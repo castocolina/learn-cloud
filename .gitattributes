@@ -1,0 +1,24 @@
+
+# Set default behavior to automatically handle line endings. Git will handle
+# line endings based on the file type.
+* text=auto
+
+# Explicitly declare text files to always be normalized to LF (Unix-style) line endings.
+# This is crucial for consistency across different operating systems.
+*.html eol=lf
+*.css eol=lf
+*.js eol=lf
+*.md eol=lf
+*.json eol=lf
+*.sh eol=lf
+
+# Mark specific file types as binary. This tells Git not to attempt to convert
+# their line endings or diff them in a meaningful way.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg binary
+*.woff binary
+*.woff2 binary

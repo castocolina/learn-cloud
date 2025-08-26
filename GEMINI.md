@@ -60,9 +60,10 @@ For each piece of content generated, follow this pedagogical structure:
 The final output will be a modern, interactive web-based book. While I will generate the text content, keep this structure in mind:
 
 *   **`content/` directory:**
-    *   Should contain a common `style.css` and `script.js` for the entire book.
-    *   Each **Unit** will have its own subdirectory (e.g., `content/unit1/`).
-    *   Inside each unit's folder, individual topics will be stored as snippets (e.g., `1-2_code_quality.html`).
+    *   This directory and its contents are essential for the website to function. Do not delete them.
+    *   It contains a common `style.css` and `script.js` for the entire book.
+    *   Each **Unit** has its own subdirectory (e.g., `content/unit1/`).
+    *   Inside each unit's folder, individual topics are stored as HTML fragments (e.g., `1-2_code_quality.html`). These are not complete HTML pages but snippets that are dynamically loaded into the main page.
 *   **User Experience (UX):**
     *   **Initial View:** The landing page should be a general overview of the book.
     *   **Navigation:**

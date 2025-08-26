@@ -1,0 +1,40 @@
+
+# Dependencies
+# These are installed by package managers and should not be in version control.
+/node_modules
+/bower_components
+
+# Build artifacts
+# These are the output of the build process and are generated from the source code.
+/build
+/dist
+/out
+
+# Log files
+# These can be verbose and specific to a user's machine.
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+# These files contain sensitive information and should never be committed.
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE and editor directories
+# These are user-specific settings and should not be shared.
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS generated files
+# These are created by the operating system and are not part of the project.
+.DS_Store
+Thumbs.db
