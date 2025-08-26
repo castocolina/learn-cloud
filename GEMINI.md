@@ -6,7 +6,7 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 
 ## Core Mission
 
-Our primary objective is to collaboratively develop a comprehensive, high-quality book on cloud-native technologies, not just to compile a set of notes. All generated content must be in **English**.
+Our primary objective is to collaboratively develop a comprehensive, high-quality book on cloud-native technologies, not just to compile a set of notes. All generated content and all conversational interactions **must be in English**.
 
 The authoritative structure for this book—its units and topics—is defined in `CONTENT.md`. We will follow that outline closely.
 
@@ -25,10 +25,15 @@ The authoritative structure for this book—its units and topics—is defined in
 *   **Best Practices:** All examples, concepts, and code must adhere to current industry best practices, emphasizing efficiency and security.
 *   **Secure by Default:** Security is not an afterthought. All code and architectural patterns should be designed with security as a primary consideration.
 *   **Production-Ready Code:** Examples should be robust, well-documented, and ready for production environments.
-### Diagramming and Visual Content
+### Interactivity, Diagrams, and Visualization
 
-*   **Markdown & SPA:** Use [Mermaid.js](https://mermaid-js.github.io/mermaid/#/) for generating diagrams (class, sequence, flow, etc.). It's excellent for version-controlled, code-based diagrams in both Markdown documentation and the final SPA.
-*   **Enhanced SPA Content:** For the SPA, we can incorporate any technology that enhances the learning experience. This includes using external libraries for interactive visualizations or downloading relevant images from the web to create rich, didactic material.
+The SPA will be built on a foundation of **Bootstrap** for styling and **Vue.js** for reactivity. To create a rich, modern, and effective learning experience, we will standardize on the following specialized libraries:
+
+*   **Diagrams as Code:** Use **[Mermaid.js](https://mermaid-js.github.io/mermaid/#/)** for generating all diagrams (class, sequence, flow, etc.). This allows diagrams to be version-controlled and updated as easily as text.
+*   **Code Highlighting:** Use **[Prism.js](https://prismjs.com/)** for syntax highlighting in all code blocks. This improves readability and provides a professional look, complete with a theme (Okaidia) and an autoloader for supporting multiple languages.
+*   **Data Visualization:** Use **[Chart.js](https://www.chartjs.org/)** to create interactive charts and graphs. This is essential for visualizing metrics, comparing performance, and explaining complex data-driven concepts.
+*   **Client-Side Search:** Use **[Lunr.js](https://lunrjs.com/)** to provide a fast and responsive full-text search experience. The search index will be built dynamically in the browser, allowing users to find content across all topics instantly.
+*   **Enhanced SPA Content:** We can incorporate any other technology that enhances learning, such as using external libraries for 3D visualizations (e.g., Three.js), implementing code playgrounds (e.g., CodeMirror), or downloading relevant images from the web to create rich, didactic material.
 
 ## Content Generation Workflow
 

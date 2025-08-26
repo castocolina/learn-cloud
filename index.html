@@ -4,126 +4,165 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mastering Cloud-Native Technologies</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Prism.js CSS (Okaidia Theme) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="content/style.css">
 </head>
-<body>
+<body class="d-flex">
 
-    <nav id="left-nav">
-        <h2>The Cloud-Native Book</h2>
-        <ul id="nav-menu">
-            <li><a href="content/overview.html"><strong>Overview</strong></a></li>
+    <nav id="left-nav" class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 380px; height: 100vh; overflow-y: auto;">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+            <span class="fs-4">The Cloud-Native Book</span>
+        </a>
+        <hr>
+        <!-- Search Bar -->
+        <div class="mb-3">
+            <input type="search" id="search-input" class="form-control" placeholder="Search content...">
+        </div>
+        <div id="search-results" class="mb-3"></div>
+        <!-- End Search Bar -->
+        <ul id="nav-menu" class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item"><a href="content/overview.html" class="nav-link link-dark"><strong>Overview</strong></a></li>
             <li class="unit">
-                <a href="#">Unit 1: Python for Cloud-Native Backend Development</a>
-                <ul class="topics">
-                    <li><a href="content/unit1/1-1_development_environment_tooling.html">1.1: Development Environment & Tooling</a></li>
-                    <li><a href="content/unit1/1-2_overview_foundational_concepts.html">1.2: Overview & Foundational Concepts</a></li>
-                    <li><a href="content/unit1/1-3_code_quality_standards.html">1.3: Code Quality and Standards</a></li>
-                    <li><a href="content/unit1/1-4_core_backend_concepts.html">1.4: Core Backend Concepts</a></li>
-                    <li><a href="content/unit1/1-5_concurrency_and_caching.html">1.5: Concurrency and Caching</a></li>
-                    <li><a href="content/unit1/1-6_building_a_restful_api_with_fastapi.html">1.6: Building a RESTful API with FastAPI</a></li>
-                    <li><a href="content/unit1/1-7_advanced_backend_topics.html">1.7: Advanced Backend Topics</a></li>
-                    <li><a href="content/unit1/1-8_testing_strategies.html">1.8: Testing Strategies</a></li>
-                    <li><a href="content/unit1/1-9_observability.html">1.9: Observability</a></li>
-                    <li><a href="content/unit1/1-10_project_building_a_microservice_in_python.html">1.10: Project: Building a Microservice in Python</a></li>
-                    <li><a href="content/unit1/1-11_unit_1_final_exam.html">1.11: Unit 1 Final Exam</a></li>
+                <a href="#unit-1-topics" data-bs-toggle="collapse" class="nav-link link-dark">Unit 1: Python for Cloud-Native Backend Development</a>
+                <ul id="unit-1-topics" class="collapse nav nav-pills flex-column ms-3">
+                    <li><a href="content/unit1/1-1_development_environment_tooling.html" class="nav-link link-dark">1.1: Development Environment & Tooling</a></li>
+                    <li><a href="content/unit1/1-2_overview_foundational_concepts.html" class="nav-link link-dark">1.2: Overview & Foundational Concepts</a></li>
+                    <li><a href="content/unit1/1-3_code_quality_standards.html" class="nav-link link-dark">1.3: Code Quality and Standards</a></li>
+                    <li><a href="content/unit1/1-4_core_backend_concepts.html" class="nav-link link-dark">1.4: Core Backend Concepts</a></li>
+                    <li><a href="content/unit1/1-5_concurrency_and_caching.html" class="nav-link link-dark">1.5: Concurrency and Caching</a></li>
+                    <li><a href="content/unit1/1-6_building_a_restful_api_with_fastapi.html" class="nav-link link-dark">1.6: Building a RESTful API with FastAPI</a></li>
+                    <li><a href="content/unit1/1-7_advanced_backend_topics.html" class="nav-link link-dark">1.7: Advanced Backend Topics</a></li>
+                    <li><a href="content/unit1/1-8_testing_strategies.html" class="nav-link link-dark">1.8: Testing Strategies</a></li>
+                    <li><a href="content/unit1/1-9_observability.html" class="nav-link link-dark">1.9: Observability</a></li>
+                    <li><a href="content/unit1/1-10_project_building_a_microservice_in_python.html" class="nav-link link-dark">1.10: Project: Building a Microservice in Python</a></li>
+                    <li><a href="content/unit1/1-11_unit_1_final_exam.html" class="nav-link link-dark">1.11: Unit 1 Final Exam</a></li>
                 </ul>
             </li>
             <li class="unit">
-                <a href="#">Unit 2: Go for Cloud-Native Backend Development</a>
-                <ul class="topics">
-                    <li><a href="content/unit2/2-1_development_environment_tooling.html">2.1: Development Environment & Tooling</a></li>
-                    <li><a href="content/unit2/2-2_overview_foundational_concepts.html">2.2: Overview & Foundational Concepts</a></li>
-                    <li><a href="content/unit2/2-3_concurrency_the_go_philosophy.html">2.3: Concurrency: The Go Philosophy</a></li>
-                    <li><a href="content/unit2/2-4_code_quality_and_standards.html">2.4: Code Quality and Standards</a></li>
-                    <li><a href="content/unit2/2-5_core_backend_concepts.html">2.5: Core Backend Concepts</a></li>
-                    <li><a href="content/unit2/2-6_building_a_restful_api.html">2.6: Building a RESTful API</a></li>
-                    <li><a href="content/unit2/2-7_advanced_backend_topics.html">2.7: Advanced Backend Topics</a></li>
-                    <li><a href="content/unit2/2-8_testing_strategies.html">2.8: Testing Strategies</a></li>
-                    <li><a href="content/unit2/2-9_observability.html">2.9: Observability</a></li>
-                    <li><a href="content/unit2/2-10_project_building_a_microservice_in_go.html">2.10: Project: Building a Microservice in Go</a></li>
-                    <li><a href="content/unit2/2-11_unit_2_final_exam.html">2.11: Unit 2 Final Exam</a></li>
+                <a href="#unit-2-topics" data-bs-toggle="collapse" class="nav-link link-dark">Unit 2: Go for Cloud-Native Backend Development</a>
+                <ul id="unit-2-topics" class="collapse nav nav-pills flex-column ms-3">
+                    <li><a href="content/unit2/2-1_development_environment_tooling.html" class="nav-link link-dark">2.1: Development Environment & Tooling</a></li>
+                    <li><a href="content/unit2/2-2_overview_foundational_concepts.html" class="nav-link link-dark">2.2: Overview & Foundational Concepts</a></li>
+                    <li><a href="content/unit2/2-3_concurrency_the_go_philosophy.html" class="nav-link link-dark">2.3: Concurrency: The Go Philosophy</a></li>
+                    <li><a href="content/unit2/2-4_code_quality_and_standards.html" class="nav-link link-dark">2.4: Code Quality and Standards</a></li>
+                    <li><a href="content/unit2/2-5_core_backend_concepts.html" class="nav-link link-dark">2.5: Core Backend Concepts</a></li>
+                    <li><a href="content/unit2/2-6_building_a_restful_api.html" class="nav-link link-dark">2.6: Building a RESTful API</a></li>
+                    <li><a href="content/unit2/2-7_advanced_backend_topics.html" class="nav-link link-dark">2.7: Advanced Backend Topics</a></li>
+                    <li><a href="content/unit2/2-8_testing_strategies.html" class="nav-link link-dark">2.8: Testing Strategies</a></li>
+                    <li><a href="content/unit2/2-9_observability.html" class="nav-link link-dark">2.9: Observability</a></li>
+                    <li><a href="content/unit2/2-10_project_building_a_microservice_in_go.html" class="nav-link link-dark">2.10: Project: Building a Microservice in Go</a></li>
+                    <li><a href="content/unit2/2-11_unit_2_final_exam.html" class="nav-link link-dark">2.11: Unit 2 Final Exam</a></li>
                 </ul>
             </li>
             <li class="unit">
-                <a href="#">Unit 3: DevOps, IaC, and CI/CD</a>
-                <ul class="topics">
-                    <li><a href="content/unit3/3-1_terraform_for_infrastructure_as_code.html">3.1: Terraform for Infrastructure as Code</a></li>
-                    <li><a href="content/unit3/3-2_kubernetes_for_container_orchestration.html">3.2: Kubernetes for Container Orchestration</a></li>
-                    <li><a href="content/unit3/3-3_github_actions_for_ci_cd.html">3.3: GitHub Actions for CI/CD</a></li>
-                    <li><a href="content/unit3/3-4_spinnaker_for_continuous_delivery.html">3.4: Spinnaker for Continuous Delivery</a></li>
-                    <li><a href="content/unit3/3-5_unit_3_final_exam.html">3.5: Unit 3 Final Exam</a></li>
+                <a href="#unit-3-topics" data-bs-toggle="collapse" class="nav-link link-dark">Unit 3: DevOps, IaC, and CI/CD</a>
+                <ul id="unit-3-topics" class="collapse nav nav-pills flex-column ms-3">
+                    <li><a href="content/unit3/3-1_terraform_for_infrastructure_as_code.html" class="nav-link link-dark">3.1: Terraform for Infrastructure as Code</a></li>
+                    <li><a href="content/unit3/3-2_kubernetes_for_container_orchestration.html" class="nav-link link-dark">3.2: Kubernetes for Container Orchestration</a></li>
+                    <li><a href="content/unit3/3-3_github_actions_for_ci_cd.html" class="nav-link link-dark">3.3: GitHub Actions for CI/CD</a></li>
+                    <li><a href="content/unit3/3-4_spinnaker_for_continuous_delivery.html" class="nav-link link-dark">3.4: Spinnaker for Continuous Delivery</a></li>
+                    <li><a href="content/unit3/3-5_unit_3_final_exam.html" class="nav-link link-dark">3.5: Unit 3 Final Exam</a></li>
                 </ul>
             </li>
             <li class="unit">
-                <a href="#">Unit 4: Secrets and Configuration Management</a>
-                <ul class="topics">
-                    <li><a href="content/unit4/4-1_hashicorp_vault.html">4.1: HashiCorp Vault</a></li>
-                    <li><a href="content/unit4/4-2_hashicorp_consul.html">4.2: HashiCorp Consul</a></li>
-                    <li><a href="content/unit4/4-3_unit_4_final_exam.html">4.3: Unit 4 Final Exam</a></li>
+                <a href="#unit-4-topics" data-bs-toggle="collapse" class="nav-link link-dark">Unit 4: Secrets and Configuration Management</a>
+                <ul id="unit-4-topics" class="collapse nav nav-pills flex-column ms-3">
+                    <li><a href="content/unit4/4-1_hashicorp_consul.html" class="nav-link link-dark">4.1: HashiCorp Consul</a></li>
+                    <li><a href="content/unit4/4-2_hashicorp_vault.html" class="nav-link link-dark">4.2: HashiCorp Vault</a></li>
+                    <li><a href="content/unit4/4-3_unit_4_final_exam.html" class="nav-link link-dark">4.3: Unit 4 Final Exam</a></li>
                 </ul>
             </li>
             <li class="unit">
-                <a href="#">Unit 5: DevSecOps</a>
-                <ul class="topics">
-                    <li><a href="content/unit5/5-1_sast_static_application_security_testing.html">5.1: SAST (Static Application Security Testing)</a></li>
-                    <li><a href="content/unit5/5-2_sca_software_composition_analysis.html">5.2: SCA (Software Composition Analysis)</a></li>
-                    <li><a href="content/unit5/5-3_container_image_scanning.html">5.3: Container Image Scanning</a></li>
-                    <li><a href="content/unit5/5-4_vulnerability_management.html">5.4: Vulnerability Management</a></li>
-                    <li><a href="content/unit5/5-5_unit_5_final_exam.html">5.5: Unit 5 Final Exam</a></li>
+                <a href="#unit-5-topics" data-bs-toggle="collapse" class="nav-link link-dark">Unit 5: DevSecOps</a>
+                <ul id="unit-5-topics" class="collapse nav nav-pills flex-column ms-3">
+                    <li><a href="content/unit5/5-1_sast_static_application_security_testing.html" class="nav-link link-dark">5.1: SAST (Static Application Security Testing)</a></li>
+                    <li><a href="content/unit5/5-2_sca_software_composition_analysis.html" class="nav-link link-dark">5.2: SCA (Software Composition Analysis)</a></li>
+                    <li><a href="content/unit5/5-3_container_image_scanning.html" class="nav-link link-dark">5.3: Container Image Scanning</a></li>
+                    <li><a href="content/unit5/5-4_vulnerability_management.html" class="nav-link link-dark">5.4: Vulnerability Management</a></li>
+                    <li><a href="content/unit5/5-5_unit_5_final_exam.html" class="nav-link link-dark">5.5: Unit 5 Final Exam</a></li>
                 </ul>
             </li>
             <li class="unit">
-                <a href="#">Unit 6: Automation</a>
-                <ul class="topics">
-                    <li><a href="content/unit6/6-1_renovatebot_for_dependency_automation.html">6.1: RenovateBot for Dependency Automation</a></li>
-                    <li><a href="content/unit6/6-2_unit_6_final_exam.html">6.2: Unit 6 Final Exam</a></li>
+                <a href="#unit-6-topics" data-bs-toggle="collapse" class="nav-link link-dark">Unit 6: Automation</a>
+                <ul id="unit-6-topics" class="collapse nav nav-pills flex-column ms-3">
+                    <li><a href="content/unit6/6-1_renovatebot_for_dependency_automation.html" class="nav-link link-dark">6.1: RenovateBot for Dependency Automation</a></li>
+                    <li><a href="content/unit6/6-2_unit_6_final_exam.html" class="nav-link link-dark">6.2: Unit 6 Final Exam</a></li>
                 </ul>
             </li>
             <li class="unit">
-                <a href="#">Unit 7: The Serverless Ecosystem on AWS</a>
-                <ul class="topics">
-                    <li><a href="content/unit7/7-1_the_serverless_spectrum.html">7.1: The Serverless Spectrum</a></li>
-                    <li><a href="content/unit7/7-2_aws_lambda_in_depth.html">7.2: AWS Lambda In-Depth</a></li>
-                    <li><a href="content/unit7/7-3_orchestration_and_workflows.html">7.3: Orchestration and Workflows</a></li>
-                    <li><a href="content/unit7/7-4_serverless_deployment_tooling.html">7.4: Serverless Deployment & Tooling</a></li>
-                    <li><a href="content/unit7/7-5_aws_developer_certification_guide.html">7.5: AWS Developer Certification Guide</a></li>
-                    <li><a href="content/unit7/7-6_unit_7_final_exam.html">7.6: Unit 7 Final Exam</a></li>
+                <a href="#unit-7-topics" data-bs-toggle="collapse" class="nav-link link-dark">Unit 7: The Serverless Ecosystem on AWS</a>
+                <ul id="unit-7-topics" class="collapse nav nav-pills flex-column ms-3">
+                    <li><a href="content/unit7/7-1_the_serverless_spectrum.html" class="nav-link link-dark">7.1: The Serverless Spectrum</a></li>
+                    <li><a href="content/unit7/7-2_aws_lambda_in_depth.html" class="nav-link link-dark">7.2: AWS Lambda In-Depth</a></li>
+                    <li><a href="content/unit7/7-3_orchestration_and_workflows.html" class="nav-link link-dark">7.3: Orchestration and Workflows</a></li>
+                    <li><a href="content/unit7/7-4_serverless_deployment_tooling.html" class="nav-link link-dark">7.4: Serverless Deployment & Tooling</a></li>
+                    <li><a href="content/unit7/7-5_aws_developer_certification_guide.html" class="nav-link link-dark">7.5: AWS Developer Certification Guide</a></li>
+                    <li><a href="content/unit7/7-6_unit_7_final_exam.html" class="nav-link link-dark">7.6: Unit 7 Final Exam</a></li>
                 </ul>
             </li>
             <li class="unit">
-                <a href="#">Unit 8: Systems Integration and Security</a>
-                <ul class="topics">
-                    <li><a href="content/unit8/8-1_securely_connecting_services.html">8.1: Securely Connecting Services</a></li>
-                    <li><a href="content/unit8/8-2_unit_8_final_exam.html">8.2: Unit 8 Final Exam</a></li>
+                <a href="#unit-8-topics" data-bs-toggle="collapse" class="nav-link link-dark">Unit 8: Systems Integration and Security</a>
+                <ul id="unit-8-topics" class="collapse nav nav-pills flex-column ms-3">
+                    <li><a href="content/unit8/8-1_securely_connecting_services.html" class="nav-link link-dark">8.1: Securely Connecting Services</a></li>
+                    <li><a href="content/unit8/8-2_unit_8_final_exam.html" class="nav-link link-dark">8.2: Unit 8 Final Exam</a></li>
                 </ul>
             </li>
             <li class="unit">
-                <a href="#">Unit 9: Capstone Projects</a>
-                <ul class="topics">
-                    <li><a href="content/unit9/9-1_project_1_python_based_e-commerce_microservices.html">9.1: Project 1: Python-based E-Commerce Microservices</a></li>
-                    <li><a href="content/unit9/9-2_project_2_go_based_real_time_analytics_pipeline.html">9.2: Project 2: Go-based Real-Time Analytics Pipeline</a></li>
+                <a href="#unit-9-topics" data-bs-toggle="collapse" class="nav-link link-dark">Unit 9: Capstone Projects</a>
+                <ul id="unit-9-topics" class="collapse nav nav-pills flex-column ms-3">
+                    <li><a href="content/unit9/9-1_project_1_python_based_e-commerce_microservices.html" class="nav-link link-dark">9.1: Project 1: Python-based E-Commerce Microservices</a></li>
+                    <li><a href="content/unit9/9-2_project_2_go_based_real_time_analytics_pipeline.html" class="nav-link link-dark">9.2: Project 2: Go-based Real-Time Analytics Pipeline</a></li>
                 </ul>
             </li>
         </ul>
     </nav>
 
-    <main>
-        <div id="progress-bar-container">
-            <div id="progress-bar">0%</div>
+    <main class="w-100 p-4" style="overflow-y: auto; height: 100vh;">
+        <div id="progress-container" class="d-flex align-items-center mb-4">
+            <!-- Unit Progress (always visible) -->
+            <div class="flex-grow-1 me-3">
+                <small id="unit-progress-label" class="text-muted d-block mb-1">Unit Progress</small>
+                <div class="progress" role="progressbar" aria-label="Unit progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="height: 20px;">
+                    <div id="unit-progress-bar" class="progress-bar bg-success" style="width: 0%"></div>
+                </div>
+            </div>
+            <!-- Overall Progress (in a dropdown) -->
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Overall
+                </button>
+                <div class="dropdown-menu p-2" style="width: 250px;">
+                     <small class="text-muted d-block mb-1">Overall Progress</small>
+                     <div class="progress" role="progressbar" aria-label="Overall book progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="height: 20px;">
+                        <div id="overall-progress-bar" class="progress-bar" style="width: 0%">0%</div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div id="content-area">
             <!-- Content will be loaded here -->
-            <h1>Welcome to the Cloud-Native Book</h1>
-            <p>Select a topic from the menu to start learning.</p>
+            <p>Loading content...</p>
         </div>
 
-        <div class="nav-buttons">
-            <button id="prev-btn" disabled>Previous</button>
-            <button id="next-btn" disabled>Next</button>
+        <div class="nav-buttons mt-4 d-flex justify-content-between">
+            <button id="prev-btn" class="btn btn-secondary" disabled>Previous</button>
+            <button id="next-btn" class="btn btn-primary" disabled>Next</button>
         </div>
     </main>
 
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <!-- Third-party libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
+    <!-- Custom Script -->
     <script src="content/script.js"></script>
 </body>
 </html>

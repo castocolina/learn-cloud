@@ -125,18 +125,18 @@
 
 ## Unit 4: Secrets and Configuration Management
 
-*   **4.1: HashiCorp Vault**
+*   **4.1: HashiCorp Consul**
+    *   Consul deployment architecture (HA setup).
+    *   Service discovery in a microservices environment.
+    *   Distributed Key-Value store for configuration.
+    *   Consul Connect for service mesh.
+    *   Quiz & Flashcards.
+*   **4.2: HashiCorp Vault**
     *   Vault deployment architecture (HA setup).
     *   Dynamic secrets for databases and cloud providers.
     *   Certificate management.
     *   Integrating Vault with Kubernetes (Vault Agent Injector).
     *   Integrating Vault with applications (Python/Go).
-    *   Quiz & Flashcards.
-*   **4.2: HashiCorp Consul**
-    *   Consul deployment architecture (HA setup).
-    *   Service discovery in a microservices environment.
-    *   Distributed Key-Value store for configuration.
-    *   Consul Connect for service mesh.
     *   Quiz & Flashcards.
 *   **4.3: Unit 4 Final Exam**
 
@@ -219,5 +219,5 @@
 
 *   **General:** [12 Factor App](https://12factor.net/)
 *   **Languages:** [Python Docs](https://docs.python.org/3/), [Go Docs](https://go.dev/doc/)
-*   **Tools:** [Terraform Docs](https://developer.hashicorp.com/terraform/docs), [Kubernetes Docs](https://kubernetes.io/docs/), [Vault Docs](https://developer.hashicorp.com/vault/docs), [Consul Docs](https://developer.hashicorp.com/consul/docs), [GitHub Actions Docs](https://docs.github.com/en/actions), [Spinnaker Docs](https://spinnaker.io/docs/), [RenovateBot Docs](https://docs.renovatebot.com/)
+*   **Tools:** [Terraform Docs](https://developer.hashicorp.com/terraform/docs), [Kubernetes Docs](https://kubernetes.io/docs/), [Consul Docs](https://developer.hashicorp.com/consul/docs), [Vault Docs](https://developer.hashicorp.com/vault/docs), [GitHub Actions Docs](https://docs.github.com/en/actions), [Spinnaker Docs](https://spinnaker.io/docs/), [RenovateBot Docs](https://docs.renovatebot.com/)
 *   **Cloud:** [AWS Docs](https://docs.aws.amazon.com/)

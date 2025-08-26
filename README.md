@@ -37,8 +37,8 @@ graph LR
     C --> C3[GitHub Actions - CI/CD];
     C --> C4[Spinnaker - CD];
 
-    D --> D1[HashiCorp Vault];
-    D --> D2[HashiCorp Consul];
+    D --> D1[HashiCorp Consul];
+    D --> D2[HashiCorp Vault];
 
     E --> E1[SAST / SCA];
     E --> E2[Container Scanning];

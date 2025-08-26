@@ -7,121 +7,16 @@
     --dark-grey: #7f8c8d;
 }
 
+/*
+  Most of the original styling has been removed as we are now using the
+  Bootstrap framework, which provides its own classes for layout,
+  components, and typography.
+
+  We can keep this file for any custom overrides or new styles that
+  are not covered by Bootstrap.
+*/
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
-    margin: 0;
     background-color: var(--background-color);
-    color: var(--text-color);
-    display: flex;
-}
-
-#left-nav {
-    width: 250px;
-    background: var(--secondary-color);
-    color: white;
-    padding: 20px;
-    height: 100vh;
-    position: fixed;
-    overflow-y: auto;
-}
-
-#left-nav h2 {
-    color: var(--primary-color);
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-#nav-menu {
-    list-style: none;
-    padding: 0;
-}
-
-#nav-menu .unit > a {
-    font-weight: bold;
-    color: white;
-    text-decoration: none;
-    display: block;
-    padding: 10px;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-}
-
-#nav-menu .unit > a:hover {
-    background-color: #34495e;
-}
-
-#nav-menu .topics {
-    list-style: none;
-    padding-left: 20px;
-    display: none; /* Hidden by default */
-}
-
-#nav-menu .topics a {
-    color: var(--light-grey);
-    text-decoration: none;
-    display: block;
-    padding: 8px;
-    border-radius: 5px;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-#nav-menu .topics a:hover, #nav-menu .topics a.active {
-    background-color: var(--primary-color);
-    color: white;
-}
-
-main {
-    margin-left: 270px; /* Same as left-nav width + padding */
-    padding: 20px;
-    width: calc(100% - 270px);
-}
-
-#progress-bar-container {
-    width: 100%;
-    background-color: var(--light-grey);
-    border-radius: 5px;
-    margin-bottom: 20px;
-}
-
-#progress-bar {
-    width: 0%;
-    height: 20px;
-    background-color: var(--primary-color);
-    border-radius: 5px;
-    text-align: center;
-    color: white;
-    line-height: 20px;
-}
-
-#content-area {
-    background: white;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-.nav-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-}
-
-.nav-buttons button {
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.nav-buttons button:hover {
-    background: #2980b9;
-}
-
-.nav-buttons button:disabled {
-    background: var(--light-grey);
-    cursor: not-allowed;
 }
