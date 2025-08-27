@@ -1,2 +1,90 @@
-<h1>Study Aids for 1.9: Observability</h1>
-<p>Coming soon...</p>
+
+<div class="container">
+    <div class="page-header">
+        <h1>1.9 Study Aids: Observability</h1>
+        <p class="lead">Use these flashcards to review the key concepts of observability in cloud-native systems.</p>
+    </div>
+
+    <div class="row">
+        <!-- Flashcard 1 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5>Observability vs. Monitoring</h5>
+                        <p>What is the key difference between observability and traditional monitoring?</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p><strong>Monitoring</strong> tells you <em>if</em> something is broken (e.g., CPU usage is high). <strong>Observability</strong> helps you understand <em>why</em> it's broken by allowing you to ask arbitrary questions about the system's internal state from its external outputs.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 2 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5>Three Pillars of Observability</h5>
+                        <p>Name the three pillars of observability.</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p>The three pillars of observability are <strong>Logs</strong>, <strong>Metrics</strong>, and <strong>Traces</strong>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 3 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5>Structured Logging</h5>
+                        <p>What is structured logging, and what is its main benefit?</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p>Structured logging involves outputting logs in a machine-readable format (e.g., JSON) with key-value pairs. Its main benefit is making logs easier to parse, query, and analyze programmatically, especially in distributed systems.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 4 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5>Prometheus Metrics</h5>
+                        <p>What are metrics in the context of observability, and what is Prometheus used for?</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p>Metrics are numerical measurements collected over time (e.g., request rates, error counts). Prometheus is an open-source monitoring system that collects and stores these metrics as time series data, allowing for powerful querying and alerting.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 5 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5>Distributed Tracing</h5>
+                        <p>What problem does distributed tracing solve in microservices architectures?</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p>Distributed tracing solves the problem of understanding the flow and performance of a single request as it travels through multiple services. It helps pinpoint latency issues, identify service dependencies, and debug complex interactions across a distributed system.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

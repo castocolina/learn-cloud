@@ -1,2 +1,166 @@
-<h1>Quiz for 1.9: Observability</h1>
-<p>Coming soon...</p>
+
+<div class="container">
+    <div class="page-header">
+        <h1>1.9 Quiz: Observability</h1>
+        <p class="lead">Test your knowledge on the concepts and tools for system observability.</p>
+    </div>
+
+    <div id="quiz-container">
+        <div class="card quiz-card" id="q1">
+            <div class="card-body">
+                <h5 class="card-title">Question 1</h5>
+                <p class="card-text">What is the primary goal of observability in a cloud-native system?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q1" id="q1_a1" value="A">
+                    <label class="form-check-label" for="q1_a1">
+                        A) To prevent all system failures from occurring.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q1" id="q1_a2" value="B">
+                    <label class="form-check-label" for="q1_a2">
+                        B) To understand the internal state of a system by examining its external outputs, especially to answer arbitrary questions about its behavior.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q1" id="q1_a3" value="C">
+                    <label class="form-check-label" for="q1_a3">
+                        C) To replace all manual debugging efforts with automated solutions.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B"></div>
+            </div>
+        </div>
+
+        <div class="card quiz-card" id="q2" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 2</h5>
+                <p class="card-text">Which of the following are considered the "three pillars of observability"? (Select all that apply)</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q2" id="q2_a1" value="A">
+                    <label class="form-check-label" for="q2_a1">
+                        A) Logs
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q2" id="q2_a2" value="B">
+                    <label class="form-check-label" for="q2_a2">
+                        B) Alerts
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q2" id="q2_a3" value="C">
+                    <label class="form-check-label" for="q2_a3">
+                        C) Metrics
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q2" id="q2_a4" value="D">
+                    <label class="form-check-label" for="q2_a4">
+                        D) Traces
+                    </label>
+                </div>
+                <div class="answer" data-correct="A,C,D"></div>
+            </div>
+        </div>
+
+        <div class="card quiz-card" id="q3" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 3</h5>
+                <p class="card-text">What is the main advantage of structured logging over traditional unstructured logging?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q3" id="q3_a1" value="A">
+                    <label class="form-check-label" for="q3_a1">
+                        A) It makes logs more human-readable.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q3" id="q3_a2" value="B">
+                    <label class="form-check-label" for="q3_a2">
+                        B) It allows for easier machine parsing, querying, and analysis of log data.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q3" id="q3_a3" value="C">
+                    <label class="form-check-label" for="q3_a3">
+                        C) It reduces the volume of log data generated.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B"></div>
+            </div>
+        </div>
+
+        <div class="card quiz-card" id="q4" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 4</h5>
+                <p class="card-text">What is Prometheus primarily used for in an observability stack?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q4" id="q4_a1" value="A">
+                    <label class="form-check-label" for="q4_a1">
+                        A) Collecting and storing application logs.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q4" id="q4_a2" value="B">
+                    <label class="form-check-label" for="q4_a2">
+                        B) Tracing requests across distributed services.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q4" id="q4_a3" value="C">
+                    <label class="form-check-label" for="q4_a3">
+                        C) Collecting and storing numerical metrics as time series data.
+                    </label>
+                </div>
+                <div class="answer" data-correct="C"></div>
+            </div>
+        </div>
+
+        <div class="card quiz-card" id="q5" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 5</h5>
+                <p class="card-text">Which of the following are benefits of implementing distributed tracing with OpenTelemetry? (Select all that apply)</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q5" id="q5_a1" value="A">
+                    <label class="form-check-label" for="q5_a1">
+                        A) Pinpointing latency issues across multiple services.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q5" id="q5_a2" value="B">
+                    <label class="form-check-label" for="q5_a2">
+                        B) Automatically fixing bugs in production.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q5" id="q5_a3" value="C">
+                    <label class="form-check-label" for="q5_a3">
+                        C) Understanding service dependencies and communication flows.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q5" id="q5_a4" value="D">
+                    <label class="form-check-label" for="q5_a4">
+                        D) Debugging complex interactions in microservices architectures.
+                    </label>
+                </div>
+                <div class="answer" data-correct="A,C,D"></div>
+            </div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button class="btn btn-secondary" id="prev-btn" style="display: none;">Previous</button>
+            <button class="btn btn-primary" id="next-btn">Next</button>
+            <button class="btn btn-success" id="submit-btn" style="display: none;">Submit Answers</button>
+        </div>
+    </div>
+
+    <div id="results-container" style="display: none;">
+        <h3>Quiz Results</h3>
+        <p>Your score: <span id="score"></span></p>
+        <p>Percentage: <span id="percentage"></span>%</p>
+        <p id="feedback"></p>
+        <button class="btn btn-primary" id="try-again-btn">Try Again</button>
+    </div>
+
+</div>

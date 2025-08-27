@@ -1,2 +1,166 @@
-<h1>Quiz for 1.3: Code Quality and Standards</h1>
-<p>Coming soon...</p>
+
+<div class="container">
+    <div class="page-header">
+        <h1>1.3 Quiz: Code Quality and Standards</h1>
+        <p class="lead">Test your knowledge on Python's code quality tools and standards.</p>
+    </div>
+
+    <div id="quiz-container">
+        <div class="card quiz-card" id="q1">
+            <div class="card-body">
+                <h5 class="card-title">Question 1</h5>
+                <p class="card-text">What is PEP 8?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q1" id="q1_a1" value="A">
+                    <label class="form-check-label" for="q1_a1">
+                        A) A library for making HTTP requests.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q1" id="q1_a2" value="B">
+                    <label class="form-check-label" for="q1_a2">
+                        B) The official style guide for Python code, focusing on readability and consistency.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q1" id="q1_a3" value="C">
+                    <label class="form-check-label" for="q1_a3">
+                        C) A tool for managing Python packages.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B"></div>
+            </div>
+        </div>
+
+        <div class="card quiz-card" id="q2" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 2</h5>
+                <p class="card-text">What is the primary philosophy of the Black code formatter?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q2" id="q2_a1" value="A">
+                    <label class="form-check-label" for="q2_a1">
+                        A) To be highly configurable to support any possible coding style.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q2" id="q2_a2" value="B">
+                    <label class="form-check-label" for="q2_a2">
+                        B) To be an uncompromising, opinionated formatter that enforces one single style.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q2" id="q2_a3" value="C">
+                    <label class="form-check-label" for="q2_a3">
+                        C) To only check for errors but never modify the code.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B"></div>
+            </div>
+        </div>
+
+        <div class="card quiz-card" id="q3" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 3</h5>
+                <p class="card-text">Which of the following issues can a linter like Ruff detect? (Select all that apply)</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q3" id="q3_a1" value="A">
+                    <label class="form-check-label" for="q3_a1">
+                        A) Unused imports and variables.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q3" id="q3_a2" value="B">
+                    <label class="form-check-label" for="q3_a2">
+                        B) Incorrect business logic.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q3" id="q3_a3" value="C">
+                    <label class="form-check-label" for="q3_a3">
+                        C) Undefined names or variables.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q3" id="q3_a4" value="D">
+                    <label class="form-check-label" for="q3_a4">
+                        D) Inefficient algorithms.
+                    </label>
+                </div>
+                <div class="answer" data-correct="A,C"></div>
+            </div>
+        </div>
+
+        <div class="card quiz-card" id="q4" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 4</h5>
+                <p class="card-text">What is the main benefit of using pre-commit hooks in a development workflow?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q4" id="q4_a1" value="A">
+                    <label class="form-check-label" for="q4_a1">
+                        A) They automatically write commit messages for you.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q4" id="q4_a2" value="B">
+                    <label class="form-check-label" for="q4_a2">
+                        B) They deploy the code to production after every commit.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q4" id="q4_a3" value="C">
+                    <label class="form-check-label" for="q4_a3">
+                        C) They automate code quality checks, ensuring all code meets standards before it is committed.
+                    </label>
+                </div>
+                <div class="answer" data-correct="C"></div>
+            </div>
+        </div>
+
+        <div class="card quiz-card" id="q5" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 5</h5>
+                <p class="card-text">Which of the following are valid actions performed by the Black formatter? (Select all that apply)</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q5" id="q5_a1" value="A">
+                    <label class="form-check-label" for="q5_a1">
+                        A) Normalizing quotes (e.g., from single to double quotes).
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q5" id="q5_a2" value="B">
+                    <label class="form-check-label" for="q5_a2">
+                        B) Adding or removing whitespace around operators.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q5" id="q5_a3" value="C">
+                    <label class="form-check-label" for="q5_a3">
+                        C) Renaming variables to be more descriptive.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q5" id="q5_a4" value="D">
+                    <label class="form-check-label" for="q5_a4">
+                        D) Wrapping long lines of code.
+                    </label>
+                </div>
+                <div class="answer" data-correct="A,B,D"></div>
+            </div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button class="btn btn-secondary" id="prev-btn" style="display: none;">Previous</button>
+            <button class="btn btn-primary" id="next-btn">Next</button>
+            <button class="btn btn-success" id="submit-btn" style="display: none;">Submit Answers</button>
+        </div>
+    </div>
+
+    <div id="results-container" style="display: none;">
+        <h3>Quiz Results</h3>
+        <p>Your score: <span id="score"></span></p>
+        <p>Percentage: <span id="percentage"></span>%</p>
+        <p id="feedback"></p>
+        <button class="btn btn-primary" id="try-again-btn">Try Again</button>
+    </div>
+
+</div>

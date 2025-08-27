@@ -1,2 +1,90 @@
-<h1>Study Aids for 1.6: Building a RESTful API with FastAPI</h1>
-<p>Coming soon...</p>
+
+<div class="container">
+    <div class="page-header">
+        <h1>1.6 Study Aids: Building a RESTful API with FastAPI</h1>
+        <p class="lead">Use these flashcards to review the key concepts of building APIs with FastAPI.</p>
+    </div>
+
+    <div class="row">
+        <!-- Flashcard 1 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5>FastAPI's Key Features</h5>
+                        <p>What are two of the main features that make FastAPI a modern, high-performance framework?</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p>1. <strong>High Performance:</strong> It's built on Starlette and Pydantic, making it one of the fastest Python frameworks. <br/> 2. <strong>Automatic Docs:</strong> It automatically generates interactive API documentation (Swagger UI) from your code and type hints.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 2 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5>Pydantic Integration</h5>
+                        <p>What role do Pydantic models play in a FastAPI application?</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p>Pydantic models are used to define the data shape of request bodies and responses. FastAPI uses these models to perform data validation, serialization (converting data to and from JSON), and to auto-generate the schemas for the API documentation.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 3 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5>Uvicorn</h5>
+                        <p>What is Uvicorn and why do you need it to run a FastAPI application?</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p>Uvicorn is an <strong>ASGI (Asynchronous Server Gateway Interface)</strong> server. FastAPI is an ASGI framework, which means it doesn't have a built-in web server. Uvicorn is the server that receives HTTP requests and passes them to the FastAPI application to be processed.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 4 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5>Dependency Injection</h5>
+                        <p>What is the primary benefit of using FastAPI's dependency injection system?</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p>The primary benefits are <strong>code reuse</strong> and <strong>separation of concerns</strong>. It allows you to share logic (like database connections or authentication) across multiple endpoints and makes testing much easier by allowing you to override dependencies with mocks.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 5 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5>Path Operation Decorators</h5>
+                        <p>What is the purpose of a decorator like <code>@app.post("/items/")</code> in FastAPI?</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p>It's a <strong>path operation decorator</strong> that links a URL path (<code>/items/</code>) and an HTTP method (<code>POST</code>) to the function defined directly below it. It tells FastAPI to call this function whenever it receives a POST request to that specific path.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

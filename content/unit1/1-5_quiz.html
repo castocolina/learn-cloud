@@ -1,2 +1,166 @@
-<h1>Quiz for 1.5: Concurrency and Caching</h1>
-<p>Coming soon...</p>
+
+<div class="container">
+    <div class="page-header">
+        <h1>1.5 Quiz: Concurrency and Caching</h1>
+        <p class="lead">Test your knowledge on Python's concurrency and caching mechanisms.</p>
+    </div>
+
+    <div id="quiz-container">
+        <div class="card quiz-card" id="q1">
+            <div class="card-body">
+                <h5 class="card-title">Question 1</h5>
+                <p class="card-text">The Global Interpreter Lock (GIL) in CPython is the primary reason why...</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q1" id="q1_a1" value="A">
+                    <label class="form-check-label" for="q1_a1">
+                        A) Python cannot perform concurrent operations at all.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q1" id="q1_a2" value="B">
+                    <label class="form-check-label" for="q1_a2">
+                        B) Python threads are not effective for CPU-bound tasks but are effective for I/O-bound tasks.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q1" id="q1_a3" value="C">
+                    <label class="form-check-label" for="q1_a3">
+                        C) Python is faster than other programming languages.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B"></div>
+            </div>
+        </div>
+
+        <div class="card quiz-card" id="q2" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 2</h5>
+                <p class="card-text">For which of the following tasks would using the <code>threading</code> module or <code>asyncio</code> provide a significant performance benefit? (Select all that apply)</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q2" id="q2_a1" value="A">
+                    <label class="form-check-label" for="q2_a1">
+                        A) Calculating the 1,000,000th prime number.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q2" id="q2_a2" value="B">
+                    <label class="form-check-label" for="q2_a2">
+                        B) Making thousands of simultaneous requests to an external REST API.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q2" id="q2_a3" value="C">
+                    <label class="form-check-label" for="q2_a3">
+                        C) Reading 100 different files from a network storage drive.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q2" id="q2_a4" value="D">
+                    <label class="form-check-label" for="q2_a4">
+                        D) Compressing a large file in memory.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B,C"></div>
+            </div>
+        </div>
+
+        <div class="card quiz-card" id="q3" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 3</h5>
+                <p class="card-text">What is the fundamental difference between the concurrency models of <code>threading</code> and <code>asyncio</code>?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q3" id="q3_a1" value="A">
+                    <label class="form-check-label" for="q3_a1">
+                        A) <code>threading</code> uses multiple processes, while <code>asyncio</code> uses multiple threads.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q3" id="q3_a2" value="B">
+                    <label class="form-check-label" for="q3_a2">
+                        B) <code>threading</code> uses pre-emptive multitasking managed by the OS, while <code>asyncio</code> uses cooperative multitasking managed by an event loop.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q3" id="q3_a3" value="C">
+                    <label class="form-check-label" for="q3_a3">
+                        C) There is no fundamental difference; they are just different syntaxes for the same thing.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B"></div>
+            </div>
+        </div>
+
+        <div class="card quiz-card" id="q4" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 4</h5>
+                <p class="card-text">You have a function that takes a long time to run because it performs a complex, pure calculation. Which tool is best suited to cache its results within a single application process?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q4" id="q4_a1" value="A">
+                    <label class="form-check-label" for="q4_a1">
+                        A) An external Redis cache.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q4" id="q4_a2" value="B">
+                    <label class="form-check-label" for="q4_a2">
+                        B) The <code>@functools.lru_cache</code> decorator.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q4" id="q4_a3" value="C">
+                    <label class="form-check-label" for="q4_a3">
+                        C) Storing the results in a global dictionary.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B"></div>
+            </div>
+        </div>
+
+        <div class="card quiz-card" id="q5" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 5</h5>
+                <p class="card-text">Which of the following are key characteristics of <code>asyncio</code>? (Select all that apply)</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q5" id="q5_a1" value="A">
+                    <label class="form-check-label" for="q5_a1">
+                        A) It uses the <code>async</code> and <code>await</code> keywords.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q5" id="q5_a2" value="B">
+                    <label class="form-check-label" for="q5_a2">
+                        B) It is primarily designed for CPU-bound tasks.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q5" id="q5_a3" value="C">
+                    <label class="form-check-label" for="q5_a3">
+                        C) It relies on an event loop to manage concurrent tasks.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q5" id="q5_a4" value="D">
+                    <label class="form-check-label" for="q5_a4">
+                        D) It can be more memory-efficient than threading for a large number of I/O operations.
+                    </label>
+                </div>
+                <div class="answer" data-correct="A,C,D"></div>
+            </div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button class="btn btn-secondary" id="prev-btn" style="display: none;">Previous</button>
+            <button class="btn btn-primary" id="next-btn">Next</button>
+            <button class="btn btn-success" id="submit-btn" style="display: none;">Submit Answers</button>
+        </div>
+    </div>
+
+    <div id="results-container" style="display: none;">
+        <h3>Quiz Results</h3>
+        <p>Your score: <span id="score"></span></p>
+        <p>Percentage: <span id="percentage"></span>%</p>
+        <p id="feedback"></p>
+        <button class="btn btn-primary" id="try-again-btn">Try Again</button>
+    </div>
+
+</div>

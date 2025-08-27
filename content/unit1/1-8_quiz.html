@@ -1,2 +1,166 @@
-<h1>Quiz for 1.8: Testing Strategies</h1>
-<p>Coming soon...</p>
+
+<div class="container">
+    <div class="page-header">
+        <h1>1.8 Quiz: Testing Strategies</h1>
+        <p class="lead">Test your knowledge on Python's testing strategies and tools.</p>
+    </div>
+
+    <div id="quiz-container">
+        <div class="card quiz-card" id="q1">
+            <div class="card-body">
+                <h5 class="card-title">Question 1</h5>
+                <p class="card-text">According to the Testing Pyramid, which type of test should you have the most of?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q1" id="q1_a1" value="A">
+                    <label class="form-check-label" for="q1_a1">
+                        A) End-to-End Tests
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q1" id="q1_a2" value="B">
+                    <label class="form-check-label" for="q1_a2">
+                        B) Integration Tests
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q1" id="q1_a3" value="C">
+                    <label class="form-check-label" for="q1_a3">
+                        C) Unit Tests
+                    </label>
+                </div>
+                <div class="answer" data-correct="C"></div>
+            </div>
+        </div>
+
+        <div class="card quiz-card" id="q2" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 2</h5>
+                <p class="card-text">What are the primary benefits of using mocking in unit tests? (Select all that apply)</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q2" id="q2_a1" value="A">
+                    <label class="form-check-label" for="q2_a1">
+                        A) To make tests run faster by avoiding real external dependencies.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q2" id="q2_a2" value="B">
+                    <label class="form-check-label" for="q2_a2">
+                        B) To verify the actual integration between components.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q2" id="q2_a3" value="C">
+                    <label class="form-check-label" for="q2_a3">
+                        C) To isolate the component under test from its dependencies.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q2" id="q2_a4" value="D">
+                    <label class="form-check-label" for="q2_a4">
+                        D) To easily test error conditions or specific return values from dependencies.
+                    </label>
+                </div>
+                <div class="answer" data-correct="A,C,D"></div>
+            </div>
+        </div>
+
+        <div class="card quiz-card" id="q3" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 3</h5>
+                <p class="card-text">What problem does Testcontainers primarily solve for integration testing?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q3" id="q3_a1" value="A">
+                    <label class="form-check-label" for="q3_a1">
+                        A) It helps in writing unit tests for complex algorithms.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q3" id="q3_a2" value="B">
+                    <label class="form-check-label" for="q3_a2">
+                        B) It provides a way to spin up real external services (like databases) in Docker containers for realistic and isolated test environments.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q3" id="q3_a3" value="C">
+                    <label class="form-check-label" for="q3_a3">
+                        C) It automatically generates test cases from your source code.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B"></div>
+            </div>
+        </div>
+
+        <div class="card quiz-card" id="q4" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 4</h5>
+                <p class="card-text">Which Python testing framework is widely considered the most popular and powerful for general-purpose testing, known for its simplicity and rich features like fixtures and assertion rewriting?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q4" id="q4_a1" value="A">
+                    <label class="form-check-label" for="q4_a1">
+                        A) <code>unittest</code>
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q4" id="q4_a2" value="B">
+                    <label class="form-check-label" for="q4_a2">
+                        B) <code>doctest</code>
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q4" id="q4_a3" value="C">
+                    <label class="form-check-label" for="q4_a3">
+                        C) <code>pytest</code>
+                    </label>
+                </div>
+                <div class="answer" data-correct="C"></div>
+            </div>
+        </div>
+
+        <div class="card quiz-card" id="q5" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 5</h5>
+                <p class="card-text">Which of the following statements are true about integration tests? (Select all that apply)</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q5" id="q5_a1" value="A">
+                    <label class="form-check-label" for="q5_a1">
+                        A) They are typically faster than unit tests.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q5" id="q5_a2" value="B">
+                    <label class="form-check-label" for="q5_a2">
+                        B) They verify the interactions between multiple components or services.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q5" id="q5_a3" value="C">
+                    <label class="form-check-label" for="q5_a3">
+                        C) They often require external dependencies like databases or message queues.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q5" id="q5_a4" value="D">
+                    <label class="form-check-label" for="q5_a4">
+                        D) They are primarily concerned with testing individual functions in isolation.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B,C"></div>
+            </div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button class="btn btn-secondary" id="prev-btn" style="display: none;">Previous</button>
+            <button class="btn btn-primary" id="next-btn">Next</button>
+            <button class="btn btn-success" id="submit-btn" style="display: none;">Submit Answers</button>
+        </div>
+    </div>
+
+    <div id="results-container" style="display: none;">
+        <h3>Quiz Results</h3>
+        <p>Your score: <span id="score"></span></p>
+        <p>Percentage: <span id="percentage"></span>%</p>
+        <p id="feedback"></p>
+        <button class="btn btn-primary" id="try-again-btn">Try Again</button>
+    </div>
+
+</div>

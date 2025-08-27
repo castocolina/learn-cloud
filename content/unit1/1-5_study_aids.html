@@ -1,2 +1,90 @@
-<h1>Study Aids for 1.5: Concurrency and Caching</h1>
-<p>Coming soon...</p>
+
+<div class="container">
+    <div class="page-header">
+        <h1>1.5 Study Aids: Concurrency and Caching</h1>
+        <p class="lead">Use these flashcards to review the key concepts of performance optimization in Python.</p>
+    </div>
+
+    <div class="row">
+        <!-- Flashcard 1 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5>The Global Interpreter Lock (GIL)</h5>
+                        <p>What is the GIL, and what kind of tasks does it primarily impact?</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p>The GIL is a mutex in CPython that allows only one thread to execute Python bytecode at a time. It primarily impacts <strong>CPU-bound</strong> tasks, while its lock is released during <strong>I/O-bound</strong> tasks, making concurrency effective for them.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 2 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5><code>threading</code> vs. <code>asyncio</code></h5>
+                        <p>When would you choose the <code>threading</code> module over <code>asyncio</code>?</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p>You would choose <code>threading</code> when working with blocking I/O operations and libraries that do not support the <code>asyncio</code> ecosystem. It allows you to add concurrency without having to rewrite your code in an async style.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 3 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5>Asyncio's Model</h5>
+                        <p>How does <code>asyncio</code> achieve concurrency?</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p><code>asyncio</code> uses a single-threaded <strong>event loop</strong> and cooperative multitasking. Coroutines (<code>async</code> functions) explicitly yield control with <code>await</code> when waiting for I/O, allowing the event loop to run other tasks. This can be more efficient than threading for many I/O operations.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 4 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5><code>functools.lru_cache</code></h5>
+                        <p>What is the primary purpose of the <code>@lru_cache</code> decorator?</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p>Its purpose is <strong>memoization</strong>, or in-process caching. It caches the return values of a function, so if the function is called again with the same arguments, the result is returned instantly from memory, avoiding re-computation.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 5 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5>LRU Cache Limitations</h5>
+                        <p>What are the main limitations of using <code>@lru_cache</code>?</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p>The cache is stored in the memory of a <strong>single process</strong>. It is not shared between processes or servers, and its contents are lost if the application restarts. It is best for caching results from pure functions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

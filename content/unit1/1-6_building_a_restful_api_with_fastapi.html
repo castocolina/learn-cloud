@@ -1,0 +1,168 @@
+
+<div class="container">
+    <div class="page-header">
+        <h1>1.6 Building a RESTful API with FastAPI</h1>
+    </div>
+
+    <p class="lead">Now we arrive at a cornerstone of modern backend development: building APIs. In this topic, we will use <strong>FastAPI</strong>, a high-performance web framework that leverages modern Python features to create robust, scalable, and well-documented RESTful services. It elegantly combines concepts we've already covered, like <code>asyncio</code> and type hints, into a seamless development experience.</p>
+
+    <hr/>
+
+    <!-- Introduction to FastAPI -->
+    <h2>What is FastAPI?</h2>
+    <p>
+        <a href="https://fastapi.tiangolo.com/" target="_blank">FastAPI</a> is a web framework for building APIs with Python 3.7+ based on standard Python type hints. It has rapidly gained popularity for several key reasons:
+    </p>
+    <ul>
+        <li><strong>High Performance:</strong> Built on top of Starlette (an ASGI framework) and Pydantic (a data validation library), FastAPI is one of the fastest Python web frameworks available, with performance comparable to NodeJS and Go.</li>
+        <li><strong>Async Native:</strong> It is designed from the ground up to work with <code>asyncio</code>, making it perfect for the high-concurrency, I/O-bound workloads common in cloud-native applications.</li>
+        <li><strong>Automatic Interactive Documentation:</strong> It automatically generates interactive API documentation (using OpenAPI and JSON Schema) that developers can use to explore and test API endpoints directly from their browser.</li>
+        <li><strong>Type-Driven:</strong> It uses Python type hints to enforce data validation, serialization, and documentation, which drastically reduces bugs and improves developer productivity.</li>
+        <li><strong>Powerful Dependency Injection:</strong> It includes a simple but powerful dependency injection system that simplifies code structure and testing.</li>
+    </ul>
+
+    <h4>Installation</h4>
+    <p>To get started, you need FastAPI and an ASGI server to run it, such as <a href="https://www.uvicorn.org/" target="_blank">Uvicorn</a>.</p>
+    <pre><code class="language-bash">pip install fastapi uvicorn</code></pre>
+
+    <hr/>
+
+    <!-- Creating a Simple API -->
+    <h2>1. Creating a Simple API</h2>
+    <p>Let's start with the simplest possible FastAPI application. Create a file named <code>main.py</code>:</p>
+    <pre><code class="language-python">
+from fastapi import FastAPI
+
+# Create an instance of the FastAPI class
+app = FastAPI()
+
+# Define a path operation decorator for a GET request to the root URL
+@app.get("/")
+async def read_root():
+    """This is the root endpoint of the API."""
+    return {"message": "Hello, World!"}
+
+@app.get("/items/{item_id}")
+async def read_item(item_id: int, q: str | None = None):
+    """Reads an item by its ID, with an optional query parameter."""
+    return {"item_id": item_id, "q": q}
+    </code></pre>
+
+    <p>Now, run the development server from your terminal:</p>
+    <pre><code class="language-bash">uvicorn main:app --reload</code></pre>
+    <div class="alert alert-info">
+        The command <code>uvicorn main:app</code> refers to:
+        <ul>
+            <li><code>main</code>: The file <code>main.py</code>.</li>
+            <li><code>app</code>: The object <code>app = FastAPI()</code> created inside <code>main.py</code>.</li>
+            <li><code>--reload</code>: Makes the server restart after code changes. Only use for development.</li>
+        </ul>
+    </div>
+
+    <p>Open your browser and navigate to <a href="http://127.0.0.1:8000" target="_blank">http://127.0.0.1:8000</a>. You will see the JSON response: <code>{"message":"Hello, World!"}</code>.</p>
+    <p>Now, for the magic: navigate to <a href="http://127.0.0.1:8000/docs" target="_blank">http://127.0.0.1:8000/docs</a>. You will see the automatic, interactive Swagger UI documentation. FastAPI has generated a complete OpenAPI schema for your API from your Python code, including path parameters, query parameters, and their types.</p>
+
+    <hr/>
+
+    <!-- Data Validation with Pydantic -->
+    <h2>2. Data Validation with Pydantic</h2>
+    <p>
+        FastAPI's superpower is its integration with <strong>Pydantic</strong>. You define the "shape" of your data using Pydantic models, and FastAPI handles all the validation, serialization, and documentation for you.
+    </p>
+    <p>Let's create a <code>POST</code> endpoint that accepts a request body. We define the structure of the body using a Pydantic model.</p>
+    <pre><code class="language-python">
+from fastapi import FastAPI
+from pydantic import BaseModel
+from typing import Optional
+
+class Item(BaseModel):
+    """Pydantic model for an item in our store."""
+    name: str
+    description: Optional[str] = None
+    price: float
+    tax: Optional[float] = None
+
+app = FastAPI()
+
+# A simple in-memory "database"
+fake_items_db = []
+
+@app.post("/items/")
+async def create_item(item: Item):
+    """Creates an item. The request body must match the Item model."""
+    fake_items_db.append(item.dict())
+    return item
+    </code></pre>
+    <p>
+        When you send a request to the <code>/items/</code> endpoint, FastAPI automatically:
+    </p>
+    <ol>
+        <li>Parses the JSON from the request body.</li>
+        <li>Validates that the data conforms to the <code>Item</code> model (e.g., <code>name</code> is a string, <code>price</code> is a float).</li>
+        <li>If validation fails, it returns a detailed JSON error response indicating exactly what was wrong.</li>
+        <li>If validation succeeds, it creates an instance of the <code>Item</code> class and passes it to your endpoint function as the <code>item</code> argument.</li>
+    </ol>
+    <p>This eliminates a massive amount of boilerplate code and provides strong data guarantees at the edge of your application.</p>
+
+    <hr/>
+
+    <!-- Dependency Injection -->
+    <h2>3. Dependency Injection</h2>
+    <p>
+        Dependency Injection (DI) is a powerful pattern for managing the dependencies of your code. In FastAPI, it's a first-class citizen that helps you write cleaner, more modular, and more testable code.
+    </p>
+    <p>
+        A "dependency" is typically a function that FastAPI runs before your path operation function. The return value of the dependency function is then passed as an argument to your endpoint.
+    </p>
+
+    <h4>Example: Common Query Parameters</h4>
+    <p>Imagine you have multiple endpoints that need pagination. Instead of repeating the <code>skip</code> and <code>limit</code> query parameters in every function signature, you can create a dependency.</p>
+    <pre><code class="language-python">
+from fastapi import Depends, FastAPI
+
+app = FastAPI()
+
+# This is our dependency function
+async def common_parameters(skip: int = 0, limit: int = 100):
+    return {"skip": skip, "limit": limit}
+
+@app.get("/users/")
+async def read_users(commons: dict = Depends(common_parameters)):
+    # The `commons` dict is the return value from our dependency
+    # In a real app, you would use these values to query a database.
+    return {"message": "Returning users", **commons}
+
+@app.get("/items/")
+async def read_items(commons: dict = Depends(common_parameters)):
+    return {"message": "Returning items", **commons}
+    </code></pre>
+
+    <h4>Example: Database Connection Dependency</h4>
+    <p>A more powerful use case is managing resources like database connections. A dependency can create a database session, <code>yield</code> it to the endpoint, and then ensure the session is closed after the request is finished, even if an error occurs.</p>
+    <pre><code class="language-python">
+# Assuming you have SQLAlchemy setup from Topic 1.4
+# from .database import SessionLocal
+
+# Dependency to get a DB session
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+@app.post("/users/")
+async def create_user(user: UserCreate, db: Session = Depends(get_db)):
+    # The `db` object is a valid SQLAlchemy session.
+    # FastAPI will handle opening and closing it for every request.
+    db_user = models.User(**user.dict())
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+    </code></pre>
+    <div class="alert alert-success">
+        FastAPI's dependency injection system is a key feature for building production-ready applications. It encourages good software design by promoting separation of concerns and making components easily testable by allowing you to "override" dependencies during tests.
+    </div>
+
+</div>

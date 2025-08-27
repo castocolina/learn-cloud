@@ -1,2 +1,166 @@
-<h1>Quiz for 1.6: Building a RESTful API with FastAPI</h1>
-<p>Coming soon...</p>
+
+<div class="container">
+    <div class="page-header">
+        <h1>1.6 Quiz: Building a RESTful API with FastAPI</h1>
+        <p class="lead">Test your knowledge on the features and concepts of FastAPI.</p>
+    </div>
+
+    <div id="quiz-container">
+        <div class="card quiz-card" id="q1">
+            <div class="card-body">
+                <h5 class="card-title">Question 1</h5>
+                <p class="card-text">What is the role of Uvicorn in a FastAPI application?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q1" id="q1_a1" value="A">
+                    <label class="form-check-label" for="q1_a1">
+                        A) It's a database driver for connecting to PostgreSQL.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q1" id="q1_a2" value="B">
+                    <label class="form-check-label" for="q1_a2">
+                        B) It's an ASGI server that runs the FastAPI application and handles HTTP requests.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q1" id="q1_a3" value="C">
+                    <label class="form-check-label" for="q1_a3">
+                        C) It's a library for data validation and serialization.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B"></div>
+            </div>
+        </div>
+
+        <div class="card quiz-card" id="q2" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 2</h5>
+                <p class="card-text">When you define a Pydantic model for a request body in FastAPI, what does the framework do automatically for you? (Select all that apply)</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q2" id="q2_a1" value="A">
+                    <label class="form-check-label" for="q2_a1">
+                        A) Parses the incoming JSON request body.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q2" id="q2_a2" value="B">
+                    <label class="form-check-label" for="q2_a2">
+                        B) Validates the data against the types and constraints defined in the model.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q2" id="q2_a3" value="C">
+                    <label class="form-check-label" for="q2_a3">
+                        C) Automatically writes the validated data to a database.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q2" id="q2_a4" value="D">
+                    <label class="form-check-label" for="q2_a4">
+                        D) Generates a clear JSON error message if validation fails.
+                    </label>
+                </div>
+                <div class="answer" data-correct="A,B,D"></div>
+            </div>
+        </div>
+
+        <div class="card quiz-card" id="q3" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 3</h5>
+                <p class="card-text">How do you view the automatic interactive API documentation (Swagger UI) for a default FastAPI application?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q3" id="q3_a1" value="A">
+                    <label class="form-check-label" for="q3_a1">
+                        A) By navigating to the <code>/api/docs</code> endpoint.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q3" id="q3_a2" value="B">
+                    <label class="form-check-label" for="q3_a2">
+                        B) By navigating to the <code>/docs</code> endpoint.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q3" id="q3_a3" value="C">
+                    <label class="form-check-label" for="q3_a3">
+                        C) You must manually generate it with a separate command-line tool.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B"></div>
+            </div>
+        </div>
+
+        <div class="card quiz-card" id="q4" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 4</h5>
+                <p class="card-text">What is the main purpose of using <code>Depends</code> in a FastAPI path operation function?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q4" id="q4_a1" value="A">
+                    <label class="form-check-label" for="q4_a1">
+                        A) To declare that an endpoint depends on another microservice.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q4" id="q4_a2" value="B">
+                    <label class="form-check-label" for="q4_a2">
+                        B) To specify that a function parameter should be populated by the dependency injection system.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q4" id="q4_a3" value="C">
+                    <label class="form-check-label" for="q4_a3">
+                        C) To define the Pydantic model that the endpoint depends on for validation.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B"></div>
+            </div>
+        </div>
+
+        <div class="card quiz-card" id="q5" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 5</h5>
+                <p class="card-text">Which of the following are key features of FastAPI? (Select all that apply)</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q5" id="q5_a1" value="A">
+                    <label class="form-check-label" for="q5_a1">
+                        A) Built-in support for GraphQL APIs.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q5" id="q5_a2" value="B">
+                    <label class="form-check-label" for="q5_a2">
+                        B) Automatic generation of interactive API documentation.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q5" id="q5_a3" value="C">
+                    <label class="form-check-label" for="q5_a3">
+                        C) High performance based on Starlette and Pydantic.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q5" id="q5_a4" value="D">
+                    <label class="form-check-label" for="q5_a4">
+                        D) A powerful dependency injection system.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B,C,D"></div>
+            </div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button class="btn btn-secondary" id="prev-btn" style="display: none;">Previous</button>
+            <button class="btn btn-primary" id="next-btn">Next</button>
+            <button class="btn btn-success" id="submit-btn" style="display: none;">Submit Answers</button>
+        </div>
+    </div>
+
+    <div id="results-container" style="display: none;">
+        <h3>Quiz Results</h3>
+        <p>Your score: <span id="score"></span></p>
+        <p>Percentage: <span id="percentage"></span>%</p>
+        <p id="feedback"></p>
+        <button class="btn btn-primary" id="try-again-btn">Try Again</button>
+    </div>
+
+</div>

@@ -1,2 +1,90 @@
-<h1>Study Aids for 1.8: Testing Strategies</h1>
-<p>Coming soon...</p>
+
+<div class="container">
+    <div class="page-header">
+        <h1>1.8 Study Aids: Testing Strategies</h1>
+        <p class="lead">Use these flashcards to review the key concepts of testing in Python backend development.</p>
+    </div>
+
+    <div class="row">
+        <!-- Flashcard 1 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5>Testing Pyramid</h5>
+                        <p>Describe the three main layers of the Testing Pyramid.</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p>1. <strong>Unit Tests:</strong> Fast, isolated, test individual components. <br/> 2. <strong>Integration Tests:</strong> Verify interactions between components, slower than unit tests. <br/> 3. <strong>End-to-End Tests:</strong> Simulate user scenarios across the entire system, slowest and most brittle.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 2 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5>Mocking</h5>
+                        <p>When and why would you use mocking in your tests?</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p>Mocking is used in unit tests to replace real dependencies (like external APIs, databases) with controlled, fake objects. This isolates the unit under test, makes tests faster, and allows testing of error conditions without external setup.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 3 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5>Testcontainers</h5>
+                        <p>What problem does Testcontainers solve for integration testing?</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p>Testcontainers solves the problem of managing external dependencies for integration tests. It allows you to spin up real services (e.g., databases, message queues) in throwaway Docker containers, ensuring realistic, isolated, and consistent test environments.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 4 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5><code>pytest</code> Advantages</h5>
+                        <p>List two key advantages of using <code>pytest</code> as your Python testing framework.</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p>1. <strong>Simplicity:</strong> Easy to write tests with simple <code>assert</code> statements. <br/> 2. <strong>Powerful Fixtures:</strong> Reusable setup/teardown code. <br/> 3. <strong>Rich Assertion Rewriting:</strong> Provides detailed output on assertion failures. <br/> 4. <strong>Extensibility:</strong> Large plugin ecosystem.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 5 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5><code>unittest.mock.patch</code></h5>
+                        <p>How is <code>unittest.mock.patch</code> typically used in a test?</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p><code>patch</code> is used as a decorator or context manager to temporarily replace an object (e.g., a function, a class, a module attribute) with a mock object during the execution of a test. This allows you to control the behavior of dependencies.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

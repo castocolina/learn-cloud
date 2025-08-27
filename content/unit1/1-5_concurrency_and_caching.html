@@ -1,0 +1,153 @@
+
+<div class="container">
+    <div class="page-header">
+        <h1>1.5 Concurrency and Caching</h1>
+    </div>
+
+    <p class="lead">Modern backend services must be fast and responsive. Two fundamental techniques for achieving this are <strong>concurrency</strong> and <strong>caching</strong>. Concurrency allows a service to handle multiple tasks simultaneously, while caching avoids re-computing or re-fetching expensive results. This topic explores Python's powerful built-in tools for both.</p>
+
+    <hr/>
+
+    <!-- Concurrency in Python -->
+    <h2>Understanding Concurrency in Python: The GIL</h2>
+    <p>
+        Before diving into code, it's crucial to understand a key aspect of CPython (the standard Python implementation): the <strong>Global Interpreter Lock (GIL)</strong>. The GIL is a mutex that protects access to Python objects, preventing multiple native threads from executing Python bytecode at the same time. This means that even on a multi-core processor, only one thread can be executing Python code at any given moment.
+    </p>
+    <p>
+        This might sound like a major limitation, but it primarily affects <strong>CPU-bound</strong> tasks (e.g., complex mathematical calculations). For <strong>I/O-bound</strong> tasks (e.g., waiting for a network response, reading from a database, or writing to a file), the GIL is released while the thread is waiting. This allows other threads to run, making concurrency highly effective for typical backend workloads.
+    </p>
+
+    <div class="alert alert-info">
+        <strong>Key Takeaway:</strong> Python's concurrency models are excellent for I/O-bound operations, which represent the vast majority of work in a typical cloud-native service.
+    </div>
+
+    <h3>1. Concurrency with the <code>threading</code> Module</h3>
+    <p>
+        The <code>threading</code> module is Python's traditional approach to concurrency. It's well-suited for making existing blocking I/O operations concurrent without a major code redesign.
+    </p>
+    <p>Let's consider a simple example: fetching data from several URLs sequentially.</p>
+    <pre><code class="language-python">
+import time
+import requests
+
+urls = [
+    "https://www.python.org",
+    "https://www.sqlalchemy.org",
+    "https://fastapi.tiangolo.com",
+]
+
+def fetch_url(url):
+    requests.get(url)
+    print(f"Fetched {url}")
+
+# Sequential execution
+start_time = time.time()
+for url in urls:
+    fetch_url(url)
+end_time = time.time()
+print(f"Sequential execution took: {end_time - start_time:.2f} seconds")
+    </code></pre>
+
+    <p>Now, let's parallelize this using a <code>ThreadPoolExecutor</code>, which manages a pool of threads for us.</p>
+    <pre><code class="language-python">
+import time
+import requests
+from concurrent.futures import ThreadPoolExecutor
+
+# ... (urls and fetch_url function are the same)
+
+# Concurrent execution with threads
+start_time = time.time()
+with ThreadPoolExecutor(max_workers=5) as executor:
+    executor.map(fetch_url, urls)
+end_time = time.time()
+print(f"Threaded execution took: {end_time - start_time:.2f} seconds")
+    </code></pre>
+    <p>When you run this, you'll notice the threaded version is significantly faster because the network requests are performed concurrently. While one thread is waiting for a response from `python.org`, another can be sending a request to `sqlalchemy.org`.</p>
+
+    <h3>2. Modern Concurrency with <code>asyncio</code></h3>
+    <p>
+        <strong><code>asyncio</code></strong> is Python's modern framework for writing concurrent code using an <strong>async/await</strong> syntax. It uses a single-threaded, non-blocking I/O model called an event loop. Instead of waiting for an operation to complete, the code registers a callback and yields control to the event loop, which can then run other tasks.
+    </p>
+    <p>
+        This model, known as cooperative multitasking, can be much more efficient than threading for a very large number of I/O operations because it avoids the overhead of creating and managing threads.
+    </p>
+    <p>To use <code>asyncio</code> for network requests, we need an async-native HTTP library, as <code>requests</code> is blocking. <code>aiohttp</code> is a popular choice.</p>
+    <pre><code class="language-bash">pip install aiohttp</code></pre>
+
+    <p>Here is the same URL fetching task implemented with <code>asyncio</code>:</p>
+    <pre><code class="language-python">
+import time
+import asyncio
+import aiohttp
+
+# ... (urls list is the same)
+
+async def fetch_url_async(session, url):
+    async with session.get(url) as response:
+        await response.text()
+        print(f"Fetched {url}")
+
+async def main():
+    async with aiohttp.ClientSession() as session:
+        tasks = [fetch_url_async(session, url) for url in urls]
+        await asyncio.gather(*tasks)
+
+# Asynchronous execution
+start_time = time.time()
+# In Python 3.7+ you can just run asyncio.run(main())
+asyncio.run(main())
+end_time = time.time()
+print(f"Asyncio execution took: {end_time - start_time:.2f} seconds")
+    </code></pre>
+    <div class="alert alert-success">
+        <strong>When to use <code>asyncio</code>?</strong> For new, high-performance backend services, especially when using modern frameworks like FastAPI or Starlette, <code>asyncio</code> is the recommended approach. It forms the foundation of Python's modern cloud-native ecosystem.
+    </div>
+
+    <hr/>
+
+    <!-- In-Process Caching -->
+    <h2>In-Process Caching with <code>functools.lru_cache</code></h2>
+    <p>
+        While external caches like Redis (covered in the previous topic) are for sharing data between processes or servers, sometimes you just need to cache the result of a function within a single running process. This is called <strong>in-process caching</strong> or <strong>memoization</strong>.
+    </p>
+    <p>
+        Python's standard library provides a simple and powerful tool for this: the <code>@lru_cache</code> decorator from the <code>functools</code> module. LRU stands for "Least Recently Used," which describes the cache eviction strategy: when the cache is full, the least recently used items are discarded.
+    </p>
+
+    <h4>Example: Caching an Expensive Calculation</h4>
+    <p>Imagine a function that performs a costly operation. We can use <code>@lru_cache</code> to store its results. Subsequent calls with the same arguments will return the cached value instantly.</p>
+    <pre><code class="language-python">
+import time
+from functools import lru_cache
+
+@lru_cache(maxsize=128) # The maxsize parameter defines how many results to store
+def expensive_api_call(user_id: int):
+    """Simulates a slow function call, e.g., to an external API."""
+    print(f"Performing expensive call for user_id={user_id}...")
+    time.sleep(2) # Simulate a 2-second delay
+    return {"id": user_id, "data": f"Some data for {user_id}"}
+
+# --- First calls ---
+start = time.time()
+print(expensive_api_call(1))
+print(f"Call 1 took {time.time() - start:.2f}s") # Will take ~2 seconds
+
+start = time.time()
+print(expensive_api_call(2))
+print(f"Call 2 took {time.time() - start:.2f}s") # Will take ~2 seconds
+
+# --- Subsequent calls with the same arguments ---
+start = time.time()
+print(expensive_api_call(1)) # This is now cached
+print(f"Call 3 took {time.time() - start:.2f}s") # Will be almost instant!
+
+start = time.time()
+print(expensive_api_call(2)) # This is also cached
+print(f"Call 4 took {time.time() - start:.2f}s") # Will be almost instant!
+    </code></pre>
+    <div class="alert alert-warning">
+        <strong>Limitations:</strong> The <code>lru_cache</code> is stored in the memory of a single Python process. It is not shared between different processes or servers and will be cleared if the application restarts. It is best used for caching the results of pure functions where the output depends only on the input arguments.
+    </div>
+
+</div>

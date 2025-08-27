@@ -1,0 +1,681 @@
+
+<div class="container">
+    <div class="page-header">
+        <h1>1.11 Unit 1 Final Exam: Python for Cloud-Native Backend Development</h1>
+        <p class="lead">This comprehensive exam covers all the material from Unit 1, testing your understanding of Python's role in cloud-native backend development, from environment setup to advanced communication patterns and observability.</p>
+    </div>
+
+    <div id="quiz-container">
+        <!-- Question 1.1: pyenv -->
+        <div class="card quiz-card" id="q1">
+            <div class="card-body">
+                <h5 class="card-title">Question 1</h5>
+                <p class="card-text">What is <code>pyenv</code> primarily used for?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q1" id="q1_a1" value="A">
+                    <label class="form-check-label" for="q1_a1">
+                        A) Managing Python package dependencies within a project.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q1" id="q1_a2" value="B">
+                    <label class="form-check-label" for="q1_a2">
+                        B) Switching between multiple Python versions on the same machine.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q1" id="q1_a3" value="C">
+                    <label class="form-check-label" for="q1_a3">
+                        C) A web framework for building APIs.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B"></div>
+            </div>
+        </div>
+
+        <!-- Question 1.1: Poetry -->
+        <div class="card quiz-card" id="q2" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 2</h5>
+                <p class="card-text">What is the main benefit of using Poetry for dependency management in Python projects?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q2" id="q2_a1" value="A">
+                    <label class="form-check-label" for="q2_a1">
+                        A) It only manages direct dependencies, ignoring transitive ones.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q2" id="q2_a2" value="B">
+                    <label class="form-check-label" for="q2_a2">
+                        B) It provides deterministic builds by locking exact versions of all dependencies.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q2" id="q2_a3" value="C">
+                    <label class="form-check-label" for="q2_a3">
+                        C) It is a lightweight alternative to <code>pip</code> that does not use virtual environments.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B"></div>
+            </div>
+        </div>
+
+        <!-- Question 1.2: Why Python for Cloud -->
+        <div class="card quiz-card" id="q3" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 3</h5>
+                <p class="card-text">Why is Python considered a good choice for cloud-native backend development? (Select all that apply)</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q3" id="q3_a1" value="A">
+                    <label class="form-check-label" for="q3_a1">
+                        A) Its extensive ecosystem of libraries and frameworks.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q3" id="q3_a2" value="B">
+                    <label class="form-check-label" for="q3_a2">
+                        B) Its inherent ability to run code on multiple CPU cores simultaneously without the GIL.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q3" id="q3_a3" value="C">
+                    <label class="form-check-label" for="q3_a3">
+                        C) Its ease of use and rapid development capabilities.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q3" id="q3_a4" value="D">
+                    <label class="form-check-label" for="q3_a4">
+                        D) Strong community support and widespread adoption in data science and AI.
+                    </label>
+                </div>
+                <div class="answer" data-correct="A,C,D"></div>
+            </div>
+        </div>
+
+        <!-- Question 1.2: Pydantic -->
+        <div class="card quiz-card" id="q4" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 4</h5>
+                <p class="card-text">What is the primary role of Pydantic in Python's typing system for backend development?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q4" id="q4_a1" value="A">
+                    <label class="form-check-label" for="q4_a1">
+                        A) To enforce strict static typing at compile time.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q4" id="q4_a2" value="B">
+                    <label class="form-check-label" for="q4_a2">
+                        B) To provide data validation and settings management using Python type hints at runtime.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q4" id="q4_a3" value="C">
+                    <label class="form-check-label" for="q4_a3">
+                        C) To generate database schemas from Python classes.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B"></div>
+            </div>
+        </div>
+
+        <!-- Question 1.3: PEP 8 -->
+        <div class="card quiz-card" id="q5" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 5</h5>
+                <p class="card-text">What is the main purpose of PEP 8?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q5" id="q5_a1" value="A">
+                    <label class="form-check-label" for="q5_a1">
+                        A) To define the Python language syntax.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q5" id="q5_a2" value="B">
+                    <label class="form-check-label" for="q5_a2">
+                        B) To provide style guidelines for writing readable and consistent Python code.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q5" id="q5_a3" value="C">
+                    <label class="form-check-label" for="q5_a3">
+                        C) To manage Python package installations.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B"></div>
+            </div>
+        </div>
+
+        <!-- Question 1.3: Black -->
+        <div class="card quiz-card" id="q6" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 6</h5>
+                <p class="card-text">Which tool is known as "The Uncompromising Code Formatter" because it enforces a single, consistent style with minimal configuration?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q6" id="q6_a1" value="A">
+                    <label class="form-check-label" for="q6_a1">
+                        A) Ruff
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q6" id="q6_a2" value="B">
+                    <label class="form-check-label" for="q6_a2">
+                        B) Black
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q6" id="q6_a3" value="C">
+                    <label class="form-check-label" for="q6_a3">
+                        C) Flake8
+                    </label>
+                </div>
+                <div class="answer" data-correct="B"></div>
+            </div>
+        </div>
+
+        <!-- Question 1.3: Ruff -->
+        <div class="card quiz-card" id="q7" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 7</h5>
+                <p class="card-text">What types of issues does Ruff primarily identify? (Select all that apply)</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q7" id="q7_a1" value="A">
+                    <label class="form-check-label" for="q7_a1">
+                        A) Unused imports or variables.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q7" id="q7_a2" value="B">
+                    <label class="form-check-label" for="q7_a2">
+                        B) Syntax errors that prevent code from running.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q7" id="q7_a3" value="C">
+                    <label class="form-check-label" for="q7_a3">
+                        C) Violations of code style guidelines (e.g., PEP 8).
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q7" id="q7_a4" value="D">
+                    <label class="form-check-label" for="q7_a4">
+                        D) Potential security vulnerabilities.
+                    </label>
+                </div>
+                <div class="answer" data-correct="A,C,D"></div>
+            </div>
+        </div>
+
+        <!-- Question 1.4: ORM -->
+        <div class="card quiz-card" id="q8" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 8</h5>
+                <p class="card-text">What is the main advantage of using an ORM (Object-Relational Mapper) like SQLAlchemy?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q8" id="q8_a1" value="A">
+                    <label class="form-check-label" for="q8_a1">
+                        A) It eliminates the need for a database.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q8" id="q8_a2" value="B">
+                    <label class="form-check-label" for="q8_a2">
+                        B) It allows developers to interact with databases using object-oriented code instead of raw SQL.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q8" id="q8_a3" value="C">
+                    <label class="form-check-label" for="q8_a3">
+                        C) It is primarily used for NoSQL databases.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B"></div>
+            </div>
+        </div>
+
+        <!-- Question 1.4: Redis -->
+        <div class="card quiz-card" id="q9" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 9</h5>
+                <p class="card-text">What is the primary use case for Redis in a backend application?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q9" id="q9_a1" value="A">
+                    <label class="form-check-label" for="q9_a1">
+                        A) As a primary relational database for complex queries.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q9" id="q9_a2" value="B">
+                    <label class="form-check-label" for="q9_a2">
+                        B) For long-term storage of large binary files.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q9" id="q9_a3" value="C">
+                    <label class="form-check-label" for="q9_a3">
+                        C) As an in-memory cache for frequently accessed data.
+                    </label>
+                </div>
+                <div class="answer" data-correct="C"></div>
+            </div>
+        </div>
+
+        <!-- Question 1.4: MongoDB -->
+        <div class="card quiz-card" id="q10" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 10</h5>
+                <p class="card-text">Which of the following are characteristics of MongoDB? (Select all that apply)</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q10" id="q10_a1" value="A">
+                    <label class="form-check-label" for="q10_a1">
+                        A) It is a document-oriented database.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q10" id="q10_a2" value="B">
+                    <label class="form-check-label" for="q10_a2">
+                        B) It stores data in flexible, JSON-like documents.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q10" id="q10_a3" value="C">
+                    <label class="form-check-label" for="q10_a3">
+                        C) It enforces a strict schema for all collections.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q10" id="q10_a4" value="D">
+                    <label class="form-check-label" for="q10_a4">
+                        D) It is a relational database.
+                    </label>
+                </div>
+                <div class="answer" data-correct="A,B"></div>
+            </div>
+        </div>
+
+        <!-- Question 1.5: GIL -->
+        <div class="card quiz-card" id="q11" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 11</h5>
+                <p class="card-text">What is the primary impact of the Global Interpreter Lock (GIL) on Python concurrency?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q11" id="q11_a1" value="A">
+                    <label class="form-check-label" for="q11_a1">
+                        A) It prevents Python from using multiple CPU cores for any task.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q11" id="q11_a2" value="B">
+                    <label class="form-check-label" for="q11_a2">
+                        B) It limits the performance of CPU-bound tasks in multi-threaded Python programs.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q11" id="q11_a3" value="C">
+                    <label class="form-check-label" for="q11_a3">
+                        C) It makes Python unsuitable for I/O-bound concurrent operations.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B"></div>
+            </div>
+        </div>
+
+        <!-- Question 1.5: asyncio vs threading -->
+        <div class="card quiz-card" id="q12" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 12</h5>
+                <p class="card-text">When is <code>asyncio</code> generally preferred over the <code>threading</code> module for concurrency in Python?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q12" id="q12_a1" value="A">
+                    <label class="form-check-label" for="q12_a1">
+                        A) For CPU-bound tasks that require parallel execution.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q12" id="q12_a2" value="B">
+                    <label class="form-check-label" for="q12_a2">
+                        B) For high-performance, scalable I/O-bound applications with async-native libraries.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q12" id="q12_a3" value="C">
+                    <label class="form-check-label" for="q12_a3">
+                        C) When interacting with legacy blocking I/O libraries.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B"></div>
+            </div>
+        </div>
+
+        <!-- Question 1.5: lru_cache -->
+        <div class="card quiz-card" id="q13" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 13</h5>
+                <p class="card-text">What is the purpose of <code>functools.lru_cache</code>?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q13" id="q13_a1" value="A">
+                    <label class="form-check-label" for="q13_a1">
+                        A) To cache data across multiple microservices.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q13" id="q13_a2" value="B">
+                    <label class="form-check-label" for="q13_a2">
+                        B) To provide in-process memoization for function results.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q13" id="q13_a3" value="C">
+                    <label class="form-check-label" for="q13_a3">
+                        C) To manage a distributed cache system like Redis.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B"></div>
+            </div>
+        </div>
+
+        <!-- Question 1.6: Uvicorn -->
+        <div class="card quiz-card" id="q14" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 14</h5>
+                <p class="card-text">What is the role of Uvicorn in a FastAPI application?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q14" id="q14_a1" value="A">
+                    <label class="form-check-label" for="q14_a1">
+                        A) It is the database ORM used by FastAPI.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q14" id="q14_a2" value="B">
+                    <label class="form-check-label" for="q14_a2">
+                        B) It is the ASGI server that runs the FastAPI application.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q14" id="q14_a3" value="C">
+                    <label class="form-check-label" for="q14_a3">
+                        C) It provides automatic API documentation for FastAPI.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B"></div>
+            </div>
+        </div>
+
+        <!-- Question 1.6: FastAPI Pydantic -->
+        <div class="card quiz-card" id="q15" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 15</h5>
+                <p class="card-text">What does FastAPI automatically handle when you define a Pydantic model for a request body? (Select all that apply)</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q15" id="q15_a1" value="A">
+                    <label class="form-check-label" for="q15_a1">
+                        A) Parsing the incoming JSON request body.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q15" id="q15_a2" value="B">
+                    <label class="form-check-label" for="q15_a2">
+                        B) Validating the data against the model's types and constraints.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q15" id="q15_a3" value="C">
+                    <label class="form-check-label" for="q15_a3">
+                        C) Generating clear JSON error messages if validation fails.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q15" id="q15_a4" value="D">
+                    <label class="form-check-label" for="q15_a4">
+                        D) Automatically creating database tables based on the model.
+                    </label>
+                </div>
+                <div class="answer" data-correct="A,B,C"></div>
+            </div>
+        </div>
+
+        <!-- Question 1.6: Dependency Injection -->
+        <div class="card quiz-card" id="q16" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 16</h5>
+                <p class="card-text">What is the main benefit of FastAPI's Dependency Injection system?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q16" id="q16_a1" value="A">
+                    <label class="form-check-label" for="q16_a1">
+                        A) It automatically generates client-side code for your API.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q16" id="q16_a2" value="B">
+                    <label class="form-check-label" for="q16_a2">
+                        B) It promotes code reuse, separation of concerns, and simplifies testing by managing dependencies.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q16" id="q16_a3" value="C">
+                    <label class="form-check-label" for="q16_a3">
+                        C) It provides built-in authentication and authorization mechanisms.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B"></div>
+            </div>
+        </div>
+
+        <!-- Question 1.7: EDA -->
+        <div class="card quiz-card" id="q17" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 17</h5>
+                <p class="card-text">What is the primary benefit of an Event-Driven Architecture (EDA) in a microservices environment?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q17" id="q17_a1" value="A">
+                    <label class="form-check-label" for="q17_a1">
+                        A) It ensures all services are tightly coupled for faster development.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q17" id="q17_a2" value="B">
+                    <label class="form-check-label" for="q17_a2">
+                        B) It allows services to communicate asynchronously, leading to greater decoupling, scalability, and resilience.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q17" id="q17_a3" value="C">
+                    <label class="form-check-label" for="q17_a3">
+                        C) It eliminates the need for any form of inter-service communication.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B"></div>
+            </div>
+        </div>
+
+        <!-- Question 1.7: gRPC -->
+        <div class="card quiz-card" id="q18" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 18</h5>
+                <p class="card-text">For what kind of communication is gRPC typically preferred over REST in a microservices architecture?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q18" id="q18_a1" value="A">
+                    <label class="form-check-label" for="q18_a1">
+                        A) Public-facing APIs consumed by web browsers.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q18" id="q18_a2" value="B">
+                    <label class="form-check-label" for="q18_a2">
+                        B) Internal microservice communication requiring high performance, strong typing, and efficient serialization.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q18" id="q18_a3" value="C">
+                    <label class="form-check-label" for="q18_a3">
+                        C) Simple, ad-hoc data exchange between loosely coupled systems.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B"></div>
+            </div>
+        </div>
+
+        <!-- Question 1.7: Protobuf -->
+        <div class="card quiz-card" id="q19" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 19</h5>
+                <p class="card-text">What are the advantages of using Protocol Buffers (Protobuf) with gRPC? (Select all that apply)</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q19" id="q19_a1" value="A">
+                    <label class="form-check-label" for="q19_a1">
+                        A) Human-readable data format for easy debugging.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q19" id="q19_a2" value="B">
+                    <label class="form-check-label" for="q19_a2">
+                        B) Efficient binary serialization for faster data transfer.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q19" id="q19_a3" value="C">
+                    <label class="form-check-label" for="q19_a3">
+                        C) Language-agnostic interface definition.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q19" id="q19_a4" value="D">
+                    <label class="form-check-label" for="q19_a4">
+                        D) Strong type checking and code generation.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B,C,D"></div>
+            </div>
+        </div>
+
+        <!-- Question 1.8: Testcontainers -->
+        <div class="card quiz-card" id="q20" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 20</h5>
+                <p class="card-text">What problem does Testcontainers primarily solve for integration testing?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q20" id="q20_a1" value="A">
+                    <label class="form-check-label" for="q20_a1">
+                        A) It automatically generates test cases from your source code.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q20" id="q20_a2" value="B">
+                    <label class="form-check-label" for="q20_a2">
+                        B) It provides a way to spin up real external services (like databases) in Docker containers for realistic and isolated test environments.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q20" id="q20_a3" value="C">
+                    <label class="form-check-label" for="q20_a3">
+                        C) It helps in writing unit tests for complex algorithms.
+                    </label>
+                </div>
+                <div class="answer" data-correct="B"></div>
+            </div>
+        </div>
+
+        <!-- Question 1.8: Mocking -->
+        <div class="card quiz-card" id="q21" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 21</h5>
+                <p class="card-text">Which of the following are benefits of using mocking in unit tests? (Select all that apply)</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q21" id="q21_a1" value="A">
+                    <label class="form-check-label" for="q21_a1">
+                        A) To make tests run faster by avoiding real external dependencies.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q21" id="q21_a2" value="B">
+                    <label class="form-check-label" for="q21_a2">
+                        B) To verify the actual integration between components.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q21" id="q21_a3" value="C">
+                    <label class="form-check-label" for="q21_a3">
+                        C) To isolate the component under test from its dependencies.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="q21" id="q21_a4" value="D">
+                    <label class="form-check-label" for="q21_a4">
+                        D) To easily test error conditions or specific return values from dependencies.
+                    </label>
+                </div>
+                <div class="answer" data-correct="A,C,D"></div>
+            </div>
+        </div>
+
+        <!-- Question 1.9: Three Pillars -->
+        <div class="card quiz-card" id="q22" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 22</h5>
+                <p class="card-text">What are the "three pillars of observability"?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q22" id="q22_a1" value="A">
+                    <label class="form-check-label" for="q22_a1">
+                        A) CPU, Memory, Disk
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q22" id="q22_a2" value="B">
+                    <label class="form-check-label" for="q22_a2">
+                        B) Logs, Metrics, Traces
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q22" id="q22_a3" value="C">
+                    <label class="form-check-label" for="q22_a3">
+                        C) Availability, Reliability, Scalability
+                    </label>
+                </div>
+                <div class="answer" data-correct="B"></div>
+            </div>
+        </div>
+
+        <!-- Question 1.9: Prometheus -->
+        <div class="card quiz-card" id="q23" style="display: none;">
+            <div class="card-body">
+                <h5 class="card-title">Question 23</h5>
+                <p class="card-text">What is Prometheus primarily used for in an observability stack?</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q23" id="q23_a1" value="A">
+                    <label class="form-check-label" for="q23_a1">
+                        A) Collecting and storing application logs.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q23" id="q23_a2" value="B">
+                    <label class="form-check-label" for="q23_a2">
+                        B) Tracing requests across distributed services.
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q23" id="q23_a3" value="C">
+                    <label class="form-check-label" for="q23_a3">
+                        C) Collecting and storing numerical metrics as time series data.
+                    </label>
+                </div>
+                <div class="answer" data-correct="C"></div>
+            </div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button class="btn btn-secondary" id="prev-btn" style="display: none;">Previous</button>
+            <button class="btn btn-primary" id="next-btn">Next</button>
+            <button class="btn btn-success" id="submit-btn" style="display: none;">Submit Answers</button>
+        </div>
+    </div>
+
+    <div id="results-container" style="display: none;">
+        <h3>Quiz Results</h3>
+        <p>Your score: <span id="score"></span></p>
+        <p>Percentage: <span id="percentage"></span>%</p>
+        <p id="feedback"></p>
+        <button class="btn btn-primary" id="try-again-btn">Try Again</button>
+    </div>
+
+</div>

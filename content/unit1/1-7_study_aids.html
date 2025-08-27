@@ -1,2 +1,90 @@
-<h1>Study Aids for 1.7: Advanced Backend Topics</h1>
-<p>Coming soon...</p>
+
+<div class="container">
+    <div class="page-header">
+        <h1>1.7 Study Aids: Advanced Backend Topics</h1>
+        <p class="lead">Use these flashcards to review the key concepts of advanced communication patterns in cloud-native backends.</p>
+    </div>
+
+    <div class="row">
+        <!-- Flashcard 1 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5>Event-Driven Architecture (EDA)</h5>
+                        <p>What is the primary benefit of adopting an Event-Driven Architecture?</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p>The primary benefit is <strong>decoupling services</strong>. Services communicate asynchronously via events, making them more independent, scalable, and resilient, as they don't need direct knowledge of each other.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 2 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5>Message Queues (RabbitMQ)</h5>
+                        <p>What is the primary role of a message queue like RabbitMQ in an event-driven system?</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p>Message queues act as intermediaries, storing messages temporarily between producers and consumers. They enable asynchronous communication, buffer messages during traffic spikes, and facilitate reliable delivery and task offloading.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 3 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5>Kafka vs. RabbitMQ</h5>
+                        <p>What is the key difference in the primary use cases for Kafka compared to RabbitMQ?</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p><strong>RabbitMQ</strong> is generally used for traditional message queuing, task distribution, and point-to-point communication. <strong>Kafka</strong> is a distributed streaming platform designed for high-throughput, fault-tolerant event streams, real-time analytics, and event sourcing.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 4 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5>gRPC Advantages</h5>
+                        <p>List two main advantages of gRPC over REST for internal microservice communication.</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p>1. <strong>Performance:</strong> Uses HTTP/2 and efficient binary serialization (Protobuf). <br/> 2. <strong>Strongly Typed Contracts:</strong> Enforces strict type checking and enables code generation across languages, reducing integration errors.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 5 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5>Protocol Buffers (Protobuf)</h5>
+                        <p>What is the role of Protocol Buffers in gRPC communication?</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p>Protobuf is a language-neutral, platform-neutral mechanism for serializing structured data. In gRPC, it defines the service interfaces and message structures, ensuring efficient, strongly-typed data exchange between client and server.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

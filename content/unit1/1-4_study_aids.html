@@ -1,2 +1,90 @@
-<h1>Study Aids for 1.4: Core Backend Concepts</h1>
-<p>Coming soon...</p>
+
+<div class="container">
+    <div class="page-header">
+        <h1>1.4 Study Aids: Core Backend Concepts</h1>
+        <p class="lead">Use these flashcards to review the key concepts of backend data management in Python.</p>
+    </div>
+
+    <div class="row">
+        <!-- Flashcard 1 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5>Python Dataclasses</h5>
+                        <p>What is the purpose of the <code>@dataclass</code> decorator in Python?</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p>It automatically generates boilerplate methods for classes that primarily store data, such as <code>__init__()</code>, <code>__repr__()</code>, and <code>__eq__()</code>. This reduces code verbosity and simplifies class creation.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 2 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5>Direct Database Access</h5>
+                        <p>What is the most critical security risk when writing direct SQL queries, and how is it prevented?</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p>The most critical risk is <strong>SQL Injection</strong>. It is prevented by using <strong>parameterized queries</strong> (passing parameters as a tuple to <code>cursor.execute()</code>), not by using string formatting to build SQL strings.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 3 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5>ORM (SQLAlchemy)</h5>
+                        <p>What is an Object-Relational Mapper (ORM) and what is its main advantage?</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p>An ORM is a library that maps database tables to objects in code. Its main advantage is increased developer productivity by allowing developers to work with Python objects instead of writing raw SQL, which also reduces boilerplate code.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 4 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5>Redis</h5>
+                        <p>What is a primary use case for Redis in a cloud-native backend application?</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p>The primary use case for Redis is <strong>caching</strong>. As a very fast in-memory key-value store, it is used to store the results of expensive operations (like database queries) to significantly reduce latency and database load.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 5 -->
+        <div class="col-md-4">
+            <div class="card flip-card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <h5>MongoDB</h5>
+                        <p>What kind of data model does MongoDB use, and what is a key benefit of this model?</p>
+                    </div>
+                    <div class="card-back">
+                        <h6>Answer</h6>
+                        <p>MongoDB uses a <strong>document-oriented</strong> data model, storing data in flexible, JSON-like BSON documents. A key benefit is its schema flexibility, which is ideal for applications with rapidly changing requirements or semi-structured data.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

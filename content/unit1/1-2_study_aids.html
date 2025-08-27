@@ -1,2 +1,106 @@
-<h1>Study Aids for 1.2: Overview & Foundational Concepts</h1>
-<p>Coming soon...</p>
+
+<div class="container">
+    <div class="page-header">
+        <h1>1.2 Study Aids: Foundational Concepts</h1>
+        <p class="lead">Use these flashcards to reinforce the key concepts from this topic.</p>
+    </div>
+
+    <div class="row">
+        <!-- Flashcard 1 -->
+        <div class="col-md-4 mb-4">
+            <div class="card flashcard">
+                <div class="card-front">
+                    <div class="card-body">
+                        <h5 class="card-title">Why Python for Cloud?</h5>
+                        <p class="card-text">What are the three main reasons Python is a strong choice for cloud-native development?</p>
+                    </div>
+                </div>
+                <div class="card-back">
+                    <div class="card-body">
+                        <h5 class="card-title">Answer</h5>
+                        <p class="card-text">
+                            <ol>
+                                <li><strong>Rich Ecosystem:</strong> Extensive libraries and frameworks (FastAPI, Boto3).</li>
+                                <li><strong>Simplicity & Readability:</strong> Clean syntax leads to maintainable code.</li>
+                                <li><strong>High Developer Productivity:</strong> Faster development cycles.</li>
+                            </ol>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 2 -->
+        <div class="col-md-4 mb-4">
+            <div class="card flashcard">
+                <div class="card-front">
+                    <div class="card-body">
+                        <h5 class="card-title">Type Hints</h5>
+                        <p class="card-text">What is the primary purpose of type hints in Python? Do they enforce types at runtime?</p>
+                    </div>
+                </div>
+                <div class="card-back">
+                    <div class="card-body">
+                        <h5 class="card-title">Answer</h5>
+                        <p class="card-text">Their primary purpose is to enable <strong>static analysis</strong> by tools like MyPy to catch type-related errors before the code is run. They <strong>do not</strong> enforce types at runtime; the Python interpreter ignores them.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 3 -->
+        <div class="col-md-4 mb-4">
+            <div class="card flashcard">
+                <div class="card-front">
+                    <div class="card-body">
+                        <h5 class="card-title">Pydantic</h5>
+                        <p class="card-text">What key capability does Pydantic add on top of Python's standard type hints?</p>
+                    </div>
+                </div>
+                <div class="card-back">
+                    <div class="card-body">
+                        <h5 class="card-title">Answer</h5>
+                        <p class="card-text">Pydantic provides <strong>runtime data validation</strong> and serialization. It uses type hints to parse, validate, and transform data as the program is running, which is crucial for validating incoming data in APIs.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 4 -->
+        <div class="col-md-4 mb-4">
+            <div class="card flashcard">
+                <div class="card-front">
+                    <div class="card-body">
+                        <h5 class="card-title">Data Structures</h5>
+                        <p class="card-text">Which built-in Python data structure is most commonly used to represent a JSON object received in an API request?</p>
+                    </div>
+                </div>
+                <div class="card-back">
+                    <div class="card-body">
+                        <h5 class="card-title">Answer</h5>
+                        <p class="card-text">The <strong>Dictionary (`dict`)</strong>. Its key-value pair structure maps directly to the structure of a JSON object, making it the natural choice for serialization and deserialization.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flashcard 5 -->
+        <div class="col-md-4 mb-4">
+            <div class="card flashcard">
+                <div class="card-front">
+                    <div class="card-body">
+                        <h5 class="card-title">Pydantic Special Types</h5>
+                        <p class="card-text">What is the benefit of using special types like `EmailStr` or `HttpUrl` in a Pydantic model?</p>
+                    </div>
+                </div>
+                <div class="card-back">
+                    <div class="card-body">
+                        <h5 class="card-title">Answer</h5>
+                        <p class="card-text">They provide built-in, format-specific validation. Pydantic will automatically check if a string is a valid email address or a well-formed URL, saving you the effort of writing complex validation logic yourself.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
