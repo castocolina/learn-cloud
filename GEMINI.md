@@ -45,20 +45,14 @@ The book is structured into `Units` and `Topics`, as defined in `CONTENT.md`.
 Our pedagogical structure is sequential and iterative. Follow this process strictly:
 
 1.  **After completing each Topic:** It is mandatory to generate the following before moving to the next topic:
-    *   **Flashcards:** Create at least 5 flashcards for the key concepts introduced.
-    *   **Quiz:** Create a quiz with at least 5 questions to review the material.
+    *   **Topic Content:** The main didactic material for the topic.
+    *   **Study aids:** Create at least 5 flashcards for the key concepts introduced. These should be generated as a separate HTML file (e.g., `x-x_study_aids.html`) and intended as a distinct menu entry.
+    *   **Quiz:** Create a quiz with at least 5 questions to review the material. This should be generated as a separate HTML file (e.g., `x-x_quiz.html`) and intended as a distinct menu entry.
+        *   **Single-choice questions:** Use radio buttons (`<input type="radio">`). The correct answer is indicated in a `div` with class `answer` and a `data-correct` attribute with the value of the correct option.
+        *   **Multiple-choice questions:** Use checkboxes (`<input type="checkbox">`). The correct answers are indicated in a `div` with class `answer` and a `data-correct` attribute with a comma-separated list of the values of the correct options.
 
 2.  **After completing all Topics in a Unit:**
-    *   Create a comprehensive **Unit Test** with at least 20 questions that covers all material in the unit.
-
-For each piece of content generated, follow this pedagogical structure:
-
-1.  **At the end of each Topic:**
-    *   Generate **Flashcards** for at least 5 key concepts from the topic.
-    *   Create a **Quiz** with at least 5 questions to review the material.
-
-2.  **At the end of each Unit:**
-    *   Create a comprehensive **Unit Test** with at least 20 questions covering all topics within the unit.
+    *   Create a comprehensive **Unit Test** with at least 20 questions that covers all material in the unit. This should be generated as a separate HTML file (e.g., `x-x_unit_test.html`) and intended as a distinct menu entry.
 
 ## Website Structure & Design
 
@@ -77,3 +71,27 @@ The final output will be a modern, interactive web-based book. While I will gene
         *   The navigation should be fluid and seamless, loading content snippets dynamically.
     *   **Progress Tracking:** A progress bar should always be visible, showing `n/m` topics completed and the overall percentage.
     *   **Design:** The aesthetic should be modern and clean.
+
+## Collaboration and Style Guide
+
+### Feedback Loop
+
+This document is a living document. Feedback from our interactions will be used to update these guidelines to ensure consistency and quality in the book's content and user experience.
+
+### UI/UX Style Guide
+
+This section defines the UI/UX for the different components of the book.
+
+#### Quizzes
+
+*   **Structure:** Quizzes are presented as a series of navigable cards, with one question per card.
+*   **Navigation:** "Previous" and "Next" buttons are used to navigate between questions. The "Submit Answers" button is only visible on the last question.
+*   **Options:** Answer options are presented as labels that can be clicked to select the corresponding radio button or checkbox.
+    *   **Single-choice questions:** Use radio buttons (`<input type="radio">`). The correct answer is indicated in a `div` with class `answer` and a `data-correct` attribute with the value of the correct option.
+    *   **Multiple-choice questions:** Use checkboxes (`<input type="checkbox">`). The correct answers are indicated in a `div` with class `answer` and a `data-correct` attribute with a comma-separated list of the values of the correct options.
+*   **Submission:** After submitting the quiz, the questions are hidden and the results are displayed, showing the score, percentage, and a pass/fail message. A "Try Again" button is provided to reset the quiz.
+*   **Button Styles:**
+    *   Page navigation (Previous/Next): `btn-outline-secondary` and `btn-outline-primary`.
+    *   Quiz navigation (Previous/Next): `btn-secondary` and `btn-primary`.
+    *   Quiz submission: `btn-success`.
+    *   Try Again: `btn-primary`.

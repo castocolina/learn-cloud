@@ -182,6 +182,149 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    function handleQuizSubmission(button) {
+        const quizContainer = button.closest('.quiz-container');
+        const questions = quizContainer.querySelectorAll('.question');
+        let score = 0;
+        const totalQuestions = questions.length;
+
+        questions.forEach((question, index) => {
+            const questionCard = question.closest('.quiz-card');
+            const inputs = question.querySelectorAll('input');
+            const correctAnswerData = question.querySelector('.answer').dataset.correct;
+            const correctAnswers = correctAnswerData.split(',');
+
+            let selectedAnswers = [];
+            if (inputs[0].type === 'radio') {
+                const selectedOption = question.querySelector(`input[name="q${index + 1}"]:checked`);
+                if (selectedOption) {
+                    selectedAnswers.push(selectedOption.value);
+                }
+            } else { // checkboxes
+                const selectedOptions = question.querySelectorAll(`input[name="q${index + 1}"]:checked`);
+                selectedOptions.forEach(option => selectedAnswers.push(option.value));
+            }
+
+            questionCard.classList.remove('correct', 'incorrect');
+
+            if (selectedAnswers.length > 0 && arraysEqual(selectedAnswers.sort(), correctAnswers.sort())) {
+                score++;
+                questionCard.classList.add('correct');
+            } else {
+                questionCard.classList.add('incorrect');
+            }
+        });
+
+        const percentage = (score / totalQuestions) * 100;
+        
+        let resultsHtml = `
+            <div class="quiz-results">
+                <h4>Quiz Results</h4>
+                <p>You scored ${score} out of ${totalQuestions} (${percentage.toFixed(2)}%).</p>
+        `;
+
+        if (percentage >= 70) {
+            resultsHtml += `<p class="pass">Congratulations! You passed the quiz.</p>`;
+        } else {
+            resultsHtml += `<p class="fail">You did not pass the quiz. Please review the material and try again.</p>`;
+        }
+
+        resultsHtml += `<button class="btn btn-primary mt-3" id="try-again-quiz">Try Again</button></div>`;
+
+        const resultsContainer = quizContainer.querySelector('.quiz-results-container');
+        resultsContainer.innerHTML = resultsHtml;
+
+        quizContainer.querySelectorAll('.quiz-card').forEach(card => card.style.display = 'none');
+        quizContainer.querySelector('.quiz-navigation').style.display = 'none';
+    }
+
+    function resetQuiz(quizContainer) {
+        const resultsContainer = quizContainer.querySelector('.quiz-results-container');
+        resultsContainer.innerHTML = '';
+
+        quizContainer.querySelectorAll('.quiz-card').forEach((card, index) => {
+            card.classList.remove('correct', 'incorrect');
+            if (index === 0) {
+                card.classList.add('active-card');
+                card.style.display = 'block';
+            } else {
+                card.classList.remove('active-card');
+                card.style.display = 'none';
+            }
+        });
+
+        quizContainer.querySelectorAll('input').forEach(input => {
+            input.checked = false;
+        });
+
+        const prevButton = quizContainer.querySelector('#prev-question');
+        const nextButton = quizContainer.querySelector('#next-question');
+        const submitButton = quizContainer.querySelector('#submit-quiz');
+        
+        if(prevButton) prevButton.disabled = true;
+        if(nextButton) {
+            nextButton.style.display = 'inline-block';
+            nextButton.disabled = false;
+        }
+        if(submitButton) {
+            submitButton.style.display = 'none';
+            submitButton.disabled = false;
+            submitButton.textContent = 'Submit Answers';
+        }
+        quizContainer.querySelector('.quiz-navigation').style.display = 'block';
+    }
+
+    function arraysEqual(a, b) {
+        if (a.length !== b.length) return false;
+        for (let i = 0; i < a.length; i++) {
+            if (a[i] !== b[i]) return false;
+        }
+        return true;
+    }
+
+    function navigateQuiz(direction) {
+        const quizContainer = document.querySelector('.quiz-container');
+        if (!quizContainer) return;
+
+        const activeCard = quizContainer.querySelector('.quiz-card.active-card');
+        const currentQuestion = parseInt(activeCard.dataset.question, 10);
+        const nextQuestion = currentQuestion + direction;
+        
+        const nextCard = quizContainer.querySelector(`.quiz-card[data-question="${nextQuestion}"]`);
+
+        if (nextCard) {
+            activeCard.classList.remove('active-card');
+            activeCard.style.display = 'none';
+            nextCard.classList.add('active-card');
+            nextCard.style.display = 'block';
+        }
+
+        const prevButton = quizContainer.querySelector('#prev-question');
+        const nextButton = quizContainer.querySelector('#next-question');
+        const submitButton = quizContainer.querySelector('#submit-quiz');
+        const totalQuestions = quizContainer.querySelectorAll('.quiz-card').length;
+
+        if(prevButton) prevButton.disabled = nextQuestion === 1;
+        if(nextButton) {
+            nextButton.style.display = nextQuestion === totalQuestions ? 'none' : 'inline-block';
+        }
+        if(submitButton) {
+            submitButton.style.display = nextQuestion === totalQuestions ? 'inline-block' : 'none';
+        }
+    }
+
+    contentArea.addEventListener('click', (e) => {
+        if (e.target.id === 'next-question') {
+            navigateQuiz(1);
+        } else if (e.target.id === 'prev-question') {
+            navigateQuiz(-1);
+        } else if (e.target.id === 'submit-quiz') {
+            handleQuizSubmission(e.target);
+        } else if (e.target.id === 'try-again-quiz') {
+            resetQuiz(e.target.closest('.quiz-container'));
+        }
+    });
+
     function initialize() {
         const unitElements = document.querySelectorAll('#nav-menu .unit');
         let topicGlobalIndex = 0;

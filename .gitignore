@@ -38,3 +38,5 @@ yarn-error.log*
 # These are created by the operating system and are not part of the project.
 .DS_Store
 Thumbs.db
+
+tmp/

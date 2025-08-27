@@ -1,0 +1,102 @@
+<h2>Unit 1.1: Development Environment & Tooling</h2>
+<p>Welcome to the world of cloud-native Python! As an experienced developer, you know that a solid foundation is non-negotiable. In the cloud-native ecosystem, this foundation begins with a clean, reproducible, and powerful development environment. This topic will guide you through setting up a professional environment that ensures consistency from your local machine to production.</p>
+
+<h3>The "Works on My Machine" Problem, Solved</h3>
+<p>The first principle of modern development is environment consistency. A Docker-centric workflow is key, but it starts even before that: managing the Python version itself. Different projects may require different versions of Python. Hard-installing a single system-wide Python is inflexible and leads to conflicts. This is where `pyenv` comes in.</p>
+
+<h4>Python Version Management with <code>pyenv</code></h4>
+<p><code>pyenv</code> lets you install multiple Python versions side-by-side and switch between them effortlessly. It works by intercepting Python commands and redirecting them to the correct version based on your project's configuration.</p>
+<p><strong>Why use it?</strong></p>
+<ul>
+    <li><strong>Project-Specific Versions:</strong> Set a specific Python version for each project (e.g., `3.11.5` for one, `3.10.8` for another).</li>
+    <li><strong>Global Default:</strong> Set a default Python version for your user account.</li>
+    <li><strong>Seamless Switching:</strong> No manual path manipulation is needed. It just works.</li>
+</ul>
+<p>You can find installation instructions at the official <a href="https://github.com/pyenv/pyenv#installation" target="_blank">pyenv GitHub repository</a>. Once installed, setting up a new project with a specific Python version is simple:</p>
+<pre><code class="language-bash"># Install a specific Python version
+pyenv install 3.11.5
+
+# Set it as the local version for the current directory
+# This creates a .python-version file
+pyenv local 3.11.5
+
+# Verify the version
+python --version
+# Output: Python 3.11.5</code></pre>
+
+<hr>
+
+<h3>Dependency Management with Poetry</h3>
+<p>Once the Python version is handled, the next step is managing project dependencies. As an experienced Python developer, you are likely familiar with <code>pip</code> for package installation and <code>venv</code> for creating isolated virtual environments. This traditional approach involves using <code>pip install -r requirements.txt</code> to manage dependencies and manually activating virtual environments.</p>
+<p><code>pip</code> is the official package installer for Python, maintained by the Python Packaging Authority (PyPA), a working group within the Python community responsible for maintaining and evolving packaging standards. <code>venv</code> is part of Python's standard library, meaning it's maintained as part of the core Python development.</p>
+<p>While <code>pip</code> and <code>venv</code> are functional and widely used, they have certain limitations, especially in a cloud-native context:</p>
+<ul>
+    <li><strong>Non-Deterministic Builds:</strong> <code>requirements.txt</code> typically lists direct dependencies, but not their transitive dependencies or exact versions. This can lead to different environments if dependencies are updated between installations.</li>
+    <li><strong>Separate Tools:</strong> Managing the virtual environment and dependencies requires using two distinct tools (<code>venv</code> and <code>pip</code>), which can sometimes lead to inconsistencies or extra manual steps.</li>
+    <li><strong>Lack of Packaging Features:</strong> <code>pip</code> and <code>venv</code> don't inherently provide features for building and publishing your Python packages.</li>
+</ul>
+<p>Enter <a href="https://python-poetry.org/" target="_blank">Poetry</a>. It's a modern, all-in-one tool for dependency management, packaging, and virtual environment management. Poetry is an independent project with a vibrant and active open-source community. Its rapid adoption and continuous development are testaments to its effectiveness and the strong support it receives from developers.</p>
+<p>Poetry is projected to be "better than usual" because it offers a holistic and opinionated approach to Python project management. Unlike the fragmented traditional tools, Poetry provides a unified, intuitive workflow that covers the entire project lifecycle from dependency resolution to packaging and publishing. Its focus on deterministic builds through the <code>poetry.lock</code> file, combined with a streamlined command-line interface, significantly enhances developer experience and ensures consistency across development, testing, and production environments. This integrated design reduces common pitfalls and boilerplate, allowing developers to focus more on writing application logic.</p>
+<p>It addresses the shortcomings of the traditional approach by using a <code>pyproject.toml</code> file to manage your project in a clear, declarative way, and a <code>poetry.lock</code> file for deterministic builds.</p>
+<p><strong>Why use Poetry?</strong></p>
+<ul>
+    <li><strong>Unified Tooling:</strong> Manages dependencies, virtual environments, and packaging in one place, simplifying your workflow.</li>
+    <li><strong>Deterministic Builds:</strong> The <code>poetry.lock</code> file ensures that every developer on your team, and your CI/CD pipeline, uses the exact same versions of all dependencies, eliminating "it works on my machine" issues.</li>
+    <li><strong>Clear Dependency Specification:</strong> Clearly separates main dependencies from development dependencies in <code>pyproject.toml</code>.</li>
+    <li><strong>Easy Publishing:</strong> Simplifies the process of packaging your project and publishing it to repositories like PyPI.</li>
+</ul>
+
+<h4>Getting Started with Poetry</h4>
+<p>After installing Poetry, starting a new project and managing it is intuitive:</p>
+<pre><code class="language-bash"># Create a new project structure
+poetry new my-cloud-project
+cd my-cloud-project
+
+# Add a dependency (e.g., FastAPI)
+poetry add fastapi
+
+# Add a development-only dependency (e.g., pytest)
+poetry add pytest --group dev
+
+# Activate the virtual environment
+poetry shell
+
+# Run your application
+python my_cloud_project/main.py</code></pre>
+<p>This workflow creates and manages a virtual environment automatically, tied to your project. The `pyproject.toml` file is the heart of your project's configuration.</p>
+
+<hr>
+
+<h3>IDE Integration: Visual Studio Code</h3>
+<p>A powerful IDE is crucial for productivity. While PyCharm is an excellent choice, we recommend <strong>Visual Studio Code (VS Code)</strong> due to its lightweight nature, powerful extensions, and seamless integration with Docker and cloud platforms.</p>
+<p>For a world-class Python experience in VS Code, install these extensions:</p>
+<ul>
+    <li><a href="https://marketplace.visualstudio.com/items?itemName=ms-python.python" target="_blank"><strong>Python (Microsoft)</strong></a>: The official extension, providing core support for debugging, environment selection, and more.</li>
+    <li><a href="https://marketplace.visualstudio.com/items?itemName=ms-python.pylance" target="_blank"><strong>Pylance (Microsoft)</strong></a>: A high-performance language server providing fast autocompletion, type checking, and rich code navigation.</li>
+    <li><a href="https://marketplace.visualstudio.com/items?itemName=ms-azuretools.docker" target="_blank"><strong>Docker</strong></a>: Essential for building, managing, and inspecting containers directly from your IDE.</li>
+</ul>
+<p>When you open a Poetry-managed project in VS Code, it will automatically detect the virtual environment, giving you access to all installed dependencies and the correct Python interpreter.</p>
+
+<hr>
+
+<h3>Containerization with Docker</h3>
+<p>As stated in the introduction, proficiency with Docker is assumed. In cloud-native development, Docker isn't just for deployment; it's a core part of the development loop. It guarantees that your application runs in a consistent, isolated environment, whether on your laptop or in a Kubernetes pod.</p>
+<p>We will delve deeper into creating optimized Dockerfiles for Python applications in a later topic. For now, understand that Docker provides the crucial consistency needed for cloud-native environments.</p>
+
+<hr>
+
+<h3>Putting It All Together: A Starter Workflow</h3>
+<p>Let's combine everything into a single, repeatable workflow for starting a new cloud-native Python service.</p>
+<ol>
+    <li><strong>Set Python Version:</strong><br><code>pyenv install 3.11.5 && pyenv local 3.11.5</code></li>
+    <li><strong>Create Project with Poetry:</strong><br><code>poetry new my-service && cd my-service</code></li>
+    <li><strong>Add Dependencies:</strong><br><code>poetry add fastapi uvicorn[standard]</code></li>
+    <li><strong>Add Dev Dependencies:</strong><br><code>poetry add pytest --group dev</code></li>
+    <li><strong>Activate Environment:</strong><br><code>poetry shell</code></li>
+    <li><strong>Develop:</strong><br>Start writing your code.</li>
+</ol>
+
+<h3>Conclusion</h3>
+<p>You have now configured a complete, professional development environment. By using `pyenv`, Poetry, VS Code, and understanding the role of Docker, you have a setup that is reproducible, enforces quality, and boosts productivity. This robust foundation is essential as we move on to building and deploying real-world cloud-native applications.</p>
+
+<hr>
