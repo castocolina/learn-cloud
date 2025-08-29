@@ -1,88 +1,164 @@
+<div id="flashcards-section">
+    <h2>Flashcards: Concurrency and Caching</h2>
+    <div class="flashcards-container">
 
-<div class="container">
-    <div class="page-header">
-        <h1>1.5 Study Aids: Concurrency and Caching</h1>
-        <p class="lead">Use these flashcards to review the key concepts of performance optimization in Python.</p>
-    </div>
-
-    <div class="row">
-        <!-- Flashcard 1 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>The Global Interpreter Lock (GIL)</h5>
-                        <p>What is the GIL, and what kind of tasks does it primarily impact?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>The GIL is a mutex in CPython that allows only one thread to execute Python bytecode at a time. It primarily impacts <strong>CPU-bound</strong> tasks, while its lock is released during <strong>I/O-bound</strong> tasks, making concurrency effective for them.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What is the Global Interpreter Lock (GIL) in CPython?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>The GIL is a mutex that prevents multiple native threads from executing Python bytecode simultaneously, meaning only one thread can execute Python code at a time.</p>
             </div>
         </div>
 
-        <!-- Flashcard 2 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5><code>threading</code> vs. <code>asyncio</code></h5>
-                        <p>When would you choose the <code>threading</code> module over <code>asyncio</code>?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>You would choose <code>threading</code> when working with blocking I/O operations and libraries that do not support the <code>asyncio</code> ecosystem. It allows you to add concurrency without having to rewrite your code in an async style.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>How does the GIL affect CPU-bound vs. I/O-bound tasks?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>The GIL primarily affects CPU-bound tasks by limiting parallel execution. For I/O-bound tasks, the GIL is released while waiting, allowing other threads to run and making concurrency effective.</p>
             </div>
         </div>
 
-        <!-- Flashcard 3 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>Asyncio's Model</h5>
-                        <p>How does <code>asyncio</code> achieve concurrency?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p><code>asyncio</code> uses a single-threaded <strong>event loop</strong> and cooperative multitasking. Coroutines (<code>async</code> functions) explicitly yield control with <code>await</code> when waiting for I/O, allowing the event loop to run other tasks. This can be more efficient than threading for many I/O operations.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>When is the `threading` module a good choice for concurrency in Python?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>The `threading` module is well-suited for I/O-bound operations, as the GIL is released during I/O waits, allowing other threads to make progress.</p>
             </div>
         </div>
 
-        <!-- Flashcard 4 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5><code>functools.lru_cache</code></h5>
-                        <p>What is the primary purpose of the <code>@lru_cache</code> decorator?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>Its purpose is <strong>memoization</strong>, or in-process caching. It caches the return values of a function, so if the function is called again with the same arguments, the result is returned instantly from memory, avoiding re-computation.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What is the main advantage of `asyncio` over `threading` for I/O-bound tasks?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>`asyncio` uses a single-threaded, non-blocking event loop, which can be more efficient for a very large number of I/O operations by avoiding the overhead of creating and managing multiple threads.</p>
             </div>
         </div>
 
-        <!-- Flashcard 5 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>LRU Cache Limitations</h5>
-                        <p>What are the main limitations of using <code>@lru_cache</code>?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>The cache is stored in the memory of a <strong>single process</strong>. It is not shared between processes or servers, and its contents are lost if the application restarts. It is best for caching results from pure functions.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What is `functools.lru_cache` used for?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>`functools.lru_cache` is used for in-process caching (memoization) of function results, storing them in memory to avoid re-computation for subsequent calls with the same arguments.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>Illustrate GIL Impact on CPU-bound vs. I/O-bound Tasks.</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
+                    View Diagram
+                </button>
+                <h4>Answer</h4>
+                <pre class="mermaid">
+graph TD
+    subgraph CPU-Bound Task
+        A[Thread 1: Compute] --> B{GIL Acquired};
+        B --> C[Execute Python Code];
+        C --> D{"GIL Released (briefly)"};
+        D --> A;
+    end
+
+    subgraph I/O-Bound Task
+        X[Thread 2: Network Request] --> Y{GIL Acquired};
+        Y --> Z[Initiate I/O Operation];
+        Z --> W{"GIL Released (during I/O wait)"};
+        W --> X;
+    end
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style X fill:#ccf,stroke:#333,stroke-width:2px
+    style C fill:#f9f,stroke:#333,stroke-width:2px
+    style Z fill:#ccf,stroke:#333,stroke-width:2px
+                </pre>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>Illustrate `lru_cache` Workflow.</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
+                    View Diagram
+                </button>
+                <h4>Answer</h4>
+                <pre class="mermaid">
+graph TD
+    A[Function Call with Args] --> B{Are Args in Cache?};
+    B -- Yes --> C[Return Cached Result];
+    B -- No --> D[Execute Function Logic];
+    D --> E[Compute Result];
+    E --> F[Store Result in Cache];
+    F --> C;
+                </pre>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>Illustrate Python Concurrency: Threading vs. Asyncio.</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
+                    View Diagram
+                </button>
+                <h4>Answer</h4>
+                <pre class="mermaid">
+graph TD
+    A[Python Program] --> B{Concurrency Need?};
+
+    subgraph Threading Module
+        C[Threading] --> D[Multiple OS Threads];
+        D --> E["GIL (Global Interpreter Lock)"];
+        E -- "Prevents true CPU parallelism" --> F["Best for I/O-bound tasks (blocking I/O)"];
+        F --> G[Context Switching by OS];
+    end
+
+    subgraph Asyncio Module
+        H[Asyncio] --> I[Single OS Thread];
+        I --> J[Event Loop];
+        J --> K[Cooperative Multitasking];
+        K --> L["Best for I/O-bound tasks (non-blocking I/O)"];
+        L --> M[Context Switching by Coroutines];
+    end
+
+    B -- "CPU-bound (limited by GIL)" --> C;
+    B -- "I/O-bound (efficient)" --> H;
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style B fill:#ccf,stroke:#333,stroke-width:2px
+    style C fill:#fcf,stroke:#333,stroke-width:2px
+    style H fill:#cfc,stroke:#333,stroke-width:2px
+    style D fill:#fcc,stroke:#333,stroke-width:2px
+    style I fill:#cff,stroke:#333,stroke-width:2px
+    style E fill:#f99,stroke:#333,stroke-width:2px
+    style J fill:#9cf,stroke:#333,stroke-width:2px
+    style F fill:#fdd,stroke:#333,stroke-width:2px
+    style K fill:#9ff,stroke:#333,stroke-width:2px
+    style G fill:#fdd,stroke:#333,stroke-width:2px
+    style L fill:#9ff,stroke:#333,stroke-width:2px
+    style M fill:#9ff,stroke:#333,stroke-width:2px
+                </pre>
             </div>
         </div>
 

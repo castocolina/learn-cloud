@@ -1,106 +1,156 @@
+<div id="flashcards-section">
+    <h2>Flashcards: Foundational Concepts</h2>
+    <div class="flashcards-container">
 
-<div class="container">
-    <div class="page-header">
-        <h1>1.2 Study Aids: Foundational Concepts</h1>
-        <p class="lead">Use these flashcards to reinforce the key concepts from this topic.</p>
-    </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>Why is Python a top choice for cloud-native applications?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <ul>
+                    <li><strong>Rich Ecosystem & Libraries:</strong> Extensive PyPI, battle-tested libraries (FastAPI, Django, Pandas, NumPy, Cloud SDKs like Boto3).</li>
+                    <li><strong>Simplicity & Readability:</strong> Clean syntax, "executable pseudocode," easier collaboration and onboarding.</li>
+                    <li><strong>High Developer Productivity:</strong> Fast development cycles due to simple syntax and rich ecosystem.</li>
+                </ul>
+                <!-- Image Placeholder: Icon combining Python logo with cloud and microservices elements. -->
+            </div>
+        </div>
 
-    <div class="row">
-        <!-- Flashcard 1 -->
-        <div class="col-md-4 mb-4">
-            <div class="card flashcard">
-                <div class="card-front">
-                    <div class="card-body">
-                        <h5 class="card-title">Why Python for Cloud?</h5>
-                        <p class="card-text">What are the three main reasons Python is a strong choice for cloud-native development?</p>
-                    </div>
-                </div>
-                <div class="card-back">
-                    <div class="card-body">
-                        <h5 class="card-title">Answer</h5>
-                        <p class="card-text">
-                            <ol>
-                                <li><strong>Rich Ecosystem:</strong> Extensive libraries and frameworks (FastAPI, Boto3).</li>
-                                <li><strong>Simplicity & Readability:</strong> Clean syntax leads to maintainable code.</li>
-                                <li><strong>High Developer Productivity:</strong> Faster development cycles.</li>
-                            </ol>
-                        </p>
-                    </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <h4>What are Python's core built-in data structures and their typical use cases in backend development?</h4>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
+                    View Diagram
+                </button>
+                <ul>
+                    <li><strong>Dictionaries (`dict`):</strong> Unordered, mutable key-value pairs. Ideal for JSON payloads, configuration, database records.
+                        <pre><code class="language-python">user_data = {"id": 101, "username": "cloud_dev"}</code></pre>
+                    </li>
+                    <li><strong>Lists (`list`):</strong> Ordered, mutable collections. Used for sequences of items, e.g., active sessions, arrays of data.
+                        <pre><code class="language-python">active_sessions = [s1, s2, s3]</code></pre>
+                    </li>
+                    <li><strong>Tuples (`tuple`):</strong> Ordered, immutable collections. Useful for fixed data structures like coordinates, database rows where data shouldn't change.
+                        <pre><code class="language-python">db_record = ("user123", "user123@example.com")</code></pre>
+                    </li>
+                </ul>
+                <div class="mermaid">
+                    graph TD
+                        subgraph Python Data Structures
+                            A[Dictionary] --> B{Key 1};
+                            B --> C[Value 1];
+                            A --> D{Key 2};
+                            D --> E[Value 2];
+
+                            F[List] --> G[0: Element 1];
+                            G --> H[1: Element 2];
+
+                            I[Tuple] --> J((0: Element 1));
+                            J --> K((1: Element 2));
+                        end
                 </div>
             </div>
         </div>
 
-        <!-- Flashcard 2 -->
-        <div class="col-md-4 mb-4">
-            <div class="card flashcard">
-                <div class="card-front">
-                    <div class="card-body">
-                        <h5 class="card-title">Type Hints</h5>
-                        <p class="card-text">What is the primary purpose of type hints in Python? Do they enforce types at runtime?</p>
-                    </div>
-                </div>
-                <div class="card-back">
-                    <div class="card-body">
-                        <h5 class="card-title">Answer</h5>
-                        <p class="card-text">Their primary purpose is to enable <strong>static analysis</strong> by tools like MyPy to catch type-related errors before the code is run. They <strong>do not</strong> enforce types at runtime; the Python interpreter ignores them.</p>
-                    </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <h4>Explain the purpose and impact of Python's Type Hints in production-ready code.</h4>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
+                    View Diagram
+                </button>
+                <ul>
+                    <li><strong>Purpose:</strong> Annotations (PEP 484) for variables, function parameters, and return values to specify expected types.</li>
+                    <li><strong>Impact:</strong>
+                        <ul>
+                            <li><strong>Clarity:</strong> Improves code readability and understanding.</li>
+                            <li><strong>Early Error Detection:</strong> Used by static analysis tools (e.g., MyPy) to catch type-related bugs *before* runtime.</li>
+                            <li><strong>Tooling:</strong> Enables powerful IDE features like autocompletion and refactoring.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Note:</strong> Type hints do *not* enforce types at runtime.</li>
+                </ul>
+                <div class="mermaid">
+                    graph TD
+                        A[Python Code with Type Hints] --> B(Static Analysis Tool);
+                        B --> C{Type Checker};
+                        C --> D["Errors/Warnings/Success"];
+                        E[Type Stubs (.pyi)] --> C;
+                        F["Configuration File (e.g., pyproject.toml, mypy.ini)"] --> B;
+                        B -- Uses --> G[Standard Library Types];
+                        B -- Uses --> H[Third-Party Library Types];
                 </div>
             </div>
         </div>
 
-        <!-- Flashcard 3 -->
-        <div class="col-md-4 mb-4">
-            <div class="card flashcard">
-                <div class="card-front">
-                    <div class="card-body">
-                        <h5 class="card-title">Pydantic</h5>
-                        <p class="card-text">What key capability does Pydantic add on top of Python's standard type hints?</p>
-                    </div>
-                </div>
-                <div class="card-back">
-                    <div class="card-body">
-                        <h5 class="card-title">Answer</h5>
-                        <p class="card-text">Pydantic provides <strong>runtime data validation</strong> and serialization. It uses type hints to parse, validate, and transform data as the program is running, which is crucial for validating incoming data in APIs.</p>
-                    </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <h4>How does Pydantic enhance Python's typing system for cloud-native applications?</h4>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
+                    View Diagram
+                </button>
+                <ul>
+                    <li><strong>Runtime Type Checking:</strong> Extends type hints by enforcing types and validating data at runtime.</li>
+                    <li><strong>Data Validation:</strong> Ensures incoming data (e.g., API requests, JSON payloads) conforms to defined schemas.</li>
+                    <li><strong>Serialization/Deserialization:</strong> Automatically converts Python objects to/from data formats like JSON.</li>
+                    <li><strong>Protective Barrier:</strong> Acts as a critical layer at the application edge, preventing invalid data from reaching business logic.</li>
+                    <li><strong>Backbone of FastAPI:</strong> Essential for building robust and well-defined APIs.</li>
+                </ul>
+                <div class="mermaid">
+                    flowchart TD
+                        A[Raw Input Data] --> B{Define Pydantic Model};
+                        B --> C[Instantiate Model with Input Data];
+                        C --> D{Pydantic Validation Process};
+                        D -- Valid --> E[Validated Pydantic Object];
+                        D -- Invalid --> F[ValidationError];
+
+                        subgraph "Validation Steps"
+                            D1[Type Validation] --> D2[Field Validation];
+                            D2 --> D3["Data Coercion"];
+                        end
+
+                        D --> D1;
+                        D3 --> D;
                 </div>
             </div>
         </div>
 
-        <!-- Flashcard 4 -->
-        <div class="col-md-4 mb-4">
-            <div class="card flashcard">
-                <div class="card-front">
-                    <div class="card-body">
-                        <h5 class="card-title">Data Structures</h5>
-                        <p class="card-text">Which built-in Python data structure is most commonly used to represent a JSON object received in an API request?</p>
-                    </div>
-                </div>
-                <div class="card-back">
-                    <div class="card-body">
-                        <h5 class="card-title">Answer</h5>
-                        <p class="card-text">The <strong>Dictionary (`dict`)</strong>. Its key-value pair structure maps directly to the structure of a JSON object, making it the natural choice for serialization and deserialization.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <h4>How are Python functions and classes typically utilized in cloud-native backend development?</h4>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <ul>
+                    <li><strong>Functions:</strong>
+                        <ul>
+                            <li><strong>Stateless Operations:</strong> Ideal for serverless functions (e.g., AWS Lambda) where each invocation is independent.</li>
+                            <li><strong>Utility Logic:</strong> Encapsulating reusable, self-contained pieces of logic.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Classes:</strong>
+                        <ul>
+                            <li><strong>Modeling Entities:</strong> Representing complex business objects (e.g., `User`, `Product`, `Order`).</li>
+                            <li><strong>Encapsulating Business Logic:</strong> Grouping data and methods that operate on that data.</li>
+                            <li><strong>Stateful Components:</strong> Though less common in purely stateless microservices, still vital for managing internal state within a service.</li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- Image Placeholder: Icons representing a function (e.g., f(x)) and a class (e.g., a blueprint or object). -->
             </div>
         </div>
-
-        <!-- Flashcard 5 -->
-        <div class="col-md-4 mb-4">
-            <div class="card flashcard">
-                <div class="card-front">
-                    <div class="card-body">
-                        <h5 class="card-title">Pydantic Special Types</h5>
-                        <p class="card-text">What is the benefit of using special types like `EmailStr` or `HttpUrl` in a Pydantic model?</p>
-                    </div>
-                </div>
-                <div class="card-back">
-                    <div class="card-body">
-                        <h5 class="card-title">Answer</h5>
-                        <p class="card-text">They provide built-in, format-specific validation. Pydantic will automatically check if a string is a valid email address or a well-formed URL, saving you the effort of writing complex validation logic yourself.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
 </div>
+
+
+

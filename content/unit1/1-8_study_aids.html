@@ -1,88 +1,95 @@
+<div id="flashcards-section">
+    <h2>Flashcards: Testing Strategies</h2>
+    <div class="flashcards-container">
 
-<div class="container">
-    <div class="page-header">
-        <h1>1.8 Study Aids: Testing Strategies</h1>
-        <p class="lead">Use these flashcards to review the key concepts of testing in Python backend development.</p>
-    </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>Describe the concept of the Testing Pyramid.</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
+                    View Diagram
+                </button>
+                <h4>Answer</h4>
+                <p>The Testing Pyramid suggests having many fast, isolated unit tests at the base, fewer integration tests in the middle, and even fewer slow, comprehensive end-to-end tests at the top.</p>
+                <pre class="mermaid">
+graph TD
+    A["End-to-End Tests (Few, Slow)"]
+    B["Integration Tests (More, Medium Speed)"]
+    C["Unit Tests (Many, Fast)"]
 
-    <div class="row">
-        <!-- Flashcard 1 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>Testing Pyramid</h5>
-                        <p>Describe the three main layers of the Testing Pyramid.</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>1. <strong>Unit Tests:</strong> Fast, isolated, test individual components. <br/> 2. <strong>Integration Tests:</strong> Verify interactions between components, slower than unit tests. <br/> 3. <strong>End-to-End Tests:</strong> Simulate user scenarios across the entire system, slowest and most brittle.</p>
-                    </div>
-                </div>
+    C --> B;
+    B --> A;
+
+    style A fill:#fcc,stroke:#333,stroke-width:2px
+    style B fill:#f99,stroke:#333,stroke-width:2px
+    style C fill:#f66,stroke:#333,stroke-width:2px
+                </pre>
             </div>
         </div>
 
-        <!-- Flashcard 2 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>Mocking</h5>
-                        <p>When and why would you use mocking in your tests?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>Mocking is used in unit tests to replace real dependencies (like external APIs, databases) with controlled, fake objects. This isolates the unit under test, makes tests faster, and allows testing of error conditions without external setup.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What is the primary goal of a unit test?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>The primary goal of a unit test is to test individual functions or methods in isolation, providing fast and precise feedback on their correctness.</p>
             </div>
         </div>
 
-        <!-- Flashcard 3 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>Testcontainers</h5>
-                        <p>What problem does Testcontainers solve for integration testing?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>Testcontainers solves the problem of managing external dependencies for integration tests. It allows you to spin up real services (e.g., databases, message queues) in throwaway Docker containers, ensuring realistic, isolated, and consistent test environments.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>When would you use mocking in your tests?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
+                    View Diagram
+                </button>
+                <h4>Answer</h4>
+                <p>Mocking is used in unit tests to replace real objects (e.g., external APIs, databases) with controlled, fake objects, ensuring tests are fast, isolated, and predictable.</p>
+                <pre class="mermaid">
+graph LR
+    A["Component Under Test"] --> B{"Real Dependency?"};
+    B -- Yes (Integration Test) --> C[Real Dependency];
+    B -- No (Unit Test) --> D[Mock Object];
+    D -- Simulates Behavior --> A;
+                </pre>
             </div>
         </div>
 
-        <!-- Flashcard 4 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5><code>pytest</code> Advantages</h5>
-                        <p>List two key advantages of using <code>pytest</code> as your Python testing framework.</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>1. <strong>Simplicity:</strong> Easy to write tests with simple <code>assert</code> statements. <br/> 2. <strong>Powerful Fixtures:</strong> Reusable setup/teardown code. <br/> 3. <strong>Rich Assertion Rewriting:</strong> Provides detailed output on assertion failures. <br/> 4. <strong>Extensibility:</strong> Large plugin ecosystem.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What problem do Testcontainers solve for integration testing?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
+                    View Diagram
+                </button>
+                <h4>Answer</h4>
+                <p>Testcontainers provide lightweight, throwaway instances of real services (like databases or message queues) in Docker containers, enabling realistic, isolated, and consistent integration tests.</p>
+                <pre class="mermaid">
+graph TD
+    A[Test Code] --> B[Testcontainers Library];
+    B --> C[Docker Daemon];
+    C --> D["Ephemeral Docker Container (e.g., PostgreSQL)"];
+    D -- "Provides Service" --> A;
+                </pre>
             </div>
         </div>
 
-        <!-- Flashcard 5 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5><code>unittest.mock.patch</code></h5>
-                        <p>How is <code>unittest.mock.patch</code> typically used in a test?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p><code>patch</code> is used as a decorator or context manager to temporarily replace an object (e.g., a function, a class, a module attribute) with a mock object during the execution of a test. This allows you to control the behavior of dependencies.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What is the main difference between unit and integration tests?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>Unit tests focus on isolated components, while integration tests verify the interactions between multiple components or services.</p>
             </div>
         </div>
 

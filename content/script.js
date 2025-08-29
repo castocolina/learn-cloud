@@ -41,6 +41,20 @@ document.addEventListener('DOMContentLoaded', () => {
             mermaid.run({ nodes: contentArea.querySelectorAll('.mermaid') });
             Prism.highlightAllUnder(contentArea);
 
+            // Attach event listeners for view diagram buttons
+            contentArea.querySelectorAll('.view-diagram-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const flashcardBack = e.target.closest('.flashcard-back');
+                    const mermaidPre = flashcardBack.querySelector('pre.mermaid');
+                    if (mermaidPre) {
+                        const mermaidCode = mermaidPre.textContent;
+                        const modalTitle = e.target.closest('.flashcard').querySelector('h4').textContent;
+                        document.getElementById('mermaidModalLabel').textContent = `Diagram: ${modalTitle}`;
+                        document.getElementById('modalMermaidContent').dataset.mermaidCode = mermaidCode;
+                    }
+                });
+            });
+
         } catch (error) {
             console.error('Error loading content:', error);
             contentArea.innerHTML = `<p>Error loading content. Please try again later.</p>`;
@@ -325,6 +339,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // New: Handle Mermaid modal display and rendering
+    const mermaidModal = document.getElementById('mermaidModal');
+    if (mermaidModal) {
+        mermaidModal.addEventListener('shown.bs.modal', () => {
+            const modalMermaidContent = document.getElementById('modalMermaidContent');
+            // Clear previous diagram
+            modalMermaidContent.innerHTML = '';
+            // Get the Mermaid code from a temporary storage (set by button click handler)
+            const mermaidCode = modalMermaidContent.dataset.mermaidCode;
+            if (mermaidCode) {
+                modalMermaidContent.innerHTML = `<pre class="mermaid">${mermaidCode}</pre>`;
+                mermaid.run({ nodes: [modalMermaidContent.querySelector('.mermaid')] });
+            }
+        });
+    }
+
     function initialize() {
         const unitElements = document.querySelectorAll('#nav-menu .unit');
         let topicGlobalIndex = 0;
@@ -355,15 +385,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (overviewLink) {
             loadContent(overviewLink.getAttribute('href'), -1);
-        } else if (topics.length > 0) {
-            loadContent(topics[0].url, 0);
         }
+        // else if (topics.length > 0) { // Removed this as it was causing issues with initial load
+        //     loadContent(topics[0].url, 0);
+        // }
         updateProgressBars();
         initializeSearch(); // Build the search index
     }
 
     // Initialize Mermaid.js
-    mermaid.initialize({ startOnLoad: false, theme: 'default' });
+    // mermaid.initialize({ startOnLoad: false, theme: 'default' }); // Moved to top
 
     initialize();
 });

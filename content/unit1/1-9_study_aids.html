@@ -1,88 +1,116 @@
+<div id="flashcards-section">
+    <h2>Flashcards: Observability</h2>
+    <div class="flashcards-container">
 
-<div class="container">
-    <div class="page-header">
-        <h1>1.9 Study Aids: Observability</h1>
-        <p class="lead">Use these flashcards to review the key concepts of observability in cloud-native systems.</p>
-    </div>
-
-    <div class="row">
-        <!-- Flashcard 1 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>Observability vs. Monitoring</h5>
-                        <p>What is the key difference between observability and traditional monitoring?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p><strong>Monitoring</strong> tells you <em>if</em> something is broken (e.g., CPU usage is high). <strong>Observability</strong> helps you understand <em>why</em> it's broken by allowing you to ask arbitrary questions about the system's internal state from its external outputs.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What is the primary goal of observability in cloud-native systems?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>Observability helps you understand *why* a system is broken by allowing you to ask arbitrary questions about its internal state, unlike traditional monitoring which tells you *if* something is broken.</p>
             </div>
         </div>
 
-        <!-- Flashcard 2 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>Three Pillars of Observability</h5>
-                        <p>Name the three pillars of observability.</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>The three pillars of observability are <strong>Logs</strong>, <strong>Metrics</strong>, and <strong>Traces</strong>.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What are the three pillars of observability?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
+                    View Diagram
+                </button>
+                <h4>Answer</h4>
+                <p>The three pillars of observability are Logs, Metrics, and Traces.</p>
+                <pre class="mermaid">
+graph TD
+    A[Observability] --> B(Logs);
+    A --> C(Metrics);
+    A --> D(Traces);
+                </pre>
             </div>
         </div>
 
-        <!-- Flashcard 3 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>Structured Logging</h5>
-                        <p>What is structured logging, and what is its main benefit?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>Structured logging involves outputting logs in a machine-readable format (e.g., JSON) with key-value pairs. Its main benefit is making logs easier to parse, query, and analyze programmatically, especially in distributed systems.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>Why is structured logging preferred over unstructured text logs in distributed systems?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>Structured logging (e.g., JSON format) makes logs machine-readable, easier to parse, query, and analyze, which is crucial for managing logs in complex distributed systems.</p>
             </div>
         </div>
 
-        <!-- Flashcard 4 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>Prometheus Metrics</h5>
-                        <p>What are metrics in the context of observability, and what is Prometheus used for?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>Metrics are numerical measurements collected over time (e.g., request rates, error counts). Prometheus is an open-source monitoring system that collects and stores these metrics as time series data, allowing for powerful querying and alerting.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What is Distributed Tracing and what problem does it solve?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>Distributed Tracing tracks the journey of a single request as it propagates through multiple services in a distributed system, helping to identify performance bottlenecks and debug complex interactions.</p>
             </div>
         </div>
 
-        <!-- Flashcard 5 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>Distributed Tracing</h5>
-                        <p>What problem does distributed tracing solve in microservices architectures?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>Distributed tracing solves the problem of understanding the flow and performance of a single request as it travels through multiple services. It helps pinpoint latency issues, identify service dependencies, and debug complex interactions across a distributed system.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What is OpenTelemetry?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>OpenTelemetry is a vendor-neutral set of APIs, SDKs, and tools for instrumenting, generating, collecting, and exporting telemetry data (traces, metrics, and logs).</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>Illustrate Prometheus Metrics Collection Architecture.</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
+                    View Diagram
+                </button>
+                <h4>Answer</h4>
+                <pre class="mermaid">
+graph LR
+    App1[Application 1] -- Exposes Metrics --> Prometheus[Prometheus Server];
+    App2[Application 2] -- Exposes Metrics --> Prometheus;
+    Prometheus -- Stores --> TimeSeriesDB[Time-Series Database];
+    Prometheus -- Alerts --> Alertmanager[Alertmanager];
+    Prometheus -- Queries --> Grafana["Grafana (Visualization)"];
+                </pre>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>Illustrate Distributed Tracing with OpenTelemetry and Jaeger.</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
+                    View Diagram
+                </button>
+                <h4>Answer</h4>
+                <pre class="mermaid">
+graph TD
+    Client[Client Request] --> ServiceA["Service A (Instrumented)"];
+    ServiceA --> ServiceB["Service B (Instrumented)"];
+    ServiceB --> ServiceC["Service C (Instrumented)"];
+    ServiceC --> ServiceA;
+
+    ServiceA -- Exports Spans --> OTelCollector[OpenTelemetry Collector];
+    ServiceB -- Exports Spans --> OTelCollector;
+    ServiceC -- Exports Spans --> OTelCollector;
+
+    OTelCollector -- "Forwards Traces" --> Jaeger["Jaeger Backend"];
+    Jaeger --> JaegerUI["Jaeger UI (Visualization)"];
+                </pre>
             </div>
         </div>
 

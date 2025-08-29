@@ -29,7 +29,7 @@ The authoritative structure for this book—its units and topics—is defined in
 
 The SPA will be built on a foundation of **Bootstrap** for styling and **Vue.js** for reactivity. To create a rich, modern, and effective learning experience, we will standardize on the following specialized libraries:
 
-*   **Diagrams as Code:** Use **[Mermaid.js](https://mermaid-js.github.io/mermaid/#/)** for generating all diagrams (class, sequence, flow, etc.). This allows diagrams to be version-controlled and updated as easily as text.
+*   **Diagrams as Code:** Use **[Mermaid.js](https://mermaid-js.github.io/mermaid/#/)** for generating all diagrams (class, sequence, flow, etc.). This allows diagrams to be version-controlled and updated as easily as text. When node descriptions contain special characters (e.g., parentheses), enclose the entire description in double quotes (e.g., `Node["Text with (special) characters"]`) to ensure correct rendering.
 *   **Code Highlighting:** Use **[Prism.js](https://prismjs.com/)** for syntax highlighting in all code blocks. This improves readability and provides a professional look, complete with a theme (Okaidia) and an autoloader for supporting multiple languages.
 *   **Data Visualization:** Use **[Chart.js](https://www.chartjs.org/)** to create interactive charts and graphs. This is essential for visualizing metrics, comparing performance, and explaining complex data-driven concepts.
 *   **Client-Side Search:** Use **[Lunr.js](https://lunrjs.com/)** to provide a fast and responsive full-text search experience. The search index will be built dynamically in the browser, allowing users to find content across all topics instantly.
@@ -47,6 +47,14 @@ Our pedagogical structure is sequential and iterative. Follow this process stric
 1.  **After completing each Topic:** It is mandatory to generate the following before moving to the next topic:
     *   **Topic Content:** The main didactic material for the topic.
     *   **Study aids:** Create at least 5 flashcards for the key concepts introduced. These should be generated as a separate HTML file (e.g., `x-x_study_aids.html`) and intended as a distinct menu entry.
+    *   **Structure:** Study aids should be contained within `<div id="flashcards-section">`.
+        *   Flashcards are within `<div class="flashcards-container">`.
+        *   Each flashcard is a `<div class="flashcard" onclick="this.classList.toggle('flipped')">`.
+        *   Inside each flashcard, there are two divs: `<div class="flashcard-front">` for the question and `<div class="flashcard-back">` for the answer.
+        *   Mermaid diagrams, if applicable, should be placed directly within the `<div class="flashcard-back">` of the relevant flashcard. They should also have a "View Diagram" button that launches a centralized Bootstrap modal for expanded viewing.
+        *   **Centralized Diagram Modal:** The HTML structure for the Bootstrap modal (`#mermaidModal`) will be defined once in `index.html` (or a common layout file) and its JavaScript logic will reside in `script.js`.
+        *   Avoid a separate "Visual Aids" section outside the flashcards.
+    *   **Size:** Flashcards should be slightly larger to accommodate content better.
     *   **Quiz:** Create a quiz with at least 5 questions to review the material. This should be generated as a separate HTML file (e.g., `x-x_quiz.html`) and intended as a distinct menu entry.
         *   **Single-choice questions:** Use radio buttons (`<input type="radio">`). The correct answer is indicated in a `div` with class `answer` and a `data-correct` attribute with the value of the correct option.
         *   **Multiple-choice questions:** Use checkboxes (`<input type="checkbox">`). The correct answers are indicated in a `div` with class `answer` and a `data-correct` attribute with a comma-separated list of the values of the correct options.
@@ -85,13 +93,21 @@ This section defines the UI/UX for the different components of the book.
 #### Quizzes
 
 *   **Structure:** Quizzes are presented as a series of navigable cards, with one question per card.
+    *   Outer container: `<div id="quiz-section">`
+    *   Inner container: `<div class="quiz-container">`
+    *   Question cards: `<div class="quiz-card" data-question="X">`
+        *   Inside `quiz-card`: `<div class="question">`
+        *   Question text: `<p>`
+        *   Options list: `<ul class="options">` with `<li><label><input type="radio/checkbox"></label></li>`
+        *   Answer div: `<div class="answer" data-correct="X"></div>`
 *   **Navigation:** "Previous" and "Next" buttons are used to navigate between questions. The "Submit Answers" button is only visible on the last question.
+    *   Navigation buttons container: `<div class="quiz-navigation">`
 *   **Options:** Answer options are presented as labels that can be clicked to select the corresponding radio button or checkbox.
     *   **Single-choice questions:** Use radio buttons (`<input type="radio">`). The correct answer is indicated in a `div` with class `answer` and a `data-correct` attribute with the value of the correct option.
     *   **Multiple-choice questions:** Use checkboxes (`<input type="checkbox">`). The correct answers are indicated in a `div` with class `answer` and a `data-correct` attribute with a comma-separated list of the values of the correct options.
 *   **Submission:** After submitting the quiz, the questions are hidden and the results are displayed, showing the score, percentage, and a pass/fail message. A "Try Again" button is provided to reset the quiz.
+    *   Results container: `<div class="quiz-results-container"></div>`
 *   **Button Styles:**
-    *   Page navigation (Previous/Next): `btn-outline-secondary` and `btn-outline-primary`.
-    *   Quiz navigation (Previous/Next): `btn-secondary` and `btn-primary`.
+    *   Quiz navigation (Previous/Next): `btn-outline-secondary` and `btn-outline-primary`.
     *   Quiz submission: `btn-success`.
     *   Try Again: `btn-primary`.

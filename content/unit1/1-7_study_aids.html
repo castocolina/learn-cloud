@@ -1,88 +1,134 @@
+<div id="flashcards-section">
+    <h2>Flashcards: Advanced Backend Topics</h2>
+    <div class="flashcards-container">
 
-<div class="container">
-    <div class="page-header">
-        <h1>1.7 Study Aids: Advanced Backend Topics</h1>
-        <p class="lead">Use these flashcards to review the key concepts of advanced communication patterns in cloud-native backends.</p>
-    </div>
-
-    <div class="row">
-        <!-- Flashcard 1 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>Event-Driven Architecture (EDA)</h5>
-                        <p>What is the primary benefit of adopting an Event-Driven Architecture?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>The primary benefit is <strong>decoupling services</strong>. Services communicate asynchronously via events, making them more independent, scalable, and resilient, as they don't need direct knowledge of each other.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What is the core principle of Event-Driven Architecture (EDA)?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>EDA is a design paradigm where services communicate asynchronously by producing and consuming events, leading to decoupling, scalability, and resilience.</p>
             </div>
         </div>
 
-        <!-- Flashcard 2 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>Message Queues (RabbitMQ)</h5>
-                        <p>What is the primary role of a message queue like RabbitMQ in an event-driven system?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>Message queues act as intermediaries, storing messages temporarily between producers and consumers. They enable asynchronous communication, buffer messages during traffic spikes, and facilitate reliable delivery and task offloading.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What is the primary role of a message queue in EDA?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>A message queue (or broker) facilitates asynchronous communication between services, decoupling producers from consumers and enabling features like task offloading and resilience.</p>
             </div>
         </div>
 
-        <!-- Flashcard 3 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>Kafka vs. RabbitMQ</h5>
-                        <p>What is the key difference in the primary use cases for Kafka compared to RabbitMQ?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p><strong>RabbitMQ</strong> is generally used for traditional message queuing, task distribution, and point-to-point communication. <strong>Kafka</strong> is a distributed streaming platform designed for high-throughput, fault-tolerant event streams, real-time analytics, and event sourcing.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What are the main advantages of gRPC over REST for internal microservice communication?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>gRPC offers higher performance (due to HTTP/2 and binary Protobuf), strongly typed contracts, and support for various streaming patterns, making it ideal for efficient internal communication.</p>
             </div>
         </div>
 
-        <!-- Flashcard 4 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>gRPC Advantages</h5>
-                        <p>List two main advantages of gRPC over REST for internal microservice communication.</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>1. <strong>Performance:</strong> Uses HTTP/2 and efficient binary serialization (Protobuf). <br/> 2. <strong>Strongly Typed Contracts:</strong> Enforces strict type checking and enables code generation across languages, reducing integration errors.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What is the purpose of Protocol Buffers (Protobuf) in gRPC?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>Protobuf is a language-neutral, platform-neutral mechanism for serializing structured data. It defines service interfaces and message structures, ensuring strict type checking and enabling code generation across different languages for gRPC.</p>
             </div>
         </div>
 
-        <!-- Flashcard 5 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>Protocol Buffers (Protobuf)</h5>
-                        <p>What is the role of Protocol Buffers in gRPC communication?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>Protobuf is a language-neutral, platform-neutral mechanism for serializing structured data. In gRPC, it defines the service interfaces and message structures, ensuring efficient, strongly-typed data exchange between client and server.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>Differentiate between synchronous and asynchronous communication patterns in microservices.</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>Synchronous communication (e.g., REST, gRPC) is request/response-based and blocking, while asynchronous communication (e.g., message queues, streaming platforms) is event-driven, non-blocking, and promotes decoupling.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>Illustrate Simple Event-Driven Architecture.</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
+                    View Diagram
+                </button>
+                <h4>Answer</h4>
+                <pre class="mermaid">
+graph LR
+    Producer["Service A (Producer)"] --> MessageQueue[Message Queue];
+    MessageQueue --> Consumer["Service B (Consumer)"];
+    MessageQueue --> AnotherConsumer["Service C (Another Consumer)"];
+
+    subgraph Event Flow
+        Producer -- Publishes Event --> MessageQueue;
+        MessageQueue -- Delivers Event --> Consumer;
+        MessageQueue -- Delivers Event --> AnotherConsumer;
+    end
+                </pre>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>Illustrate gRPC Communication Flow.</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
+                    View Diagram
+                </button>
+                <h4>Answer</h4>
+                <pre class="mermaid">
+graph LR
+    Client["gRPC Client"] --> Stub["Client Stub (Generated Code)"];
+    Stub --> Network["Network (HTTP/2)"];
+    Network --> ServerStub["Server Stub (Generated Code)"];
+    ServerStub --> Server["gRPC Server (Service Implementation)"];
+    Server -- "Response (Protobuf)" --> ServerStub;
+    ServerStub --> Network;
+    Network --> Stub;
+    Stub --> Client;
+                </pre>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>Illustrate Choosing Communication Patterns.</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
+                    View Diagram
+                </button>
+                <h4>Answer</h4>
+                <pre class="mermaid">
+graph TD
+    Start[Choose Communication Pattern] --> Sync{Synchronous?};
+
+    Sync -- Yes --> SyncType{Type?};
+    SyncType -- "Public API / Browser Client" --> REST["REST (HTTP/1.1, HTTP/2)"];
+    SyncType -- "Internal / Performance Critical" --> gRPC["gRPC (HTTP/2 + Protobuf)"];
+
+    Sync -- No --> Async{Asynchronous?};
+    Async -- Yes --> AsyncType{Type?};
+    AsyncType -- "Decoupling / Task Offloading" --> MessageQueue["Message Queues (e.g., RabbitMQ)"];
+    AsyncType -- "High-Throughput / Event Streams" --> StreamingPlatform["Streaming Platforms (e.g., Kafka)"];
+                </pre>
             </div>
         </div>
 

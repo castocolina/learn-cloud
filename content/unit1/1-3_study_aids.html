@@ -1,88 +1,93 @@
+<div id="flashcards-section">
+    <h2>Flashcards: Code Quality and Standards</h2>
+    <div class="flashcards-container">
 
-<div class="container">
-    <div class="page-header">
-        <h1>1.3 Study Aids: Code Quality and Standards</h1>
-        <p class="lead">Use these flashcards to review the key concepts of Python code quality.</p>
-    </div>
-
-    <div class="row">
-        <!-- Flashcard 1 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>PEP 8</h5>
-                        <p>What is the primary purpose of PEP 8?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>PEP 8 is Python's official style guide. Its primary purpose is to improve the readability and consistency of Python code, making it easier for developers to collaborate and maintain projects.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What is PEP 8?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>PEP 8 is Python's official style guide, providing conventions for writing readable and consistent Python code.</p>
             </div>
         </div>
 
-        <!-- Flashcard 2 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>Code Formatter (Black)</h5>
-                        <p>What is the main benefit of using an opinionated code formatter like Black?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>It enforces a single, consistent style across the entire codebase, which eliminates all debates and arguments over code formatting. This allows developers to focus on logic and functionality instead of style.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What is the primary purpose of Black?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>Black is an opinionated code formatter that automatically enforces a consistent code style, eliminating debates over formatting in code reviews.</p>
             </div>
         </div>
 
-        <!-- Flashcard 3 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>Linter (Ruff)</h5>
-                        <p>What does a linter like Ruff do that a formatter like Black does not?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>A linter analyzes the code for potential errors, bugs, and stylistic issues that go beyond formatting. It can detect issues like unused imports, undefined variables, and potential security vulnerabilities, which a formatter ignores.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>How does Ruff differ from Black?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>Black is a code formatter (re-arranges code for style), while Ruff is a linter (analyzes code for potential errors, bugs, and stylistic issues).</p>
             </div>
         </div>
 
-        <!-- Flashcard 4 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>Ruff's Key Advantage</h5>
-                        <p>What is the main advantage of using Ruff over older Python linters?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>Ruff's key advantage is its speed. Written in Rust, it is significantly faster than traditional Python linters. It also combines the functionality of many tools into one, simplifying the toolchain.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What are pre-commit hooks used for?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>Pre-commit hooks are automated scripts that run before a commit is created to enforce code quality standards and ensure consistency in the codebase.</p>
             </div>
         </div>
 
-        <!-- Flashcard 5 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>Pre-commit Hooks</h5>
-                        <p>How do pre-commit hooks improve team workflow?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>They automate code quality checks by running tools like Black and Ruff before a commit is created. This ensures that all code entering the repository adheres to the established standards, preventing errors and style inconsistencies from being committed in the first place.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>Name two key areas covered by PEP 8.</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>Naming conventions (e.g., snake_case, PascalCase) and code layout (e.g., 4 spaces for indentation, line length limits).</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>Illustrate the Python Code Quality Workflow.</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
+                    View Diagram
+                </button>
+                <h4>Answer</h4>
+                <pre class="mermaid">
+graph TD
+    A[Developer Writes Python Code] --> B(PEP 8: Python Style Guide);
+    B --> C{Automated Code Quality Tools};
+    C --> D[Black: Opinionated Formatter];
+    C --> E[Ruff: Fast Linter & Formatter];
+    D --> F["Formatted Code (PEP 8 Adherent)"];
+    E --> G["Linted Code (Issues Identified/Fixed)"];
+    F --> G;
+    G --> H[High-Quality, Consistent Python Code];
+
+    subgraph "Tools"
+        D
+        E
+    end
+
+    style B fill:#f9f,stroke:#333,stroke-width:2px
+    style D fill:#ccf,stroke:#333,stroke-width:2px
+    style E fill:#ccf,stroke:#333,stroke-width:2px
+    style H fill:#cfc,stroke:#333,stroke-width:2px
+                </pre>
             </div>
         </div>
 

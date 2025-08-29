@@ -30,8 +30,8 @@ body {
 }
 
 .flashcard {
-    width: 350px;
-    height: 250px;
+    width: 400px; /* Increased from 350px */
+    height: 300px; /* Increased from 250px */
     position: relative;
     transform-style: preserve-3d;
     transition: transform 0.6s;
@@ -73,13 +73,13 @@ body {
 
 .flashcard h4 {
     margin-top: 0;
-    font-size: 1.2em;
+    font-size: 1.4em; /* Increased from 1.2em */
     border-bottom: 2px solid;
     padding-bottom: 5px;
 }
 
 .flashcard p {
-    font-size: 1em;
+    font-size: 1.1em; /* Increased from 1em */
     text-align: center;
 }
 

@@ -1,88 +1,144 @@
+<div id="flashcards-section">
+    <h2>Flashcards: Core Backend Concepts</h2>
+    <div class="flashcards-container">
 
-<div class="container">
-    <div class="page-header">
-        <h1>1.4 Study Aids: Core Backend Concepts</h1>
-        <p class="lead">Use these flashcards to review the key concepts of backend data management in Python.</p>
-    </div>
-
-    <div class="row">
-        <!-- Flashcard 1 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>Python Dataclasses</h5>
-                        <p>What is the purpose of the <code>@dataclass</code> decorator in Python?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>It automatically generates boilerplate methods for classes that primarily store data, such as <code>__init__()</code>, <code>__repr__()</code>, and <code>__eq__()</code>. This reduces code verbosity and simplifies class creation.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What is the primary benefit of using Python's `dataclasses`?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>Dataclasses reduce boilerplate code for classes primarily used to store data, automatically generating methods like `__init__`, `__repr__`, and `__eq__`.</p>
             </div>
         </div>
 
-        <!-- Flashcard 2 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>Direct Database Access</h5>
-                        <p>What is the most critical security risk when writing direct SQL queries, and how is it prevented?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>The most critical risk is <strong>SQL Injection</strong>. It is prevented by using <strong>parameterized queries</strong> (passing parameters as a tuple to <code>cursor.execute()</code>), not by using string formatting to build SQL strings.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>Explain the purpose of an ORM (Object-Relational Mapper).</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>An ORM allows developers to interact with a relational database using object-oriented programming concepts (e.g., Python objects) instead of writing raw SQL queries, improving productivity and reducing boilerplate.</p>
             </div>
         </div>
 
-        <!-- Flashcard 3 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>ORM (SQLAlchemy)</h5>
-                        <p>What is an Object-Relational Mapper (ORM) and what is its main advantage?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>An ORM is a library that maps database tables to objects in code. Its main advantage is increased developer productivity by allowing developers to work with Python objects instead of writing raw SQL, which also reduces boilerplate code.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>Why are parameterized queries crucial for database interactions?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>Parameterized queries prevent SQL injection attacks by separating the SQL code from the data, ensuring that user input cannot be executed as malicious code.</p>
             </div>
         </div>
 
-        <!-- Flashcard 4 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>Redis</h5>
-                        <p>What is a primary use case for Redis in a cloud-native backend application?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>The primary use case for Redis is <strong>caching</strong>. As a very fast in-memory key-value store, it is used to store the results of expensive operations (like database queries) to significantly reduce latency and database load.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What is Redis primarily used for in backend applications?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>Redis is primarily used as an in-memory data store for caching, which helps to reduce latency and database load by storing frequently accessed data.</p>
             </div>
         </div>
 
-        <!-- Flashcard 5 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>MongoDB</h5>
-                        <p>What kind of data model does MongoDB use, and what is a key benefit of this model?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>MongoDB uses a <strong>document-oriented</strong> data model, storing data in flexible, JSON-like BSON documents. A key benefit is its schema flexibility, which is ideal for applications with rapidly changing requirements or semi-structured data.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>How does MongoDB differ from a traditional relational database?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>MongoDB is a NoSQL document database that stores data in flexible, JSON-like documents (BSON) without a predefined schema, unlike relational databases which use rigid, tabular schemas.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>Illustrate the Caching Workflow with Redis.</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
+                    View Diagram
+                </button>
+                <h4>Answer</h4>
+                <pre class="mermaid">
+graph TD
+    A[Application Request] --> B{Is data in Cache?};
+    B -- Yes --> C[Return Cached Data];
+    B -- No --> D[Query Database];
+    D --> E[Get Data from DB];
+    E --> F[Store Data in Cache];
+    F --> C;
+                </pre>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>Illustrate Application-ORM-Database Interaction.</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
+                    View Diagram
+                </button>
+                <h4>Answer</h4>
+                <pre class="mermaid">
+graph LR
+    A[Application] -- Uses Objects --> B["ORM (e.g., SQLAlchemy)"];
+    B -- Generates SQL --> C[Relational Database];
+                </pre>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>Compare Relational vs. NoSQL Databases.</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
+                    View Diagram
+                </button>
+                <h4>Answer</h4>
+                <pre class="mermaid">
+graph TD
+    A[Database Types] --> B(Relational Databases);
+    A --> C(NoSQL Databases);
+
+    B --> B1{Structure};
+    B1 --> B1a[Tabular, Predefined Schema];
+    B --> B2{Scalability};
+    B2 --> B2a["Vertical (Scale Up)"];
+    B --> B3{ACID Properties};
+    B3 --> B3a[Atomicity, Consistency, Isolation, Durability];
+    B --> B4{Query Language};
+    B4 --> B4a["SQL (Structured Query Language)"];
+    B --> B5{Use Cases};
+    B5 --> B5a[Complex Transactions, Financial Systems, Data Integrity Critical];
+
+    C --> C1{Structure};
+    C1 --> C1a[Document, Key-Value, Column-Family, Graph, Flexible Schema];
+    C --> C2{Scalability};
+    C2 --> C2a["Horizontal (Scale Out)"];
+    C --> C3{BASE Properties};
+    C3 --> C3a["Basically Available, Soft State, Eventually Consistent"];
+    C --> C4{Query Language};
+    C4 --> C4a["Varies (e.g., JSON-like queries, APIs)"];
+    C --> C5{Use Cases};
+    C5 --> C5a[Big Data, Real-time Web Apps, Content Management, High Throughput];
+
+    style B fill:#f9f,stroke:#333,stroke-width:2px;
+    style C fill:#ccf,stroke:#333,stroke-width:2px;
+    linkStyle 0 stroke-width:2px,fill:none,stroke:green;
+    linkStyle 1 stroke-width:2px,fill:none,stroke:blue;
+                </pre>
             </div>
         </div>
 

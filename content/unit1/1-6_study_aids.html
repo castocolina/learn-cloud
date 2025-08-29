@@ -1,88 +1,103 @@
+<div id="flashcards-section">
+    <h2>Flashcards: Building a RESTful API with FastAPI</h2>
+    <div class="flashcards-container">
 
-<div class="container">
-    <div class="page-header">
-        <h1>1.6 Study Aids: Building a RESTful API with FastAPI</h1>
-        <p class="lead">Use these flashcards to review the key concepts of building APIs with FastAPI.</p>
-    </div>
-
-    <div class="row">
-        <!-- Flashcard 1 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>FastAPI's Key Features</h5>
-                        <p>What are two of the main features that make FastAPI a modern, high-performance framework?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>1. <strong>High Performance:</strong> It's built on Starlette and Pydantic, making it one of the fastest Python frameworks. <br/> 2. <strong>Automatic Docs:</strong> It automatically generates interactive API documentation (Swagger UI) from your code and type hints.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What are the key advantages of FastAPI?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>FastAPI offers high performance, is async-native, provides automatic interactive documentation, uses type-driven validation with Pydantic, and has a powerful dependency injection system.</p>
             </div>
         </div>
 
-        <!-- Flashcard 2 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>Pydantic Integration</h5>
-                        <p>What role do Pydantic models play in a FastAPI application?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>Pydantic models are used to define the data shape of request bodies and responses. FastAPI uses these models to perform data validation, serialization (converting data to and from JSON), and to auto-generate the schemas for the API documentation.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What is the role of Uvicorn in a FastAPI application?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>Uvicorn is an ASGI server that runs FastAPI applications, handling the asynchronous communication between the web server and the application.</p>
             </div>
         </div>
 
-        <!-- Flashcard 3 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>Uvicorn</h5>
-                        <p>What is Uvicorn and why do you need it to run a FastAPI application?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>Uvicorn is an <strong>ASGI (Asynchronous Server Gateway Interface)</strong> server. FastAPI is an ASGI framework, which means it doesn't have a built-in web server. Uvicorn is the server that receives HTTP requests and passes them to the FastAPI application to be processed.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>How does Pydantic enhance FastAPI's data handling?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>Pydantic models define the structure and types of data, enabling FastAPI to automatically perform data validation, serialization, and generate documentation for request bodies and responses.</p>
             </div>
         </div>
 
-        <!-- Flashcard 4 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>Dependency Injection</h5>
-                        <p>What is the primary benefit of using FastAPI's dependency injection system?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>The primary benefits are <strong>code reuse</strong> and <strong>separation of concerns</strong>. It allows you to share logic (like database connections or authentication) across multiple endpoints and makes testing much easier by allowing you to override dependencies with mocks.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What is automatic interactive documentation in FastAPI?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>FastAPI automatically generates interactive API documentation (e.g., Swagger UI, ReDoc) based on the API code, allowing developers to explore and test endpoints directly from a browser.</p>
             </div>
         </div>
 
-        <!-- Flashcard 5 -->
-        <div class="col-md-4">
-            <div class="card flip-card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <h5>Path Operation Decorators</h5>
-                        <p>What is the purpose of a decorator like <code>@app.post("/items/")</code> in FastAPI?</p>
-                    </div>
-                    <div class="card-back">
-                        <h6>Answer</h6>
-                        <p>It's a <strong>path operation decorator</strong> that links a URL path (<code>/items/</code>) and an HTTP method (<code>POST</code>) to the function defined directly below it. It tells FastAPI to call this function whenever it receives a POST request to that specific path.</p>
-                    </div>
-                </div>
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>Explain the concept of Dependency Injection in FastAPI.</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>Dependency Injection in FastAPI is a system where dependencies (functions or classes providing resources like database sessions or common parameters) are automatically provided to path operation functions, promoting modular and testable code.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>Illustrate FastAPI Request-Response Flow with Pydantic Validation.</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
+                    View Diagram
+                </button>
+                <h4>Answer</h4>
+                <pre class="mermaid">
+graph TD
+    A[Client Request] --> B[FastAPI Application];
+    B --> C{Pydantic Validation};
+    C -- Valid Data --> D[Path Operation Function];
+    C -- Invalid Data --> E[Return Validation Error];
+    D --> F[Process Logic];
+    F --> G[Return Response];
+    G --> B;
+    B --> H[Client Receives Response];
+                </pre>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>Illustrate FastAPI Dependency Injection.</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
+                    View Diagram
+                </button>
+                <h4>Answer</h4>
+                <pre class="mermaid">
+graph LR
+    A[Client Request] --> B[FastAPI Endpoint];
+    B -- Requires --> C[Dependency Function];
+    C -- Provides --> B;
+    B --> D["Process Request"];
+                </pre>
             </div>
         </div>
 

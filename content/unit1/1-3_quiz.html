@@ -1,166 +1,77 @@
+<div id="quiz-section">
+    <h2>Quiz: Code Quality and Standards</h2>
 
-<div class="container">
-    <div class="page-header">
-        <h1>1.3 Quiz: Code Quality and Standards</h1>
-        <p class="lead">Test your knowledge on Python's code quality tools and standards.</p>
-    </div>
-
-    <div id="quiz-container">
-        <div class="card quiz-card" id="q1">
-            <div class="card-body">
-                <h5 class="card-title">Question 1</h5>
-                <p class="card-text">What is PEP 8?</p>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="q1" id="q1_a1" value="A">
-                    <label class="form-check-label" for="q1_a1">
-                        A) A library for making HTTP requests.
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="q1" id="q1_a2" value="B">
-                    <label class="form-check-label" for="q1_a2">
-                        B) The official style guide for Python code, focusing on readability and consistency.
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="q1" id="q1_a3" value="C">
-                    <label class="form-check-label" for="q1_a3">
-                        C) A tool for managing Python packages.
-                    </label>
-                </div>
-                <div class="answer" data-correct="B"></div>
+    <div class="quiz-container">
+        <div class="quiz-card active-card" data-question="1">
+            <div class="question">
+                <p>1. What is the primary purpose of PEP 8?</p>
+                <ul class="options">
+                    <li><label for="q1a"><input type="radio" id="q1a" name="q1" value="a"> a) To define Python's syntax rules.</label></li>
+                    <li><label for="q1b"><input type="radio" id="q1b" name="q1" value="b"> b) To provide style conventions for Python code.</label></li>
+                    <li><label for="q1c"><input type="radio" id="q1c" name="q1" value="c"> c) To manage Python package dependencies.</label></li>
+                    <li><label for="q1d"><input type="radio" id="q1d" name="q1" value="d"> d) To optimize Python code for performance.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
             </div>
         </div>
 
-        <div class="card quiz-card" id="q2" style="display: none;">
-            <div class="card-body">
-                <h5 class="card-title">Question 2</h5>
-                <p class="card-text">What is the primary philosophy of the Black code formatter?</p>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="q2" id="q2_a1" value="A">
-                    <label class="form-check-label" for="q2_a1">
-                        A) To be highly configurable to support any possible coding style.
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="q2" id="q2_a2" value="B">
-                    <label class="form-check-label" for="q2_a2">
-                        B) To be an uncompromising, opinionated formatter that enforces one single style.
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="q2" id="q2_a3" value="C">
-                    <label class="form-check-label" for="q2_a3">
-                        C) To only check for errors but never modify the code.
-                    </label>
-                </div>
-                <div class="answer" data-correct="B"></div>
+        <div class="quiz-card" data-question="2">
+            <div class="question">
+                <p>2. Which tool is known as "The Uncompromising Code Formatter" for Python?</p>
+                <ul class="options">
+                    <li><label for="q2a"><input type="radio" id="q2a" name="q2" value="a"> a) Ruff</label></li>
+                    <li><label for="q2b"><input type="radio" id="q2b" name="q2" value="b"> b) Flake8</label></li>
+                    <li><label for="q2c"><input type="radio" id="q2c" name="q2" value="c"> c) Black</label></li>
+                    <li><label for="q2d"><input type="radio" id="q2d" name="q2" value="d"> d) Pylint</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
             </div>
         </div>
 
-        <div class="card quiz-card" id="q3" style="display: none;">
-            <div class="card-body">
-                <h5 class="card-title">Question 3</h5>
-                <p class="card-text">Which of the following issues can a linter like Ruff detect? (Select all that apply)</p>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="q3" id="q3_a1" value="A">
-                    <label class="form-check-label" for="q3_a1">
-                        A) Unused imports and variables.
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="q3" id="q3_a2" value="B">
-                    <label class="form-check-label" for="q3_a2">
-                        B) Incorrect business logic.
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="q3" id="q3_a3" value="C">
-                    <label class="form-check-label" for="q3_a3">
-                        C) Undefined names or variables.
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="q3" id="q3_a4" value="D">
-                    <label class="form-check-label" for="q3_a4">
-                        D) Inefficient algorithms.
-                    </label>
-                </div>
-                <div class="answer" data-correct="A,C"></div>
+        <div class="quiz-card" data-question="3">
+            <div class="question">
+                <p>3. Which of the following are benefits of using a linter like Ruff? (Select all that apply)</p>
+                <ul class="options">
+                    <li><label for="q3a"><input type="checkbox" id="q3a" name="q3" value="a"> a) Automatically reformatting code to a consistent style.</label></li>
+                    <li><label for="q3b"><input type="checkbox" id="q3b" name="q3" value="b"> b) Identifying unused imports or variables.</label></li>
+                    <li><label for="q3c"><input type="checkbox" id="q3c" name="q3" value="c"> c) Detecting potential bugs and suspicious constructs.</label></li>
+                    <li><label for="q3d"><input type="checkbox" id="q3d" name="q3" value="d"> d) Enforcing strict naming conventions.</label></li>
+                </ul>
+                <div class="answer" data-correct="b,c,d"></div>
             </div>
         </div>
 
-        <div class="card quiz-card" id="q4" style="display: none;">
-            <div class="card-body">
-                <h5 class="card-title">Question 4</h5>
-                <p class="card-text">What is the main benefit of using pre-commit hooks in a development workflow?</p>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="q4" id="q4_a1" value="A">
-                    <label class="form-check-label" for="q4_a1">
-                        A) They automatically write commit messages for you.
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="q4" id="q4_a2" value="B">
-                    <label class="form-check-label" for="q4_a2">
-                        B) They deploy the code to production after every commit.
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="q4" id="q4_a3" value="C">
-                    <label class="form-check-label" for="q4_a3">
-                        C) They automate code quality checks, ensuring all code meets standards before it is committed.
-                    </label>
-                </div>
-                <div class="answer" data-correct="C"></div>
+        <div class="quiz-card" data-question="4">
+            <div class="question">
+                <p>4. What is the main advantage of using pre-commit hooks in a development workflow?</p>
+                <ul class="options">
+                    <li><label for="q4a"><input type="radio" id="q4a" name="q4" value="a"> a) They automatically deploy code to production environments.</label></li>
+                    <li><label for="q4b"><input type="radio" id="q4b" name="q4" value="b"> b) They ensure code quality standards are met before a commit is created.</label></li>
+                    <li><label for="q4c"><input type="radio" id="q4c" name="q4" value="c"> c) They provide real-time monitoring of application performance.</label></li>
+                    <li><label for="q4d"><input type="radio" id="q4d" name="q4" value="d"> d) They generate comprehensive documentation for the codebase.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
             </div>
         </div>
 
-        <div class="card quiz-card" id="q5" style="display: none;">
-            <div class="card-body">
-                <h5 class="card-title">Question 5</h5>
-                <p class="card-text">Which of the following are valid actions performed by the Black formatter? (Select all that apply)</p>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="q5" id="q5_a1" value="A">
-                    <label class="form-check-label" for="q5_a1">
-                        A) Normalizing quotes (e.g., from single to double quotes).
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="q5" id="q5_a2" value="B">
-                    <label class="form-check-label" for="q5_a2">
-                        B) Adding or removing whitespace around operators.
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="q5" id="q5_a3" value="C">
-                    <label class="form-check-label" for="q5_a3">
-                        C) Renaming variables to be more descriptive.
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="q5" id="q5_a4" value="D">
-                    <label class="form-check-label" for="q5_a4">
-                        D) Wrapping long lines of code.
-                    </label>
-                </div>
-                <div class="answer" data-correct="A,B,D"></div>
+        <div class="quiz-card" data-question="5">
+            <div class="question">
+                <p>5. According to PEP 8, what is the recommended indentation level for Python code?</p>
+                <ul class="options">
+                    <li><label for="q5a"><input type="radio" id="q5a" name="q5" value="a"> a) 2 spaces</label></li>
+                    <li><label for="q5b"><input type="radio" id="q5b" name="q5" value="b"> b) 3 spaces</label></li>
+                    <li><label for="q5c"><input type="radio" id="q5c" name="q5" value="c"> c) 4 spaces</label></li>
+                    <li><label for="q5d"><input type="radio" id="q5d" name="q5" value="d"> d) 1 tab</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
             </div>
         </div>
 
         <div class="quiz-navigation">
-            <button class="btn btn-secondary" id="prev-btn" style="display: none;">Previous</button>
-            <button class="btn btn-primary" id="next-btn">Next</button>
-            <button class="btn btn-success" id="submit-btn" style="display: none;">Submit Answers</button>
+            <button class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <button class="btn btn-outline-primary" id="next-question">Next</button>
+            <button class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
         </div>
+        <div class="quiz-results-container"></div>
     </div>
-
-    <div id="results-container" style="display: none;">
-        <h3>Quiz Results</h3>
-        <p>Your score: <span id="score"></span></p>
-        <p>Percentage: <span id="percentage"></span>%</p>
-        <p id="feedback"></p>
-        <button class="btn btn-primary" id="try-again-btn">Try Again</button>
-    </div>
-
 </div>

@@ -1,152 +1,77 @@
+<div id="quiz-section">
+    <h2>Quiz: Foundational Concepts</h2>
 
-<div class="container">
-    <div class="page-header">
-        <h1>1.2 Quiz: Foundational Concepts</h1>
-        <p class="lead">Test your knowledge of the foundational Python concepts for cloud development.</p>
+    <div class="quiz-container">
+        <div class="quiz-card active-card" data-question="1">
+            <div class="question">
+                <p>1. Why is Python considered highly productive for cloud-native development?</p>
+                <ul class="options">
+                    <li><label for="q1a"><input type="radio" id="q1a" name="q1" value="a"> a) Its strict compile-time type checking.</label></li>
+                    <li><label for="q1b"><input type="radio" id="q1b" name="q1" value="b"> b) Its extensive use of boilerplate code.</label></li>
+                    <li><label for="q1c"><input type="radio" id="q1c" name="q1" value="c"> c) The combination of simple syntax and a rich ecosystem.</label></li>
+                    <li><label for="q1d"><input type="radio" id="q1d" name="q1" value="d"> d) Its exclusive focus on low-level memory management.</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="2">
+            <div class="question">
+                <p>2. Which of the following are core built-in data structures in Python? (Select all that apply)</p>
+                <ul class="options">
+                    <li><label for="q2a"><input type="checkbox" id="q2a" name="q2" value="a"> a) Dictionaries</label></li>
+                    <li><label for="q2b"><input type="checkbox" id="q2b" name="q2" value="b"> b) Arrays</label></li>
+                    <li><label for="q2c"><input type="checkbox" id="q2c" name="q2" value="c"> c) Lists</label></li>
+                    <li><label for="q2d"><input type="checkbox" id="q2d" name="q2" value="d"> d) Tuples</label></li>
+                </ul>
+                <div class="answer" data-correct="a,c,d"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="3">
+            <div class="question">
+                <p>3. What is the primary purpose of Python's type hints (PEP 484)?</p>
+                <ul class="options">
+                    <li><label for="q3a"><input type="radio" id="q3a" name="q3" value="a"> a) To enforce strict type checking at runtime.</label></li>
+                    <li><label for="q3b"><input type="radio" id="q3b" name="q3" value="b"> b) To provide clarity and enable static analysis tools to catch errors early.</label></li>
+                    <li><label for="q3c"><input type="radio" id="q3c" name="q3" value="c"> c) To automatically convert data types during serialization.</label></li>
+                    <li><label for="q3d"><input type="radio" id="q3d" name="q3" value="d"> d) To define database schemas directly within Python code.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="4">
+            <div class="question">
+                <p>4. What is the main benefit of using Pydantic in cloud-native Python applications?</p>
+                <ul class="options">
+                    <li><label for="q4a"><input type="radio" id="q4a" name="q4" value="a"> a) It replaces the need for traditional database ORMs.</label></li>
+                    <li><label for="q4b"><input type="radio" id="q4b" name="q4" value="b"> b) It provides runtime type checking and data validation for incoming data.</label></li>
+                    <li><label for="q4c"><input type="radio" id="q4c" name="q4" value="c"> c) It enables asynchronous programming without `async`/`await`.</label></li>
+                    <li><label for="q4d"><input type="radio" id="q4d" name="q4" value="d"> d) It compiles Python code to native machine code for faster execution.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="5">
+            <div class="question">
+                <p>5. In cloud-native Python development, when are functions typically preferred over classes?</p>
+                <ul class="options">
+                    <li><label for="q5a"><input type="radio" id="q5a" name="q5" value="a"> a) When modeling complex entities with encapsulated state and behavior.</label></li>
+                    <li><label for="q5b"><input type="radio" id="q5b" name="q5" value="b"> b) For stateless operations, such as in serverless functions or utility logic.</label></li>
+                    <li><label for="q5c"><input type="radio" id="q5c" name="q5" value="c"> c) When defining data schemas for API request validation.</label></li>
+                    <li><label for="q5d"><input type="radio" id="q5d" name="q5" value="d"> d) When building a graphical user interface (GUI).</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <button class="btn btn-outline-primary" id="next-question">Next</button>
+            <button class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
+        </div>
+        <div class="quiz-results-container"></div>
     </div>
-
-    <div id="quiz-container">
-        <!-- Question 1 -->
-        <div class="card quiz-card" id="q1">
-            <div class="card-header">
-                <h5 class="card-title">Question 1/5</h5>
-            </div>
-            <div class="card-body">
-                <p>Which of the following is NOT a primary reason for Python's popularity in cloud-native development?</p>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="q1" id="q1a1" value="A">
-                    <label class="form-check-label" for="q1a1">A) Its extensive ecosystem of libraries and cloud SDKs.</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="q1" id="q1a2" value="B">
-                    <label class="form-check-label" for="q1a2">B) Its high performance and low memory footprint compared to languages like C++ or Rust.</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="q1" id="q1a3" value="C">
-                    <label class="form-check-label" for="q1a3">C) Its simple, readable syntax that enhances developer productivity.</label>
-                </div>
-                <div class="answer" data-correct="B"></div>
-            </div>
-        </div>
-
-        <!-- Question 2 -->
-        <div class="card quiz-card" id="q2" style="display: none;">
-            <div class="card-header">
-                <h5 class="card-title">Question 2/5</h5>
-            </div>
-            <div class="card-body">
-                <p>What is the main function of Python's type hints (e.g., `name: str`)?</p>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="q2" id="q2a1" value="A">
-                    <label class="form-check-label" for="q2a1">A) To enforce strict type checking at runtime, raising an error if types do not match.</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="q2" id="q2a2" value="B">
-                    <label class="form-check-label" for="q2a2">B) To provide metadata for static analysis tools to detect type errors before code execution.</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="q2" id="q2a3" value="C">
-                    <label class="form-check-label" for="q2a3">C) To automatically convert data from one type to another.</label>
-                </div>
-                <div class="answer" data-correct="B"></div>
-            </div>
-        </div>
-
-        <!-- Question 3 -->
-        <div class="card quiz-card" id="q3" style="display: none;">
-            <div class="card-header">
-                <h5 class="card-title">Question 3/5</h5>
-            </div>
-            <div class="card-body">
-                <p>How does Pydantic enhance the use of type hints for building robust APIs?</p>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="q3" id="q3a1" value="A">
-                    <label class="form-check-label" for="q3a1">A) It only checks types during unit tests, not in production.</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="q3" id="q3a2" value="B">
-                    <label class="form-check-label" for="q3a2">B) It uses type hints to perform runtime data validation, parsing, and serialization.</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="q3" id="q3a3" value="C">
-                    <label class="form-check-label" for="q3a3">C) It compiles Python code to a faster, statically-typed language.</label>
-                </div>
-                <div class="answer" data-correct="B"></div>
-            </div>
-        </div>
-
-        <!-- Question 4 -->
-        <div class="card quiz-card" id="q4" style="display: none;">
-            <div class="card-header">
-                <h5 class="card-title">Question 4/5</h5>
-            </div>
-            <div class="card-body">
-                <p>You are defining a Pydantic model for an API that accepts user information. Which of the following fields correctly defines an optional website URL that must be a valid URL if provided?</p>
-                <pre><code class="language-python">
-from pydantic import BaseModel, HttpUrl
-from typing import Optional
-
-class User(BaseModel):
-    username: str
-    # ... choose the correct line below
-                </code></pre>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="q4" id="q4a1" value="A">
-                    <label class="form-check-label" for="q4a1">A) `website: HttpUrl`</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="q4" id="q4a2" value="B">
-                    <label class="form-check-label" for="q4a2">B) `website: Optional[HttpUrl] = None`</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="q4" id="q4a3" value="C">
-                    <label class="form-check-label" for="q4a3">C) `website: str`</label>
-                </div>
-                <div class="answer" data-correct="B"></div>
-            </div>
-        </div>
-
-        <!-- Question 5 -->
-        <div class="card quiz-card" id="q5" style="display: none;">
-            <div class="card-header">
-                <h5 class="card-title">Question 5/5</h5>
-            </div>
-            <div class="card-body">
-                <p>Which two of the following are benefits of using Pydantic in a backend application? (Choose two)</p>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="q5" id="q5a1" value="A">
-                    <label class="form-check-label" for="q5a1">A) It acts as a protective barrier, ensuring incoming data conforms to a schema.</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="q5" id="q5a2" value="B">
-                    <label class="form-check-label" for="q5a2">B) It automatically writes your unit tests for you.</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="q5" id="q5a3" value="C">
-                    <label class="form-check-label" for="q5a3">C) It reduces boilerplate code for data validation and serialization.</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="q5" id="q5a4" value="D">
-                    <label class="form-check-label" for="q5a4">D) It replaces the need for a database.</label>
-                </div>
-                <div class="answer" data-correct="A,C"></div>
-            </div>
-        </div>
-
-        <!-- Navigation -->
-        <div class="d-flex justify-content-between mt-4">
-            <button class="btn btn-secondary" id="prev-btn" style="display: none;">Previous</button>
-            <button class="btn btn-primary" id="next-btn">Next</button>
-            <button class="btn btn-success" id="submit-btn" style="display: none;">Submit Answers</button>
-        </div>
-    </div>
-
-    <div id="results-container" style="display: none;">
-        <h3>Quiz Results</h3>
-        <p>Your score: <span id="score"></span></p>
-        <p>Percentage: <span id="percentage"></span>%</p>
-        <p><span id="feedback"></span></p>
-        <button class="btn btn-primary" id="try-again-btn">Try Again</button>
-    </div>
-
 </div>
