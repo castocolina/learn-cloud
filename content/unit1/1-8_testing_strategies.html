@@ -1,4 +1,3 @@
-
 <div class="container">
     <div class="page-header">
         <h1>1.8 Testing Strategies</h1>
@@ -13,6 +12,22 @@
     <p>
         The concept of the <a href="https://martinfowler.com/bliki/TestPyramid.html" target="_blank">Testing Pyramid</a> suggests that you should have many fast, isolated <strong>unit tests</strong>, fewer <strong>integration tests</strong> that verify interactions between components, and even fewer slow, comprehensive <strong>end-to-end tests</strong>.
     </p>
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                A["End-to-End Tests (Few, Slow)"]
+                B["Integration Tests (More, Medium Speed)"]
+                C["Unit Tests (Many, Fast)"]
+
+                C --> B;
+                B --> A;
+
+                style A fill:#fcc,stroke:#333,stroke-width:2px
+                style B fill:#f99,stroke:#333,stroke-width:2px
+                style C fill:#f66,stroke:#333,stroke-width:2px
+        </pre>
+        <small class="text-muted">Diagram: The Testing Pyramid</small>
+    </div>
     <ul>
         <li><strong>Unit Tests:</strong> Test individual functions or methods in isolation. They are fast and provide precise feedback on where a bug is located.</li>
         <li><strong>Integration Tests:</strong> Verify that different components or services work correctly together (e.g., your application interacting with a database, or two microservices communicating). They are slower than unit tests but provide more confidence.</li>
@@ -69,6 +84,16 @@ def test_multiply():
     <p>
         When writing unit tests, you often need to test a component that interacts with external services (like databases, APIs, or message queues). To keep unit tests fast and isolated, you can use <strong>mocking</strong>: replacing real objects with controlled, fake objects.
     </p>
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph LR
+                A["Component Under Test"] --> B{"Real Dependency?"};
+                B -- Yes (Integration Test) --> C[Real Dependency];
+                B -- No (Unit Test) --> D[Mock Object];
+                D -- Simulates Behavior --> A;
+        </pre>
+        <small class="text-muted">Diagram: Mocking Workflow</small>
+    </div>
     <p>
         Python's standard library provides the powerful <code>unittest.mock</code> module, which includes <code>MagicMock</code> and the <code>patch</code> function.
     </p>
@@ -126,8 +151,20 @@ def test_get_user_data_http_error():
     <!-- Testcontainers -->
     <h2>3. Emulating Services with Testcontainers</h2>
     <p>
-        For true integration tests, you need to interact with real instances of your dependencies (databases, message queues, etc.). <strong>Testcontainers</strong> is an open-source library that provides lightweight, throwaway instances of common databases, message brokers, web browsers, or anything else that can run in a Docker container.
+        For true integration tests, you need to interact with real instances of your dependencies (databases, message queues, etc.).         <strong>Testcontainers</strong> is an open-source library that provides lightweight, throwaway instances of common databases, message brokers, web browsers, or anything else that can run in a Docker container.
     </p>
+
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                A[Test Code] --> B[Testcontainers Library];
+                B --> C[Docker Daemon];
+                C --> D["Ephemeral Docker Container (e.g., PostgreSQL)"];
+                D -- "Provides Service" --> A;
+        </pre>
+        <small class="text-muted">Diagram: Testcontainers Workflow</small>
+    </div>
+
     <p>
         This allows you to write integration tests that are realistic, isolated, and run consistently across different development environments and CI/CD pipelines.
     </p>

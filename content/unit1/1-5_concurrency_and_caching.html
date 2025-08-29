@@ -1,4 +1,3 @@
-
 <div class="container">
     <div class="page-header">
         <h1>1.5 Concurrency and Caching</h1>
@@ -19,6 +18,31 @@
 
     <div class="alert alert-info">
         <strong>Key Takeaway:</strong> Python's concurrency models are excellent for I/O-bound operations, which represent the vast majority of work in a typical cloud-native service.
+    </div>
+
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                subgraph CPU-Bound Task
+                    A[Thread 1: Compute] --> B{GIL Acquired};
+                    B --> C[Execute Python Code];
+                    C --> D{"GIL Released (briefly)"};
+                    D --> A;
+                end
+
+                subgraph I/O-Bound Task
+                    X[Thread 2: Network Request] --> Y{GIL Acquired};
+                    Y --> Z[Initiate I/O Operation];
+                    Z --> W{"GIL Released (during I/O wait)"};
+                    W --> X;
+                end
+
+                style A fill:#f9f,stroke:#333,stroke-width:2px
+                style X fill:#ccf,stroke:#333,stroke-width:2px
+                style C fill:#f9f,stroke:#333,stroke-width:2px
+                style Z fill:#ccf,stroke:#333,stroke-width:2px
+        </pre>
+        <small class="text-muted">Diagram: GIL Impact on CPU-bound vs. I/O-bound Tasks</small>
     </div>
 
     <h3>1. Concurrency with the <code>threading</code> Module</h3>
@@ -104,6 +128,46 @@ print(f"Asyncio execution took: {end_time - start_time:.2f} seconds")
         <strong>When to use <code>asyncio</code>?</strong> For new, high-performance backend services, especially when using modern frameworks like FastAPI or Starlette, <code>asyncio</code> is the recommended approach. It forms the foundation of Python's modern cloud-native ecosystem.
     </div>
 
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                A[Python Program] --> B{Concurrency Need?};
+
+                subgraph Threading Module
+                    C[Threading] --> D[Multiple OS Threads];
+                    D --> E["GIL (Global Interpreter Lock)"];
+                    E -- "Prevents true CPU parallelism" --> F["Best for I/O-bound tasks (blocking I/O)"];
+                    F --> G[Context Switching by OS];
+                end
+
+                subgraph Asyncio Module
+                    H[Asyncio] --> I[Single OS Thread];
+                    I --> J[Event Loop];
+                    J --> K[Cooperative Multitasking];
+                    K --> L["Best for I/O-bound tasks (non-blocking I/O)"];
+                    L --> M[Context Switching by Coroutines];
+                end
+
+                B -- "CPU-bound (limited by GIL)" --> C;
+                B -- "I/O-bound (efficient)" --> H;
+
+                style A fill:#f9f,stroke:#333,stroke-width:2px
+                style B fill:#ccf,stroke:#333,stroke-width:2px
+                style C fill:#fcf,stroke:#333,stroke-width:2px
+                style H fill:#cfc,stroke:#333,stroke-width:2px
+                style D fill:#fcc,stroke:#333,stroke-width:2px
+                style I fill:#cff,stroke:#333,stroke-width:2px
+                style E fill:#f99,stroke:#333,stroke-width:2px
+                style J fill:#9cf,stroke:#333,stroke-width:2px
+                style F fill:#fdd,stroke:#333,stroke-width:2px
+                style K fill:#9ff,stroke:#333,stroke-width:2px
+                style G fill:#fdd,stroke:#333,stroke-width:2px
+                style L fill:#9ff,stroke:#333,stroke-width:2px
+                style M fill:#9ff,stroke:#333,stroke-width:2px
+        </pre>
+        <small class="text-muted">Diagram: Python Concurrency: Threading vs. Asyncio</small>
+    </div>
+
     <hr/>
 
     <!-- In-Process Caching -->
@@ -114,6 +178,19 @@ print(f"Asyncio execution took: {end_time - start_time:.2f} seconds")
     <p>
         Python's standard library provides a simple and powerful tool for this: the <code>@lru_cache</code> decorator from the <code>functools</code> module. LRU stands for "Least Recently Used," which describes the cache eviction strategy: when the cache is full, the least recently used items are discarded.
     </p>
+
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                A[Function Call with Args] --> B{Are Args in Cache?};
+                B -- Yes --> C[Return Cached Result];
+                B -- No --> D[Execute Function Logic];
+                D --> E[Compute Result];
+                E --> F[Store Result in Cache];
+                F --> C;
+        </pre>
+        <small class="text-muted">Diagram: `lru_cache` Workflow</small>
+    </div>
 
     <h4>Example: Caching an Expensive Calculation</h4>
     <p>Imagine a function that performs a costly operation. We can use <code>@lru_cache</code> to store its results. Subsequent calls with the same arguments will return the cached value instantly.</p>

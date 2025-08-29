@@ -87,55 +87,5 @@
             </div>
         </div>
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>Illustrate FastAPI Request-Response Flow with Pydantic Validation.</p>
-            </div>
-            <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Answer</h4>
-                <pre class="mermaid">
-    graph TD
-        A[Client Request] --> B[FastAPI Application];
-        B --> C{Pydantic Validation};
-        C -- Valid Data --> D[Path Operation Function];
-        C -- Invalid Data --> E[Return Validation Error];
-        D --> F[Process Logic];
-        F --> G[Return Response];
-        G --> B;
-        B --> H[Client Receives Response];
-                </pre>
-            </div>
-        </div>
-
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>Illustrate FastAPI Dependency Injection.</p>
-            </div>
-            <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Answer</h4>
-                <pre class="mermaid">
-    graph LR
-        A[Client Request] --> B[FastAPI Endpoint];
-        B -- Requires --> C[Dependency Function];
-        C -- Provides --> B;
-        B --> D["Process Request"];
-                </pre>
-            </div>
-        </div>
-
     </div>
 </div>

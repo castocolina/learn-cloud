@@ -1,4 +1,3 @@
-
 <div class="container">
     <div class="page-header">
         <h1>1.2 Overview & Foundational Concepts</h1>
@@ -75,6 +74,25 @@ db_record = ("user123", "user123@example.com", "2023-10-27T10:00:00Z")
 user_id, email, created_at = db_record
         </code></pre>
 
+        <div class="text-center my-4">
+            <pre class="mermaid">
+                graph TD
+                    subgraph Python Data Structures
+                        A[Dictionary] --> B{Key 1};
+                        B --> C[Value 1];
+                        A --> D{Key 2};
+                        D --> E[Value 2];
+
+                        F[List] --> G[0: Element 1];
+                        G --> H[1: Element 2];
+
+                        I[Tuple] --> J("(0: Element 1)");
+                        J --> K("(1: Element 2)");
+                    end
+            </pre>
+            <small class="text-muted">Diagram: Core Python Data Structures</small>
+        </div>
+
         <h4>Functions and Classes</h4>
         <p>Python's support for both functional and object-oriented programming provides flexibility. In cloud applications, you'll use functions for stateless operations (like in serverless functions) and classes to model complex entities and business logic.</p>
         <pre><code class="language-python">
@@ -105,10 +123,25 @@ user.deactivate()
     <!-- Python's Typing System -->
     <section id="typing-system">
         <h2>Python's Typing System: Writing Production-Ready Code</h2>
-        <p>This is one of the most critical topics for writing reliable, production-grade Python. While Python is dynamically typed, the introduction of **type hints** (as specified in <a href="https://peps.python.org/pep-0484/" target="_blank">PEP 484</a>) revolutionized how we build large-scale applications. They provide clarity, help catch errors early, and enable powerful tooling.</p>
+        <p>This is one of the most critical topics for writing reliable, production-grade Python. While Python is dynamically typed, the introduction of <strong>type hints</strong> (as specified in <a href="https://peps.python.org/pep-0484/" target="_blank">PEP 484</a>) revolutionized how we build large-scale applications. They provide clarity, help catch errors early, and enable powerful tooling.</p>
 
         <h4>Type Hints</h4>
         <p>Type hints are annotations that specify the expected type of variables, function parameters, and return values. They do not enforce types at runtime but are used by static analysis tools to prevent bugs.</p>
+        
+        <div class="text-center my-4">
+            <pre class="mermaid">
+                graph TD
+                    A[Python Code with Type Hints] --> B(Static Analysis Tool);
+                    B --> C{Type Checker};
+                    C --> D["Errors/Warnings/Success"];
+                    E["Type Stubs (.pyi)"] --> C;
+                    F["Configuration File (e.g., pyproject.toml, mypy.ini)"] --> B;
+                    B -- Uses --> G[Standard Library Types];
+                    B -- Uses --> H[Third-Party Library Types];
+            </pre>
+            <small class="text-muted">Diagram: Static Analysis Workflow with Type Hints</small>
+        </div>
+
         <pre><code class="language-python">
 from typing import List, Dict, Optional
 
@@ -132,7 +165,7 @@ def get_user_by_id(user_id: int) -> Optional[Dict[str, any]]:
         </code></pre>
 
         <h4>Tooling Spotlight: Pydantic</h4>
-        <p>While type hints provide static analysis, <strong>Pydantic</strong> takes it a step further by providing *runtime* type checking and data validation. This is a game-changer for building APIs, as it allows you to define data shapes with Python classes and automatically validate, serialize, and deserialize data.</p>
+        <p>While type hints provide static analysis, <strong>Pydantic</strong> takes it a step further by providing <em>runtime</em> type checking and data validation. This is a game-changer for building APIs, as it allows you to define data shapes with Python classes and automatically validate, serialize, and deserialize data.</p>
         <p>Pydantic is the backbone of modern Python web frameworks like FastAPI for its robustness and ease of use.</p>
 
         <div class="card bg-light mb-3">
@@ -181,6 +214,27 @@ except Exception as e:
     print(e)
         </code></pre>
         <p>By using Pydantic, you get data validation, serialization (e.g., to JSON), and documentation all in one place, making your code cleaner, more robust, and easier to maintain.</p>
+        
+        <div class="text-center my-4">
+            <pre class="mermaid">
+                flowchart TD
+                    A[Raw Input Data] --> B{Define Pydantic Model};
+                    B --> C[Instantiate Model with Input Data];
+                    C --> D{Pydantic Validation Process};
+                    D -- Valid --> E[Validated Pydantic Object];
+                    D -- Invalid --> F[ValidationError];
+
+                    subgraph "Validation Steps"
+                        D1[Type Validation] --> D2[Field Validation];
+                        D2 --> D3["Data Coercion"];
+                    end
+
+                    D --> D1;
+                    D3 --> D;
+            </pre>
+            <small class="text-muted">Diagram: Pydantic Validation Process</small>
+        </div>
+
     </section>
 
 </div>

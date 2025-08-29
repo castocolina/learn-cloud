@@ -30,124 +30,6 @@
                     <i class="bi bi-arrows-angle-expand"></i>
                 </button>
                 <h4>Question</h4>
-                <p>What are Python's core built-in data structures and their typical use cases in backend development?</p>
-            </div>
-            <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Answer</h4>
-                <ul>
-                    <li><strong>Dictionaries (`dict`):</strong> Unordered, mutable key-value pairs. Ideal for JSON payloads, configuration, database records.
-                        <pre><code class="language-python">user_data = {"id": 101, "username": "cloud_dev"}</code></pre>
-                    </li>
-                    <li><strong>Lists (`list`):</strong> Ordered, mutable collections. Used for sequences of items, e.g., active sessions, arrays of data.
-                        <pre><code class="language-python">active_sessions = [s1, s2, s3]</code></pre>
-                    </li>
-                    <li><strong>Tuples (`tuple`):</strong> Ordered, immutable collections. Useful for fixed data structures like coordinates, database rows where data shouldn't change.
-                        <pre><code class="language-python">db_record = ("user123", "user123@example.com")</code></pre>
-                    </li>
-                </ul>
-                <div class="mermaid">
-                    graph TD
-                        subgraph Python Data Structures
-                            A[Dictionary] --> B{Key 1};
-                            B --> C[Value 1];
-                            A --> D{Key 2};
-                            D --> E[Value 2];
-
-                            F[List] --> G[0: Element 1];
-                            G --> H[1: Element 2];
-
-                            I[Tuple] --> J((0: Element 1));
-                            J --> K((1: Element 2));
-                        end
-                </div>
-            </div>
-        </div>
-
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>Explain the purpose and impact of Python's Type Hints in production-ready code.</p>
-            </div>
-            <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Answer</h4>
-                <ul>
-                    <li><strong>Purpose:</strong> Annotations (PEP 484) for variables, function parameters, and return values to specify expected types.</li>
-                    <li><strong>Impact:</strong>
-                        <ul>
-                            <li><strong>Clarity:</strong> Improves code readability and understanding.</li>
-                            <li><strong>Early Error Detection:</strong> Used by static analysis tools (e.g., MyPy) to catch type-related bugs *before* runtime.</li>
-                            <li><strong>Tooling:</strong> Enables powerful IDE features like autocompletion and refactoring.</li>
-                        </ul>
-                    </li>
-                    <li><strong>Note:</strong> Type hints do *not* enforce types at runtime.</li>
-                </ul>
-                <div class="mermaid">
-                    graph TD
-                        A[Python Code with Type Hints] --> B(Static Analysis Tool);
-                        B --> C{Type Checker};
-                        C --> D["Errors/Warnings/Success"];
-                        E[Type Stubs (.pyi)] --> C;
-                        F["Configuration File (e.g., pyproject.toml, mypy.ini)"] --> B;
-                        B -- Uses --> G[Standard Library Types];
-                        B -- Uses --> H[Third-Party Library Types];
-                </div>
-            </div>
-        </div>
-
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>How does Pydantic enhance Python's typing system for cloud-native applications?</p>
-            </div>
-            <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Answer</h4>
-                <ul>
-                    <li><strong>Runtime Type Checking:</strong> Extends type hints by enforcing types and validating data at runtime.</li>
-                    <li><strong>Data Validation:</strong> Ensures incoming data (e.g., API requests, JSON payloads) conforms to defined schemas.</li>
-                    <li><strong>Serialization/Deserialization:</strong> Automatically converts Python objects to/from data formats like JSON.</li>
-                    <li><strong>Protective Barrier:</strong> Acts as a critical layer at the application edge, preventing invalid data from reaching business logic.</li>
-                    <li><strong>Backbone of FastAPI:</strong> Essential for building robust and well-defined APIs.</li>
-                </ul>
-                <div class="mermaid">
-                    flowchart TD
-                        A[Raw Input Data] --> B{Define Pydantic Model};
-                        B --> C[Instantiate Model with Input Data];
-                        C --> D{Pydantic Validation Process};
-                        D -- Valid --> E[Validated Pydantic Object];
-                        D -- Invalid --> F[ValidationError];
-
-                        subgraph "Validation Steps"
-                            D1[Type Validation] --> D2[Field Validation];
-                            D2 --> D3["Data Coercion"];
-                        end
-
-                        D --> D1;
-                        D3 --> D;
-                </div>
-            </div>
-        </div>
-
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
                 <p>How are Python functions and classes typically utilized in cloud-native backend development?</p>
             </div>
             <div class="flashcard-back">
@@ -173,5 +55,6 @@
                 <!-- Image Placeholder: Icons representing a function (e.g., f(x)) and a class (e.g., a blueprint or object). -->
             </div>
         </div>
+
     </div>
 </div>

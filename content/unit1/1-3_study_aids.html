@@ -87,42 +87,7 @@
             </div>
         </div>
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>Illustrate the Python Code Quality Workflow.</p>
-            </div>
-            <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Answer</h4>
-                <pre class="mermaid">
-    graph TD
-        A[Developer Writes Python Code] --> B(PEP 8: Python Style Guide);
-        B --> C{Automated Code Quality Tools};
-        C --> D[Black: Opinionated Formatter];
-        C --> E[Ruff: Fast Linter & Formatter];
-        D --> F["Formatted Code (PEP 8 Adherent)"];
-        E --> G["Linted Code (Issues Identified/Fixed)"];
-        F --> G;
-        G --> H[High-Quality, Consistent Python Code];
-
-        subgraph "Tools"
-            D
-            E
-        end
-
-        style B fill:#f9f,stroke:#333,stroke-width:2px
-        style D fill:#ccf,stroke:#333,stroke-width:2px
-        style E fill:#ccf,stroke:#333,stroke-width:2px
-        style H fill:#cfc,stroke:#333,stroke-width:2px
-                </pre>
-            </div>
-        </div>
+        
 
     </div>
 </div>

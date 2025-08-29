@@ -1,10 +1,19 @@
-
 <div class="container">
     <div class="page-header">
         <h1>1.9 Observability</h1>
     </div>
 
     <p class="lead">In complex, distributed cloud-native systems, understanding what's happening inside your applications is crucial. This is where <strong>observability</strong> comes in. Unlike traditional monitoring (which tells you <em>if</em> something is broken), observability helps you understand <em>why</em> it's broken by allowing you to ask arbitrary questions about your system's internal state. It relies on three pillars: <strong>Logs</strong>, <strong>Metrics</strong>, and <strong>Traces</strong>.</p>
+
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                A[Observability] --> B(Logs);
+                A --> C(Metrics);
+                A --> D(Traces);
+        </pre>
+        <small class="text-muted">Diagram: The Three Pillars of Observability</small>
+    </div>
 
     <hr/>
 
@@ -138,6 +147,18 @@ docker run \
     </code></pre>
     <p>Access Prometheus UI at <a href="http://localhost:9090" target="_blank">http://localhost:9090</a>. You can query your metrics there. For advanced visualization, <a href="https://grafana.com/" target="_blank">Grafana</a> is commonly used with Prometheus.</p>
 
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph LR
+                App1[Application 1] -- Exposes Metrics --> Prometheus[Prometheus Server];
+                App2[Application 2] -- Exposes Metrics --> Prometheus;
+                Prometheus -- Stores --> TimeSeriesDB[Time-Series Database];
+                Prometheus -- Alerts --> Alertmanager[Alertmanager];
+                Prometheus -- Queries --> Grafana["Grafana (Visualization)"];
+        </pre>
+        <small class="text-muted">Diagram: Prometheus Metrics Collection Architecture</small>
+    </div>
+
     <hr/>
 
     <!-- Tracing with OpenTelemetry -->
@@ -197,6 +218,24 @@ async def get_user(user_id: int):
 docker run -d --name jaeger -p 16686:16686 -p 4317:4317 -p 4318:4318 jaegertracing/all-in-one:latest
     </code></pre>
     <p>Access Jaeger UI at <a href="http://localhost:16686" target="_blank">http://localhost:16686</a>. You can search for traces and visualize the flow of requests through your services.</p>
+
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                Client[Client Request] --> ServiceA["Service A (Instrumented)"];
+                ServiceA --> ServiceB["Service B (Instrumented)"];
+                ServiceB --> ServiceC["Service C (Instrumented)"];
+                ServiceC --> ServiceA;
+
+                ServiceA -- Exports Spans --> OTelCollector[OpenTelemetry Collector];
+                ServiceB -- Exports Spans --> OTelCollector;
+                ServiceC -- Exports Spans --> OTelCollector;
+
+                OTelCollector -- "Forwards Traces" --> Jaeger["Jaeger Backend"];
+                Jaeger --> JaegerUI["Jaeger UI (Visualization)"];
+        </pre>
+        <small class="text-muted">Diagram: Distributed Tracing with OpenTelemetry and Jaeger</small>
+    </div>
 
     <hr/>
 

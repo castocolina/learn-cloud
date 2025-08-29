@@ -174,4 +174,29 @@ repos:
         Now, every time you run <code>git commit</code>, Ruff will run first to lint and fix issues, followed by Black to format the code. If any changes are made, the commit will be aborted, allowing you to review and stage the fixes. This workflow guarantees that all code entering the repository meets the defined quality standards.
     </p>
 
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                A[Developer Writes Python Code] --> B(PEP 8: Python Style Guide);
+                B --> C{Automated Code Quality Tools};
+                C --> D[Black: Opinionated Formatter];
+                C --> E[Ruff: Fast Linter & Formatter];
+                D --> F["Formatted Code (PEP 8 Adherent)"];
+                E --> G["Linted Code (Issues Identified/Fixed)"];
+                F --> G;
+                G --> H[High-Quality, Consistent Python Code];
+
+                subgraph "Tools"
+                    D
+                    E
+                end
+
+                style B fill:#f9f,stroke:#333,stroke-width:2px
+                style D fill:#ccf,stroke:#333,stroke-width:2px
+                style E fill:#ccf,stroke:#333,stroke-width:2px
+                style H fill:#cfc,stroke:#333,stroke-width:2px
+        </pre>
+        <small class="text-muted">Diagram: Automated Python Code Quality Workflow</small>
+    </div>
+
 </div>

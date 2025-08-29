@@ -1,4 +1,3 @@
-
 <div class="container">
     <div class="page-header">
         <h1>1.7 Advanced Backend Topics</h1>
@@ -21,6 +20,22 @@
         <li><strong>Asynchronous Processing:</strong> Long-running tasks can be offloaded without blocking the main request flow.</li>
     </ul>
 
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph LR
+                Producer["Service A (Producer)"] --> MessageQueue[Message Queue];
+                MessageQueue --> Consumer["Service B (Consumer)"];
+                MessageQueue --> AnotherConsumer["Service C (Another Consumer)"];
+
+                subgraph Event Flow
+                    Producer -- Publishes Event --> MessageQueue;
+                    MessageQueue -- Delivers Event --> Consumer;
+                    MessageQueue -- Delivers Event --> AnotherConsumer;
+                end
+        </pre>
+        <small class="text-muted">Diagram: Simple Event-Driven Architecture</small>
+    </div>
+
     <h3>RabbitMQ: A General-Purpose Message Broker</h3>
     <p>
         <a href="https://www.rabbitmq.com/" target="_blank">RabbitMQ</a> is a widely used open-source message broker that implements the Advanced Message Queuing Protocol (AMQP). It's excellent for general-purpose messaging, task queues, and publish/subscribe patterns.
@@ -29,7 +44,7 @@
     <h4>Setup: Running RabbitMQ with Docker</h4>
     <pre><code class="language-bash">
 docker run -d --hostname my-rabbit --name some-rabbit -p 5672:5672 -p 15672:15672 rabbitmq:3-management-alpine
-    </code></pre>
+</code></pre>
     <div class="alert alert-info">
         The <code>-p 15672:15672</code> port exposes the RabbitMQ Management UI, which you can access at <a href="http://localhost:15672" target="_blank">http://localhost:15672</a> (default guest/guest credentials).
     </div>
@@ -101,6 +116,21 @@ channel.start_consuming()
         <li><strong>Strongly Typed Contracts:</strong> Defines service interfaces and message structures using Protocol Buffers (Protobuf), ensuring strict type checking and code generation across different languages.</li>
         <li><strong>Bidirectional Streaming:</strong> Supports various communication patterns, including client-side streaming, server-side streaming, and bidirectional streaming.</li>
     </ul>
+
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph LR
+                Client["gRPC Client"] --> Stub["Client Stub (Generated Code)"];
+                Stub --> Network["Network (HTTP/2)"];
+                Network --> ServerStub["Server Stub (Generated Code)"];
+                ServerStub --> Server["gRPC Server (Service Implementation)"];
+                Server -- "Response (Protobuf)" --> ServerStub;
+                ServerStub --> Network;
+                Network --> Stub;
+                Stub --> Client;
+        </pre>
+        <small class="text-muted">Diagram: gRPC Communication Flow</small>
+    </div>
 
     <h3>Protocol Buffers (Protobuf)</h3>
     <p>
@@ -224,7 +254,7 @@ if __name__ == '__main__':
         <li>
             <strong>Synchronous (Request/Response):</strong>
             <ul>
-                <li><strong>REST (HTTP/1.1 or HTTP/2):</strong> Best for public APIs, browser-based clients, and simple request-response interactions. Widely understood and easy to debug.</li>
+                <li><strong>REST (HTTP/1.1, HTTP/2):</strong> Best for public APIs, browser-based clients, and simple request-response interactions. Widely understood and easy to debug.</li>
                 <li><strong>gRPC (HTTP/2 + Protobuf):</strong> Ideal for internal microservice communication where performance, strong typing, and efficient serialization are critical. Supports various streaming patterns.</li>
             </ul>
         </li>
@@ -236,6 +266,23 @@ if __name__ == '__main__':
             </ul>
         </li>
     </ul>
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                Start[Choose Communication Pattern] --> Sync{Synchronous?};
+
+                Sync -- Yes --> SyncType{Type?};
+                SyncType -- "Public API / Browser Client" --> REST["REST (HTTP/1.1, HTTP/2)"];
+                SyncType -- "Internal / Performance Critical" --> gRPC["gRPC (HTTP/2 + Protobuf)"];
+
+                Sync -- No --> Async{Asynchronous?};
+                Async -- Yes --> AsyncType{Type?};
+                AsyncType -- "Decoupling / Task Offloading" --> MessageQueue["Message Queues (e.g., RabbitMQ)"];
+                AsyncType -- "High-Throughput / Event Streams" --> StreamingPlatform["Streaming Platforms (e.g., Kafka)"];
+        </pre>
+        <small class="text-muted">Diagram: Choosing Communication Patterns</small>
+    </div>
+
     <div class="alert alert-info">
         <strong>Service Discovery:</strong> In a dynamic cloud environment, services need to find each other. Tools like HashiCorp Consul (covered in Unit 4) provide robust service discovery mechanisms, allowing services to register themselves and discover others without hardcoding network locations.
     </div>
