@@ -4,10 +4,16 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>What is PEP 8?</p>
             </div>
             <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Answer</h4>
                 <p>PEP 8 is Python's official style guide, providing conventions for writing readable and consistent Python code.</p>
             </div>
@@ -15,10 +21,16 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>What is the primary purpose of Black?</p>
             </div>
             <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Answer</h4>
                 <p>Black is an opinionated code formatter that automatically enforces a consistent code style, eliminating debates over formatting in code reviews.</p>
             </div>
@@ -26,10 +38,16 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>How does Ruff differ from Black?</p>
             </div>
             <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Answer</h4>
                 <p>Black is a code formatter (re-arranges code for style), while Ruff is a linter (analyzes code for potential errors, bugs, and stylistic issues).</p>
             </div>
@@ -37,10 +55,16 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>What are pre-commit hooks used for?</p>
             </div>
             <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Answer</h4>
                 <p>Pre-commit hooks are automated scripts that run before a commit is created to enforce code quality standards and ensure consistency in the codebase.</p>
             </div>
@@ -48,10 +72,16 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>Name two key areas covered by PEP 8.</p>
             </div>
             <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Answer</h4>
                 <p>Naming conventions (e.g., snake_case, PascalCase) and code layout (e.g., 4 spaces for indentation, line length limits).</p>
             </div>
@@ -59,34 +89,37 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>Illustrate the Python Code Quality Workflow.</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
-                    View Diagram
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
                 </button>
                 <h4>Answer</h4>
                 <pre class="mermaid">
-graph TD
-    A[Developer Writes Python Code] --> B(PEP 8: Python Style Guide);
-    B --> C{Automated Code Quality Tools};
-    C --> D[Black: Opinionated Formatter];
-    C --> E[Ruff: Fast Linter & Formatter];
-    D --> F["Formatted Code (PEP 8 Adherent)"];
-    E --> G["Linted Code (Issues Identified/Fixed)"];
-    F --> G;
-    G --> H[High-Quality, Consistent Python Code];
+    graph TD
+        A[Developer Writes Python Code] --> B(PEP 8: Python Style Guide);
+        B --> C{Automated Code Quality Tools};
+        C --> D[Black: Opinionated Formatter];
+        C --> E[Ruff: Fast Linter & Formatter];
+        D --> F["Formatted Code (PEP 8 Adherent)"];
+        E --> G["Linted Code (Issues Identified/Fixed)"];
+        F --> G;
+        G --> H[High-Quality, Consistent Python Code];
 
-    subgraph "Tools"
-        D
-        E
-    end
+        subgraph "Tools"
+            D
+            E
+        end
 
-    style B fill:#f9f,stroke:#333,stroke-width:2px
-    style D fill:#ccf,stroke:#333,stroke-width:2px
-    style E fill:#ccf,stroke:#333,stroke-width:2px
-    style H fill:#cfc,stroke:#333,stroke-width:2px
+        style B fill:#f9f,stroke:#333,stroke-width:2px
+        style D fill:#ccf,stroke:#333,stroke-width:2px
+        style E fill:#ccf,stroke:#333,stroke-width:2px
+        style H fill:#cfc,stroke:#333,stroke-width:2px
                 </pre>
             </div>
         </div>

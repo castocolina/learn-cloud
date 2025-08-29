@@ -137,3 +137,12 @@ body {
     margin-bottom: 10px;
     cursor: pointer;
 }
+
+
+
+.view-diagram-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 10;
+}

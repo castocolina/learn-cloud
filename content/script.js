@@ -44,14 +44,28 @@ document.addEventListener('DOMContentLoaded', () => {
             // Attach event listeners for view diagram buttons
             contentArea.querySelectorAll('.view-diagram-btn').forEach(button => {
                 button.addEventListener('click', (e) => {
-                    const flashcardBack = e.target.closest('.flashcard-back');
-                    const mermaidPre = flashcardBack.querySelector('pre.mermaid');
-                    if (mermaidPre) {
-                        const mermaidCode = mermaidPre.textContent;
-                        const modalTitle = e.target.closest('.flashcard').querySelector('h4').textContent;
-                        document.getElementById('mermaidModalLabel').textContent = `Diagram: ${modalTitle}`;
-                        document.getElementById('modalMermaidContent').dataset.mermaidCode = mermaidCode;
+                    e.stopPropagation(); // Prevent the card from flipping
+
+                    const flashcard = e.target.closest('.flashcard');
+                    const flashcardFront = flashcard.querySelector('.flashcard-front');
+                    const flashcardBack = flashcard.querySelector('.flashcard-back');
+                    
+                    // Get title from the front of the card
+                    const modalTitle = flashcardFront.querySelector('p') ? flashcardFront.querySelector('p').textContent : flashcardFront.querySelector('h4').textContent;
+                    
+                    // Clone the back content and remove the button for display
+                    const contentClone = flashcardBack.cloneNode(true);
+                    const buttonInClone = contentClone.querySelector('.view-diagram-btn');
+                    if (buttonInClone) {
+                        buttonInClone.remove();
                     }
+                    
+                    const modalContentHtml = contentClone.innerHTML;
+
+                    // Set data attributes for the modal to use
+                    const modal = document.getElementById('mermaidModal');
+                    modal.dataset.modalTitle = modalTitle;
+                    modal.dataset.modalContent = modalContentHtml;
                 });
             });
 
@@ -342,15 +356,24 @@ document.addEventListener('DOMContentLoaded', () => {
     // New: Handle Mermaid modal display and rendering
     const mermaidModal = document.getElementById('mermaidModal');
     if (mermaidModal) {
-        mermaidModal.addEventListener('shown.bs.modal', () => {
-            const modalMermaidContent = document.getElementById('modalMermaidContent');
-            // Clear previous diagram
-            modalMermaidContent.innerHTML = '';
-            // Get the Mermaid code from a temporary storage (set by button click handler)
-            const mermaidCode = modalMermaidContent.dataset.mermaidCode;
-            if (mermaidCode) {
-                modalMermaidContent.innerHTML = `<pre class="mermaid">${mermaidCode}</pre>`;
-                mermaid.run({ nodes: [modalMermaidContent.querySelector('.mermaid')] });
+        mermaidModal.addEventListener('shown.bs.modal', (event) => {
+            const modalTitleEl = document.getElementById('mermaidModalLabel');
+            const modalBodyEl = document.getElementById('genericModalBody');
+
+            // Clear previous content
+            modalBodyEl.innerHTML = '';
+
+            // Get data from the modal's dataset
+            const title = event.currentTarget.dataset.modalTitle || 'Content';
+            const contentHtml = event.currentTarget.dataset.modalContent || '<p>No content found.</p>';
+
+            modalTitleEl.textContent = title;
+            modalBodyEl.innerHTML = contentHtml;
+
+            // If there's a mermaid diagram in the content, render it
+            const mermaidDiagram = modalBodyEl.querySelector('.mermaid');
+            if (mermaidDiagram) {
+                mermaid.run({ nodes: [mermaidDiagram] });
             }
         });
     }

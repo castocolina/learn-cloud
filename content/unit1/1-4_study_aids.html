@@ -4,10 +4,16 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>What is the primary benefit of using Python's `dataclasses`?</p>
             </div>
             <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Answer</h4>
                 <p>Dataclasses reduce boilerplate code for classes primarily used to store data, automatically generating methods like `__init__`, `__repr__`, and `__eq__`.</p>
             </div>
@@ -15,10 +21,16 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>Explain the purpose of an ORM (Object-Relational Mapper).</p>
             </div>
             <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Answer</h4>
                 <p>An ORM allows developers to interact with a relational database using object-oriented programming concepts (e.g., Python objects) instead of writing raw SQL queries, improving productivity and reducing boilerplate.</p>
             </div>
@@ -26,10 +38,16 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>Why are parameterized queries crucial for database interactions?</p>
             </div>
             <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Answer</h4>
                 <p>Parameterized queries prevent SQL injection attacks by separating the SQL code from the data, ensuring that user input cannot be executed as malicious code.</p>
             </div>
@@ -37,10 +55,16 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>What is Redis primarily used for in backend applications?</p>
             </div>
             <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Answer</h4>
                 <p>Redis is primarily used as an in-memory data store for caching, which helps to reduce latency and database load by storing frequently accessed data.</p>
             </div>
@@ -48,10 +72,16 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>How does MongoDB differ from a traditional relational database?</p>
             </div>
             <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Answer</h4>
                 <p>MongoDB is a NoSQL document database that stores data in flexible, JSON-like documents (BSON) without a predefined schema, unlike relational databases which use rigid, tabular schemas.</p>
             </div>
@@ -59,85 +89,94 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>Illustrate the Caching Workflow with Redis.</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
-                    View Diagram
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
                 </button>
                 <h4>Answer</h4>
                 <pre class="mermaid">
-graph TD
-    A[Application Request] --> B{Is data in Cache?};
-    B -- Yes --> C[Return Cached Data];
-    B -- No --> D[Query Database];
-    D --> E[Get Data from DB];
-    E --> F[Store Data in Cache];
-    F --> C;
+    graph TD
+        A[Application Request] --> B{Is data in Cache?};
+        B -- Yes --> C[Return Cached Data];
+        B -- No --> D[Query Database];
+        D --> E[Get Data from DB];
+        E --> F[Store Data in Cache];
+        F --> C;
                 </pre>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>Illustrate Application-ORM-Database Interaction.</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
-                    View Diagram
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
                 </button>
                 <h4>Answer</h4>
                 <pre class="mermaid">
-graph LR
-    A[Application] -- Uses Objects --> B["ORM (e.g., SQLAlchemy)"];
-    B -- Generates SQL --> C[Relational Database];
+    graph LR
+        A[Application] -- Uses Objects --> B["ORM (e.g., SQLAlchemy)"];
+        B -- Generates SQL --> C[Relational Database];
                 </pre>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>Compare Relational vs. NoSQL Databases.</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
-                    View Diagram
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
                 </button>
                 <h4>Answer</h4>
                 <pre class="mermaid">
-graph TD
-    A[Database Types] --> B(Relational Databases);
-    A --> C(NoSQL Databases);
+    graph TD
+        A[Database Types] --> B(Relational Databases);
+        A --> C(NoSQL Databases);
 
-    B --> B1{Structure};
-    B1 --> B1a[Tabular, Predefined Schema];
-    B --> B2{Scalability};
-    B2 --> B2a["Vertical (Scale Up)"];
-    B --> B3{ACID Properties};
-    B3 --> B3a[Atomicity, Consistency, Isolation, Durability];
-    B --> B4{Query Language};
-    B4 --> B4a["SQL (Structured Query Language)"];
-    B --> B5{Use Cases};
-    B5 --> B5a[Complex Transactions, Financial Systems, Data Integrity Critical];
+        B --> B1{Structure};
+        B1 --> B1a[Tabular, Predefined Schema];
+        B --> B2{Scalability};
+        B2 --> B2a["Vertical (Scale Up)"];
+        B --> B3{ACID Properties};
+        B3 --> B3a[Atomicity, Consistency, Isolation, Durability];
+        B --> B4{Query Language};
+        B4 --> B4a["SQL (Structured Query Language)"];
+        B --> B5{Use Cases};
+        B5 --> B5a[Complex Transactions, Financial Systems, Data Integrity Critical];
 
-    C --> C1{Structure};
-    C1 --> C1a[Document, Key-Value, Column-Family, Graph, Flexible Schema];
-    C --> C2{Scalability};
-    C2 --> C2a["Horizontal (Scale Out)"];
-    C --> C3{BASE Properties};
-    C3 --> C3a["Basically Available, Soft State, Eventually Consistent"];
-    C --> C4{Query Language};
-    C4 --> C4a["Varies (e.g., JSON-like queries, APIs)"];
-    C --> C5{Use Cases};
-    C5 --> C5a[Big Data, Real-time Web Apps, Content Management, High Throughput];
+        C --> C1{Structure};
+        C1 --> C1a[Document, Key-Value, Column-Family, Graph, Flexible Schema];
+        C --> C2{Scalability};
+        C2 --> C2a["Horizontal (Scale Out)"];
+        C --> C3{BASE Properties};
+        C3 --> C3a["Basically Available, Soft State, Eventually Consistent"];
+        C --> C4{Query Language};
+        C4 --> C4a["Varies (e.g., JSON-like queries, APIs)"];
+        C --> C5{Use Cases};
+        C5 --> C5a[Big Data, Real-time Web Apps, Content Management, High Throughput];
 
-    style B fill:#f9f,stroke:#333,stroke-width:2px;
-    style C fill:#ccf,stroke:#333,stroke-width:2px;
-    linkStyle 0 stroke-width:2px,fill:none,stroke:green;
-    linkStyle 1 stroke-width:2px,fill:none,stroke:blue;
+        style B fill:#f9f,stroke:#333,stroke-width:2px;
+        style C fill:#ccf,stroke:#333,stroke-width:2px;
+        linkStyle 0 stroke-width:2px,fill:none,stroke:green;
+        linkStyle 1 stroke-width:2px,fill:none,stroke:blue;
                 </pre>
             </div>
         </div>

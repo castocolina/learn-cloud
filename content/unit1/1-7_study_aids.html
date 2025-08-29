@@ -4,10 +4,16 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>What is the core principle of Event-Driven Architecture (EDA)?</p>
             </div>
             <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Answer</h4>
                 <p>EDA is a design paradigm where services communicate asynchronously by producing and consuming events, leading to decoupling, scalability, and resilience.</p>
             </div>
@@ -15,10 +21,16 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>What is the primary role of a message queue in EDA?</p>
             </div>
             <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Answer</h4>
                 <p>A message queue (or broker) facilitates asynchronous communication between services, decoupling producers from consumers and enabling features like task offloading and resilience.</p>
             </div>
@@ -26,10 +38,16 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>What are the main advantages of gRPC over REST for internal microservice communication?</p>
             </div>
             <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Answer</h4>
                 <p>gRPC offers higher performance (due to HTTP/2 and binary Protobuf), strongly typed contracts, and support for various streaming patterns, making it ideal for efficient internal communication.</p>
             </div>
@@ -37,10 +55,16 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>What is the purpose of Protocol Buffers (Protobuf) in gRPC?</p>
             </div>
             <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Answer</h4>
                 <p>Protobuf is a language-neutral, platform-neutral mechanism for serializing structured data. It defines service interfaces and message structures, ensuring strict type checking and enabling code generation across different languages for gRPC.</p>
             </div>
@@ -48,10 +72,16 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>Differentiate between synchronous and asynchronous communication patterns in microservices.</p>
             </div>
             <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Answer</h4>
                 <p>Synchronous communication (e.g., REST, gRPC) is request/response-based and blocking, while asynchronous communication (e.g., message queues, streaming platforms) is event-driven, non-blocking, and promotes decoupling.</p>
             </div>
@@ -59,75 +89,84 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>Illustrate Simple Event-Driven Architecture.</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
-                    View Diagram
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
                 </button>
                 <h4>Answer</h4>
                 <pre class="mermaid">
-graph LR
-    Producer["Service A (Producer)"] --> MessageQueue[Message Queue];
-    MessageQueue --> Consumer["Service B (Consumer)"];
-    MessageQueue --> AnotherConsumer["Service C (Another Consumer)"];
+    graph LR
+        Producer["Service A (Producer)"] --> MessageQueue[Message Queue];
+        MessageQueue --> Consumer["Service B (Consumer)"];
+        MessageQueue --> AnotherConsumer["Service C (Another Consumer)"];
 
-    subgraph Event Flow
-        Producer -- Publishes Event --> MessageQueue;
-        MessageQueue -- Delivers Event --> Consumer;
-        MessageQueue -- Delivers Event --> AnotherConsumer;
-    end
+        subgraph Event Flow
+            Producer -- Publishes Event --> MessageQueue;
+            MessageQueue -- Delivers Event --> Consumer;
+            MessageQueue -- Delivers Event --> AnotherConsumer;
+        end
                 </pre>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>Illustrate gRPC Communication Flow.</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
-                    View Diagram
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
                 </button>
                 <h4>Answer</h4>
                 <pre class="mermaid">
-graph LR
-    Client["gRPC Client"] --> Stub["Client Stub (Generated Code)"];
-    Stub --> Network["Network (HTTP/2)"];
-    Network --> ServerStub["Server Stub (Generated Code)"];
-    ServerStub --> Server["gRPC Server (Service Implementation)"];
-    Server -- "Response (Protobuf)" --> ServerStub;
-    ServerStub --> Network;
-    Network --> Stub;
-    Stub --> Client;
+    graph LR
+        Client["gRPC Client"] --> Stub["Client Stub (Generated Code)"];
+        Stub --> Network["Network (HTTP/2)"];
+        Network --> ServerStub["Server Stub (Generated Code)"];
+        ServerStub --> Server["gRPC Server (Service Implementation)"];
+        Server -- "Response (Protobuf)" --> ServerStub;
+        ServerStub --> Network;
+        Network --> Stub;
+        Stub --> Client;
                 </pre>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>Illustrate Choosing Communication Patterns.</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
-                    View Diagram
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
                 </button>
                 <h4>Answer</h4>
                 <pre class="mermaid">
-graph TD
-    Start[Choose Communication Pattern] --> Sync{Synchronous?};
+    graph TD
+        Start[Choose Communication Pattern] --> Sync{Synchronous?};
 
-    Sync -- Yes --> SyncType{Type?};
-    SyncType -- "Public API / Browser Client" --> REST["REST (HTTP/1.1, HTTP/2)"];
-    SyncType -- "Internal / Performance Critical" --> gRPC["gRPC (HTTP/2 + Protobuf)"];
+        Sync -- Yes --> SyncType{Type?};
+        SyncType -- "Public API / Browser Client" --> REST["REST (HTTP/1.1, HTTP/2)"];
+        SyncType -- "Internal / Performance Critical" --> gRPC["gRPC (HTTP/2 + Protobuf)"];
 
-    Sync -- No --> Async{Asynchronous?};
-    Async -- Yes --> AsyncType{Type?};
-    AsyncType -- "Decoupling / Task Offloading" --> MessageQueue["Message Queues (e.g., RabbitMQ)"];
-    AsyncType -- "High-Throughput / Event Streams" --> StreamingPlatform["Streaming Platforms (e.g., Kafka)"];
+        Sync -- No --> Async{Asynchronous?};
+        Async -- Yes --> AsyncType{Type?};
+        AsyncType -- "Decoupling / Task Offloading" --> MessageQueue["Message Queues (e.g., RabbitMQ)"];
+        AsyncType -- "High-Throughput / Event Streams" --> StreamingPlatform["Streaming Platforms (e.g., Kafka)"];
                 </pre>
             </div>
         </div>

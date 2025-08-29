@@ -4,10 +4,16 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>What are the key advantages of FastAPI?</p>
             </div>
             <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Answer</h4>
                 <p>FastAPI offers high performance, is async-native, provides automatic interactive documentation, uses type-driven validation with Pydantic, and has a powerful dependency injection system.</p>
             </div>
@@ -15,10 +21,16 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>What is the role of Uvicorn in a FastAPI application?</p>
             </div>
             <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Answer</h4>
                 <p>Uvicorn is an ASGI server that runs FastAPI applications, handling the asynchronous communication between the web server and the application.</p>
             </div>
@@ -26,10 +38,16 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>How does Pydantic enhance FastAPI's data handling?</p>
             </div>
             <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Answer</h4>
                 <p>Pydantic models define the structure and types of data, enabling FastAPI to automatically perform data validation, serialization, and generate documentation for request bodies and responses.</p>
             </div>
@@ -37,10 +55,16 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>What is automatic interactive documentation in FastAPI?</p>
             </div>
             <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Answer</h4>
                 <p>FastAPI automatically generates interactive API documentation (e.g., Swagger UI, ReDoc) based on the API code, allowing developers to explore and test endpoints directly from a browser.</p>
             </div>
@@ -48,10 +72,16 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>Explain the concept of Dependency Injection in FastAPI.</p>
             </div>
             <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Answer</h4>
                 <p>Dependency Injection in FastAPI is a system where dependencies (functions or classes providing resources like database sessions or common parameters) are automatically provided to path operation functions, promoting modular and testable code.</p>
             </div>
@@ -59,44 +89,50 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>Illustrate FastAPI Request-Response Flow with Pydantic Validation.</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
-                    View Diagram
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
                 </button>
                 <h4>Answer</h4>
                 <pre class="mermaid">
-graph TD
-    A[Client Request] --> B[FastAPI Application];
-    B --> C{Pydantic Validation};
-    C -- Valid Data --> D[Path Operation Function];
-    C -- Invalid Data --> E[Return Validation Error];
-    D --> F[Process Logic];
-    F --> G[Return Response];
-    G --> B;
-    B --> H[Client Receives Response];
+    graph TD
+        A[Client Request] --> B[FastAPI Application];
+        B --> C{Pydantic Validation};
+        C -- Valid Data --> D[Path Operation Function];
+        C -- Invalid Data --> E[Return Validation Error];
+        D --> F[Process Logic];
+        F --> G[Return Response];
+        G --> B;
+        B --> H[Client Receives Response];
                 </pre>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>Illustrate FastAPI Dependency Injection.</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
-                    View Diagram
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
                 </button>
                 <h4>Answer</h4>
                 <pre class="mermaid">
-graph LR
-    A[Client Request] --> B[FastAPI Endpoint];
-    B -- Requires --> C[Dependency Function];
-    C -- Provides --> B;
-    B --> D["Process Request"];
+    graph LR
+        A[Client Request] --> B[FastAPI Endpoint];
+        B -- Requires --> C[Dependency Function];
+        C -- Provides --> B;
+        B --> D["Process Request"];
                 </pre>
             </div>
         </div>

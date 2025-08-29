@@ -4,37 +4,46 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>Describe the concept of the Testing Pyramid.</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
-                    View Diagram
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
                 </button>
                 <h4>Answer</h4>
                 <p>The Testing Pyramid suggests having many fast, isolated unit tests at the base, fewer integration tests in the middle, and even fewer slow, comprehensive end-to-end tests at the top.</p>
                 <pre class="mermaid">
-graph TD
-    A["End-to-End Tests (Few, Slow)"]
-    B["Integration Tests (More, Medium Speed)"]
-    C["Unit Tests (Many, Fast)"]
+    graph TD
+        A["End-to-End Tests (Few, Slow)"]
+        B["Integration Tests (More, Medium Speed)"]
+        C["Unit Tests (Many, Fast)"]
 
-    C --> B;
-    B --> A;
+        C --> B;
+        B --> A;
 
-    style A fill:#fcc,stroke:#333,stroke-width:2px
-    style B fill:#f99,stroke:#333,stroke-width:2px
-    style C fill:#f66,stroke:#333,stroke-width:2px
+        style A fill:#fcc,stroke:#333,stroke-width:2px
+        style B fill:#f99,stroke:#333,stroke-width:2px
+        style C fill:#f66,stroke:#333,stroke-width:2px
                 </pre>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>What is the primary goal of a unit test?</p>
             </div>
             <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Answer</h4>
                 <p>The primary goal of a unit test is to test individual functions or methods in isolation, providing fast and precise feedback on their correctness.</p>
             </div>
@@ -42,52 +51,64 @@ graph TD
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>When would you use mocking in your tests?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
-                    View Diagram
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
                 </button>
                 <h4>Answer</h4>
                 <p>Mocking is used in unit tests to replace real objects (e.g., external APIs, databases) with controlled, fake objects, ensuring tests are fast, isolated, and predictable.</p>
                 <pre class="mermaid">
-graph LR
-    A["Component Under Test"] --> B{"Real Dependency?"};
-    B -- Yes (Integration Test) --> C[Real Dependency];
-    B -- No (Unit Test) --> D[Mock Object];
-    D -- Simulates Behavior --> A;
+    graph LR
+        A["Component Under Test"] --> B{"Real Dependency?"};
+        B -- Yes (Integration Test) --> C[Real Dependency];
+        B -- No (Unit Test) --> D[Mock Object];
+        D -- Simulates Behavior --> A;
                 </pre>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>What problem do Testcontainers solve for integration testing?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
-                    View Diagram
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
                 </button>
                 <h4>Answer</h4>
                 <p>Testcontainers provide lightweight, throwaway instances of real services (like databases or message queues) in Docker containers, enabling realistic, isolated, and consistent integration tests.</p>
                 <pre class="mermaid">
-graph TD
-    A[Test Code] --> B[Testcontainers Library];
-    B --> C[Docker Daemon];
-    C --> D["Ephemeral Docker Container (e.g., PostgreSQL)"];
-    D -- "Provides Service" --> A;
+    graph TD
+        A[Test Code] --> B[Testcontainers Library];
+        B --> C[Docker Daemon];
+        C --> D["Ephemeral Docker Container (e.g., PostgreSQL)"];
+        D -- "Provides Service" --> A;
                 </pre>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>What is the main difference between unit and integration tests?</p>
             </div>
             <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Answer</h4>
                 <p>Unit tests focus on isolated components, while integration tests verify the interactions between multiple components or services.</p>
             </div>

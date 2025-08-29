@@ -4,10 +4,16 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>What is the primary goal of observability in cloud-native systems?</p>
             </div>
             <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Answer</h4>
                 <p>Observability helps you understand *why* a system is broken by allowing you to ask arbitrary questions about its internal state, unlike traditional monitoring which tells you *if* something is broken.</p>
             </div>
@@ -15,30 +21,39 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>What are the three pillars of observability?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
-                    View Diagram
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
                 </button>
                 <h4>Answer</h4>
                 <p>The three pillars of observability are Logs, Metrics, and Traces.</p>
                 <pre class="mermaid">
-graph TD
-    A[Observability] --> B(Logs);
-    A --> C(Metrics);
-    A --> D(Traces);
+    graph TD
+        A[Observability] --> B(Logs);
+        A --> C(Metrics);
+        A --> D(Traces);
                 </pre>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>Why is structured logging preferred over unstructured text logs in distributed systems?</p>
             </div>
             <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Answer</h4>
                 <p>Structured logging (e.g., JSON format) makes logs machine-readable, easier to parse, query, and analyze, which is crucial for managing logs in complex distributed systems.</p>
             </div>
@@ -46,10 +61,16 @@ graph TD
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>What is Distributed Tracing and what problem does it solve?</p>
             </div>
             <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Answer</h4>
                 <p>Distributed Tracing tracks the journey of a single request as it propagates through multiple services in a distributed system, helping to identify performance bottlenecks and debug complex interactions.</p>
             </div>
@@ -57,10 +78,16 @@ graph TD
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>What is OpenTelemetry?</p>
             </div>
             <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Answer</h4>
                 <p>OpenTelemetry is a vendor-neutral set of APIs, SDKs, and tools for instrumenting, generating, collecting, and exporting telemetry data (traces, metrics, and logs).</p>
             </div>
@@ -68,48 +95,54 @@ graph TD
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>Illustrate Prometheus Metrics Collection Architecture.</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
-                    View Diagram
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
                 </button>
                 <h4>Answer</h4>
                 <pre class="mermaid">
-graph LR
-    App1[Application 1] -- Exposes Metrics --> Prometheus[Prometheus Server];
-    App2[Application 2] -- Exposes Metrics --> Prometheus;
-    Prometheus -- Stores --> TimeSeriesDB[Time-Series Database];
-    Prometheus -- Alerts --> Alertmanager[Alertmanager];
-    Prometheus -- Queries --> Grafana["Grafana (Visualization)"];
+    graph LR
+        App1[Application 1] -- Exposes Metrics --> Prometheus[Prometheus Server];
+        App2[Application 2] -- Exposes Metrics --> Prometheus;
+        Prometheus -- Stores --> TimeSeriesDB[Time-Series Database];
+        Prometheus -- Alerts --> Alertmanager[Alertmanager];
+        Prometheus -- Queries --> Grafana["Grafana (Visualization)"];
                 </pre>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
                 <h4>Question</h4>
                 <p>Illustrate Distributed Tracing with OpenTelemetry and Jaeger.</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-info view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal">
-                    View Diagram
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
                 </button>
                 <h4>Answer</h4>
                 <pre class="mermaid">
-graph TD
-    Client[Client Request] --> ServiceA["Service A (Instrumented)"];
-    ServiceA --> ServiceB["Service B (Instrumented)"];
-    ServiceB --> ServiceC["Service C (Instrumented)"];
-    ServiceC --> ServiceA;
+    graph TD
+        Client[Client Request] --> ServiceA["Service A (Instrumented)"];
+        ServiceA --> ServiceB["Service B (Instrumented)"];
+        ServiceB --> ServiceC["Service C (Instrumented)"];
+        ServiceC --> ServiceA;
 
-    ServiceA -- Exports Spans --> OTelCollector[OpenTelemetry Collector];
-    ServiceB -- Exports Spans --> OTelCollector;
-    ServiceC -- Exports Spans --> OTelCollector;
+        ServiceA -- Exports Spans --> OTelCollector[OpenTelemetry Collector];
+        ServiceB -- Exports Spans --> OTelCollector;
+        ServiceC -- Exports Spans --> OTelCollector;
 
-    OTelCollector -- "Forwards Traces" --> Jaeger["Jaeger Backend"];
-    Jaeger --> JaegerUI["Jaeger UI (Visualization)"];
+        OTelCollector -- "Forwards Traces" --> Jaeger["Jaeger Backend"];
+        Jaeger --> JaegerUI["Jaeger UI (Visualization)"];
                 </pre>
             </div>
         </div>
