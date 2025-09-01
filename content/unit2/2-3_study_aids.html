@@ -1,2 +1,106 @@
-<h1>Study Aids for 2.3: Concurrency: The Go Philosophy</h1>
-<p>Coming soon...</p>
+<h2>Study Aids: Concurrency: The Go Philosophy</h2>
+
+<div class="card mb-4">
+    <div class="card-header">
+        Key Takeaways
+    </div>
+    <div class="card-body">
+        <ul>
+            <li><strong>Go's Concurrency Philosophy:</strong> Go encourages a pattern of "sharing memory by communicating" via channels, rather than the traditional approach of "communicating by sharing memory" which requires complex locks and mutexes.</li>
+            <li><strong>Goroutines are Lightweight:</strong> A goroutine is a lightweight thread of execution managed by the Go runtime. They are cheap to create, and you can run hundreds of thousands of them concurrently. They are started simply by using the `go` keyword.</li>
+            <li><strong>Channels for Communication & Synchronization:</strong> Channels are typed conduits that allow goroutines to safely send and receive data. Their blocking nature provides a powerful and simple mechanism for synchronization.</li>
+            <li><strong>The `select` Statement for Advanced Control:</strong> The `select` statement allows a goroutine to wait on multiple channel operations at once, making it a powerful tool for implementing timeouts and managing complex interactions between concurrent processes.</li>
+        </ul>
+    </div>
+</div>
+
+<div id="flashcards-section">
+    <div class="flashcards-container">
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is the core philosophy of concurrency in Go?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>"Do not communicate by sharing memory; instead, share memory by communicating." This means using channels to pass data between goroutines rather than using locks to protect shared data.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is a goroutine?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>A goroutine is a lightweight thread of execution managed by the Go runtime, not the OS. They are cheap to create and are started by calling a function with the `go` keyword.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What are the two primary functions of a channel in Go?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>1. <strong>Communication:</strong> To pass data safely between goroutines. <br>2. <strong>Synchronization:</strong> To coordinate the execution of goroutines, because send/receive operations are blocking by default.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What problem does the `select` statement solve?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>The `select` statement allows a single goroutine to wait on multiple channel communication operations simultaneously. It blocks until one of its cases can proceed, enabling patterns like timeouts and non-blocking operations.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>Briefly describe the Fan-Out, Fan-In concurrency pattern.</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>It's a pattern to parallelize work. **Fan-Out:** A producer distributes jobs to multiple worker goroutines. **Fan-In:** A consumer collects the results from all the workers into a single channel.</p>
+            </div>
+        </div>
+
+    </div>
+</div>
