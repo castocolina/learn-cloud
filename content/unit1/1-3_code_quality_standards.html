@@ -39,8 +39,8 @@
     </p>
 
     <h4>Installation</h4>
-    <p>You can install Black using pip:</p>
-    <pre><code class="language-bash">pip install black</code></pre>
+    <p>You can install Black as a development dependency using Poetry:</p>
+    <pre><code class="language-bash">poetry add black --group dev</code></pre>
 
     <h4>Usage Example</h4>
     <p>Consider this poorly formatted Python code in a file named <code>messy_code.py</code>:</p>
@@ -97,7 +97,7 @@ data = {"key1": "value1", "key2": "value2"}
     </ul>
 
     <h4>Installation</h4>
-    <pre><code class="language-bash">pip install ruff</code></pre>
+    <pre><code class="language-bash">poetry add ruff --group dev</code></pre>
 
     <h4>Usage Example</h4>
     <p>Let's create a file <code>buggy_code.py</code> with some common issues:</p>
@@ -137,14 +137,33 @@ Found 3 errors.
 
     <hr/>
 
+    <h3>Centralized Configuration with <code>pyproject.toml</code></h3>
+    <p>To ensure that Black and Ruff behave consistently for every developer and in your CI/CD pipeline, you should configure them in your <code>pyproject.toml</code> file. This keeps all project configuration in one place.</p>
+    <p>You can add a <code>[tool.black]</code> and <code>[tool.ruff]</code> section to your <code>pyproject.toml</code>:</p>
+    <pre><code class="language-toml">
+# ... other pyproject.toml content ...
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+
+[tool.ruff]
+line-length = 88
+select = ["E", "F", "W", "I", "UP", "S"] # Select which rules to enable
+ignore = ["E501"] # Ignore specific rules (line length is handled by Black)
+
+target-version = "py311"
+    </code></pre>
+    <p>By defining this configuration, you guarantee that running <code>black .</code> and <code>ruff check .</code> will use the same settings everywhere, ensuring consistency across the board.</p>
+
     <h2>Integration and Workflow with Pre-commit</h2>
     <p>
         To ensure these checks are run consistently without relying on developers to remember, we can automate them using <strong>pre-commit hooks</strong>. These are scripts that run automatically before a commit is created.
     </p>
     <p>
-        The <a href="https://pre-commit.com/" target="_blank">pre-commit framework</a> makes this easy to manage. First, install it:
+        The <a href="https://pre-commit.com/" target="_blank">pre-commit framework</a> makes this easy to manage. First, install it as a development dependency:
     </p>
-    <pre><code class="language-bash">pip install pre-commit</code></pre>
+    <pre><code class="language-bash">poetry add pre-commit --group dev</code></pre>
     <p>
         Next, create a file named <code>.pre-commit-config.yaml</code> in the root of your project with the following content:
     </p>
@@ -177,26 +196,33 @@ repos:
     <div class="text-center my-4">
         <pre class="mermaid">
             graph TD
-                A[Developer Writes Python Code] --> B(PEP 8: Python Style Guide);
-                B --> C{Automated Code Quality Tools};
-                C --> D[Black: Opinionated Formatter];
-                C --> E[Ruff: Fast Linter & Formatter];
-                D --> F["Formatted Code (PEP 8 Adherent)"];
-                E --> G["Linted Code (Issues Identified/Fixed)"];
-                F --> G;
-                G --> H[High-Quality, Consistent Python Code];
-
-                subgraph "Tools"
-                    D
-                    E
+                subgraph Developer Workflow
+                    A[1. Developer writes code] --> B{2. Runs `git commit`};
                 end
 
-                style B fill:#f9f,stroke:#333,stroke-width:2px
-                style D fill:#ccf,stroke:#333,stroke-width:2px
-                style E fill:#ccf,stroke:#333,stroke-width:2px
-                style H fill:#cfc,stroke:#333,stroke-width:2px
+                subgraph Pre-commit Hook Execution
+                    B -- Triggers --> C{pre-commit};
+                    C -- Runs Hooks from .pre-commit-config.yaml --> D[Ruff Check & Fix];
+                    D --> E[Black Formatting];
+                end
+
+                subgraph Commit Outcome
+                    E -- "If files were modified" --> F((Commit Aborted));
+                    F --> G[3. Developer reviews and stages changes];
+                    G --> B;
+                    E -- "If no files were modified" --> H((Commit Successful));
+                end
+
+                H --> I[4. Code pushed to repository];
+
+                classDef dev fill:#f9f,stroke:#333,stroke-width:2px;
+                classDef hook fill:#ccf,stroke:#333,stroke-width:2px;
+                classDef outcome fill:#cfc,stroke:#333,stroke-width:2px;
+                class A,B,G dev;
+                class C,D,E hook;
+                class F,H,I outcome;
         </pre>
-        <small class="text-muted">Diagram: Automated Python Code Quality Workflow</small>
+        <small class="text-muted">Diagram: The Pre-commit Git Hook Workflow</small>
     </div>
 
 </div>

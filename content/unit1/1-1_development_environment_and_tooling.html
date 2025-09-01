@@ -12,7 +12,7 @@
     <li><strong>Global Default:</strong> Set a default Python version for your user account.</li>
     <li><strong>Seamless Switching:</strong> No manual path manipulation is needed. It just works.</li>
 </ul>
-<p>You can find installation instructions at the official <a href="https://github.com/pyenv/pyenv#installation" target="_blank">pyenv GitHub repository</a>. Once installed, setting up a new project with a specific Python version is simple:</p>
+<p>You can find installation instructions at the official <a href="https://github.com/pyenv/pyenv#installation" target="_blank"><i class="bi bi-github"></i> pyenv GitHub repository</a>. Once installed, setting up a new project with a specific Python version is simple:</p>
 <pre><code class="language-bash"># Install a specific Python version
 pyenv install 3.11.5
 
@@ -65,10 +65,41 @@ poetry shell
 python my_cloud_project/main.py</code></pre>
 <p>This workflow creates and manages a virtual environment automatically, tied to your project. The `pyproject.toml` file is the heart of your project's configuration.</p>
 
+<h4>Anatomy of <code>pyproject.toml</code></h4>
+<p>The <code>pyproject.toml</code> file is declarative and centralizes your project's metadata and dependencies. Here is a typical example:</p>
+<pre><code class="language-toml">[tool.poetry]
+name = "my-cloud-project"
+version = "0.1.0"
+description = "A sample cloud-native project."
+authors = ["Your Name <you@example.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.103.2"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"</code></pre>
+<ul>
+    <li><code>[tool.poetry]</code>: Contains general information about your project.</li>
+    <li><code>[tool.poetry.dependencies]</code>: Lists all the packages required for your application to run in production. The <code>^</code> symbol is a version constraint that means "compatible with". For example, <code>^3.11</code> means any version from 3.11.0 up to (but not including) 4.0.0.</li>
+    <li><code>[tool.poetry.group.dev.dependencies]</code>: A dedicated section for development-only dependencies, such as testing frameworks or linters. These are not installed in a production environment.</li>
+    <li><code>[build-system]</code>: Specifies how the project should be built. This section is managed by Poetry and generally does not need to be edited manually.</li>
+</ul>
+<div class="alert alert-info"><strong>Note on Activating Environments:</strong> While <code>poetry shell</code> spawns a new shell with the virtual environment activated (convenient for manual commands), it's not the only way to use the environment. Modern IDEs like VS Code and PyCharm will automatically detect and use the Poetry environment for your project. Additionally, you can run any command within the project's environment using <code>poetry run</code> (e.g., <code>poetry run pytest</code>). This is especially useful for scripts and CI/CD pipelines.</div>
+
 <hr>
 
-<h3>IDE Integration: Visual Studio Code</h3>
-<p>A powerful IDE is crucial for productivity. While PyCharm is an excellent choice, we recommend <strong>Visual Studio Code (VS Code)</strong> due to its lightweight nature, powerful extensions, and seamless integration with Docker and cloud platforms.</p>
+<h3>IDE Integration: VS Code and PyCharm</h3>
+<p>A powerful IDE is crucial for productivity. Both Visual Studio Code (VS Code) and PyCharm are top-tier choices with excellent Python support. We will cover both.</p>
+
+<h4>Visual Studio Code</h4>
+<p>We recommend <strong>Visual Studio Code (VS Code)</strong> due to its lightweight nature, powerful extensions, and seamless integration with Docker and cloud platforms.</p>
 <p>For a world-class Python experience in VS Code, install these extensions:</p>
 <ul>
     <li><a href="https://marketplace.visualstudio.com/items?itemName=ms-python.python" target="_blank"><strong>Python (Microsoft)</strong></a>: The official extension, providing core support for debugging, environment selection, and more.</li>
@@ -77,16 +108,98 @@ python my_cloud_project/main.py</code></pre>
 </ul>
 <p>When you open a Poetry-managed project in VS Code, it will automatically detect the virtual environment, giving you access to all installed dependencies and the correct Python interpreter.</p>
 
+<h4>PyCharm</h4>
+<p>PyCharm offers a more integrated, "batteries-included" experience. Recent versions of PyCharm (2021.3 and newer) have built-in support for Poetry, making the integration seamless.</p>
+<p><strong>For New Projects:</strong></p>
+<ol>
+    <li>In the "New Project" window, choose "Poetry" as the environment type.</li>
+    <li>Select a base Python interpreter.</li>
+    <li>PyCharm will automatically detect your Poetry executable and create the project with a <code>pyproject.toml</code> file and a Poetry virtual environment.</li>
+</ol>
+<p><strong>For Existing Projects:</strong></p>
+<ol>
+    <li>Go to <code>File > Settings > Project: [your_project] > Python Interpreter</code>.</li>
+    <li>Click the gear icon and select "Add...".</li>
+    <li>Choose "Poetry Environment" and select "Existing environment". PyCharm will typically autodetect the correct environment.</li>
+</ol>
+<p>Once configured, you can manage dependencies directly through PyCharm's UI or by using the integrated terminal with standard <code>poetry</code> commands.</p>
+
 <hr>
 
 <h3>Containerization with Docker</h3>
 <p>As stated in the introduction, proficiency with Docker is assumed. In cloud-native development, Docker isn't just for deployment; it's a core part of the development loop. It guarantees that your application runs in a consistent, isolated environment, whether on your laptop or in a Kubernetes pod.</p>
-<p>We will delve deeper into creating optimized Dockerfiles for Python applications in a later topic. For now, understand that Docker provides the crucial consistency needed for cloud-native environments.</p>
+
+<div class="text-center my-4">
+    <pre class="mermaid">
+        graph TB
+            Dev[Local Development] --> DockerImage[Docker Image];
+            DockerImage --> CI[CI/CD Pipeline];
+            CI --> Prod[Production Environment];
+            Dev -- "Consistent Environment" --> DockerImage;
+            DockerImage -- "Consistent Environment" --> CI;
+            CI -- "Consistent Environment" --> Prod;
+            style DockerImage fill:#ccf,stroke:#333,stroke-width:2px
+    </pre>
+    <small class="text-muted">Diagram: Docker for Environment Consistency</small>
+</div>
+
+<p>While we will delve deeper into creating optimized, multi-stage Dockerfiles later, here is a basic example of a <code>Dockerfile</code> for a Poetry-based Python application. This file would be placed at the root of your project.</p>
+
+<pre><code class="language-dockerfile"># 1. Use an official Python runtime as a parent image
+FROM python:3.11-slim
+
+# 2. Set the working directory in the container
+WORKDIR /app
+
+# 3. Install Poetry
+RUN pip install poetry
+
+# 4. Copy only the dependency files to leverage Docker cache
+COPY poetry.lock pyproject.toml ./
+
+# 5. Install dependencies
+RUN poetry install --no-root --no-dev
+
+# 6. Copy the rest of the application code
+COPY . .
+
+# 7. Command to run the application
+CMD ["poetry", "run", "python", "my_project/main.py"]</code></pre>
+
+<p>This <code>Dockerfile</code> demonstrates several best practices:</p>
+<ul>
+    <li>Using a slim base image to keep the final image size down.</li>
+    <li>Copying only dependency-related files first to take advantage of Docker's layer caching. If these files don't change, Docker won't re-run the dependency installation step.</li>
+    <li>Installing dependencies without the project's root package and without development dependencies, which is ideal for a production environment.</li>
+</ul>
 
 <hr>
 
 <h3>Putting It All Together: A Starter Workflow</h3>
 <p>Let's combine everything into a single, repeatable workflow for starting a new cloud-native Python service.</p>
+
+<div class="text-center my-4">
+    <pre class="mermaid">
+        graph TD
+            A[Start] --> B{Set Python Version};
+            B --> C{Create Project};
+            C --> D{Add Dependencies};
+            D --> E{Write Code};
+            E --> F{Test Code};
+            F --> G((Commit to Git));
+            G --> H((Deploy));
+
+            subgraph Tooling
+                B -- "pyenv local 3.11.5" --> B
+                C -- "poetry new my-service" --> C
+                D -- "poetry add fastapi" --> D
+                E -- "IDE (VS Code/PyCharm)" --> E
+                F -- "poetry run pytest" --> F
+            end
+    </pre>
+    <small class="text-muted">Diagram: Development Workflow</small>
+</div>
+
 <ol>
     <li><strong>Set Python Version:</strong><br><code>pyenv install 3.11.5 && pyenv local 3.11.5</code></li>
     <li><strong>Create Project with Poetry:</strong><br><code>poetry new my-service && cd my-service</code></li>

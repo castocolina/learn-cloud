@@ -77,21 +77,46 @@ user_id, email, created_at = db_record
         <div class="text-center my-4">
             <pre class="mermaid">
                 graph TD
-                    subgraph Python Data Structures
-                        A[Dictionary] --> B{Key 1};
-                        B --> C[Value 1];
-                        A --> D{Key 2};
-                        D --> E[Value 2];
+                    subgraph Core Python Data Structures
+                        direction LR
 
-                        F[List] --> G[0: Element 1];
-                        G --> H[1: Element 2];
+                        subgraph Sequence Types
+                            List["List<br>(Mutable, Ordered)<br>[1, 2, 3]"]
+                            Tuple["Tuple<br>(Immutable, Ordered)<br>(1, 2, 3)"]
+                        end
 
-                        I[Tuple] --> J("(0: Element 1)");
-                        J --> K("(1: Element 2)");
+                        subgraph Mapping Type
+                            Dict["Dictionary<br>(Mutable, Unordered*)<br>{'key': 'value'}"]
+                        end
+
+                        subgraph Set Types
+                            Set["Set<br>(Mutable, Unordered)<br>{1, 2, 3}"]
+                            Frozenset["Frozenset<br>(Immutable, Unordered)<br>frozenset({1, 2, 3})"]
+                        end
                     end
+                    classDef mutable fill:#e6fffa,stroke:#333,stroke-width:2px;
+                    classDef immutable fill:#ffebe6,stroke:#333,stroke-width:2px;
+                    class List,Dict,Set mutable
+                    class Tuple,Frozenset immutable
             </pre>
-            <small class="text-muted">Diagram: Core Python Data Structures</small>
+            <small class="text-muted">Diagram: Core Python Data Structures. *Dictionaries are ordered in Python 3.7+.</small>
         </div>
+
+        <h4>Control Flow</h4>
+        <p>Python's control flow statements (<code>if</code>, <code>for</code>, <code>while</code>) are straightforward. A feature particularly useful in backend logic is the <code>for...else</code> loop, which is often underutilized. The <code>else</code> block executes only if the loop completes without hitting a <code>break</code> statement.</p>
+        <pre><code class="language-python">
+# Example of a for...else loop to find a user
+users = [{"id": 1, "name": "Alice"}, {"id": 2, "name": "Bob"}]
+user_id_to_find = 3
+
+for user in users:
+    if user["id"] == user_id_to_find:
+        print(f"Found user: {user['name']}")
+        break
+else:
+    # This block runs only if the loop finishes without a break
+    print(f"User with id {user_id_to_find} not found.")
+        </code></pre>
 
         <h4>Functions and Classes</h4>
         <p>Python's support for both functional and object-oriented programming provides flexibility. In cloud applications, you'll use functions for stateless operations (like in serverless functions) and classes to model complex entities and business logic.</p>
@@ -177,41 +202,73 @@ def get_user_by_id(user_id: int) -> Optional[Dict[str, any]]:
 
         <p>Let's see a practical example. Imagine you are defining the data model for a user profile in an API.</p>
         <pre><code class="language-python">
-from pydantic import BaseModel, EmailStr, HttpUrl
+from pydantic import BaseModel, EmailStr, HttpUrl, ValidationError
 from typing import List, Optional
 from datetime import datetime
 
+# Define a data model using a Pydantic BaseModel
 class UserProfile(BaseModel):
     username: str
-    email: EmailStr  # Pydantic provides special types for common formats
+    email: EmailStr  # Built-in validation for email formats
     join_date: datetime
-    bio: Optional[str] = None # An optional field with a default of None
-    website: Optional[HttpUrl] = None
-    tags: List[str] = [] # A list that defaults to empty
+    bio: Optional[str] = None
+    website: Optional[HttpUrl] = None # Built-in validation for URLs
+    tags: List[str] = []
 
-# Example of creating a valid user profile
-# Pydantic will automatically convert the string date to a datetime object
+# --- 1. Successful Validation ---
+# Input data as a dictionary (e.g., from a JSON request body)
 valid_data = {
     "username": "cloud_ninja",
     "email": "ninja@example.com",
-    "join_date": "2023-10-27T12:00:00Z",
+    "join_date": "2023-10-27T12:00:00Z", # Pydantic automatically parses ISO 8601 strings to datetime objects
     "website": "https://example.com"
 }
-user_profile = UserProfile(**valid_data)
-print(user_profile.json(indent=2))
 
-# Example of invalid data that Pydantic will reject
+# Create an instance of the model
+# Pydantic validates the data during instantiation
+user_profile = UserProfile(**valid_data)
+
+# Pydantic provides a .json() method for easy serialization
+print("--- Valid Profile JSON Output ---")
+print(user_profile.json(indent=2))
+# Output:
+# {
+#   "username": "cloud_ninja",
+#   "email": "ninja@example.com",
+#   "join_date": "2023-10-27T12:00:00+00:00",
+#   "bio": null,
+#   "website": "https://example.com/",
+#   "tags": []
+# }
+
+
+# --- 2. Failed Validation ---
 invalid_data = {
     "username": "bad_user",
-    "email": "not-an-email", # This will raise a validation error
-    "join_date": "yesterday" # This is not a valid ISO 8601 date
+    "email": "not-an-email",  # This will be flagged as an invalid email
+    "join_date": "yesterday"   # This is not a valid ISO 8601 date
 }
 
 try:
+    # Attempt to create a model with invalid data
     UserProfile(**invalid_data)
-except Exception as e:
+except ValidationError as e:
+    # Pydantic raises a specific ValidationError with detailed information
     print("\n--- Pydantic Validation Error ---")
-    print(e)
+    print(e.json(indent=2))
+# Output:
+# [
+#   {
+#     "loc": ["email"],
+#     "msg": "value is not a valid email address",
+#     "type": "value_error.email"
+#   },
+#   {
+#     "loc": ["join_date"],
+#     "msg": "invalid datetime format",
+#     "type": "value_error.datetime"
+#   }
+# ]
         </code></pre>
         <p>By using Pydantic, you get data validation, serialization (e.g., to JSON), and documentation all in one place, making your code cleaner, more robust, and easier to maintain.</p>
         

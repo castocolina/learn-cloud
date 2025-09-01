@@ -23,26 +23,32 @@
     <div class="text-center my-4">
         <pre class="mermaid">
             graph TD
-                subgraph CPU-Bound Task
-                    A[Thread 1: Compute] --> B{GIL Acquired};
-                    B --> C[Execute Python Code];
-                    C --> D{"GIL Released (briefly)"};
-                    D --> A;
+                subgraph Multi-Core CPU
+                    Core1[Core 1]
+                    Core2[Core 2]
                 end
 
-                subgraph I/O-Bound Task
-                    X[Thread 2: Network Request] --> Y{GIL Acquired};
-                    Y --> Z[Initiate I/O Operation];
-                    Z --> W{"GIL Released (during I/O wait)"};
-                    W --> X;
+                subgraph Python Threads
+                    Thread1[Thread 1: I/O Bound]
+                    Thread2[Thread 2: I/O Bound]
+                    Thread3[Thread 3: CPU Bound]
                 end
 
-                style A fill:#f9f,stroke:#333,stroke-width:2px
-                style X fill:#ccf,stroke:#333,stroke-width:2px
-                style C fill:#f9f,stroke:#333,stroke-width:2px
-                style Z fill:#ccf,stroke:#333,stroke-width:2px
+                GIL((Global Interpreter Lock))
+
+                Thread1 -- Waiting for Network --> GIL_Released{GIL is Released};
+                Thread2 -- Waiting for Disk --> GIL_Released;
+                GIL_Released -- Allows other threads to run --> Thread3;
+                Thread3 -- Acquires GIL --> Core1;
+                
+                Core2 -- Remains Idle for Python Code --> Core2;
+
+                linkStyle 0 stroke-width:2px,fill:none,stroke:green;
+                linkStyle 1 stroke-width:2px,fill:none,stroke:green;
+                linkStyle 2 stroke-width:2px,fill:none,stroke:blue;
+                linkStyle 3 stroke-width:2px,fill:none,stroke:red;
         </pre>
-        <small class="text-muted">Diagram: GIL Impact on CPU-bound vs. I/O-bound Tasks</small>
+        <small class="text-muted">Diagram: How the GIL allows concurrency for I/O-bound tasks.</small>
     </div>
 
     <h3>1. Concurrency with the <code>threading</code> Module</h3>
@@ -61,15 +67,27 @@ urls = [
 ]
 
 def fetch_url(url):
-    requests.get(url)
-    print(f"Fetched {url}")
+    """A simple function to fetch a URL and print a message."""
+    try:
+        # Make the HTTP GET request
+        response = requests.get(url, timeout=5) # Set a timeout
+        print(f"Fetched {url} with status {response.status_code}")
+    except requests.RequestException as e:
+        print(f"Failed to fetch {url}: {e}")
 
-# Sequential execution
+# --- Sequential Execution ---
+print("--- Starting Sequential Fetch ---")
 start_time = time.time()
 for url in urls:
     fetch_url(url)
 end_time = time.time()
 print(f"Sequential execution took: {end_time - start_time:.2f} seconds")
+# Expected Output (will vary):
+# --- Starting Sequential Fetch ---
+# Fetched https://www.python.org with status 200
+# Fetched https://www.sqlalchemy.org with status 200
+# Fetched https://fastapi.tiangolo.com with status 200
+# Sequential execution took: 1.50 seconds
     </code></pre>
 
     <p>Now, let's parallelize this using a <code>ThreadPoolExecutor</code>, which manages a pool of threads for us.</p>
@@ -80,12 +98,21 @@ from concurrent.futures import ThreadPoolExecutor
 
 # ... (urls and fetch_url function are the same)
 
-# Concurrent execution with threads
+# --- Concurrent Execution with Threads ---
+print("\n--- Starting Threaded Fetch ---")
 start_time = time.time()
-with ThreadPoolExecutor(max_workers=5) as executor:
+# The `with` statement ensures threads are cleaned up properly
+with ThreadPoolExecutor(max_workers=3) as executor:
+    # `map` applies the function to each item in the iterable
     executor.map(fetch_url, urls)
 end_time = time.time()
 print(f"Threaded execution took: {end_time - start_time:.2f} seconds")
+# Expected Output (will vary, and order is not guaranteed):
+# --- Starting Threaded Fetch ---
+# Fetched https://www.python.org with status 200
+# Fetched https://fastapi.tiangolo.com with status 200
+# Fetched https://www.sqlalchemy.org with status 200
+# Threaded execution took: 0.55 seconds
     </code></pre>
     <p>When you run this, you'll notice the threaded version is significantly faster because the network requests are performed concurrently. While one thread is waiting for a response from `python.org`, another can be sending a request to `sqlalchemy.org`.</p>
 
@@ -97,7 +124,7 @@ print(f"Threaded execution took: {end_time - start_time:.2f} seconds")
         This model, known as cooperative multitasking, can be much more efficient than threading for a very large number of I/O operations because it avoids the overhead of creating and managing threads.
     </p>
     <p>To use <code>asyncio</code> for network requests, we need an async-native HTTP library, as <code>requests</code> is blocking. <code>aiohttp</code> is a popular choice.</p>
-    <pre><code class="language-bash">pip install aiohttp</code></pre>
+    <pre><code class="language-bash">poetry add aiohttp</code></pre>
 
     <p>Here is the same URL fetching task implemented with <code>asyncio</code>:</p>
     <pre><code class="language-python">
@@ -105,24 +132,48 @@ import time
 import asyncio
 import aiohttp
 
-# ... (urls list is the same)
+# The list of URLs to fetch
+urls = [
+    "https://www.python.org",
+    "https://www.sqlalchemy.org",
+    "https://fastapi.tiangolo.com",
+]
 
+# `async def` defines a coroutine, a function that can be paused and resumed.
 async def fetch_url_async(session, url):
-    async with session.get(url) as response:
-        await response.text()
-        print(f"Fetched {url}")
+    """Asynchronously fetches a URL using aiohttp."""
+    # `async with` is used for asynchronous context managers.
+    try:
+        async with session.get(url, timeout=5) as response:
+            # `await` pauses the function until the I/O operation is complete.
+            await response.text() # We await reading the response body
+            print(f"Fetched {url} with status {response.status}")
+    except Exception as e:
+        print(f"Failed to fetch {url}: {e}")
+
 
 async def main():
+    """The main coroutine that orchestrates the tasks."""
+    # Create a single aiohttp session to be reused for all requests.
     async with aiohttp.ClientSession() as session:
+        # Create a list of tasks to run concurrently.
         tasks = [fetch_url_async(session, url) for url in urls]
+        # `asyncio.gather` runs all tasks in the list concurrently.
         await asyncio.gather(*tasks)
 
-# Asynchronous execution
+# --- Asynchronous Execution ---
+print("--- Starting Asyncio Fetch ---")
 start_time = time.time()
-# In Python 3.7+ you can just run asyncio.run(main())
+# `asyncio.run()` starts the event loop and runs the main coroutine.
 asyncio.run(main())
 end_time = time.time()
 print(f"Asyncio execution took: {end_time - start_time:.2f} seconds")
+# Expected Output (will vary, and order is not guaranteed):
+# --- Starting Asyncio Fetch ---
+# Fetched https://www.python.org with status 200
+# Fetched https://fastapi.tiangolo.com with status 200
+# Fetched https://www.sqlalchemy.org with status 200
+# Asyncio execution took: 0.48 seconds
     </code></pre>
     <div class="alert alert-success">
         <strong>When to use <code>asyncio</code>?</strong> For new, high-performance backend services, especially when using modern frameworks like FastAPI or Starlette, <code>asyncio</code> is the recommended approach. It forms the foundation of Python's modern cloud-native ecosystem.
@@ -131,41 +182,25 @@ print(f"Asyncio execution took: {end_time - start_time:.2f} seconds")
     <div class="text-center my-4">
         <pre class="mermaid">
             graph TD
-                A[Python Program] --> B{Concurrency Need?};
-
-                subgraph Threading Module
-                    C[Threading] --> D[Multiple OS Threads];
-                    D --> E["GIL (Global Interpreter Lock)"];
-                    E -- "Prevents true CPU parallelism" --> F["Best for I/O-bound tasks (blocking I/O)"];
-                    F --> G[Context Switching by OS];
+                subgraph Threading
+                    direction LR
+                    T1[Thread 1] -- Blocks on I/O --> T1_Wait[Waits...];
+                    T2[Thread 2] -- Runs while T1 waits --> T2_Exec[Executes];
+                    T1_Wait --> T1_Done[Resumes];
                 end
 
-                subgraph Asyncio Module
-                    H[Asyncio] --> I[Single OS Thread];
-                    I --> J[Event Loop];
-                    J --> K[Cooperative Multitasking];
-                    K --> L["Best for I/O-bound tasks (non-blocking I/O)"];
-                    L --> M[Context Switching by Coroutines];
+                subgraph Asyncio
+                    direction LR
+                    A1[Task 1] -- Awaits I/O --> A_Loop{Event Loop};
+                    A_Loop -- Runs other tasks --> A2[Task 2];
+                    A2 -- Awaits I/O --> A_Loop;
+                    A_Loop -- Resumes Task 1 when ready --> A1_Done[Task 1 Resumes];
                 end
 
-                B -- "CPU-bound (limited by GIL)" --> C;
-                B -- "I/O-bound (efficient)" --> H;
-
-                style A fill:#f9f,stroke:#333,stroke-width:2px
-                style B fill:#ccf,stroke:#333,stroke-width:2px
-                style C fill:#fcf,stroke:#333,stroke-width:2px
-                style H fill:#cfc,stroke:#333,stroke-width:2px
-                style D fill:#fcc,stroke:#333,stroke-width:2px
-                style I fill:#cff,stroke:#333,stroke-width:2px
-                style E fill:#f99,stroke:#333,stroke-width:2px
-                style J fill:#9cf,stroke:#333,stroke-width:2px
-                style F fill:#fdd,stroke:#333,stroke-width:2px
-                style K fill:#9ff,stroke:#333,stroke-width:2px
-                style G fill:#fdd,stroke:#333,stroke-width:2px
-                style L fill:#9ff,stroke:#333,stroke-width:2px
-                style M fill:#9ff,stroke:#333,stroke-width:2px
+                style Threading fill:#fcf,stroke:#333,stroke-width:2px
+                style Asyncio fill:#cfc,stroke:#333,stroke-width:2px
         </pre>
-        <small class="text-muted">Diagram: Python Concurrency: Threading vs. Asyncio</small>
+        <small class="text-muted">Diagram: Threading (Preemptive) vs. Asyncio (Cooperative) Multitasking</small>
     </div>
 
     <hr/>
@@ -198,30 +233,54 @@ print(f"Asyncio execution took: {end_time - start_time:.2f} seconds")
 import time
 from functools import lru_cache
 
-@lru_cache(maxsize=128) # The maxsize parameter defines how many results to store
+@lru_cache(maxsize=128)
 def expensive_api_call(user_id: int):
-    """Simulates a slow function call, e.g., to an external API."""
-    print(f"Performing expensive call for user_id={user_id}...")
-    time.sleep(2) # Simulate a 2-second delay
+    """Simulates a slow function call that we want to cache."""
+    print(f"--> Performing expensive call for user_id={user_id}...")
+    time.sleep(2)  # Simulate a 2-second I/O wait
     return {"id": user_id, "data": f"Some data for {user_id}"}
 
-# --- First calls ---
+# --- First calls (will be slow and trigger the function body) ---
+print("--- First Round of Calls ---")
 start = time.time()
 print(expensive_api_call(1))
-print(f"Call 1 took {time.time() - start:.2f}s") # Will take ~2 seconds
+print(f"Call 1 took {time.time() - start:.2f}s\n")
 
 start = time.time()
 print(expensive_api_call(2))
-print(f"Call 2 took {time.time() - start:.2f}s") # Will take ~2 seconds
+print(f"Call 2 took {time.time() - start:.2f}s\n")
 
-# --- Subsequent calls with the same arguments ---
+# --- Subsequent calls (will be fast and return from cache) ---
+print("--- Second Round of Calls (Cached) ---")
 start = time.time()
-print(expensive_api_call(1)) # This is now cached
-print(f"Call 3 took {time.time() - start:.2f}s") # Will be almost instant!
+print(expensive_api_call(1))  # This is now cached
+print(f"Call 3 took {time.time() - start:.2f}s\n")
 
 start = time.time()
-print(expensive_api_call(2)) # This is also cached
-print(f"Call 4 took {time.time() - start:.2f}s") # Will be almost instant!
+print(expensive_api_call(2))  # This is also cached
+print(f"Call 4 took {time.time() - start:.2f}s\n")
+
+# You can inspect the cache's statistics
+print(expensive_api_call.cache_info())
+
+# Expected Output:
+# --- First Round of Calls ---
+# --> Performing expensive call for user_id=1...
+# {'id': 1, 'data': 'Some data for 1'}
+# Call 1 took 2.00s
+# 
+# --> Performing expensive call for user_id=2...
+# {'id': 2, 'data': 'Some data for 2'}
+# Call 2 took 2.00s
+# 
+# --- Second Round of Calls (Cached) ---
+# {'id': 1, 'data': 'Some data for 1'}
+# Call 3 took 0.00s
+# 
+# {'id': 2, 'data': 'Some data for 2'}
+# Call 4 took 0.00s
+# 
+# CacheInfo(hits=2, misses=2, maxsize=128, currsize=2)
     </code></pre>
     <div class="alert alert-warning">
         <strong>Limitations:</strong> The <code>lru_cache</code> is stored in the memory of a single Python process. It is not shared between different processes or servers and will be cleared if the application restarts. It is best used for caching the results of pure functions where the output depends only on the input arguments.

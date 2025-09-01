@@ -73,7 +73,7 @@ docker run --name postgres-db -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432
         The most popular library for connecting to PostgreSQL in Python is <code>psycopg2</code>.
     </p>
     <p>Install the library (the binary version is recommended for ease of installation):</p>
-    <pre><code class="language-bash">pip install psycopg2-binary</code></pre>
+    <pre><code class="language-bash">poetry add psycopg2-binary</code></pre>
 
     <p>The following example demonstrates how to securely query the database using a <strong>parameterized query</strong>. This is critical for preventing SQL injection.</p>
     <pre><code class="language-python">
@@ -117,53 +117,66 @@ def get_user_by_username(username: str):
 # You would need to create it first with a separate SQL script.
     </code></pre>
 
-    <h3>2. Relational Databases with an ORM (SQLAlchemy)</h3>
+    <h3>2. Relational Databases with an ORM (SQLAlchemy 2.0)</h3>
     <p>
-        An Object-Relational Mapper (ORM) abstracts away the SQL, allowing you to interact with your database using Python objects. This dramatically increases productivity and reduces boilerplate code. <strong>SQLAlchemy</strong> is the most powerful and widely used ORM in the Python ecosystem.
+        An Object-Relational Mapper (ORM) abstracts away the SQL, allowing you to interact with your database using Python objects. This dramatically increases productivity and reduces boilerplate code. <strong>SQLAlchemy</strong> is the most powerful and widely used ORM in the Python ecosystem. We will use the modern, type-annotated style introduced in SQLAlchemy 2.0.
     </p>
     <div class="text-center my-4">
         <pre class="mermaid">
-            graph LR
-                A[Application] -- Uses Objects --> B["ORM (e.g., SQLAlchemy)"];
-                B -- Generates SQL --> C[Relational Database];
+            graph TB
+                A[Application Code] -- Uses --> User(User Object);
+                User -- Interacts with --> B[ORM Session];
+                B -- Translates to --> SQL["SQL Queries (SELECT, INSERT, etc.)"];
+                SQL -- Executes on --> C[PostgreSQL Database];
+                C -- Returns Data --> SQL;
+                SQL -- Translates to --> B;
+                B -- Populates --> User;
         </pre>
         <small class="text-muted">Diagram: Application-ORM-Database Interaction</small>
     </div>
     <p>Install SQLAlchemy and the psycopg2 driver:</p>
-    <pre><code class="language-bash">pip install sqlalchemy psycopg2-binary</code></pre>
+    <pre><code class="language-bash">poetry add sqlalchemy psycopg2-binary</code></pre>
 
-    <p>Now, let's refactor the previous example using SQLAlchemy. Notice how we define a class that maps to our table, and then query it using object-oriented syntax.</p>
+    <p>Now, let's refactor the previous example using the SQLAlchemy 2.0 ORM style. Notice how we define a class with type hints that maps to our table.</p>
     <pre><code class="language-python">
-from sqlalchemy import create_engine, Column, Integer, String
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import create_engine, String, select
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, Session
+import os
 
 # --- Database Setup ---
 DB_URL = f"postgresql://postgres:{os.getenv('DB_PASSWORD', 'mysecretpassword')}@localhost/postgres"
 engine = create_engine(DB_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
 
-# --- ORM Model Definition ---
+# --- ORM Model Definition (SQLAlchemy 2.0 style) ---
+
+# 1. Create a base class for declarative models
+class Base(DeclarativeBase):
+    pass
+
+# 2. Define the User model with type annotations
 class User(Base):
     __tablename__ = "users"
-    user_id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)
-    email = Column(String, unique=True)
+
+    # Mapped columns with Python 3 type hints
+    user_id: Mapped[int] = mapped_column(primary_key=True)
+    username: Mapped[str] = mapped_column(String(50), unique=True, index=True)
+    email: Mapped[str] = mapped_column(String(100), unique=True)
+
+    def __repr__(self) -> str:
+        return f"User(id={self.user_id!r}, username={self.username!r})"
 
 # You would run this once to create the table
 # Base.metadata.create_all(bind=engine)
 
 # --- Data Access Logic ---
-def get_user_by_username_orm(username: str):
-    """Fetches a user using the SQLAlchemy ORM."""
-    db = SessionLocal()
-    try:
-        # The query is now a method call, not a raw SQL string.
-        user = db.query(User).filter(User.username == username).first()
+def get_user_by_username_orm(username: str) -> User | None:
+    """Fetches a user using the SQLAlchemy 2.0 ORM style."""
+    # Use a `with` statement for session management to ensure it's always closed
+    with Session(engine) as session:
+        # The `select` statement is more explicit and type-safe
+        statement = select(User).where(User.username == username)
+        user = session.scalars(statement).first()
         return user
-    finally:
-        db.close()
 
 # --- Usage ---
 found_user = get_user_by_username_orm("some_user")
@@ -187,7 +200,7 @@ if found_user:
     <p>Run Redis with Docker:</p>
     <pre><code class="language-bash">docker run --name redis-db -p 6379:6379 -d redis:7-alpine</code></pre>
     <p>Install the Python client:</p>
-    <pre><code class="language-bash">pip install redis</code></pre>
+    <pre><code class="language-bash">poetry add redis</code></pre>
 
     <p>This example shows a common caching pattern: check for a result in Redis first. If it's not there (a "cache miss"), fetch it from the database and store it in Redis for future requests.</p>
     <pre><code class="language-python">
@@ -239,7 +252,7 @@ def get_user_with_caching(username: str):
     <p>Run MongoDB with Docker:</p>
     <pre><code class="language-bash">docker run --name mongo-db -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=example -d mongo:6</code></pre>
     <p>Install the official Python driver:</p>
-    <pre><code class="language-bash">pip install pymongo</code></pre>
+    <pre><code class="language-bash">poetry add pymongo</code></pre>
 
     <p>The example below shows how to connect to MongoDB, insert a document, and then query for it.</p>
     <pre><code class="language-python">
