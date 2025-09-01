@@ -1,2 +1,106 @@
-<h1>Study Aids for 3.4: Spinnaker for Continuous Delivery</h1>
-<p>Coming soon...</p>
+<h2>Study Aids: Spinnaker for Continuous Delivery</h2>
+
+<div class="card mb-4">
+    <div class="card-header">
+        Key Takeaways
+    </div>
+    <div class="card-body">
+        <ul>
+            <li><strong>Spinnaker is for CD, not CI:</strong> Spinnaker is a specialized, multi-cloud <strong>Continuous Delivery (CD)</strong> platform designed for safe, high-velocity software releases. It complements, rather than replaces, CI tools like GitHub Actions.</li>
+            <li><strong>Native Deployment Strategies:</strong> It provides native, first-class support for advanced deployment strategies like Red/Black (Blue/Green) and Canary, making them declarative and easy to manage.</li>
+            <li><strong>Automated Canary Analysis is Key:</strong> Spinnaker's killer feature is <strong>Automated Canary Analysis (ACA)</strong>, which automatically compares a new release against a baseline using real-time metrics to provide a data-driven assessment of its risk.</li>
+            <li><strong>Use Them Together:</strong> The most effective pattern is to use GitHub Actions for CI (build, test, push artifact) and then trigger a Spinnaker pipeline to handle the complex CD part of the workflow (deploy, analyze, promote).</li>
+        </ul>
+    </div>
+</div>
+
+<div id="flashcards-section">
+    <div class="flashcards-container">
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is the primary difference between Continuous Integration (CI) and Continuous Delivery (CD)?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p><strong>CI</strong> focuses on automatically building and testing code after every change to ensure it integrates correctly. <strong>CD</strong> focuses on automatically and safely releasing the successfully tested code to production environments.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>In Spinnaker, what is a "Server Group"?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>A Server Group represents a running, versioned instance of your application. In Kubernetes, this is typically a <code>Deployment</code> or <code>ReplicaSet</code>. In AWS, it's an Auto Scaling Group. Spinnaker manages the lifecycle of these server groups.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is Automated Canary Analysis (ACA) in Spinnaker?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>It's a process where Spinnaker automatically deploys a small "canary" version of a new release, compares its performance metrics (from a tool like Prometheus) against the stable "baseline" version, and provides a score to determine if the release is safe to promote.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>Why is Spinnaker considered more powerful for deployments than a general-purpose CI tool like GitHub Actions?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>Spinnaker is purpose-built for CD. It has native, first-class support for advanced deployment strategies, deep integrations with cloud providers (understanding their resources), and powerful features like Automated Canary Analysis that are very difficult to script in a CI tool.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>Describe the recommended workflow combining GitHub Actions and Spinnaker.</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>The GitHub Actions workflow handles the <strong>CI</strong> part: it builds the code, runs tests, and pushes a container image to a registry. Upon success, it triggers a Spinnaker pipeline, which then handles the <strong>CD</strong> part: deploying the new image using a safe strategy like Canary or Blue/Green.</p>
+            </div>
+        </div>
+
+    </div>
+</div>

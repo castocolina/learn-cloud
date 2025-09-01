@@ -1,0 +1,210 @@
+<div class="container">
+    <div class="page-header">
+        <h1>3.1: Terraform for Infrastructure as Code</h1>
+    </div>
+
+    <p class="lead">Welcome to Unit 3! We now shift from writing application code to defining the infrastructure that runs it. <strong>Infrastructure as Code (IaC)</strong> is a foundational DevOps practice that involves managing and provisioning infrastructure through machine-readable definition files, rather than manual configuration. <a href="https://www.terraform.io/" target="_blank">Terraform</a> by HashiCorp is the industry-standard tool for IaC, allowing you to declaratively define, version, and automate your cloud and on-premise resources.</p>
+
+    <hr/>
+
+    <!-- HCL Syntax -->
+    <h2><i class="bi bi-file-code"></i> 1. Deep Dive into HCL Syntax</h2>
+    <p>
+        Terraform configurations are written in <strong>HashiCorp Configuration Language (HCL)</strong>. HCL is designed to be human-readable and machine-friendly. A Terraform configuration consists of several key blocks.
+    </p>
+
+    <h4>Core Terraform Blocks</h4>
+    <pre><code class="language-hcl">
+# 1. The `terraform` block configures Terraform itself, including required providers.
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+# 2. The `provider` block configures a specific provider (e.g., AWS credentials and region).
+provider "aws" {
+  region = "us-east-1"
+}
+
+# 3. The `resource` block defines a piece of infrastructure.
+# Format: resource "<PROVIDER>_<TYPE>" "<LOCAL_NAME>" { ... }
+resource "aws_s3_bucket" "app_storage" {
+  bucket = "my-unique-app-storage-bucket-12345"
+
+  tags = {
+    Name        = "My App Storage"
+    Environment = "Dev"
+  }
+}
+
+# 4. The `variable` block defines an input variable.
+variable "bucket_prefix" {
+  description = "Prefix for the S3 bucket name."
+  type        = string
+  default     = "app-storage"
+}
+
+# 5. The `output` block defines an output value from your configuration.
+output "bucket_id" {
+  description = "The ID (name) of the created S3 bucket."
+  value       = aws_s3_bucket.app_storage.id
+}
+    </code></pre>
+
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                A["Terraform Core"] --> B{"terraform init"};
+                B -- "Downloads Provider" --> C["AWS Provider"];
+                B --> D["Terraform Plan/Apply"];
+                D -- "Reads" --> E["main.tf (HCL Code)"];
+                E -- "Defines" --> F["Resource: aws_s3_bucket"];
+                D -- "Creates/Updates" --> G["AWS API"];
+                G -- "Provisions" --> H["S3 Bucket in AWS"];
+        </pre>
+        <small class="text-muted">Diagram: The Basic Terraform Workflow (init, plan, apply)</small>
+    </div>
+
+    <hr/>
+
+    <!-- Remote State -->
+    <h2><i class="bi bi-cloud-arrow-up"></i> 2. Managing Remote State</h2>
+    <p>
+        Terraform must store state about your managed infrastructure to map real-world resources to your configuration. By default, this state is stored in a local file named <code>terraform.tfstate</code>. <strong>This is dangerous for teams.</strong> If multiple people run Terraform at the same time, or if someone loses their state file, your infrastructure can be corrupted.
+    </p>
+    <p>
+        The solution is <strong>remote state</strong>, where the state file is stored in a shared, remote location. A best practice for AWS is to use an S3 bucket for storage and a DynamoDB table for <strong>state locking</strong>, which prevents concurrent executions.
+    </p>
+
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                subgraph "Developer A"
+                    A1["terraform apply"] -- "Tries to acquire lock" --> DDB[DynamoDB Lock Table];
+                end
+                subgraph "Developer B"
+                    B1["terraform apply"] -- "Tries to acquire lock" --> DDB;
+                end
+                
+                DDB -- "Grants lock to A" --> A1;
+                DDB -- "Denies lock to B (fails)" --> B1;
+
+                A1 -- "Writes state on success" --> S3[S3 Bucket (terraform.tfstate)];
+
+                style DDB fill:#f9d6d5,stroke:#333,stroke-width:2px
+        </pre>
+        <small class="text-muted">Diagram: Remote State and Locking with S3 and DynamoDB</small>
+    </div>
+
+    <h4>Configuration for Remote State</h4>
+    <p>You configure the remote backend in your <code>terraform</code> block.</p>
+    <pre><code class="language-hcl">
+# terraform.tf
+terraform {
+  backend "s3" {
+    bucket         = "my-terraform-state-bucket" # Must be created manually and be unique
+    key            = "global/s3/terraform.tfstate" # Path to state file in the bucket
+    region         = "us-east-1"
+    dynamodb_table = "terraform-state-locks"   # Must be created manually
+    encrypt        = true
+  }
+  # ... required_providers ...
+}
+    </code></pre>
+    <div class="alert alert-warning">You must create the S3 bucket and DynamoDB table manually before you can initialize this backend. This is a one-time setup task for your organization.</div>
+
+    <hr/>
+
+    <!-- Reusable Modules -->
+    <h2><i class="bi bi-box-seam"></i> 3. Creating Reusable Modules</h2>
+    <p>
+        As your infrastructure grows, you'll want to reuse common patterns. <strong>Terraform Modules</strong> are the primary way to package and reuse resource configurations. A module is a self-contained set of Terraform configuration files in a directory.
+    </p>
+
+    <h4>Example: An S3 Bucket Module</h4>
+    <p>Let's create a module for a standardized S3 bucket with versioning and tagging.</p>
+    <p>Project Structure:</p>
+    <pre><code>
+.
+├── modules
+│   └── s3-bucket
+│       ├── main.tf
+│       ├── variables.tf
+│       └── outputs.tf
+└── main.tf
+    </code></pre>
+
+    <p><code>modules/s3-bucket/variables.tf</code></p>
+    <pre><code class="language-hcl">
+variable "bucket_name" {
+  description = "The name of the S3 bucket."
+  type        = string
+}
+
+variable "tags" {
+  description = "A map of tags to assign to the bucket."
+  type        = map(string)
+  default     = {}
+}
+    </code></pre>
+
+    <p><code>modules/s3-bucket/main.tf</code></p>
+    <pre><code class="language-hcl">
+resource "aws_s3_bucket" "this" {
+  bucket = var.bucket_name
+  tags   = var.tags
+}
+
+resource "aws_s3_bucket_versioning" "this" {
+  bucket = aws_s3_bucket.this.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+    </code></pre>
+
+    <p><code>modules/s3-bucket/outputs.tf</code></p>
+    <pre><code class="language-hcl">
+output "bucket_arn" {
+  description = "The ARN of the bucket."
+  value       = aws_s3_bucket.this.arn
+}
+    </code></pre>
+
+    <h4>Using the Module</h4>
+    <p>Now, you can use this module in your root <code>main.tf</code>.</p>
+    <pre><code class="language-hcl">
+# main.tf
+module "app_storage" {
+  source = "./modules/s3-bucket"
+
+  bucket_name = "my-app-storage-from-module"
+  tags = {
+    Environment = "Production"
+    ManagedBy   = "Terraform"
+  }
+}
+
+output "app_storage_arn" {
+  value = module.app_storage.bucket_arn
+}
+    </code></pre>
+
+    <hr/>
+
+    <!-- Provisioning Kubernetes -->
+    <h2><i class="bi bi-grid-3x3-gap"></i> 4. Provisioning Kubernetes and Cloud Resources (AWS)</h2>
+    <p>
+        Terraform is not just for basic resources; it excels at provisioning complex systems like Kubernetes clusters. While a full EKS (Elastic Kubernetes Service) cluster is complex, the principle is the same: you define resources and their relationships.
+    </p>
+    <p>
+        The <a href="https://registry.terraform.io/modules/terraform-aws-modules/eks/aws/latest" target="_blank">official AWS EKS module</a> is a powerful, community-supported module that abstracts away most of the complexity of setting up a production-ready cluster.
+    </p>
+    <p>Once a cluster is provisioned, Terraform can also manage resources inside it using the <a href="https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs" target="_blank">Kubernetes Provider</a> and the <a href="https://registry.terraform.io/providers/hashicorp/helm/latest/docs" target="_blank">Helm Provider</a>. This allows you to define your infrastructure and your application deployments in the same IaC workflow, which we will explore in the next topic.
+    </p>
+
+</div>

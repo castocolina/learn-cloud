@@ -1,2 +1,106 @@
-<h1>Study Aids for 2.9: Observability</h1>
-<p>Coming soon...</p>
+<h2>Study Aids: Observability</h2>
+
+<div class="card mb-4">
+    <div class="card-header">
+        Key Takeaways
+    </div>
+    <div class="card-body">
+        <ul>
+            <li><strong>The Three Pillars:</strong> Effective observability in Go, as in any modern stack, relies on the combination of Logs (for specific events), Metrics (for aggregated performance data), and Traces (for request lifecycle analysis).</li>
+            <li><strong>Structured Logging is Standard:</strong> With the introduction of the <code>log/slog</code> package in Go 1.21, structured (JSON) logging is now a built-in, idiomatic practice, crucial for making logs machine-readable and queryable.</li>
+            <li><strong>Prometheus for Metrics:</strong> The de facto standard for metrics collection is Prometheus. Go applications can be easily instrumented using the <code>prometheus/client_golang</code> library to expose a <code>/metrics</code> endpoint for scraping.</li>
+            <li><strong>OpenTelemetry for Tracing:</strong> OpenTelemetry is the vendor-neutral standard for distributed tracing. It allows you to trace the path of a request across multiple microservices to identify bottlenecks and debug complex interactions.</li>
+        </ul>
+    </div>
+</div>
+
+<div id="flashcards-section">
+    <div class="flashcards-container">
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What are the three pillars of observability?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p><strong>Logs:</strong> Detailed, timestamped records of discrete events. <br><strong>Metrics:</strong> Aggregated numerical data over time (e.g., counters, gauges). <br><strong>Traces:</strong> A record of a request's journey through a distributed system.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>As of Go 1.21, what is the standard library package for structured logging?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>The <code>log/slog</code> package, which provides a fast and easy way to produce structured logs (e.g., in JSON format) without third-party dependencies.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is the primary purpose of exposing a <code>/metrics</code> endpoint from a Go application when using Prometheus?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>The <code>/metrics</code> endpoint provides the application's current metrics in a standardized format. The Prometheus server periodically "scrapes" (fetches data from) this endpoint to collect and store the metrics for monitoring and alerting.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What problem does Distributed Tracing solve in a microservices architecture?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>It tracks the entire path of a single request as it travels through multiple different services. This helps identify which service is causing a performance bottleneck or where an error originates in a complex, distributed transaction.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is OpenTelemetry?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>OpenTelemetry (OTel) is a vendor-neutral, open-source observability framework. It provides a standardized set of APIs, SDKs, and tools for instrumenting applications to generate and export telemetry data (traces, metrics, and logs), preventing vendor lock-in.</p>
+            </div>
+        </div>
+
+    </div>
+</div>

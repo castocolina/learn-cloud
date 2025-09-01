@@ -1,2 +1,106 @@
-<h1>Study Aids for 3.3: GitHub Actions for CI/CD</h1>
-<p>Coming soon...</p>
+<h2>Study Aids: GitHub Actions for CI/CD</h2>
+
+<div class="card mb-4">
+    <div class="card-header">
+        Key Takeaways
+    </div>
+    <div class="card-body">
+        <ul>
+            <li><strong>Automation in Your Repo:</strong> GitHub Actions allows you to build powerful, event-driven CI/CD pipelines directly in your repository using YAML workflow files located in the <code>.github/workflows</code> directory.</li>
+            <li><strong>Hierarchical Structure:</strong> Workflows are triggered by <strong>events</strong> and contain one or more <strong>jobs</strong>. Each job runs on a runner and contains a sequence of <strong>steps</strong>, which can be shell commands or reusable <strong>actions</strong>.</li>
+            <li><strong>Secrets Management is Critical:</strong> Never hardcode sensitive data. Always use GitHub's encrypted <strong>Secrets</strong> to securely store credentials like API keys and tokens for use in your workflows.</li>
+            <li><strong>Leverage the Marketplace:</strong> Complex tasks like logging into a cloud provider, building a Docker image, or deploying to Kubernetes are made simple by using pre-built, community-vetted actions from the GitHub Marketplace.</li>
+        </ul>
+    </div>
+</div>
+
+<div id="flashcards-section">
+    <div class="flashcards-container">
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What are the five core components of GitHub Actions?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>1. <strong>Workflow:</strong> The overall automated process.<br>2. <strong>Event:</strong> The trigger for the workflow (e.g., <code>push</code>).<br>3. <strong>Job:</strong> A set of steps running on a single runner.<br>4. <strong>Step:</strong> An individual command or action.<br>5. <strong>Action:</strong> A reusable unit of code.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>How do you ensure that a job in a GitHub Actions workflow only runs after other jobs have succeeded?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>By using the <code>needs</code> keyword in the job definition. For example, <code>needs: [lint, test]</code> ensures the current job only starts after the <code>lint</code> and <code>test</code> jobs complete successfully.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is the correct way to handle a Docker Hub password in a GitHub Actions workflow?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>Store it as an encrypted secret in the repository settings (e.g., <code>DOCKERHUB_TOKEN</code>) and reference it in the workflow using the syntax <code>${{ secrets.DOCKERHUB_TOKEN }}</code>. Never hardcode it in the YAML file.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is a "composite action" in GitHub Actions?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>A reusable action you create within your own repository (in <code>.github/actions/</code>) that bundles multiple workflow steps into a single, reusable unit. This helps to reduce code duplication across different workflows.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is the general process for deploying to Kubernetes from GitHub Actions?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>1. Store the cluster's <code>kubeconfig</code> file as a GitHub Secret.<br>2. Add a job that uses an action to configure <code>kubectl</code> with that secret.<br>3. Use <code>kubectl apply</code> or a dedicated deployment action to apply your Kubernetes manifests, often updating the image tag dynamically.</p>
+            </div>
+        </div>
+
+    </div>
+</div>

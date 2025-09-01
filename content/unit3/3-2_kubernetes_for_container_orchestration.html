@@ -1,0 +1,176 @@
+<div class="container">
+    <div class="page-header">
+        <h1>3.2: Kubernetes for Container Orchestration</h1>
+    </div>
+
+    <p class="lead">Now that we can define our infrastructure with Terraform, the next step is to manage the applications running on it. <strong>Kubernetes</strong> is the de facto open-source standard for automating the deployment, scaling, and management of containerized applications. It takes your container images and runs them on a cluster of machines, handling failures, scaling, and networking automatically.</p>
+
+    <hr/>
+
+    <!-- Advanced Deployments -->
+    <h2><i class="bi bi-fast-forward-circle"></i> 1. Advanced Deployment Strategies</h2>
+    <p>
+        A standard Kubernetes <code>Deployment</code> object provides a rolling update strategy, which is great for stateless applications. However, for more control over the release process and to minimize risk, advanced strategies are often used.
+    </p>
+
+    <h4>Blue/Green Deployments</h4>
+    <p>
+        In a Blue/Green deployment, you have two identical production environments: "Blue" (the current version) and "Green" (the new version). Traffic is directed to the Blue environment. You deploy and test the new version in the Green environment. Once it's verified, you switch the router to send all traffic to the Green environment. This allows for near-instantaneous rollback if issues are found.
+    </p>
+    <p>In Kubernetes, this is typically managed by changing the selector on a <code>Service</code> object.</p>
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                subgraph "Before Release"
+                    A["User Traffic"] --> Svc1["Service (selector: version=blue)"];
+                    Svc1 --> PodB1["Pod v1 (blue)"];
+                    Svc1 --> PodB2["Pod v1 (blue)"];
+                    PodG1["Pod v2 (green)"] -- "No Traffic" --x Svc1;
+                end
+                subgraph "After Release"
+                    A2["User Traffic"] --> Svc2["Service (selector: version=green)"];
+                    Svc2 --> PodG1_2["Pod v2 (green)"];
+                    Svc2 --> PodG2_2["Pod v2 (green)"];
+                    PodB1_2["Pod v1 (blue)"] -- "No Traffic" --x Svc2;
+                end
+        </pre>
+        <small class="text-muted">Diagram: Blue/Green Deployment Flow</small>
+    </div>
+
+    <h4>Canary Deployments</h4>
+    <p>
+        A Canary deployment involves releasing a new version to a small subset of users before rolling it out to the entire user base. This allows you to test the new version with real production traffic and monitor for errors or performance degradation. In Kubernetes, this is often done by managing two separate <code>Deployment</code> objects (one for stable, one for canary) that share the same <code>Service</code>.
+    </p>
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                A["User Traffic"] --> Svc["Service"];
+                Svc -- "90% of traffic" --> D_Stable["Deployment (Stable, 9 replicas)"];
+                Svc -- "10% of traffic" --> D_Canary["Deployment (Canary, 1 replica)"];
+        </pre>
+        <small class="text-muted">Diagram: Canary Deployment Flow</small>
+    </div>
+
+    <hr/>
+
+    <!-- StatefulSets -->
+    <h2><i class="bi bi-database-lock"></i> 2. StatefulSets and Persistent Volumes</h2>
+    <p>
+        <code>Deployments</code> are ideal for stateless applications where any pod can be replaced by another. However, stateful applications like databases require stable network identifiers and persistent storage. Kubernetes provides specific objects for this purpose.
+    </p>
+    <ul>
+        <li><strong>PersistentVolume (PV):</strong> A piece of storage in the cluster that has been provisioned by an administrator. It is a resource in the cluster, just like a CPU or memory.</li>
+        <li><strong>PersistentVolumeClaim (PVC):</strong> A request for storage by a user. It is similar to a Pod. Pods consume node resources, and PVCs consume PV resources.</li>
+        <li><strong>StatefulSet:</strong> A workload object used to manage stateful applications. It provides stable, unique network identifiers and stable, persistent storage for its Pods.</li>
+    </ul>
+
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                subgraph "StatefulSet: my-app"
+                    Pod0["my-app-0"] <--> PVC0["pvc-for-my-app-0"];
+                    Pod1["my-app-1"] <--> PVC1["pvc-for-my-app-1"];
+                end
+                PVC0 --> PV0["PersistentVolume 1"];
+                PVC1 --> PV1["PersistentVolume 2"];
+        </pre>
+        <small class="text-muted">Diagram: StatefulSet with Stable Pods and PersistentVolumeClaims</small>
+    </div>
+
+    <h4>Example: A Simple StatefulSet</h4>
+    <p>This example defines a <code>StatefulSet</code> that creates a new <code>PersistentVolumeClaim</code> for each replica, ensuring each pod gets its own unique storage volume.</p>
+    <pre><code class="language-yaml">
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: web
+spec:
+  serviceName: "nginx"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: k8s.gcr.io/nginx-slim:0.8
+        ports:
+        - containerPort: 80
+          name: web
+        volumeMounts:
+        - name: www
+          mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+  - metadata:
+      name: www
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
+    </code></pre>
+
+    <hr/>
+
+    <!-- Network Policies -->
+    <h2><i class="bi bi-shield-lock"></i> 3. Network Policies</h2>
+    <p>
+        By default, all Pods in a Kubernetes cluster can communicate with all other Pods. <strong>Network Policies</strong> are like a firewall for your Pods, allowing you to restrict traffic flow at the network level. This is a critical feature for securing your applications and implementing a zero-trust network model.
+    </p>
+
+    <h4>Example: Deny-All and Allow Specific Traffic</h4>
+    <p>A common pattern is to create a default "deny-all" policy for a namespace and then explicitly allow the traffic you need. This example allows ingress traffic to pods with the label `app: backend` only from pods with the label `app: frontend`.</p>
+    <pre><code class="language-yaml">
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: backend-allow-frontend
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: backend
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: frontend
+    ports:
+    - protocol: TCP
+      port: 8080
+    </code></pre>
+
+    <hr/>
+
+    <!-- Helm -->
+    <h2><i class="bi bi-box-seam"></i> 4. Helm for Package Management</h2>
+    <p>
+        Deploying a complex application can involve dozens of Kubernetes YAML files. Managing, versioning, and configuring these files is a significant challenge. <strong><a href="https://helm.sh/" target="_blank">Helm</a></strong> is the package manager for Kubernetes, solving this problem by bundling related resources into a single package called a <strong>Chart</strong>.
+    </p>
+    <ul>
+        <li><strong>Chart:</strong> A package of pre-configured Kubernetes resources.</li>
+        <li><strong>Release:</strong> An instance of a Chart deployed to a cluster with a specific configuration.</li>
+        <li><strong>Repository:</strong> A server that stores and serves packaged Charts.</li>
+    </ul>
+
+    <h4>Using Helm</h4>
+    <p>Helm allows you to install complex, production-ready applications with a single command.</p>
+    <pre><code class="language-bash">
+# Add a chart repository
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
+# Update your local chart repository cache
+helm repo update
+
+# Install the Prometheus chart into your cluster
+helm install my-prometheus prometheus-community/prometheus
+    </code></pre>
+    <p>Helm uses a templating engine to generate Kubernetes manifests from a Chart's templates and a <code>values.yaml</code> file, which provides the configuration. This allows you to customize deployments without manually editing the underlying YAML files.</p>
+
+</div>

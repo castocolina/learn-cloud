@@ -1,2 +1,106 @@
-<h1>Study Aids for 2.8: Testing Strategies</h1>
-<p>Coming soon...</p>
+<h2>Study Aids: Testing Strategies</h2>
+
+<div class="card mb-4">
+    <div class="card-header">
+        Key Takeaways
+    </div>
+    <div class="card-body">
+        <ul>
+            <li><strong>Testing is Built-in:</strong> Go includes a simple yet powerful testing framework in its standard library (the <code>testing</code> package), making testing a first-class citizen.</li>
+            <li><strong>Idiomatic Patterns:</strong> Table-driven tests are the standard, idiomatic way in Go to test a variety of inputs and edge cases for a function in a clean and maintainable way.</li>
+            <li><strong>Interfaces are for Mocking:</strong> Go's implicit interfaces provide a natural and type-safe way to mock dependencies for unit tests, allowing for easy isolation of the component being tested without requiring third-party mocking frameworks.</li>
+            <li><strong>Realistic Integration Tests:</strong> For integration testing, the best practice is to use a library like Testcontainers to programmatically spin up real dependencies (like a PostgreSQL database) in ephemeral Docker containers, ensuring tests are both realistic and isolated.</li>
+        </ul>
+    </div>
+</div>
+
+<div id="flashcards-section">
+    <div class="flashcards-container">
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is the standard signature for a test function in Go, and where are test files located?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>The signature is <code>func TestXxx(t *testing.T)</code>. Test files must end with <code>_test.go</code> and are typically located in the same package as the code they are testing.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is a table-driven test in Go?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>It is an idiomatic Go pattern where you define a slice of test case structs (the "table"), each containing inputs and expected outputs. The test function then iterates over this slice, running a distinct sub-test for each case using <code>t.Run()</code>.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>How does Go's use of interfaces simplify mocking for unit tests?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>It allows you to define dependencies using interfaces. In tests, you can then create a simple "mock" struct that implements that interface with controlled behavior (e.g., returning fixed data). This isolates the component under test without needing complex third-party mocking libraries.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What problem does Testcontainers solve for integration testing?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>Testcontainers provides lightweight, ephemeral instances of real services (like databases or message queues) running in Docker containers. This allows tests to run against a realistic, clean, and isolated environment every time, ensuring consistency between local and CI environments.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is the main difference between a unit test and an integration test in Go?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>A <strong>unit test</strong> checks a single function or component in isolation, often using mocks for dependencies. An <strong>integration test</strong> checks how multiple components work together, for example, by testing application code against a real database spun up by Testcontainers.</p>
+            </div>
+        </div>
+
+    </div>
+</div>

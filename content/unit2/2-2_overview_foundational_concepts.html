@@ -1,6 +1,6 @@
 <div class="container">
     <div class="page-header">
-        <h1>2.2 Overview & Foundational Concepts</h1>
+        <h1>2.2: Overview & Foundational Concepts</h1>
     </div>
 
     <p class="lead">Now that your Go environment is ready, let's explore the foundational concepts of the language. Coming from a language like Python, you'll find Go to be refreshingly simple yet powerful. It's statically typed, compiled, and built with concurrency as a first-class citizen. This topic will bridge your existing programming knowledge to the Go way of thinking, focusing on the features most relevant to building high-performance backend services.</p>
@@ -8,7 +8,7 @@
     <hr>
 
     <section id="why-go-revisited">
-        <h2>Why Go for the Cloud? The Language Features Behind the Hype</h2>
+        <h2><i class="bi bi-question-circle"></i> Why Go for the Cloud? The Language Features Behind the Hype</h2>
         <p>In the previous topic, we mentioned Go's strengths. Now let's connect those strengths to its core language features:</p>
         <div class="row">
             <div class="col-md-6">
@@ -49,7 +49,7 @@
     <hr>
 
     <section id="core-features">
-        <h2>Core Language Features: A Tour for the Experienced Developer</h2>
+        <h2><i class="bi bi-braces"></i> Core Language Features: A Tour for the Experienced Developer</h2>
         <p>Let's walk through Go's core constructs, highlighting how they compare to what you already know.</p>
 
         <h4>Packages, Variables, and Functions</h4>
@@ -76,29 +76,44 @@ func main() {
         <p>Go's control flow is simple (`if`, `for`, `switch`). There are no `while` or `do-while` loops; the `for` loop handles everything. The most important pattern to learn is Go's approach to error handling. Functions that can fail return an `error` as the last return value. The caller is expected to check if the error is `nil` immediately. This explicit error handling is a core tenet of Go philosophy, contrasting with the exception-based `try...except` blocks in Python.</p>
         <pre><code class="language-go">
 import (
+    "errors"
     "fmt"
-    "strconv"
 )
 
+// This function returns a string and an error
+func divide(a, b float64) (string, error) {
+    if b == 0 {
+        // Return a zero-value for the string and a new error
+        return "", errors.New("cannot divide by zero")
+    }
+    // Return the result and a nil error on success
+    return fmt.Sprintf("%f / %f = %f", a, b, a/b), nil
+}
+
 func main() {
-    // The second return value is the potential error
-    num, err := strconv.Atoi("123")
+    result, err := divide(10, 2)
+    // The idiomatic Go way: check for the error immediately.
     if err != nil {
-        // Handle the error and return early. This is the idiomatic Go way.
-        fmt.Println("Error converting string to int:", err)
+        fmt.Println("Error:", err)
+        return // Handle the error and return early
+    }
+    // If err is nil, we can safely use the result
+    fmt.Println("Success:", result)
+
+    result, err = divide(10, 0)
+    if err != nil {
+        fmt.Println("Error:", err)
         return
     }
-
-    // If err is nil, we can safely use the value
-    fmt.Println("Successfully converted to number:", num)
+    fmt.Println("Success:", result) // This line won't be reached
 }
         </code></pre>
         <div class="text-center my-4">
             <pre class="mermaid">
                 graph TD
-                    A[Call Function That Can Fail] --> B{Check: err != nil?};
-                    B -- Yes (Error Occurred) --> C[Handle Error and Return Early];
-                    B -- No (Success) --> D[Continue Normal Execution];
+                    A["Call Function That Can Fail"] --> B{"Check: err != nil?"};
+                    B -- "Yes (Error Occurred)" --> C["Handle Error and Return Early"];
+                    B -- "No (Success)" --> D["Continue Normal Execution"];
             </pre>
             <small class="text-muted">Diagram: The `if err != nil` Go Error Handling Pattern</small>
         </div>
@@ -191,7 +206,7 @@ func main() {
 
         <hr>
 
-        <h2>The Power of Interfaces: Composition Over Inheritance</h2>
+        <h2><i class="bi bi-intersect"></i> The Power of Interfaces: Composition Over Inheritance</h2>
         <p>This is one of Go's most elegant and powerful features. An <strong>interface</strong> is a type that specifies a set of method signatures. A type is said to implement an interface if it has all the methods defined in that interface. There is no `implements` keyword; the satisfaction is implicit. This is a major departure from languages like Java or Python (with ABCs) where implementation must be explicitly declared.</p>
         <p>This promotes a form of polymorphism and enables extreme decoupling. You can write functions that operate on interfaces, and any type that satisfies the interface can be used, without them needing to know about each other. This is a cornerstone of building testable and maintainable microservices.</p>
 
@@ -199,21 +214,21 @@ func main() {
             <pre class="mermaid">
                 graph TD
                     subgraph "Define Interface"
-                        I(Shaper Interface<br>Area() float64)
+                        I("Shaper Interface<br>Area() float64")
                     end
 
                     subgraph "Define Concrete Types"
-                        C(Circle Struct<br>radius float64<br>Area() float64)
-                        R(Rectangle Struct<br>width, height float64<br>Area() float64)
+                        C("Circle Struct<br>radius float64<br>Area() float64")
+                        R("Rectangle Struct<br>width, height float64<br>Area() float64")
                     end
 
                     subgraph "Usage"
                         F["Function printArea(s Shaper)"]
                     end
 
-                    C -- Implicitly Implements --> I;
-                    R -- Implicitly Implements --> I;
-                    F -- Accepts --> I;
+                    C -- "Implicitly Implements" --> I;
+                    R -- "Implicitly Implements" --> I;
+                    F -- "Accepts" --> I;
 
                     style I fill:#ccf,stroke:#333,stroke-width:2px
             </pre>

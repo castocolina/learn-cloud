@@ -1,2 +1,77 @@
-<h1>Quiz for 2.9: Observability</h1>
-<p>Coming soon...</p>
+<div id="quiz-section">
+    <h2>Quiz: Observability</h2>
+
+    <div class="quiz-container">
+        <div class="quiz-card active-card" data-question="1">
+            <div class="question">
+                <p>1. Which of the following are considered the three pillars of observability?</p>
+                <ul class="options">
+                    <li><label for="q1a"><input type="radio" id="q1a" name="q1" value="a"> a) Debugging, Monitoring, and Alerting</label></li>
+                    <li><label for="q1b"><input type="radio" id="q1b" name="q1" value="b"> b) Logs, Metrics, and Traces</label></li>
+                    <li><label for="q1c"><input type="radio" id="q1c" name="q1" value="c"> c) Requests, Responses, and Errors</label></li>
+                    <li><label for="q1d"><input type="radio" id="q1d" name="q1" value="d"> d) CPU, Memory, and Disk</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="2">
+            <div class="question">
+                <p>2. What is the primary advantage of using structured logging (e.g., with Go's <code>slog</code> package)?</p>
+                <ul class="options">
+                    <li><label for="q2a"><input type="radio" id="q2a" name="q2" value="a"> a) It makes logs more colorful and easier for humans to read in a terminal.</label></li>
+                    <li><label for="q2b"><input type="radio" id="q2b" name="q2" value="b"> b) It reduces the total amount of information that gets logged.</label></li>
+                    <li><label for="q2c"><input type="radio" id="q2c" name="q2" value="c"> c) It makes logs machine-readable (e.g., as JSON), which allows for easy parsing, searching, and filtering.</label></li>
+                    <li><label for="q2d"><input type="radio" id="q2d" name="q2" value="d"> d) It automatically encrypts all log output for enhanced security.</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="3">
+            <div class="question">
+                <p>3. How does a Prometheus server typically collect metrics from an instrumented Go application?</p>
+                <ul class="options">
+                    <li><label for="q3a"><input type="radio" id="q3a" name="q3" value="a"> a) The application actively pushes metrics to the Prometheus server whenever they change.</label></li>
+                    <li><label for="q3b"><input type="radio" id="q3b" name="q3" value="b"> b) The Prometheus server periodically scrapes a <code>/metrics</code> HTTP endpoint exposed by the application.</label></li>
+                    <li><label for="q3c"><input type="radio" id="q3c" name="q3" value="c"> c) The application writes metrics to a local file that the Prometheus server reads.</label></li>
+                    <li><label for="q3d"><input type="radio" id="q3d" name="q3" value="d"> d) The Prometheus server connects directly to the Go application's memory.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="4">
+            <div class="question">
+                <p>4. What is the main goal of using Distributed Tracing with a tool like OpenTelemetry?</p>
+                <ul class="options">
+                    <li><label for="q4a"><input type="radio" id="q4a" name="q4" value="a"> a) To count the total number of errors that occur in an application.</label></li>
+                    <li><label for="q4b"><input type="radio" id="q4b" name="q4" value="b"> b) To measure the overall CPU and memory usage of a single service.</label></li>
+                    <li><label for="q4c"><input type="radio" id="q4c" name="q4" value="c"> c) To track the complete journey of a request as it passes through multiple microservices.</label></li>
+                    <li><label for="q4d"><input type="radio" id="q4d" name="q4" value="d"> d) To provide a real-time graph of currently active users.</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="5">
+            <div class="question">
+                <p>5. What is a key benefit of using OpenTelemetry for instrumentation?</p>
+                <ul class="options">
+                    <li><label for="q5a"><input type="radio" id="q5a" name="q5" value="a"> a) It only works with a specific vendor's observability tools.</label></li>
+                    <li><label for="q5b"><input type="radio" id="q5b" name="q5" value="b"> b) It is a vendor-neutral standard, allowing you to export telemetry data to various backends without changing your code.</label></li>
+                    <li><label for="q5c"><input type="radio" id="q5c" name="q5" value="c"> c) It is the fastest logging library available for Go.</label></li>
+                    <li><label for="q5d"><input type="radio" id="q5d" name="q5" value="d"> d) It automatically fixes performance bottlenecks it finds in the code.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <button class="btn btn-outline-primary" id="next-question">Next</button>
+            <button class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
+        </div>
+        <div class="quiz-results-container"></div>
+    </div>
+</div>

@@ -29,7 +29,7 @@ Following our guidelines in \`GEMINI.md\`, please generate the content for this 
 -  Cite official documentation or authoritative sources where appropriate.
 -  Where applicable, download, edit and insert web images. 
 -  Where applicable, create diagrams using **Mermaid.js syntax** to visually explain complex ideas (e.g., architecture, sequences, or data flows).
-   **Crucial:** For all Mermaid diagrams, all text descriptions for both **nodes** and **connectors/links** must always be enclosed in double quotes. For example: \`A["Node description"]\`, \`B("Node description")\, \`C{"Node description"}\` and \`A --|"Link description"|--> B\`. 
+   **Crucial:** For all Mermaid diagrams, all text descriptions for both **nodes** and **connectors/links** must always be enclosed in double quotes. For example: \`A["Node description"]\`, \`B("Node description")\`, \`C{"Node description"}\` and \`A --|"Link description"|--> B\`. 
    This is a mandatory rule to prevent rendering errors. If you need to include special characters (e.g., parentheses) in node descriptions, ensure the entire description is enclosed in double quotes. Fix any existing diagrams that do not follow this rule.
    Vertically aligned diagrams is better than horizontally aligned ones.
 -  Ensure all code blocks are properly formatted with the correct language for syntax highlighting.
@@ -53,7 +53,7 @@ Perfect. Now, to conclude **Topic {unit_topic}**, please create a **quiz with fi
 EOM
 # --- End of Prompt Templates ---
 
-find content/unit* -path content/unit1 -prune -o -type f -name "*.html" -printf "%p\n" \
+find content/unit* \( -path content/unit1 -o -path "content/unit2/2-[1-4]*" \) -prune -o -type f -name "*.html" -printf "%p\n" \
     | sort -V | while IFS= read -r filename; do
         echo "---"
         echo "Processing file: $filename"
@@ -82,13 +82,21 @@ find content/unit* -path content/unit1 -prune -o -type f -name "*.html" -printf 
         GUIDELINES=$(cat GEMINI.md)
         DEEP_THINKING_INSTRUCTION="Think step-by-step. Before answering, review the provided guidelines and the file content carefully to generate the best possible response."
 
+        FISRT_PART_INSTRUCTION="This call is to generate or update only one file at a time. The file to be updated is specified at the end of this prompt. Only update the specified file. Do not create or update any other files."
         # Add the final instruction about which file to update
         FINAL_INSTRUCTION="For this execution, the only file that should be updated is: \`$filename\`"
 
         # Combine all parts into the final prompt
-        FINAL_PROMPT="$PROMPT"$'\n\n'"$DEEP_THINKING_INSTRUCTION"$'\n\n'"--- GUIDELINES ---"$'\n'"$GUIDELINES"$'\n\n'"$FINAL_INSTRUCTION"
+        FINAL_PROMPT="${FISRT_PART_INSTRUCTION}\n\n$PROMPT"$'\n\n'"$DEEP_THINKING_INSTRUCTION"$'\n\n'"$FINAL_INSTRUCTION"
 
+        echo "Using model: $MODEL"
+        echo "Final prompt:"
+        echo "----------------------------------------"
+        echo -e "$FINAL_PROMPT"
+        echo "----------------------------------------"
+        echo "Calling gemini command..."
 
+        wait_time 5
         # Send the file CONTENT to the gemini command's standard input with the enriched prompt
         cat "$filename" | gemini -a -p "$FINAL_PROMPT" -y
 
@@ -96,5 +104,5 @@ find content/unit* -path content/unit1 -prune -o -type f -name "*.html" -printf 
         echo "----------------------------------------"
         echo
         
-        wait_time 5
+        wait_time 3
     done

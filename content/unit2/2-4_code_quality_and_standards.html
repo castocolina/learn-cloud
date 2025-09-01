@@ -8,16 +8,16 @@
     <hr/>
 
     <!-- Idiomatic Go -->
-    <h2>1. Idiomatic Go: Writing Code the "Go Way"</h2>
+    <h2><i class="bi bi-check-circle-fill"></i> 1. Idiomatic Go: Writing Code the "Go Way"</h2>
     <p>
         Every language has its own set of conventions and best practices. In Go, writing "idiomatic" code is highly valued. It means writing code that is simple, readable, and leverages the language's features as they were intended. For developers coming from other languages, this might mean unlearning some patterns.
     </p>
     <p>Key principles of idiomatic Go include:</p>
     <ul>
-        <li><strong>Simplicity:</strong> Prefer simple, clear code over clever or complex solutions.</li>
-        <li><strong>Readability:</strong> Code is read far more often than it is written. Prioritize clarity for the next developer who will read your code.</li>
-        <li><strong>Explicit Error Handling:</strong> Embrace the `if err != nil` pattern. Don't hide errors.</li>
-        <li><strong>Small Interfaces:</strong> Define interfaces with as few methods as possible.</li>
+        <li><i class="bi bi-lightbulb"></i> <strong>Simplicity:</strong> Prefer simple, clear code over clever or complex solutions.</li>
+        <li><i class="bi bi-book"></i> <strong>Readability:</strong> Code is read far more often than it is written. Prioritize clarity for the next developer who will read your code.</li>
+        <li><i class="bi bi-exclamation-triangle"></i> <strong>Explicit Error Handling:</strong> Embrace the `if err != nil` pattern. Don't hide errors.</li>
+        <li><i class="bi bi-bounding-box-circles"></i> <strong>Small Interfaces:</strong> Define interfaces with as few methods as possible.</li>
     </ul>
     <p>
         The best resources for learning idiomatic Go are the official documents:
@@ -30,7 +30,7 @@
     <hr/>
 
     <!-- gofmt -->
-    <h2>2. Formatting with `gofmt`</h2>
+    <h2><i class="bi bi-paint-bucket"></i> 2. Formatting with `gofmt`</h2>
     <p>
         Go completely eliminates debates over code formatting with one official, non-negotiable tool: <strong><code>gofmt</code></strong>. It is built into the Go toolchain and has no configuration options. There is only one correct way to format Go code, and `gofmt` enforces it.
     </p>
@@ -64,13 +64,13 @@ func main() {
 }
     </code></pre>
     <div class="alert alert-info">
-        <strong>Note:</strong> The Go community's universal adoption of `gofmt` means you can read any Go project and it will have the same style, which significantly reduces cognitive load.
+        <i class="bi bi-info-circle-fill"></i> <strong>Note:</strong> The Go community's universal adoption of `gofmt` means you can read any Go project and it will have the same style, which significantly reduces cognitive load.
     </div>
 
     <hr/>
 
     <!-- golangci-lint -->
-    <h2>3. Linting with `golangci-lint`</h2>
+    <h2><i class="bi bi-search"></i> 3. Linting with `golangci-lint`</h2>
     <p>
         While `gofmt` handles formatting, a <strong>linter</strong> analyzes your code for a much wider range of issues, including potential bugs, performance problems, and stylistic errors. The de facto standard linter for Go is <strong><code>golangci-lint</code></strong>.
     </p>
@@ -114,11 +114,11 @@ issues:
     </code></pre>
 
     <p>To run the linter on your project, simply execute:</p>
-    <pre><code class="language-bash">golangci-lint run</code></pre>
+    <pre><code class="language-bash">golangci-lint run ./...</code></pre>
 
     <hr/>
 
-    <h3>Automation with Pre-commit Hooks</h3>
+    <h3><i class="bi bi-robot"></i> Automation with Pre-commit Hooks</h3>
     <p>
         Just as with Python, we can use pre-commit hooks to automate these checks, ensuring that no unformatted or un-linted code ever gets committed to the repository.
     </p>
@@ -150,24 +150,24 @@ repos:
     <div class="text-center my-4">
         <pre class="mermaid">
             graph TD
-                subgraph Developer Workflow
-                    A[1. Developer writes code] --> B{2. Runs `git commit`};
+                subgraph "Developer Workflow"
+                    A["1. Developer writes code"] --> B{"2. Runs `git commit`"};
                 end
 
-                subgraph Pre-commit Hook Execution
-                    B -- Triggers --> C{pre-commit};
-                    C -- Runs Hooks --> D[go-fmt & go-imports];
-                    D --> E[golangci-lint];
+                subgraph "Pre-commit Hook Execution"
+                    B -- "Triggers" --> C{"pre-commit"};
+                    C -- "Runs Hooks" --> D["go-fmt & go-imports"];
+                    D --> E["golangci-lint"];
                 end
 
-                subgraph Commit Outcome
-                    E -- "If files were modified or lint errors found" --> F((Commit Aborted));
-                    F --> G[3. Developer reviews and stages changes];
+                subgraph "Commit Outcome"
+                    E -- "If files were modified or lint errors found" --> F(("Commit Aborted"));
+                    F --> G["3. Developer reviews and stages changes"];
                     G --> B;
-                    E -- "If no issues" --> H((Commit Successful));
+                    E -- "If no issues" --> H(("Commit Successful"));
                 end
 
-                H --> I[4. Code pushed to repository];
+                H --> I["4. Code pushed to repository"];
 
                 classDef dev fill:#f9f,stroke:#333,stroke-width:2px;
                 classDef hook fill:#ccf,stroke:#333,stroke-width:2px;

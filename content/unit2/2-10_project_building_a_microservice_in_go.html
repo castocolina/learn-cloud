@@ -1,0 +1,374 @@
+<div class="container">
+    <div class="page-header">
+        <h1>2.10 Project: Building a Microservice in Go</h1>
+    </div>
+
+    <p class="lead">This project is the culmination of Unit 2, where you will apply all the concepts you've learned to build a complete, production-ready <strong>Order Microservice</strong> in Go. We will use Gin for the API, GORM for database interaction, and implement structured logging, background processing with goroutines, and robust testing strategies.</p>
+
+    <hr/>
+
+    <h2>Project Goal</h2>
+    <p>
+        To create a RESTful API for managing orders. The service will allow creating new orders and retrieving their details. Upon creation, the order will be passed to a background worker for asynchronous processing. This project will demonstrate core Go backend concepts in a practical, cloud-native context.
+    </p>
+
+    <h3>Key Concepts Integrated:</h3>
+    <ul>
+        <li><strong>Project Structure:</strong> A standard Go project layout (<code>/cmd</code>, <code>/internal</code>).</li>
+        <li><strong>Gin Framework:</strong> Building the RESTful API and handling requests.</li>
+        <li><strong>GORM:</strong> Object-Relational Mapping (ORM) for PostgreSQL.</li>
+        <li><strong>Concurrency:</strong> Using goroutines and channels for a simple background worker pattern.</li>
+        <li><strong>Structured Logging:</strong> Using the standard library's <code>slog</code> package.</li>
+        <li><strong>Testing:</strong> Unit testing with interface-based mocking and integration testing with Testcontainers.</li>
+        <li><strong>Containerization:</strong> A multi-stage Dockerfile for a minimal, secure production image.</li>
+    </ul>
+
+    <hr/>
+
+    <h2>1. Project Setup</h2>
+    <p>Start by creating the project directory and initializing a Go module.</p>
+    <pre><code class="language-bash">
+mkdir order-service
+cd order-service
+go mod init example.com/order-service
+    </code></pre>
+    <p>Create the standard directory structure:</p>
+    <pre><code class="language-bash">
+mkdir -p cmd/server internal/database internal/service
+    </code></pre>
+    <p>Install the necessary dependencies:</p>
+    <pre><code class="language-bash">
+go get -u github.com/gin-gonic/gin
+go get -u gorm.io/gorm
+go get -u gorm.io/driver/postgres
+go get -u github.com/google/uuid
+# For testing
+go get -u github.com/stretchr/testify/assert
+go get -u github.com/testcontainers/testcontainers-go/modules/postgres
+    </code></pre>
+
+    <hr/>
+
+    <h2>2. Database and GORM Model</h2>
+    <h4><code>internal/database/database.go</code></h4>
+    <p>This file will contain our GORM model and database connection logic.</p>
+    <pre><code class="language-go">
+package database
+
+import (
+    "gorm.io/driver/postgres"
+    "gorm.io/gorm"
+)
+
+// Order represents an order in the database
+type Order struct {
+    gorm.Model // Includes ID, CreatedAt, UpdatedAt, DeletedAt
+    Product  string
+    Quantity int
+    Status   string
+}
+
+// NewConnection creates a new database connection
+func NewConnection(dsn string) (*gorm.DB, error) {
+    db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+    if err != nil {
+        return nil, err
+    }
+
+    // Migrate the schema
+    if err := db.AutoMigrate(&Order{}); err != nil {
+        return nil, err
+    }
+    return db, nil
+}
+    </code></pre>
+
+    <hr/>
+
+    <h2>3. Service Layer with Background Worker</h2>
+    <h4><code>internal/service/order_service.go</code></h4>
+    <p>This layer contains the business logic. It will interact with the database and send created orders to a channel for a background worker to process.</p>
+    <pre><code class="language-go">
+package service
+
+import (
+    "log/slog"
+    "time"
+
+    "example.com/order-service/internal/database"
+    "gorm.io/gorm"
+)
+
+// OrderService handles the business logic for orders.
+type OrderService struct {
+    db         *gorm.DB
+    orderQueue chan uint // Channel to send order IDs for processing
+}
+
+// NewOrderService creates a new OrderService and starts the background worker.
+func NewOrderService(db *gorm.DB) *OrderService {
+    s := &OrderService{
+        db:         db,
+        orderQueue: make(chan uint, 100), // Buffered channel
+    }
+    go s.processOrders() // Start the background worker
+    return s
+}
+
+// CreateOrder creates a new order and queues it for processing.
+func (s *OrderService) CreateOrder(product string, quantity int) (*database.Order, error) {
+    order := &database.Order{
+        Product:  product,
+        Quantity: quantity,
+        Status:   "PENDING",
+    }
+
+    if result := s.db.Create(order); result.Error != nil {
+        return nil, result.Error
+    }
+
+    // Send the order ID to the processing queue
+    s.orderQueue &lt;- order.ID
+    slog.Info("Order queued for processing", "order_id", order.ID)
+
+    return order, nil
+}
+
+// GetOrder retrieves an order by its ID.
+func (s *OrderService) GetOrder(id uint) (*database.Order, error) {
+    var order database.Order
+    if result := s.db.First(&order, id); result.Error != nil {
+        return nil, result.Error
+    }
+    return &order, nil
+}
+
+// processOrders is the background worker that processes orders from the queue.
+func (s *OrderService) processOrders() {
+    for orderID := range s.orderQueue {
+        slog.Info("Processing order...", "order_id", orderID)
+        time.Sleep(2 * time.Second) // Simulate work
+
+        s.db.Model(&database.Order{}).Where("id = ?", orderID).Update("status", "PROCESSED")
+        slog.Info("Order processed successfully", "order_id", orderID)
+    }
+}
+    </code></pre>
+
+    <hr/>
+
+    <h2>4. API Layer (Gin Handlers)</h2>
+    <h4><code>cmd/server/main.go</code></h4>
+    <p>This is the entry point of our application. It sets up the Gin router, database connection, service, and handlers.</p>
+    <pre><code class="language-go">
+package main
+
+import (
+    "log"
+    "log/slog"
+    "net/http"
+    "os"
+    "strconv"
+
+    "example.com/order-service/internal/database"
+    "example.com/order-service/internal/service"
+    "github.com/gin-gonic/gin"
+)
+
+func main() {
+    // Setup structured logger
+    logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+    slog.SetDefault(logger)
+
+    // Database connection
+    dsn := "host=localhost user=gorm password=gorm dbname=gorm port=5432 sslmode=disable"
+    db, err := database.NewConnection(dsn)
+    if err != nil {
+        log.Fatalf("Failed to connect to database: %v", err)
+    }
+
+    // Setup service
+    orderService := service.NewOrderService(db)
+
+    // Setup Gin router
+    r := gin.Default()
+
+    r.POST("/orders", func(c *gin.Context) {
+        var json struct {
+            Product  string `json:"product"`
+            Quantity int    `json:"quantity"`
+        }
+        if err := c.ShouldBindJSON(&json); err != nil {
+            c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+            return
+        }
+
+        order, err := orderService.CreateOrder(json.Product, json.Quantity)
+        if err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create order"})
+            return
+        }
+        c.JSON(http.StatusCreated, order)
+    })
+
+    r.GET("/orders/:id", func(c *gin.Context) {
+        id, err := strconv.ParseUint(c.Param("id"), 10, 32)
+        if err != nil {
+            c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid order ID"})
+            return
+        }
+
+        order, err := orderService.GetOrder(uint(id))
+        if err != nil {
+            c.JSON(http.StatusNotFound, gin.H{"error": "Order not found"})
+            return
+        }
+        c.JSON(http.StatusOK, order)
+    })
+
+    slog.Info("Starting server on port 8080")
+    r.Run(":8080")
+}
+    </code></pre>
+
+    <hr/>
+
+    <h2>5. Testing</h2>
+    <p>We will write an integration test for our API using Testcontainers to ensure it works with a real PostgreSQL database.</p>
+    <h4><code>cmd/server/main_test.go</code></h4>
+    <pre><code class="language-go">
+package main
+
+import (
+    "bytes"
+    "context"
+    "encoding/json"
+    "net/http"
+    "net/http/httptest"
+    "testing"
+
+    "example.com/order-service/internal/database"
+    "example.com/order-service/internal/service"
+    "github.com/gin-gonic/gin"
+    "github.com/stretchr/testify/assert"
+    "github.com/testcontainers/testcontainers-go"
+    "github.com/testcontainers/testcontainers-go/modules/postgres"
+    "github.com/testcontainers/testcontainers-go/wait"
+)
+
+func setupRouter(db *gorm.DB) *gin.Engine {
+    // This function is a simplified version of main() for testing
+    orderService := service.NewOrderService(db)
+    r := gin.Default()
+
+    r.POST("/orders", func(c *gin.Context) {
+        // ... handler logic from main ...
+    })
+    r.GET("/orders/:id", func(c *gin.Context) {
+        // ... handler logic from main ...
+    })
+    return r
+}
+
+func TestOrderAPI_Integration(t *testing.T) {
+    ctx := context.Background()
+
+    // Start a PostgreSQL container
+    pgContainer, err := postgres.RunContainer(ctx,
+        testcontainers.WithImage("postgres:15-alpine"),
+        postgres.WithDatabase("test-db"),
+        postgres.WithUsername("user"),
+        postgres.WithPassword("password"),
+        wait.ForLog("database system is ready to accept connections"),
+    )
+    if err != nil {
+        t.Fatalf("failed to start container: %s", err)
+    }
+    defer pgContainer.Terminate(ctx)
+
+    // Get connection string and connect
+    connStr, err := pgContainer.ConnectionString(ctx, "sslmode=disable")
+    assert.NoError(t, err)
+    db, err := database.NewConnection(connStr)
+    assert.NoError(t, err)
+
+    router := setupRouter(db)
+
+    // Test POST /orders
+    orderPayload := `{"product":"Laptop","quantity":1}`
+    w := httptest.NewRecorder()
+    req, _ := http.NewRequest("POST", "/orders", bytes.NewBufferString(orderPayload))
+    req.Header.Set("Content-Type", "application/json")
+    router.ServeHTTP(w, req)
+
+    assert.Equal(t, http.StatusCreated, w.Code)
+
+    var createdOrder database.Order
+    json.Unmarshal(w.Body.Bytes(), &createdOrder)
+    assert.Equal(t, "Laptop", createdOrder.Product)
+    assert.Equal(t, 1, createdOrder.Quantity)
+    assert.Equal(t, "PENDING", createdOrder.Status)
+
+    // Test GET /orders/:id
+    w = httptest.NewRecorder()
+    req, _ = http.NewRequest("GET", fmt.Sprintf("/orders/%d", createdOrder.ID), nil)
+    router.ServeHTTP(w, req)
+
+    assert.Equal(t, http.StatusOK, w.Code)
+    var fetchedOrder database.Order
+    json.Unmarshal(w.Body.Bytes(), &fetchedOrder)
+    assert.Equal(t, createdOrder.ID, fetchedOrder.ID)
+    assert.Equal(t, "Laptop", fetchedOrder.Product)
+}
+    </code></pre>
+
+    <hr/>
+
+    <h2>6. Containerization & Running</h2>
+    <h4><code>Dockerfile</code></h4>
+    <p>A multi-stage Dockerfile to create a minimal production image.</p>
+    <pre><code class="language-dockerfile">
+# Stage 1: Builder
+FROM golang:1.22-alpine AS builder
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -o /server ./cmd/server
+
+# Stage 2: Final Image
+FROM scratch
+COPY --from=builder /server /server
+EXPOSE 8080
+ENTRYPOINT ["/server"]
+    </code></pre>
+
+    <h4><code>docker-compose.yml</code></h4>
+    <p>To run the service and its PostgreSQL dependency together.</p>
+    <pre><code class="language-yaml">
+version: '3.8'
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: gorm
+      POSTGRES_PASSWORD: gorm
+      POSTGRES_DB: gorm
+    ports:
+      - "5432:5432"
+
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      GIN_MODE: release
+      DB_DSN: "host=db user=gorm password=gorm dbname=gorm port=5432 sslmode=disable"
+    depends_on:
+      - db
+    </code></pre>
+
+    <p>Run the entire stack with:</p>
+    <pre><code class="language-bash">docker compose up --build</code></pre>
+
+</div>

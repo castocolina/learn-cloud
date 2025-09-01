@@ -1,0 +1,149 @@
+<div class="container">
+    <div class="page-header">
+        <h1>3.4: Spinnaker for Continuous Delivery</h1>
+    </div>
+
+    <p class="lead">While GitHub Actions is excellent for Continuous Integration (CI), complex deployment scenarios require a specialized tool. <strong>Continuous Delivery (CD)</strong> is the practice of automating the entire software release process. <a href="https://spinnaker.io/" target="_blank">Spinnaker</a> is an open-source, multi-cloud continuous delivery platform originally developed by Netflix. It is designed for releasing software changes with high velocity and confidence.</p>
+
+    <div class="alert alert-info">
+        <strong>CI vs. CD:</strong> <strong>Continuous Integration</strong> focuses on building and testing code every time a change is pushed. <strong>Continuous Delivery</strong> picks up after CI, automating the release of that tested code to a production environment.
+    </div>
+
+    <hr/>
+
+    <!-- Core Concepts -->
+    <h2><i class="bi bi-diagram-3"></i> Core Concepts of Spinnaker</h2>
+    <p>Spinnaker has its own vocabulary for modeling deployments, which is key to understanding its power.</p>
+    <ul>
+        <li><strong>Application:</strong> The service you are deploying. This is the top-level object that contains all other resources.</li>
+        <li><strong>Pipeline:</strong> The heart of Spinnaker. It defines your deployment workflow as a sequence of stages.</li>
+        <li><strong>Stage:</strong> A single action within a pipeline, such as deploying a new version, running a test, or waiting for manual approval.</li>
+        <li><strong>Cluster:</strong> A logical grouping of Server Groups.</li>
+        <li><strong>Server Group:</strong> The running, versioned instance of your application. In Kubernetes, this is typically a <code>Deployment</code> or <code>ReplicaSet</code>. In AWS, it's an Auto Scaling Group.</li>
+    </ul>
+
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                App["Application: my-app"] --> Pipe["Pipeline: Deploy to Prod"];
+                subgraph "Pipeline"
+                    direction LR
+                    Stage1["Stage: Bake Image"] --> Stage2["Stage: Deploy Canary"];
+                    Stage2 --> Stage3["Stage: Automated Canary Analysis"];
+                    Stage3 --> Stage4["Stage: Deploy Full Rollout"];
+                end
+                Pipe -- "Creates/Manages" --> Cluster["Cluster: my-app-prod"];
+                subgraph "Cluster"
+                    ServerGroup1["Server Group: my-app-v001"];
+                    ServerGroup2["Server Group: my-app-v002"];
+                end
+        </pre>
+        <small class="text-muted">Diagram: The Relationship Between Spinnaker Concepts</small>
+    </div>
+
+    <hr/>
+
+    <!-- Advanced Pipeline Strategies -->
+    <h2><i class="bi bi-signpost-split"></i> 1. Advanced Pipeline Strategies</h2>
+    <p>
+        Spinnaker makes it easy to implement sophisticated, safe deployment strategies that would be complex to script manually in a CI tool.
+    </p>
+
+    <h4>Red/Black (Blue/Green) Deployments</h4>
+    <p>
+        Spinnaker has built-in support for the Red/Black strategy. A typical pipeline would have stages to:
+    </p>
+    <ol>
+        <li>Deploy the new version (the "Red" server group) alongside the old version (the "Black" server group).</li>
+        <li>After the new version is healthy, a "Manual Judgment" stage can be added to allow for final verification.</li>
+        <li>Once approved, a stage disables the old Black server group, leaving only the new Red one serving traffic.</li>
+    </ol>
+    <p>Spinnaker manages the underlying load balancer and server group state, providing a clear, visual workflow and a one-click rollback option (by re-enabling the previous server group).</p>
+
+    <hr/>
+
+    <!-- Automated Canary Analysis -->
+    <h2><i class="bi bi-clipboard-data"></i> 2. Automated Canary Analysis (ACA)</h2>
+    <p>
+        This is one of Spinnaker's most powerful features. <strong>Automated Canary Analysis</strong> automates the process of risk assessment for a new release. It compares a new "canary" version against a "baseline" version using real-time metrics from a monitoring system like Prometheus or Datadog.
+    </p>
+
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                A["Start Canary"] --> B["Deploy Small Canary Version (e.g., 5% traffic)"];
+                B --> C{"Run Canary Analysis for X minutes"};
+                C -- "Collects metrics every minute" --> D["Metrics Provider (e.g., Prometheus)"];
+                D -- "Baseline vs Canary Metrics" --> E["Spinnaker (Kayenta) performs statistical analysis"];
+                E --> F{"Generate Canary Score (0-100)"};
+                F -- "Score > 95?" --> G["Promote to Full Rollout"];
+                F -- "Score < 75?" --> H["Automatic Rollback"];
+                F -- "75 < Score < 95?" --> I["Wait for Manual Judgment"];
+        </pre>
+        <small class="text-muted">Diagram: Automated Canary Analysis (ACA) Workflow</small>
+    </div>
+
+    <p>The process works as follows:</p>
+    <ol>
+        <li>A pipeline deploys a small canary server group alongside the stable baseline version.</li>
+        <li>The ACA stage begins, periodically querying a metrics provider for key application health indicators (e.g., CPU usage, error rates, latency).</li>
+        <li>Spinnaker's analysis engine, Kayenta, uses statistical tests to compare the canary's metrics against the baseline's.</li>
+        <li>It produces a score based on this analysis. Based on pre-configured thresholds, the pipeline can automatically promote the canary, fail it and trigger a rollback, or wait for a human to make the final decision.</li>
+    </ol>
+    <p>ACA provides a data-driven, automated way to answer the question: "Is this new version safe to release?"</p>
+
+    <hr/>
+
+    <!-- Integrations -->
+    <h2><i class="bi bi-plug"></i> 3. Integration with Kubernetes and Cloud Providers</h2>
+    <p>
+        Spinnaker is not just a generic automation tool; it has deep, native integrations with cloud providers and Kubernetes. It understands the underlying resources and can manipulate them intelligently.
+    </p>
+    <ul>
+        <li><strong>Kubernetes:</strong> Spinnaker understands native Kubernetes objects like <code>Deployments</code>, <code>ReplicaSets</code>, <code>Services</code>, and <code>Ingresses</code>. When it performs a deployment, it doesn't just run <code>kubectl apply</code>; it monitors the rollout status, checks for health, and understands the relationships between these objects.</li>
+        <li><strong>Cloud Providers (AWS, GCP, Azure):</strong> Spinnaker can manage cloud-native resources directly, such as AWS Auto Scaling Groups and Load Balancers, making it a true multi-cloud deployment tool.</li>
+    </ul>
+
+    <hr/>
+
+    <!-- Spinnaker vs. GitHub Actions -->
+    <h2><i class="bi bi-git"></i> Spinnaker vs. GitHub Actions for CD</h2>
+    <p>
+        A common question is when to use a tool like Spinnaker over a CI tool like GitHub Actions for deployments.
+    </p>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Feature</th>
+                <th>GitHub Actions</th>
+                <th>Spinnaker</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Primary Focus</strong></td>
+                <td>Continuous Integration (CI)</td>
+                <td>Continuous Delivery (CD)</td>
+            </tr>
+            <tr>
+                <td><strong>Deployments</strong></td>
+                <td>Possible, but complex strategies require scripting (e.g., with <code>kubectl</code>).</td>
+                <td>Native, first-class support for advanced strategies (Blue/Green, Canary, etc.).</td>
+            </tr>
+            <tr>
+                <td><strong>Canary Analysis</strong></td>
+                <td>Very difficult to implement; requires extensive custom scripting.</td>
+                <td>Built-in, automated canary analysis is a core feature.</td>
+            </tr>
+            <tr>
+                <td><strong>Multi-Cloud</strong></td>
+                <td>Possible, but requires separate actions and configuration for each cloud.</td>
+                <td>Designed from the ground up for multi-cloud and multi-region deployments.</td>
+            </tr>
+        </tbody>
+    </table>
+    <p>
+        The most powerful and common pattern is to <strong>use them together</strong>: GitHub Actions builds and tests the code, pushes a Docker image, and then triggers a Spinnaker pipeline to handle the safe, controlled delivery of that image to production.
+    </p>
+
+</div>

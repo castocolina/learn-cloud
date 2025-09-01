@@ -1,0 +1,287 @@
+<div class="container">
+    <div class="page-header">
+        <h1>2.8: Testing Strategies</h1>
+    </div>
+
+    <p class="lead">Writing correct and reliable software requires a robust testing strategy. Go's creators made testing a first-class citizen, building a powerful and simple testing framework directly into the standard library. This topic covers the essential testing strategies in Go, from fast, isolated unit tests to comprehensive integration tests that use real dependencies managed by Testcontainers.</p>
+
+    <hr/>
+
+    <!-- Testing Pyramid -->
+    <h2><i class="bi bi-triangle"></i> The Testing Pyramid in Go</h2>
+    <p>
+        The Testing Pyramid is a valuable model for structuring your testing efforts. The core idea is to have a large base of fast unit tests, a smaller layer of integration tests, and a tiny number of slow end-to-end tests.
+    </p>
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                A["End-to-End Tests (Few, Slow, Brittle)"]
+                B["Integration Tests (More, Slower)"]
+                C["Unit Tests (Many, Fast, Isolated)"]
+
+                C --> B;
+                B --> A;
+
+                style A fill:#f9d6d5,stroke:#333,stroke-width:2px
+                style B fill:#f5b7b1,stroke:#333,stroke-width:2px
+                style C fill:#ec7063,stroke:#333,stroke-width:2px
+        </pre>
+        <small class="text-muted">Diagram: The Testing Pyramid</small>
+    </div>
+    <ul>
+        <li><strong>Unit Tests:</strong> Verify a single piece of functionality (usually a single function or method) in isolation.</li>
+        <li><strong>Integration Tests:</strong> Verify that multiple components work together correctly (e.g., your service and a real database).</li>
+        <li><strong>End-to-End Tests:</strong> Verify the entire system from the user's perspective.</li>
+    </ul>
+    <p>This topic focuses on the foundation: unit and integration tests.</p>
+
+    <hr/>
+
+    <!-- Unit Testing -->
+    <h2><i class="bi bi-file-earmark-code"></i> 1. Unit and Integration Testing with the `testing` Package</h2>
+    <p>
+        Go's built-in <code>testing</code> package provides all the tools you need. Tests are placed in files ending with <code>_test.go</code> and are co-located with the code they are testing. The <code>go test</code> command automatically discovers and runs these tests.
+    </p>
+
+    <h4>Basic Unit Test</h4>
+    <p>A test function is defined with the signature <code>func TestXxx(t *testing.T)</code>, where `Xxx` is a name starting with a capital letter.</p>
+    <pre><code class="language-go">
+// file: math/add.go
+package math
+
+func Add(a, b int) int {
+    return a + b
+}
+
+// file: math/add_test.go
+package math
+
+import "testing"
+
+func TestAdd(t *testing.T) {
+    got := Add(2, 3)
+    want := 5
+
+    if got != want {
+        t.Errorf("Add(2, 3) = %d; want %d", got, want)
+    }
+}
+    </code></pre>
+
+    <h4>Table-Driven Tests</h4>
+    <p>A common and idiomatic pattern in Go is the <strong>table-driven test</strong>, where you define a slice of test cases (the "table") and iterate over them. This makes it easy to test many different inputs and edge cases with minimal boilerplate.</p>
+    <pre><code class="language-go">
+// file: math/add_test.go
+package math
+
+import "testing"
+
+func TestAddTableDriven(t *testing.T) {
+    var tests = []struct {
+        name string
+        a, b int
+        want int
+    }{
+        {"positive numbers", 2, 3, 5},
+        {"negative numbers", -1, -1, -2},
+        {"zero", 0, 0, 0},
+        {"positive and negative", -5, 5, 0},
+    }
+
+    for _, tt := range tests {
+        t.Run(tt.name, func(t *testing.T) {
+            ans := Add(tt.a, tt.b)
+            if ans != tt.want {
+                t.Errorf("got %d, want %d", ans, tt.want)
+            }
+        })
+    }
+}
+    </code></pre>
+
+    <hr/>
+
+    <!-- Mocking -->
+    <h2><i class="bi bi-person-bounding-box"></i> 2. Mocking Interfaces</h2>
+    <p>
+        To write effective unit tests, you must isolate the component under test from its dependencies (like databases or external APIs). In Go, this is achieved naturally and elegantly using <strong>interfaces</strong>. Instead of mocking concrete types, you define your dependencies as interfaces and provide a "mock" implementation of that interface during tests.
+    </p>
+
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                A["Business Logic Function"] -- "Depends on" --> B(DataStore Interface);
+                subgraph Production
+                    C["PostgresDB Struct"] -- "Implements" --> B;
+                end
+                subgraph Testing
+                    D["MockDataStore Struct"] -- "Implements" --> B;
+                end
+                A -- "Uses in Test" --> D;
+                A -- "Uses in Prod" --> C;
+        </pre>
+        <small class="text-muted">Diagram: Dependency Injection and Mocking with Interfaces</small>
+    </div>
+
+    <h4>Example: Mocking a Database Dependency</h4>
+    <p>Imagine a service that retrieves a user. First, we define the interface for our data store.</p>
+    <pre><code class="language-go">
+// file: store/user_store.go
+package store
+
+type User struct {
+    ID   int
+    Name string
+}
+
+// UserStorer is an interface that defines how to interact with user data.
+// Any type that implements GetUserByID satisfies this interface.	ype UserStorer interface {
+    GetUserByID(id int) (*User, error)
+}
+
+// Service uses the interface, not a concrete database type.
+type Service struct {
+    store UserStorer
+}
+
+func (s *Service) GetUserName(id int) (string, error) {
+    user, err := s.store.GetUserByID(id)
+    if err != nil {
+        return "", err
+    }
+    return user.Name, nil
+}
+    </code></pre>
+
+    <p>Now, we can create a mock implementation for our tests.</p>
+    <pre><code class="language-go">
+// file: store/user_store_test.go
+package store
+
+import (
+    "errors"
+    "testing"
+)
+
+// MockUserStore is a mock implementation of the UserStorer interface.
+type MockUserStore struct {
+    users map[int]User
+}
+
+// Implement the GetUserByID method for the mock.
+func (m *MockUserStore) GetUserByID(id int) (*User, error) {
+    user, ok := m.users[id]
+    if !ok {
+        return nil, errors.New("user not found")
+    }
+    return &user, nil
+}
+
+func TestGetUserName(t *testing.T) {
+    // Setup the mock with some data
+    mockStore := &MockUserStore{
+        users: map[int]User{
+            1: {ID: 1, Name: "Alice"},
+        },
+    }
+
+    // Inject the mock into our service
+    service := &Service{store: mockStore}
+
+    // Test the success case
+    name, err := service.GetUserName(1)
+    if err != nil {
+        t.Fatalf("expected no error, got %v", err)
+    }
+    if name != "Alice" {
+        t.Errorf("expected name Alice, got %s", name)
+    }
+
+    // Test the error case
+    _, err = service.GetUserName(2)
+    if err == nil {
+        t.Fatal("expected an error, got nil")
+    }
+}
+    </code></pre>
+
+    <hr/>
+
+    <!-- Testcontainers -->
+    <h2><i class="bi bi-box-seam"></i> 3. Emulating Services with Testcontainers</h2>
+    <p>
+        For integration tests, mocking is not enough. You need to verify that your application works correctly with real dependencies. <strong>Testcontainers for Go</strong> is a library that makes it easy to spin up and manage ephemeral Docker containers for your tests.
+    </p>
+
+    <h4>Installation</h4>
+    <pre><code class="language-bash">go get github.com/testcontainers/testcontainers-go</code></pre>
+
+    <h4>Example: Integration Test with a Real PostgreSQL Database</h4>
+    <p>Let's write an integration test for a function that creates a user in a real PostgreSQL database.</p>
+    <pre><code class="language-go">
+// file: db/user_repo_integration_test.go
+package db
+
+import (
+    "context"
+    "testing"
+
+    "github.com/testcontainers/testcontainers-go"
+    "github.com/testcontainers/testcontainers-go/modules/postgres"
+    "gorm.io/driver/postgres"
+    "gorm.io/gorm"
+)
+
+// This test will spin up a real PostgreSQL container.
+func TestCreateUserIntegration(t *testing.T) {
+    ctx := context.Background()
+
+    // 1. Create a new PostgreSQL container
+    pgContainer, err := postgres.RunContainer(ctx,
+        testcontainers.WithImage("docker.io/postgres:15-alpine"),
+        postgres.WithDatabase("test-db"),
+        postgres.WithUsername("user"),
+        postgres.WithPassword("password"),
+        testcontainers.WithWaitStrategy(wait.ForLog("database system is ready to accept connections").WithOccurrence(2)),
+    )
+    if err != nil {
+        t.Fatalf("failed to start container: %s", err)
+    }
+    // Clean up the container after the test is complete
+    defer func() {
+        if err := pgContainer.Terminate(ctx); err != nil {
+            t.Fatalf("failed to terminate container: %s", err)
+        }
+    }()
+
+    // 2. Get the connection string from the container
+    connStr, err := pgContainer.ConnectionString(ctx, "sslmode=disable")
+    if err != nil {
+        t.Fatalf("failed to get connection string: %s", err)
+    }
+
+    // 3. Connect to the test database using GORM
+    db, err := gorm.Open(postgres.Open(connStr), &gorm.Config{})
+    if err != nil {
+        t.Fatalf("failed to connect to db: %s", err)
+    }
+
+    // 4. Run the test logic against the real database
+    repo := NewUserRepository(db) // Assume NewUserRepository creates your repo struct
+    err = repo.CreateUser(ctx, &User{Name: "Test User"})
+    if err != nil {
+        t.Fatalf("CreateUser failed: %s", err)
+    }
+
+    // Verify the user was created
+    user, err := repo.GetUserByName(ctx, "Test User")
+    if err != nil {
+        t.Fatalf("GetUserByName failed: %s", err)
+    }
+    if user.Name != "Test User" {
+        t.Errorf("expected user name 'Test User', got '%s'", user.Name)
+    }
+}
+    </code></pre>
+
+</div>

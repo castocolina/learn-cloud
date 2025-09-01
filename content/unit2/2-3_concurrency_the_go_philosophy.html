@@ -1,6 +1,6 @@
 <div class="container">
     <div class="page-header">
-        <h1>2.3 Concurrency: The Go Philosophy</h1>
+        <h1>2.3: Concurrency: The Go Philosophy</h1>
     </div>
 
     <p class="lead">Concurrency is arguably Go's most famous feature and a primary reason for its success in the cloud-native landscape. While other languages approach concurrency with threads, locks, and mutexes, Go introduces a simpler, more powerful model based on the ideas of Communicating Sequential Processes (CSP). This topic dives into the heart of Go's concurrency: goroutines and channels.</p>
@@ -14,7 +14,7 @@
     <hr/>
 
     <!-- Goroutines -->
-    <h2>1. Goroutines: Concurrency Made Easy</h2>
+    <h2><i class="bi bi-cpu"></i> 1. Goroutines: Concurrency Made Easy</h2>
     <p>
         A <strong>goroutine</strong> is a lightweight thread of execution managed by the Go runtime. They are incredibly cheap to create—you can have hundreds of thousands or even millions of them running in a single process. Creating a goroutine is as simple as prefixing a function call with the <code>go</code> keyword.
     </p>
@@ -55,7 +55,7 @@ func main() {
     <hr/>
 
     <!-- Channels -->
-    <h2>2. Channels: Synchronizing and Communicating</h2>
+    <h2><i class="bi bi-arrows-left-right"></i> 2. Channels: Synchronizing and Communicating</h2>
     <p>
         <strong>Channels</strong> are the pipes that connect concurrent goroutines. You can send values into channels from one goroutine and receive those values into another. They are typed, meaning a channel can only transport data of a specific type.
     </p>
@@ -65,10 +65,10 @@ func main() {
 ch := make(chan string)
 
 // Send a value into the channel
-ch <- "hello"
+ch &lt;- "hello"
 
 // Receive a value from the channel
-msg := <-ch
+msg := &lt;-ch
     </code></pre>
 
     <p>By default, sends and receives on a channel are <strong>blocking</strong>. This is the key to synchronization. A sender will block until a receiver is ready, and a receiver will block until a sender sends a value. Let's use a channel to fix our previous example.</p>
@@ -83,7 +83,7 @@ func sum(s []int, c chan int) {
     for _, v := range s {
         sum += v
     }
-    c <- sum // Send the sum to the channel c
+    c &lt;- sum // Send the sum to the channel c
 }
 
 func main() {
@@ -97,7 +97,7 @@ func main() {
 
     // Receive the results from the channel
     // The main goroutine will block here until both sums are received
-    x, y := <-c, <-c
+    x, y := &lt;-c, &lt;-c
 
     fmt.Println(x, y, x+y)
     // Output: -1 17 16 (or 17 -1 16, order is not guaranteed)
@@ -108,7 +108,7 @@ func main() {
     <hr/>
 
     <!-- Common Concurrency Patterns -->
-    <h2>3. Common Concurrency Patterns</h2>
+    <h2><i class="bi bi-diagram-2"></i> 3. Common Concurrency Patterns</h2>
 
     <h3>The `select` Statement</h3>
     <p>
@@ -129,19 +129,19 @@ func main() {
 
     go func() {
         time.Sleep(1 * time.Second)
-        c1 <- "one"
+        c1 &lt;- "one"
     }()
     go func() {
         time.Sleep(2 * time.Second)
-        c2 <- "two"
+        c2 &lt;- "two"
     }()
 
     // We will wait for both messages, but the select will handle them as they arrive.
     for i := 0; i < 2; i++ {
         select {
-        case msg1 := <-c1:
+        case msg1 := &lt;-c1:
             fmt.Println("received", msg1)
-        case msg2 := <-c2:
+        case msg2 := &lt;-c2:
             fmt.Println("received", msg2)
         }
     }
@@ -156,9 +156,9 @@ func main() {
     <pre><code class="language-go">
 // Inside a select block:
 select {
-case res := <-c1:
+case res := &lt;-c1:
     fmt.Println(res)
-case <-time.After(1 * time.Second):
+case &lt;-time.After(1 * time.Second):
     fmt.Println("timeout 1")
 }
     </code></pre>
@@ -169,16 +169,16 @@ case <-time.After(1 * time.Second):
     <div class="text-center my-4">
         <pre class="mermaid">
             graph TD
-                Producer --> JobsChannel[Jobs Channel];
-                JobsChannel -- Fan-Out --> Worker1[Worker 1];
-                JobsChannel -- Fan-Out --> Worker2[Worker 2];
-                JobsChannel -- Fan-Out --> Worker3[Worker 3];
+                Producer["Producer"] --> JobsChannel["Jobs Channel"];
+                JobsChannel -- "Fan-Out" --> Worker1["Worker 1"];
+                JobsChannel -- "Fan-Out" --> Worker2["Worker 2"];
+                JobsChannel -- "Fan-Out" --> Worker3["Worker 3"];
 
-                Worker1 --> ResultsChannel[Results Channel];
-                Worker2 --> ResultsChannel[Results Channel];
-                Worker3 --> ResultsChannel[Results Channel];
+                Worker1 --> ResultsChannel["Results Channel"];
+                Worker2 --> ResultsChannel["Results Channel"];
+                Worker3 --> ResultsChannel["Results Channel"];
 
-                ResultsChannel -- Fan-In --> Consumer;
+                ResultsChannel -- "Fan-In" --> Consumer["Consumer"];
         </pre>
         <small class="text-muted">Diagram: The Fan-Out, Fan-In Concurrency Pattern</small>
     </div>
@@ -188,17 +188,17 @@ package main
 
 import (
     "fmt"
-    "sync"
+    "time"
 )
 
 // worker function that receives jobs and sends results
-func worker(id int, jobs <-chan int, results chan<- int) {
+func worker(id int, jobs &lt;-chan int, results chan&lt;- int) {
     for j := range jobs {
         fmt.Printf("worker %d started job %d\n", id, j)
         // Simulate work
         time.Sleep(time.Second)
         fmt.Printf("worker %d finished job %d\n", id, j)
-        results <- j * 2
+        results &lt;- j * 2
     }
 }
 
@@ -214,14 +214,15 @@ func main() {
 
     // Send 5 jobs to the jobs channel
     for j := 1; j <= numJobs; j++ {
-        jobs <- j
+        jobs &lt;- j
     }
     close(jobs) // Close the jobs channel to signal no more jobs are coming
 
     // Collect the results (Fan-In)
     for a := 1; a <= numJobs; a++ {
-        <-results
+        &lt;-results
     }
+    fmt.Println("All jobs are done.")
 }
     </code></pre>
 

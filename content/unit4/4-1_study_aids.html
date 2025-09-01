@@ -1,2 +1,106 @@
-<h1>Study Aids for 4.1: HashiCorp Consul</h1>
-<p>Coming soon...</p>
+<h2>Study Aids: HashiCorp Consul</h2>
+
+<div class="card mb-4">
+    <div class="card-header">
+        Key Takeaways
+    </div>
+    <div class="card-body">
+        <ul>
+            <li><strong>Consul is a Service Networking Tool:</strong> It solves three major challenges in microservices: service discovery, distributed configuration (KV store), and secure service-to-service communication (service mesh).</li>
+            <li><strong>Service Discovery is Core:</strong> Consul's primary function is to allow services to find each other dynamically through DNS or an HTTP API. This eliminates the need for hardcoded IP addresses in a dynamic environment.</li>
+            <li><strong>Dynamic Configuration with the KV Store:</strong> The distributed Key-Value (KV) store is ideal for managing dynamic configuration, such as feature flags or maintenance modes, across all services without requiring a redeploy.</li>
+            <li><strong>Security with Consul Connect:</strong> Consul Connect, the built-in service mesh, automatically secures all inter-service traffic using mutual TLS (mTLS), providing both encryption and strong identity verification without requiring application code changes.</li>
+        </ul>
+    </div>
+</div>
+
+<div id="flashcards-section">
+    <div class="flashcards-container">
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What are the three main features of HashiCorp Consul?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>1. <strong>Service Discovery:</strong> Helping services find each other.<br>2. <strong>Distributed Key-Value (KV) Store:</strong> For dynamic configuration.<br>3. <strong>Service Mesh (Consul Connect):</strong> For securing communication.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>In a Consul cluster, what is the difference between a "server" agent and a "client" agent?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p><strong>Server</strong> agents (usually 3 or 5) form a consensus quorum to store and replicate the cluster's state. <strong>Client</strong> agents are lightweight, run on every application node, and act as a local proxy for service registration and health checking.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>How does Consul's service discovery work?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>Services register themselves with a local Consul client. Other services can then query Consul (via its DNS or HTTP API) to get the current IP address and port of healthy instances of the services they need to connect to.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is Consul Connect?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>It is Consul's built-in service mesh feature. It secures service-to-service communication by automatically providing and managing mutual TLS (mTLS) encryption and identity verification for all traffic, typically using sidecar proxies.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is a common use case for Consul's distributed Key-Value (KV) store?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>Managing dynamic configuration, such as enabling or disabling feature flags across an entire fleet of services without requiring a redeployment. Applications can watch a key for changes and update their behavior in real-time.</p>
+            </div>
+        </div>
+
+    </div>
+</div>

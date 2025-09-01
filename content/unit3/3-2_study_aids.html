@@ -1,2 +1,106 @@
-<h1>Study Aids for 3.2: Kubernetes for Container Orchestration</h1>
-<p>Coming soon...</p>
+<h2>Study Aids: Kubernetes for Container Orchestration</h2>
+
+<div class="card mb-4">
+    <div class="card-header">
+        Key Takeaways
+    </div>
+    <div class="card-body">
+        <ul>
+            <li><strong>Advanced Deployments Mitigate Risk:</strong> Kubernetes enables sophisticated deployment strategies like <strong>Blue/Green</strong> (instant switchover) and <strong>Canary</strong> (gradual rollout) to minimize the risk and impact of new releases.</li>
+            <li><strong>Stateful Applications are First-Class Citizens:</strong> Running stateful applications is managed with <strong>StatefulSets</strong>, which provide stable network identities and storage, and <strong>PersistentVolumeClaims (PVCs)</strong>, which allow applications to request durable storage.</li>
+            <li><strong>Secure Your Network by Default:</strong> <strong>NetworkPolicies</strong> act as a firewall for pods, allowing you to implement a zero-trust network model by explicitly defining which services are allowed to communicate with each other.</li>
+            <li><strong>Helm Simplifies Complexity:</strong> <strong>Helm</strong> is the package manager for Kubernetes. It simplifies the deployment and management of complex applications by bundling all their required Kubernetes resources into a single, versioned, and configurable package called a <strong>Chart</strong>.</li>
+        </ul>
+    </div>
+</div>
+
+<div id="flashcards-section">
+    <div class="flashcards-container">
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is the main difference between a Blue/Green deployment and a Canary deployment?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>In <strong>Blue/Green</strong>, you switch 100% of traffic to a new, identical environment all at once. In a <strong>Canary</strong> deployment, you release the new version to a small subset of users first and gradually increase traffic, monitoring for issues.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What two key features does a <code>StatefulSet</code> provide that a <code>Deployment</code> does not?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>1. <strong>Stable, unique network identifiers</strong> for each pod (e.g., <code>pod-0</code>, <code>pod-1</code>).<br>2. <strong>Stable, persistent storage</strong> that is tied to each pod's unique identity, ensuring a pod is always re-attached to its specific storage volume.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is the purpose of a Kubernetes <code>NetworkPolicy</code>?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>To act as a firewall for pods. It allows you to control the ingress (incoming) and egress (outgoing) network traffic for a group of pods, securing the network within the cluster by enforcing rules about which services can communicate.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is Helm, and what is a Helm Chart?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p><strong>Helm</strong> is the package manager for Kubernetes. A <strong>Chart</strong> is a package containing a collection of pre-configured Kubernetes resource templates that can be deployed, versioned, and managed as a single unit.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is the relationship between a <code>PersistentVolume</code> (PV) and a <code>PersistentVolumeClaim</code> (PVC)?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>A <strong>PV</strong> is a piece of storage in the cluster, provisioned by an administrator. A <strong>PVC</strong> is a request for that storage made by a user or application. The PVC is "bound" to a suitable PV, abstracting the underlying storage details from the application.</p>
+            </div>
+        </div>
+
+    </div>
+</div>

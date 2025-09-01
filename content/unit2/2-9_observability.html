@@ -1,0 +1,242 @@
+<div class="container">
+    <div class="page-header">
+        <h1>2.9: Observability</h1>
+    </div>
+
+    <p class="lead">In distributed cloud-native systems, you can't fix what you can't see. <strong>Observability</strong> is the practice of instrumenting your applications to provide high-fidelity signals about their internal state, allowing you to understand, debug, and optimize their behavior. It is built on three core pillars: <strong>Logs</strong>, <strong>Metrics</strong>, and <strong>Traces</strong>.</p>
+
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                A["Observability"] --> B["Logs (What happened?)"];
+                A --> C["Metrics (How is it performing?)"];
+                A --> D["Traces (Where did it happen?)"];
+        </pre>
+        <small class="text-muted">Diagram: The Three Pillars of Observability</small>
+    </div>
+
+    <hr/>
+
+    <!-- Structured Logging -->
+    <h2><i class="bi bi-card-text"></i> 1. Structured Logging with `slog`</h2>
+    <p>
+        Logs provide a detailed, event-by-event record of an application's execution. To be useful in a distributed system, logs must be <strong>structured</strong> (typically as JSON), not just plain text. This makes them machine-readable and allows for powerful querying, filtering, and analysis in a central logging platform.
+    </p>
+    <p>As of Go 1.21, a structured logging package, <strong><code>slog</code></strong>, is part of the standard library, making it the new default for modern Go applications.</p>
+
+    <h4>Example: Structured Logging in an HTTP Server</h4>
+    <p>This example sets up a default `slog` logger that outputs JSON and includes a middleware to add a unique `request_id` to every log message within a single HTTP request.</p>
+    <pre><code class="language-go">
+package main
+
+import (
+    "context"
+    "log/slog"
+    "net/http"
+    "os"
+
+    "github.com/google/uuid"
+)
+
+// requestIDKey is the context key for the request ID.
+var requestIDKey = &struct{ name string }{"requestID"}
+
+func main() {
+    // Create a new JSON logger and set it as the default
+    logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+    slog.SetDefault(logger)
+
+    mux := http.NewServeMux()
+    mux.HandleFunc("/", helloHandler)
+
+    // Chain the middleware
+    handler := requestIDMiddleware(mux)
+
+    slog.Info("Server starting on port 8080...")
+    if err := http.ListenAndServe(":8080", handler); err != nil {
+        slog.Error("Server failed to start", "error", err)
+    }
+}
+
+func helloHandler(w http.ResponseWriter, r *http.Request) {
+    // Retrieve the logger with the request ID from the context
+    logger := loggerFromCtx(r.Context())
+
+    logger.Info("Handling hello request")
+    w.WriteHeader(http.StatusOK)
+    w.Write([]byte("Hello, world!"))
+}
+
+// requestIDMiddleware adds a unique request ID to the context and logs.
+func requestIDMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        requestID := uuid.New().String()
+        
+        // Create a logger with the request_id attribute
+        logger := slog.Default().With("request_id", requestID)
+
+        // Store the logger in the request context
+        ctx := context.WithValue(r.Context(), requestIDKey, logger)
+        r = r.WithContext(ctx)
+
+        logger.Info("Incoming request", "method", r.Method, "path", r.URL.Path)
+        next.ServeHTTP(w, r)
+    })
+}
+
+// loggerFromCtx retrieves the logger from the context.
+func loggerFromCtx(ctx context.Context) *slog.Logger {
+    if logger, ok := ctx.Value(requestIDKey).(*slog.Logger); ok {
+        return logger
+    }
+    return slog.Default()
+}
+    </code></pre>
+    <p>When you run this and make a request, you will see JSON logs with consistent `request_id` fields, allowing you to trace the entire lifecycle of a single request.</p>
+
+    <hr/>
+
+    <!-- Metrics with Prometheus -->
+    <h2><i class="bi bi-graph-up"></i> 2. Metrics with Prometheus</h2>
+    <p>
+        <strong>Metrics</strong> are numerical measurements aggregated over time (e.g., request counts, latency, CPU usage). <a href="https://prometheus.io/" target="_blank">Prometheus</a> is the de facto standard for metrics collection in the cloud-native world. Applications expose a <code>/metrics</code> endpoint, which the Prometheus server scrapes periodically.
+    </p>
+
+    <h4>Go Client Installation</h4>
+    <pre><code class="language-bash">go get github.com/prometheus/client_golang</code></pre>
+
+    <h4>Example: Instrumenting an HTTP Server</h4>
+    <p>We can use the official Prometheus client to instrument our server, collecting metrics on HTTP requests.</p>
+    <pre><code class="language-go">
+// main.go (additions to the previous example)
+import (
+    "github.com/prometheus/client_golang/prometheus"
+    "github.com/prometheus/client_golang/prometheus/promauto"
+    "github.com/prometheus/client_golang/prometheus/promhttp"
+)
+
+var (
+    httpRequestsTotal = promauto.NewCounterVec(
+        prometheus.CounterOpts{
+            Name: "http_requests_total",
+            Help: "Total number of HTTP requests.",
+        }, 
+        []string{"method", "path"},
+    )
+    httpRequestDuration = promauto.NewHistogramVec(
+        prometheus.HistogramOpts{
+            Name: "http_request_duration_seconds",
+            Help: "Duration of HTTP requests.",
+        }, 
+        []string{"method", "path"},
+    )
+)
+
+// metricsMiddleware wraps another middleware to add metrics.
+func metricsMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        start := time.Now()
+        next.ServeHTTP(w, r)
+        duration := time.Since(start)
+
+        httpRequestsTotal.WithLabelValues(r.Method, r.URL.Path).Inc()
+        httpRequestDuration.WithLabelValues(r.Method, r.URL.Path).Observe(duration.Seconds())
+    })
+}
+
+// In main() function, update the handler chain and add the /metrics endpoint
+func main() {
+    // ... logger setup ...
+    mux := http.NewServeMux()
+    mux.HandleFunc("/", helloHandler)
+    mux.Handle("/metrics", promhttp.Handler()) // Expose metrics
+
+    // Chain middlewares: requestID -> metrics -> router
+    handler := requestIDMiddleware(metricsMiddleware(mux))
+
+    // ... ListenAndServe ...
+}
+    </code></pre>
+    <p>Now, the application exposes a <code>/metrics</code> endpoint that Prometheus can scrape.</p>
+
+    <hr/>
+
+    <!-- Tracing with OpenTelemetry -->
+    <h2><i class="bi bi-diagram-3-fill"></i> 3. Tracing with OpenTelemetry</h2>
+    <p>
+        <strong>Distributed Tracing</strong> allows you to visualize the entire journey of a request as it flows through multiple services. This is invaluable for identifying bottlenecks and understanding dependencies in a microservices architecture. <a href="https://opentelemetry.io/" target="_blank">OpenTelemetry</a> is the vendor-neutral standard for instrumenting applications to generate traces.
+    </p>
+
+    <h4>Go Client Installation</h4>
+    <pre><code class="language-bash">
+go get go.opentelemetry.io/otel \
+    go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc \
+    go.opentelemetry.io/otel/sdk \
+    go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp
+</code></pre>
+
+    <h4>Example: Instrumenting with OpenTelemetry</h4>
+    <p>This example sets up a basic OpenTelemetry tracer that sends trace data to a collector (like Jaeger) and automatically instruments incoming HTTP requests.</p>
+    <pre><code class="language-go">
+// main.go (additions)
+import (
+    "go.opentelemetry.io/otel"
+    "go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
+    "go.opentelemetry.io/otel/propagation"
+    "go.opentelemetry.io/otel/sdk/resource"
+    sdktrace "go.opentelemetry.io/otel/sdk/trace"
+    semconv "go.opentelemetry.io/otel/semconv/v1.24.0"
+    "go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+)
+
+// initTracer initializes the OpenTelemetry tracer
+func initTracer() (*sdktrace.TracerProvider, error) {
+    exporter, err := otlptracegrpc.New(context.Background(),
+        otlptracegrpc.WithInsecure(), // For local testing
+        otlptracegrpc.WithEndpoint("localhost:4317"),
+    )
+    if err != nil {
+        return nil, err
+    }
+
+    res, err := resource.Merge(
+        resource.Default(),
+        resource.NewWithAttributes(semconv.SchemaURL, semconv.ServiceName("my-go-app")),
+    )
+    if err != nil {
+        return nil, err
+    }
+
+    tp := sdktrace.NewTracerProvider(
+        sdktrace.WithBatcher(exporter),
+        sdktrace.WithResource(res),
+    )
+    otel.SetTracerProvider(tp)
+    otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}))
+    return tp, nil
+}
+
+// In main() function
+func main() {
+    tp, err := initTracer()
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer func() {
+        if err := tp.Shutdown(context.Background()); err != nil {
+            log.Printf("Error shutting down tracer provider: %v", err)
+        }
+    }()
+
+    // ... logger setup ...
+    
+    // Wrap the helloHandler with OpenTelemetry instrumentation
+    otelHandler := otelhttp.NewHandler(http.HandlerFunc(helloHandler), "hello-handler")
+    mux.Handle("/", otelHandler)
+    
+    // ... rest of main ...
+}
+    </code></pre>
+    <p>With this setup, every request to your server will generate a trace that can be visualized in a backend like Jaeger, giving you a clear picture of request latency and flow.</p>
+
+</div>

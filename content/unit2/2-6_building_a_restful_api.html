@@ -1,0 +1,223 @@
+<div class="container">
+    <div class="page-header">
+        <h1>2.6: Building a RESTful API</h1>
+    </div>
+
+    <p class="lead">Building APIs is a fundamental task for any backend developer. Go's powerful standard library and rich ecosystem of frameworks provide excellent tools for creating high-performance, robust RESTful services. This topic will guide you through building an API first with the standard <code>net/http</code> package to understand the fundamentals, and then with Gin, a popular high-performance framework, to see how frameworks can accelerate development.</p>
+
+    <hr/>
+
+    <!-- Standard Library -->
+    <h2><i class="bi bi-book"></i> 1. Using the Standard Library (<code>net/http</code>)</h2>
+    <p>
+        Unlike some other languages, Go's standard library is comprehensive and production-ready. The <code>net/http</code> package provides all the core components needed to build a robust web server without any third-party dependencies. Understanding how it works is essential for any Go developer.
+    </p>
+
+    <h4>Core Components of <code>net/http</code></h4>
+    <ul>
+        <li><strong><code>http.HandleFunc</code>:</strong> Registers a function to handle requests for a specific URL pattern.</li>
+        <li><strong><code>http.ListenAndServe</code>:</strong> Starts an HTTP server with a given address and a "handler" to process incoming requests.</li>
+        <li><strong><code>http.Handler</code>:</strong> An interface that requires a <code>ServeHTTP(ResponseWriter, *Request)</code> method. It's a more advanced way to structure handlers.</li>
+        <li><strong><code>http.ResponseWriter</code>:</strong> An interface used by a handler to construct the HTTP response.</li>
+        <li><strong><code>http.Request</code>:</strong> A struct representing the incoming HTTP request, including its method, URL, headers, and body.</li>
+    </ul>
+
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                A["Client Request (e.g., GET /items)"] --> B["HTTP Server (net/http)"];
+                B --> C{"ServeMux (Router)"};
+                C -- "/items" --> D["itemsHandler(w, r)"];
+                D -- "Writes to" --> E["ResponseWriter (w)"];
+                D -- "Reads from" --> F["Request (r)"];
+                E --> B;
+                B --> G["Client Response"];
+        </pre>
+        <small class="text-muted">Diagram: Request Flow in a <code>net/http</code> Server</small>
+    </div>
+
+    <h4>Example: A Simple JSON API</h4>
+    <p>Let's build a simple API to manage a list of products. We'll handle JSON requests and responses using the standard <code>encoding/json</code> package.</p>
+
+    <pre><code class="language-go">
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+    "log"
+    "net/http"
+    "sync"
+)
+
+// Product struct to hold our data
+type Product struct {
+    ID   int    `json:"id"`
+    Name string `json:"name"`
+}
+
+// In-memory "database" for our products
+var (
+    products  = make(map[int]Product)
+    nextID    = 1
+    productsMutex = &sync.RWMutex{}
+)
+
+// productsHandler handles requests to /products
+func productsHandler(w http.ResponseWriter, r *http.Request) {
+    switch r.Method {
+    case http.MethodGet:
+        getProducts(w, r)
+    case http.MethodPost:
+        createProduct(w, r)
+    default:
+        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+    }
+}
+
+func getProducts(w http.ResponseWriter, r *http.Request) {
+    productsMutex.RLock() // Use a read-lock for safety
+    defer productsMutex.RUnlock()
+
+    // Create a slice to hold the products
+    var productList []Product
+    for _, p := range products {
+        productList = append(productList, p)
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(productList)
+}
+
+func createProduct(w http.ResponseWriter, r *http.Request) {
+    var p Product
+    // Decode the incoming JSON body into the Product struct
+    if err := json.NewDecoder(r.Body).Decode(&p); err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    productsMutex.Lock() // Use a write-lock
+    defer productsMutex.Unlock()
+
+    p.ID = nextID
+    nextID++
+    products[p.ID] = p
+
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(http.StatusCreated)
+    json.NewEncoder(w).Encode(p)
+}
+
+func main() {
+    // Register our handler for the /products endpoint
+    http.HandleFunc("/products", productsHandler)
+
+    fmt.Println("Server starting on port 8080...")
+    // Start the server
+    if err := http.ListenAndServe(":8080", nil); err != nil {
+        log.Fatal(err)
+    }
+}
+    </code></pre>
+    <p>To run this, save it as `main.go` and execute `go run main.go`. You can then use a tool like `curl` to interact with it:</p>
+    <pre><code class="language-bash">
+# Get all products (will be an empty list initially)
+curl http://localhost:8080/products
+
+# Create a new product
+curl -X POST -H "Content-Type: application/json" -d '{"name":"Laptop"}' http://localhost:8080/products
+
+# Get all products again
+curl http://localhost:8080/products
+    </code></pre>
+
+    <hr/>
+
+    <!-- Frameworks -->
+    <h2><i class="bi bi-joystick"></i> 2. Using a Framework (Gin)</h2>
+    <p>
+        While the standard library is powerful, frameworks can reduce boilerplate and provide helpful features like advanced routing, middleware, and data binding. <strong><a href="https://gin-gonic.com/" target="_blank">Gin</a></strong> is a minimalistic, high-performance web framework for Go.
+    </p>
+    <p><strong>Why use a framework like Gin?</strong></p>
+    <ul>
+        <li><strong>Radix Tree Routing:</strong> Extremely fast routing with support for path parameters (e.g., `/users/:id`).</li>
+        <li><strong>Middleware:</strong> Easily add cross-cutting concerns like logging, authentication, or error handling to groups of routes.</li>
+        <li><strong>Data Binding:</strong> Automatically bind incoming request data (JSON, form data) to structs.</li>
+    </ul>
+
+    <h4>Installation</h4>
+    <pre><code class="language-bash">go get -u github.com/gin-gonic/gin</code></pre>
+
+    <h4>Example: The Same API with Gin</h4>
+    <p>Let's refactor our product API using Gin. Notice how much cleaner the routing and JSON handling becomes.</p>
+    <pre><code class="language-go">
+package main
+
+import (
+    "net/http"
+    "sync"
+
+    "github.com/gin-gonic/gin"
+)
+
+// Product struct remains the same
+type Product struct {
+    ID   int    `json:"id"`
+    Name string `json:"name"`
+}
+
+// In-memory "database" remains the same
+var (
+    products  = make(map[int]Product)
+    nextID    = 1
+    productsMutex = &sync.RWMutex{}
+)
+
+func main() {
+    // Create a new Gin router
+    r := gin.Default() // Default includes logger and recovery middleware
+
+    // Define a GET route
+    r.GET("/products", func(c *gin.Context) {
+        productsMutex.RLock()
+        defer productsMutex.RUnlock()
+
+        var productList []Product
+        for _, p := range products {
+            productList = append(productList, p)
+        }
+        // Gin handles setting the content type and serializing the struct to JSON
+        c.JSON(http.StatusOK, productList)
+    })
+
+    // Define a POST route
+    r.POST("/products", func(c *gin.Context) {
+        var newProduct Product
+
+        // Bind the incoming JSON to the newProduct struct
+        if err := c.ShouldBindJSON(&newProduct); err != nil {
+            c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+            return
+        }
+
+        productsMutex.Lock()
+        defer productsMutex.Unlock()
+
+        newProduct.ID = nextID
+        nextID++
+        products[newProduct.ID] = newProduct
+
+        c.JSON(http.StatusCreated, newProduct)
+    })
+
+    // Run the server
+    r.Run(":8080") // listen and serve on 0.0.0.0:8080
+}
+    </code></pre>
+
+    <div class="alert alert-info">
+        <strong>Standard Library vs. Frameworks:</strong> For simple services, the standard library is often sufficient and avoids external dependencies. For more complex applications with many routes, middleware, and complex data binding needs, a framework like Gin, Echo, or Chi can significantly improve productivity and code organization.
+    </div>
+
+</div>

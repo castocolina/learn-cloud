@@ -1,2 +1,77 @@
-<h1>Quiz for 2.7: Advanced Backend Topics</h1>
-<p>Coming soon...</p>
+<div id="quiz-section">
+    <h2>Quiz: Advanced Backend Topics</h2>
+
+    <div class="quiz-container">
+        <div class="quiz-card active-card" data-question="1">
+            <div class="question">
+                <p>1. What is a primary advantage of using an event-driven architecture with a message queue?</p>
+                <ul class="options">
+                    <li><label for="q1a"><input type="radio" id="q1a" name="q1" value="a"> a) It guarantees that services respond to requests immediately.</label></li>
+                    <li><label for="q1b"><input type="radio" id="q1b" name="q1" value="b"> b) It decouples producer and consumer services, allowing them to scale independently.</label></li>
+                    <li><label for="q1c"><input type="radio" id="q1c" name="q1" value="c"> c) It simplifies synchronous request/response communication.</label></li>
+                    <li><label for="q1d"><input type="radio" id="q1d" name="q1" value="d"> d) It requires all services to be written in the same language.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="2">
+            <div class="question">
+                <p>2. For which scenario is gRPC most suitable compared to a traditional REST API?</p>
+                <ul class="options">
+                    <li><label for="q2a"><input type="radio" id="q2a" name="q2" value="a"> a) A public-facing API that needs to be easily accessible from a web browser.</label></li>
+                    <li><label for="q2b"><input type="radio" id="q2b" name="q2" value="b"> b) High-performance, low-latency communication between internal microservices.</label></li>
+                    <li><label for="q2c"><input type="radio" id="q2c" name="q2" value="c"> c) Simple, human-readable data exchange that is easy to debug with curl.</label></li>
+                    <li><label for="q2d"><input type="radio" id="q2d" name="q2" value="d"> d) An API that must support older versions of HTTP/1.0.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="3">
+            <div class="question">
+                <p>3. What is the function of a <code>.proto</code> file in a gRPC application?</p>
+                <ul class="options">
+                    <li><label for="q3a"><input type="radio" id="q3a" name="q3" value="a"> a) It is a Go source file that implements the server logic.</label></li>
+                    <li><label for="q3b"><input type="radio" id="q3b" name="q3" value="b"> b) It is a configuration file for the gRPC server's runtime behavior.</label></li>
+                    <li><label for="q3c"><input type="radio" id="q3c" name="q3" value="c"> c) It is an Interface Definition Language (IDL) file that defines the service contract and message structures.</label></li>
+                    <li><label for="q3d"><input type="radio" id="q3d" name="q3" value="d"> d) It is a script for deploying the gRPC service to a container orchestration platform.</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="4">
+            <div class="question">
+                <p>4. Which of the following are key characteristics of gRPC? (Select all that apply)</p>
+                <ul class="options">
+                    <li><label for="q4a"><input type="checkbox" id="q4a" name="q4" value="a"> a) It uses HTTP/2 for transport.</label></li>
+                    <li><label for="q4b"><input type="checkbox" id="q4b" name="q4" value="b"> b) It uses Protocol Buffers for efficient binary serialization.</label></li>
+                    <li><label for="q4c"><input type="checkbox" id="q4c" name="q4" value="c"> c) It enables the creation of strongly-typed API contracts.</label></li>
+                    <li><label for="q4d"><input type="checkbox" id="q4d" name="q4" value="d"> d) It uses JSON as its default data format.</label></li>
+                </ul>
+                <div class="answer" data-correct="a,b,c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="5">
+            <div class="question">
+                <p>5. What is the purpose of the <code>protoc</code> command when developing a gRPC service in Go?</p>
+                <ul class="options">
+                    <li><label for="q5a"><input type="radio" id="q5a" name="q5" value="a"> a) To start the gRPC server and listen for incoming connections.</label></li>
+                    <li><label for="q5b"><input type="radio" id="q5b" name="q5" value="b"> b) To install the required gRPC libraries for the project.</label></li>
+                    <li><label for="q5c"><input type="radio" id="q5c" name="q5" value="c"> c) To generate Go source code for messages and service stubs from a <code>.proto</code> file.</label></li>
+                    <li><label for="q5d"><input type="radio" id="q5d" name="q5" value="d"> d) To test the network connectivity to a running gRPC server.</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <button class="btn btn-outline-primary" id="next-question">Next</button>
+            <button class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
+        </div>
+        <div class="quiz-results-container"></div>
+    </div>
+</div>

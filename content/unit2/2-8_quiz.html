@@ -1,2 +1,77 @@
-<h1>Quiz for 2.8: Testing Strategies</h1>
-<p>Coming soon...</p>
+<div id="quiz-section">
+    <h2>Quiz: Testing Strategies</h2>
+
+    <div class="quiz-container">
+        <div class="quiz-card active-card" data-question="1">
+            <div class="question">
+                <p>1. According to Go conventions, which of the following is a valid test function signature?</p>
+                <ul class="options">
+                    <li><label for="q1a"><input type="radio" id="q1a" name="q1" value="a"> a) <code>func testMyFunction(t *testing.T)</code></label></li>
+                    <li><label for="q1b"><input type="radio" id="q1b" name="q1" value="b"> b) <code>func TestMyFunction(t *testing.T)</code></label></li>
+                    <li><label for="q1c"><input type="radio" id="q1c" name="q1" value="c"> c) <code>func TestMyFunction()</code></label></li>
+                    <li><label for="q1d"><input type="radio" id="q1d" name="q1" value="d"> d) <code>func MyFunctionTest(t *testing.T)</code></label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="2">
+            <div class="question">
+                <p>2. What is the most idiomatic way to create a mock for a database dependency in a Go unit test?</p>
+                <ul class="options">
+                    <li><label for="q2a"><input type="radio" id="q2a" name="q2" value="a"> a) Use a third-party dynamic mocking library to patch methods at runtime.</label></li>
+                    <li><label for="q2b"><input type="radio" id="q2b" name="q2" value="b"> b) Define the dependency as an interface and create a mock struct that implements that interface.</label></li>
+                    <li><label for="q2c"><input type="radio" id="q2c" name="q2" value="c"> c) Connect to a real, shared development database for all unit tests.</label></li>
+                    <li><label for="q2d"><input type="radio" id="q2d" name="q2" value="d"> d) Write test results directly to a file instead of interacting with a dependency.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="3">
+            <div class="question">
+                <p>3. What is the primary benefit of using table-driven tests in Go?</p>
+                <ul class="options">
+                    <li><label for="q3a"><input type="radio" id="q3a" name="q3" value="a"> a) They run tests in parallel automatically.</label></li>
+                    <li><label for="q3b"><input type="radio" id="q3b" name="q3" value="b"> b) They make it easy to test many different inputs and edge cases with minimal repetitive code.</label></li>
+                    <li><label for="q3c"><input type="radio" id="q3c" name="q3" value="c"> c) They generate test reports in a graphical HTML format.</label></li>
+                    <li><label for="q3d"><input type="radio" id="q3d" name="q3" value="d"> d) They are the only way to test functions that return errors.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="4">
+            <div class="question">
+                <p>4. What is the main purpose of using the Testcontainers library in Go?</p>
+                <ul class="options">
+                    <li><label for="q4a"><input type="radio" id="q4a" name="q4" value="a"> a) To run unit tests inside a specially instrumented Docker container.</label></li>
+                    <li><label for="q4b"><input type="radio" id="q4b" name="q4" value="b"> b) To create mock objects for external dependencies like databases.</label></li>
+                    <li><label for="q4c"><input type="radio" id="q4c" name="q4" value="c"> c) To provide ephemeral, real instances of services (like databases) in Docker for realistic integration tests.</label></li>
+                    <li><label for="q4d"><input type="radio" id="q4d" name="q4" value="d"> d) To measure the code coverage of tests and enforce a minimum coverage percentage.</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="5">
+            <div class="question">
+                <p>5. According to the Testing Pyramid concept, which type of test should you have the most of in your test suite?</p>
+                <ul class="options">
+                    <li><label for="q5a"><input type="radio" id="q5a" name="q5" value="a"> a) End-to-End Tests</label></li>
+                    <li><label for="q5b"><input type="radio" id="q5b" name="q5" value="b"> b) Manual Tests</label></li>
+                    <li><label for="q5c"><input type="radio" id="q5c" name="q5" value="c"> c) Integration Tests</label></li>
+                    <li><label for="q5d"><input type="radio" id="q5d" name="q5" value="d"> d) Unit Tests</label></li>
+                </ul>
+                <div class="answer" data-correct="d"></div>
+            </div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <button class="btn btn-outline-primary" id="next-question">Next</button>
+            <button class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
+        </div>
+        <div class="quiz-results-container"></div>
+    </div>
+</div>

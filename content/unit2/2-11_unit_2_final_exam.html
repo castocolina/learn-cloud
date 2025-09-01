@@ -1,0 +1,297 @@
+<div class="container">
+    <div class="page-header">
+        <h1>2.11 Unit 2 Final Exam: Go for Cloud-Native Backend Development</h1>
+        <p class="lead">This comprehensive exam covers all the material from Unit 2, testing your understanding of Go's role in cloud-native development, from its core concepts and concurrency model to building and testing production-ready services.</p>
+    </div>
+
+    <div id="quiz-section">
+        <div class="quiz-container">
+            <!-- Question 1 -->
+            <div class="quiz-card active-card" data-question="1">
+                <div class="question">
+                    <p>1. (2.1) What is the primary benefit of using a multi-stage Docker build for a Go application?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q1" value="a"> a) It makes the build process faster by compiling stages in parallel.</label></li>
+                        <li><label><input type="radio" name="q1" value="b"> b) It includes the Go compiler and source code in the final image for easier debugging.</label></li>
+                        <li><label><input type="radio" name="q1" value="c"> c) It creates a minimal and more secure final image by separating the build environment from the runtime environment.</label></li>
+                        <li><label><input type="radio" name="q1" value="d"> d) It automatically versions the Docker images based on git tags.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="c"></div>
+                </div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="quiz-card" data-question="2">
+                <div class="question">
+                    <p>2. (2.1) What is the role of the <code>go.sum</code> file in Go Modules?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q2" value="a"> a) It lists the direct dependencies of the project.</label></li>
+                        <li><label><input type="radio" name="q2" value="b"> b) It contains the cryptographic checksums of all direct and indirect dependencies to ensure build reproducibility.</label></li>
+                        <li><label><input type="radio" name="q2" value="c"> c) It is a human-readable summary of the project's dependencies.</label></li>
+                        <li><label><input type="radio" name="q2" value="d"> d) It contains documentation for the project's dependencies.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="b"></div>
+                </div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="quiz-card" data-question="3">
+                <div class="question">
+                    <p>3. (2.2) How does a Go struct satisfy an interface?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q3" value="a"> a) By explicitly declaring it with the <code>implements</code> keyword.</label></li>
+                        <li><label><input type="radio" name="q3" value="b"> b) Implicitly, by defining all the methods required by the interface.</label></li>
+                        <li><label><input type="radio" name="q3" value="c"> c) By embedding the interface type within the struct definition.</label></li>
+                        <li><label><input type="radio" name="q3" value="d"> d) By registering the struct with a central interface manager.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="b"></div>
+                </div>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="quiz-card" data-question="4">
+                <div class="question">
+                    <p>4. (2.2) What is the idiomatic way to handle a potential error returned from a function in Go?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q4" value="a"> a) Wrap the function call in a <code>try...catch</code> block.</label></li>
+                        <li><label><input type="radio" name="q4" value="b"> b) Ignore the error value and hope for the best.</label></li>
+                        <li><label><input type="radio" name="q4" value="c"> c) Check if the returned error value is not <code>nil</code> immediately after the function call.</label></li>
+                        <li><label><input type="radio" name="q4" value="d"> d) Use the <code>panic()</code> function to stop execution.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="c"></div>
+                </div>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="quiz-card" data-question="5">
+                <div class="question">
+                    <p>5. (2.3) How do you start a new, concurrent thread of execution in Go?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q5" value="a"> a) By calling a function with the <code>goroutine</code> keyword.</label></li>
+                        <li><label><input type="radio" name="q5" value="b"> b) By creating a new instance of the <code>Thread</code> class.</label></li>
+                        <li><label><input type="radio" name="q5" value="c"> c) By calling a function with the <code>go</code> keyword.</label></li>
+                        <li><label><input type="radio" name="q5" value="d"> d) By using the <code>async</code> keyword before the function definition.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="c"></div>
+                </div>
+            </div>
+
+            <!-- Question 6 -->
+            <div class="quiz-card" data-question="6">
+                <div class="question">
+                    <p>6. (2.3) What is the primary purpose of the <code>select</code> statement in Go?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q6" value="a"> a) To conditionally execute code like a standard <code>if-else</code> block.</label></li>
+                        <li><label><input type="radio" name="q6" value="b"> b) To iterate over the values in a channel.</label></li>
+                        <li><label><input type="radio" name="q6" value="c"> c) To wait on multiple channel operations and proceed with the first one that is ready.</label></li>
+                        <li><label><input type="radio" name="q6" value="d"> d) To select a random goroutine to execute next.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="c"></div>
+                </div>
+            </div>
+
+            <!-- Question 7 -->
+            <div class="quiz-card" data-question="7">
+                <div class="question">
+                    <p>7. (2.4) Which built-in tool enforces the official, non-configurable code format for all Go code?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q7" value="a"> a) <code>go vet</code></label></li>
+                        <li><label><input type="radio" name="q7" value="b"> b) <code>golangci-lint</code></label></li>
+                        <li><label><input type="radio" name="q7" value="c"> c) <code>goimports</code></label></li>
+                        <li><label><input type="radio" name="q7" value="d"> d) <code>gofmt</code></label></li>
+                    </ul>
+                    <div class="answer" data-correct="d"></div>
+                </div>
+            </div>
+
+            <!-- Question 8 -->
+            <div class="quiz-card" data-question="8">
+                <div class="question">
+                    <p>8. (2.4) What is the primary role of <code>golangci-lint</code> in the Go ecosystem?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q8" value="a"> a) It is the official Go compiler.</label></li>
+                        <li><label><input type="radio" name="q8" value="b"> b) It is a fast, comprehensive meta-linter that runs many different code analysis tools.</label></li>
+                        <li><label><input type="radio" name="q8" value="c"> c) It is a dependency management tool.</label></li>
+                        <li><label><input type="radio" name="q8" value="d"> d) It is a tool for cross-compiling Go applications.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="b"></div>
+                </div>
+            </div>
+
+            <!-- Question 9 -->
+            <div class="quiz-card" data-question="9">
+                <div class="question">
+                    <p>9. (2.5) How does Go achieve code reuse and polymorphism without traditional class-based inheritance?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q9" value="a"> a) Through multiple inheritance of structs.</label></li>
+                        <li><label><input type="radio" name="q9" value="b"> b) Through composition (embedding structs) and polymorphism via interfaces.</label></li>
+                        <li><label><input type="radio" name="q9" value="c"> c) Through the use of generic functions only.</label></li>
+                        <li><label><input type="radio" name="q9" value="d"> d) Go does not support code reuse or polymorphism.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="b"></div>
+                </div>
+            </div>
+
+            <!-- Question 10 -->
+            <div class="quiz-card" data-question="10">
+                <div class="question">
+                    <p>10. (2.5) What is a key limitation of in-memory caching that is solved by distributed caching (e.g., with Redis)?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q10" value="a"> a) In-memory caching is slower than distributed caching.</label></li>
+                        <li><label><input type="radio" name="q10" value="b"> b) In-memory caching cannot store complex data structures.</label></li>
+                        <li><label><input type="radio" name="q10" value="c"> c) The in-memory cache is lost on application restart and is not shared between service instances.</label></li>
+                        <li><label><input type="radio" name="q10" value="d"> d) The in-memory cache has a higher network latency.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="c"></div>
+                </div>
+            </div>
+
+            <!-- Question 11 -->
+            <div class="quiz-card" data-question="11">
+                <div class="question">
+                    <p>11. (2.6) When building a REST API, what is a key advantage of using a framework like Gin over the standard <code>net/http</code> package?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q11" value="a"> a) The standard library cannot handle HTTPS traffic.</label></li>
+                        <li><label><input type="radio" name="q11" value="b"> b) Gin provides built-in support for middleware, which simplifies tasks like logging and authentication.</label></li>
+                        <li><label><input type="radio" name="q11" value="c"> c) The standard library is not suitable for production use.</label></li>
+                        <li><label><input type="radio" name="q11" value="d"> d) Gin is the only way to handle JSON data in Go.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="b"></div>
+                </div>
+            </div>
+
+            <!-- Question 12 -->
+            <div class="quiz-card" data-question="12">
+                <div class="question">
+                    <p>12. (2.6) How do you decode a JSON request body into a struct using the Gin framework?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q12" value="a"> a) <code>json.Unmarshal(c.Request.Body, &myStruct)</code></label></li>
+                        <li><label><input type="radio" name="q12" value="b"> b) <code>c.GetJSON(&myStruct)</code></label></li>
+                        <li><label><input type="radio" name="q12" value="c"> c) <code>c.ShouldBindJSON(&myStruct)</code></label></li>
+                        <li><label><input type="radio" name="q12" value="d"> d) <code>c.Request.ParseJSON(&myStruct)</code></label></li>
+                    </ul>
+                    <div class="answer" data-correct="c"></div>
+                </div>
+            </div>
+
+            <!-- Question 13 -->
+            <div class="quiz-card" data-question="13">
+                <div class="question">
+                    <p>13. (2.7) For which type of communication is gRPC generally preferred over REST?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q13" value="a"> a) Public-facing APIs consumed by web browsers.</label></li>
+                        <li><label><input type="radio" name="q13" value="b"> b) High-performance, low-latency communication between internal microservices.</label></li>
+                        <li><label><input type="radio" name="q13" value="c"> c) Simple, ad-hoc data exchange that needs to be easily debugged with curl.</label></li>
+                        <li><label><input type="radio" name="q13" value="d"> d) APIs that must support a wide range of legacy clients.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="b"></div>
+                </div>
+            </div>
+
+            <!-- Question 14 -->
+            <div class="quiz-card" data-question="14">
+                <div class="question">
+                    <p>14. (2.7) What is the role of a message queue like RabbitMQ in a microservices architecture?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q14" value="a"> a) To provide a primary database for storing application state.</label></li>
+                        <li><label><input type="radio" name="q14" value="b"> b) To act as a synchronous request/response broker between services.</label></li>
+                        <li><label><input type="radio" name="q14" value="c"> c) To decouple services by enabling asynchronous, event-driven communication.</label></li>
+                        <li><label><input type="radio" name="q14" value="d"> d) To serve static web content.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="c"></div>
+                </div>
+            </div>
+
+            <!-- Question 15 -->
+            <div class="quiz-card" data-question="15">
+                <div class="question">
+                    <p>15. (2.8) What is the idiomatic Go pattern for testing a single function with many different inputs and expected outputs?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q15" value="a"> a) Creating a separate test file for each input.</label></li>
+                        <li><label><input type="radio" name="q15" value="b"> b) Using a <code>for</code> loop with a hardcoded list of inputs inside the test function.</label></li>
+                        <li><label><input type="radio" name="q15" value="c"> c) Table-driven tests, where a slice of test case structs is iterated over.</label></li>
+                        <li><label><input type="radio" name="q15" value="d"> d) Writing a single assertion that checks all inputs at once.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="c"></div>
+                </div>
+            </div>
+
+            <!-- Question 16 -->
+            <div class="quiz-card" data-question="16">
+                <div class="question">
+                    <p>16. (2.8) What problem does the Testcontainers library solve for integration testing?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q16" value="a"> a) It generates mock data for tests.</label></li>
+                        <li><label><input type="radio" name="q16" value="b"> b) It provides ephemeral, real instances of external services (like databases) in Docker containers.</label></li>
+                        <li><label><input type="radio" name="q16" value="c"> c) It measures test coverage and performance.</label></li>
+                        <li><label><input type="radio" name="q16" value="d"> d) It allows you to write tests in a different language than your application.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="b"></div>
+                </div>
+            </div>
+
+            <!-- Question 17 -->
+            <div class="quiz-card" data-question="17">
+                <div class="question">
+                    <p>17. (2.9) What are the three pillars of observability?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q17" value="a"> a) CPU, Memory, and Disk</label></li>
+                        <li><label><input type="radio" name="q17" value="b"> b) Reading, Writing, and Executing</label></li>
+                        <li><label><input type="radio" name="q17" value="c"> c) Logs, Metrics, and Traces</label></li>
+                        <li><label><input type="radio" name="q17" value="d"> d) Development, Staging, and Production</label></li>
+                    </ul>
+                    <div class="answer" data-correct="c"></div>
+                </div>
+            </div>
+
+            <!-- Question 18 -->
+            <div class="quiz-card" data-question="18">
+                <div class="question">
+                    <p>18. (2.9) As of Go 1.21, what is the standard library package for creating structured (e.g., JSON) logs?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q18" value="a"> a) <code>log</code></label></li>
+                        <li><label><input type="radio" name="q18" value="b"> b) <code>fmt</code></label></li>
+                        <li><label><input type="radio" name="q18" value="c"> c) <code>encoding/json</code></label></li>
+                        <li><label><input type="radio" name="q18" value="d"> d) <code>log/slog</code></label></li>
+                    </ul>
+                    <div class="answer" data-correct="d"></div>
+                </div>
+            </div>
+
+            <!-- Question 19 -->
+            <div class="quiz-card" data-question="19">
+                <div class="question">
+                    <p>19. (2.10) In the Unit 2 project, what concurrency pattern was used to handle order processing without blocking the API response?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q19" value="a"> a) A mutex lock around the entire HTTP handler.</label></li>
+                        <li><label><input type="radio" name="q19" value="b"> b) A background worker goroutine listening for jobs on a channel.</label></li>
+                        <li><label><input type="radio" name="q19" value="c"> c) Spawning a new OS thread for each order.</label></li>
+                        <li><label><input type="radio" name="q19" value="d"> d) Using the <code>sync.WaitGroup</code> to block the API response until processing was complete.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="b"></div>
+                </div>
+            </div>
+
+            <!-- Question 20 -->
+            <div class="quiz-card" data-question="20">
+                <div class="question">
+                    <p>20. (2.1) Why is the build flag <code>CGO_ENABLED=0</code> often used when building Go binaries for Docker?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q20" value="a"> a) To enable cross-compilation for different operating systems.</label></li>
+                        <li><label><input type="radio" name="q20" value="b"> b) To create a static binary with no C library dependencies, making it highly portable.</label></li>
+                        <li><label><input type="radio" name="q20" value="c"> c) To enable C-style comments in the Go code.</label></li>
+                        <li><label><input type="radio" name="q20" value="d"> d) To significantly speed up the compilation process.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="b"></div>
+                </div>
+            </div>
+
+            <div class="quiz-navigation">
+                <button class="btn btn-outline-secondary" id="prev-question">Previous</button>
+                <button class="btn btn-outline-primary" id="next-question">Next</button>
+                <button class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
+            </div>
+            <div class="quiz-results-container"></div>
+        </div>
+    </div>
+</div>

@@ -1,2 +1,77 @@
-<h1>Quiz for 3.1: Terraform for Infrastructure as Code</h1>
-<p>Coming soon...</p>
+<div id="quiz-section">
+    <h2>Quiz: Terraform for Infrastructure as Code</h2>
+
+    <div class="quiz-container">
+        <div class="quiz-card active-card" data-question="1">
+            <div class="question">
+                <p>1. What is the primary goal of Infrastructure as Code (IaC)?</p>
+                <ul class="options">
+                    <li><label for="q1a"><input type="radio" id="q1a" name="q1" value="a"> a) To manually configure servers one by one through a graphical interface.</label></li>
+                    <li><label for="q1b"><input type="radio" id="q1b" name="q1" value="b"> b) To manage and provision infrastructure through version-controlled, machine-readable definition files.</label></li>
+                    <li><label for="q1c"><input type="radio" id="q1c" name="q1" value="c"> c) To eliminate the need for cloud providers like AWS or Azure.</label></li>
+                    <li><label for="q1d"><input type="radio" id="q1d" name="q1" value="d"> d) To write application code and infrastructure definitions in the same programming language.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="2">
+            <div class="question">
+                <p>2. Which Terraform command should you run to preview the changes that will be made to your infrastructure without actually applying them?</p>
+                <ul class="options">
+                    <li><label for="q2a"><input type="radio" id="q2a" name="q2" value="a"> a) <code>terraform init</code></label></li>
+                    <li><label for="q2b"><input type="radio" id="q2b" name="q2" value="b"> b) <code>terraform apply</code></label></li>
+                    <li><label for="q2c"><input type="radio" id="q2c" name="q2" value="c"> c) <code>terraform validate</code></label></li>
+                    <li><label for="q2d"><input type="radio" id="q2d" name="q2" value="d"> d) <code>terraform plan</code></label></li>
+                </ul>
+                <div class="answer" data-correct="d"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="3">
+            <div class="question">
+                <p>3. Why is state locking (e.g., with a DynamoDB table) crucial when using remote state in a team environment?</p>
+                <ul class="options">
+                    <li><label for="q3a"><input type="radio" id="q3a" name="q3" value="a"> a) It encrypts the state file for better security.</label></li>
+                    <li><label for="q3b"><input type="radio" id="q3b" name="q3" value="b"> b) It prevents multiple users from running <code>terraform apply</code> at the same time, which could corrupt the state.</label></li>
+                    <li><label for="q3c"><input type="radio" id="q3c" name="q3" value="c"> c) It reduces the cost of storing the state file in an S3 bucket.</label></li>
+                    <li><label for="q3d"><input type="radio" id="q3d" name="q3" value="d"> d) It automatically formats the Terraform HCL code before applying.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="4">
+            <div class="question">
+                <p>4. What is the main purpose of creating a Terraform module?</p>
+                <ul class="options">
+                    <li><label for="q4a"><input type="radio" id="q4a" name="q4" value="a"> a) To define provider credentials and region information.</label></li>
+                    <li><label for="q4b"><input type="radio" id="q4b" name="q4" value="b"> b) To store the Terraform state file remotely.</label></li>
+                    <li><label for="q4c"><input type="radio" id="q4c" name="q4" value="c"> c) To package and reuse common infrastructure patterns as a single, configurable unit.</label></li>
+                    <li><label for="q4d"><input type="radio" id="q4d" name="q4" value="d"> d) To execute shell scripts as part of the Terraform workflow.</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="5">
+            <div class="question">
+                <p>5. In HCL, what does the following block define: <code>resource "aws_instance" "web_server" { ... }</code>?</p>
+                <ul class="options">
+                    <li><label for="q5a"><input type="radio" id="q5a" name="q5" value="a"> a) A variable named <code>web_server</code> of type <code>aws_instance</code>.</label></li>
+                    <li><label for="q5b"><input type="radio" id="q5b" name="q5" value="b"> b) A provider configuration for the AWS web_server service.</label></li>
+                    <li><label for="q5c"><input type="radio" id="q5c" name="q5" value="c"> c) A piece of infrastructure of type <code>aws_instance</code>, which is locally named <code>web_server</code>.</label></li>
+                    <li><label for="q5d"><input type="radio" id="q5d" name="q5" value="d"> d) An output value to be displayed after applying the configuration.</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <button class="btn btn-outline-primary" id="next-question">Next</button>
+            <button class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
+        </div>
+        <div class="quiz-results-container"></div>
+    </div>
+</div>
