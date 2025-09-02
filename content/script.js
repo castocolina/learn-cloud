@@ -18,10 +18,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Load content
     navMenu.addEventListener('click', async (e) => {
-        if (e.target.tagName === 'A' && e.target.getAttribute('href').includes('.html')) {
+        const targetLink = e.target.closest('a');
+        if (targetLink && targetLink.getAttribute('href') && targetLink.getAttribute('href').includes('.html')) {
             e.preventDefault();
-            const url = e.target.getAttribute('href');
-            const index = parseInt(e.target.dataset.index, 10);
+            const url = targetLink.getAttribute('href');
+            const index = parseInt(targetLink.dataset.index, 10);
             await loadContent(url, index);
         }
     });
@@ -404,10 +405,18 @@ document.addEventListener('DOMContentLoaded', () => {
         topics = units.flatMap(unit => unit.topics);
 
         const overviewLink = document.querySelector('#nav-menu > .nav-item > a[href*="overview.html"]');
-        overviewLink.dataset.index = -1;
+        // Ensure the overview link is part of the topics array for navigation consistency
+        if (overviewLink && !topics.some(topic => topic.url === overviewLink.getAttribute('href'))) {
+            topics.unshift({
+                url: overviewLink.getAttribute('href'),
+                title: overviewLink.textContent,
+                index: -1
+            });
+        }
 
+        // Programmatically click the overview link to ensure initial load goes through the event listener
         if (overviewLink) {
-            loadContent(overviewLink.getAttribute('href'), -1);
+            overviewLink.click();
         }
         // else if (topics.length > 0) { // Removed this as it was causing issues with initial load
         //     loadContent(topics[0].url, 0);
