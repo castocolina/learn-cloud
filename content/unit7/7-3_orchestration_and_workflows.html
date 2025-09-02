@@ -1,0 +1,154 @@
+<div class="container">
+    <div class="page-header">
+        <h1>7.3: Orchestration and Workflows</h1>
+    </div>
+
+    <p class="lead">While individual Lambda functions are powerful, real-world applications often consist of multiple steps, conditional logic, and error handling. Chaining functions together by having one Lambda directly invoke another can lead to a brittle, hard-to-debug architecture sometimes called "Lambda pinball." A much better approach is to use a dedicated orchestration service. <strong>AWS Step Functions</strong> is a serverless orchestrator that lets you coordinate multiple AWS services into a visual, resilient, and auditable workflow.</p>
+
+    <hr/>
+
+    <h2><i class="bi bi-diagram-3"></i> 1. Introduction to AWS Step Functions</h2>
+    <p>
+        AWS Step Functions allows you to define your application's workflow as a <strong>state machine</strong>. Each step in your workflow is a <strong>state</strong>. This approach provides several key advantages over manual orchestration:
+    </p>
+    <ul>
+        <li><strong>Visualization:</strong> Workflows are represented as visual diagrams, making them easy to understand and debug.</li>
+        <li><strong>Resilience:</strong> Step Functions manages the state of your workflow, provides built-in error handling and retry logic, and maintains an audit trail of every execution.</li>
+        <li><strong>Decoupling:</strong> It decouples the logic of your workflow from the implementation of your tasks (e.g., your Lambda functions).</li>
+        <li><strong>Service Integrations:</strong> It can directly integrate with over 200 AWS services, often eliminating the need for "glue" Lambda functions.</li>
+    </ul>
+
+    <h4>Core Concepts</h4>
+    <ul>
+        <li><strong>State Machine:</strong> The workflow itself, defined using the Amazon States Language (ASL).</li>
+        <li><strong>State:</strong> A single step in a state machine. Common state types include:
+            <ul>
+                <li><code>Task</code>: Performs work by invoking a Lambda function or another AWS service.</li>
+                <li><code>Choice</code>: Adds branching logic to the workflow based on the state's input.</li>
+                <li><code>Parallel</code>: Executes multiple branches of the workflow concurrently.</li>
+                <li><code>Wait</code>: Pauses the workflow for a specified amount of time.</li>
+            </ul>
+        </li>
+        <li><strong>Amazon States Language (ASL):</strong> A JSON-based, structured language used to define your state machine.</li>
+    </ul>
+
+    <hr/>
+
+    <h2><i class="bi bi-bezier"></i> 2. Building a Sample Workflow</h2>
+    <p>Let's model a simplified e-commerce order processing workflow. The goal is to process a payment, and if successful, update the inventory and notify the user in parallel.</p>
+
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                A["Start"] --> B(Process Payment Task);
+                B --> C{Payment Successful?};
+                C -- "Yes" --> D["Parallel State"];
+                C -- "No" --> F(Handle Failed Payment Task);
+                subgraph D
+                    direction LR
+                    D1[Update Inventory Task] & D2[Notify User Task];
+                end
+                D --> E["End"];
+                F --> E;
+        </pre>
+        <small class="text-muted">Diagram: A visual representation of the order processing workflow.</small>
+    </div>
+
+    <h4>Amazon States Language (ASL) Definition</h4>
+    <p>The visual workflow above is defined by the following ASL JSON. This is the "Infrastructure as Code" for your workflow.</p>
+    <pre><code class="language-json">
+{
+  "Comment": "A simple e-commerce order processing workflow",
+  "StartAt": "ProcessPayment",
+  "States": {
+    "ProcessPayment": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:123456789012:function:process-payment-function",
+      "Next": "PaymentChoice"
+    },
+    "PaymentChoice": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.payment_status",
+          "StringEquals": "SUCCESS",
+          "Next": "ProcessOrderParallel"
+        }
+      ],
+      "Default": "HandleFailedPayment"
+    },
+    "ProcessOrderParallel": {
+      "Type": "Parallel",
+      "Branches": [
+        {
+          "StartAt": "UpdateInventory",
+          "States": {
+            "UpdateInventory": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:us-east-1:123456789012:function:update-inventory-function",
+              "End": true
+            }
+          }
+        },
+        {
+          "StartAt": "NotifyUser",
+          "States": {
+            "NotifyUser": {
+              "Type": "Task",
+              "Resource": "arn:aws:sns:us-east-1:123456789012:order-notifications",
+              "End": true
+            }
+          }
+        }
+      ],
+      "End": true
+    },
+    "HandleFailedPayment": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:123456789012:function:failed-payment-function",
+      "End": true
+    }
+  }
+}
+    </code></pre>
+
+    <hr/>
+
+    <h2><i class="bi bi-plug"></i> 3. Integrating Lambda and Other Services</h2>
+    <p>In the ASL definition, the <code>Resource</code> field of a <code>Task</code> state specifies what work to perform. This is most often the ARN of a Lambda function.</p>
+
+    <h4>Passing Data Between States</h4>
+    <p>The output of one state becomes the input of the next state. Your Lambda function receives the input as its `event` object and its return value becomes the output of the `Task` state.</p>
+
+    <h5>Example Python Lambda for Payment Processing</h5>
+    <pre><code class="language-python">
+import json
+
+def handler(event, context):
+    """
+    This function simulates processing a payment.
+    It receives the order details in the event object.
+    """
+    order_id = event.get("order_id")
+    amount = event.get("amount")
+    
+    print(f"Processing payment for order {order_id} of amount {amount}")
+    
+    # In a real application, you would integrate with a payment gateway.
+    # Here, we'll just simulate success.
+    payment_successful = True
+    
+    # The return value becomes the output of the Step Function task.
+    # This output will be used by the "Choice" state.
+    return {
+        "order_id": order_id,
+        "amount": amount,
+        "payment_status": "SUCCESS" if payment_successful else "FAILED"
+    }
+
+    </code></pre>
+
+    <h4>Direct Service Integrations</h4>
+    <p>Notice the `NotifyUser` state in the ASL example. Its `Resource` is an SNS topic ARN, not a Lambda function. Step Functions can integrate directly with many AWS services. Instead of writing a Lambda function that does nothing but publish a message to SNS, you can configure the `Task` state to do it directly. This is a powerful optimization that reduces code, complexity, and cost.</p>
+
+</div>

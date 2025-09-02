@@ -1,0 +1,126 @@
+<div class="container">
+    <div class="page-header">
+        <h1>7.1: The Serverless Spectrum</h1>
+    </div>
+
+    <p class="lead">Welcome to Unit 7. We now enter the world of <strong>serverless computing</strong>, a paradigm that further abstracts away infrastructure management, allowing developers to focus purely on application logic. Serverless doesn't mean there are no servers; it means you, the developer, don't have to manage them. This topic explores the serverless philosophy and introduces the two main models on AWS: Function as a Service (FaaS) with AWS Lambda and serverless containers with AWS Fargate.</p>
+
+    <hr/>
+
+    <h2><i class="bi bi-cloud-check"></i> 1. The Serverless Philosophy</h2>
+    <p>
+        The core idea of serverless is to shift the responsibility of managing infrastructure—provisioning, scaling, patching, and maintenance—entirely to the cloud provider. This enables several key benefits:
+    </p>
+    <ul>
+        <li><strong>No Server Management:</strong> You never have to provision, patch, or manage any servers.</li>
+        <li><strong>Pay-for-Value:</strong> You are billed only for the exact resources consumed during execution, often measured in milliseconds. You never pay for idle capacity.</li>
+        <li><strong>Automatic Scaling:</strong> The platform automatically scales your application in response to demand, from zero to thousands of requests per second.</li>
+        <li><strong>High Availability:</strong> Serverless platforms are inherently highly available and fault-tolerant across multiple availability zones.</li>
+    </ul>
+
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                subgraph "Traditional IaaS (e.g., EC2)"
+                    A["You Manage: App, Runtime, OS, VMs, Servers, Networking"]
+                end
+                subgraph "Containers (e.g., Kubernetes)"
+                    B["You Manage: App, Runtime"]
+                    C["Platform Manages: OS, VMs, Servers, Networking"]
+                end
+                subgraph "Serverless (e.g., Lambda)"
+                    D["You Manage: App Code"]
+                    E["Platform Manages: Everything Else"]
+                end
+                A --> B --> D;
+        </pre>
+        <small class="text-muted">Diagram: The Evolution of Abstraction</small>
+    </div>
+
+    <hr/>
+
+    <h2><i class="bi bi-box"></i> 2. AWS Lambda: Function as a Service (FaaS)</h2>
+    <p>
+        <a href="https://aws.amazon.com/lambda/" target="_blank">AWS Lambda</a> is the quintessential FaaS offering. It allows you to run code in response to events without provisioning or managing servers. You upload your code as a "Lambda function," and the platform handles everything required to run and scale your code with high availability.
+    </p>
+    <h4>Key Concepts</h4>
+    <ul>
+        <li><strong>Function:</strong> A piece of code that runs on Lambda. You can write functions in many languages, including Python and Go.</li>
+        <li><strong>Event:</strong> The trigger that invokes your function. This can be an HTTP request from API Gateway, a new file in an S3 bucket, a message in an SQS queue, and many other sources.</li>
+        <li><strong>Execution Environment:</strong> A temporary, isolated container where your function code runs. AWS manages creating and tearing down these environments.</li>
+    </ul>
+
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                A["Event Source (e.g., API Gateway)"] -- "Triggers" --> B["AWS Lambda"];
+                subgraph B
+                    C["Execution Environment (Container)"] --> D["Your Function Code"];
+                end
+                D -- "Returns Result" --> A;
+        </pre>
+        <small class="text-muted">Diagram: Basic AWS Lambda Workflow</small>
+    </div>
+
+    <hr/>
+
+    <h2><i class="bi bi-box-seam"></i> 3. AWS Fargate: Serverless Containers</h2>
+    <p>
+        What if you have an existing containerized application that you want to run without managing servers? This is where <a href="https://aws.amazon.com/fargate/" target="_blank">AWS Fargate</a> comes in. Fargate is a serverless compute engine for containers that works with both Amazon Elastic Container Service (ECS) and Amazon Elastic Kubernetes Service (EKS).
+    </p>
+    <p>
+        With Fargate, you no longer need to provision, configure, or scale a cluster of virtual machines to run your containers. You simply package your application in a container, specify the CPU and memory it requires, and Fargate launches and manages the containers for you.
+    </p>
+
+    <hr/>
+
+    <h2><i class="bi bi-question-lg"></i> 4. Comparing Lambda vs. Fargate</h2>
+    <p>Choosing between Lambda and Fargate depends on your application's architecture, performance requirements, and existing codebase.</p>
+
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Feature</th>
+                <th>AWS Lambda (FaaS)</th>
+                <th>AWS Fargate (Serverless Containers)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Unit of Scale</strong></td>
+                <td>The individual function invocation.</td>
+                <td>The container (Task in ECS, Pod in EKS).</td>
+            </tr>
+            <tr>
+                <td><strong>Execution Duration</strong></td>
+                <td>Short-lived, typically up to 15 minutes.</td>
+                <td>Long-running processes are supported.</td>
+            </tr>
+            <tr>
+                <td><strong>Cost Model</strong></td>
+                <td>Pay per request and per millisecond of execution time. Extremely cost-effective for spiky or low-traffic workloads.</td>
+                <td>Pay for vCPU and memory resources requested for your container, billed per second. More cost-effective for consistent, high-traffic workloads.</td>
+            </tr>
+            <tr>
+                <td><strong>Best For</strong></td>
+                <td>Event-driven, short-running tasks; microservices; data processing; API backends.</td>
+                <td>Migrating existing containerized applications; long-running services; applications requiring more control over the execution environment.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                A["Is your workload..."] --> B{"Event-driven & Short-lived?"};
+                B -- "Yes" --> C["AWS Lambda"];
+                B -- "No" --> D{"An existing containerized app?"};
+                D -- "Yes" --> E["AWS Fargate"];
+                D -- "No" --> F{"Need fine-grained control over the OS/instance?"};
+                F -- "Yes" --> G["Traditional EC2 / Self-Managed Kubernetes"];
+                F -- "No" --> H["Consider Fargate or Lambda"];
+        </pre>
+        <small class="text-muted">Diagram: Decision Flow for Choosing a Serverless Model</small>
+    </div>
+
+</div>

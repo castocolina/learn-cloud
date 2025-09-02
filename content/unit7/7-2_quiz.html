@@ -1,2 +1,77 @@
-<h1>Quiz for 7.2: AWS Lambda In-Depth</h1>
-<p>Coming soon...</p>
+<div id="quiz-section">
+    <h2>Quiz: AWS Lambda In-Depth</h2>
+
+    <div class="quiz-container">
+        <div class="quiz-card active-card" data-question="1">
+            <div class="question">
+                <p>1. What is a "cold start" in the context of AWS Lambda?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q1" value="a"> a) An error that occurs when a Lambda function is invoked in a cold climate.</label></li>
+                    <li><label><input type="radio" name="q1" value="b"> b) The latency added to an invocation when a new execution environment must be created.</label></li>
+                    <li><label><input type="radio" name="q1" value="c"> c) A feature that allows Lambda functions to start faster.</label></li>
+                    <li><label><input type="radio" name="q1" value="d"> d) The process of restarting a Lambda function after it has crashed.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="2">
+            <div class="question">
+                <p>2. What is the maximum execution time for a single AWS Lambda invocation?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q2" value="a"> a) 5 minutes</label></li>
+                    <li><label><input type="radio" name="q2" value="b"> b) 15 minutes</label></li>
+                    <li><label><input type="radio" name="q2" value="c"> c) 30 minutes</label></li>
+                    <li><label><input type="radio" name="q2" value="d"> d) 1 hour</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="3">
+            <div class="question">
+                <p>3. What is the primary purpose of "Provisioned Concurrency"?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q3" value="a"> a) To reduce the cost of running Lambda functions.</label></li>
+                    <li><label><input type="radio" name="q3" value="b"> b) To increase the maximum execution time of a function.</label></li>
+                    <li><label><input type="radio" name="q3" value="c"> c) To keep a set number of execution environments warm to eliminate cold starts for a predictable workload.</label></li>
+                    <li><label><input type="radio" name="q3" value="d"> d) To automatically scale the function's memory based on the payload.</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="4">
+            <div class="question">
+                <p>4. What happens when the number of concurrent Lambda executions exceeds your account's concurrency limit?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q4" value="a"> a) The Lambda function's memory is automatically increased.</label></li>
+                    <li><label><input type="radio" name="q4" value="b"> b) Subsequent requests are queued and processed when capacity becomes available.</label></li>
+                    <li><label><input type="radio" name="q4" value="c"> c) The Lambda function is automatically deployed to a different region.</label></li>
+                    <li><label><input type="radio" name="q4" value="d"> d) The Lambda service starts throttling new requests, returning an error.</label></li>
+                </ul>
+                <div class="answer" data-correct="d"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="5">
+            <div class="question">
+                <p>5. For a Lambda function that requires the absolute lowest latency and fastest cold start time, which language would generally be the better choice?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q5" value="a"> a) Python, because it is an interpreted language.</label></li>
+                    <li><label><input type="radio" name="q5" value="b"> b) Go, because it compiles to a small, efficient static binary.</label></li>
+                    <li><label><input type="radio" name="q5" value="c"> c) Python, because its deployment packages are smaller.</label></li>
+                    <li><label><input type="radio" name="q5" value="d"> d) Go, because it has more available libraries.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <button class="btn btn-outline-primary" id="next-question">Next</button>
+            <button class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
+        </div>
+        <div class="quiz-results-container"></div>
+    </div>
+</div>

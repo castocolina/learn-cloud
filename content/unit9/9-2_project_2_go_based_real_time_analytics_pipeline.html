@@ -1,0 +1,95 @@
+<div class="container">
+    <div class="page-header">
+        <h1>9.2: Project 2: Go-based Real-Time Analytics Pipeline</h1>
+    </div>
+
+    <h2><i class="bi bi-briefcase"></i> Project Brief</h2>
+    <p class="lead">
+        Build a high-performance backend system for a real-time analytics platform. This project will leverage Go's strengths in concurrency and performance, and will be deployed on a modern DevOps stack including Kubernetes, Terraform, and gRPC.
+    </p>
+
+    <hr/>
+
+    <h3>Core Services to Build:</h3>
+    <ol>
+        <li>
+            <strong>Ingestion Service (Go):</strong>
+            <ul>
+                <li>Exposes a <strong>gRPC</strong> endpoint to receive high-volume event data from clients.</li>
+                <li>Upon receiving an event, it publishes the event to a Kafka topic for durable, real-time processing.</li>
+                <li>Designed for maximum throughput and low latency.</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Processing Service (Go):</strong>
+            <ul>
+                <li>A background worker service that consumes events from the Kafka topic.</li>
+                <li>Performs some form of aggregation or transformation on the data (e.g., counting event types over a time window).</li>
+                <li>Leverages Go's concurrency (goroutines) to process multiple events in parallel.</li>
+                <li>Writes the aggregated results to a time-series database (e.g., InfluxDB or TimescaleDB).</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Query Service (Go):</strong>
+            <ul>
+                <li>Exposes a minimal REST API (using Gin) with an endpoint like <code>GET /analytics</code>.</li>
+                <li>Queries the time-series database to retrieve aggregated analytics data.</li>
+                <li>Presents the results to the user.</li>
+            </ul>
+        </li>
+    </ol>
+
+    <h3>Technical Requirements & Architecture:</h3>
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                Client["Data Source (Client)"] -- "gRPC Stream" --> Ingestion[Ingestion Service];
+                Ingestion -- "Publishes Events" --> Kafka[Apache Kafka];
+                Kafka -- "Consumes Events" --> Processing[Processing Service];
+                Processing -- "Writes Aggregates" --> TSDB[(Time-Series DB)];
+                
+                User["User"] --> QueryAPI["Query Service (REST API)"];
+                QueryAPI -- "Queries Aggregates" --> TSDB;
+
+                subgraph "Infrastructure (Managed by Terraform)"
+                    direction LR
+                    Cluster["EKS Cluster"];
+                    Kafka;
+                    TSDB;
+                end
+        </pre>
+        <small class="text-muted">Diagram: Target Architecture for the Go Capstone Project</small>
+    </div>
+
+    <ul>
+        <li>
+            <strong>Infrastructure as Code:</strong>
+            <ul>
+                <li>Use <strong>Terraform</strong> to provision all necessary AWS infrastructure, including an EKS cluster, a managed Kafka service (e.g., Amazon MSK), and a time-series database.</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Containerization & Orchestration:</strong>
+            <ul>
+                <li>Each Go service must be containerized using a multi-stage <strong>Dockerfile</strong> to produce a minimal static binary.</li>
+                <li>All services must be deployed to the EKS cluster using <strong>Kubernetes manifests</strong>.</li>
+            </ul>
+        </li>
+        <li>
+            <strong>High-Performance Communication:</strong>
+            <ul>
+                <li>Use <strong>gRPC</strong> with Protocol Buffers for the data ingestion endpoint to ensure a high-performance, strongly-typed contract.</li>
+            </ul>
+        </li>
+        <li>
+            <strong>CI/CD:</strong>
+            <ul>
+                <li>Create a <strong>GitHub Actions</strong> workflow that automates:</li>
+                <li>Linting (gosec, golangci-lint) and testing (go test).</li>
+                <li>Building minimal Docker images from the static Go binaries.</li>
+                <li>Pushing the images to a container registry.</li>
+            </ul>
+        </li>
+    </ul>
+
+</div>

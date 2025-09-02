@@ -1,0 +1,297 @@
+<div class="container">
+    <div class="page-header">
+        <h1>5.5: Unit 5 Final Exam: DevSecOps</h1>
+        <p class="lead">This comprehensive exam covers all the material from Unit 5, testing your understanding of the core principles and practices of DevSecOps, including SAST, SCA, container scanning, and vulnerability management.</p>
+    </div>
+
+    <div id="quiz-section">
+        <div class="quiz-container">
+            <!-- Question 1 -->
+            <div class="quiz-card active-card" data-question="1">
+                <div class="question">
+                    <p>1. (SAST) What is the primary function of a Static Application Security Testing (SAST) tool?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q1" value="a"> a) To analyze a running application for vulnerabilities by sending malicious payloads.</label></li>
+                        <li><label><input type="radio" name="q1" value="b"> b) To analyze an application's source code or binaries for security flaws without executing it.</label></li>
+                        <li><label><input type="radio" name="q1" value="c"> c) To check for vulnerabilities in third-party dependencies.</label></li>
+                        <li><label><input type="radio" name="q1" value="d"> d) To scan the operating system of the container image.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="b"></div>
+                </div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="quiz-card" data-question="2">
+                <div class="question">
+                    <p>2. (SAST) Which of the following is a common SAST tool for Go?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q2" value="a"> a) Bandit</label></li>
+                        <li><label><input type="radio" name="q2" value="b"> b) Gosec</label></li>
+                        <li><label><input type="radio" name="q2" value="c"> c) Trivy</label></li>
+                        <li><label><input type="radio" name="q2" value="d"> d) Pip-audit</label></li>
+                    </ul>
+                    <div class="answer" data-correct="b"></div>
+                </div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="quiz-card" data-question="3">
+                <div class="question">
+                    <p>3. (SAST) Integrating SAST into a CI/CD pipeline to run on every pull request is an example of what core DevSecOps principle?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q3" value="a"> a) Shifting Right</label></li>
+                        <li><label><input type="radio" name="q3" value="b"> b) Vertical Scaling</label></li>
+                        <li><label><input type="radio" name="q3" value="c"> c) Shifting Left</label></li>
+                        <li><label><input type="radio" name="q3" value="d"> d) Manual Gating</label></li>
+                    </ul>
+                    <div class="answer" data-correct="c"></div>
+                </div>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="quiz-card" data-question="4">
+                <div class="question">
+                    <p>4. (SAST) A SAST tool would be most effective at finding which of these vulnerabilities?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q4" value="a"> a) A hardcoded password in a source file.</label></li>
+                        <li><label><input type="radio" name="q4" value="b"> b) A vulnerable version of the OpenSSL library in the base container image.</label></li>
+                        <li><label><input type="radio" name="q4" value="c"> c) A misconfigured S3 bucket policy.</label></li>
+                        <li><label><input type="radio" name="q4" value="d"> d) A vulnerable version of the `requests` library in Python.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="a"></div>
+                </div>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="quiz-card" data-question="5">
+                <div class="question">
+                    <p>5. (SCA) What is the primary goal of Software Composition Analysis (SCA)?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q5" value="a"> a) To analyze the complexity of your application's source code.</label></li>
+                        <li><label><input type="radio" name="q5" value="b"> b) To identify all third-party dependencies and check them for known vulnerabilities.</label></li>
+                        <li><label><input type="radio" name="q5" value="c"> c) To ensure that all dependencies are from the same software vendor.</label></li>
+                        <li><label><input type="radio" name="q5" value="d"> d) To scan the final container image for OS-level vulnerabilities.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="b"></div>
+                </div>
+            </div>
+
+            <!-- Question 6 -->
+            <div class="quiz-card" data-question="6">
+                <div class="question">
+                    <p>6. (SCA) What is a "transitive dependency"?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q6" value="a"> a) A dependency that you explicitly define in your `go.mod` or `requirements.txt`.</label></li>
+                        <li><label><input type="radio" name="q6" value="b"> b) A dependency that is only used during testing.</label></li>
+                        <li><label><input type="radio" name="q6" value="c"> c) A dependency that is required by one of your direct dependencies.</label></li>
+                        <li><label><input type="radio" name="q6" value="d"> d) A dependency that has been deprecated.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="c"></div>
+                </div>
+            </div>
+
+            <!-- Question 7 -->
+            <div class="quiz-card" data-question="7">
+                <div class="question">
+                    <p>7. (SCA) What is a key advantage of Go's `govulncheck` tool?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q7" value="a"> a) It is the only SCA tool available for Go.</label></li>
+                        <li><label><input type="radio" name="q7" value="b"> b) It can automatically update all dependencies to the latest version.</label></li>
+                        <li><label><input type="radio" name="q7" value="c"> c) It analyzes the call graph to see if your code actually uses the vulnerable functions in a dependency.</label></li>
+                        <li><label><input type="radio" name="q7" value="d"> d) It is faster than any other SCA tool.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="c"></div>
+                </div>
+            </div>
+
+            <!-- Question 8 -->
+            <div class="quiz-card" data-question="8">
+                <div class="question">
+                    <p>8. (SCA) Which tool is developed by the Python Packaging Authority (PyPA) for auditing Python environments?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q8" value="a"> a) `safety`</label></li>
+                        <li><label><input type="radio" name="q8" value="b"> b) `bandit`</label></li>
+                        <li><label><input type="radio" name="q8" value="c"> c) `pip-audit`</label></li>
+                        <li><label><input type="radio" name="q8" value="d"> d) `gosec`</label></li>
+                    </ul>
+                    <div class="answer" data-correct="c"></div>
+                </div>
+            </div>
+
+            <!-- Question 9 -->
+            <div class="quiz-card" data-question="9">
+                <div class="question">
+                    <p>9. (Container Scanning) Why is container image scanning necessary even if you already perform SAST and SCA?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q9" value="a"> a) It is not necessary; SAST and SCA cover everything.</label></li>
+                        <li><label><input type="radio" name="q9" value="b"> b) Because image scanning is much faster than SAST and SCA.</label></li>
+                        <li><label><input type="radio" name="q9" value="c"> c) Because it finds vulnerabilities in the base image and OS packages that SAST/SCA do not cover.</label></li>
+                        <li><label><input type="radio" name="q9" value="d"> d) Because it is the only type of scan that can be run in a CI/CD pipeline.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="c"></div>
+                </div>
+            </div>
+
+            <!-- Question 10 -->
+            <div class="quiz-card" data-question="10">
+                <div class="question">
+                    <p>10. (Container Scanning) Which of the following are popular open-source container image scanners?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q10" value="a"> a) Docker and Kubernetes</label></li>
+                        <li><label><input type="radio" name="q10" value="b"> b) Trivy and Grype</label></li>
+                        <li><label><input type="radio" name="q10" value="c"> c) Bandit and Gosec</label></li>
+                        <li><label><input type="radio" name="q10" value="d"> d) Jenkins and Spinnaker</label></li>
+                    </ul>
+                    <div class="answer" data-correct="b"></div>
+                </div>
+            </div>
+
+            <!-- Question 11 -->
+            <div class="quiz-card" data-question="11">
+                <div class="question">
+                    <p>11. (Container Scanning) Where is the best place to perform the *first* container image scan in a CI/CD pipeline?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q11" value="a"> a) After deploying the image to production.</label></li>
+                        <li><label><input type="radio" name="q11" value="b"> b) After pushing the image to a container registry.</label></li>
+                        <li><label><input type="radio" name="q11" value="c"> c) Immediately after building the image, before pushing it to a registry.</label></li>
+                        <li><label><input type="radio" name="q11" value="d"> d) Once a week on all images in the registry.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="c"></div>
+                </div>
+            </div>
+
+            <!-- Question 12 -->
+            <div class="quiz-card" data-question="12">
+                <div class="question">
+                    <p>12. (Container Scanning) Why is it beneficial for a container registry to continuously scan images?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q12" value="a"> a) To find vulnerabilities that were intentionally added by developers.</label></li>
+                        <li><label><input type="radio" name="q12" value="b"> b) To find vulnerabilities that are only detectable when the container is running.</label></li>
+                        <li><label><input type="radio" name="q12" value="c"> c) To discover new vulnerabilities that are publicly disclosed after the image was built and pushed.</label></li>
+                        <li><label><input type="radio" name="q12" value="d"> d) To reduce the size of the stored images.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="c"></div>
+                </div>
+            </div>
+
+            <!-- Question 13 -->
+            <div class="quiz-card" data-question="13">
+                <div class="question">
+                    <p>13. (Vulnerability Management) What are the four stages of the vulnerability management lifecycle?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q13" value="a"> a) Discover, Prioritize, Remediate, Verify</label></li>
+                        <li><label><input type="radio" name="q13" value="b"> b) Discover, Ignore, Report, Archive</label></li>
+                        <li><label><input type="radio" name="q13" value="c"> c) Plan, Code, Build, Test</label></li>
+                        <li><label><input type="radio" name="q13" value="d"> d) Scan, Patch, Deploy, Monitor</label></li>
+                    </ul>
+                    <div class="answer" data-correct="a"></div>
+                </div>
+            </div>
+
+            <!-- Question 14 -->
+            <div class="quiz-card" data-question="14">
+                <div class="question">
+                    <p>14. (Vulnerability Management) What is the Common Vulnerability Scoring System (CVSS)?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q14" value="a"> a) A tool for fixing vulnerabilities automatically.</label></li>
+                        <li><label><input type="radio" name="q14" value="b"> b) A list of all known vulnerabilities.</label></li>
+                        <li><label><input type="radio" name="q14" value="c"> c) An industry standard for rating the severity of vulnerabilities.</label></li>
+                        <li><label><input type="radio" name="q14" value="d"> d) A type of security compliance certification.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="c"></div>
+                </div>
+            </div>
+
+            <!-- Question 15 -->
+            <div class="quiz-card" data-question="15">
+                <div class="question">
+                    <p>15. (Vulnerability Management) Why is business context crucial for prioritizing vulnerabilities?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q15" value="a"> a) Because all vulnerabilities with a HIGH CVSS score must be fixed immediately, regardless of context.</label></li>
+                        <li><label><input type="radio" name="q15" value="b"> b) Because it helps determine the actual risk by considering factors like application exposure and data sensitivity.</label></li>
+                        <li><label><input type="radio" name="q15" value="c"> c) Because business context is needed to calculate the CVSS score.</label></li>
+                        <li><label><input type="radio" name="q15" value="d"> d) Because developers will not fix vulnerabilities without a business justification.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="b"></div>
+                </div>
+            </div>
+
+            <!-- Question 16 -->
+            <div class="quiz-card" data-question="16">
+                <div class="question">
+                    <p>16. (Vulnerability Management) What is a remediation SLA?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q16" value="a"> a) A contract with a security vendor.</label></li>
+                        <li><label><input type="radio" name="q16" value="b"> b) A policy defining the maximum time allowed to fix a vulnerability based on its severity.</label></li>
+                        <li><label><input type="radio" name="q16" value="c"> c) A tool that automatically applies security patches.</label></li>
+                        <li><label><input type="radio" name="q16" value="d"> d) A report of all fixed vulnerabilities.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="b"></div>
+                </div>
+            </div>
+
+            <!-- Question 17 -->
+            <div class="quiz-card" data-question="17">
+                <div class="question">
+                    <p>17. (SAST) Which of these would a SAST tool be LEAST likely to find?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q17" value="a"> a) SQL injection vulnerability.</label></li>
+                        <li><label><input type="radio" name="q17" value="b"> b) Use of a weak cryptographic algorithm.</label></li>
+                        <li><label><input type="radio" name="q17" value="c"> c) A business logic flaw allowing a user to approve their own expense report.</label></li>
+                        <li><label><input type="radio" name="q17" value="d"> d) A hardcoded password.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="c"></div>
+                </div>
+            </div>
+
+            <!-- Question 18 -->
+            <div class="quiz-card" data-question="18">
+                <div class="question">
+                    <p>18. (SCA) Your SCA scan finds a critical vulnerability in a dependency. What is the most common and effective first step to remediate it?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q18" value="a"> a) Remove the dependency from your project entirely.</label></li>
+                        <li><label><input type="radio" name="q18" value="b"> b) Rewrite the dependency's code yourself to patch the flaw.</label></li>
+                        <li><label><input type="radio" name="q18" value="c"> c) Update the dependency to the next available non-vulnerable version.</label></li>
+                        <li><label><input type="radio" name="q18" value="d"> d) Accept the risk and do nothing.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="c"></div>
+                </div>
+            </div>
+
+            <!-- Question 19 -->
+            <div class="quiz-card" data-question="19">
+                <div class="question">
+                    <p>19. (Container Scanning) You scan an image and Trivy reports a vulnerability with "no fixed version". What does this mean?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q19" value="a"> a) The vulnerability is a false positive and can be ignored.</label></li>
+                        <li><label><input type="radio" name="q19" value="b"> b) You must manually patch the library yourself.</label></li>
+                        <li><label><input type="radio" name="q19" value="c"> c) A patch has not yet been released by the upstream maintainer of the vulnerable package.</label></li>
+                        <li><label><input type="radio" name="q19" value="d"> d) The scanner is broken and needs to be updated.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="c"></div>
+                </div>
+            </div>
+
+            <!-- Question 20 -->
+            <div class="quiz-card" data-question="20">
+                <div class="question">
+                    <p>20. (Vulnerability Management) What is the final, crucial step in the vulnerability management lifecycle after a fix has been deployed?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q20" value="a"> a) Announce the fix to the company.</label></li>
+                        <li><label><input type="radio" name="q20" value="b"> b) Delete the old vulnerability ticket.</label></li>
+                        <li><label><input type="radio" name="q20" value="c"> c) Verify that the fix is effective by re-scanning with the original tool.</label></li>
+                        <li><label><input type="radio" name="q20" value="d"> d) Move on to the next task.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="c"></div>
+                </div>
+            </div>
+
+            <div class="quiz-navigation">
+                <button class="btn btn-outline-secondary" id="prev-question">Previous</button>
+                <button class="btn btn-outline-primary" id="next-question">Next</button>
+                <button class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
+            </div>
+            <div class="quiz-results-container"></div>
+        </div>
+    </div>
+</div>

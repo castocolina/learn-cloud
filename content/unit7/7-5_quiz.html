@@ -1,2 +1,77 @@
-<h1>Quiz for 7.5: AWS Developer Certification Guide</h1>
-<p>Coming soon...</p>
+<div id="quiz-section">
+    <h2>Quiz: AWS Developer Certification Guide</h2>
+
+    <div class="quiz-container">
+        <div class="quiz-card active-card" data-question="1">
+            <div class="question">
+                <p>1. A Lambda function needs to read data from a DynamoDB table. What must be configured for this to work?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q1" value="a"> a) The Lambda function must be in the same Availability Zone as the DynamoDB table.</label></li>
+                    <li><label><input type="radio" name="q1" value="b"> b) The function's IAM Execution Role must have a policy allowing `dynamodb:GetItem` access.</label></li>
+                    <li><label><input type="radio" name="q1" value="c"> c) The DynamoDB table must have a public endpoint.</label></li>
+                    <li><label><input type="radio" name="q1" value="d"> d) The Lambda function must have Provisioned Concurrency enabled.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="2">
+            <div class="question">
+                <p>2. You have deployed a new version of a Lambda function and want to gradually shift traffic from the old version to the new one. Which Lambda feature would you use?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q2" value="a"> a) Lambda Layers</label></li>
+                    <li><label><input type="radio" name="q2" value="b"> b) A Dead-Letter Queue (DLQ)</label></li>
+                    <li><label><input type="radio" name="q2" value="c"> c) Aliases with weighted routing</label></li>
+                    <li><label><input type="radio" name="q2" value="d"> d) Environment variables</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="3">
+            <div class="question">
+                <p>3. An asynchronous Lambda function fails to process an event after several retries. To avoid losing the event, where should you configure Lambda to send it?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q3" value="a"> a) To another Lambda function directly.</label></li>
+                    <li><label><input type="radio" name="q3" value="b"> b) To an Amazon S3 bucket.</label></li>
+                    <li><label><input type="radio" name="q3" value="c"> c) To a Dead-Letter Queue (DLQ), such as an SQS queue.</label></li>
+                    <li><label><input type="radio" name="q3" value="d"> d) To Amazon CloudWatch Logs.</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="4">
+            <div class="question">
+                <p>4. In API Gateway, what is the primary advantage of using Lambda proxy integration?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q4" value="a"> a) It allows for more fine-grained control over the request and response transformation.</label></li>
+                    <li><label><input type="radio" name="q4" value="b"> b) It passes the entire raw HTTP request to the Lambda function, simplifying the setup.</label></li>
+                    <li><label><input type="radio" name="q4" value="c"> c) It is more secure than non-proxy integration.</label></li>
+                    <li><label><input type="radio" name="q4" value="d"> d) It only works with Go runtimes.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="5">
+            <div class="question">
+                <p>5. Which AWS SAM command would you use to build your serverless application and package its dependencies?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q5" value="a"> a) `sam deploy`</label></li>
+                    <li><label><input type="radio" name="q5" value="b"> b) `sam package`</label></li>
+                    <li><label><input type="radio" name="q5" value="c"> c) `sam local start-api`</label></li>
+                    <li><label><input type="radio" name="q5" value="d"> d) `sam build`</label></li>
+                </ul>
+                <div class="answer" data-correct="d"></div>
+            </div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <button class="btn btn-outline-primary" id="next-question">Next</button>
+            <button class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
+        </div>
+        <div class="quiz-results-container"></div>
+    </div>
+</div>

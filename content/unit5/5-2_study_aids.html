@@ -1,2 +1,104 @@
-<h1>Study Aids for 5.2: SCA (Software Composition Analysis)</h1>
-<p>Coming soon...</p>
+<div id="flashcards-section">
+    <h2>Study Aids: SCA (Software Composition Analysis)</h2>
+    <div class="card mb-4">
+        <div class="card-header">
+            Key Takeaways
+        </div>
+        <div class="card-body">
+            <ul>
+                <li><strong>You Are What You Import:</strong> Modern applications are built on open-source dependencies. SCA is the process of identifying these dependencies and scanning them for known vulnerabilities (CVEs).</li>
+                <li><strong>Supply Chain Risk:</strong> A vulnerability in a third-party library is a vulnerability in your application. Managing this software supply chain risk is a critical part of DevSecOps.</li>
+                <li><strong>Tooling for Your Ecosystem:</strong> Use language-specific SCA tools. For Python, <strong>pip-audit</strong> or <strong>safety</strong> are common choices. For Go, the official tool is <strong>govulncheck</strong>.</li>
+                <li><strong>Context is Key (Go):</strong> Go's `govulncheck` tool is particularly powerful because it only reports vulnerabilities in dependency code that your application actually calls, reducing false positives and alert fatigue.</li>
+            </ul>
+        </div>
+    </div>
+    <div class="flashcards-container">
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is Software Composition Analysis (SCA)?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>SCA is the automated process of identifying the open-source and third-party components used in an application and checking them for known security vulnerabilities.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>How does SCA differ from SAST?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p><strong>SAST</strong> (Static Application Security Testing) analyzes the code you wrote yourself for vulnerabilities. <strong>SCA</strong> analyzes the third-party code (dependencies) you import for known vulnerabilities.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is the standard SCA tool for Python projects?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p><code>pip-audit</code>, which is developed by the Python Packaging Authority (PyPA) and checks dependencies against the PyPI Advisory Database.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is a key advantage of Go's `govulncheck` tool?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>It performs call graph analysis to determine if your application actually invokes the vulnerable code within a dependency. This reduces noise by only reporting vulnerabilities that are reachable and therefore pose a more direct risk.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is the "software supply chain"?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>It refers to the entire ecosystem of components, libraries, and dependencies (both direct and transitive) that make up your application. Securing the supply chain means ensuring all these components are free from known vulnerabilities.</p>
+            </div>
+        </div>
+
+    </div>
+</div>

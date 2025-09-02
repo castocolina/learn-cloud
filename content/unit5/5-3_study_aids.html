@@ -1,2 +1,104 @@
-<h1>Study Aids for 5.3: Container Image Scanning</h1>
-<p>Coming soon...</p>
+<div id="flashcards-section">
+    <h2>Study Aids: Container Image Scanning</h2>
+    <div class="card mb-4">
+        <div class="card-header">
+            Key Takeaways
+        </div>
+        <div class="card-body">
+            <ul>
+                <li><strong>Images are More Than Code:</strong> A container image bundles your application with its dependencies, OS packages, and a base image. A vulnerability in any layer compromises the whole container.</li>
+                <li><strong>Scan at Multiple Stages:</strong> For defense-in-depth, scan images during CI (to fail builds early), in the registry (to catch newly discovered vulnerabilities), and at runtime (to monitor deployed workloads).</li>
+                <li><strong>Use Open-Source Tools:</strong> Tools like <strong>Trivy</strong> and <strong>Grype</strong> are fast, easy-to-use, open-source scanners that integrate well into CI/CD pipelines.</li>
+                <li><strong>Automate and Enforce:</strong> The goal of image scanning is to automate vulnerability detection. Configure your CI pipeline to fail if vulnerabilities above a certain severity (e.g., HIGH or CRITICAL) are found.</li>
+            </ul>
+        </div>
+    </div>
+    <div class="flashcards-container">
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is Container Image Scanning?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>It is the process of analyzing a container image's contents (including OS packages, application dependencies, and binaries) to identify known security vulnerabilities and misconfigurations.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>Why is image scanning a necessary addition to SAST and SCA?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>SAST scans your code and SCA scans your direct dependencies, but image scanning analyzes the entire packaged artifact. It finds vulnerabilities in the operating system layer (e.g., a vulnerable version of `openssl` or `libc`) that SAST/SCA would miss.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>Name two popular open-source container image scanning tools.</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p><strong>Trivy</strong> (by Aqua Security) and <strong>Grype</strong> (by Anchore).</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>Where in the CI/CD pipeline is the most effective place to first scan a container image?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>Immediately after the image is built, but <strong>before</strong> it is pushed to a container registry. This provides the fastest feedback and prevents a vulnerable image from being stored and potentially deployed.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What does the `exit-code: '1'` option typically do in a scanner's GitHub Action?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>It configures the action to fail the entire CI/CD job if the scanner finds any vulnerabilities that meet the specified severity threshold. This is used to enforce security gates in the pipeline.</p>
+            </div>
+        </div>
+
+    </div>
+</div>

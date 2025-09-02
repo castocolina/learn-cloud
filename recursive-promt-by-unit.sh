@@ -21,7 +21,7 @@ Your goal is to ensure that all topic content files (e.g., 'X-Y_topic_name.html'
 For each topic file, ensure:
 -  It acts as an expert educator for an experienced programmer new to cloud-native.
 -  It starts with foundational principles.
--  It provides production-ready code examples, `docker run` commands for external software, and recommends relevant tooling.
+-  It provides production-ready code examples, \`docker run\` commands for external software, and recommends relevant tooling.
 -  It cites official documentation.
 -  It includes Mermaid.js diagrams where applicable, following the crucial rules for nodes and links (all text in double quotes).
 -  All code blocks are properly formatted.
@@ -32,23 +32,13 @@ Additionally, ensure that for this unit, the study aids ('X-Y_study_aids.html'),
 EOM
 # --- End of Prompt Templates ---
 
-find content/unit[5-9]* -maxdepth 0 -type d -printf "%p\n" \
+find content/unit[6-9]* -maxdepth 0 -type d -printf "%p\n" \
     | sort -V | while IFS= read -r unit_dir; do
         echo "---"
         echo "Processing unit directory: $unit_dir"
 
         # Extract unit number (e.g., 1 from content/unit1)
         unit=$(basename "$unit_dir" | sed 's/unit//')
-
-        # Construct the unit test filename based on the unit number
-        unit_test_file=$(find "$unit_dir" -maxdepth 1 -type f -name "*_unit_${unit}_final_exam.html" -printf "%p\n")
-
-        if [ -z "$unit_test_file" ]; then
-            echo "No unit test file found for unit $unit in $unit_dir. Skipping."
-            continue
-        fi
-
-        echo "Found unit test file: $unit_test_file"
 
         PROMPT_TEMPLATE="$UNIT_PROCESSING_PROMPT"
 

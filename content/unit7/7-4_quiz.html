@@ -1,2 +1,77 @@
-<h1>Quiz for 7.4: Serverless Deployment & Tooling</h1>
-<p>Coming soon...</p>
+<div id="quiz-section">
+    <h2>Quiz: Serverless Deployment & Tooling</h2>
+
+    <div class="quiz-container">
+        <div class="quiz-card active-card" data-question="1">
+            <div class="question">
+                <p>1. What is the primary purpose of a serverless IaC framework like AWS SAM or the Serverless Framework?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q1" value="a"> a) To write the application logic for Lambda functions.</label></li>
+                    <li><label><input type="radio" name="q1" value="b"> b) To define all the cloud resources for a serverless application in a configuration file for automated deployment.</label></li>
+                    <li><label><input type="radio" name="q1" value="c"> c) To monitor the performance of running Lambda functions.</label></li>
+                    <li><label><input type="radio" name="q1" value="d"> d) To provide a web-based IDE for serverless development.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="2">
+            <div class="question">
+                <p>2. Which file is the standard configuration manifest for the Serverless Framework?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q2" value="a"> a) `template.yaml`</label></li>
+                    <li><label><input type="radio" name="q2" value="b"> b) `serverless.yml`</label></li>
+                    <li><label><input type="radio" name="q2" value="c"> c) `config.json`</label></li>
+                    <li><label><input type="radio" name="q2" value="d"> d) `cloudformation.template`</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="3">
+            <div class="question">
+                <p>3. Which framework is an extension of AWS CloudFormation and is developed and maintained by AWS?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q3" value="a"> a) The Serverless Framework</label></li>
+                    <li><label><input type="radio" name="q3" value="b"> b) Terraform</label></li>
+                    <li><label><input type="radio" name="q3" value="c"> c) AWS SAM (Serverless Application Model)</label></li>
+                    <li><label><input type="radio" name="q3" value="d"> d) Pulumi</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="4">
+            <div class="question">
+                <p>4. What is a significant advantage of the Serverless Framework?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q4" value="a"> a) It only works with AWS.</label></li>
+                    <li><label><input type="radio" name="q4" value="b"> b) It has built-in local testing that is superior to all other tools.</label></li>
+                    <li><label><input type="radio" name="q4" value="c"> c) It supports multiple cloud providers (AWS, Azure, GCP) and has a large plugin ecosystem.</label></li>
+                    <li><label><input type="radio" name="q4" value="d"> d) It does not use AWS CloudFormation for deployments.</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="5">
+            <div class="question">
+                <p>5. What is the function of the `sam local start-api` command in the AWS SAM CLI?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q5" value="a"> a) It deploys the API to a local development server in the AWS cloud.</label></li>
+                    <li><label><input type="radio" name="q5" value="b"> b) It starts a local Docker container that simulates API Gateway and your Lambda functions, allowing for local testing.</label></li>
+                    <li><label><input type="radio" name="q5" value="c"> c) It validates the syntax of the `template.yaml` file.</label></li>
+                    <li><label><input type="radio" name="q5" value="d"> d) It packages the application and prepares it for deployment.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <button class="btn btn-outline-primary" id="next-question">Next</button>
+            <button class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
+        </div>
+        <div class="quiz-results-container"></div>
+    </div>
+</div>

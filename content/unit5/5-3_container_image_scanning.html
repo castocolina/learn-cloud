@@ -1,0 +1,106 @@
+<div class="container">
+    <div class="page-header">
+        <h1>5.3: Container Image Scanning</h1>
+    </div>
+
+    <p class="lead">Our applications don't run in a vacuum; they are packaged into container images along with an operating system, system libraries, and other binaries. A vulnerability in any of these layers is a vulnerability in our deployment. <strong>Container Image Scanning</strong> is the process of analyzing a container image to find known security vulnerabilities in these components.</p>
+    <p>This is a critical step in DevSecOps, as it secures the final artifact that gets deployed to production. It complements SAST (which scans your code) and SCA (which scans your direct dependencies) by scanning the entire packaged environment.</p>
+
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                subgraph "Container Image"
+                    A["Your Application Binary"]
+                    B["Application Dependencies (e.g., JARs, node_modules)"]
+                    C["OS Packages (e.g., libc, openssl, curl)"]
+                    D["Base Image (e.g., ubuntu:22.04)"]
+                end
+                
+                Scanner["Image Scanner (e.g., Trivy, Grype)"] -- "Scans All Layers" --> A
+                Scanner -- "Scans All Layers" --> B
+                Scanner -- "Scans All Layers" --> C
+                Scanner -- "Scans All Layers" --> D
+        </pre>
+        <small class="text-muted">Diagram: Container Image Scanning analyzes every layer of an image.</small>
+    </div>
+
+    <hr/>
+
+    <h2><i class="bi bi-shield-check"></i> When and Where to Scan</h2>
+    <p>Image scanning should be integrated into multiple points of your CI/CD pipeline to provide defense in depth:</p>
+    <ol>
+        <li><strong>In the CI Pipeline:</strong> Scan an image immediately after it's built. If critical vulnerabilities are found, the build should fail, preventing the insecure image from ever being pushed to a registry.</li>
+        <li><strong>In the Container Registry:</strong> Most modern container registries (like Docker Hub, GHCR, ECR) have built-in scanners that automatically scan images upon push and can continuously monitor them for newly discovered vulnerabilities.</li>
+        <li><strong>At Runtime:</strong> In-cluster security tools can scan running containers to detect vulnerabilities in workloads that are already deployed.</li>
+    </ol>
+
+    <hr/>
+
+    <h2><i class="bi bi-tools"></i> Tooling: Trivy and Grype</h2>
+    <p>
+        Two of the most popular open-source container scanning tools are <a href="https://github.com/aquasecurity/trivy" target="_blank">Trivy</a> by Aqua Security and <a href="https://github.com/anchore/grype" target="_blank">Grype</a> by Anchore. Both are fast, easy to use, and have extensive vulnerability databases.
+    </p>
+
+    <h3>Scanning with Trivy</h3>
+    <p>Trivy is known for its speed and simplicity.</p>
+    <h4>Installation</h4>
+    <pre><code class="language-bash">
+# On macOS
+brew install trivy
+
+# On Linux
+# Download binary from https://github.com/aquasecurity/trivy/releases
+    </code></pre>
+
+    <h4>Usage</h4>
+    <p>You can scan an image directly from a registry:</p>
+    <pre><code class="language-bash">
+# Scan the official python:3.10-slim image
+trivy image python:3.10-slim
+    </code></pre>
+    <p>The output will be a table of vulnerabilities found, including the package name, installed version, fixed version, and severity.</p>
+    <pre><code class="language-text">
+python:3.10-slim (debian 11.5)
+================================
+Total: 2 (UNKNOWN: 0, LOW: 0, MEDIUM: 1, HIGH: 1, CRITICAL: 0)
+
+┌──────────────┬────────────────┬──────────┬───────────────────┬───────────────┬──────────────────────────────────────────────────────────┐
+│   Library    │ Vulnerability  │ Severity │ Installed Version │ Fixed Version │                          Title                           │
+├──────────────┼────────────────┼──────────┼───────────────────┼───────────────┼──────────────────────────────────────────────────────────┤
+│ apt          │ CVE-2022-1234  │ HIGH     │ 2.2.4             │ 2.2.5         │ apt: Incorrect handling of...                            │
+├──────────────┼────────────────┼──────────┼───────────────────┼───────────────┼──────────────────────────────────────────────────────────┤
+│ libssl1.1    │ CVE-2022-5678  │ MEDIUM   │ 1.1.1n-0+deb11u3  │ 1.1.1n-0+deb11u4│ openssl: ...                                             │
+└──────────────┴────────────────┴──────────┴───────────────────┴───────────────┴──────────────────────────────────────────────────────────┘
+    </code></pre>
+
+    <h4>Integrating Trivy into CI/CD</h4>
+    <p>Trivy provides an official GitHub Action that makes integration simple. You can configure it to fail the build if vulnerabilities of a certain severity are found.</p>
+    <pre><code class="language-yaml">
+# .github/workflows/ci.yml
+jobs:
+  build-and-scan:
+    name: Build and Scan Image
+    runs-on: ubuntu-latest
+    steps:
+      # ... steps to build your docker image, e.g., using docker/build-push-action
+      - name: Build Docker image
+        id: build_image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false # Don't push yet
+          tags: myapp:${{ github.sha }}
+          load: true # Load the image into the local Docker daemon
+
+      - name: Scan image with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'myapp:${{ github.sha }}'
+          format: 'table'
+          exit-code: '1' # Fail the build if vulnerabilities are found
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH' # Fail on CRITICAL or HIGH severity
+    </code></pre>
+
+</div>

@@ -1,0 +1,158 @@
+<div class="container">
+    <div class="page-header">
+        <h1>7.2: AWS Lambda In-Depth</h1>
+    </div>
+
+    <p class="lead">Now that we understand the serverless spectrum, let's take a deep dive into its most popular implementation: AWS Lambda. This topic explores the advantages and limitations of the Lambda model, explains the critical concept of concurrency, and compares the developer experience of using Python and Go for writing Lambda functions.</p>
+
+    <hr/>
+
+    <h2><i class="bi bi-check-circle"></i> 1. Advantages & Limitations</h2>
+    <p>Lambda's architecture provides powerful benefits but also imposes constraints that you must design your application around.</p>
+
+    <h4>Advantages</h4>
+    <ul>
+        <li><strong>Cost-Effective:</strong> The pay-per-invocation model is extremely cheap for workloads with idle periods or spiky traffic.</li>
+        <li><strong>Zero Administration:</strong> No servers to patch, no operating systems to manage, no container orchestrators to configure.</li>
+        <li><strong>Massive Scalability:</strong> Lambda can scale from a few requests to thousands per second automatically, without any pre-warming or configuration.</li>
+        <li><strong>Tight AWS Ecosystem Integration:</strong> Functions can be triggered by over 200 AWS services, making it the glue of the AWS ecosystem.</li>
+    </ul>
+
+    <h4>Limitations</h4>
+    <ul>
+        <li><strong>Execution Duration:</strong> A single function invocation can run for a maximum of <strong>15 minutes</strong>. This makes Lambda unsuitable for very long-running batch jobs.</li>
+        <li><strong>Cold Starts:</strong> The first time a function is invoked (or after a period of inactivity), AWS must provision a new execution environment. This setup time, known as a "cold start," can add latency to the request.</li>
+        <li><strong>Deployment Package Size:</strong> The size of your deployment package (code and dependencies) is limited. The unzipped limit is 250 MB.</li>
+        <li><strong>Statelessness:</strong> Each invocation runs in a fresh, isolated environment. You cannot rely on local state persisting between invocations. State must be stored externally (e.g., in a database like DynamoDB or a cache like Redis).</li>
+    </ul>
+
+    <hr/>
+
+    <h2><i class="bi bi-diagram-3"></i> 2. Lambda Concurrency Explained</h2>
+    <p>Understanding how Lambda scales is crucial for building reliable applications. Concurrency is the number of requests that your function is serving at any given time.</p>
+
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                A["100 Concurrent Requests Arrive"] --> B{"Lambda Service"};
+                B --> C["Creates 100 Separate<br>Execution Environments"];
+                subgraph C
+                    Env1["Env 1 runs Request 1"];
+                    Env2["Env 2 runs Request 2"];
+                    EnvEtc["..."];
+                    Env100["Env 100 runs Request 100"];
+                end
+        </pre>
+        <small class="text-muted">Diagram: Lambda scales by creating parallel execution environments.</small>
+    </div>
+
+    <h4>On-Demand vs. Provisioned Concurrency</h4>
+    <ul>
+        <li><strong>On-Demand Concurrency:</strong> This is the default behavior. Lambda scales automatically to meet traffic. However, there is a default account-level concurrency limit (typically 1,000 concurrent executions per region, which can be increased). If you exceed this limit, Lambda will start <strong>throttling</strong> requests, returning an error to the caller.</li>
+        <li><strong>Provisioned Concurrency:</strong> This feature keeps a specified number of execution environments "warm" and ready to respond instantly. It guarantees that a certain number of requests will not experience a cold start. This is useful for applications with predictable traffic patterns or strict latency requirements, but it incurs a cost even when the function is not running.</li>
+    </ul>
+
+    <h4>Throttling Issues</h4>
+    <p>Throttling is a critical concept. If a downstream service (like a database) cannot handle the massive concurrency that Lambda can generate, it can be overwhelmed. It's essential to configure concurrency limits on your Lambda functions to act as a safety valve and protect your downstream resources.</p>
+
+    <hr/>
+
+    <h2><i class="bi bi-code-slash"></i> 3. Using Lambda with Python vs. Go</h2>
+    <p>Both Python and Go are excellent, first-class languages for AWS Lambda. The choice often depends on the specific use case and team expertise.</p>
+
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Aspect</th>
+                <th>Python</th>
+                <th>Go</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Performance</strong></td>
+                <td>Interpreted language. Generally slower cold start times and execution speed.</td>
+                <td>Compiled language. Extremely fast cold starts and execution, leading to lower latency and cost.</td>
+            </tr>
+            <tr>
+                <td><strong>Development Speed</strong></td>
+                <td>Very high. The dynamic nature and rich ecosystem (e.g., Boto3, Pydantic) make for rapid development.</td>
+                <td>High. The language is simple, but the static typing and compilation step can make iteration slightly slower than Python.</td>
+            </tr>
+            <tr>
+                <td><strong>Deployment Package</strong></td>
+                <td>Requires packaging the code and all its dependencies into a zip file. Can become large.</td>
+                <td>Compiles to a single, small static binary. Easy to package and results in a very small deployment artifact.</td>
+            </tr>
+            <tr>
+                <td><strong>Best For</strong></td>
+                <td>Rapid development, data science/ML tasks, applications where millisecond performance is not the absolute top priority.</td>
+                <td>High-performance, low-latency APIs; functions where minimizing cold start time and cost is critical.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h4>Example: A Simple "Hello, World" Lambda</h4>
+
+    <h5>Python</h5>
+    <pre><code class="language-python">
+# handler.py
+import json
+
+def handler(event, context):
+    """A simple Python Lambda handler."""
+    print("Received event:", json.dumps(event))
+    
+    # The `event` object contains information about the trigger
+    name = event.get("name", "World")
+    
+    return {
+        "statusCode": 200,
+        "headers": {"Content-Type": "application/json"},
+        "body": json.dumps({"message": f"Hello, {name}!"})
+    }
+    </code></pre>
+
+    <h5>Go</h5>
+    <pre><code class="language-go">
+// main.go
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+
+	"github.com/aws/aws-lambda-go/events"
+	"github.com/aws/aws-lambda-go/lambda"
+)
+
+// Request is the input event structure
+type Request struct {
+	Name string `json:"name"`
+}
+
+// Handler is our lambda handler function
+func Handler(ctx context.Context, request Request) (events.APIGatewayProxyResponse, error) {
+	// The `request` object is automatically unmarshalled from the event payload
+	name := "World"
+	if request.Name != "" {
+		name = request.Name
+	}
+
+	message := fmt.Sprintf("Hello, %s!", name)
+	body, _ := json.Marshal(map[string]string{"message": message})
+
+	return events.APIGatewayProxyResponse{
+		StatusCode: 200,
+		Headers:    map[string]string{"Content-Type": "application/json"},
+		Body:       string(body),
+	}, nil
+}
+
+func main() {
+	lambda.Start(Handler)
+}
+    </code></pre>
+
+</div>

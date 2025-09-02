@@ -1,2 +1,77 @@
-<h1>Quiz for 7.1: The Serverless Spectrum</h1>
-<p>Coming soon...</p>
+<div id="quiz-section">
+    <h2>Quiz: The Serverless Spectrum</h2>
+
+    <div class="quiz-container">
+        <div class="quiz-card active-card" data-question="1">
+            <div class="question">
+                <p>1. What is the core value proposition of "serverless" computing?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q1" value="a"> a) It uses fewer servers, which is better for the environment.</label></li>
+                    <li><label><input type="radio" name="q1" value="b"> b) It abstracts away infrastructure management, allowing developers to focus on code.</label></li>
+                    <li><label><input type="radio" name="q1" value="c"> c) It is always cheaper than running traditional servers.</label></li>
+                    <li><label><input type="radio" name="q1" value="d"> d) It does not use servers at all.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="2">
+            <div class="question">
+                <p>2. Which AWS service is an example of Function as a Service (FaaS)?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q2" value="a"> a) Amazon EC2</label></li>
+                    <li><label><input type="radio" name="q2" value="b"> b) Amazon S3</label></li>
+                    <li><label><input type="radio" name="q2" value="c"> c) AWS Lambda</label></li>
+                    <li><label><input type="radio" name="q2" value="d"> d) AWS Fargate</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="3">
+            <div class="question">
+                <p>3. For which type of workload is AWS Fargate generally a better fit than AWS Lambda?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q3" value="a"> a) Short-running, event-driven data processing tasks.</label></li>
+                    <li><label><input type="radio" name="q3" value="b"> b) An existing, long-running web application packaged in a Docker container.</label></li>
+                    <li><label><input type="radio" name="q3" value="c"> c) A function that runs once a day to generate a report.</label></li>
+                    <li><label><input type="radio" name="q3" value="d"> d) An API backend with infrequent, spiky traffic.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="4">
+            <div class="question">
+                <p>4. What is a key characteristic of the serverless cost model?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q4" value="a"> a) You pay a fixed monthly fee per application.</label></li>
+                    <li><label><input type="radio" name="q4" value="b"> b) You pay only for the exact resources consumed during execution and not for idle time.</label></li>
+                    <li><label><input type="radio" name="q4" value="c"> c) You pay for the number of servers provisioned, regardless of usage.</label></li>
+                    <li><label><input type="radio" name="q4" value="d"> d) You pay for network traffic only.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="5">
+            <div class="question">
+                <p>5. What is the primary difference in the unit of scale between Lambda and Fargate?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q5" value="a"> a) Lambda scales by function, Fargate scales by server.</label></li>
+                    <li><label><input type="radio" name="q5" value="b"> b) Lambda scales by individual request/invocation, Fargate scales by the container (Task/Pod).</label></li>
+                    <li><label><input type="radio" name="q5" value="c"> c) Lambda scales by memory, Fargate scales by CPU.</label></li>
+                    <li><label><input type="radio" name="q5" value="d"> d) There is no difference in how they scale.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <button class="btn btn-outline-primary" id="next-question">Next</button>
+            <button class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
+        </div>
+        <div class="quiz-results-container"></div>
+    </div>
+</div>

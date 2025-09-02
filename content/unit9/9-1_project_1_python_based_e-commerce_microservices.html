@@ -1,0 +1,106 @@
+<div class="container">
+    <div class="page-header">
+        <h1>9.1: Project 1: Python-based E-Commerce Microservices</h1>
+    </div>
+
+    <h2><i class="bi bi-briefcase"></i> Project Brief</h2>
+    <p class="lead">
+        Build a multi-service backend for an e-commerce application. This project will integrate the key technologies from this course, including Python, FastAPI, Kubernetes, Terraform, and Vault, to create a robust, scalable, and secure system.
+    </p>
+
+    <hr/>
+
+    <h3>Core Services to Build:</h3>
+    <ol>
+        <li>
+            <strong>Product Service (FastAPI):</strong>
+            <ul>
+                <li>A RESTful API for managing products.</li>
+                <li>Endpoints: <code>POST /products</code>, <code>GET /products/{id}</code>, <code>GET /products</code>.</li>
+                <li>Data Store: PostgreSQL database, accessed via SQLAlchemy.</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Order Service (FastAPI):</strong>
+            <ul>
+                <li>A RESTful API for creating and retrieving orders.</li>
+                <li>Endpoint: <code>POST /orders</code> (should take a list of product IDs and quantities).</li>
+                <li>Upon receiving an order, it publishes an `OrderCreated` event to a message queue.</li>
+                <li>Data Store: PostgreSQL database.</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Payment Worker (Python):</strong>
+            <ul>
+                <li>A background service that consumes `OrderCreated` events from the message queue.</li>
+                <li>Simulates payment processing (e.g., with a <code>time.sleep()</code>).</li>
+                <li>Updates the order status in the Order Service's database upon completion.</li>
+            </ul>
+        </li>
+    </ol>
+
+    <h3>Technical Requirements & Architecture:</h3>
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                User["User"] --> Ingress["Kubernetes Ingress"];
+                Ingress --> ProductAPI["Product Service (FastAPI)"];
+                Ingress --> OrderAPI["Order Service (FastAPI)"];
+                
+                ProductAPI <--> ProductDB[(PostgreSQL)];
+                OrderAPI <--> OrderDB[(PostgreSQL)];
+                OrderAPI -- "Publishes 'OrderCreated' Event" --> MQ[Message Queue];
+                MQ -- "Delivers Event" --> PaymentWorker["Payment Worker"];
+                PaymentWorker -- "Updates Order Status" --> OrderDB;
+
+                subgraph "Secrets Management"
+                    Vault[HashiCorp Vault] -- "Injects DB Credentials" --> ProductAPI;
+                    Vault -- "Injects DB Credentials" --> OrderAPI;
+                    Vault -- "Injects DB Credentials" --> PaymentWorker;
+                end
+
+                subgraph "Infrastructure (Managed by Terraform)"
+                    direction LR
+                    Cluster["EKS Cluster"];
+                    ProductDB;
+                    OrderDB;
+                    MQ;
+                    Vault;
+                end
+        </pre>
+        <small class="text-muted">Diagram: Target Architecture for the Python Capstone Project</small>
+    </div>
+
+    <ul>
+        <li>
+            <strong>Infrastructure as Code:</strong>
+            <ul>
+                <li>Use <strong>Terraform</strong> to provision all necessary AWS infrastructure, including an EKS cluster, RDS for PostgreSQL databases, and a message queue service (e.g., Amazon MQ or a self-hosted RabbitMQ).</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Containerization & Orchestration:</strong>
+            <ul>
+                <li>Each service must be containerized using a multi-stage <strong>Dockerfile</strong>.</li>
+                <li>All services must be deployed to the EKS cluster using <strong>Kubernetes manifests</strong> (Deployments, Services, etc.).</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Secrets Management:</strong>
+            <ul>
+                <li>Use <strong>HashiCorp Vault</strong> to manage database credentials.</li>
+                <li>Integrate Vault with Kubernetes using the Vault Agent Injector to securely provide credentials to the services at runtime.</li>
+            </ul>
+        </li>
+        <li>
+            <strong>CI/CD:</strong>
+            <ul>
+                <li>Create a <strong>GitHub Actions</strong> workflow that automates:</li>
+                <li>Linting (Ruff) and testing (Pytest).</li>
+                <li>Building and pushing Docker images to a registry.</li>
+                <li>(Bonus) Automatically deploying to Kubernetes upon a merge to the `main` branch.</li>
+            </ul>
+        </li>
+    </ul>
+
+</div>

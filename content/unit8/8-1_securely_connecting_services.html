@@ -1,0 +1,107 @@
+<div class="container">
+    <div class="page-header">
+        <h1>8.1: Securely Connecting Services</h1>
+    </div>
+
+    <p class="lead">Welcome to Unit 8. In a distributed microservices architecture, two of the most critical security challenges are: 1) How does a service get the credentials it needs to talk to another service (like a database) without hardcoding them? and 2) How do we ensure the communication itself is secure? This topic addresses these challenges by exploring secure credential injection and transport layer security with mutual TLS (mTLS).</p>
+
+    <hr/>
+
+    <h2><i class="bi bi-key-fill"></i> 1. Passing Credentials Without Hardcoding</h2>
+    <p>
+        Hardcoding secrets (database passwords, API keys, etc.) in source code or configuration files is one of the most common and dangerous security anti-patterns. It leads to "secret sprawl" and makes credential rotation nearly impossible. The modern approach is to have services fetch their credentials dynamically and securely at runtime.
+    </p>
+
+    <h4>A. Using Vault to Inject Secrets into Applications</h4>
+    <p>
+        As we covered in Unit 4, <a href="https://www.vaultproject.io/" target="_blank">HashiCorp Vault</a> is the gold standard for secrets management. The recommended pattern, especially in Kubernetes, is the <strong>Vault Agent Injector</strong>.
+    </p>
+    <p><strong>Recap of the Workflow:</strong></p>
+    <ol>
+        <li>A pod is annotated to request secrets from Vault.</li>
+        <li>The Vault Agent Injector adds a sidecar container to the pod.</li>
+        <li>The sidecar authenticates to Vault using the pod's Kubernetes Service Account.</li>
+        <li>The sidecar retrieves the secrets and writes them to a shared in-memory volume.</li>
+        <li>Your application reads the secrets from the local filesystem (e.g., <code>/vault/secrets/db-password</code>).</li>
+    </ol>
+    <p>This pattern is powerful because the application code is completely decoupled from Vault, and the secrets are never written to disk on the host machine.</p>
+
+    <h4>B. Using Kubernetes Secrets</h4>
+    <p>
+        Kubernetes has a built-in object for storing secrets called, simply, a <code>Secret</code>. These secrets can be mounted into pods as environment variables or as files in a volume.
+    </p>
+    <pre><code class="language-yaml">
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-db-secret
+type: Opaque
+data:
+  # Note: Data must be base64 encoded
+  DB_PASSWORD: "cGFzc3dvcmQxMjM=" # "password123" encoded
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-app-pod
+spec:
+  containers:
+    - name: my-app
+      image: my-app-image
+      env:
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: my-db-secret
+              key: DB_PASSWORD
+    </code></pre>
+    <div class="alert alert-warning">
+        <strong>Security Consideration:</strong> While better than hardcoding, standard Kubernetes Secrets are only base64 encoded, not encrypted. Anyone with API access to the namespace can read them. For true security, you must enable <a href="https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/" target="_blank">Encryption at Rest</a> for your etcd database or use an external secrets management tool like Vault.
+    </div>
+
+    <h4>C. Using AWS Secrets Manager and IAM Roles for Service Accounts (IRSA)</h4>
+    <p>
+        When running on EKS (Amazon's managed Kubernetes), the most secure, native pattern is to use <a href="https://aws.amazon.com/secrets-manager/" target="_blank">AWS Secrets Manager</a> combined with <strong>IAM Roles for Service Accounts (IRSA)</strong>.
+    </p>
+    <p><strong>Workflow:</strong></p>
+    <ol>
+        <li>You create an IAM role with a policy that grants permission to read a specific secret from AWS Secrets Manager.</li>
+        <li>You associate this IAM role with a Kubernetes Service Account.</li>
+        <li>You configure your pod to use this Service Account.</li>
+        <li>The AWS SDK inside your application automatically uses the service account's projected token to assume the IAM role and retrieve the secret from Secrets Manager.</li>
+    </ol>
+
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                A["Pod with Service Account"] -- "1. Assumes IAM Role via OIDC" --> B["AWS STS"];
+                B -- "2. Returns Temporary AWS Credentials" --> A;
+                A -- "3. Uses Credentials to Call Secrets Manager" --> C["AWS Secrets Manager"];
+                C -- "4. Returns DB Secret" --> A;
+                A -- "5. Connects to DB" --> D["Amazon RDS Database"];
+        </pre>
+        <small class="text-muted">Diagram: IRSA Workflow for Securely Fetching Secrets</small>
+    </div>
+    <p>This is the most secure pattern on AWS because no long-lived AWS credentials ever exist inside the cluster. The credentials are temporary and automatically rotated.</p>
+
+    <hr/>
+
+    <h2><i class="bi bi-shield-shaded"></i> 2. Secure Communication with mTLS</h2>
+    <p>
+        Encrypting traffic between services is essential for a zero-trust network. <strong>Mutual TLS (mTLS)</strong> goes a step beyond standard TLS. In standard TLS, only the client verifies the server's identity. In mTLS, both the client and the server present and verify each other's certificates, ensuring that both ends of the connection are authenticated.
+    </p>
+
+    <h4>Implementing mTLS with a Service Mesh</h4>
+    <p>
+        Manually implementing and managing certificates for mTLS is extremely complex. This is the primary problem solved by a <strong>service mesh</strong> like <a href="https://www.consul.io/" target="_blank">Consul</a> or <a href="https://istio.io/" target="_blank">Istio</a>.
+    </p>
+    <p><strong>Workflow (recap from Unit 4):</strong></p>
+    <ol>
+        <li>A sidecar proxy (like Envoy) is injected alongside each service instance.</li>
+        <li>The service mesh's control plane acts as a Certificate Authority (CA), automatically issuing and rotating certificates for each service.</li>
+        <li>All traffic between services is transparently routed through their sidecar proxies.</li>
+        <li>The proxies handle the entire mTLS handshake, encrypting and decrypting traffic and verifying the identity of the peer service.</li>
+    </ol>
+    <p>Using a service mesh for mTLS is the industry-standard best practice because it provides uniform, policy-driven security without requiring any changes to the application code.</p>
+
+</div>

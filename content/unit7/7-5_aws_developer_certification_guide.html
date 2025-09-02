@@ -1,0 +1,78 @@
+<div class="container">
+    <div class="page-header">
+        <h1>7.5: AWS Developer Certification Guide</h1>
+    </div>
+
+    <p class="lead">Earning the <strong>AWS Certified Developer - Associate (DVA-C02)</strong> certification is a valuable way to validate your skills and knowledge of AWS services. This unit has covered many of the core serverless concepts that are heavily featured on the exam. This topic provides a focused guide to the key serverless concepts you should master for the exam and offers study tips for success.</p>
+
+    <div class="alert alert-info">
+        <strong>Disclaimer:</strong> This is a study guide, not an exhaustive list of all exam topics. Always refer to the official <a href="https://aws.amazon.com/certification/certified-developer-associate/" target="_blank">AWS Certified Developer - Associate Exam Guide</a> for the most current information.
+    </div>
+
+    <hr/>
+
+    <h2><i class="bi bi-check2-circle"></i> Key Serverless Concepts for the Exam</h2>
+    <p>The DVA-C02 exam emphasizes practical knowledge of developing, deploying, and debugging cloud-native applications on AWS. Serverless is a major component of this.</p>
+
+    <h4>1. AWS Lambda</h4>
+    <ul>
+        <li><strong>Execution Model:</strong> Understand the entire lifecycle: invocation types (synchronous, asynchronous, event source mapping), the event object, the context object, and what happens during a cold vs. warm start.</li>
+        <li><strong>Permissions:</strong> Know that Lambda functions use an <strong>IAM Role (Execution Role)</strong> to get permissions to access other AWS services (e.g., read from S3, write to DynamoDB).</li>
+        <li><strong>Concurrency:</strong> Be able to explain the difference between on-demand and provisioned concurrency, and know what Lambda throttling is and how to use reserved concurrency to prevent it.</li>
+        <li><strong>Versions and Aliases:</strong> Understand how to use versions to create immutable snapshots of your code and aliases (e.g., `dev`, `prod`) to point to specific versions for safe deployments like blue/green.</li>
+        <li><strong>Destination and DLQs:</strong> Know how to configure a Dead-Letter Queue (DLQ) using SQS or SNS to handle failed asynchronous invocations.</li>
+    </ul>
+
+    <h4>2. Amazon API Gateway</h4>
+    <ul>
+        <li><strong>Integrations:</strong> Understand the difference between Lambda proxy integration (where the entire request is passed to Lambda) and non-proxy (custom) integration. The exam heavily favors proxy integration.</li>
+        <li><strong>Authentication & Authorization:</strong> Be familiar with the different ways to secure an API, including IAM roles, Lambda authorizers (formerly Cognito authorizers), and resource policies.</li>
+        <li><strong>Stages:</strong> Know that you deploy an API to a "stage" (e.g., `dev`, `v1`, `prod`) and how to use stage variables.</li>
+    </ul>
+
+    <h4>3. Amazon DynamoDB</h4>
+    <ul>
+        <li><strong>Core Concepts:</strong> Understand tables, items, primary keys (partition key, sort key), and attributes.</li>
+        <li><strong>Capacity Modes:</strong> Know the difference between On-Demand (pay-per-request) and Provisioned (specify read/write capacity units) modes.</li>
+        <li><strong>Consistency Models:</strong> Understand the difference between strongly consistent reads and eventually consistent reads (the default).</li>
+        <li><strong>DynamoDB Streams:</strong> Know that Streams capture a time-ordered sequence of item-level modifications and can be used as an event source to trigger Lambda functions.</li>
+    </ul>
+
+    <h4>4. Amazon SQS & SNS</h4>
+    <ul>
+        <li><strong>SQS (Simple Queue Service):</strong> Understand its role in decoupling services. Know the difference between standard queues (at-least-once delivery, best-effort ordering) and FIFO queues (first-in, first-out delivery, exactly-once processing). Know what a DLQ is for.</li>
+        <li><strong>SNS (Simple Notification Service):</strong> Understand its publish/subscribe model. Know that SNS can deliver messages to multiple subscribers, including SQS queues, Lambda functions, and HTTP endpoints.</li>
+        <li><strong>Fan-Out Pattern:</strong> Be able to describe the common pattern of using SNS to fan out a single message to multiple SQS queues, which are then processed by Lambda functions.</li>
+    </ul>
+
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                A["Publisher Service"] -- "Publishes Message" --> B["SNS Topic"];
+                B -- "Fans Out" --> C["SQS Queue A"];
+                B -- "Fans Out" --> D["SQS Queue B"];
+                B -- "Fans Out" --> E["Lambda Function C"];
+                C --> F["Lambda Function A<br>(Processes messages from A)"];
+                D --> G["Lambda Function B<br>(Processes messages from B)"];
+        </pre>
+        <small class="text-muted">Diagram: The SNS to SQS Fan-Out Pattern, a common exam topic.</small>
+    </div>
+
+    <h4>5. Deployment & Tooling</h4>
+    <ul>
+        <li><strong>AWS SAM:</strong> Be familiar with the structure of a <code>template.yaml</code> file and the purpose of the <code>sam build</code>, <code>sam package</code>, and <code>sam deploy</code> commands.</li>
+        <li><strong>AWS CloudFormation:</strong> Understand that SAM is an extension of CloudFormation. You should know the basic structure of a CloudFormation template and how it deploys resources as a "stack".</li>
+    </ul>
+
+    <hr/>
+
+    <h2><i class="bi bi-lightbulb"></i> Study Tips for Success</h2>
+    <ol>
+        <li><strong>Hands-On is Non-Negotiable:</strong> You cannot pass this exam by only reading. Use the AWS Free Tier to build small applications using Lambda, API Gateway, and DynamoDB. Deploy them using AWS SAM.</li>
+        <li><strong>Know the AWS SDK:</strong> For the DVA-C02, you need to know the names and basic usage of key SDK calls. For example, for DynamoDB, you should know `GetItem`, `PutItem`, `UpdateItem`, and `Query`. You don't need to memorize every parameter, but you should know what each call does.</li>
+        <li><strong>Understand IAM Roles Deeply:</strong> A significant portion of questions will involve permissions. Always remember that AWS services use IAM Roles to get the permissions they need to interact with other services.</li>
+        <li><strong>Read the Official Exam Guide and Sample Questions:</strong> The official AWS materials are the best source of truth for the exam's scope. Review them carefully.</li>
+        <li><strong>Take Practice Exams:</strong> Use reputable practice exams (e.g., from Stephane Maarek, Jon Bonso) to gauge your readiness and identify weak areas. Analyze why you got questions wrong, don't just memorize the answers.</li>
+    </ol>
+
+</div>

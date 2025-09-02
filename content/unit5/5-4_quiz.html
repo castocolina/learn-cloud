@@ -1,2 +1,77 @@
-<h1>Quiz for 5.4: Vulnerability Management</h1>
-<p>Coming soon...</p>
+<div id="quiz-section">
+    <h2>Quiz: Vulnerability Management</h2>
+
+    <div class="quiz-container">
+        <div class="quiz-card active-card" data-question="1">
+            <div class="question">
+                <p>1. What are the four stages of the vulnerability management lifecycle, in the correct order?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q1" value="a"> a) Prioritize, Discover, Verify, Remediate</label></li>
+                    <li><label><input type="radio" name="q1" value="b"> b) Discover, Prioritize, Remediate, Verify</label></li>
+                    <li><label><input type="radio" name="q1" value="c"> c) Discover, Remediate, Prioritize, Verify</label></li>
+                    <li><label><input type="radio" name="q1" value="d"> d) Remediate, Verify, Discover, Prioritize</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="2">
+            <div class="question">
+                <p>2. What is the primary purpose of the Common Vulnerability Scoring System (CVSS)?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q2" value="a"> a) To provide a definitive list of all known software vulnerabilities.</label></li>
+                    <li><label><input type="radio" name="q2" value="b"> b) To provide a standardized numerical score representing the severity of a vulnerability.</label></li>
+                    <li><label><input type="radio" name="q2" value="c"> c) To automatically patch vulnerabilities in open-source software.</label></li>
+                    <li><label><input type="radio" name="q2" value="d"> d) To assign a unique tracking ID to each vulnerability.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="3">
+            <div class="question">
+                <p>3. Why is relying solely on the CVSS score for prioritization often insufficient?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q3" value="a"> a) Because the CVSS score is usually inaccurate.</label></li>
+                    <li><label><input type="radio" name="q3" value="b"> b) Because the CVSS score does not account for the specific business context of the application.</label></li>
+                    <li><label><input type="radio" name="q3" value="c"> c) Because lower scores always represent a higher risk.</label></li>
+                    <li><label><input type="radio" name="q3" value="d"> d) Because the CVSS score changes daily.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="4">
+            <div class="question">
+                <p>4. What is a remediation SLA?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q4" value="a"> a) A license agreement for a security scanning tool.</label></li>
+                    <li><label><input type="radio" name="q4" value="b"> b) A report detailing all the vulnerabilities found in a scan.</label></li>
+                    <li><label><input type="radio" name="q4" value="c"> c) A policy defining the maximum time allowed to fix a vulnerability based on its severity.</label></li>
+                    <li><label><input type="radio" name="q4" value="d"> d) A contract with a third-party vendor to fix vulnerabilities for you.</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="5">
+            <div class="question">
+                <p>5. What is the final and most crucial step after a developer claims to have fixed a vulnerability?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q5" value="a"> a) Close the ticket immediately.</label></li>
+                    <li><label><input type="radio" name="q5" value="b"> b) Ask the developer to write a report on the fix.</label></li>
+                    <li><label><input type="radio" name="q5" value="c"> c) Wait for the next scheduled monthly scan.</label></li>
+                    <li><label><input type="radio" name="q5" value="d"> d) Verify the fix by re-running the security scan that originally found the issue.</label></li>
+                </ul>
+                <div class="answer" data-correct="d"></div>
+            </div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <button class="btn btn-outline-primary" id="next-question">Next</button>
+            <button class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
+        </div>
+        <div class="quiz-results-container"></div>
+    </div>
+</div>

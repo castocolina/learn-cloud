@@ -1,2 +1,107 @@
-<h1>Study Aids for 7.2: AWS Lambda In-Depth</h1>
-<p>Coming soon...</p>
+<h2>Study Aids for 7.2: AWS Lambda In-Depth</h2>
+
+<div class="card mb-4">
+    <div class="card-header">
+        Key Takeaways
+    </div>
+    <div class="card-body">
+        <ul>
+            <li><strong>Trade-offs are Key:</strong> Lambda offers immense scalability and zero administration but comes with limitations like a 15-minute execution timeout and cold starts, which must be considered during application design.</li>
+            <li><strong>Concurrency is Power and Peril:</strong> Lambda scales by running many concurrent executions. This is powerful but can easily overwhelm downstream services like databases. Concurrency limits are a critical safety mechanism.</li>
+            <li><strong>Provisioned Concurrency for Latency:</strong> For latency-sensitive applications, Provisioned Concurrency keeps a specified number of function environments "warm" to eliminate cold starts, though it incurs an additional cost.</li>
+            <li><strong>Python for Speed of Development, Go for Speed of Execution:</strong> Python excels in rapid development and data-heavy tasks. Go is superior for high-performance, low-latency functions where minimizing cold start time and execution cost is paramount.</li>
+            <li><strong>Functions Must Be Stateless:</strong> Lambda functions are ephemeral. Any state that needs to persist between invocations must be stored in an external service like Amazon DynamoDB, S3, or a cache.</li>
+        </ul>
+    </div>
+</div>
+
+<div id="flashcards-section">
+    <div class="flashcards-container">
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is a "cold start" in AWS Lambda?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>A cold start is the latency incurred on the first invocation of a function (or after a period of inactivity) when AWS has to create a new execution environment, which includes downloading the code and starting the runtime.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is the maximum execution duration for a single AWS Lambda function invocation?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>15 minutes.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is the difference between On-Demand and Provisioned Concurrency in Lambda?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p><strong>On-Demand Concurrency</strong> scales automatically but is subject to regional limits and can cause throttling. <strong>Provisioned Concurrency</strong> keeps a specified number of environments warm to eliminate cold starts for a predictable number of requests, incurring a cost for the provisioned capacity.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>Why is it important to set concurrency limits on a Lambda function that interacts with a database?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>To act as a safety valve. Lambda can scale to thousands of concurrent executions, which can easily overwhelm a traditional database's connection limit. Limiting concurrency prevents the function from overwhelming its own downstream resources.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>When would you choose Go over Python for a Lambda function?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>You would choose Go for high-performance, low-latency workloads where minimizing cold start time and execution cost is critical. Its compilation to a small, static binary makes it extremely efficient in the Lambda environment.</p>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,2 +1,107 @@
-<h1>Study Aids for 7.3: Orchestration and Workflows</h1>
-<p>Coming soon...</p>
+<h2>Study Aids for 7.3: Orchestration and Workflows</h2>
+
+<div class="card mb-4">
+    <div class="card-header">
+        Key Takeaways
+    </div>
+    <div class="card-body">
+        <ul>
+            <li><strong>Avoid "Lambda Pinball":</strong> Directly chaining Lambda functions creates tight coupling and is hard to manage. Use a dedicated orchestrator like AWS Step Functions to define and execute complex workflows.</li>
+            <li><strong>Workflows as State Machines:</strong> Step Functions allows you to model your workflow as a visual state machine, making the logic easy to understand, build, and debug.</li>
+            <li><strong>ASL is IaC for Workflows:</strong> The Amazon States Language (ASL) is a JSON-based language that provides an Infrastructure as Code approach to defining your state machines, enabling version control and automation.</li>
+            <li><strong>Built-in Resilience:</strong> Step Functions provides managed state, built-in error handling, and retry logic for your tasks, significantly improving the resilience of your serverless applications.</li>
+            <li><strong>Use Direct Service Integrations:</strong> Whenever possible, leverage Step Functions' direct integrations with other AWS services (like SNS, SQS, DynamoDB) to reduce the need for single-purpose "glue" Lambda functions, which saves code, complexity, and cost.</li>
+        </ul>
+    </div>
+</div>
+
+<div id="flashcards-section">
+    <div class="flashcards-container">
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What problem does AWS Step Functions solve in a serverless architecture?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>It solves the problem of orchestrating multiple services and functions. It prevents the "Lambda Pinball" anti-pattern by providing a managed, visual way to define and execute complex workflows with built-in error handling and retries.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is a "state machine" in the context of Step Functions?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>A state machine is the formal definition of your workflow. It is composed of various "states" (like Task, Choice, Parallel) that represent the individual steps of your process and the transitions between them.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is the Amazon States Language (ASL)?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>ASL is a JSON-based, structured language used to define the states, logic, and transitions of a state machine in AWS Step Functions. It is the "Infrastructure as Code" for the workflow.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is a `Task` state in a Step Function?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>A `Task` state represents a single unit of work in a state machine. It performs this work by invoking an AWS service, most commonly an AWS Lambda function, but it can also be other services like SNS, SQS, or DynamoDB through direct integrations.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Question</h4>
+                <p>What is a major benefit of using Step Functions' direct service integrations?</p>
+            </div>
+            <div class="flashcard-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
+                    <i class="bi bi-arrows-angle-expand"></i>
+                </button>
+                <h4>Answer</h4>
+                <p>They can eliminate the need to write, manage, and pay for "glue" Lambda functions that perform simple tasks (e.g., publishing to an SNS topic or putting an item in a DynamoDB table). This reduces code, complexity, and cost.</p>
+            </div>
+        </div>
+
+    </div>
+</div>

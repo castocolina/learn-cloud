@@ -1,2 +1,77 @@
-<h1>Quiz for 8.1: Securely Connecting Services</h1>
-<p>Coming soon...</p>
+<div id="quiz-section">
+    <h2>Quiz: Securely Connecting Services</h2>
+
+    <div class="quiz-container">
+        <div class="quiz-card active-card" data-question="1">
+            <div class="question">
+                <p>1. What is the most significant security risk of hardcoding a database password in a configuration file?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q1" value="a"> a) It is difficult for developers to remember the password.</label></li>
+                    <li><label><input type="radio" name="q1" value="b"> b) It makes the application run slower.</label></li>
+                    <li><label><input type="radio" name="q1" value="c"> c) Anyone with access to the source code repository can see the production password.</label></li>
+                    <li><label><input type="radio" name="q1" value="d"> d) It prevents the database from accepting connections.</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="2">
+            <div class="question">
+                <p>2. When using the Vault Agent Injector in Kubernetes, how does the application container typically access the secrets?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q2" value="a"> a) By making a direct network call to the Vault server.</label></li>
+                    <li><label><input type="radio" name="q2" value="b"> b) By reading them from environment variables injected by the sidecar.</label></li>
+                    <li><label><input type="radio" name="q2" value="c"> c) By reading them from a file on a shared in-memory volume (e.g., `/vault/secrets/creds`).</label></li>
+                    <li><label><input type="radio" name="q2" value="d"> d) By querying the Kubernetes API server.</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="3">
+            <div class="question">
+                <p>3. By default, Kubernetes Secrets are stored in etcd using which format?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q3" value="a"> a) Plain text</label></li>
+                    <li><label><input type="radio" name="q3" value="b"> b) AES-256 encrypted</label></li>
+                    <li><label><input type="radio" name="q3" value="c"> c) Base64 encoded</label></li>
+                    <li><label><input type="radio" name="q3" value="d"> d) Gzip compressed</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="4">
+            <div class="question">
+                <p>4. What is the primary benefit of using IAM Roles for Service Accounts (IRSA) in AWS EKS?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q4" value="a"> a) It allows pods to assume an IAM role and get temporary AWS credentials, avoiding the need for long-lived keys.</label></li>
+                    <li><label><input type="radio" name="q4" value="b"> b) It automatically creates Kubernetes Service Accounts for every IAM user.</label></li>
+                    <li><label><input type="radio" name="q4" value="c"> c) It encrypts all network traffic between pods and AWS services.</label></li>
+                    <li><label><input type="radio" name="q4" value="d"> d) It simplifies the process of creating IAM users.</label></li>
+                </ul>
+                <div class="answer" data-correct="a"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="5">
+            <div class="question">
+                <p>5. What is the main purpose of using a service mesh like Consul or Istio for mTLS?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q5" value="a"> a) To manually issue TLS certificates to developers.</label></li>
+                    <li><label><input type="radio" name="q5" value="b"> b) To automatically handle certificate issuance, rotation, and the entire mTLS handshake for all services, without requiring application code changes.</label></li>
+                    <li><label><input type="radio" name="q5" value="c"> c) To provide a central database for storing TLS certificates.</label></li>
+                    <li><label><input type="radio" name="q5" value="d"> d) To scan application code for TLS-related vulnerabilities.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <button class="btn btn-outline-primary" id="next-question">Next</button>
+            <button class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
+        </div>
+        <div class="quiz-results-container"></div>
+    </div>
+</div>
