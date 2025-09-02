@@ -13,16 +13,16 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run HTMLProofer
-        uses: chinthakagodawita/html-proofer-action@v1
+        uses: athackst/htmlproofer-action@main
         with:
-          file_path: 'index.html,content'
-          log_level: 'info'
-          # Check for broken internal and external links
-          check_external_hash: true
-          check_html: true
-          external_only: true # Check only external links
-          # Ignore specific URLs if needed
-          # url_ignore: "www.example.com,www.another-example.com"
+          directory: './' # Check the entire repository
+          allow_hash_href: true # Allows href="#" anchors
+          disable_external: false # Checks external links
+          check_html: true # Enable HTML validation
+          # The original action had check_external_hash: true, which is covered by disable_external: false
+          # The original action had log_level: 'info', which is not directly supported by athackst/htmlproofer-action
+          # The original action had url_ignore, which is ignore_urls in the new action. I will keep it commented out for now.
+          # ignore_urls: '["www.example.com", "www.another-example.com"]'
 
   lint-mermaid:
     runs-on: ubuntu-latest
@@ -39,4 +39,4 @@ jobs:
         run: npm install
 
       - name: Run Mermaid Validation Script
-        run: node src/scripts/validate-mermaid.js
+        run: node src/js/validate-mermaid.js
