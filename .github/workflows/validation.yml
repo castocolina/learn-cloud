@@ -21,8 +21,7 @@ jobs:
           check_html: true # Enable HTML validation
           # The original action had check_external_hash: true, which is covered by disable_external: false
           # The original action had log_level: 'info', which is not directly supported by athackst/htmlproofer-action
-          # The original action had url_ignore, which is ignore_urls in the new action. I will keep it commented out for now.
-          # ignore_urls: '["www.example.com", "www.another-example.com"]'
+          ignore_urls: '/^http:\/\/localhost/,/^http:\/\/127.0.0.1/'
 
   lint-mermaid:
     runs-on: ubuntu-latest
