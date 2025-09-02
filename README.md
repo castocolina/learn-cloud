@@ -4,9 +4,9 @@ This repository contains the content for a comprehensive book on learning and ma
 
 ## Status
 
-[![Content Validation](https://github.com/castocolina/learn-cloud/actions/workflows/validation.yml/badge.svg)](https://github.com/castocolina/learn-cloud/actions/workflows/validation.yml)
-[![HTML Link Validation](https://github.com/castocolina/learn-cloud/actions/workflows/validation.yml/badge.svg?branch=master&event=push&job=lint-html-links)](https://github.com/castocolina/learn-cloud/actions/workflows/validation.yml)
-[![Mermaid Diagram Validation](https://github.com/castocolina/learn-cloud/actions/workflows/validation.yml/badge.svg?branch=master&event=push&job=lint-mermaid)](https://github.com/castocolina/learn-cloud/actions/workflows/validation.yml)
+[![HTML Link Check](https://img.shields.io/github/actions/workflow/status/castocolina/learn-cloud/validation.yml?branch=master&label=HTML%20Link%20Check)](https://github.com/castocolina/learn-cloud/actions/workflows/validation.yml)
+[![Mermaid Diagram Check](https://img.shields.io/github/actions/workflow/status/castocolina/learn-cloud/validation.yml?branch=master&label=Mermaid%20Diagram%20Check)](https://github.com/castocolina/learn-cloud/actions/workflows/validation.yml)
+[![Deployment](https://img.shields.io/github/actions/workflow/status/castocolina/learn-cloud/deploy.yml?branch=master&label=Deployment)](https://github.com/castocolina/learn-cloud/actions/workflows/deploy.yml)
 
 ## Getting Started
 
