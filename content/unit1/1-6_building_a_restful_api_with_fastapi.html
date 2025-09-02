@@ -105,15 +105,15 @@ async def create_item(item: Item):
 
     <div class="text-center my-4">
         <pre class="mermaid">
-            graph TD
-                A[Client Request] --> B[FastAPI Application];
-                B --> C{Pydantic Validation};
-                C -- Valid Data --> D[Path Operation Function];
-                C -- Invalid Data --> E[Return Validation Error];
-                D --> F[Process Logic];
-                F --> G[Return Response];
-                G --> B;
-                B --> H[Client Receives Response];
+graph TD
+    A["Client Request"] --> B["FastAPI Application"];
+    B --> C{"Pydantic Validation"};
+    C -- "Valid Data" --> D["Path Operation Function"];
+    C -- "Invalid Data" --> E["Return Validation Error"];
+    D --> F["Process Logic"];
+    F --> G["Return Response"];
+    G --> B;
+    B --> H["Client Receives Response"];
         </pre>
         <small class="text-muted">Diagram: FastAPI Request-Response Flow</small>
     </div>

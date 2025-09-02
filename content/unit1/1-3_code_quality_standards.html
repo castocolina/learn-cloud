@@ -195,32 +195,32 @@ repos:
 
     <div class="text-center my-4">
         <pre class="mermaid">
-            graph TD
-                subgraph Developer Workflow
-                    A[1. Developer writes code] --> B{2. Runs `git commit`};
-                end
+graph TD
+    subgraph "Developer Workflow"
+        A["1. Developer writes code"] --> B{"2. Runs `git commit`"};
+    end
 
-                subgraph Pre-commit Hook Execution
-                    B -- Triggers --> C{pre-commit};
-                    C -- Runs Hooks from .pre-commit-config.yaml --> D[Ruff Check & Fix];
-                    D --> E[Black Formatting];
-                end
+    subgraph "Pre-commit Hook Execution"
+        B -- "Triggers" --> C{"pre-commit"};
+        C -- "Runs Hooks from .pre-commit-config.yaml" --> D["Ruff Check & Fix"];
+        D --> E["Black Formatting"];
+    end
 
-                subgraph Commit Outcome
-                    E -- "If files were modified" --> F((Commit Aborted));
-                    F --> G[3. Developer reviews and stages changes];
-                    G --> B;
-                    E -- "If no files were modified" --> H((Commit Successful));
-                end
+    subgraph "Commit Outcome"
+        E -- "If files were modified" --> F(("Commit Aborted"));
+        F --> G["3. Developer reviews and stages changes"];
+        G --> B;
+        E -- "If no files were modified" --> H(("Commit Successful"));
+    end
 
-                H --> I[4. Code pushed to repository];
+    H --> I["4. Code pushed to repository"];
 
-                classDef dev fill:#f9f,stroke:#333,stroke-width:2px;
-                classDef hook fill:#ccf,stroke:#333,stroke-width:2px;
-                classDef outcome fill:#cfc,stroke:#333,stroke-width:2px;
-                class A,B,G dev;
-                class C,D,E hook;
-                class F,H,I outcome;
+    classDef dev fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef hook fill:#ccf,stroke:#333,stroke-width:2px;
+    classDef outcome fill:#cfc,stroke:#333,stroke-width:2px;
+    class A,B,G dev;
+    class C,D,E hook;
+    class F,H,I outcome;
         </pre>
         <small class="text-muted">Diagram: The Pre-commit Git Hook Workflow</small>
     </div>

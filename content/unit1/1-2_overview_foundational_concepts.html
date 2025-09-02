@@ -155,14 +155,14 @@ user.deactivate()
         
         <div class="text-center my-4">
             <pre class="mermaid">
-                graph TD
-                    A[Python Code with Type Hints] --> B(Static Analysis Tool);
-                    B --> C{Type Checker};
-                    C --> D["Errors/Warnings/Success"];
-                    E["Type Stubs (.pyi)"] --> C;
-                    F["Configuration File (e.g., pyproject.toml, mypy.ini)"] --> B;
-                    B -- Uses --> G[Standard Library Types];
-                    B -- Uses --> H[Third-Party Library Types];
+graph TD
+    A["Python Code with Type Hints"] --> B("Static Analysis Tool");
+    B --> C{"Type Checker"};
+    C --> D["Errors/Warnings/Success"];
+    E["Type Stubs (.pyi)"] --> C;
+    F["Configuration File (e.g., pyproject.toml, mypy.ini)"] --> B;
+    B -- "Uses" --> G["Standard Library Types"];
+    B -- "Uses" --> H["Third-Party Library Types"];
             </pre>
             <small class="text-muted">Diagram: Static Analysis Workflow with Type Hints</small>
         </div>
@@ -274,20 +274,20 @@ except ValidationError as e:
         
         <div class="text-center my-4">
             <pre class="mermaid">
-                flowchart TD
-                    A[Raw Input Data] --> B{Define Pydantic Model};
-                    B --> C[Instantiate Model with Input Data];
-                    C --> D{Pydantic Validation Process};
-                    D -- Valid --> E[Validated Pydantic Object];
-                    D -- Invalid --> F[ValidationError];
+flowchart TD
+    A["Raw Input Data"] --> B{"Define Pydantic Model"};
+    B --> C["Instantiate Model with Input Data"];
+    C --> D{"Pydantic Validation Process"};
+    D -- "Valid" --> E["Validated Pydantic Object"];
+    D -- "Invalid" --> F["ValidationError"];
 
-                    subgraph "Validation Steps"
-                        D1[Type Validation] --> D2[Field Validation];
-                        D2 --> D3["Data Coercion"];
-                    end
+    subgraph "Validation Steps"
+        D1["Type Validation"] --> D2["Field Validation"];
+        D2 --> D3["Data Coercion"];
+    end
 
-                    D --> D1;
-                    D3 --> D;
+    D --> D1;
+    D3 --> D;
             </pre>
             <small class="text-muted">Diagram: Pydantic Validation Process</small>
         </div>

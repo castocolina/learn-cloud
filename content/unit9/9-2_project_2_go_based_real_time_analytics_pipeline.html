@@ -43,10 +43,10 @@
     <div class="text-center my-4">
         <pre class="mermaid">
             graph TD
-                Client["Data Source (Client)"] -- "gRPC Stream" --> Ingestion[Ingestion Service];
-                Ingestion -- "Publishes Events" --> Kafka[Apache Kafka];
-                Kafka -- "Consumes Events" --> Processing[Processing Service];
-                Processing -- "Writes Aggregates" --> TSDB[(Time-Series DB)];
+                Client["Data Source (Client)"] -- "gRPC Stream" --> Ingestion["Ingestion Service"];
+                Ingestion -- "Publishes Events" --> Kafka["Apache Kafka"];
+                Kafka -- "Consumes Events" --> Processing["Processing Service"];
+                Processing -- "Writes Aggregates" --> TSDB[("Time-Series DB")];
                 
                 User["User"] --> QueryAPI["Query Service (REST API)"];
                 QueryAPI -- "Queries Aggregates" --> TSDB;
@@ -54,8 +54,8 @@
                 subgraph "Infrastructure (Managed by Terraform)"
                     direction LR
                     Cluster["EKS Cluster"];
-                    Kafka;
-                    TSDB;
+                    Kafka["Kafka"];
+                    TSDB["TSDB"];
                 end
         </pre>
         <small class="text-muted">Diagram: Target Architecture for the Go Capstone Project</small>

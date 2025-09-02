@@ -123,14 +123,14 @@ def get_user_by_username(username: str):
     </p>
     <div class="text-center my-4">
         <pre class="mermaid">
-            graph TB
-                A[Application Code] -- Uses --> User(User Object);
-                User -- Interacts with --> B[ORM Session];
-                B -- Translates to --> SQL["SQL Queries (SELECT, INSERT, etc.)"];
-                SQL -- Executes on --> C[PostgreSQL Database];
-                C -- Returns Data --> SQL;
-                SQL -- Translates to --> B;
-                B -- Populates --> User;
+graph TB
+    A["Application Code"] --> User("User Object");
+    User -- "Interacts with" --> B["ORM Session"];
+    B -- "Translates to" --> SQL["SQL Queries (SELECT, INSERT, etc.)"];
+    SQL -- "Executes on" --> C["PostgreSQL Database"];
+    C -- "Returns Data" --> SQL;
+    SQL -- "Translates to" --> B;
+    B -- "Populates" --> User;
         </pre>
         <small class="text-muted">Diagram: Application-ORM-Database Interaction</small>
     </div>
@@ -234,13 +234,13 @@ def get_user_with_caching(username: str):
 
     <div class="text-center my-4">
         <pre class="mermaid">
-            graph TD
-                A[Application Request] --> B{Is data in Cache?};
-                B -- Yes --> C[Return Cached Data];
-                B -- No --> D[Query Database];
-                D --> E[Get Data from DB];
-                E --> F[Store Data in Cache];
-                F --> C;
+graph TD
+    A["Application Request"] --> B{"Is data in Cache?"};
+    B -- "Yes" --> C["Return Cached Data"];
+    B -- "No" --> D["Query Database"];
+    D --> E["Get Data from DB"];
+    E --> F["Store Data in Cache"];
+    F --> C;
         </pre>
         <small class="text-muted">Diagram: Caching Workflow with Redis</small>
     </div>
@@ -288,36 +288,36 @@ client.close()
 
     <div class="text-center my-4">
         <pre class="mermaid">
-            graph LR
-                A[Database Types] --> B(Relational Databases);
-                A --> C(NoSQL Databases);
+graph LR
+    A["Database Types"] --> B("Relational Databases");
+    A --> C("NoSQL Databases");
 
-                B --> B1{Structure};
-                B1 --> B1a[Tabular, Predefined Schema];
-                B --> B2{Scalability};
-                B2 --> B2a["Vertical (Scale Up)"];
-                B --> B3{ACID Properties};
-                B3 --> B3a[Atomicity, Consistency, Isolation, Durability];
-                B --> B4{Query Language};
-                B4 --> B4a["SQL (Structured Query Language)"];
-                B --> B5{Use Cases};
-                B5 --> B5a[Complex Transactions, Financial Systems, Data Integrity Critical];
+    B --> B1{"Structure"};
+    B1 --> B1a["Tabular, Predefined Schema"];
+    B --> B2{"Scalability"};
+    B2 --> B2a["Vertical (Scale Up)"];
+    B --> B3{"ACID Properties"};
+    B3 --> B3a["Atomicity, Consistency, Isolation, Durability"];
+    B --> B4{"Query Language"};
+    B4 --> B4a["SQL (Structured Query Language)"];
+    B --> B5{"Use Cases"};
+    B5 --> B5a["Complex Transactions, Financial Systems, Data Integrity Critical"];
 
-                C --> C1{Structure};
-                C1 --> C1a[Document, Key-Value, Column-Family, Graph, Flexible Schema];
-                C --> C2{Scalability};
-                C2 --> C2a["Horizontal (Scale Out)"];
-                C --> C3{BASE Properties};
-                C3 --> C3a["Basically Available, Soft State, Eventually Consistent"];
-                C --> C4{Query Language};
-                C4 --> C4a["Varies (e.g., JSON-like queries, APIs)"];
-                C --> C5{Use Cases};
-                C5 --> C5a[Big Data, Real-time Web Apps, Content Management, High Throughput];
+    C --> C1{"Structure"};
+    C1 --> C1a["Document, Key-Value, Column-Family, Graph, Flexible Schema"];
+    C --> C2{"Scalability"};
+    C2 --> C2a["Horizontal (Scale Out)"];
+    C --> C3{"BASE Properties"};
+    C3 --> C3a["Basically Available, Soft State, Eventually Consistent"];
+    C --> C4{"Query Language"};
+    C4 --> C4a["Varies (e.g., JSON-like queries, APIs)"];
+    C --> C5{"Use Cases"};
+    C5 --> C5a["Big Data, Real-time Web Apps, Content Management, High Throughput"];
 
-                style B fill:#f9f,stroke:#333,stroke-width:2px;
-                style C fill:#ccf,stroke:#333,stroke-width:2px;
-                linkStyle 0 stroke-width:2px,fill:none,stroke:green;
-                linkStyle 1 stroke-width:2px,fill:none,stroke:blue;
+    style B fill:#f9f,stroke:#333,stroke-width:2px;
+    style C fill:#ccf,stroke:#333,stroke-width:2px;
+    linkStyle 0 stroke-width:2px,fill:none,stroke:green;
+    linkStyle 1 stroke-width:2px,fill:none,stroke:blue;
         </pre>
         <small class="text-muted">Diagram: Comparison of Relational vs. NoSQL Databases</small>
     </div>

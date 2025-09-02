@@ -22,31 +22,31 @@
 
     <div class="text-center my-4">
         <pre class="mermaid">
-            graph TD
-                subgraph Multi-Core CPU
-                    Core1[Core 1]
-                    Core2[Core 2]
-                end
+graph TD
+    subgraph "Multi-Core CPU"
+        Core1["Core 1"]
+        Core2["Core 2"]
+    end
 
-                subgraph Python Threads
-                    Thread1[Thread 1: I/O Bound]
-                    Thread2[Thread 2: I/O Bound]
-                    Thread3[Thread 3: CPU Bound]
-                end
+    subgraph "Python Threads"
+        Thread1["Thread 1: I/O Bound"]
+        Thread2["Thread 2: I/O Bound"]
+        Thread3["Thread 3: CPU Bound"]
+    end
 
-                GIL((Global Interpreter Lock))
+    GIL(("Global Interpreter Lock"))
 
-                Thread1 -- Waiting for Network --> GIL_Released{GIL is Released};
-                Thread2 -- Waiting for Disk --> GIL_Released;
-                GIL_Released -- Allows other threads to run --> Thread3;
-                Thread3 -- Acquires GIL --> Core1;
-                
-                Core2 -- Remains Idle for Python Code --> Core2;
+    Thread1 -- "Waiting for Network" --> GIL_Released{"GIL is Released"};
+    Thread2 -- "Waiting for Disk" --> GIL_Released;
+    GIL_Released -- "Allows other threads to run" --> Thread3;
+    Thread3 -- "Acquires GIL" --> Core1;
+    
+    Core2 -- "Remains Idle for Python Code" --> Core2;
 
-                linkStyle 0 stroke-width:2px,fill:none,stroke:green;
-                linkStyle 1 stroke-width:2px,fill:none,stroke:green;
-                linkStyle 2 stroke-width:2px,fill:none,stroke:blue;
-                linkStyle 3 stroke-width:2px,fill:none,stroke:red;
+    linkStyle 0 stroke-width:2px,fill:none,stroke:green;
+    linkStyle 1 stroke-width:2px,fill:none,stroke:green;
+    linkStyle 2 stroke-width:2px,fill:none,stroke:blue;
+    linkStyle 3 stroke-width:2px,fill:none,stroke:red;
         </pre>
         <small class="text-muted">Diagram: How the GIL allows concurrency for I/O-bound tasks.</small>
     </div>
@@ -181,24 +181,24 @@ print(f"Asyncio execution took: {end_time - start_time:.2f} seconds")
 
     <div class="text-center my-4">
         <pre class="mermaid">
-            graph TD
-                subgraph Threading
-                    direction LR
-                    T1[Thread 1] -- Blocks on I/O --> T1_Wait[Waits...];
-                    T2[Thread 2] -- Runs while T1 waits --> T2_Exec[Executes];
-                    T1_Wait --> T1_Done[Resumes];
-                end
+graph TD
+    subgraph "Threading"
+        direction LR
+        T1["Thread 1"] -- "Blocks on I/O" --> T1_Wait["Waits..."];
+        T2["Thread 2"] -- "Runs while T1 waits" --> T2_Exec["Executes"];
+        T1_Wait --> T1_Done["Resumes"];
+    end
 
-                subgraph Asyncio
-                    direction LR
-                    A1[Task 1] -- Awaits I/O --> A_Loop{Event Loop};
-                    A_Loop -- Runs other tasks --> A2[Task 2];
-                    A2 -- Awaits I/O --> A_Loop;
-                    A_Loop -- Resumes Task 1 when ready --> A1_Done[Task 1 Resumes];
-                end
+    subgraph "Asyncio"
+        direction LR
+        A1["Task 1"] -- "Awaits I/O" --> A_Loop{"Event Loop"};
+        A_Loop -- "Runs other tasks" --> A2["Task 2"];
+        A2 -- "Awaits I/O" --> A_Loop;
+        A_Loop -- "Resumes Task 1 when ready" --> A1_Done["Task 1 Resumes"];
+    end
 
-                style Threading fill:#fcf,stroke:#333,stroke-width:2px
-                style Asyncio fill:#cfc,stroke:#333,stroke-width:2px
+    style Threading fill:#fcf,stroke:#333,stroke-width:2px
+    style Asyncio fill:#cfc,stroke:#333,stroke-width:2px
         </pre>
         <small class="text-muted">Diagram: Threading (Preemptive) vs. Asyncio (Cooperative) Multitasking</small>
     </div>
@@ -216,13 +216,13 @@ print(f"Asyncio execution took: {end_time - start_time:.2f} seconds")
 
     <div class="text-center my-4">
         <pre class="mermaid">
-            graph TD
-                A[Function Call with Args] --> B{Are Args in Cache?};
-                B -- Yes --> C[Return Cached Result];
-                B -- No --> D[Execute Function Logic];
-                D --> E[Compute Result];
-                E --> F[Store Result in Cache];
-                F --> C;
+graph TD
+    A["Function Call with Args"] --> B{"Are Args in Cache?"};
+    B -- "Yes" --> C["Return Cached Result"];
+    B -- "No" --> D["Execute Function Logic"];
+    D --> E["Compute Result"];
+    E --> F["Store Result in Cache"];
+    F --> C;
         </pre>
         <small class="text-muted">Diagram: `lru_cache` Workflow</small>
     </div>

@@ -132,9 +132,9 @@ build-backend = "poetry.core.masonry.api"</code></pre>
 <div class="text-center my-4">
     <pre class="mermaid">
         graph TB
-            Dev[Local Development] --> DockerImage[Docker Image];
-            DockerImage --> CI[CI/CD Pipeline];
-            CI --> Prod[Production Environment];
+            Dev["Local Development"] --> DockerImage["Docker Image"];
+            DockerImage --> CI["CI/CD Pipeline"];
+            CI --> Prod["Production Environment"];
             Dev -- "Consistent Environment" --> DockerImage;
             DockerImage -- "Consistent Environment" --> CI;
             CI -- "Consistent Environment" --> Prod;
@@ -181,13 +181,13 @@ CMD ["poetry", "run", "python", "my_project/main.py"]</code></pre>
 <div class="text-center my-4">
     <pre class="mermaid">
         graph TD
-            A[Start] --> B{Set Python Version};
+            A["Start"] --> B{"Set Python Version"};
             B --> C{Create Project};
-            C --> D{Add Dependencies};
-            D --> E{Write Code};
-            E --> F{Test Code};
-            F --> G((Commit to Git));
-            G --> H((Deploy));
+            C --> D{"Add Dependencies"};
+            D --> E{"Write Code"};
+            E --> F{"Test Code"};
+            F --> G("Commit to Git");
+            G --> H("Deploy");
 
             subgraph Tooling
                 B -- "pyenv local 3.11.5" --> B

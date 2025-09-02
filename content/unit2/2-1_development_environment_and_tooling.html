@@ -1,208 +1,191 @@
 <div class="container">
     <div class="page-header">
-        <h1>2.1: Development Environment & Tooling</h1>
+        <h1>2.1: Development Environment & Tooling (Go)</h1>
     </div>
 
-    <p class="lead">Welcome to Unit 2! Having built a solid foundation in Python, we now pivot to another giant of the cloud-native world: <strong>Go</strong>. As an experienced developer, you'll appreciate Go's opinionated and pragmatic design, which prioritizes simplicity, performance, and concurrency. This topic guides you through setting up a professional Go development environment, highlighting the similarities and key differences from the Python ecosystem.</p>
+    <p class="lead">Welcome to Unit 2. We now shift our focus to Go (or Golang), a language designed at Google for building simple, reliable, and efficient software. As we transition from Python, you'll notice key differences: Go is a statically typed, compiled language that excels at concurrency and produces single, self-contained binary executables. This makes it an outstanding choice for cloud-native microservices.</p>
 
     <hr/>
 
-    <h2><i class="bi bi-question-circle"></i> Why Go for the Cloud?</h2>
-    <p>Go was designed at Google to solve problems of scale and concurrency. Its strengths make it a perfect fit for cloud-native services:</p>
+    <h3>Go's Philosophy: Simplicity and Performance</h3>
+    <p>
+        Unlike Python's "batteries-included" philosophy, Go's standard library is powerful but intentionally lean. The language prioritizes clarity, performance, and ease of deployment. This section will guide you through setting up a professional Go development environment, which is notably simpler than Python's due to the language's design and built-in tooling.
+    </p>
+
+    <h4>Go Version Management</h4>
+    <p>
+        While tools like <code>gvm</code> exist, Go's excellent backward compatibility means that managing multiple versions is often unnecessary for most projects. We recommend using the latest stable version from the official <a href="https://go.dev/dl/" target="_blank">Go downloads page</a>. The installer will set up the Go toolchain and the necessary environment variables (like <code>GOPATH</code> and <code>GOROOT</code>).
+    </p>
+    <pre><code class="language-bash">
+# Verify your installation
+go version
+# Output (will vary): go version go1.21.5 linux/amd64
+    </code></pre>
+
+    <hr>
+
+    <h3>Dependency Management with Go Modules</h3>
+    <p>
+        Go has a built-in dependency management system called <strong>Go Modules</strong>, introduced in Go 1.11. It is the official and standard way to manage dependencies, making tools like Python's Poetry or Node's npm unnecessary. Go Modules track your project's dependencies and their exact versions, ensuring reproducible builds.
+    </p>
+    <p>The system is managed through two key files:</p>
     <ul>
-        <li><strong><i class="bi bi-speedometer2"></i> Performance:</strong> Go is a compiled language that compiles directly to machine code, offering performance that is an order of magnitude faster than interpreted languages like Python.</li>
-        <li><strong><i class="bi bi-diagram-3"></i> Concurrency Built-in:</strong> Go's first-class support for concurrency with goroutines and channels makes it incredibly easy to build highly concurrent services that can handle thousands of simultaneous requests efficiently.</li>
-        <li><strong><i class="bi bi-box-seam"></i> Static Binaries:</strong> Go compiles your application and all its dependencies into a single, statically-linked binary. This makes deployment trivial and is a massive advantage in containerized environments, leading to incredibly small and secure Docker images.</li>
-        <li><strong><i class="bi bi-code-slash"></i> Simplicity and Readability:</strong> Go has a small, simple syntax and a strong emphasis on readability and idiomatic code, enforced by its built-in tooling.</li>
-    </ul>
-
-    <div class="text-center my-4">
-        <pre class="mermaid">
-            graph TD
-                A["Go Language"] --> B("Performance");
-                A --> C("Concurrency");
-                A --> D("Static Binaries");
-                A --> E("Simplicity");
-        </pre>
-        <small class="text-muted">Diagram: Core Strengths of Go</small>
-    </div>
-
-    <hr/>
-
-    <h2><i class="bi bi-tools"></i> 1. Setup: Installing the Go Toolchain</h2>
-    <p>
-        Unlike Python's need for external tools like `pyenv`, Go's toolchain is self-contained and manages different versions effectively. The official installation instructions can be found at <a href="https://go.dev/doc/install" target="_blank">go.dev</a>. The installer handles setting up the `GOROOT` (where the Go SDK is located) and adding the `GOPATH/bin` directory to your system's `PATH`.
-    </p>
-    <p>
-        For developers who need to switch between multiple Go versions frequently, tools like <a href="https://github.com/go-nv/goenv" target="_blank" rel="noopener noreferrer"><code>goenv</code></a> exist, providing a similar experience to Python's `pyenv`.
-    </p>
-
-    <hr/>
-
-    <h2><i class="bi bi-journal-code"></i> 2. Dependency Management with Go Modules</h2>
-    <p>
-        Go's official dependency management system is <strong>Go Modules</strong>. This is the equivalent of Python's Poetry or pip/venv, but it's built directly into the Go toolchain. It addresses dependency management with two key files: <code>go.mod</code> and <code>go.sum</code>.
-    </p>
-    <ul>
-        <li><strong><code>go.mod</code>:</strong> The heart of the module. It declares the module's path (its unique name), the Go version it's compatible with, and its direct dependencies. This is analogous to <code>pyproject.toml</code>.</li>
-        <li><strong><code>go.sum</code>:</strong> A lock file containing the cryptographic checksums of all direct and indirect dependencies. This ensures that every build is completely reproducible and secure. This is analogous to <code>poetry.lock</code>.</li>
+        <li><strong><code>go.mod</code>:</strong> A file at the root of your project that defines the module's path (its unique identifier, typically your repository path) and its direct dependencies with their version constraints.</li>
+        <li><strong><code>go.sum</code>:</strong> An auto-generated file containing the cryptographic checksums of your direct and indirect dependencies, ensuring the integrity of your project's dependency tree.</li>
     </ul>
 
     <h4>Getting Started with Go Modules</h4>
-    <p>Starting a new project is straightforward. Unlike Python, you don't need to create a virtual environment; Go handles this implicitly.</p>
+    <p>Starting a new project is straightforward:</p>
     <pre><code class="language-bash">
-# Create a new directory for your project
+# Create a new project directory
 mkdir my-go-service
 cd my-go-service
 
 # Initialize a new module
-# The module path is typically your repository path (e.g., example.com/user/repo)
-go mod init example.com/my-go-service
+# The path should be unique, often your repository path
+go mod init github.com/my-user/my-go-service
 
-# Create a main file
-touch main.go
+# Add a dependency (e.g., the Gin web framework)
+# The 'go get' command automatically adds it to go.mod and go.sum
+go get github.com/gin-gonic/gin
+
+# The Go toolchain handles the rest. No virtual environments to activate!
     </code></pre>
-    <p>To add a dependency, you can use `go get` or simply add an `import` statement to your code. The Go toolchain will automatically download the module and update `go.mod` and `go.sum` the next time you build or run `go mod tidy`.</p>
+
+    <h4>Anatomy of <code>go.mod</code></h4>
+    <p>A <code>go.mod</code> file is simple and declarative:</p>
     <pre><code class="language-go">
-// main.go
-package main
+module github.com/my-user/my-go-service
 
-import (
-    "fmt"
-    "github.com/gin-gonic/gin" // Importing a new dependency
+go 1.21
+
+require (
+    github.com/gin-gonic/gin v1.9.1
 )
-
-func main() {
-    fmt.Println("Starting Go service...")
-}
     </code></pre>
-    <p>Now, run `go mod tidy` to clean up and add the new dependency:</p>
-    <pre><code class="language-bash">
-# This command synchronizes your go.mod file with your source code
-go mod tidy
-    </code></pre>
-    <p>This command will find the `gin-gonic/gin` import, download the module, and add it to your `go.mod` and `go.sum` files.</p>
+    <ul>
+        <li><code>module</code>: Defines the module's path. All packages within this directory will have this path as a prefix.</li>
+        <li><code>go</code>: Specifies the Go version the module was created with.</li>
+        <li><code>require</code>: Lists the direct dependencies and their semantic versions.</li>
+    </ul>
+    <div class="alert alert-info">
+        <strong>Simplicity by Design:</strong> The Go toolchain automatically downloads and caches dependencies when you build or run your code. There are no virtual environments to manage, as the module system handles dependency isolation per-project.
+    </div>
 
-    <hr/>
+    <hr>
 
-    <h2><i class="bi bi-folder2-open"></i> 3. Standard Project Structure</h2>
+    <h3>IDE Integration: VS Code and GoLand</h3>
+    <p>A powerful IDE is crucial for productivity. Both Visual Studio Code (VS Code) and GoLand are top-tier choices with excellent Go support.</p>
+
+    <h4>Visual Studio Code</h4>
+    <p>VS Code provides a fantastic, lightweight Go development experience with the official Go extension.</p>
+    <ul>
+        <li><a href="https://marketplace.visualstudio.com/items?itemName=golang.go" target="_blank"><strong>Go (Official)</strong></a>: Provides core support for debugging, intelligent code completion (IntelliSense), code navigation, and integration with Go's built-in testing and formatting tools.</li>
+    </ul>
+    <p>When you first open a <code>.go</code> file, the extension will prompt you to install necessary tools like <code>gopls</code> (the Go language server) and <code>dlv</code> (the Delve debugger).</p>
+
+    <h4>GoLand</h4>
     <p>
-        The Go community has established a <a href="https://github.com/golang-standards/project-layout" target="_blank" rel="noopener noreferrer">standard project layout</a> that is widely adopted. While not strictly enforced by the compiler, following it makes projects understandable and maintainable.
+        <a href="https://www.jetbrains.com/go/" target="_blank">GoLand</a> is a dedicated Go IDE from JetBrains. It offers a more integrated, "batteries-included" experience with powerful refactoring tools, deep code analysis, and seamless integration with the Go toolchain right out of the box.
     </p>
+
+    <hr>
+
+    <h3>Containerization with Docker</h3>
+    <p>
+        Go is exceptionally well-suited for containers because it compiles to a single, statically-linked binary with no external dependencies. This allows for the creation of incredibly small and secure Docker images. The best practice is to use a <strong>multi-stage Dockerfile</strong>.
+    </p>
+
     <div class="text-center my-4">
         <pre class="mermaid">
             graph TD
-                A["Project Root"] --> B["go.mod"];
-                A --> C["go.sum"];
-                A --> D["/cmd"];
-                A --> E["/internal"];
-                A --> F["/pkg"];
-                A --> G["/api"];
+                subgraph "Build Stage (Using Go SDK Image)"
+                    A["Go Source Code"] --> B["go build"];
+                    B --> C["Statically-Linked Binary"];
+                end
 
-                D --> D1["my-app/main.go"];
-                E --> E1[".../internal/database"];
-                E --> E2[".../internal/auth"];
-                F --> F1[".../pkg/billing"];
-                G --> G1[".../api/v1/api.proto"];
+                subgraph "Final Stage (Using Scratch/Distroless Image)"
+                    D["Scratch/Distroless Base Image"]
+                    C -- "COPY" --> E["Final Lightweight Image"];
+                end
 
-                subgraph "Application"
-                    D["/cmd - Application Entrypoints"]
-                end
-                subgraph "Private Code"
-                    E["/internal - Private application and library code"]
-                end
-                subgraph "Public Code"
-                    F["/pkg - Public library code, ok to be used by others"]
-                end
-                subgraph "API Definitions"
-                    G["/api - Protobuf definitions, JSON schemas"]
-                end
+                A -- "go.mod & go.sum" --> B;
         </pre>
-        <small class="text-muted">Diagram: Standard Go Project Layout</small>
+        <small class="text-muted">Diagram: Go Multi-stage Docker Build</small>
     </div>
-    <ul>
-        <li><code>/cmd</code>: Main applications for your project. The directory name should match the executable you want to build.</li>
-        <li><code>/internal</code>: Private application and library code. It's a Go compiler feature that code in `internal` cannot be imported by other projects.</li>
-        <li><code>/pkg</code>: Public library code that's okay to be imported by other projects.</li>
-    </ul>
 
-    <hr/>
+    <p>A multi-stage build uses one stage with the full Go SDK to build the application, and a second, minimal stage (like <code>scratch</code> or Google's <a href="https://github.com/GoogleContainerTools/distroless" target="_blank">distroless</a> images) that only copies the compiled binary. This results in a tiny, production-ready image that doesn't contain the Go toolchain or any other unnecessary files.</p>
 
-    <h2><i class="bi bi-pc-display"></i> 4. IDE Integration: VS Code and GoLand</h2>
-    <p>A good IDE is essential for productivity. As with Python, VS Code and a JetBrains IDE are the top contenders.</p>
-    <ul>
-        <li><strong>Visual Studio Code:</strong> The official <a href="https://marketplace.visualstudio.com/items?itemName=golang.Go" target="_blank" rel="noopener noreferrer">Go extension</a> provides excellent support, including IntelliSense, code navigation, debugging, and integration with the Go language server (<code>gopls</code>), which provides most of the language-specific features.</li>
-        <li><strong>GoLand:</strong> The professional Go IDE from JetBrains. It offers a more "batteries-included" experience with deep code understanding, powerful refactoring tools, and an integrated debugger.</li>
-    </ul>
-
-    <hr/>
-
-    <h2><i class="bi bi-box"></i> 5. Containerization with Docker: The Multi-Stage Advantage</h2>
-    <p>
-        This is where Go truly shines in a cloud-native context. Because Go compiles to a single static binary, we can use a <strong>multi-stage Docker build</strong> to create incredibly small and secure container images.
-    </p>
-    <div class="text-center my-4">
-        <pre class="mermaid">
-            graph TD
-                subgraph "Stage 1: Builder"
-                    A["Go Base Image (e.g., golang:1.22)"] --> B["Source Code"];
-                    B --> C["go build"];
-                    C --> D["Static Binary"];
-                end
-
-                subgraph "Stage 2: Final Image"
-                    E["Minimal Base Image (e.g., scratch or alpine)"]
-                    D -- "Copied to" --> E;
-                end
-
-                E --> F["Final, Small Docker Image"];
-
-                style A fill:#ccf,stroke:#333,stroke-width:2px
-                style E fill:#cfc,stroke:#333,stroke-width:2px
-        </pre>
-        <small class="text-muted">Diagram: Go Multi-Stage Docker Build</small>
-    </div>
-    <p>Here is a best-practice <code>Dockerfile</code> for a Go application:</p>
     <pre><code class="language-dockerfile">
-# --- Stage 1: Build the binary ---
-# Use a specific version for reproducible builds
-FROM golang:1.22-alpine AS builder
+# ---- Build Stage ----
+# Use the official Go image as a builder
+FROM golang:1.21-alpine AS builder
 
 # Set the working directory
 WORKDIR /app
 
-# Copy the Go module files and download dependencies to leverage Docker cache
+# Copy the Go module files
 COPY go.mod go.sum ./
+
+# Download dependencies
 RUN go mod download
 
-# Copy the rest of the source code
+# Copy the source code
 COPY . .
 
-# Build the application, creating a static binary
+# Build the application, creating a statically-linked binary
 # CGO_ENABLED=0 is important for creating a static binary without C dependencies
-# -ldflags="-w -s" strips debugging information, reducing the binary size
-RUN CGO_ENABLED=0 GOOS=linux go build -a -ldflags="-w -s" -o /main ./cmd/my-go-service
+# -o /app/main creates the output binary at this path
+RUN CGO_ENABLED=0 GOOS=linux go build -o /app/main ./cmd/server
 
-# --- Stage 2: Create the final, minimal image ---
-# Use the 'scratch' image which is completely empty for maximum security and minimum size
-FROM scratch
+# ---- Final Stage ----
+# Use a minimal, non-root base image
+FROM gcr.io/distroless/static-debian11
 
-# Copy the static binary from the builder stage
-COPY --from=builder /main /main
+# Copy the binary from the builder stage
+COPY --from=builder /app/main /
 
-# (Optional) Copy any other necessary files, like configuration or certificates
-# COPY --from=builder /app/config.json /config.json
-
-# Expose the port the application runs on
-EXPOSE 8080
-
-# Set the entrypoint for the container
+# Set the binary as the entrypoint
 ENTRYPOINT ["/main"]
     </code></pre>
-    <p>This process results in a final image that is often just 10-20 MB in size and contains nothing but your application binary, drastically reducing the attack surface and improving deployment speed.</p>
+    <p>This approach produces a highly optimized image, often just a few megabytes in size, which is ideal for fast deployments and a reduced attack surface.</p>
 
-    <hr/>
+    <hr>
 
-    <h2>Conclusion</h2>
-    <p>You have now configured a professional Go development environment. By understanding Go's built-in tooling, dependency management with modules, standard project structure, and the power of multi-stage Docker builds, you are well-equipped to start building high-performance, cloud-native services. The emphasis on simplicity and self-contained tooling provides a refreshingly different experience from the Python ecosystem, with unique advantages for containerized deployments.</p>
+    <h3>Putting It All Together: A Starter Workflow</h3>
+    <p>Let's combine everything into a single, repeatable workflow for starting a new cloud-native Go service.</p>
+
+    <div class="text-center my-4">
+        <pre class="mermaid">
+            graph TD
+                A["Start"] --> B{"Initialize Module"};
+                B --> C{"Add Dependencies"};
+                C --> D{"Write Code"};
+                D --> E{"Test Code"};
+                E --> F{"Build Binary"};
+                F --> G("Commit to Git");
+                G --> H("Deploy Container");
+
+                subgraph "Go Tooling"
+                    B -- "go mod init" --> B
+                    C -- "go get" --> C
+                    D -- "IDE (VS Code/GoLand)" --> D
+                    E -- "go test ./..." --> E
+                    F -- "go build" --> F
+                end
+        </pre>
+        <small class="text-muted">Diagram: Go Development Workflow</small>
+    </div>
+
+    <ol>
+        <li><strong>Create Project & Initialize Module:</strong><br><code>mkdir my-service && cd my-service && go mod init github.com/user/my-service</code></li>
+        <li><strong>Add Dependencies:</strong><br><code>go get github.com/gin-gonic/gin</code></li>
+        <li><strong>Develop:</strong><br>Start writing your code in <code>.go</code> files.</li>
+        <li><strong>Run Locally:</strong><br><code>go run ./cmd/server</code></li>
+        <li><strong>Test:</strong><br><code>go test ./...</code></li>
+        <li><strong>Build for Production:</strong><br><code>CGO_ENABLED=0 GOOS=linux go build -o ./bin/server ./cmd/server</code></li>
+    </ol>
+
+    <h3>Conclusion</h3>
+    <p>You have now configured a complete, professional Go development environment. Go's built-in tooling for dependency and version management simplifies the setup significantly compared to other ecosystems. With this foundation, you are ready to leverage Go's performance and simplicity to build robust cloud-native applications.</p>
 </div>

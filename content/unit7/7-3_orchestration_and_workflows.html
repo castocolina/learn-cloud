@@ -40,13 +40,13 @@
     <div class="text-center my-4">
         <pre class="mermaid">
             graph TD
-                A["Start"] --> B(Process Payment Task);
-                B --> C{Payment Successful?};
+                A["Start"] --> B("Process Payment Task");
+                B --> C{"Payment Successful?"};
                 C -- "Yes" --> D["Parallel State"];
-                C -- "No" --> F(Handle Failed Payment Task);
+                C -- "No" --> F("Handle Failed Payment Task");
                 subgraph D
                     direction LR
-                    D1[Update Inventory Task] & D2[Notify User Task];
+                    D1["Update Inventory Task"] & D2["Notify User Task"];
                 end
                 D --> E["End"];
                 F --> E;

@@ -1,0 +1,42 @@
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+  workflow_dispatch:
+
+jobs:
+  lint-html-links:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run HTMLProofer
+        uses: chinthakagodawita/html-proofer-action@v1
+        with:
+          file_path: 'index.html,content'
+          log_level: 'info'
+          # Check for broken internal and external links
+          check_external_hash: true
+          check_html: true
+          external_only: true # Check only external links
+          # Ignore specific URLs if needed
+          # url_ignore: "www.example.com,www.another-example.com"
+
+  lint-mermaid:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Use a stable LTS version
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Mermaid Validation Script
+        run: node src/scripts/validate-mermaid.js

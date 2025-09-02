@@ -86,11 +86,11 @@ def test_multiply():
     </p>
     <div class="text-center my-4">
         <pre class="mermaid">
-            graph LR
-                A["Component Under Test"] --> B{"Real Dependency?"};
-                B -- Yes (Integration Test) --> C[Real Dependency];
-                B -- No (Unit Test) --> D[Mock Object];
-                D -- Simulates Behavior --> A;
+graph LR
+    A["Component Under Test"] --> B{"Real Dependency?"};
+    B -- "Yes (Integration Test)" --> C["Real Dependency"];
+    B -- "No (Unit Test)" --> D["Mock Object"];
+    D -- "Simulates Behavior" --> A;
         </pre>
         <small class="text-muted">Diagram: Mocking Workflow</small>
     </div>
@@ -156,11 +156,11 @@ def test_get_user_data_http_error():
 
     <div class="text-center my-4">
         <pre class="mermaid">
-            graph TD
-                A[Test Code] --> B[Testcontainers Library];
-                B --> C[Docker Daemon];
-                C --> D["Ephemeral Docker Container (e.g., PostgreSQL)"];
-                D -- "Provides Service" --> A;
+graph TD
+    A["Test Code"] --> B["Testcontainers Library"];
+    B --> C["Docker Daemon"];
+    C --> D["Ephemeral Docker Container (e.g., PostgreSQL)"];
+    D -- "Provides Service" --> A;
         </pre>
         <small class="text-muted">Diagram: Testcontainers Workflow</small>
     </div>

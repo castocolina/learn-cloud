@@ -93,7 +93,7 @@ output "bucket_id" {
                 DDB -- "Grants lock to A" --> A1;
                 DDB -- "Denies lock to B (fails)" --> B1;
 
-                A1 -- "Writes state on success" --> S3[S3 Bucket (terraform.tfstate)];
+                A1 -- "Writes state on success" --> S3["S3 Bucket (terraform.tfstate)"];
 
                 style DDB fill:#f9d6d5,stroke:#333,stroke-width:2px
         </pre>

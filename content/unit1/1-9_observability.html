@@ -7,10 +7,10 @@
 
     <div class="text-center my-4">
         <pre class="mermaid">
-            graph TD
-                A[Observability] --> B(Logs);
-                A --> C(Metrics);
-                A --> D(Traces);
+graph TD
+    A["Observability"] --> B("Logs");
+    A --> C("Metrics");
+    A --> D("Traces");
         </pre>
         <small class="text-muted">Diagram: The Three Pillars of Observability</small>
     </div>
@@ -149,12 +149,12 @@ docker run \
 
     <div class="text-center my-4">
         <pre class="mermaid">
-            graph LR
-                App1[Application 1] -- Exposes Metrics --> Prometheus[Prometheus Server];
-                App2[Application 2] -- Exposes Metrics --> Prometheus;
-                Prometheus -- Stores --> TimeSeriesDB[Time-Series Database];
-                Prometheus -- Alerts --> Alertmanager[Alertmanager];
-                Prometheus -- Queries --> Grafana["Grafana (Visualization)"];
+graph LR
+    App1["Application 1"] -- "Exposes Metrics" --> Prometheus["Prometheus Server"];
+    App2["Application 2"] -- "Exposes Metrics" --> Prometheus;
+    Prometheus -- "Stores" --> TimeSeriesDB["Time-Series Database"];
+    Prometheus -- "Alerts" --> Alertmanager["Alertmanager"];
+    Prometheus -- "Queries" --> Grafana["Grafana (Visualization)"];
         </pre>
         <small class="text-muted">Diagram: Prometheus Metrics Collection Architecture</small>
     </div>
@@ -221,18 +221,18 @@ docker run -d --name jaeger -p 16686:16686 -p 4317:4317 -p 4318:4318 jaegertraci
 
     <div class="text-center my-4">
         <pre class="mermaid">
-            graph TD
-                Client[Client Request] --> ServiceA["Service A (Instrumented)"];
-                ServiceA --> ServiceB["Service B (Instrumented)"];
-                ServiceB --> ServiceC["Service C (Instrumented)"];
-                ServiceC --> ServiceA;
+graph TD
+    Client["Client Request"] --> ServiceA["Service A (Instrumented)"];
+    ServiceA --> ServiceB["Service B (Instrumented)"];
+    ServiceB --> ServiceC["Service C (Instrumented)"];
+    ServiceC --> ServiceA;
 
-                ServiceA -- Exports Spans --> OTelCollector[OpenTelemetry Collector];
-                ServiceB -- Exports Spans --> OTelCollector;
-                ServiceC -- Exports Spans --> OTelCollector;
+    ServiceA -- "Exports Spans" --> OTelCollector["OpenTelemetry Collector"];
+    ServiceB -- "Exports Spans" --> OTelCollector;
+    ServiceC -- "Exports Spans" --> OTelCollector;
 
-                OTelCollector -- "Forwards Traces" --> Jaeger["Jaeger Backend"];
-                Jaeger --> JaegerUI["Jaeger UI (Visualization)"];
+    OTelCollector -- "Forwards Traces" --> Jaeger["Jaeger Backend"];
+    Jaeger --> JaegerUI["Jaeger UI (Visualization)"];
         </pre>
         <small class="text-muted">Diagram: Distributed Tracing with OpenTelemetry and Jaeger</small>
     </div>

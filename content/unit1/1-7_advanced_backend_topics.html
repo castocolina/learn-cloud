@@ -22,16 +22,16 @@
 
     <div class="text-center my-4">
         <pre class="mermaid">
-            graph LR
-                Producer["Service A (Producer)"] --> MessageQueue[Message Queue];
-                MessageQueue --> Consumer["Service B (Consumer)"];
-                MessageQueue --> AnotherConsumer["Service C (Another Consumer)"];
+graph LR
+    Producer["Service A (Producer)"] --> MessageQueue["Message Queue"];
+    MessageQueue --> Consumer["Service B (Consumer)"];
+    MessageQueue --> AnotherConsumer["Service C (Another Consumer)"];
 
-                subgraph Event Flow
-                    Producer -- Publishes Event --> MessageQueue;
-                    MessageQueue -- Delivers Event --> Consumer;
-                    MessageQueue -- Delivers Event --> AnotherConsumer;
-                end
+    subgraph "Event Flow"
+        Producer -- "Publishes Event" --> MessageQueue;
+        MessageQueue -- "Delivers Event" --> Consumer;
+        MessageQueue -- "Delivers Event" --> AnotherConsumer;
+    end
         </pre>
         <small class="text-muted">Diagram: Simple Event-Driven Architecture</small>
     </div>
@@ -268,17 +268,17 @@ if __name__ == '__main__':
     </ul>
     <div class="text-center my-4">
         <pre class="mermaid">
-            graph TD
-                Start[Choose Communication Pattern] --> Sync{Synchronous?};
+graph TD
+    Start["Choose Communication Pattern"] --> Sync{"Synchronous?"};
 
-                Sync -- Yes --> SyncType{Type?};
-                SyncType -- "Public API / Browser Client" --> REST["REST (HTTP/1.1, HTTP/2)"];
-                SyncType -- "Internal / Performance Critical" --> gRPC["gRPC (HTTP/2 + Protobuf)"];
+    Sync -- "Yes" --> SyncType{"Type?"};
+    SyncType -- "Public API / Browser Client" --> REST["REST (HTTP/1.1, HTTP/2)"];
+    SyncType -- "Internal / Performance Critical" --> gRPC["gRPC (HTTP/2 + Protobuf)"];
 
-                Sync -- No --> Async{Asynchronous?};
-                Async -- Yes --> AsyncType{Type?};
-                AsyncType -- "Decoupling / Task Offloading" --> MessageQueue["Message Queues (e.g., RabbitMQ)"];
-                AsyncType -- "High-Throughput / Event Streams" --> StreamingPlatform["Streaming Platforms (e.g., Kafka)"];
+    Sync -- "No" --> Async{"Asynchronous?"};
+    Async -- "Yes" --> AsyncType{"Type?"};
+    AsyncType -- "Decoupling / Task Offloading" --> MessageQueue["Message Queues (e.g., RabbitMQ)"];
+    AsyncType -- "High-Throughput / Event Streams" --> StreamingPlatform["Streaming Platforms (e.g., Kafka)"];
         </pre>
         <small class="text-muted">Diagram: Choosing Communication Patterns</small>
     </div>

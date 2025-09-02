@@ -1,0 +1,38 @@
+{
+  "name": "learn-cloud",
+  "version": "1.0.0",
+  "description": "This repository contains the content for a book on learning and mastering cloud-native technologies.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "validate:mermaid": "node src/js/validate-mermaid.js",
+    "validate:html": "html-validate index.html content/**/*.html",
+    "validate:js": "eslint .",
+    "validate:css": "stylelint \"content/**/*.css\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/castocolina/learn-cloud.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/castocolina/learn-cloud/issues"
+  },
+  "homepage": "https://github.com/castocolina/learn-cloud#readme",
+  "dependencies": {
+    "@mermaid-js/mermaid-cli": "^11.9.0",
+    "cheerio": "^1.1.2",
+    "html-validate-vue": "^7.3.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.34.0",
+    "broken-link-checker": "^0.6.7",
+    "eslint": "^9.34.0",
+    "html-validate": "^10.0.0",
+    "linkinator": "^6.1.4",
+    "stylelint": "^16.23.1",
+    "stylelint-config-standard": "^39.0.0"
+  }
+}
