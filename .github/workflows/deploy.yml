@@ -39,9 +39,9 @@ jobs:
       
       - name: Prepare Public Directory
         run: |
-          mkdir public
+          mkdir -p public/src
           cp index.html public/
-          cp -r content public/
+          cp -rv src/book public/src
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
