@@ -1,106 +1,63 @@
-<h2>Study Aids: HashiCorp Vault</h2>
+<div class="study-aids-content">
+    <header class="study-aids-header">
+        <h2>Study Aids: HashiCorp Vault</h2>
+        <p class="study-aids-intro">Learn secure secrets management, dynamic credentials, and certificate management with Vault. Click each card to reveal the answer.</p>
+    </header>
 
-<div class="card mb-4">
-    <div class="card-header">
-        Key Takeaways
-    </div>
-    <div class="card-body">
-        <ul>
-            <li><strong>Centralize Everything:</strong> Vault provides a central, secure, and auditable platform to manage all types of secrets (passwords, API keys, certificates), preventing the dangerous anti-pattern of "secret sprawl".</li>
-            <li><strong>Embrace Dynamic Secrets:</strong> Vault's most powerful feature is its ability to generate <strong>dynamic secrets</strong>—temporary, on-demand credentials that are automatically created and revoked. This dramatically improves security over long-lived, static secrets.</li>
-            <li><strong>Automate Integration in Kubernetes:</strong> The best practice for integrating with Kubernetes is the <strong>Vault Agent Injector</strong>. This webhook automatically adds a sidecar container to your pods to handle authentication and secret retrieval, abstracting the complexity away from developers.</li>
-            <li><strong>Decouple Your App from Vault:</strong> The Vault Agent sidecar writes secrets to a shared volume within the Pod. This allows your application to remain unaware of Vault; it simply reads secrets from the local filesystem, which is a clean and secure pattern.</li>
-        </ul>
-    </div>
-</div>
-
-<div id="flashcards-section">
     <div class="flashcards-container">
-
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What is "secret sprawl" and how does Vault solve it?</p>
+                <h4>Question 1</h4>
+                <p>What are dynamic secrets in HashiCorp Vault and how do they improve security?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>Secret sprawl is the anti-pattern of scattering secrets (passwords, API keys) across source code, config files, and CI variables. Vault solves this by providing a single, secure, centralized platform to manage, access, and audit all secrets.</p>
+                <p>Dynamic secrets are temporary, unique credentials generated on-demand with automatic expiration and revocation. This reduces risk by eliminating long-lived credentials and ensuring each application instance has unique, time-bound access credentials.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What is the main advantage of a "dynamic secret" over a "static secret"?</p>
+                <h4>Question 2</h4>
+                <p>How do HashiCorp tools support zero-trust security architecture?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>A dynamic secret is generated on-demand with a short Time-To-Live (TTL) and is automatically revoked by Vault when its lease expires. This dramatically minimizes the risk of a leaked credential, as it is only valid for a short time and for a specific client.</p>
+                <p>HashiCorp tools implement zero-trust by never trusting by default: Vault requires authentication for all secret access, Consul Connect provides automatic mutual TLS verification, and both use identity-based policies instead of network-based trust.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>In the Kubernetes integration, what is the role of the Vault Agent Injector?</p>
+                <h4>Question 3</h4>
+                <p>What is the difference between static and dynamic secrets management?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>It is a Kubernetes admission webhook that intercepts pod creation requests. If a pod is annotated for Vault, the injector automatically adds a Vault Agent sidecar container to the pod. This sidecar is responsible for handling authentication and secret retrieval.</p>
+                <p><strong>Static:</strong> Pre-created, long-lived credentials stored and retrieved as-is. <strong>Dynamic:</strong> Credentials generated on-demand, unique per request, with automatic expiration and revocation, providing better security through temporal and identity isolation.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>How does a pod securely authenticate to Vault in a Kubernetes environment?</p>
+                <h4>Question 4</h4>
+                <p>How does service mesh improve microservices security and observability?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>The Vault Agent sidecar uses the pod's own Kubernetes Service Account Token. It presents this token to Vault's Kubernetes Auth Method, which validates the token with the Kubernetes API server to authenticate the pod's identity.</p>
+                <p>Service mesh provides automatic mutual TLS encryption, identity-based access control, traffic routing policies, and comprehensive metrics/tracing for all service-to-service communication without requiring application code changes.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>How does an application running in a pod get access to secrets managed by the Vault Agent sidecar?</p>
+                <h4>Question 5</h4>
+                <p>What are the key components of a production-ready secrets management strategy?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>The Vault Agent writes the secrets to a shared, in-memory volume inside the pod. The application simply reads the secrets from this volume as if they were files on disk (e.g., from <code>/vault/secrets/db-creds</code>), decoupling the app from Vault.</p>
+                <p>A complete strategy includes centralized secret storage, automatic rotation, audit logging, least-privilege access policies, encryption at rest and in transit, and integration with CI/CD pipelines and application deployment workflows.</p>
             </div>
         </div>
-
     </div>
 </div>

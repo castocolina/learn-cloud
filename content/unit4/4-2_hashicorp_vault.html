@@ -1,11 +1,13 @@
-<div class="container">
-    <div class="page-header">
-        <h1>4.2: HashiCorp Vault</h1>
+<div class="topic-content">
+<header class="topic-header">
+
+    
+                <h1 class="topic-title">Unit 4.2: HashiCorp Vault</h1>
     </div>
 
     <p class="lead">In any application, you have secrets: database credentials, API keys, TLS certificates, and more. A common anti-pattern is "secret sprawl," where these secrets are hardcoded in source code, stored in plaintext configuration files, or scattered across CI/CD environment variables. <a href="https://www.vaultproject.io/" target="_blank">HashiCorp Vault</a> is the industry-standard tool for solving this problem by providing a centralized, secure, and auditable platform for all secrets management.</p>
 
-    <hr/>
+    
 
     <!-- Core Concepts -->
     <h2><i class="bi bi-key-fill"></i> 1. Vault Core Concepts</h2>
@@ -25,7 +27,7 @@ docker run -d --cap-add=IPC_LOCK -p 8200:8200 --name=vault hashicorp/vault:1.16 
     </code></pre>
     <p>The Vault UI is available at <a href="http://localhost:8200" target="_blank">http://localhost:8200</a>. You can log in with the root token (`root`).</p>
 
-    <hr/>
+    
 
     <!-- Dynamic Secrets -->
     <h2><i class="bi bi-arrow-repeat"></i> 2. Dynamic Secrets: Vault's Killer Feature</h2>
@@ -50,7 +52,7 @@ docker run -d --cap-add=IPC_LOCK -p 8200:8200 --name=vault hashicorp/vault:1.16 
         <small class="text-muted">Diagram: Dynamic Database Credential Workflow</small>
     </div>
 
-    <hr/>
+    
 
     <!-- Kubernetes Integration -->
     <h2><i class="bi bi-box-seam"></i> 3. Integrating Vault with Kubernetes</h2>
@@ -91,7 +93,7 @@ docker run -d --cap-add=IPC_LOCK -p 8200:8200 --name=vault hashicorp/vault:1.16 
         <small class="text-muted">Diagram: Vault Agent Injection Process in Kubernetes</small>
     </div>
 
-    <hr/>
+    
 
     <!-- Application Integration -->
     <h2><i class="bi bi-code-slash"></i> 4. Integrating Vault with Applications</h2>
@@ -154,7 +156,7 @@ func getDatabaseCredentials() (*dbCreds, error) {
 }
     </code></pre>
 
-    <hr/>
+    
 
     <!-- Certificate Management -->
     <h2><i class="bi bi-patch-check"></i> 5. Certificate Management</h2>
@@ -162,4 +164,6 @@ func getDatabaseCredentials() (*dbCreds, error) {
         In addition to secrets, Vault has a powerful Public Key Infrastructure (PKI) secrets engine that can act as a private Certificate Authority (CA). This allows Vault to dynamically generate short-lived X.509 certificates for your services, enabling automated and secure mutual TLS (mTLS) communication. This is an alternative to using a service mesh like Consul Connect, but it often requires more application-level integration to handle certificate rotation.
     </p>
 
+</div>
+    </div>
 </div>

@@ -1,0 +1,148 @@
+<div class="exam-content">
+    <header class="exam-header">
+        <h1>Unit 4 Final Exam: Secrets and Configuration Management</h1>
+        <p class="exam-intro">This comprehensive exam covers HashiCorp Vault and Consul, testing your understanding of secure secrets management, service discovery, and configuration in cloud-native environments.</p>
+        <div class="exam-instructions">
+            <p><strong>Instructions:</strong> Answer all questions to the best of your ability. You need 70% or higher to pass this secrets management mastery exam.</p>
+        </div>
+    </header>
+
+    <div class="quiz-container">
+        <div class="quiz-card active-card" data-question="1">
+            <div class="question">
+                <p>1. What is the primary security benefit of using dynamic secrets in HashiCorp Vault?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q1" value="a"> a) Dynamic secrets are faster to retrieve than static secrets.</label></li>
+                    <li><label><input type="radio" name="q1" value="b"> b) Dynamic secrets are automatically rotated and have limited lifespans, reducing exposure risk.</label></li>
+                    <li><label><input type="radio" name="q1" value="c"> c) Dynamic secrets don't require authentication to access.</label></li>
+                    <li><label><input type="radio" name="q1" value="d"> d) Dynamic secrets are stored in plaintext for faster access.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="2">
+            <div class="question">
+                <p>2. In HashiCorp Consul, what is the primary purpose of the service catalog?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q2" value="a"> a) To store application configuration data.</label></li>
+                    <li><label><input type="radio" name="q2" value="b"> b) To maintain a registry of available services and their health status.</label></li>
+                    <li><label><input type="radio" name="q2" value="c"> c) To encrypt service-to-service communication.</label></li>
+                    <li><label><input type="radio" name="q2" value="d"> d) To manage user authentication and authorization.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="3">
+            <div class="question">
+                <p>3. What is the difference between Consul servers and Consul clients?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q3" value="a"> a) Servers store data and participate in consensus, while clients proxy requests and run health checks.</label></li>
+                    <li><label><input type="radio" name="q3" value="b"> b) Servers handle UI requests, while clients handle API requests.</label></li>
+                    <li><label><input type="radio" name="q3" value="c"> c) Servers are read-only, while clients can write data.</label></li>
+                    <li><label><input type="radio" name="q3" value="d"> d) There is no difference; they are interchangeable roles.</label></li>
+                </ul>
+                <div class="answer" data-correct="a"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="4">
+            <div class="question">
+                <p>4. How does Vault's PKI secrets engine improve certificate management?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q4" value="a"> a) It stores pre-generated certificates indefinitely.</label></li>
+                    <li><label><input type="radio" name="q4" value="b"> b) It acts as a private CA, dynamically generating short-lived certificates.</label></li>
+                    <li><label><input type="radio" name="q4" value="c"> c) It only validates existing certificates from external CAs.</label></li>
+                    <li><label><input type="radio" name="q4" value="d"> d) It converts certificates between different formats.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="5">
+            <div class="question">
+                <p>5. What is the primary benefit of using Consul Connect for service mesh?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q5" value="a"> a) It provides automatic load balancing for services.</label></li>
+                    <li><label><input type="radio" name="q5" value="b"> b) It enables automatic mutual TLS encryption between services.</label></li>
+                    <li><label><input type="radio" name="q5" value="c"> c) It stores service configuration in a centralized database.</label></li>
+                    <li><label><input type="radio" name="q5" value="d"> d) It provides a web UI for service management.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="6">
+            <div class="question">
+                <p>6. How should applications integrate with Vault in Kubernetes environments?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q6" value="a"> a) By directly calling the Vault API from application code.</label></li>
+                    <li><label><input type="radio" name="q6" value="b"> b) By using the Vault Agent Injector to write secrets to a shared filesystem.</label></li>
+                    <li><label><input type="radio" name="q6" value="c"> c) By storing Vault tokens in environment variables.</label></li>
+                    <li><label><input type="radio" name="q6" value="d"> d) By hardcoding secrets in container images.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="7">
+            <div class="question">
+                <p>7. What is the purpose of Consul's distributed key-value store?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q7" value="a"> a) To replace application databases entirely.</label></li>
+                    <li><label><input type="radio" name="q7" value="b"> b) To store dynamic configuration and feature flags accessible to all services.</label></li>
+                    <li><label><input type="radio" name="q7" value="c"> c) To cache service discovery results for faster lookup.</label></li>
+                    <li><label><input type="radio" name="q7" value="d"> d) To store encrypted secrets and passwords.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="8">
+            <div class="question">
+                <p>8. What authentication method is recommended for applications running in Kubernetes to access Vault?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q8" value="a"> a) Username and password authentication.</label></li>
+                    <li><label><input type="radio" name="q8" value="b"> b) Kubernetes Service Account tokens with the Kubernetes auth method.</label></li>
+                    <li><label><input type="radio" name="q8" value="c"> c) Static root tokens stored in ConfigMaps.</label></li>
+                    <li><label><input type="radio" name="q8" value="d"> d) AWS IAM roles and policies.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="9">
+            <div class="question">
+                <p>9. How does service discovery with Consul DNS work?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q9" value="a"> a) Services query Consul directly via HTTP API calls.</label></li>
+                    <li><label><input type="radio" name="q9" value="b"> b) Services use standard DNS queries, and Consul responds with healthy service IPs.</label></li>
+                    <li><label><input type="radio" name="q9" value="c"> c) Services must register with a central load balancer.</label></li>
+                    <li><label><input type="radio" name="q9" value="d"> d) Services communicate only through predefined proxy servers.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="10">
+            <div class="question">
+                <p>10. What is a key advantage of using HashiCorp tools together in a cloud-native architecture?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q10" value="a"> a) They replace the need for Kubernetes entirely.</label></li>
+                    <li><label><input type="radio" name="q10" value="b"> b) They provide integrated identity-based security, service networking, and secrets management.</label></li>
+                    <li><label><input type="radio" name="q10" value="c"> c) They only work with specific cloud providers.</label></li>
+                    <li><label><input type="radio" name="q10" value="d"> d) They eliminate the need for application-level security.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button class="quiz-btn" id="prev-question">Previous</button>
+            <button class="quiz-btn" id="next-question">Next</button>
+            <button class="quiz-btn" id="submit-quiz" style="display: none;">Submit Answers</button>
+        </div>
+        <div class="quiz-results-container"></div>
+    </div>
+</div>

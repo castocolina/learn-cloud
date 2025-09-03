@@ -1,11 +1,13 @@
-<div class="container">
-    <div class="page-header">
-        <h1>4.1: HashiCorp Consul</h1>
+<div class="topic-content">
+<header class="topic-header">
+
+    
+                <h1 class="topic-title">Unit 4.1: HashiCorp Consul</h1>
     </div>
 
     <p class="lead">Welcome to Unit 4. As we build more complex microservice architectures, new challenges arise. How do services find each other in a dynamic environment where IPs and ports are constantly changing? How do we manage configuration centrally? How do we secure the traffic between services? <a href="https://www.consul.io/" target="_blank">HashiCorp Consul</a> is a comprehensive service networking solution that addresses these challenges through service discovery, a distributed key-value store, and a built-in service mesh.</p>
 
-    <hr/>
+    
 
     <!-- Architecture -->
     <h2><i class="bi bi-diagram-3"></i> 1. Consul Deployment Architecture</h2>
@@ -50,7 +52,7 @@ docker run -d --name=consul -p 8500:8500 -p 8600:8600/udp hashicorp/consul:1.18 
     </code></pre>
     <p>This command starts a Consul server and exposes the UI and API on port <code>8500</code> and the DNS interface on port <code>8600</code>. You can access the UI at <a href="http://localhost:8500" target="_blank">http://localhost:8500</a>.</p>
 
-    <hr/>
+    
 
     <!-- Service Discovery -->
     <h2><i class="bi bi-search"></i> 2. Service Discovery</h2>
@@ -84,7 +86,7 @@ docker run -d --name=consul -p 8500:8500 -p 8600:8600/udp hashicorp/consul:1.18 
         <small class="text-muted">Diagram: Consul Service Discovery Flow</small>
     </div>
 
-    <hr/>
+    
 
     <!-- KV Store -->
     <h2><i class="bi bi-key"></i> 3. Distributed Key-Value (KV) Store</h2>
@@ -104,7 +106,7 @@ consul kv get -detailed features/new-api
     </code></pre>
     <p>Applications can query this KV store at startup or runtime to dynamically change their behavior without needing a redeploy.</p>
 
-    <hr/>
+    
 
     <!-- Consul Connect -->
     <h2><i class="bi bi-shield-check"></i> 4. Consul Connect for Service Mesh</h2>
@@ -137,4 +139,6 @@ consul kv get -detailed features/new-api
         <small class="text-muted">Diagram: Service-to-Service Communication with Consul Connect</small>
     </div>
 
+</div>
+    </div>
 </div>
