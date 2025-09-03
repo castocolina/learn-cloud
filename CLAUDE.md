@@ -271,7 +271,43 @@ document.getElementById('flashcard-modal').addEventListener('click', function(ev
   - **Unit Overviews:** Dedicated overview pages for each unit
 - **Sequential Navigation:** Smart Previous/Next buttons that respect content hierarchy
 - **Progress Tracking:** Dual progress bars (unit progress + overall progress)
-- **Search Integration:** Full-text search across all content with type indicators
+- **Search Integration:** Full-text search across all content with enhanced UX
+
+#### Search UX Requirements
+
+The search functionality must provide an optimal user experience:
+
+- **High Visibility:** Search results must appear with `z-index: 9999` to ensure they're always visible above all other content
+- **Immediate Access:** Results should appear directly below the search bar without requiring scrolling
+- **Content Previews:** Each result shows contextual snippets (50 characters before/after match) with search terms highlighted in yellow
+- **Result Categorization:** Clear type indicators (Overview, Content, Study Aids, Quiz) with appropriate icons
+- **Responsive Positioning:** Results adapt to available screen space and menu states
+- **Performance:** Fast, client-side search using Lunr.js with pre-indexed content
+- **Visual Feedback:** Hover states, smooth animations, and clear result boundaries
+- **Keyboard Navigation:** Support for arrow keys and Enter to navigate results
+- **Content Highlighting:** Matching terms emphasized with `background: yellow; padding: 2px 4px; border-radius: 2px`
+
+**Search Implementation Pattern:**
+```javascript
+generateSearchPreview(topic, query) {
+    if (!topic.content) return '';
+    const queryLower = query.toLowerCase();
+    const contentLower = topic.content.toLowerCase();
+    const queryIndex = contentLower.indexOf(queryLower);
+    
+    if (queryIndex === -1) return '';
+    
+    const start = Math.max(0, queryIndex - 50);
+    const end = Math.min(topic.content.length, queryIndex + query.length + 50);
+    let preview = topic.content.substring(start, end);
+    
+    if (start > 0) preview = '...' + preview;
+    if (end < topic.content.length) preview = preview + '...';
+    
+    return preview.replace(new RegExp(`(${query})`, 'gi'), 
+        '<mark style="background: yellow; padding: 2px 4px; border-radius: 2px;">$1</mark>');
+}
+```
 
 ### Navigation Flow
 

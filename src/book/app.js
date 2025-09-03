@@ -726,31 +726,41 @@ class CloudNativeBookApp {
         try {
             // Enhanced search implementation with content indexing
             let results = [];
+            const queryLower = query.toLowerCase();
             
             if (typeof lunr !== 'undefined' && this.searchIndex) {
                 // Use Lunr.js for full-text search if available
                 const searchResults = this.searchIndex.search(query);
                 results = searchResults.map(result => {
-                    return this.topics.find(topic => topic.index.toString() === result.ref);
-                }).filter(Boolean).slice(0, 8);
+                    const topic = this.topics.find(topic => topic.index.toString() === result.ref);
+                    if (topic) {
+                        topic.searchScore = result.score;
+                    }
+                    return topic;
+                }).filter(Boolean).slice(0, 6);
             } else {
                 // Fallback to simple title and content search
-                const queryLower = query.toLowerCase();
                 results = this.topics.filter(topic => {
                     return topic.title.toLowerCase().includes(queryLower) ||
                            (topic.content && topic.content.toLowerCase().includes(queryLower));
-                }).slice(0, 8);
+                }).slice(0, 6);
             }
 
-            const resultHtml = results.map(result => `
-                <div class="search-result-item" data-index="${result.index}">
-                    <div class="search-result-title">${result.title}</div>
-                    <div class="search-result-type">${this.getTypeLabel(result.type)}</div>
-                </div>
-            `).join('');
+            const resultHtml = results.map(result => {
+                const preview = this.generateSearchPreview(result, query);
+                const highlightedTitle = this.highlightSearchTerms(result.title, query);
+                
+                return `
+                    <div class="search-result-item" data-index="${result.index}">
+                        <div class="search-result-title">${highlightedTitle}</div>
+                        <div class="search-result-type">${this.getTypeLabel(result.type)}</div>
+                        ${preview ? `<div class="search-result-preview">${preview}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
 
             this.elements.searchResults.innerHTML = resultHtml || 
-                '<div class="search-result-item">No results found</div>';
+                '<div class="search-result-item"><div class="search-result-title">No results found</div><div class="search-result-preview">Try different keywords or browse the navigation menu.</div></div>';
 
             // Add click handlers to results
             this.elements.searchResults.querySelectorAll('[data-index]').forEach(item => {
@@ -768,8 +778,37 @@ class CloudNativeBookApp {
         } catch (error) {
             console.error('Search error:', error);
             this.elements.searchResults.innerHTML = 
-                '<div class="search-result-item">Search temporarily unavailable</div>';
+                '<div class="search-result-item"><div class="search-result-title">Search temporarily unavailable</div></div>';
         }
+    }
+
+    generateSearchPreview(topic, query) {
+        if (!topic.content) return '';
+        
+        const queryLower = query.toLowerCase();
+        const contentLower = topic.content.toLowerCase();
+        const queryIndex = contentLower.indexOf(queryLower);
+        
+        if (queryIndex === -1) return '';
+        
+        // Extract context around the match
+        const contextStart = Math.max(0, queryIndex - 60);
+        const contextEnd = Math.min(topic.content.length, queryIndex + query.length + 60);
+        let preview = topic.content.slice(contextStart, contextEnd);
+        
+        // Add ellipsis if we truncated
+        if (contextStart > 0) preview = '...' + preview;
+        if (contextEnd < topic.content.length) preview = preview + '...';
+        
+        // Highlight search terms
+        return this.highlightSearchTerms(preview, query);
+    }
+
+    highlightSearchTerms(text, query) {
+        if (!query || query.length < 2) return text;
+        
+        const regex = new RegExp(`(${query})`, 'gi');
+        return text.replace(regex, '<span class="search-result-match">$1</span>');
     }
 
     getTypeLabel(type) {
