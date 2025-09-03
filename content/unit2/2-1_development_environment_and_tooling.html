@@ -1,11 +1,13 @@
-<div class="container">
-    <div class="page-header">
-        <h1>2.1: Development Environment & Tooling (Go)</h1>
+<div class="topic-content">
+<header class="topic-header">
+
+    
+                <h1 class="topic-title">Unit 2.1: Development Environment & Tooling (Go)</h1>
     </div>
 
     <p class="lead">Welcome to Unit 2. We now shift our focus to Go (or Golang), a language designed at Google for building simple, reliable, and efficient software. As we transition from Python, you'll notice key differences: Go is a statically typed, compiled language that excels at concurrency and produces single, self-contained binary executables. This makes it an outstanding choice for cloud-native microservices.</p>
 
-    <hr/>
+    
 
     <h3>Go's Philosophy: Simplicity and Performance</h3>
     <p>
@@ -22,7 +24,7 @@ go version
 # Output (will vary): go version go1.21.5 linux/amd64
     </code></pre>
 
-    <hr>
+    
 
     <h3>Dependency Management with Go Modules</h3>
     <p>
@@ -72,7 +74,7 @@ require (
         <strong>Simplicity by Design:</strong> The Go toolchain automatically downloads and caches dependencies when you build or run your code. There are no virtual environments to manage, as the module system handles dependency isolation per-project.
     </div>
 
-    <hr>
+    
 
     <h3>IDE Integration: VS Code and GoLand</h3>
     <p>A powerful IDE is crucial for productivity. Both Visual Studio Code (VS Code) and GoLand are top-tier choices with excellent Go support.</p>
@@ -89,7 +91,7 @@ require (
         <a href="https://www.jetbrains.com/go/" target="_blank">GoLand</a> is a dedicated Go IDE from JetBrains. It offers a more integrated, "batteries-included" experience with powerful refactoring tools, deep code analysis, and seamless integration with the Go toolchain right out of the box.
     </p>
 
-    <hr>
+    
 
     <h3>Containerization with Docker</h3>
     <p>
@@ -150,7 +152,7 @@ ENTRYPOINT ["/main"]
     </code></pre>
     <p>This approach produces a highly optimized image, often just a few megabytes in size, which is ideal for fast deployments and a reduced attack surface.</p>
 
-    <hr>
+    
 
     <h3>Putting It All Together: A Starter Workflow</h3>
     <p>Let's combine everything into a single, repeatable workflow for starting a new cloud-native Go service.</p>
@@ -188,4 +190,5 @@ ENTRYPOINT ["/main"]
 
     <h3>Conclusion</h3>
     <p>You have now configured a complete, professional Go development environment. Go's built-in tooling for dependency and version management simplifies the setup significantly compared to other ecosystems. With this foundation, you are ready to leverage Go's performance and simplicity to build robust cloud-native applications.</p>
+</div>    </div>
 </div>

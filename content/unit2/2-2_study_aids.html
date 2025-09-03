@@ -1,106 +1,63 @@
-<h2>Study Aids: Overview & Foundational Concepts</h2>
+<div class="study-aids-content">
+    <header class="study-aids-header">
+        <h2>Study Aids: Go Overview & Fundamentals</h2>
+        <p class="study-aids-intro">Learn Go fundamentals, syntax, data types, and basic programming concepts. Click each card to reveal the answer.</p>
+    </header>
 
-<div class="card mb-4">
-    <div class="card-header">
-        Key Takeaways
-    </div>
-    <div class="card-body">
-        <ul>
-            <li><strong>Statically Typed & Compiled:</strong> Go's static type system catches errors at compile time, and it compiles to a single machine-code binary, leading to high performance and simple deployments.</li>
-            <li><strong>Explicit Error Handling:</strong> Go favors explicit error handling using the `if err != nil` pattern, returning errors as values rather than using an exception-based system like Python's `try...except`.</li>
-            <li><strong>Composition with Structs and Interfaces:</strong> Go uses `structs` to aggregate data (similar to Python's classes) and favors composition over inheritance. Its powerful implicit interfaces enable polymorphism and decoupled code.</li>
-            <li><strong>Pointers for Efficiency:</strong> Go provides direct access to pointers, which is crucial for performance and allowing functions to modify data in place, a concept that is more abstracted in Python.</li>
-        </ul>
-    </div>
-</div>
-
-<div id="flashcards-section">
     <div class="flashcards-container">
-
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>How does Go's error handling philosophy differ from Python's?</p>
+                <h4>Question 1</h4>
+                <p>What makes Go's approach to object-oriented programming different from languages like Java or C++?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>Go uses an explicit, value-based error handling model. Functions return an `error` as their last return value, and the caller is expected to check `if err != nil`. This contrasts with Python, which uses an exception-based model with `try...except` blocks to handle errors.</p>
+                <p>Go uses composition over inheritance, with struct embedding and interfaces providing polymorphism without traditional class hierarchies.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What is an implicit interface in Go?</p>
+                <h4>Question 2</h4>
+                <p>What are the key benefits of using Go for cloud-native development?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>A type implements an interface in Go simply by possessing all the methods defined by that interface. There is no `implements` keyword. This allows for decoupling, as functions can operate on interfaces without knowing the concrete type.</p>
+                <p>Go offers fast compilation, excellent concurrency support, low memory footprint, static binaries, and strong standard library - ideal for microservices and containerized applications.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What is a `struct` in Go, and what is its closest Python equivalent?</p>
+                <h4>Question 3</h4>
+                <p>How does Go handle memory management compared to languages like C++ or Java?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>A `struct` is a composite type that groups together zero or more named fields of data. Its closest equivalent in Python is a `class`, particularly a `dataclass`, used for aggregating data attributes.</p>
+                <p>Go uses automatic garbage collection to manage memory, eliminating manual memory management like C++ while providing better performance predictability than JVM-based languages.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What is the difference between a slice and an array in Go?</p>
+                <h4>Question 4</h4>
+                <p>What is the significance of Go's "less is more" philosophy in language design?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>An **array** has a fixed size that is part of its type definition. A **slice**, on the other hand, is a more flexible, dynamically-sized view into the elements of an array. Slices are far more common in idiomatic Go code.</p>
+                <p>Go deliberately limits language features to improve readability, maintainability, and compilation speed. This simplicity reduces cognitive load and makes code more predictable.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>Why are pointers used in Go function parameters?</p>
+                <h4>Question 5</h4>
+                <p>How do Go interfaces promote clean architecture and testability?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>Passing a pointer (`*MyType`) allows a function to modify the original value that was passed in. It is also more efficient for large structs, as it avoids copying the entire data structure, passing only a memory address instead.</p>
+                <p>Go interfaces are implicit and behavior-focused, enabling dependency injection, easy mocking for tests, and loose coupling between components without inheritance complexity.</p>
             </div>
         </div>
-
     </div>
 </div>

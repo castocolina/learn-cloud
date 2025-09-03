@@ -1,106 +1,63 @@
-<h2>Study Aids: Observability</h2>
+<div class="study-aids-content">
+    <header class="study-aids-header">
+        <h2>Study Aids: Observability</h2>
+        <p class="study-aids-intro">Add monitoring, metrics, tracing, and observability to Go applications. Click each card to reveal the answer.</p>
+    </header>
 
-<div class="card mb-4">
-    <div class="card-header">
-        Key Takeaways
-    </div>
-    <div class="card-body">
-        <ul>
-            <li><strong>The Three Pillars:</strong> Effective observability in Go, as in any modern stack, relies on the combination of Logs (for specific events), Metrics (for aggregated performance data), and Traces (for request lifecycle analysis).</li>
-            <li><strong>Structured Logging is Standard:</strong> With the introduction of the <code>log/slog</code> package in Go 1.21, structured (JSON) logging is now a built-in, idiomatic practice, crucial for making logs machine-readable and queryable.</li>
-            <li><strong>Prometheus for Metrics:</strong> The de facto standard for metrics collection is Prometheus. Go applications can be easily instrumented using the <code>prometheus/client_golang</code> library to expose a <code>/metrics</code> endpoint for scraping.</li>
-            <li><strong>OpenTelemetry for Tracing:</strong> OpenTelemetry is the vendor-neutral standard for distributed tracing. It allows you to trace the path of a request across multiple microservices to identify bottlenecks and debug complex interactions.</li>
-        </ul>
-    </div>
-</div>
-
-<div id="flashcards-section">
     <div class="flashcards-container">
-
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What are the three pillars of observability?</p>
+                <h4>Question 1</h4>
+                <p>How does Go's runtime provide built-in observability features?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p><strong>Logs:</strong> Detailed, timestamped records of discrete events. <br><strong>Metrics:</strong> Aggregated numerical data over time (e.g., counters, gauges). <br><strong>Traces:</strong> A record of a request's journey through a distributed system.</p>
+                <p>Go includes runtime metrics, CPU and memory profiling via pprof, execution tracer, and GODEBUG environment variables for detailed runtime insights.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>As of Go 1.21, what is the standard library package for structured logging?</p>
+                <h4>Question 2</h4>
+                <p>What are the key benefits of using Go for cloud-native development?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>The <code>log/slog</code> package, which provides a fast and easy way to produce structured logs (e.g., in JSON format) without third-party dependencies.</p>
+                <p>Go offers fast compilation, excellent concurrency support, low memory footprint, static binaries, and strong standard library - ideal for microservices and containerized applications.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What is the primary purpose of exposing a <code>/metrics</code> endpoint from a Go application when using Prometheus?</p>
+                <h4>Question 3</h4>
+                <p>How does Go handle memory management compared to languages like C++ or Java?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>The <code>/metrics</code> endpoint provides the application's current metrics in a standardized format. The Prometheus server periodically "scrapes" (fetches data from) this endpoint to collect and store the metrics for monitoring and alerting.</p>
+                <p>Go uses automatic garbage collection to manage memory, eliminating manual memory management like C++ while providing better performance predictability than JVM-based languages.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What problem does Distributed Tracing solve in a microservices architecture?</p>
+                <h4>Question 4</h4>
+                <p>What is the significance of Go's "less is more" philosophy in language design?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>It tracks the entire path of a single request as it travels through multiple different services. This helps identify which service is causing a performance bottleneck or where an error originates in a complex, distributed transaction.</p>
+                <p>Go deliberately limits language features to improve readability, maintainability, and compilation speed. This simplicity reduces cognitive load and makes code more predictable.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What is OpenTelemetry?</p>
+                <h4>Question 5</h4>
+                <p>How do Go interfaces promote clean architecture and testability?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>OpenTelemetry (OTel) is a vendor-neutral, open-source observability framework. It provides a standardized set of APIs, SDKs, and tools for instrumenting applications to generate and export telemetry data (traces, metrics, and logs), preventing vendor lock-in.</p>
+                <p>Go interfaces are implicit and behavior-focused, enabling dependency injection, easy mocking for tests, and loose coupling between components without inheritance complexity.</p>
             </div>
         </div>
-
     </div>
 </div>

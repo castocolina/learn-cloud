@@ -1,106 +1,63 @@
-<h2>Study Aids: Building a RESTful API</h2>
+<div class="study-aids-content">
+    <header class="study-aids-header">
+        <h2>Study Aids: Building a RESTful API</h2>
+        <p class="study-aids-intro">Build performant REST APIs using Go's standard library and popular frameworks. Click each card to reveal the answer.</p>
+    </header>
 
-<div class="card mb-4">
-    <div class="card-header">
-        Key Takeaways
-    </div>
-    <div class="card-body">
-        <ul>
-            <li><strong>Standard Library is Production-Ready:</strong> Go's built-in <code>net/http</code> package is powerful and robust enough to build production-grade REST APIs without any third-party dependencies.</li>
-            <li><strong>Frameworks Accelerate Development:</strong> High-performance frameworks like Gin reduce boilerplate code for common tasks like routing, data binding, and middleware, which speeds up development for more complex applications.</li>
-            <li><strong>JSON is a Core Task:</strong> APIs commonly communicate via JSON. This is handled by the standard <code>encoding/json</code> package for manual decoding/encoding or simplified by data binding features in frameworks.</li>
-            <li><strong>It's a Trade-off:</strong> The choice between the standard library and a framework depends on the project's needs. The standard library offers simplicity and control, while frameworks offer a rich feature set and faster development speed.</li>
-        </ul>
-    </div>
-</div>
-
-<div id="flashcards-section">
     <div class="flashcards-container">
-
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What is the role of <code>http.ListenAndServe</code> in Go's <code>net/http</code> package?</p>
+                <h4>Question 1</h4>
+                <p>What advantages does Go's standard HTTP package provide for building web services?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>It starts an HTTP server that listens on a specified network address (e.g., ":8080") and uses a handler to process all incoming requests. It's a blocking call that runs until the server is shut down or an error occurs.</p>
+                <p>Go's net/http package offers high performance, built-in concurrency, middleware support, and comprehensive HTTP features without external dependencies.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What are two main advantages of using a framework like Gin over the standard <code>net/http</code> package?</p>
+                <h4>Question 2</h4>
+                <p>What are the key benefits of using Go for cloud-native development?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>1. <strong>Advanced Routing:</strong> Simplifies handling of path parameters (e.g., <code>/users/:id</code>) and grouping routes. <br>2. <strong>Middleware:</strong> Provides an easy way to add cross-cutting logic like logging, authentication, or error handling to requests.</p>
+                <p>Go offers fast compilation, excellent concurrency support, low memory footprint, static binaries, and strong standard library - ideal for microservices and containerized applications.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>How do you read a JSON request body into a Go struct using the standard <code>net/http</code> package?</p>
+                <h4>Question 3</h4>
+                <p>How does Go handle memory management compared to languages like C++ or Java?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>By using <code>json.NewDecoder(r.Body).Decode(&myStruct)</code>, where <code>r</code> is the <code>*http.Request</code> and <code>&myStruct</code> is a pointer to the target struct instance you want to populate.</p>
+                <p>Go uses automatic garbage collection to manage memory, eliminating manual memory management like C++ while providing better performance predictability than JVM-based languages.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What is the purpose of <code>c.JSON(http.StatusOK, data)</code> in the Gin framework?</p>
+                <h4>Question 4</h4>
+                <p>What is the significance of Go's "less is more" philosophy in language design?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>It serializes the <code>data</code> (e.g., a struct or map) into a JSON string, sets the <code>Content-Type</code> header to <code>application/json</code>, and writes the response with the specified HTTP status code (200 OK in this case).</p>
+                <p>Go deliberately limits language features to improve readability, maintainability, and compilation speed. This simplicity reduces cognitive load and makes code more predictable.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>When might you choose to use the standard <code>net/http</code> package instead of a framework like Gin?</p>
+                <h4>Question 5</h4>
+                <p>How do Go interfaces promote clean architecture and testability?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>For simple services where you want maximum control and minimal external dependencies, or for learning the fundamentals of how HTTP servers work in Go. It avoids adding a third-party dependency if the required features are basic.</p>
+                <p>Go interfaces are implicit and behavior-focused, enabling dependency injection, easy mocking for tests, and loose coupling between components without inheritance complexity.</p>
             </div>
         </div>
-
     </div>
 </div>

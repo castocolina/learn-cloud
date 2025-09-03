@@ -1,11 +1,13 @@
-<div class="container">
-    <div class="page-header">
-        <h1>2.8: Testing Strategies</h1>
+<div class="topic-content">
+<header class="topic-header">
+
+    
+                <h1 class="topic-title">Unit 2.8: Testing Strategies</h1>
     </div>
 
     <p class="lead">Writing correct and reliable software requires a robust testing strategy. Go's creators made testing a first-class citizen, building a powerful and simple testing framework directly into the standard library. This topic covers the essential testing strategies in Go, from fast, isolated unit tests to comprehensive integration tests that use real dependencies managed by Testcontainers.</p>
 
-    <hr/>
+    
 
     <!-- Testing Pyramid -->
     <h2><i class="bi bi-triangle"></i> The Testing Pyramid in Go</h2>
@@ -35,7 +37,7 @@
     </ul>
     <p>This topic focuses on the foundation: unit and integration tests.</p>
 
-    <hr/>
+    
 
     <!-- Unit Testing -->
     <h2><i class="bi bi-file-earmark-code"></i> 1. Unit and Integration Testing with the `testing` Package</h2>
@@ -99,7 +101,7 @@ func TestAddTableDriven(t *testing.T) {
 }
     </code></pre>
 
-    <hr/>
+    
 
     <!-- Mocking -->
     <h2><i class="bi bi-person-bounding-box"></i> 2. Mocking Interfaces</h2>
@@ -205,7 +207,7 @@ func TestGetUserName(t *testing.T) {
 }
     </code></pre>
 
-    <hr/>
+    
 
     <!-- Testcontainers -->
     <h2><i class="bi bi-box-seam"></i> 3. Emulating Services with Testcontainers</h2>
@@ -284,4 +286,6 @@ func TestCreateUserIntegration(t *testing.T) {
 }
     </code></pre>
 
+</div>
+    </div>
 </div>

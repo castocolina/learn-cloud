@@ -1,52 +1,54 @@
-<div class="container">
-    <div class="page-header">
-        <h1>2.2: Overview & Foundational Concepts</h1>
+<div class="topic-content">
+<header class="topic-header">
+
+    
+                <h1 class="topic-title">Unit 2.2: Overview & Foundational Concepts</h1>
     </div>
 
     <p class="lead">Now that your Go environment is ready, let's explore the foundational concepts of the language. Coming from a language like Python, you'll find Go to be refreshingly simple yet powerful. It's statically typed, compiled, and built with concurrency as a first-class citizen. This topic will bridge your existing programming knowledge to the Go way of thinking, focusing on the features most relevant to building high-performance backend services.</p>
 
-    <hr>
+    
 
     <section id="why-go-revisited">
         <h2><i class="bi bi-question-circle"></i> Why Go for the Cloud? The Language Features Behind the Hype</h2>
         <p>In the previous topic, we mentioned Go's strengths. Now let's connect those strengths to its core language features:</p>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title"><i class="bi bi-lightning-charge"></i> Performance through Simplicity</h5>
-                        <p class="card-text">Go is statically typed and compiles to machine code. This eliminates the overhead of an interpreter (like in Python) and allows for aggressive optimizations, resulting in faster execution. Its simple, small syntax also leads to a faster compiler.</p>
+        <div class="content-row">
+            <div class="content-col">
+                <div class="content-card">
+                    <div class="content-card">
+                        <h5 class="content-card"><i class="bi bi-lightning-charge"></i> Performance through Simplicity</h5>
+                        <p class="content-card">Go is statically typed and compiles to machine code. This eliminates the overhead of an interpreter (like in Python) and allows for aggressive optimizations, resulting in faster execution. Its simple, small syntax also leads to a faster compiler.</p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title"><i class="bi bi-diagram-3"></i> Concurrency via Goroutines</h5>
-                        <p class="card-text">Go's built-in goroutines and channels (which we'll cover in the next topic) provide a simple and powerful model for concurrency, making it trivial to build services that can handle tens of thousands of simultaneous connections.</p>
+            <div class="content-col">
+                <div class="content-card">
+                    <div class="content-card">
+                        <h5 class="content-card"><i class="bi bi-diagram-3"></i> Concurrency via Goroutines</h5>
+                        <p class="content-card">Go's built-in goroutines and channels (which we'll cover in the next topic) provide a simple and powerful model for concurrency, making it trivial to build services that can handle tens of thousands of simultaneous connections.</p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title"><i class="bi bi-box-seam"></i> Static Binaries from a Strong Type System</h5>
-                        <p class="card-text">The static type system ensures that all dependencies can be resolved at compile time. The compiler then links everything into a single executable file with no external dependencies, perfect for containerization.</p>
+            <div class="content-col">
+                <div class="content-card">
+                    <div class="content-card">
+                        <h5 class="content-card"><i class="bi bi-box-seam"></i> Static Binaries from a Strong Type System</h5>
+                        <p class="content-card">The static type system ensures that all dependencies can be resolved at compile time. The compiler then links everything into a single executable file with no external dependencies, perfect for containerization.</p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title"><i class="bi bi-code-slash"></i> Readability by Convention</h5>
-                        <p class="card-text">Go's tooling (like `gofmt`) enforces a single, idiomatic style. This, combined with features like implicit interfaces, leads to code that is easy to read and maintain, even in large teams.</p>
+            <div class="content-col">
+                <div class="content-card">
+                    <div class="content-card">
+                        <h5 class="content-card"><i class="bi bi-code-slash"></i> Readability by Convention</h5>
+                        <p class="content-card">Go's tooling (like `gofmt`) enforces a single, idiomatic style. This, combined with features like implicit interfaces, leads to code that is easy to read and maintain, even in large teams.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <hr>
+    
 
     <section id="core-features">
         <h2><i class="bi bi-braces"></i> Core Language Features: A Tour for the Experienced Developer</h2>
@@ -204,7 +206,7 @@ func main() {
 }
         </code></pre>
 
-        <hr>
+        
 
         <h2><i class="bi bi-intersect"></i> The Power of Interfaces: Composition Over Inheritance</h2>
         <p>This is one of Go's most elegant and powerful features. An <strong>interface</strong> is a type that specifies a set of method signatures. A type is said to implement an interface if it has all the methods defined in that interface. There is no `implements` keyword; the satisfaction is implicit. This is a major departure from languages like Java or Python (with ABCs) where implementation must be explicitly declared.</p>
@@ -287,9 +289,10 @@ func main() {
         </code></pre>
     </section>
 
-    <hr/>
+    
 
     <h2>Conclusion</h2>
     <p>Go's foundational concepts are intentionally minimal but powerful. By embracing static typing, explicit error handling, and implicit interfaces, Go provides the tools to build simple, reliable, and highly performant backend services. These core features provide the bedrock upon which Go's famous concurrency model is built, which we will explore in the next topic.</p>
 
+</div>    </div>
 </div>

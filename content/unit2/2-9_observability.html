@@ -1,6 +1,8 @@
-<div class="container">
-    <div class="page-header">
-        <h1>2.9: Observability</h1>
+<div class="topic-content">
+<header class="topic-header">
+
+    
+                <h1 class="topic-title">Unit 2.9: Observability</h1>
     </div>
 
     <p class="lead">In distributed cloud-native systems, you can't fix what you can't see. <strong>Observability</strong> is the practice of instrumenting your applications to provide high-fidelity signals about their internal state, allowing you to understand, debug, and optimize their behavior. It is built on three core pillars: <strong>Logs</strong>, <strong>Metrics</strong>, and <strong>Traces</strong>.</p>
@@ -15,7 +17,7 @@
         <small class="text-muted">Diagram: The Three Pillars of Observability</small>
     </div>
 
-    <hr/>
+    
 
     <!-- Structured Logging -->
     <h2><i class="bi bi-card-text"></i> 1. Structured Logging with `slog`</h2>
@@ -94,7 +96,7 @@ func loggerFromCtx(ctx context.Context) *slog.Logger {
     </code></pre>
     <p>When you run this and make a request, you will see JSON logs with consistent `request_id` fields, allowing you to trace the entire lifecycle of a single request.</p>
 
-    <hr/>
+    
 
     <!-- Metrics with Prometheus -->
     <h2><i class="bi bi-graph-up"></i> 2. Metrics with Prometheus</h2>
@@ -159,7 +161,7 @@ func main() {
     </code></pre>
     <p>Now, the application exposes a <code>/metrics</code> endpoint that Prometheus can scrape.</p>
 
-    <hr/>
+    
 
     <!-- Tracing with OpenTelemetry -->
     <h2><i class="bi bi-diagram-3-fill"></i> 3. Tracing with OpenTelemetry</h2>
@@ -239,4 +241,6 @@ func main() {
     </code></pre>
     <p>With this setup, every request to your server will generate a trace that can be visualized in a backend like Jaeger, giving you a clear picture of request latency and flow.</p>
 
+</div>
+    </div>
 </div>

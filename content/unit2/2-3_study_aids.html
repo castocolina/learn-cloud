@@ -1,106 +1,63 @@
-<h2>Study Aids: Concurrency: The Go Philosophy</h2>
+<div class="study-aids-content">
+    <header class="study-aids-header">
+        <h2>Study Aids: Concurrency - The Go Philosophy</h2>
+        <p class="study-aids-intro">Understand goroutines, channels, and Go's unique approach to concurrency. Click each card to reveal the answer.</p>
+    </header>
 
-<div class="card mb-4">
-    <div class="card-header">
-        Key Takeaways
-    </div>
-    <div class="card-body">
-        <ul>
-            <li><strong>Go's Concurrency Philosophy:</strong> Go encourages a pattern of "sharing memory by communicating" via channels, rather than the traditional approach of "communicating by sharing memory" which requires complex locks and mutexes.</li>
-            <li><strong>Goroutines are Lightweight:</strong> A goroutine is a lightweight thread of execution managed by the Go runtime. They are cheap to create, and you can run hundreds of thousands of them concurrently. They are started simply by using the `go` keyword.</li>
-            <li><strong>Channels for Communication & Synchronization:</strong> Channels are typed conduits that allow goroutines to safely send and receive data. Their blocking nature provides a powerful and simple mechanism for synchronization.</li>
-            <li><strong>The `select` Statement for Advanced Control:</strong> The `select` statement allows a goroutine to wait on multiple channel operations at once, making it a powerful tool for implementing timeouts and managing complex interactions between concurrent processes.</li>
-        </ul>
-    </div>
-</div>
-
-<div id="flashcards-section">
     <div class="flashcards-container">
-
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What is the core philosophy of concurrency in Go?</p>
+                <h4>Question 1</h4>
+                <p>What are goroutines and how do they differ from threads?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>"Do not communicate by sharing memory; instead, share memory by communicating." This means using channels to pass data between goroutines rather than using locks to protect shared data.</p>
+                <p>Goroutines are lightweight, user-space threads managed by the Go runtime. They're much more efficient than OS threads, with tiny stack sizes that grow as needed.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What is a goroutine?</p>
+                <h4>Question 2</h4>
+                <p>What are the key benefits of using Go for cloud-native development?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>A goroutine is a lightweight thread of execution managed by the Go runtime, not the OS. They are cheap to create and are started by calling a function with the `go` keyword.</p>
+                <p>Go offers fast compilation, excellent concurrency support, low memory footprint, static binaries, and strong standard library - ideal for microservices and containerized applications.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What are the two primary functions of a channel in Go?</p>
+                <h4>Question 3</h4>
+                <p>How does Go handle memory management compared to languages like C++ or Java?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>1. <strong>Communication:</strong> To pass data safely between goroutines. <br>2. <strong>Synchronization:</strong> To coordinate the execution of goroutines, because send/receive operations are blocking by default.</p>
+                <p>Go uses automatic garbage collection to manage memory, eliminating manual memory management like C++ while providing better performance predictability than JVM-based languages.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What problem does the `select` statement solve?</p>
+                <h4>Question 4</h4>
+                <p>What is the significance of Go's "less is more" philosophy in language design?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>The `select` statement allows a single goroutine to wait on multiple channel communication operations simultaneously. It blocks until one of its cases can proceed, enabling patterns like timeouts and non-blocking operations.</p>
+                <p>Go deliberately limits language features to improve readability, maintainability, and compilation speed. This simplicity reduces cognitive load and makes code more predictable.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>Briefly describe the Fan-Out, Fan-In concurrency pattern.</p>
+                <h4>Question 5</h4>
+                <p>How do Go interfaces promote clean architecture and testability?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>It's a pattern to parallelize work. **Fan-Out:** A producer distributes jobs to multiple worker goroutines. **Fan-In:** A consumer collects the results from all the workers into a single channel.</p>
+                <p>Go interfaces are implicit and behavior-focused, enabling dependency injection, easy mocking for tests, and loose coupling between components without inheritance complexity.</p>
             </div>
         </div>
-
     </div>
 </div>

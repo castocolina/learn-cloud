@@ -1,106 +1,63 @@
-<h2>Study Aids: Development Environment & Tooling</h2>
+<div class="study-aids-content">
+    <header class="study-aids-header">
+        <h2>Study Aids: Go Development Environment & Tooling</h2>
+        <p class="study-aids-intro">Master Go development setup with modules, tooling, and best practices. Click each card to reveal the answer.</p>
+    </header>
 
-<div class="card mb-4">
-    <div class="card-header">
-        Key Takeaways
-    </div>
-    <div class="card-body">
-        <ul>
-            <li><strong>Integrated Toolchain:</strong> Go includes built-in tools for dependency management (<code>go mod</code>), building (<code>go build</code>), and testing (<code>go test</code>), simplifying the development setup compared to ecosystems requiring multiple external tools.</li>
-            <li><strong>Reproducible Builds:</strong> Go Modules, with the <code>go.mod</code> and <code>go.sum</code> files, provide a robust and secure way to manage dependencies, ensuring builds are deterministic and verifiable across all environments.</li>
-            <li><strong>Static Binaries for Deployment:</strong> Go compiles applications into a single, statically-linked binary with no external dependencies, which is a major advantage for creating minimal, portable, and fast-starting container images.</li>
-            <li><strong>Multi-Stage Docker Builds:</strong> This is the standard practice for Go. It involves using a larger "builder" image to compile the code and then copying only the final binary into a minimal "runtime" image (like <code>scratch</code>), resulting in highly optimized and secure containers.</li>
-        </ul>
-    </div>
-</div>
-
-<div id="flashcards-section">
     <div class="flashcards-container">
-
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What are the roles of the <code>go.mod</code> and <code>go.sum</code> files in a Go project?</p>
+                <h4>Question 1</h4>
+                <p>What is the purpose of Go modules and how do they manage dependencies?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p><strong><code>go.mod</code></strong> declares the module's path and its direct dependencies. <strong><code>go.sum</code></strong> is a lock file containing the cryptographic checksums of all direct and indirect dependencies to ensure deterministic and verifiable builds.</p>
+                <p>Go modules provide dependency management and versioning for Go projects, replacing GOPATH-based development with a more modern approach.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What is a major advantage of Go compiling to a single static binary for cloud-native development?</p>
+                <h4>Question 2</h4>
+                <p>What are the key benefits of using Go for cloud-native development?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>A single static binary contains the application and all its dependencies, making it highly portable. This allows for the creation of minimal Docker images (e.g., from <code>scratch</code>) that are small, secure, and fast to deploy.</p>
+                <p>Go offers fast compilation, excellent concurrency support, low memory footprint, static binaries, and strong standard library - ideal for microservices and containerized applications.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>Why is a multi-stage Docker build the standard for Go applications?</p>
+                <h4>Question 3</h4>
+                <p>How does Go handle memory management compared to languages like C++ or Java?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>It separates the build environment (with the Go toolchain and source code) from the final runtime environment. This allows you to create a minimal final image containing only the compiled binary, which is much smaller and more secure.</p>
+                <p>Go uses automatic garbage collection to manage memory, eliminating manual memory management like C++ while providing better performance predictability than JVM-based languages.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What is the purpose of the <code>/cmd</code> directory in a standard Go project layout?</p>
+                <h4>Question 4</h4>
+                <p>What is the significance of Go's "less is more" philosophy in language design?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>The <code>/cmd</code> directory contains the main application entrypoints for the project. Each subdirectory within <code>/cmd</code> typically corresponds to a single executable binary that will be produced.</p>
+                <p>Go deliberately limits language features to improve readability, maintainability, and compilation speed. This simplicity reduces cognitive load and makes code more predictable.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What does the command <code>go mod tidy</code> do?</p>
+                <h4>Question 5</h4>
+                <p>How do Go interfaces promote clean architecture and testability?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p><code>go mod tidy</code> synchronizes the project's dependencies. It adds any missing dependencies required by the source code to <code>go.mod</code> and <code>go.sum</code>, and it removes any unused dependencies that are no longer imported in the code.</p>
+                <p>Go interfaces are implicit and behavior-focused, enabling dependency injection, easy mocking for tests, and loose coupling between components without inheritance complexity.</p>
             </div>
         </div>
-
     </div>
 </div>

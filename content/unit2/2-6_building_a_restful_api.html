@@ -1,11 +1,13 @@
-<div class="container">
-    <div class="page-header">
-        <h1>2.6: Building a RESTful API</h1>
+<div class="topic-content">
+<header class="topic-header">
+
+    
+                <h1 class="topic-title">Unit 2.6: Building a RESTful API</h1>
     </div>
 
     <p class="lead">Building APIs is a fundamental task for any backend developer. Go's powerful standard library and rich ecosystem of frameworks provide excellent tools for creating high-performance, robust RESTful services. This topic will guide you through building an API first with the standard <code>net/http</code> package to understand the fundamentals, and then with Gin, a popular high-performance framework, to see how frameworks can accelerate development.</p>
 
-    <hr/>
+    
 
     <!-- Standard Library -->
     <h2><i class="bi bi-book"></i> 1. Using the Standard Library (<code>net/http</code>)</h2>
@@ -132,7 +134,7 @@ curl -X POST -H "Content-Type: application/json" -d '{"name":"Laptop"}' http://l
 curl http://localhost:8080/products
     </code></pre>
 
-    <hr/>
+    
 
     <!-- Frameworks -->
     <h2><i class="bi bi-joystick"></i> 2. Using a Framework (Gin)</h2>
@@ -220,4 +222,6 @@ func main() {
         <strong>Standard Library vs. Frameworks:</strong> For simple services, the standard library is often sufficient and avoids external dependencies. For more complex applications with many routes, middleware, and complex data binding needs, a framework like Gin, Echo, or Chi can significantly improve productivity and code organization.
     </div>
 
+</div>
+    </div>
 </div>

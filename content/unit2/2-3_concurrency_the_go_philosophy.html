@@ -1,6 +1,8 @@
-<div class="container">
-    <div class="page-header">
-        <h1>2.3: Concurrency: The Go Philosophy</h1>
+<div class="topic-content">
+<header class="topic-header">
+
+    
+                <h1 class="topic-title">Unit 2.3: Concurrency: The Go Philosophy</h1>
     </div>
 
     <p class="lead">Concurrency is arguably Go's most famous feature and a primary reason for its success in the cloud-native landscape. While other languages approach concurrency with threads, locks, and mutexes, Go introduces a simpler, more powerful model based on the ideas of Communicating Sequential Processes (CSP). This topic dives into the heart of Go's concurrency: goroutines and channels.</p>
@@ -11,7 +13,7 @@
 
     <p>This philosophy encourages you to pass data between concurrent processes (goroutines) through channels, rather than having multiple processes compete for access to the same piece of memory using locks. This approach helps prevent entire classes of common concurrency bugs.</p>
 
-    <hr/>
+    
 
     <!-- Goroutines -->
     <h2><i class="bi bi-cpu"></i> 1. Goroutines: Concurrency Made Easy</h2>
@@ -52,7 +54,7 @@ func main() {
     </code></pre>
     <p>When you run this code, you'll see the output from both calls to `say` interleaved. This is because the `go say("world")` call starts a new goroutine that runs concurrently with the `main` goroutine. If we didn't have the `say("hello")` call, the main function would exit immediately, and the "world" goroutine might not have a chance to run at all. This demonstrates the need for synchronization.</p>
 
-    <hr/>
+    
 
     <!-- Channels -->
     <h2><i class="bi bi-arrows-left-right"></i> 2. Channels: Synchronizing and Communicating</h2>
@@ -105,7 +107,7 @@ func main() {
     </code></pre>
     <p>In this example, the `main` goroutine blocks at `x, y := <-c, <-c`, waiting for both `sum` goroutines to finish their work and send their results to the channel. This is a much more robust way to synchronize than using `time.Sleep`.</p>
 
-    <hr/>
+    
 
     <!-- Common Concurrency Patterns -->
     <h2><i class="bi bi-diagram-2"></i> 3. Common Concurrency Patterns</h2>
@@ -226,9 +228,10 @@ func main() {
 }
     </code></pre>
 
-    <hr/>
+    
 
     <h2>Conclusion</h2>
     <p>Go's concurrency model, built on the simplicity of goroutines and the synchronization power of channels, is a paradigm shift from traditional threading models. It provides a robust and less error-prone way to build highly concurrent applications, which is essential for modern cloud-native services that need to handle massive scale and I/O-bound workloads efficiently. Mastering these concepts is key to unlocking the full potential of Go.</p>
 
+</div>    </div>
 </div>

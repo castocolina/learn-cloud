@@ -1,106 +1,63 @@
-<h2>Study Aids: Core Backend Concepts</h2>
+<div class="study-aids-content">
+    <header class="study-aids-header">
+        <h2>Study Aids: Core Backend Concepts</h2>
+        <p class="study-aids-intro">Master HTTP, REST, JSON, and backend development concepts in Go. Click each card to reveal the answer.</p>
+    </header>
 
-<div class="card mb-4">
-    <div class="card-header">
-        Key Takeaways
-    </div>
-    <div class="card-body">
-        <ul>
-            <li><strong>Go's Approach to OOP:</strong> Go achieves object-oriented principles through composition rather than inheritance, using a combination of structs (for state), methods (for behavior), and interfaces (for polymorphism).</li>
-            <li><strong>SQL Database Interaction:</strong> Go provides two main approaches for relational databases: direct access with the standard <code>database/sql</code> package for maximum control, and higher-level abstraction with ORMs like GORM for faster development.</li>
-            <li><strong>Security is Paramount:</strong> When using <code>database/sql</code>, it is critical to use parameterized queries (e.g., using <code>$1</code> for PostgreSQL) to prevent SQL injection vulnerabilities.</li>
-            <li><strong>NoSQL Integration:</strong> Go has robust, high-quality drivers for popular NoSQL databases, making it easy to integrate services like Redis for caching (using <code>go-redis</code>) or MongoDB for document storage (using the official <code>mongo-go-driver</code>).</li>
-        </ul>
-    </div>
-</div>
-
-<div id="flashcards-section">
     <div class="flashcards-container">
-
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>How does Go handle encapsulation and visibility (public/private) without access modifier keywords?</p>
+                <h4>Question 1</h4>
+                <p>How does Go's error handling philosophy differ from exception-based languages?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>Go uses capitalization. A name (for a struct, field, function, etc.) is exported (public) if it begins with a capital letter. If it begins with a lowercase letter, it is unexported (private) and only visible within its own package.</p>
+                <p>Go treats errors as values, requiring explicit handling rather than throwing exceptions, making error paths visible and encouraging robust error management.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What is the primary purpose of the <code>database/sql</code> package in Go's standard library?</p>
+                <h4>Question 2</h4>
+                <p>What are the key benefits of using Go for cloud-native development?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>It provides a generic, standard interface for interacting with SQL or SQL-like databases. It is used in conjunction with a specific database driver (e.g., for PostgreSQL or MySQL) to execute queries, manage connections, and handle results.</p>
+                <p>Go offers fast compilation, excellent concurrency support, low memory footprint, static binaries, and strong standard library - ideal for microservices and containerized applications.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What is the main advantage of using an ORM like GORM compared to direct `database/sql` access?</p>
+                <h4>Question 3</h4>
+                <p>How does Go handle memory management compared to languages like C++ or Java?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>The main advantage is increased developer productivity. GORM abstracts away raw SQL, allowing developers to perform database CRUD (Create, Read, Update, Delete) operations using Go structs and methods, which requires less boilerplate code.</p>
+                <p>Go uses automatic garbage collection to manage memory, eliminating manual memory management like C++ while providing better performance predictability than JVM-based languages.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What is the most critical security practice when executing SQL queries with user-provided input in Go?</p>
+                <h4>Question 4</h4>
+                <p>What is the significance of Go's "less is more" philosophy in language design?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>Using parameterized queries (e.g., `db.QueryRow("SELECT ... WHERE id = $1", userID)`). This prevents SQL injection attacks by ensuring that user input is treated as data, not as executable SQL code.</p>
+                <p>Go deliberately limits language features to improve readability, maintainability, and compilation speed. This simplicity reduces cognitive load and makes code more predictable.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>Describe the common caching pattern implemented with Redis.</p>
+                <h4>Question 5</h4>
+                <p>How do Go interfaces promote clean architecture and testability?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>When requesting data, the application first checks if the data exists in the Redis cache. If it's a **cache hit**, the data is returned immediately. If it's a **cache miss**, the application queries the primary database, stores the result in Redis with an expiration time, and then returns the data.</p>
+                <p>Go interfaces are implicit and behavior-focused, enabling dependency injection, easy mocking for tests, and loose coupling between components without inheritance complexity.</p>
             </div>
         </div>
-
     </div>
 </div>
