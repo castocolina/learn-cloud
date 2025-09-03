@@ -1,19 +1,16 @@
-<div id="flashcards-section">
-    <h2>Flashcards: Development Environment & Tooling</h2>
-    <div class="flashcards-container">
+<div class="study-aids-content">
+    <header class="study-aids-header">
+        <h2>Study Aids: Development Environment & Tooling</h2>
+        <p class="study-aids-intro">Review key concepts with these interactive flashcards. Click each card to reveal the answer.</p>
+    </header>
 
+    <div class="flashcards-container">
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
+                <h4>Question 1</h4>
                 <p>What is the primary purpose of <code>pyenv</code> in a Python development environment?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p><code>pyenv</code> is used to manage multiple versions of Python on the same machine. It allows developers to easily switch between different Python versions on a per-project or global basis, ensuring that applications run against their intended interpreter version.</p>
             </div>
@@ -21,71 +18,46 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
+                <h4>Question 2</h4>
                 <p>What are two key advantages of using Poetry over a traditional <code>requirements.txt</code> and <code>venv</code> setup?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>1. <strong>Deterministic Builds:</strong> Poetry uses a <code>poetry.lock</code> file to ensure everyone on a team (and the CI/CD pipeline) uses the exact same dependency versions. <br>2. <strong>Unified Tooling:</strong> It combines dependency management, virtual environment creation, and project packaging into a single tool, managed by the <code>pyproject.toml</code> file.</p>
+                <p><strong>1. Deterministic Builds:</strong> Poetry uses a <code>poetry.lock</code> file to ensure everyone on a team uses the exact same dependency versions.<br><br><strong>2. Unified Tooling:</strong> It combines dependency management, virtual environment creation, and project packaging into a single tool.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
+                <h4>Question 3</h4>
                 <p>What is the primary configuration file used by Poetry for project management?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>The <code>pyproject.toml</code> file is the primary configuration file used by Poetry. It defines project metadata, dependencies, and other tool-specific configurations.</p>
+                <p>The <code>pyproject.toml</code> file is the primary configuration file used by Poetry. It defines project metadata, dependencies, development dependencies, and other tool-specific configurations in a declarative format.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>Which IDE is recommended for Python cloud-native development in this course, and why?</p>
+                <h4>Question 4</h4>
+                <p>What command creates a new Poetry project with the proper directory structure?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p><strong>Visual Studio Code (VS Code)</strong> is recommended due to its lightweight nature, powerful extensions, and seamless integration with Docker and cloud platforms, making it ideal for cloud-native development.</p>
+                <p><code>poetry new my-project-name</code> creates a new project directory with the standard Python package structure, including a <code>pyproject.toml</code> file and basic project scaffolding.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>Why is Docker considered a core part of the development loop in cloud-native development, even before deployment?</p>
+                <h4>Question 5</h4>
+                <p>Why is a reproducible development environment crucial for cloud-native applications?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>Docker ensures environment consistency and isolation. It guarantees that your application runs in the exact same environment on your local machine as it will in production, preventing "it works on my machine" issues and simplifying development.</p>
+                <p>A reproducible environment eliminates "works on my machine" problems by ensuring consistency between development, testing, and production environments. This is critical for cloud-native apps that may run across different platforms and be deployed by CI/CD pipelines.</p>
             </div>
         </div>
-
     </div>
 </div>

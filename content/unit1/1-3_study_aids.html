@@ -1,93 +1,63 @@
-<div id="flashcards-section">
-    <h2>Flashcards: Code Quality and Standards</h2>
+<div class="study-aids-content">
+    <header class="study-aids-header">
+        <h2>Study Aids: Code Quality and Standards</h2>
+        <p class="study-aids-intro">Master code quality tools and practices for Python development. Click each card to reveal the answer.</p>
+    </header>
+
     <div class="flashcards-container">
-
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What is PEP 8?</p>
+                <h4>Question 1</h4>
+                <p>What is the purpose of Black in Python development?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>PEP 8 is Python's official style guide, providing conventions for writing readable and consistent Python code.</p>
+                <p>Black is an opinionated code formatter that automatically formats Python code to ensure consistent style across projects. It eliminates debates about code formatting by enforcing a single, deterministic style.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What is the primary purpose of Black?</p>
+                <h4>Question 2</h4>
+                <p>What does flake8 check for in Python code?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>Black is an opinionated code formatter that automatically enforces a consistent code style, eliminating debates over formatting in code reviews.</p>
+                <p>Flake8 is a linting tool that checks for style guide enforcement (PEP 8), programming errors, cyclomatic complexity, and other code quality issues. It combines multiple tools including pycodestyle, pyflakes, and mccabe.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>How does Ruff differ from Black?</p>
+                <h4>Question 3</h4>
+                <p>What is mypy and why is it important for Python development?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>Black is a code formatter (re-arranges code for style), while Ruff is a linter (analyzes code for potential errors, bugs, and stylistic issues).</p>
+                <p>mypy is a static type checker for Python that catches type-related errors before runtime. It helps identify bugs early, improves code documentation, and makes refactoring safer, especially important for large codebases.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What are pre-commit hooks used for?</p>
+                <h4>Question 4</h4>
+                <p>What are pre-commit hooks and how do they improve code quality?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>Pre-commit hooks are automated scripts that run before a commit is created to enforce code quality standards and ensure consistency in the codebase.</p>
+                <p>Pre-commit hooks are scripts that run automatically before each git commit. They enforce code quality standards by running formatters, linters, and tests, preventing low-quality code from entering the repository.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>Name two key areas covered by PEP 8.</p>
+                <h4>Question 5</h4>
+                <p>What is the benefit of using type hints in Python functions?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>Naming conventions (e.g., snake_case, PascalCase) and code layout (e.g., 4 spaces for indentation, line length limits).</p>
+                <p>Type hints improve code readability, enable static type checking with tools like mypy, provide better IDE support with autocomplete and error detection, and serve as documentation for function parameters and return values.</p>
             </div>
         </div>
-
-        
-
     </div>
 </div>
