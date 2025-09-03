@@ -1,35 +1,17 @@
-<h2>Study Aids for 8.1: Securely Connecting Services</h2>
+<div class="study-aids-content">
+    <header class="study-aids-header">
+        <h2>Study Aids: Securely Connecting Services</h2>
+        <p class="study-aids-intro">Master the key concepts of secure service-to-service communication and credential management patterns.</p>
+    </header>
 
-<div class="card mb-4">
-    <div class="card-header">
-        Key Takeaways
-    </div>
-    <div class="card-body">
-        <ul>
-            <li><strong>Never Hardcode Secrets:</strong> Hardcoding credentials in source code or config files is a major security anti-pattern. Secrets must be injected dynamically at runtime.</li>
-            <li><strong>Vault is the Gold Standard:</strong> HashiCorp Vault provides a centralized platform for secrets management. The Vault Agent Injector for Kubernetes is the recommended pattern for securely delivering secrets to pods.</li>
-            <li><strong>Kubernetes Secrets Need More:</strong> Standard Kubernetes Secrets are only base64 encoded, not encrypted. For true security, they must be combined with etcd encryption at rest or an external secrets provider.</li>
-            <li><strong>IRSA for EKS:</strong> On AWS EKS, IAM Roles for Service Accounts (IRSA) is the most secure, native pattern. It allows pods to assume an IAM role to fetch secrets from AWS Secrets Manager without any long-lived credentials stored in the cluster.</li>
-            <li><strong>mTLS for Secure Transport:</strong> Mutual TLS (mTLS) secures service-to-service communication by ensuring both the client and server verify each other's identity. A service mesh (like Consul or Istio) is the best way to implement mTLS automatically and transparently.</li>
-        </ul>
-    </div>
-</div>
-
-<div id="flashcards-section">
     <div class="flashcards-container">
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>What is the primary problem with hardcoding secrets in source code or config files?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>It leads to "secret sprawl," making secrets difficult to manage, rotate, and audit. It also means anyone with source code access has access to production credentials, which is a major security risk.</p>
             </div>
@@ -37,16 +19,10 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>What is the recommended pattern for getting secrets from HashiCorp Vault into a Kubernetes pod?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>The <strong>Vault Agent Injector</strong>. It adds a sidecar container to the pod that authenticates to Vault, retrieves secrets, and writes them to a shared in-memory volume for the application to consume.</p>
             </div>
@@ -54,16 +30,10 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>What is the main security weakness of default Kubernetes <code>Secret</code> objects?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>They are only base64 encoded, not encrypted. Anyone with API access to read the secret can easily decode it. True security requires enabling encryption at rest for the etcd database.</p>
             </div>
@@ -71,16 +41,10 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>What is IRSA (IAM Roles for Service Accounts) on AWS EKS?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>It is a feature that allows a Kubernetes Service Account to be associated with an IAM Role. Pods using that service account can then assume the role to securely access AWS services (like Secrets Manager) without needing long-lived AWS credentials stored in the cluster.</p>
             </div>
@@ -88,16 +52,10 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>How does mutual TLS (mTLS) differ from standard TLS?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>In standard TLS, only the client verifies the server's identity. In <strong>mTLS</strong>, both the client and the server present and validate each other's certificates, providing stronger, two-way authentication.</p>
             </div>
