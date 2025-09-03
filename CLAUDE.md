@@ -95,24 +95,80 @@ The book is structured into `Units` and `Topics` with a hierarchical navigation 
 <div class="study-aids-content">
     <header class="study-aids-header">
         <h2>Study Aids: [Topic Name]</h2>
-        <p class="study-aids-intro">[Descriptive introduction]</p>
+        <p class="study-aids-intro">Review key concepts with these interactive flashcards. Click each card to reveal the answer.</p>
     </header>
     
     <div class="flashcards-container">
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">Question</div>
-            <div class="flashcard-back">Answer</div>
+        <div class="flashcard">
+            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
+                    <p>Question text goes here</p>
+                </div>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
+                    <p>Answer content goes here</p>
+                </div>
+            </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
         </div>
     </div>
+
+    <!-- Flashcard Modal -->
+    <dialog id="flashcard-modal" class="flashcard-modal">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h3 id="modal-question">Question</h3>
+                <button class="modal-close-btn" onclick="closeFlashcardModal()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </header>
+            <div class="modal-body">
+                <div class="modal-answer">
+                    <h4>Answer</h4>
+                    <div id="modal-answer-content">Answer content will appear here</div>
+                </div>
+            </div>
+        </div>
+    </dialog>
 </div>
+
+<script>
+function openFlashcardModal(button) {
+    const flashcard = button.parentElement;
+    const question = flashcard.querySelector('.flashcard-front p').textContent;
+    const answer = flashcard.querySelector('.flashcard-back p').innerHTML;
+    
+    document.getElementById('modal-question').textContent = question;
+    document.getElementById('modal-answer-content').innerHTML = answer;
+    document.getElementById('flashcard-modal').showModal();
+}
+
+function closeFlashcardModal() {
+    document.getElementById('flashcard-modal').close();
+}
+
+// Close modal when clicking outside
+document.getElementById('flashcard-modal').addEventListener('click', function(event) {
+    if (event.target === this) {
+        closeFlashcardModal();
+    }
+});
+</script>
 ```
 
+**Flashcard Requirements:**
 - **Standardization:** Each topic must have exactly 5 flashcards
 - **Modern Structure:** Use `study-aids-content` wrapper with descriptive header
 - **No Bootstrap:** Remove all Bootstrap dependencies (btn-, modal, card classes)
+- **Interactive Features:** Flashcards flip on click and have expand buttons for modal view
+- **3D Flip Animation:** Use CSS transforms for smooth card flipping experience
+- **Modal Integration:** Each flashcard has expand button using HTML5 `<dialog>` element
+- **Touch-Friendly:** Proper sizing and hover states for all device types
+- **No External Libraries:** Use native HTML5 dialog and CSS animations (no external modal library needed)
 - Place Mermaid diagrams directly in main content (`.html` files), not in study aids
-- Each flashcard should be touch-friendly with proper sizing
-- Use modern CSS for animations and interactions
 
 ### Quiz Structure
 

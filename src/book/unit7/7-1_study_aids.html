@@ -2,77 +2,128 @@
     <header class="study-aids-header">
         <h2>Study Aids: The Serverless Spectrum</h2>
     </header>
-    <div class="content-card">
-    <div class="card-header">
-        Key Takeaways
-    </div>
-    <div class="card-body">
-        <ul>
-            <li><strong>Serverless Means No Server Management:</strong> The core philosophy is to abstract away the underlying infrastructure, allowing developers to focus on code while the cloud provider manages servers, scaling, and patching.</li>
-            <li><strong>Pay-for-Value Model:</strong> A key benefit of serverless is paying only for the resources consumed during execution, eliminating the cost of idle capacity.</li>
-            <li><strong>Lambda for Functions (FaaS):</strong> AWS Lambda is ideal for short-running, event-driven tasks. You upload code, and it runs in response to triggers like HTTP requests or S3 events.</li>
-            <li><strong>Fargate for Containers:</strong> AWS Fargate is a serverless compute engine for running existing containerized applications without managing the underlying EC2 instances or Kubernetes nodes.</li>
-            <li><strong>Choose the Right Model:</strong> The choice between Lambda and Fargate depends on the workload. Lambda is suited for event-driven functions, while Fargate is better for long-running services or migrating existing container applications.</li>
-        </ul>
-    </div>
-</div>
-
     <div class="flashcards-container">
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <h4>Question</h4>
-                <p>What is the core philosophy of "serverless" computing?</p>
+        <div class="flashcard">
+            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
+                    <p>What is the core philosophy of "serverless" computing?</p>
+                </div>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
+                    <p>Serverless computing abstracts away infrastructure management. Developers focus on writing application logic, and the cloud provider is responsible for provisioning, scaling, and maintaining the servers that run the code.</p>
+                </div>
             </div>
-            <div class="flashcard-back">
-                <h4>Answer</h4>
-                <p>Serverless computing abstracts away infrastructure management. Developers focus on writing application logic, and the cloud provider is responsible for provisioning, scaling, and maintaining the servers that run the code.</p>
-            </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
         </div>
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <h4>Question</h4>
-                <p>What is AWS Lambda?</p>
+        <div class="flashcard">
+            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
+                    <p>What is AWS Lambda?</p>
+                </div>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
+                    <p>AWS Lambda is a <strong>Function as a Service (FaaS)</strong> offering. It allows you to run code in response to events without provisioning or managing any servers. You are billed only for the compute time you consume.</p>
+                </div>
             </div>
-            <div class="flashcard-back">
-                <h4>Answer</h4>
-                <p>AWS Lambda is a <strong>Function as a Service (FaaS)</strong> offering. It allows you to run code in response to events without provisioning or managing any servers. You are billed only for the compute time you consume.</p>
-            </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
         </div>
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <h4>Question</h4>
-                <p>What is AWS Fargate?</p>
+        <div class="flashcard">
+            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
+                    <p>What is AWS Fargate?</p>
+                </div>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
+                    <p>AWS Fargate is a <strong>serverless compute engine for containers</strong>. It allows you to run containerized applications on ECS or EKS without managing the underlying EC2 instances or nodes of the cluster.</p>
+                </div>
             </div>
-            <div class="flashcard-back">
-                <h4>Answer</h4>
-                <p>AWS Fargate is a <strong>serverless compute engine for containers</strong>. It allows you to run containerized applications on ECS or EKS without managing the underlying EC2 instances or nodes of the cluster.</p>
-            </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
         </div>
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <h4>Question</h4>
-                <p>What is a key difference in the cost model between Lambda and Fargate?</p>
+        <div class="flashcard">
+            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
+                    <p>What is a key difference in the cost model between Lambda and Fargate?</p>
+                </div>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
+                    <p><strong>Lambda</strong> is billed per request and per millisecond of execution, making it ideal for spiky traffic. <strong>Fargate</strong> is billed per second for the vCPU and memory resources requested by your container, making it more cost-effective for consistent, long-running workloads.</p>
+                </div>
             </div>
-            <div class="flashcard-back">
-                <h4>Answer</h4>
-                <p><strong>Lambda</strong> is billed per request and per millisecond of execution, making it ideal for spiky traffic. <strong>Fargate</strong> is billed per second for the vCPU and memory resources requested by your container, making it more cost-effective for consistent, long-running workloads.</p>
-            </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
         </div>
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <h4>Question</h4>
-                <p>When would you choose Fargate over Lambda?</p>
+        <div class="flashcard">
+            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
+                    <p>When would you choose Fargate over Lambda?</p>
+                </div>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
+                    <p>You would choose Fargate when you need to run an existing containerized application, when you have a long-running service, or when your application requires more control over the execution environment than Lambda's function model allows.</p>
+                </div>
             </div>
-            <div class="flashcard-back">
-                <h4>Answer</h4>
-                <p>You would choose Fargate when you need to run an existing containerized application, when you have a long-running service, or when your application requires more control over the execution environment than Lambda's function model allows.</p>
-            </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
         </div>
 
     </div>
+
+    <!-- Flashcard Modal -->
+    <dialog id="flashcard-modal" class="flashcard-modal">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h3 id="modal-question">Question</h3>
+                <button class="modal-close-btn" onclick="closeFlashcardModal()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </header>
+            <div class="modal-body">
+                <div class="modal-answer">
+                    <h4>Answer</h4>
+                    <div id="modal-answer-content">Answer content will appear here</div>
+                </div>
+            </div>
+        </div>
+    </dialog>
 </div>
+
+<script>
+function openFlashcardModal(button) {
+    const flashcard = button.parentElement;
+    const question = flashcard.querySelector('.flashcard-front p').textContent;
+    const answer = flashcard.querySelector('.flashcard-back p').innerHTML;
+    
+    document.getElementById('modal-question').textContent = question;
+    document.getElementById('modal-answer-content').innerHTML = answer;
+    document.getElementById('flashcard-modal').showModal();
+}
+
+function closeFlashcardModal() {
+    document.getElementById('flashcard-modal').close();
+}
+
+// Close modal when clicking outside
+document.getElementById('flashcard-modal').addEventListener('click', function(event) {
+    if (event.target === this) {
+        closeFlashcardModal();
+    }
+});
+</script>
