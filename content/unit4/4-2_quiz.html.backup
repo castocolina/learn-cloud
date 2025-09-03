@@ -1,0 +1,77 @@
+<div id="quiz-section">
+    <h2>Quiz: HashiCorp Vault</h2>
+
+    <div class="quiz-container">
+        <div class="quiz-card active-card" data-question="1">
+            <div class="question">
+                <p>1. What is the primary problem that HashiCorp Vault is designed to solve?</p>
+                <ul class="options">
+                    <li><label for="q1a"><input type="radio" id="q1a" name="q1" value="a"> a) Service discovery in a dynamic microservices environment.</label></li>
+                    <li><label for="q1b"><input type="radio" id="q1b" name="q1" value="b"> b) Automating the build and test process in a CI/CD pipeline.</label></li>
+                    <li><label for="q1c"><input type="radio" id="q1c" name="q1" value="c"> c) Centralizing the management, storage, and access control for secrets to prevent "secret sprawl".</label></li>
+                    <li><label for="q1d"><input type="radio" id="q1d" name="q1" value="d"> d) Orchestrating and scheduling containerized applications.</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="2">
+            <div class="question">
+                <p>2. What is the main security advantage of using Vault's dynamic secrets for database access?</p>
+                <ul class="options">
+                    <li><label for="q2a"><input type="radio" id="q2a" name="q2" value="a"> a) The credentials are easy for developers to remember.</label></li>
+                    <li><label for="q2b"><input type="radio" id="q2b" name="q2" value="b"> b) The credentials are generated on-demand with a short TTL and are automatically revoked, minimizing the window of exposure if leaked.</label></li>
+                    <li><label for="q2c"><input type="radio" id="q2c" name="q2" value="c"> c) The credentials can be safely shared by multiple applications without restriction.</label></li>
+                    <li><label for="q2d"><input type="radio" id="q2d" name="q2" value="d"> d) The credentials automatically grant administrative access to the database.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="3">
+            <div class="question">
+                <p>3. In a Kubernetes environment, what component is responsible for automatically injecting the Vault Agent sidecar into your application's pods?</p>
+                <ul class="options">
+                    <li><label for="q3a"><input type="radio" id="q3a" name="q3" value="a"> a) The Kubelet running on the worker node.</label></li>
+                    <li><label for="q3b"><input type="radio" id="q3b" name="q3" value="b"> b) The Vault Agent Injector, which functions as a mutating admission webhook.</label></li>
+                    <li><label for="q3c"><input type="radio" id="q3c" name="q3" value="c"> c) The application's main container, which must pull the agent at startup.</label></li>
+                    <li><label for="q3d"><input type="radio" id="q3d" name="q3" value="d"> d) A Helm chart that manually combines the two containers.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="4">
+            <div class="question">
+                <p>4. When using the recommended Kubernetes integration, how does the Vault Agent typically authenticate itself to Vault?</p>
+                <ul class="options">
+                    <li><label for="q4a"><input type="radio" id="q4a" name="q4" value="a"> a) Using a long-lived Vault token stored in a Kubernetes ConfigMap.</label></li>
+                    <li><label for="q4b"><input type="radio" id="q4b" name="q4" value="b"> b) Using the Pod's associated Service Account Token.</label></li>
+                    <li><label for="q4c"><input type="radio" id="q4c" name="q4" value="c"> c) Using a username and password passed as environment variables to the sidecar.</label></li>
+                    <li><label for="q4d"><input type="radio" id="q4d" name="q4" value="d"> d) Using the cloud provider's instance metadata endpoint.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="5">
+            <div class="question">
+                <p>5. After the Vault Agent sidecar fetches a secret, how does the main application container typically access it?</p>
+                <ul class="options">
+                    <li><label for="q5a"><input type="radio" id="q5a" name="q5" value="a"> a) By making a direct API call to the main Vault server.</label></li>
+                    <li><label for="q5b"><input type="radio" id="q5b" name="q5" value="b"> b) By making an API call to the local Vault Agent sidecar over localhost.</label></li>
+                    <li><label for="q5c"><input type="radio" id="q5c" name="q5" value="c"> c) By reading it from an environment variable that the sidecar injects.</label></li>
+                    <li><label for="q5d"><input type="radio" id="q5d" name="q5" value="d"> d) By reading it from a file on a shared memory volume (e.g., <code>/vault/secrets/...</code>).</label></li>
+                </ul>
+                <div class="answer" data-correct="d"></div>
+            </div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <button class="btn btn-outline-primary" id="next-question">Next</button>
+            <button class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
+        </div>
+        <div class="quiz-results-container"></div>
+    </div>
+</div>

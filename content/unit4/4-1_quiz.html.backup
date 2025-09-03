@@ -1,0 +1,77 @@
+<div id="quiz-section">
+    <h2>Quiz: HashiCorp Consul</h2>
+
+    <div class="quiz-container">
+        <div class="quiz-card active-card" data-question="1">
+            <div class="question">
+                <p>1. Which of the following is NOT a core feature of HashiCorp Consul?</p>
+                <ul class="options">
+                    <li><label for="q1a"><input type="radio" id="q1a" name="q1" value="a"> a) Service Discovery</label></li>
+                    <li><label for="q1b"><input type="radio" id="q1b" name="q1" value="b"> b) Distributed Key-Value Store</label></li>
+                    <li><label for="q1c"><input type="radio" id="q1c" name="q1" value="c"> c) Container Orchestration</label></li>
+                    <li><label for="q1d"><input type="radio" id="q1d" name="q1" value="d"> d) Service Mesh</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="2">
+            <div class="question">
+                <p>2. In a high-availability Consul cluster, what is the primary role of the <strong>server</strong> agents?</p>
+                <ul class="options">
+                    <li><label for="q2a"><input type="radio" id="q2a" name="q2" value="a"> a) To run on every application node and perform local health checks.</label></li>
+                    <li><label for="q2b"><input type="radio" id="q2b" name="q2" value="b"> b) To form a consensus using the Raft algorithm and store the cluster's state.</label></li>
+                    <li><label for="q2c"><input type="radio" id="q2c" name="q2" value="c"> c) To act as a simple DNS forwarder for external requests.</label></li>
+                    <li><label for="q2d"><input type="radio" id="q2d" name="q2" value="d"> d) To exclusively serve the Consul UI dashboard.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="3">
+            <div class="question">
+                <p>3. How does an application typically discover another service using Consul's DNS interface?</p>
+                <ul class="options">
+                    <li><label for="q3a"><input type="radio" id="q3a" name="q3" value="a"> a) By making an HTTP request to <code>http://consul/v1/catalog/service/my-service</code>.</label></li>
+                    <li><label for="q3b"><input type="radio" id="q3b" name="q3" value="b"> b) By reading a local configuration file that is constantly updated by the Consul agent.</label></li>
+                    <li><label for="q3c"><input type="radio" id="q3c" name="q3" value="c"> c) By performing a DNS query for a special name like <code>my-service.service.consul</code>.</label></li>
+                    <li><label for="q3d"><input type="radio" id="q3d" name="q3" value="d"> d) By connecting directly to the Consul server's internal Raft database.</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="4">
+            <div class="question">
+                <p>4. What is the primary security benefit provided by Consul Connect?</p>
+                <ul class="options">
+                    <li><label for="q4a"><input type="radio" id="q4a" name="q4" value="a"> a) It scans container images for known vulnerabilities.</label></li>
+                    <li><label for="q4b"><input type="radio" id="q4b" name="q4" value="b"> b) It manages user passwords and API keys for external services.</label></li>
+                    <li><label for="q4c"><input type="radio" id="q4c" name="q4" value="c"> c) It automatically provides mutual TLS (mTLS) to encrypt and verify all service-to-service communication.</label></li>
+                    <li><label for="q4d"><input type="radio" id="q4d" name="q4" value="d"> d) It provides a network firewall at the edge of the datacenter.</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="5">
+            <div class="question">
+                <p>5. What is a common use case for the Consul KV store?</p>
+                <ul class="options">
+                    <li><label for="q5a"><input type="radio" id="q5a" name="q5" value="a"> a) Storing application logs for long-term analysis.</label></li>
+                    <li><label for="q5b"><input type="radio" id="q5b" name="q5" value="b"> b) Storing large binary files like videos or database backups.</label></li>
+                    <li><label for="q5c"><input type="radio" id="q5c" name="q5" value="c"> c) Storing user session data for web applications.</label></li>
+                    <li><label for="q5d"><input type="radio" id="q5d" name="q5" value="d"> d) Storing dynamic configuration like feature flags or maintenance mode settings.</label></li>
+                </ul>
+                <div class="answer" data-correct="d"></div>
+            </div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <button class="btn btn-outline-primary" id="next-question">Next</button>
+            <button class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
+        </div>
+        <div class="quiz-results-container"></div>
+    </div>
+</div>

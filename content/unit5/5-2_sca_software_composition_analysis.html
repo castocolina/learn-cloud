@@ -1,7 +1,9 @@
-<div class="container">
-    <div class="page-header">
-        <h1>5.2: SCA (Software Composition Analysis)</h1>
-    </div>
+<div class="topic-content">
+    <header class="topic-header">
+        <h1 class="topic-title">Unit 5.2: SCA (Software Composition Analysis)</h1>
+    </header>
+    <main class="topic-main">
+        <section class="content-section">
 
     <p class="lead">Modern applications are rarely built from scratch. We rely on a vast ecosystem of open-source libraries and third-party dependencies to accelerate development. While this is powerful, it also introduces risk. <strong>Software Composition Analysis (SCA)</strong> is the automated process of identifying the open-source components in a codebase and scanning them for known security vulnerabilities.</p>
     <p>If SAST is about finding flaws in your own code, SCA is about finding flaws in the code you import. Managing this "software supply chain" is a critical part of DevSecOps.</p>
@@ -29,9 +31,9 @@
         <small class="text-muted">Diagram: SCA scans both direct and transitive dependencies for vulnerabilities.</small>
     </div>
 
-    <hr/>
-
-    <h2><i class="bi bi-file-earmark-code"></i> SCA for Python</h2>
+        </section>
+        <section class="content-section">
+            <h2><i class="bi bi-file-earmark-code"></i> SCA for Python</h2>
     <p>
         For Python, several tools can scan your dependencies. We'll look at two popular ones: <code>pip-audit</code> and <code>safety</code>. They both check your installed packages against vulnerability databases.
     </p>
@@ -84,9 +86,9 @@ jobs:
           pip-audit
     </code></pre>
 
-    <hr/>
-
-    <h2><i class="bi bi-file-earmark-code-fill"></i> SCA for Go: govulncheck</h2>
+        </section>
+        <section class="content-section">
+            <h2><i class="bi bi-file-earmark-code-fill"></i> SCA for Go: govulncheck</h2>
     <p>
         The official tool for finding known vulnerabilities in Go projects is <strong><code>govulncheck</code></strong>. It's integrated into the Go toolchain and provides a key advantage: it analyzes your codebase to see if your code actually calls the vulnerable functions in a dependency. This reduces noise by only reporting vulnerabilities in code paths that are reachable by your application.
     </p>
@@ -128,5 +130,6 @@ jobs:
       - name: Run govulncheck
         run: go install golang.org/x/vuln/cmd/govulncheck@latest && govulncheck ./...
     </code></pre>
-
+        </section>
+    </main>
 </div>

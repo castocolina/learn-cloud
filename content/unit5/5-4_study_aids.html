@@ -1,6 +1,8 @@
-<div id="flashcards-section">
-    <h2>Study Aids: Vulnerability Management</h2>
-    <div class="card mb-4">
+<div class="study-aids-content">
+    <header class="study-aids-header">
+        <h2>Study Aids: Vulnerability Management</h2>
+    </header>
+    <div class="content-card">
         <div class="card-header">
             Key Takeaways
         </div>
@@ -17,16 +19,10 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>What are the four stages of the vulnerability management lifecycle?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>1. <strong>Discover:</strong> Find vulnerabilities using tools like SAST, SCA, and image scanners.<br>2. <strong>Prioritize:</strong> Assess the risk and urgency of each vulnerability.<br>3. <strong>Remediate:</strong> Fix the vulnerability.<br>4. <strong>Verify:</strong> Confirm the fix by re-scanning.</p>
             </div>
@@ -34,16 +30,10 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>What is CVSS?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>The <strong>Common Vulnerability Scoring System (CVSS)</strong> is the industry standard for rating the severity of security vulnerabilities. It provides a numerical score from 0.0 to 10.0, which helps in prioritizing remediation efforts.</p>
             </div>
@@ -51,16 +41,10 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>Why is business context important for prioritizing vulnerabilities beyond just the CVSS score?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>Context determines the actual risk. A high-severity vulnerability in a non-critical, internal service might be lower risk than a medium-severity one in a public-facing service that handles sensitive data. Factors include reachability, data sensitivity, and exposure.</p>
             </div>
@@ -68,16 +52,10 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>What is a remediation SLA in vulnerability management?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>A Service Level Agreement (SLA) for remediation is a policy that defines the maximum amount of time a team has to fix a vulnerability after it has been discovered, usually based on its severity level (e.g., "Critical vulnerabilities must be fixed within 72 hours").</p>
             </div>
@@ -85,16 +63,10 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>What is the final step in the vulnerability management lifecycle after a patch has been applied?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p><strong>Verification.</strong> The same tool that found the vulnerability should be re-run to confirm that the fix is effective and the vulnerability is no longer present.</p>
             </div>

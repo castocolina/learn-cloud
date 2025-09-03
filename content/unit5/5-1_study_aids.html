@@ -1,6 +1,8 @@
-<div id="flashcards-section">
-    <h2>Study Aids: SAST (Static Application Security Testing)</h2>
-    <div class="card mb-4">
+<div class="study-aids-content">
+    <header class="study-aids-header">
+        <h2>Study Aids: SAST (Static Application Security Testing)</h2>
+    </header>
+    <div class="content-card">
         <div class="card-header">
             Key Takeaways
         </div>
@@ -17,16 +19,10 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>What is "Shifting Left" in the context of DevSecOps?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>It is the practice of moving security checks and processes to the earliest possible point in the development lifecycle (i.e., further to the left on a typical project timeline diagram). This helps find and fix vulnerabilities when they are cheapest and easiest to address.</p>
             </div>
@@ -34,16 +30,10 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>What is Static Application Security Testing (SAST)?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>SAST is a "white-box" testing methodology that analyzes an application's source code, bytecode, or binary for security vulnerabilities without executing the program.</p>
             </div>
@@ -51,16 +41,10 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>What is the standard SAST tool for Python, and what kind of issues can it find?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p><strong>Bandit</strong> is the standard SAST tool for Python. It can find issues like hardcoded passwords, insecure use of subprocess, known insecure XML parsing, and weak cryptographic functions.</p>
             </div>
@@ -68,16 +52,10 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>What is the standard SAST tool for Go?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p><strong>gosec</strong> is the standard SAST tool for Go. It analyzes the Go AST (Abstract Syntax Tree) to find security weaknesses.</p>
             </div>
@@ -85,16 +63,10 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>Why is it critical to integrate SAST tools into a CI/CD pipeline?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>Integrating SAST into the CI/CD pipeline automates the security scanning process. It ensures that every code change (e.g., on every push or pull request) is automatically checked for vulnerabilities, providing rapid feedback to developers and preventing insecure code from reaching production.</p>
             </div>
