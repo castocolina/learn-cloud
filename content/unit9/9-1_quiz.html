@@ -1,0 +1,80 @@
+<div class="quiz-content">
+    <header class="quiz-header">
+        <h2>Quiz: Python E-Commerce Microservices Project</h2>
+        <p class="quiz-intro">Test your understanding of microservices architecture patterns and the technologies integrated in the Python e-commerce capstone project.</p>
+    </header>
+
+    <div class="quiz-container">
+        <div class="quiz-card active-card" data-question="1">
+            <div class="question">
+                <p>1. In the e-commerce microservices architecture, what happens when the Order Service receives a new order?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q1" value="a"> a) It directly calls the Payment Worker synchronously to process payment.</label></li>
+                    <li><label><input type="radio" name="q1" value="b"> b) It publishes an `OrderCreated` event to a message queue for asynchronous processing.</label></li>
+                    <li><label><input type="radio" name="q1" value="c"> c) It immediately updates the order status to "paid" in the database.</label></li>
+                    <li><label><input type="radio" name="q1" value="d"> d) It waits for the Payment Worker to poll for new orders.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="2">
+            <div class="question">
+                <p>2. What is the primary advantage of using FastAPI for the Product and Order services?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q2" value="a"> a) It's the only Python web framework that supports REST APIs.</label></li>
+                    <li><label><input type="radio" name="q2" value="b"> b) It provides automatic OpenAPI documentation, high performance, and native async support.</label></li>
+                    <li><label><input type="radio" name="q2" value="c"> c) It eliminates the need for a database.</label></li>
+                    <li><label><input type="radio" name="q2" value="d"> d) It automatically handles all security concerns without additional configuration.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="3">
+            <div class="question">
+                <p>3. How should database credentials be securely provided to the microservices in Kubernetes?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q3" value="a"> a) Hardcode them in the application's environment variables.</label></li>
+                    <li><label><input type="radio" name="q3" value="b"> b) Store them in a ConfigMap for easy access.</label></li>
+                    <li><label><input type="radio" name="q3" value="c"> c) Use HashiCorp Vault with the Agent Injector pattern to inject secrets at runtime.</label></li>
+                    <li><label><input type="radio" name="q3" value="d"> d) Include them directly in the Docker image.</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="4">
+            <div class="question">
+                <p>4. Which Infrastructure as Code tool should be used to provision the cloud resources for this project?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q4" value="a"> a) Ansible</label></li>
+                    <li><label><input type="radio" name="q4" value="b"> b) Terraform</label></li>
+                    <li><label><input type="radio" name="q4" value="c"> c) Chef</label></li>
+                    <li><label><input type="radio" name="q4" value="d"> d) Puppet</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="5">
+            <div class="question">
+                <p>5. What security tools should be integrated into the CI/CD pipeline for this Python project? (Select all that apply)</p>
+                <ul class="options">
+                    <li><label><input type="checkbox" name="q5" value="a"> a) Bandit for SAST (Static Application Security Testing)</label></li>
+                    <li><label><input type="checkbox" name="q5" value="b"> b) pip-audit for SCA (Software Composition Analysis)</label></li>
+                    <li><label><input type="checkbox" name="q5" value="c"> c) gosec for Go security scanning</label></li>
+                    <li><label><input type="checkbox" name="q5" value="d"> d) Trivy for container image scanning</label></li>
+                </ul>
+                <div class="answer" data-correct="a,b,d"></div>
+            </div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button class="quiz-btn" id="prev-question">Previous</button>
+            <button class="quiz-btn" id="next-question">Next</button>
+            <button class="quiz-btn" id="submit-quiz" style="display: none;">Submit Answers</button>
+        </div>
+        <div class="quiz-results-container"></div>
+    </div>
+</div>

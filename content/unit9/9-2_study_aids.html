@@ -1,0 +1,77 @@
+<div class="study-aids-content">
+    <header class="study-aids-header">
+        <h2>Study Aids: Go Real-Time Analytics Pipeline Project</h2>
+    </header>
+    <div class="content-card">
+        <div class="card-header">
+            Key Takeaways
+        </div>
+        <div class="card-body">
+            <ul>
+                <li><strong>High-Performance Architecture:</strong> Use Go's concurrency (goroutines) and gRPC for maximum throughput and low-latency data ingestion and processing.</li>
+                <li><strong>Event Streaming:</strong> Apache Kafka provides durable, scalable message streaming for real-time data pipelines with strong guarantees.</li>
+                <li><strong>Time-Series Storage:</strong> Specialized databases like InfluxDB or TimescaleDB are optimized for time-based analytics and aggregations.</li>
+                <li><strong>Protocol Buffers:</strong> Use protobuf with gRPC for strongly-typed, efficient serialization in high-performance systems.</li>
+                <li><strong>Microservices Separation:</strong> Separate ingestion, processing, and query concerns for better scalability and maintainability.</li>
+            </ul>
+        </div>
+    </div>
+    <div class="flashcards-container">
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What are the three core services in the Go real-time analytics pipeline project?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p><strong>Ingestion Service</strong> (gRPC endpoint for high-volume event data), <strong>Processing Service</strong> (background worker consuming from Kafka and performing aggregations), and <strong>Query Service</strong> (REST API for retrieving analytics data).</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>Why is gRPC chosen over REST for the data ingestion endpoint?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>gRPC provides <strong>higher performance</strong> through HTTP/2 and binary serialization, <strong>strongly-typed contracts</strong> via Protocol Buffers, <strong>streaming support</strong> for continuous data ingestion, and <strong>efficient resource utilization</strong> for high-volume scenarios.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What role does Apache Kafka play in this architecture?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>Kafka acts as a <strong>durable event streaming platform</strong> that decouples ingestion from processing, provides <strong>message persistence</strong> and replay capabilities, enables <strong>horizontal scaling</strong>, and offers <strong>fault tolerance</strong> for real-time data pipelines.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>How does Go's concurrency model benefit the Processing Service?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>Go's <strong>goroutines</strong> enable processing multiple Kafka events in parallel with minimal overhead, the <strong>channel system</strong> facilitates safe communication between goroutines, and the <strong>lightweight threading model</strong> allows handling thousands of concurrent operations efficiently.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>Why use a specialized time-series database instead of a traditional relational database?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>Time-series databases like <strong>InfluxDB or TimescaleDB</strong> are optimized for <strong>time-based data storage</strong>, provide efficient <strong>data compression</strong> for historical data, offer built-in <strong>aggregation functions</strong>, and support <strong>high-throughput writes</strong> with time-based retention policies.</p>
+            </div>
+        </div>
+
+    </div>
+</div>

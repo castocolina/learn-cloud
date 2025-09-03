@@ -1,0 +1,157 @@
+<div class="exam-content">
+    <header class="exam-header">
+        <h1>Unit 9 Final Exam: Capstone Projects and System Integration</h1>
+        <p class="exam-intro">This comprehensive exam covers both capstone projects, testing your understanding of microservices architecture, cloud-native patterns, and the integration of technologies covered throughout the course.</p>
+    </header>
+
+    <div class="quiz-section">
+        <div class="quiz-container">
+            <!-- Question 1 -->
+            <div class="quiz-card active-card" data-question="1">
+                <div class="question">
+                    <p>1. In the Python e-commerce project, what is the primary benefit of using a message queue between the Order Service and Payment Worker?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q1" value="a"> a) It makes the system faster by eliminating network calls.</label></li>
+                        <li><label><input type="radio" name="q1" value="b"> b) It provides asynchronous communication, decoupling, and fault tolerance between services.</label></li>
+                        <li><label><input type="radio" name="q1" value="c"> c) It automatically scales the Payment Worker based on demand.</label></li>
+                        <li><label><input type="radio" name="q1" value="d"> d) It eliminates the need for a database in the Payment Worker.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="b"></div>
+                </div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="quiz-card" data-question="2">
+                <div class="question">
+                    <p>2. Why is gRPC preferred over REST for the data ingestion endpoint in the Go analytics pipeline?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q2" value="a"> a) gRPC is easier to debug than REST.</label></li>
+                        <li><label><input type="radio" name="q2" value="b"> b) gRPC offers higher performance, strongly-typed contracts, and streaming capabilities.</label></li>
+                        <li><label><input type="radio" name="q2" value="c"> c) gRPC works better with relational databases.</label></li>
+                        <li><label><input type="radio" name="q2" value="d"> d) gRPC is required by Kubernetes.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="b"></div>
+                </div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="quiz-card" data-question="3">
+                <div class="question">
+                    <p>3. How should database credentials be securely managed in both capstone projects when deployed to Kubernetes?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q3" value="a"> a) Store them in environment variables in the Kubernetes deployment YAML.</label></li>
+                        <li><label><input type="radio" name="q3" value="b"> b) Include them in the Docker image during the build process.</label></li>
+                        <li><label><input type="radio" name="q3" value="c"> c) Use HashiCorp Vault with the Agent Injector pattern to inject secrets at runtime.</label></li>
+                        <li><label><input type="radio" name="q3" value="d"> d) Store them in a Kubernetes ConfigMap.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="c"></div>
+                </div>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="quiz-card" data-question="4">
+                <div class="question">
+                    <p>4. What Infrastructure as Code tool should be used to provision cloud resources for both projects?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q4" value="a"> a) Ansible</label></li>
+                        <li><label><input type="radio" name="q4" value="b"> b) Terraform</label></li>
+                        <li><label><input type="radio" name="q4" value="c"> c) Chef</label></li>
+                        <li><label><input type="radio" name="q4" value="d"> d) CloudFormation</label></li>
+                    </ul>
+                    <div class="answer" data-correct="b"></div>
+                </div>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="quiz-card" data-question="5">
+                <div class="question">
+                    <p>5. In the Go analytics pipeline, what happens after the Processing Service aggregates event data?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q5" value="a"> a) It sends the results back to Kafka for distribution.</label></li>
+                        <li><label><input type="radio" name="q5" value="b"> b) It writes the aggregated results to a time-series database.</label></li>
+                        <li><label><input type="radio" name="q5" value="c"> c) It directly returns the results to the client via gRPC.</label></li>
+                        <li><label><input type="radio" name="q5" value="d"> d) It caches the results in Redis for fast access.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="b"></div>
+                </div>
+            </div>
+
+            <!-- Question 6 -->
+            <div class="quiz-card" data-question="6">
+                <div class="question">
+                    <p>6. What type of database is most appropriate for the analytics results in the Go project?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q6" value="a"> a) A relational database like PostgreSQL for ACID compliance.</label></li>
+                        <li><label><input type="radio" name="q6" value="b"> b) A time-series database like InfluxDB or TimescaleDB for time-based analytics.</label></li>
+                        <li><label><input type="radio" name="q6" value="c"> c) A document database like MongoDB for flexible schema.</label></li>
+                        <li><label><input type="radio" name="q6" value="d"> d) A graph database like Neo4j for relationship queries.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="b"></div>
+                </div>
+            </div>
+
+            <!-- Question 7 -->
+            <div class="quiz-card" data-question="7">
+                <div class="question">
+                    <p>7. Which security tools should be integrated into the CI/CD pipeline for the Python e-commerce project? (Select all that apply)</p>
+                    <ul class="options">
+                        <li><label><input type="checkbox" name="q7" value="a"> a) Bandit for static application security testing</label></li>
+                        <li><label><input type="checkbox" name="q7" value="b"> b) pip-audit for software composition analysis</label></li>
+                        <li><label><input type="checkbox" name="q7" value="c"> c) Trivy for container image scanning</label></li>
+                        <li><label><input type="checkbox" name="q7" value="d"> d) gosec for Go security analysis</label></li>
+                    </ul>
+                    <div class="answer" data-correct="a,b,c"></div>
+                </div>
+            </div>
+
+            <!-- Question 8 -->
+            <div class="quiz-card" data-question="8">
+                <div class="question">
+                    <p>8. How does Go's concurrency model benefit the Processing Service in the analytics pipeline?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q8" value="a"> a) It eliminates the need for error handling.</label></li>
+                        <li><label><input type="radio" name="q8" value="b"> b) It enables processing multiple Kafka events in parallel with goroutines and channels.</label></li>
+                        <li><label><input type="radio" name="q8" value="c"> c) It automatically distributes work across multiple servers.</label></li>
+                        <li><label><input type="radio" name="q8" value="d"> d) It provides built-in database connection pooling.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="b"></div>
+                </div>
+            </div>
+
+            <!-- Question 9 -->
+            <div class="quiz-card" data-question="9">
+                <div class="question">
+                    <p>9. What is the role of Apache Kafka in the Go analytics pipeline architecture?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q9" value="a"> a) It serves as the primary database for storing analytics results.</label></li>
+                        <li><label><input type="radio" name="q9" value="b"> b) It provides durable event streaming between the ingestion and processing services.</label></li>
+                        <li><label><input type="radio" name="q9" value="c"> c) It handles user authentication and authorization.</label></li>
+                        <li><label><input type="radio" name="q9" value="d"> d) It manages service discovery and load balancing.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="b"></div>
+                </div>
+            </div>
+
+            <!-- Question 10 -->
+            <div class="quiz-card" data-question="10">
+                <div class="question">
+                    <p>10. In both capstone projects, what DevOps practice ensures consistent, repeatable deployments?</p>
+                    <ul class="options">
+                        <li><label><input type="radio" name="q10" value="a"> a) Manual deployment by senior engineers.</label></li>
+                        <li><label><input type="radio" name="q10" value="b"> b) Using Infrastructure as Code (Terraform) and GitOps workflows.</label></li>
+                        <li><label><input type="radio" name="q10" value="c"> c) Deploying directly from developer laptops.</label></li>
+                        <li><label><input type="radio" name="q10" value="d"> d) Using only Kubernetes YAML files without version control.</label></li>
+                    </ul>
+                    <div class="answer" data-correct="b"></div>
+                </div>
+            </div>
+
+            <div class="quiz-navigation">
+                <button class="quiz-btn" id="prev-question">Previous</button>
+                <button class="quiz-btn" id="next-question">Next</button>
+                <button class="quiz-btn" id="submit-quiz" style="display: none;">Submit Answers</button>
+            </div>
+            <div class="quiz-results-container"></div>
+        </div>
+    </div>
+</div>

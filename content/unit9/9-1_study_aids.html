@@ -1,0 +1,77 @@
+<div class="study-aids-content">
+    <header class="study-aids-header">
+        <h2>Study Aids: Python E-Commerce Microservices Project</h2>
+    </header>
+    <div class="content-card">
+        <div class="card-header">
+            Key Takeaways
+        </div>
+        <div class="card-body">
+            <ul>
+                <li><strong>Microservices Architecture:</strong> Build loosely coupled services that communicate via REST APIs and message queues for better scalability and maintainability.</li>
+                <li><strong>FastAPI Framework:</strong> Use FastAPI for high-performance REST API development with automatic OpenAPI documentation and async support.</li>
+                <li><strong>Event-Driven Communication:</strong> Use message queues (RabbitMQ/Redis) to decouple services and enable asynchronous processing.</li>
+                <li><strong>Infrastructure as Code:</strong> Use Terraform to provision cloud resources and Kubernetes to orchestrate containerized services.</li>
+                <li><strong>Security Integration:</strong> Integrate HashiCorp Vault for secrets management and implement proper authentication/authorization patterns.</li>
+            </ul>
+        </div>
+    </div>
+    <div class="flashcards-container">
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What are the three core services in the Python E-commerce microservices project?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p><strong>Product Service</strong> (REST API for managing products), <strong>Order Service</strong> (REST API for creating orders and publishing events), and <strong>Payment Worker</strong> (background service consuming order events and processing payments).</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>Why is a message queue essential in this microservices architecture?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>It enables <strong>asynchronous communication</strong> between services, decouples the Order Service from the Payment Worker, provides reliability through message persistence, and allows for better scalability and fault tolerance.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What key technologies are integrated in this capstone project?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p><strong>Python/FastAPI</strong> (services), <strong>PostgreSQL</strong> (data persistence), <strong>RabbitMQ/Redis</strong> (messaging), <strong>Kubernetes</strong> (orchestration), <strong>Terraform</strong> (IaC), <strong>Vault</strong> (secrets), <strong>GitHub Actions</strong> (CI/CD).</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>How should database credentials be handled securely in this architecture?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p>Use <strong>HashiCorp Vault</strong> with the Vault Agent Injector pattern in Kubernetes. Services authenticate via their service account, retrieve database credentials dynamically at runtime, and never hardcode secrets in code or config files.</p>
+            </div>
+        </div>
+
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">
+                <h4>Question</h4>
+                <p>What CI/CD pipeline features should be implemented for this project?</p>
+            </div>
+            <div class="flashcard-back">
+                <h4>Answer</h4>
+                <p><strong>Automated testing</strong> (Pytest), <strong>code linting</strong> (Ruff), <strong>Docker image building</strong> and pushing to registry, <strong>SAST/SCA scanning</strong> (Bandit, pip-audit), and <strong>automated deployment</strong> to Kubernetes on main branch merges.</p>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,80 @@
+<div class="quiz-content">
+    <header class="quiz-header">
+        <h2>Quiz: Go Real-Time Analytics Pipeline Project</h2>
+        <p class="quiz-intro">Test your understanding of high-performance Go architecture patterns and real-time data processing pipeline design.</p>
+    </header>
+
+    <div class="quiz-container">
+        <div class="quiz-card active-card" data-question="1">
+            <div class="question">
+                <p>1. What is the primary advantage of using gRPC over REST for the data ingestion endpoint in this project?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q1" value="a"> a) gRPC is easier to implement than REST APIs.</label></li>
+                    <li><label><input type="radio" name="q1" value="b"> b) gRPC provides higher performance through HTTP/2, binary serialization, and streaming support.</label></li>
+                    <li><label><input type="radio" name="q1" value="c"> c) gRPC eliminates the need for authentication.</label></li>
+                    <li><label><input type="radio" name="q1" value="d"> d) gRPC automatically scales to handle any load.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="2">
+            <div class="question">
+                <p>2. In this analytics pipeline, what happens after the Ingestion Service receives an event via gRPC?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q2" value="a"> a) It immediately processes and stores the event in the time-series database.</label></li>
+                    <li><label><input type="radio" name="q2" value="b"> b) It publishes the event to a Kafka topic for durable, asynchronous processing.</label></li>
+                    <li><label><input type="radio" name="q2" value="c"> c) It directly calls the Query Service to update analytics results.</label></li>
+                    <li><label><input type="radio" name="q2" value="d"> d) It caches the event in memory for batch processing.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="3">
+            <div class="question">
+                <p>3. How does the Processing Service leverage Go's concurrency model for handling Kafka events?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q3" value="a"> a) It processes events sequentially to ensure data consistency.</label></li>
+                    <li><label><input type="radio" name="q3" value="b"> b) It uses goroutines to process multiple events in parallel with minimal overhead.</label></li>
+                    <li><label><input type="radio" name="q3" value="c"> c) It creates a new thread for each event using the standard library threading.</label></li>
+                    <li><label><input type="radio" name="q3" value="d"> d) It relies on Kafka's built-in parallel processing capabilities.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="4">
+            <div class="question">
+                <p>4. What type of database is most suitable for storing the aggregated analytics results in this pipeline?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q4" value="a"> a) A traditional relational database like MySQL.</label></li>
+                    <li><label><input type="radio" name="q4" value="b"> b) A NoSQL document database like MongoDB.</label></li>
+                    <li><label><input type="radio" name="q4" value="c"> c) A time-series database like InfluxDB or TimescaleDB.</label></li>
+                    <li><label><input type="radio" name="q4" value="d"> d) An in-memory cache like Redis.</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-card" data-question="5">
+            <div class="question">
+                <p>5. Which technologies and patterns are essential components of this Go analytics pipeline? (Select all that apply)</p>
+                <ul class="options">
+                    <li><label><input type="checkbox" name="q5" value="a"> a) Protocol Buffers for efficient serialization</label></li>
+                    <li><label><input type="checkbox" name="q5" value="b"> b) Apache Kafka for event streaming</label></li>
+                    <li><label><input type="checkbox" name="q5" value="c"> c) FastAPI for REST endpoints</label></li>
+                    <li><label><input type="checkbox" name="q5" value="d"> d) Gin framework for the Query Service REST API</label></li>
+                </ul>
+                <div class="answer" data-correct="a,b,d"></div>
+            </div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button class="quiz-btn" id="prev-question">Previous</button>
+            <button class="quiz-btn" id="next-question">Next</button>
+            <button class="quiz-btn" id="submit-quiz" style="display: none;">Submit Answers</button>
+        </div>
+        <div class="quiz-results-container"></div>
+    </div>
+</div>
