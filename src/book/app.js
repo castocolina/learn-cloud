@@ -946,16 +946,23 @@ class CloudNativeBookApp {
         const selectedOptions = container.querySelectorAll('.options li.selected');
         selectedOptions.forEach(option => option.classList.remove('selected'));
 
-        // Show quiz cards and navigation
+        // Reset quiz cards and navigation display
         const cards = container.querySelectorAll('.quiz-card');
         const navigation = container.querySelector('.quiz-navigation');
         const resultsContainer = container.querySelector('.quiz-results-container');
 
-        cards.forEach(card => card.style.display = 'block');
-        if (navigation) navigation.style.display = 'flex';
+        // Remove inline styles that were set during results display
+        cards.forEach(card => {
+            card.style.display = '';  // Remove inline display style
+        });
+        
+        if (navigation) {
+            navigation.style.display = '';  // Remove inline display style
+        }
+        
         resultsContainer.classList.remove('show');
 
-        // Update UI to show first question
+        // Update UI to show first question only
         this.updateQuizUI(container, state);
 
         console.log(`🔄 ${state.isExam ? 'Exam' : 'Quiz'} restarted`);

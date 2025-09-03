@@ -1521,9 +1521,9 @@ body {
 
 .quiz-navigation #next-question,
 .quiz-navigation [data-action="next"] {
-    background: linear-gradient(135deg, var(--primary) 0%, #2980b9 100%);
+    background: linear-gradient(135deg, #8e44ad 0%, #9b59b6 100%);
     color: var(--white);
-    border: 2px solid var(--primary);
+    border: 2px solid #8e44ad;
     border-radius: var(--radius-full);
     padding: var(--space-sm) var(--space-lg);
     font-size: var(--font-sm);
@@ -1532,7 +1532,7 @@ body {
     letter-spacing: 0.5px;
     transition: all 0.3s ease;
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
+    box-shadow: 0 2px 4px rgba(142, 68, 173, 0.3);
     position: relative;
     overflow: hidden;
 }
@@ -1546,10 +1546,10 @@ body {
 
 .quiz-navigation #next-question:hover,
 .quiz-navigation [data-action="next"]:hover {
-    background: linear-gradient(135deg, #2980b9 0%, #21618c 100%);
-    border-color: #2980b9;
+    background: linear-gradient(135deg, #7d3c98 0%, #8e44ad 100%);
+    border-color: #7d3c98;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.4);
+    box-shadow: 0 4px 8px rgba(142, 68, 173, 0.4);
 }
 
 .quiz-navigation #submit-quiz,
