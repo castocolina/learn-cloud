@@ -170,7 +170,13 @@ document.getElementById('flashcard-modal').addEventListener('click', function(ev
 - **No External Libraries:** Use native HTML5 dialog and CSS animations (no external modal library needed)
 - Place Mermaid diagrams directly in main content (`.html` files), not in study aids
 
-### Quiz Structure
+### Quiz & Exam System
+
+**Interactive Assessment Requirements:**
+
+Both quizzes and exams must provide an individual question display with navigation controls, automatic scoring, and restart functionality.
+
+#### Quiz Structure (5 questions, 80% pass threshold)
 
 ```html
 <div class="quiz-content">
@@ -178,35 +184,88 @@ document.getElementById('flashcard-modal').addEventListener('click', function(ev
         <h2>Quiz: [Topic Name]</h2>
         <p class="quiz-intro">[Descriptive introduction explaining what will be tested]</p>
     </header>
-    
     <div class="quiz-container">
-        <div class="quiz-card" data-question="1">
+        <div class="quiz-card active-card" data-question="1">
             <div class="question">
-                <p>Question text</p>
+                <p>1. [Question text]</p>
                 <ul class="options">
-                    <li><label><input type="radio" name="q1" value="a"> Option A</label></li>
+                    <li><label><input type="radio" name="q1" value="a"> a) Option A</label></li>
+                    <li><label><input type="radio" name="q1" value="b"> b) Option B</label></li>
+                    <li><label><input type="radio" name="q1" value="c"> c) Option C</label></li>
+                    <li><label><input type="radio" name="q1" value="d"> d) Option D</label></li>
                 </ul>
                 <div class="answer" data-correct="a"></div>
             </div>
         </div>
+        <!-- Repeat for 5 questions total -->
         
         <div class="quiz-navigation">
-            <button class="quiz-btn" id="prev-question">Previous</button>
-            <button class="quiz-btn" id="next-question">Next</button>
-            <button class="quiz-btn" id="submit-quiz" style="display: none;">Submit Answers</button>
+            <button class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <div class="quiz-progress">Question 1 of 5</div>
+            <button class="btn btn-outline-primary" id="next-question">Next</button>
+            <button class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
         </div>
+        <div class="quiz-results-container"></div>
     </div>
 </div>
 ```
 
-**Question Types:**
-- **Single-choice:** Use radio buttons with `data-correct` containing the correct option value
-- **Multiple-choice:** Use checkboxes with `data-correct` containing comma-separated correct values
+#### Exam Structure (10-20 questions, 70% pass threshold)
 
-**Button Styles:**
-- **Modern Navigation:** Use `quiz-btn` class for all quiz navigation buttons
-- **No Bootstrap:** Remove all Bootstrap dependencies (btn-primary, btn-secondary, etc.)
-- Ensure touch-friendly sizing (minimum 44px touch targets)
+```html
+<div class="exam-content">
+    <header class="exam-header">
+        <h1>Unit [X] Final Exam: [Unit Title]</h1>
+        <p class="exam-intro">[Comprehensive description of exam coverage]</p>
+        <div class="exam-instructions">
+            <p><strong>Instructions:</strong> Answer all questions to the best of your ability. You need 70% or higher to pass.</p>
+        </div>
+    </header>
+    <div class="quiz-container">
+        <!-- Same structure as quiz but with 10-20 questions -->
+        <div class="quiz-card active-card" data-question="1">
+            <div class="question">
+                <p>1. [Question text]</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q1" value="a"> A) Option A</label></li>
+                    <li><label><input type="radio" name="q1" value="b"> B) Option B</label></li>
+                    <li><label><input type="checkbox" name="q1" value="c"> C) Multiple choice option</label></li>
+                    <li><label><input type="checkbox" name="q1" value="d"> D) Multiple choice option</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div> <!-- Single: "b", Multiple: "c,d" -->
+            </div>
+        </div>
+        
+        <div class="quiz-navigation">
+            <button class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <div class="quiz-progress">Question 1 of 20</div>
+            <button class="btn btn-outline-primary" id="next-question">Next</button>
+            <button class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
+        </div>
+        <div class="quiz-results-container"></div>
+    </div>
+</div>
+```
+
+**Assessment Standards:**
+- **Quizzes:** 5 questions, 80% required to pass
+- **Unit Final Exams:** 10-20 questions (varies by unit), 70% required to pass
+- **Question Types:** Single-choice (radio) or multiple-choice (checkbox)
+- **Multiple-choice answers:** Use comma-separated values in data-correct (e.g., "a,c,d")
+- **Navigation:** Individual question display with Previous/Next buttons
+- **Results:** Automatic scoring with pass/fail feedback and "Try Again" functionality
+- **Visual Feedback:** Selected options highlighted, progress indicator, animated transitions
+
+**JavaScript Integration:**
+The quiz system is automatically initialized via `initializeQuizzes()` in `initializeContentFeatures()`. No additional JavaScript is needed in individual quiz files.
+
+**Interactive Features:**
+- **Single Question Display:** Only one question visible at a time with smooth transitions
+- **Navigation Controls:** Previous/Next buttons with smart visibility (Previous hidden on Q1, Submit shown on last question)
+- **Progress Tracking:** Real-time progress indicator showing current question number
+- **Visual Selection:** Selected options highlighted with border and background changes
+- **Results System:** Comprehensive scoring with percentage, pass/fail status, and detailed feedback
+- **Try Again:** Full restart functionality that clears all answers and returns to question 1
 
 ## File Structure Requirements
 

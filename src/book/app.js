@@ -639,9 +639,326 @@ class CloudNativeBookApp {
     }
 
     initializeQuizzes() {
-        // Quiz initialization logic would go here
-        const quizzes = this.elements.contentArea.querySelectorAll('.quiz-container');
-        console.log(`🧪 Found ${quizzes.length} quizzes in content`);
+        const quizContainers = this.elements.contentArea.querySelectorAll('.quiz-container');
+        console.log(`🧪 Found ${quizContainers.length} quiz/exam containers`);
+        
+        quizContainers.forEach(container => {
+            this.setupQuizContainer(container);
+        });
+    }
+
+    setupQuizContainer(container) {
+        const cards = container.querySelectorAll('.quiz-card');
+        const navigation = container.querySelector('.quiz-navigation');
+        const resultsContainer = container.querySelector('.quiz-results-container');
+        
+        if (cards.length === 0) {
+            console.warn('No quiz cards found in container');
+            return;
+        }
+
+        // Quiz state
+        const quizState = {
+            currentQuestion: 0,
+            totalQuestions: cards.length,
+            answers: {},
+            isExam: container.closest('.exam-content') !== null
+        };
+
+        // Store state on container for access
+        container.quizState = quizState;
+
+        // Initialize UI
+        this.updateQuizUI(container, quizState);
+        this.setupQuizNavigation(container, quizState);
+        this.setupQuizInteractions(container, quizState);
+
+        console.log(`🎯 Initialized ${quizState.isExam ? 'exam' : 'quiz'} with ${quizState.totalQuestions} questions`);
+    }
+
+    updateQuizUI(container, state) {
+        const cards = container.querySelectorAll('.quiz-card');
+        const navigation = container.querySelector('.quiz-navigation');
+
+        // Hide all cards
+        cards.forEach(card => card.classList.remove('active-card'));
+        
+        // Show current card
+        if (cards[state.currentQuestion]) {
+            cards[state.currentQuestion].classList.add('active-card');
+        }
+
+        // Update navigation buttons
+        const prevBtn = navigation?.querySelector('#prev-question, [data-action="prev"]');
+        const nextBtn = navigation?.querySelector('#next-question, [data-action="next"]');
+        const submitBtn = navigation?.querySelector('#submit-quiz, [data-action="submit"]');
+
+        if (prevBtn) {
+            prevBtn.style.display = state.currentQuestion > 0 ? 'inline-block' : 'none';
+        }
+
+        if (nextBtn) {
+            nextBtn.style.display = state.currentQuestion < state.totalQuestions - 1 ? 'inline-block' : 'none';
+        }
+
+        if (submitBtn) {
+            submitBtn.style.display = state.currentQuestion === state.totalQuestions - 1 ? 'inline-block' : 'none';
+        }
+
+        // Update progress indicator
+        const progressElement = navigation?.querySelector('.quiz-progress');
+        if (progressElement) {
+            progressElement.textContent = `Question ${state.currentQuestion + 1} of ${state.totalQuestions}`;
+        } else if (navigation) {
+            // Create progress indicator if it doesn't exist
+            const progress = document.createElement('div');
+            progress.className = 'quiz-progress';
+            progress.textContent = `Question ${state.currentQuestion + 1} of ${state.totalQuestions}`;
+            navigation.appendChild(progress);
+        }
+    }
+
+    setupQuizNavigation(container, state) {
+        const navigation = container.querySelector('.quiz-navigation');
+        if (!navigation) return;
+
+        // Remove existing listeners by cloning
+        const newNavigation = navigation.cloneNode(true);
+        navigation.parentNode.replaceChild(newNavigation, navigation);
+
+        // Add new listeners
+        newNavigation.addEventListener('click', (e) => {
+            const action = e.target.id || e.target.getAttribute('data-action');
+            
+            switch (action) {
+                case 'prev-question':
+                case 'prev':
+                    if (state.currentQuestion > 0) {
+                        state.currentQuestion--;
+                        this.updateQuizUI(container, state);
+                    }
+                    break;
+                
+                case 'next-question':
+                case 'next':
+                    if (state.currentQuestion < state.totalQuestions - 1) {
+                        state.currentQuestion++;
+                        this.updateQuizUI(container, state);
+                    }
+                    break;
+                
+                case 'submit-quiz':
+                case 'submit':
+                    this.submitQuiz(container, state);
+                    break;
+
+                case 'try-again':
+                case 'restart':
+                    this.restartQuiz(container, state);
+                    break;
+            }
+        });
+    }
+
+    setupQuizInteractions(container, state) {
+        const cards = container.querySelectorAll('.quiz-card');
+        
+        cards.forEach((card, questionIndex) => {
+            const questionNumber = questionIndex + 1;
+            const options = card.querySelectorAll('input[type="radio"], input[type="checkbox"]');
+            
+            options.forEach(option => {
+                option.addEventListener('change', () => {
+                    this.handleAnswerSelection(container, state, questionNumber, option);
+                });
+
+                // Add click handler to parent li for better UX
+                const li = option.closest('li');
+                if (li) {
+                    li.addEventListener('click', () => {
+                        if (!option.checked) {
+                            option.checked = true;
+                            option.dispatchEvent(new Event('change'));
+                        }
+                    });
+                }
+            });
+        });
+    }
+
+    handleAnswerSelection(container, state, questionNumber, selectedOption) {
+        const questionName = selectedOption.name;
+        const isMultipleChoice = selectedOption.type === 'checkbox';
+
+        if (isMultipleChoice) {
+            // Handle multiple choice questions
+            if (!state.answers[questionNumber]) {
+                state.answers[questionNumber] = [];
+            }
+            
+            if (selectedOption.checked) {
+                if (!state.answers[questionNumber].includes(selectedOption.value)) {
+                    state.answers[questionNumber].push(selectedOption.value);
+                }
+            } else {
+                state.answers[questionNumber] = state.answers[questionNumber].filter(
+                    answer => answer !== selectedOption.value
+                );
+            }
+        } else {
+            // Handle single choice questions
+            state.answers[questionNumber] = selectedOption.value;
+        }
+
+        // Update visual feedback
+        const card = container.querySelectorAll('.quiz-card')[questionNumber - 1];
+        const allOptions = card.querySelectorAll('.options li');
+        allOptions.forEach(li => li.classList.remove('selected'));
+        
+        const selectedLi = selectedOption.closest('li');
+        if (selectedLi && selectedOption.checked) {
+            selectedLi.classList.add('selected');
+        }
+
+        console.log(`📝 Question ${questionNumber} answered:`, state.answers[questionNumber]);
+    }
+
+    submitQuiz(container, state) {
+        const results = this.calculateQuizResults(container, state);
+        this.displayQuizResults(container, state, results);
+    }
+
+    calculateQuizResults(container, state) {
+        const cards = container.querySelectorAll('.quiz-card');
+        let correctAnswers = 0;
+        const results = {
+            totalQuestions: state.totalQuestions,
+            answeredQuestions: Object.keys(state.answers).length,
+            correctAnswers: 0,
+            percentage: 0,
+            passed: false,
+            details: []
+        };
+
+        cards.forEach((card, index) => {
+            const questionNumber = index + 1;
+            const answerElement = card.querySelector('.answer');
+            const correctAnswer = answerElement?.getAttribute('data-correct');
+            const userAnswer = state.answers[questionNumber];
+
+            if (!correctAnswer) {
+                console.warn(`No correct answer found for question ${questionNumber}`);
+                return;
+            }
+
+            let isCorrect = false;
+            
+            if (correctAnswer.includes(',')) {
+                // Multiple choice question
+                const correctAnswers = correctAnswer.split(',').map(a => a.trim()).sort();
+                const userAnswers = (Array.isArray(userAnswer) ? userAnswer : []).sort();
+                isCorrect = JSON.stringify(correctAnswers) === JSON.stringify(userAnswers);
+            } else {
+                // Single choice question
+                isCorrect = correctAnswer === userAnswer;
+            }
+
+            if (isCorrect) {
+                results.correctAnswers++;
+            }
+
+            results.details.push({
+                question: questionNumber,
+                correct: correctAnswer,
+                user: userAnswer,
+                isCorrect
+            });
+        });
+
+        results.percentage = Math.round((results.correctAnswers / results.totalQuestions) * 100);
+        
+        // Pass threshold: 80% for quizzes, 70% for exams
+        const passThreshold = state.isExam ? 70 : 80;
+        results.passed = results.percentage >= passThreshold;
+        results.passThreshold = passThreshold;
+
+        return results;
+    }
+
+    displayQuizResults(container, state, results) {
+        const resultsContainer = container.querySelector('.quiz-results-container');
+        if (!resultsContainer) {
+            console.error('Results container not found');
+            return;
+        }
+
+        // Hide quiz cards and navigation
+        const cards = container.querySelectorAll('.quiz-card');
+        const navigation = container.querySelector('.quiz-navigation');
+        
+        cards.forEach(card => card.style.display = 'none');
+        if (navigation) navigation.style.display = 'none';
+
+        // Show results
+        resultsContainer.innerHTML = `
+            <div class="quiz-score ${results.passed ? 'pass' : 'fail'}">
+                ${results.percentage}%
+            </div>
+            <div class="quiz-feedback">
+                <h3>${results.passed ? '🎉 Congratulations!' : '📚 Keep Studying!'}</h3>
+                <p>You answered ${results.correctAnswers} out of ${results.totalQuestions} questions correctly.</p>
+                <p>${results.passed ? 
+                    `Great job! You've passed with ${results.percentage}% (required: ${results.passThreshold}%).` :
+                    `You need ${results.passThreshold}% to pass. Review the material and try again.`
+                }</p>
+            </div>
+            <div class="quiz-actions">
+                <button class="btn btn-outline-primary" data-action="try-again">Try Again</button>
+                <button class="btn btn-primary" onclick="app.navigate(1)">Continue Learning</button>
+            </div>
+        `;
+
+        resultsContainer.classList.add('show');
+
+        // Add try again functionality
+        const tryAgainBtn = resultsContainer.querySelector('[data-action="try-again"]');
+        if (tryAgainBtn) {
+            tryAgainBtn.addEventListener('click', () => {
+                this.restartQuiz(container, state);
+            });
+        }
+
+        console.log(`📊 ${state.isExam ? 'Exam' : 'Quiz'} completed: ${results.percentage}% (${results.passed ? 'PASSED' : 'FAILED'})`);
+    }
+
+    restartQuiz(container, state) {
+        // Reset state
+        state.currentQuestion = 0;
+        state.answers = {};
+
+        // Clear all selections
+        const inputs = container.querySelectorAll('input[type="radio"], input[type="checkbox"]');
+        inputs.forEach(input => {
+            input.checked = false;
+        });
+
+        // Remove selected classes
+        const selectedOptions = container.querySelectorAll('.options li.selected');
+        selectedOptions.forEach(option => option.classList.remove('selected'));
+
+        // Show quiz cards and navigation
+        const cards = container.querySelectorAll('.quiz-card');
+        const navigation = container.querySelector('.quiz-navigation');
+        const resultsContainer = container.querySelector('.quiz-results-container');
+
+        cards.forEach(card => card.style.display = 'block');
+        if (navigation) navigation.style.display = 'flex';
+        resultsContainer.classList.remove('show');
+
+        // Update UI to show first question
+        this.updateQuizUI(container, state);
+
+        console.log(`🔄 ${state.isExam ? 'Exam' : 'Quiz'} restarted`);
     }
 
     initializeUnitOverviewFeatures() {
