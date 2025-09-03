@@ -6,60 +6,126 @@
 
     <div class="flashcards-container">
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <h4>Question</h4>
+        <div class="flashcard">
+            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
                 <p>Why is it a security risk to store a long-lived <code>kubeconfig</code> file as a secret in your CI/CD system?</p>
             </div>
-            <div class="flashcard-back">
-                <h4>Answer</h4>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
                 <p>Because if the secret is compromised, an attacker gets long-term, potentially administrative, access to your Kubernetes cluster. The best practice is to generate short-lived <code>kubeconfig</code> files for each deployment job.</p>
+                </div>
             </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
         </div>
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <h4>Question</h4>
+        <div class="flashcard">
+            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
                 <p>What is OIDC and how does it help secure CI/CD pipelines?</p>
             </div>
-            <div class="flashcard-back">
-                <h4>Answer</h4>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
                 <p>OpenID Connect (OIDC) is an authentication layer on top of OAuth 2.0. It allows a CI/CD job to prove its identity to a cloud provider (like AWS) using a short-lived JWT. The provider can then grant it temporary credentials, avoiding the need to store static API keys in the CI system.</p>
+                </div>
             </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
         </div>
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <h4>Question</h4>
+        <div class="flashcard">
+            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
                 <p>What is the primary benefit of integrating a CI/CD pipeline with HashiCorp Vault?</p>
             </div>
-            <div class="flashcard-back">
-                <h4>Answer</h4>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
                 <p>It centralizes secrets management, providing a single source of truth with strong auditing and access control. It allows the CI/CD job to fetch secrets dynamically using a short-lived token, rather than storing them directly in the CI system.</p>
+                </div>
             </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
         </div>
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <h4>Question</h4>
+        <div class="flashcard">
+            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
                 <p>What is Atlantis?</p>
             </div>
-            <div class="flashcard-back">
-                <h4>Answer</h4>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
                 <p>Atlantis is an open-source tool that automates Terraform by running <code>terraform plan</code> and <code>apply</code> from within pull request comments. It helps teams collaborate on infrastructure changes with a clear review and approval workflow.</p>
+                </div>
             </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
         </div>
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <h4>Question</h4>
+        <div class="flashcard">
+            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
                 <p>What is the "principle of least privilege" in the context of CI/CD credentials?</p>
             </div>
-            <div class="flashcard-back">
-                <h4>Answer</h4>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
                 <p>It means that the credentials used by a CI/CD job should have only the minimum set of permissions required to perform its task, and only for the minimum amount of time necessary. For example, a job that only pushes to an S3 bucket should only have <code>s3:PutObject</code> permission, not full admin access.</p>
+                </div>
             </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
         </div>
 
     </div>
+
+    <!-- Flashcard Modal -->
+    <dialog id="flashcard-modal" class="flashcard-modal">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h3 id="modal-question">Question</h3>
+                <button class="modal-close-btn" onclick="closeFlashcardModal()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </header>
+            <div class="modal-body">
+                <div class="modal-answer">
+                    <h4>Answer</h4>
+                    <div id="modal-answer-content">Answer content will appear here</div>
+                </div>
+            </div>
+        </div>
+    </dialog>
 </div>
+
+<script>
+function openFlashcardModal(button) {
+    const flashcard = button.parentElement;
+    const question = flashcard.querySelector('.flashcard-front p').textContent;
+    const answer = flashcard.querySelector('.flashcard-back p').innerHTML;
+    
+    document.getElementById('modal-question').textContent = question;
+    document.getElementById('modal-answer-content').innerHTML = answer;
+    document.getElementById('flashcard-modal').showModal();
+}
+
+function closeFlashcardModal() {
+    document.getElementById('flashcard-modal').close();
+}
+
+// Close modal when clicking outside
+document.getElementById('flashcard-modal').addEventListener('click', function(event) {
+    if (event.target === this) {
+        closeFlashcardModal();
+    }
+});
+</script>

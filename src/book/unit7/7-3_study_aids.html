@@ -19,60 +19,126 @@
 
     <div class="flashcards-container">
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <h4>Question</h4>
+        <div class="flashcard">
+            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
                 <p>What problem does AWS Step Functions solve in a serverless architecture?</p>
             </div>
-            <div class="flashcard-back">
-                <h4>Answer</h4>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
                 <p>It solves the problem of orchestrating multiple services and functions. It prevents the "Lambda Pinball" anti-pattern by providing a managed, visual way to define and execute complex workflows with built-in error handling and retries.</p>
+                </div>
             </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
         </div>
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <h4>Question</h4>
+        <div class="flashcard">
+            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
                 <p>What is a "state machine" in the context of Step Functions?</p>
             </div>
-            <div class="flashcard-back">
-                <h4>Answer</h4>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
                 <p>A state machine is the formal definition of your workflow. It is composed of various "states" (like Task, Choice, Parallel) that represent the individual steps of your process and the transitions between them.</p>
+                </div>
             </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
         </div>
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <h4>Question</h4>
+        <div class="flashcard">
+            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
                 <p>What is the Amazon States Language (ASL)?</p>
             </div>
-            <div class="flashcard-back">
-                <h4>Answer</h4>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
                 <p>ASL is a JSON-based, structured language used to define the states, logic, and transitions of a state machine in AWS Step Functions. It is the "Infrastructure as Code" for the workflow.</p>
+                </div>
             </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
         </div>
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <h4>Question</h4>
+        <div class="flashcard">
+            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
                 <p>What is a `Task` state in a Step Function?</p>
             </div>
-            <div class="flashcard-back">
-                <h4>Answer</h4>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
                 <p>A `Task` state represents a single unit of work in a state machine. It performs this work by invoking an AWS service, most commonly an AWS Lambda function, but it can also be other services like SNS, SQS, or DynamoDB through direct integrations.</p>
+                </div>
             </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
         </div>
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <h4>Question</h4>
+        <div class="flashcard">
+            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
                 <p>What is a major benefit of using Step Functions' direct service integrations?</p>
             </div>
-            <div class="flashcard-back">
-                <h4>Answer</h4>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
                 <p>They can eliminate the need to write, manage, and pay for "glue" Lambda functions that perform simple tasks (e.g., publishing to an SNS topic or putting an item in a DynamoDB table). This reduces code, complexity, and cost.</p>
+                </div>
             </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
         </div>
 
     </div>
+
+    <!-- Flashcard Modal -->
+    <dialog id="flashcard-modal" class="flashcard-modal">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h3 id="modal-question">Question</h3>
+                <button class="modal-close-btn" onclick="closeFlashcardModal()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </header>
+            <div class="modal-body">
+                <div class="modal-answer">
+                    <h4>Answer</h4>
+                    <div id="modal-answer-content">Answer content will appear here</div>
+                </div>
+            </div>
+        </div>
+    </dialog>
 </div>
+
+<script>
+function openFlashcardModal(button) {
+    const flashcard = button.parentElement;
+    const question = flashcard.querySelector('.flashcard-front p').textContent;
+    const answer = flashcard.querySelector('.flashcard-back p').innerHTML;
+    
+    document.getElementById('modal-question').textContent = question;
+    document.getElementById('modal-answer-content').innerHTML = answer;
+    document.getElementById('flashcard-modal').showModal();
+}
+
+function closeFlashcardModal() {
+    document.getElementById('flashcard-modal').close();
+}
+
+// Close modal when clicking outside
+document.getElementById('flashcard-modal').addEventListener('click', function(event) {
+    if (event.target === this) {
+        closeFlashcardModal();
+    }
+});
+</script>

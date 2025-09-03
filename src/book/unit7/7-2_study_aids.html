@@ -19,60 +19,126 @@
 
     <div class="flashcards-container">
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <h4>Question</h4>
+        <div class="flashcard">
+            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
                 <p>What is a "cold start" in AWS Lambda?</p>
             </div>
-            <div class="flashcard-back">
-                <h4>Answer</h4>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
                 <p>A cold start is the latency incurred on the first invocation of a function (or after a period of inactivity) when AWS has to create a new execution environment, which includes downloading the code and starting the runtime.</p>
+                </div>
             </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
         </div>
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <h4>Question</h4>
+        <div class="flashcard">
+            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
                 <p>What is the maximum execution duration for a single AWS Lambda function invocation?</p>
             </div>
-            <div class="flashcard-back">
-                <h4>Answer</h4>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
                 <p>15 minutes.</p>
+                </div>
             </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
         </div>
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <h4>Question</h4>
+        <div class="flashcard">
+            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
                 <p>What is the difference between On-Demand and Provisioned Concurrency in Lambda?</p>
             </div>
-            <div class="flashcard-back">
-                <h4>Answer</h4>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
                 <p><strong>On-Demand Concurrency</strong> scales automatically but is subject to regional limits and can cause throttling. <strong>Provisioned Concurrency</strong> keeps a specified number of environments warm to eliminate cold starts for a predictable number of requests, incurring a cost for the provisioned capacity.</p>
+                </div>
             </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
         </div>
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <h4>Question</h4>
+        <div class="flashcard">
+            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
                 <p>Why is it important to set concurrency limits on a Lambda function that interacts with a database?</p>
             </div>
-            <div class="flashcard-back">
-                <h4>Answer</h4>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
                 <p>To act as a safety valve. Lambda can scale to thousands of concurrent executions, which can easily overwhelm a traditional database's connection limit. Limiting concurrency prevents the function from overwhelming its own downstream resources.</p>
+                </div>
             </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
         </div>
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <h4>Question</h4>
+        <div class="flashcard">
+            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
                 <p>When would you choose Go over Python for a Lambda function?</p>
             </div>
-            <div class="flashcard-back">
-                <h4>Answer</h4>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
                 <p>You would choose Go for high-performance, low-latency workloads where minimizing cold start time and execution cost is critical. Its compilation to a small, static binary makes it extremely efficient in the Lambda environment.</p>
+                </div>
             </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
         </div>
 
     </div>
+
+    <!-- Flashcard Modal -->
+    <dialog id="flashcard-modal" class="flashcard-modal">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h3 id="modal-question">Question</h3>
+                <button class="modal-close-btn" onclick="closeFlashcardModal()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </header>
+            <div class="modal-body">
+                <div class="modal-answer">
+                    <h4>Answer</h4>
+                    <div id="modal-answer-content">Answer content will appear here</div>
+                </div>
+            </div>
+        </div>
+    </dialog>
 </div>
+
+<script>
+function openFlashcardModal(button) {
+    const flashcard = button.parentElement;
+    const question = flashcard.querySelector('.flashcard-front p').textContent;
+    const answer = flashcard.querySelector('.flashcard-back p').innerHTML;
+    
+    document.getElementById('modal-question').textContent = question;
+    document.getElementById('modal-answer-content').innerHTML = answer;
+    document.getElementById('flashcard-modal').showModal();
+}
+
+function closeFlashcardModal() {
+    document.getElementById('flashcard-modal').close();
+}
+
+// Close modal when clicking outside
+document.getElementById('flashcard-modal').addEventListener('click', function(event) {
+    if (event.target === this) {
+        closeFlashcardModal();
+    }
+});
+</script>

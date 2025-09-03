@@ -17,60 +17,126 @@
     </div>
     <div class="flashcards-container">
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <h4>Question</h4>
+        <div class="flashcard">
+            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
                 <p>What is Container Image Scanning?</p>
             </div>
-            <div class="flashcard-back">
-                <h4>Answer</h4>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
                 <p>It is the process of analyzing a container image's contents (including OS packages, application dependencies, and binaries) to identify known security vulnerabilities and misconfigurations.</p>
+                </div>
             </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
         </div>
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <h4>Question</h4>
+        <div class="flashcard">
+            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
                 <p>Why is image scanning a necessary addition to SAST and SCA?</p>
             </div>
-            <div class="flashcard-back">
-                <h4>Answer</h4>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
                 <p>SAST scans your code and SCA scans your direct dependencies, but image scanning analyzes the entire packaged artifact. It finds vulnerabilities in the operating system layer (e.g., a vulnerable version of `openssl` or `libc`) that SAST/SCA would miss.</p>
+                </div>
             </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
         </div>
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <h4>Question</h4>
+        <div class="flashcard">
+            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
                 <p>Name two popular open-source container image scanning tools.</p>
             </div>
-            <div class="flashcard-back">
-                <h4>Answer</h4>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
                 <p><strong>Trivy</strong> (by Aqua Security) and <strong>Grype</strong> (by Anchore).</p>
+                </div>
             </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
         </div>
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <h4>Question</h4>
+        <div class="flashcard">
+            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
                 <p>Where in the CI/CD pipeline is the most effective place to first scan a container image?</p>
             </div>
-            <div class="flashcard-back">
-                <h4>Answer</h4>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
                 <p>Immediately after the image is built, but <strong>before</strong> it is pushed to a container registry. This provides the fastest feedback and prevents a vulnerable image from being stored and potentially deployed.</p>
+                </div>
             </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
         </div>
 
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-front">
-                <h4>Question</h4>
+        <div class="flashcard">
+            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
                 <p>What does the `exit-code: '1'` option typically do in a scanner's GitHub Action?</p>
             </div>
-            <div class="flashcard-back">
-                <h4>Answer</h4>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
                 <p>It configures the action to fail the entire CI/CD job if the scanner finds any vulnerabilities that meet the specified severity threshold. This is used to enforce security gates in the pipeline.</p>
+                </div>
             </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
         </div>
 
     </div>
+
+    <!-- Flashcard Modal -->
+    <dialog id="flashcard-modal" class="flashcard-modal">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h3 id="modal-question">Question</h3>
+                <button class="modal-close-btn" onclick="closeFlashcardModal()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </header>
+            <div class="modal-body">
+                <div class="modal-answer">
+                    <h4>Answer</h4>
+                    <div id="modal-answer-content">Answer content will appear here</div>
+                </div>
+            </div>
+        </div>
+    </dialog>
 </div>
+
+<script>
+function openFlashcardModal(button) {
+    const flashcard = button.parentElement;
+    const question = flashcard.querySelector('.flashcard-front p').textContent;
+    const answer = flashcard.querySelector('.flashcard-back p').innerHTML;
+    
+    document.getElementById('modal-question').textContent = question;
+    document.getElementById('modal-answer-content').innerHTML = answer;
+    document.getElementById('flashcard-modal').showModal();
+}
+
+function closeFlashcardModal() {
+    document.getElementById('flashcard-modal').close();
+}
+
+// Close modal when clicking outside
+document.getElementById('flashcard-modal').addEventListener('click', function(event) {
+    if (event.target === this) {
+        closeFlashcardModal();
+    }
+});
+</script>
