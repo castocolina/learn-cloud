@@ -1,13 +1,15 @@
-<div class="container">
-    <div class="page-header">
-        <h1>8.1: Securely Connecting Services</h1>
-    </div>
+<div class="topic-content">
+    <header class="topic-header">
+        <h1 class="topic-title">Unit 8.1: Securely Connecting Services</h1>
+    </header>
+    <main class="topic-main">
+        <section class="content-section">
 
     <p class="lead">Welcome to Unit 8. In a distributed microservices architecture, two of the most critical security challenges are: 1) How does a service get the credentials it needs to talk to another service (like a database) without hardcoding them? and 2) How do we ensure the communication itself is secure? This topic addresses these challenges by exploring secure credential injection and transport layer security with mutual TLS (mTLS).</p>
 
-    <hr/>
-
-    <h2><i class="bi bi-key-fill"></i> 1. Passing Credentials Without Hardcoding</h2>
+        </section>
+        <section class="content-section">
+            <h2><i class="bi bi-key-fill"></i> 1. Passing Credentials Without Hardcoding</h2>
     <p>
         Hardcoding secrets (database passwords, API keys, etc.) in source code or configuration files is one of the most common and dangerous security anti-patterns. It leads to "secret sprawl" and makes credential rotation nearly impossible. The modern approach is to have services fetch their credentials dynamically and securely at runtime.
     </p>
@@ -102,6 +104,7 @@ spec:
         <li>All traffic between services is transparently routed through their sidecar proxies.</li>
         <li>The proxies handle the entire mTLS handshake, encrypting and decrypting traffic and verifying the identity of the peer service.</li>
     </ol>
-    <p>Using a service mesh for mTLS is the industry-standard best practice because it provides uniform, policy-driven security without requiring any changes to the application code.</p>
-
+            <p>Using a service mesh for mTLS is the industry-standard best practice because it provides uniform, policy-driven security without requiring any changes to the application code.</p>
+        </section>
+    </main>
 </div>
