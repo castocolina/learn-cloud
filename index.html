@@ -4,252 +4,362 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mastering Cloud-Native Technologies</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <!-- Prism.js CSS (Okaidia Theme) -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
+    
+    <!-- External Libraries -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Custom Styles -->
     <link rel="stylesheet" href="content/style.css">
 </head>
-<body class="d-flex">
+<body>
+    <!-- Main App Container -->
+    <div class="app">
+        <!-- Mobile Header -->
+        <header class="mobile-header">
+            <a href="/" class="mobile-header-brand">Cloud-Native Book</a>
+            <button class="mobile-menu-toggle" type="button" aria-label="Toggle menu">
+                <i class="bi bi-list"></i>
+            </button>
+        </header>
 
-    <nav id="left-nav" class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 380px; height: 100vh; overflow-y: auto;">
-        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-            <span class="fs-4">The Cloud-Native Book</span>
-        </a>
-        <hr>
-        <!-- Search Bar -->
-        <div class="mb-3">
-            <input type="search" id="search-input" class="form-control" placeholder="Search content...">
-        </div>
-        <div id="search-results" class="mb-3"></div>
-        <!-- End Search Bar -->
-        <ul id="nav-menu" class="nav nav-pills flex-column mb-auto">
-            <li class="nav-item"><a href="content/overview.html" class="nav-link link-dark" data-index="-1"><strong>Overview</strong></a></li>
-            <li class="unit">
-                <a href="#unit-1-topics" data-bs-toggle="collapse" class="nav-link link-dark">Unit 1: Python for Cloud-Native Backend Development</a>
-                <ul id="unit-1-topics" class="collapse nav nav-pills flex-column ms-3">
-                    <li><a href="content/unit1/1-1_development_environment_and_tooling.html" class="nav-link link-dark">1.1: Development Environment & Tooling</a></li>
-                    <li><a href="content/unit1/1-1_study_aids.html" class="nav-link link-dark">1.1: Study aids</a></li>
-                    <li><a href="content/unit1/1-1_quiz.html" class="nav-link link-dark">1.1: Quiz</a></li>
-                    <li><a href="content/unit1/1-2_overview_foundational_concepts.html" class="nav-link link-dark">1.2 Overview: Foundational Concepts</a></li>
-                    <li><a href="content/unit1/1-2_study_aids.html" class="nav-link link-dark">1.2: Study aids</a></li>
-                    <li><a href="content/unit1/1-2_quiz.html" class="nav-link link-dark">1.2: Quiz</a></li>
-                    <li><a href="content/unit1/1-3_code_quality_standards.html" class="nav-link link-dark">1.3: Code Quality and Standards</a></li>
-                    <li><a href="content/unit1/1-3_study_aids.html" class="nav-link link-dark">1.3: Study aids</a></li>
-                    <li><a href="content/unit1/1-3_quiz.html" class="nav-link link-dark">1.3: Quiz</a></li>
-                    <li><a href="content/unit1/1-4_core_backend_concepts.html" class="nav-link link-dark">1.4: Core Backend Concepts</a></li>
-                    <li><a href="content/unit1/1-4_study_aids.html" class="nav-link link-dark">1.4: Study aids</a></li>
-                    <li><a href="content/unit1/1-4_quiz.html" class="nav-link link-dark">1.4: Quiz</a></li>
-                    <li><a href="content/unit1/1-5_concurrency_and_caching.html" class="nav-link link-dark">1.5: Concurrency and Caching</a></li>
-                    <li><a href="content/unit1/1-5_study_aids.html" class="nav-link link-dark">1.5: Study aids</a></li>
-                    <li><a href="content/unit1/1-5_quiz.html" class="nav-link link-dark">1.5: Quiz</a></li>
-                    <li><a href="content/unit1/1-6_building_a_restful_api_with_fastapi.html" class="nav-link link-dark">1.6: Building a RESTful API with FastAPI</a></li>
-                    <li><a href="content/unit1/1-6_study_aids.html" class="nav-link link-dark">1.6: Study aids</a></li>
-                    <li><a href="content/unit1/1-6_quiz.html" class="nav-link link-dark">1.6: Quiz</a></li>
-                    <li><a href="content/unit1/1-7_advanced_backend_topics.html" class="nav-link link-dark">1.7: Advanced Backend Topics</a></li>
-                    <li><a href="content/unit1/1-7_study_aids.html" class="nav-link link-dark">1.7: Study aids</a></li>
-                    <li><a href="content/unit1/1-7_quiz.html" class="nav-link link-dark">1.7: Quiz</a></li>
-                    <li><a href="content/unit1/1-8_testing_strategies.html" class="nav-link link-dark">1.8: Testing Strategies</a></li>
-                    <li><a href="content/unit1/1-8_study_aids.html" class="nav-link link-dark">1.8: Study aids</a></li>
-                    <li><a href="content/unit1/1-8_quiz.html" class="nav-link link-dark">1.8: Quiz</a></li>
-                    <li><a href="content/unit1/1-9_observability.html" class="nav-link link-dark">1.9: Observability</a></li>
-                    <li><a href="content/unit1/1-9_study_aids.html" class="nav-link link-dark">1.9: Study aids</a></li>
-                    <li><a href="content/unit1/1-9_quiz.html" class="nav-link link-dark">1.9: Quiz</a></li>
-                    <li><a href="content/unit1/1-10_project_building_a_microservice_in_python.html" class="nav-link link-dark">1.10: Project: Building a Microservice in Python</a></li>
-                    <li><a href="content/unit1/1-11_unit_1_final_exam.html" class="nav-link link-dark">1.11: Unit 1 Final Exam</a></li>
-                </ul>
-            </li>
-            <li class="unit">
-                <a href="#unit-2-topics" data-bs-toggle="collapse" class="nav-link link-dark">Unit 2: Go for Cloud-Native Backend Development</a>
-                <ul id="unit-2-topics" class="collapse nav nav-pills flex-column ms-3">
-                    <li><a href="content/unit2/2-1_development_environment_and_tooling.html" class="nav-link link-dark">2.1: Development Environment & Tooling</a></li>
-                    <li><a href="content/unit2/2-1_study_aids.html" class="nav-link link-dark">2.1: Study aids</a></li>
-                    <li><a href="content/unit2/2-1_quiz.html" class="nav-link link-dark">2.1: Quiz</a></li>
-                    <li><a href="content/unit2/2-2_overview_foundational_concepts.html" class="nav-link link-dark">2.2: Overview & Foundational Concepts</a></li>
-                    <li><a href="content/unit2/2-2_study_aids.html" class="nav-link link-dark">2.2: Study aids</a></li>
-                    <li><a href="content/unit2/2-2_quiz.html" class="nav-link link-dark">2.2: Quiz</a></li>
-                    <li><a href="content/unit2/2-3_concurrency_the_go_philosophy.html" class="nav-link link-dark">2.3: Concurrency: The Go Philosophy</a></li>
-                    <li><a href="content/unit2/2-3_study_aids.html" class="nav-link link-dark">2.3: Study aids</a></li>
-                    <li><a href="content/unit2/2-3_quiz.html" class="nav-link link-dark">2.3: Quiz</a></li>
-                    <li><a href="content/unit2/2-4_code_quality_and_standards.html" class="nav-link link-dark">2.4: Code Quality and Standards</a></li>
-                    <li><a href="content/unit2/2-4_study_aids.html" class="nav-link link-dark">2.4: Study aids</a></li>
-                    <li><a href="content/unit2/2-4_quiz.html" class="nav-link link-dark">2.4: Quiz</a></li>
-                    <li><a href="content/unit2/2-5_core_backend_concepts.html" class="nav-link link-dark">2.5: Core Backend Concepts</a></li>
-                    <li><a href="content/unit2/2-5_study_aids.html" class="nav-link link-dark">2.5: Study aids</a></li>
-                    <li><a href="content/unit2/2-5_quiz.html" class="nav-link link-dark">2.5: Quiz</a></li>
-                    <li><a href="content/unit2/2-6_building_a_restful_api.html" class="nav-link link-dark">2.6: Building a RESTful API</a></li>
-                    <li><a href="content/unit2/2-6_study_aids.html" class="nav-link link-dark">2.6: Study aids</a></li>
-                    <li><a href="content/unit2/2-6_quiz.html" class="nav-link link-dark">2.6: Quiz</a></li>
-                    <li><a href="content/unit2/2-7_advanced_backend_topics.html" class="nav-link link-dark">2.7: Advanced Backend Topics</a></li>
-                    <li><a href="content/unit2/2-7_study_aids.html" class="nav-link link-dark">2.7: Study aids</a></li>
-                    <li><a href="content/unit2/2-7_quiz.html" class="nav-link link-dark">2.7: Quiz</a></li>
-                    <li><a href="content/unit2/2-8_testing_strategies.html" class="nav-link link-dark">2.8: Testing Strategies</a></li>
-                    <li><a href="content/unit2/2-8_study_aids.html" class="nav-link link-dark">2.8: Study aids</a></li>
-                    <li><a href="content/unit2/2-8_quiz.html" class="nav-link link-dark">2.8: Quiz</a></li>
-                    <li><a href="content/unit2/2-9_observability.html" class="nav-link link-dark">2.9: Observability</a></li>
-                    <li><a href="content/unit2/2-9_study_aids.html" class="nav-link link-dark">2.9: Study aids</a></li>
-                    <li><a href="content/unit2/2-9_quiz.html" class="nav-link link-dark">2.9: Quiz</a></li>
-                    <li><a href="content/unit2/2-10_project_building_a_microservice_in_go.html" class="nav-link link-dark">2.10: Project: Building a Microservice in Go</a></li>
-                    <li><a href="content/unit2/2-11_unit_2_final_exam.html" class="nav-link link-dark">2.11: Unit 2 Final Exam</a></li>
-                </ul>
-            </li>
-            <li class="unit">
-                <a href="#unit-3-topics" data-bs-toggle="collapse" class="nav-link link-dark">Unit 3: DevOps, IaC, and CI/CD</a>
-                <ul id="unit-3-topics" class="collapse nav nav-pills flex-column ms-3">
-                    <li><a href="content/unit3/3-1_terraform_for_infrastructure_as_code.html" class="nav-link link-dark">3.1: Terraform for Infrastructure as Code</a></li>
-                    <li><a href="content/unit3/3-1_study_aids.html" class="nav-link link-dark">3.1: Study aids</a></li>
-                    <li><a href="content/unit3/3-1_quiz.html" class="nav-link link-dark">3.1: Quiz</a></li>
-                    <li><a href="content/unit3/3-2_kubernetes_for_container_orchestration.html" class="nav-link link-dark">3.2: Kubernetes for Container Orchestration</a></li>
-                    <li><a href="content/unit3/3-2_study_aids.html" class="nav-link link-dark">3.2: Study aids</a></li>
-                    <li><a href="content/unit3/3-2_quiz.html" class="nav-link link-dark">3.2: Quiz</a></li>
-                    <li><a href="content/unit3/3-3_github_actions_for_ci_cd.html" class="nav-link link-dark">3.3: GitHub Actions for CI/CD</a></li>
-                    <li><a href="content/unit3/3-3_study_aids.html" class="nav-link link-dark">3.3: Study aids</a></li>
-                    <li><a href="content/unit3/3-3_quiz.html" class="nav-link link-dark">3.3: Quiz</a></li>
-                    <li><a href="content/unit3/3-4_spinnaker_for_continuous_delivery.html" class="nav-link link-dark">3.4: Spinnaker for Continuous Delivery</a></li>
-                    <li><a href="content/unit3/3-4_study_aids.html" class="nav-link link-dark">3.4: Study aids</a></li>
-                    <li><a href="content/unit3/3-4_quiz.html" class="nav-link link-dark">3.4: Quiz</a></li>
-                    <li><a href="content/unit3/3-5_unit_3_final_exam.html" class="nav-link link-dark">3.5: Unit 3 Final Exam</a></li>
-                </ul>
-            </li>
-            <li class="unit">
-                <a href="#unit-4-topics" data-bs-toggle="collapse" class="nav-link link-dark">Unit 4: Secrets and Configuration Management</a>
-                <ul id="unit-4-topics" class="collapse nav nav-pills flex-column ms-3">
-                    <li><a href="content/unit4/4-1_hashicorp_consul.html" class="nav-link link-dark">4.1: HashiCorp Consul</a></li>
-                    <li><a href="content/unit4/4-1_study_aids.html" class="nav-link link-dark">4.1: Study aids</a></li>
-                    <li><a href="content/unit4/4-1_quiz.html" class="nav-link link-dark">4.1: Quiz</a></li>
-                    <li><a href="content/unit4/4-2_hashicorp_vault.html" class="nav-link link-dark">4.2: HashiCorp Vault</a></li>
-                    <li><a href="content/unit4/4-2_study_aids.html" class="nav-link link-dark">4.2: Study aids</a></li>
-                    <li><a href="content/unit4/4-2_quiz.html" class="nav-link link-dark">4.2: Quiz</a></li>
-                    <li><a href="content/unit4/4-3_unit_4_final_exam.html" class="nav-link link-dark">4.3: Unit 4 Final Exam</a></li>
-                </ul>
-            </li>
-            <li class="unit">
-                <a href="#unit-5-topics" data-bs-toggle="collapse" class="nav-link link-dark">Unit 5: DevSecOps</a>
-                <ul id="unit-5-topics" class="collapse nav nav-pills flex-column ms-3">
-                    <li><a href="content/unit5/5-1_sast_static_application_security_testing.html" class="nav-link link-dark">5.1: SAST (Static Application Security Testing)</a></li>
-                    <li><a href="content/unit5/5-1_study_aids.html" class="nav-link link-dark">5.1: Study aids</a></li>
-                    <li><a href="content/unit5/5-1_quiz.html" class="nav-link link-dark">5.1: Quiz</a></li>
-                    <li><a href="content/unit5/5-2_sca_software_composition_analysis.html" class="nav-link link-dark">5.2: SCA (Software Composition Analysis)</a></li>
-                    <li><a href="content/unit5/5-2_study_aids.html" class="nav-link link-dark">5.2: Study aids</a></li>
-                    <li><a href="content/unit5/5-2_quiz.html" class="nav-link link-dark">5.2: Quiz</a></li>
-                    <li><a href="content/unit5/5-3_container_image_scanning.html" class="nav-link link-dark">5.3: Container Image Scanning</a></li>
-                    <li><a href="content/unit5/5-3_study_aids.html" class="nav-link link-dark">5.3: Study aids</a></li>
-                    <li><a href="content/unit5/5-3_quiz.html" class="nav-link link-dark">5.3: Quiz</a></li>
-                    <li><a href="content/unit5/5-4_vulnerability_management.html" class="nav-link link-dark">5.4: Vulnerability Management</a></li>
-                    <li><a href="content/unit5/5-4_study_aids.html" class="nav-link link-dark">5.4: Study aids</a></li>
-                    <li><a href="content/unit5/5-4_quiz.html" class="nav-link link-dark">5.4: Quiz</a></li>
-                    <li><a href="content/unit5/5-5_unit_5_final_exam.html" class="nav-link link-dark">5.5: Unit 5 Final Exam</a></li>
-                </ul>
-            </li>
-            <li class="unit">
-                <a href="#unit-6-topics" data-bs-toggle="collapse" class="nav-link link-dark">Unit 6: Automation</a>
-                <ul id="unit-6-topics" class="collapse nav nav-pills flex-column ms-3">
-                    <li><a href="content/unit6/6-1_renovatebot_for_dependency_automation.html" class="nav-link link-dark">6.1: RenovateBot for Dependency Automation</a></li>
-                    <li><a href="content/unit6/6-1_study_aids.html" class="nav-link link-dark">6.1: Study aids</a></li>
-                    <li><a href="content/unit6/6-1_quiz.html" class="nav-link link-dark">6.1: Quiz</a></li>
-                    <li><a href="content/unit6/6-2_unit_6_final_exam.html" class="nav-link link-dark">6.2: Unit 6 Final Exam</a></li>
-                </ul>
-            </li>
-            <li class="unit">
-                <a href="#unit-7-topics" data-bs-toggle="collapse" class="nav-link link-dark">Unit 7: The Serverless Ecosystem on AWS</a>
-                <ul id="unit-7-topics" class="collapse nav nav-pills flex-column ms-3">
-                    <li><a href="content/unit7/7-1_the_serverless_spectrum.html" class="nav-link link-dark">7.1: The Serverless Spectrum</a></li>
-                    <li><a href="content/unit7/7-1_study_aids.html" class="nav-link link-dark">7.1: Study aids</a></li>
-                    <li><a href="content/unit7/7-1_quiz.html" class="nav-link link-dark">7.1: Quiz</a></li>
-                    <li><a href="content/unit7/7-2_aws_lambda_in_depth.html" class="nav-link link-dark">7.2: AWS Lambda In-Depth</a></li>
-                    <li><a href="content/unit7/7-2_study_aids.html" class="nav-link link-dark">7.2: Study aids</a></li>
-                    <li><a href="content/unit7/7-2_quiz.html" class="nav-link link-dark">7.2: Quiz</a></li>
-                    <li><a href="content/unit7/7-3_orchestration_and_workflows.html" class="nav-link link-dark">7.3: Orchestration and Workflows</a></li>
-                    <li><a href="content/unit7/7-3_study_aids.html" class="nav-link link-dark">7.3: Study aids</a></li>
-                    <li><a href="content/unit7/7-3_quiz.html" class="nav-link link-dark">7.3: Quiz</a></li>
-                    <li><a href="content/unit7/7-4_serverless_deployment_tooling.html" class="nav-link link-dark">7.4: Serverless Deployment & Tooling</a></li>
-                    <li><a href="content/unit7/7-4_study_aids.html" class="nav-link link-dark">7.4: Study aids</a></li>
-                    <li><a href="content/unit7/7-4_quiz.html" class="nav-link link-dark">7.4: Quiz</a></li>
-                    <li><a href="content/unit7/7-5_aws_developer_certification_guide.html" class="nav-link link-dark">7.5: AWS Developer Certification Guide</a></li>
-                    <li><a href="content/unit7/7-5_study_aids.html" class="nav-link link-dark">7.5: Study aids</a></li>
-                    <li><a href="content/unit7/7-5_quiz.html" class="nav-link link-dark">7.5: Quiz</a></li>
-                    <li><a href="content/unit7/7-6_unit_7_final_exam.html" class="nav-link link-dark">7.6: Unit 7 Final Exam</a></li>
-                </ul>
-            </li>
-            <li class="unit">
-                <a href="#unit-8-topics" data-bs-toggle="collapse" class="nav-link link-dark">Unit 8: Systems Integration and Security</a>
-                <ul id="unit-8-topics" class="collapse nav nav-pills flex-column ms-3">
-                    <li><a href="content/unit8/8-1_securely_connecting_services.html" class="nav-link link-dark">8.1: Securely Connecting Services</a></li>
-                    <li><a href="content/unit8/8-1_study_aids.html" class="nav-link link-dark">8.1: Study aids</a></li>
-                    <li><a href="content/unit8/8-1_quiz.html" class="nav-link link-dark">8.1: Quiz</a></li>
-                    <li><a href="content/unit8/8-2_secure_credential_management_in_ci_cd_and_iac.html" class="nav-link link-dark">8.2: Secure Credential Management in CI/CD and IaC</a></li>
-                    <li><a href="content/unit8/8-2_study_aids.html" class="nav-link link-dark">8.2: Study aids</a></li>
-                    <li><a href="content/unit8/8-2_quiz.html" class="nav-link link-dark">8.2: Quiz</a></li>
-                    <li><a href="content/unit8/8-3_unit_8_final_exam.html" class="nav-link link-dark">8.3: Unit 8 Final Exam</a></li>
-                </ul>
-            </li>
-            <li class="unit">
-                <a href="#unit-9-topics" data-bs-toggle="collapse" class="nav-link link-dark">Unit 9: Capstone Projects</a>
-                <ul id="unit-9-topics" class="collapse nav nav-pills flex-column ms-3">
-                    <li><a href="content/unit9/9-1_project_1_python_based_e-commerce_microservices.html" class="nav-link link-dark">9.1: Project 1: Python-based E-Commerce Microservices</a></li>
-                    <li><a href="content/unit9/9-2_project_2_go_based_real_time_analytics_pipeline.html" class="nav-link link-dark">9.2: Project 2: Go-based Real-Time Analytics Pipeline</a></li>                </ul>
-            </li>
-        </ul>
-    </nav>
-
-    <main class="w-100 p-4" style="overflow-y: auto; height: 100vh;">
-        <div id="progress-container" class="d-flex align-items-center mb-4">
-            <!-- Unit Progress (always visible) -->
-            <div class="flex-grow-1 me-3">
-                <small id="unit-progress-label" class="text-muted d-block mb-1">Unit Progress</small>
-                <div class="progress" role="progressbar" aria-label="Unit progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="height: 20px;">
-                    <div id="unit-progress-bar" class="progress-bar bg-success" style="width: 0%"></div>
-                </div>
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <!-- Brand -->
+            <a href="/" class="sidebar-brand">Cloud-Native Book</a>
+            
+            <!-- Search -->
+            <div class="search-container">
+                <input type="search" class="search-input" placeholder="Search content..." aria-label="Search">
+                <div class="search-results"></div>
             </div>
-            <!-- Overall Progress (in a dropdown) -->
-            <div class="dropdown">
-                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Overall
-                </button>
-                <div class="dropdown-menu p-2" style="width: 250px;">
-                     <small class="text-muted d-block mb-1">Overall Progress</small>
-                     <div class="progress" role="progressbar" aria-label="Overall book progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="height: 20px;">
-                        <div id="overall-progress-bar" class="progress-bar" style="width: 0%">0%</div>
+            
+            <!-- Navigation Menu -->
+            <nav class="nav-menu">
+                <ul>
+                    <!-- Overview -->
+                    <li>
+                        <a href="content/overview.html" class="nav-link" data-index="-1">
+                            <i class="bi bi-house-door"></i> Book Overview
+                        </a>
+                    </li>
+                    
+                    <!-- Unit 1: Python -->
+                    <li class="unit">
+                        <a href="content/unit1/unit1_overview.html" class="nav-link unit-link" data-index="100">
+                            <i class="bi bi-code-slash"></i> Unit 1: Python for Cloud-Native
+                        </a>
+                        <div class="unit-toggle" aria-expanded="false" data-unit="1">
+                            <i class="bi bi-chevron-right unit-toggle-icon"></i>
+                        </div>
+                        <ul class="unit-topics">
+                            <li><a href="content/unit1/unit1_overview.html" class="nav-link" data-index="100">📖 Unit 1 Overview</a></li>
+                            <li><a href="content/unit1/1-1_development_environment_and_tooling.html" class="nav-link" data-index="101">1.1: Development Environment & Tooling</a></li>
+                            <li><a href="content/unit1/1-1_study_aids.html" class="nav-link" data-index="102">1.1: Study Aids</a></li>
+                            <li><a href="content/unit1/1-1_quiz.html" class="nav-link" data-index="103">1.1: Quiz</a></li>
+                            <li><a href="content/unit1/1-2_overview_foundational_concepts.html" class="nav-link" data-index="104">1.2: Overview & Foundational Concepts</a></li>
+                            <li><a href="content/unit1/1-2_study_aids.html" class="nav-link" data-index="105">1.2: Study Aids</a></li>
+                            <li><a href="content/unit1/1-2_quiz.html" class="nav-link" data-index="106">1.2: Quiz</a></li>
+                            <li><a href="content/unit1/1-3_code_quality_standards.html" class="nav-link" data-index="107">1.3: Code Quality and Standards</a></li>
+                            <li><a href="content/unit1/1-3_study_aids.html" class="nav-link" data-index="108">1.3: Study Aids</a></li>
+                            <li><a href="content/unit1/1-3_quiz.html" class="nav-link" data-index="109">1.3: Quiz</a></li>
+                            <li><a href="content/unit1/1-4_core_backend_concepts.html" class="nav-link" data-index="110">1.4: Core Backend Concepts</a></li>
+                            <li><a href="content/unit1/1-4_study_aids.html" class="nav-link" data-index="111">1.4: Study Aids</a></li>
+                            <li><a href="content/unit1/1-4_quiz.html" class="nav-link" data-index="112">1.4: Quiz</a></li>
+                            <li><a href="content/unit1/1-5_concurrency_and_caching.html" class="nav-link" data-index="113">1.5: Concurrency and Caching</a></li>
+                            <li><a href="content/unit1/1-5_study_aids.html" class="nav-link" data-index="114">1.5: Study Aids</a></li>
+                            <li><a href="content/unit1/1-5_quiz.html" class="nav-link" data-index="115">1.5: Quiz</a></li>
+                            <li><a href="content/unit1/1-6_building_a_restful_api_with_fastapi.html" class="nav-link" data-index="116">1.6: Building a RESTful API with FastAPI</a></li>
+                            <li><a href="content/unit1/1-6_study_aids.html" class="nav-link" data-index="117">1.6: Study Aids</a></li>
+                            <li><a href="content/unit1/1-6_quiz.html" class="nav-link" data-index="118">1.6: Quiz</a></li>
+                            <li><a href="content/unit1/1-7_advanced_backend_topics.html" class="nav-link" data-index="119">1.7: Advanced Backend Topics</a></li>
+                            <li><a href="content/unit1/1-7_study_aids.html" class="nav-link" data-index="120">1.7: Study Aids</a></li>
+                            <li><a href="content/unit1/1-7_quiz.html" class="nav-link" data-index="121">1.7: Quiz</a></li>
+                            <li><a href="content/unit1/1-8_testing_strategies.html" class="nav-link" data-index="122">1.8: Testing Strategies</a></li>
+                            <li><a href="content/unit1/1-8_study_aids.html" class="nav-link" data-index="123">1.8: Study Aids</a></li>
+                            <li><a href="content/unit1/1-8_quiz.html" class="nav-link" data-index="124">1.8: Quiz</a></li>
+                            <li><a href="content/unit1/1-9_observability.html" class="nav-link" data-index="125">1.9: Observability</a></li>
+                            <li><a href="content/unit1/1-9_study_aids.html" class="nav-link" data-index="126">1.9: Study Aids</a></li>
+                            <li><a href="content/unit1/1-9_quiz.html" class="nav-link" data-index="127">1.9: Quiz</a></li>
+                            <li><a href="content/unit1/1-10_project_building_a_microservice_in_python.html" class="nav-link" data-index="128">1.10: Project: Building a Microservice in Python</a></li>
+                            <li><a href="content/unit1/1-11_unit_1_final_exam.html" class="nav-link" data-index="129">1.11: Unit 1 Final Exam</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Unit 2: Go -->
+                    <li class="unit">
+                        <a href="content/unit2/unit2_overview.html" class="nav-link unit-link" data-index="200">
+                            <i class="bi bi-lightning"></i> Unit 2: Go for Cloud-Native
+                        </a>
+                        <div class="unit-toggle" aria-expanded="false" data-unit="2">
+                            <i class="bi bi-chevron-right unit-toggle-icon"></i>
+                        </div>
+                        <ul class="unit-topics">
+                            <li><a href="content/unit2/unit2_overview.html" class="nav-link" data-index="200">📖 Unit 2 Overview</a></li>
+                            <li><a href="content/unit2/2-1_development_environment_and_tooling.html" class="nav-link" data-index="201">2.1: Development Environment & Tooling</a></li>
+                            <li><a href="content/unit2/2-1_study_aids.html" class="nav-link" data-index="202">2.1: Study Aids</a></li>
+                            <li><a href="content/unit2/2-1_quiz.html" class="nav-link" data-index="203">2.1: Quiz</a></li>
+                            <li><a href="content/unit2/2-2_overview_foundational_concepts.html" class="nav-link" data-index="204">2.2: Overview & Foundational Concepts</a></li>
+                            <li><a href="content/unit2/2-2_study_aids.html" class="nav-link" data-index="205">2.2: Study Aids</a></li>
+                            <li><a href="content/unit2/2-2_quiz.html" class="nav-link" data-index="206">2.2: Quiz</a></li>
+                            <li><a href="content/unit2/2-3_concurrency_the_go_philosophy.html" class="nav-link" data-index="207">2.3: Concurrency: The Go Philosophy</a></li>
+                            <li><a href="content/unit2/2-3_study_aids.html" class="nav-link" data-index="208">2.3: Study Aids</a></li>
+                            <li><a href="content/unit2/2-3_quiz.html" class="nav-link" data-index="209">2.3: Quiz</a></li>
+                            <li><a href="content/unit2/2-4_code_quality_and_standards.html" class="nav-link" data-index="210">2.4: Code Quality and Standards</a></li>
+                            <li><a href="content/unit2/2-4_study_aids.html" class="nav-link" data-index="211">2.4: Study Aids</a></li>
+                            <li><a href="content/unit2/2-4_quiz.html" class="nav-link" data-index="212">2.4: Quiz</a></li>
+                            <li><a href="content/unit2/2-5_core_backend_concepts.html" class="nav-link" data-index="213">2.5: Core Backend Concepts</a></li>
+                            <li><a href="content/unit2/2-5_study_aids.html" class="nav-link" data-index="214">2.5: Study Aids</a></li>
+                            <li><a href="content/unit2/2-5_quiz.html" class="nav-link" data-index="215">2.5: Quiz</a></li>
+                            <li><a href="content/unit2/2-6_building_a_restful_api.html" class="nav-link" data-index="216">2.6: Building a RESTful API</a></li>
+                            <li><a href="content/unit2/2-6_study_aids.html" class="nav-link" data-index="217">2.6: Study Aids</a></li>
+                            <li><a href="content/unit2/2-6_quiz.html" class="nav-link" data-index="218">2.6: Quiz</a></li>
+                            <li><a href="content/unit2/2-7_advanced_backend_topics.html" class="nav-link" data-index="219">2.7: Advanced Backend Topics</a></li>
+                            <li><a href="content/unit2/2-7_study_aids.html" class="nav-link" data-index="220">2.7: Study Aids</a></li>
+                            <li><a href="content/unit2/2-7_quiz.html" class="nav-link" data-index="221">2.7: Quiz</a></li>
+                            <li><a href="content/unit2/2-8_testing_strategies.html" class="nav-link" data-index="222">2.8: Testing Strategies</a></li>
+                            <li><a href="content/unit2/2-8_study_aids.html" class="nav-link" data-index="223">2.8: Study Aids</a></li>
+                            <li><a href="content/unit2/2-8_quiz.html" class="nav-link" data-index="224">2.8: Quiz</a></li>
+                            <li><a href="content/unit2/2-9_observability.html" class="nav-link" data-index="225">2.9: Observability</a></li>
+                            <li><a href="content/unit2/2-9_study_aids.html" class="nav-link" data-index="226">2.9: Study Aids</a></li>
+                            <li><a href="content/unit2/2-9_quiz.html" class="nav-link" data-index="227">2.9: Quiz</a></li>
+                            <li><a href="content/unit2/2-10_project_building_a_microservice_in_go.html" class="nav-link" data-index="228">2.10: Project: Building a Microservice in Go</a></li>
+                            <li><a href="content/unit2/2-11_unit_2_final_exam.html" class="nav-link" data-index="229">2.11: Unit 2 Final Exam</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Unit 3: DevOps -->
+                    <li class="unit">
+                        <a href="content/unit3/unit3_overview.html" class="nav-link unit-link" data-index="300">
+                            <i class="bi bi-tools"></i> Unit 3: DevOps, IaC, and CI/CD
+                        </a>
+                        <div class="unit-toggle" aria-expanded="false" data-unit="3">
+                            <i class="bi bi-chevron-right unit-toggle-icon"></i>
+                        </div>
+                        <ul class="unit-topics">
+                            <li><a href="content/unit3/unit3_overview.html" class="nav-link" data-index="300">📖 Unit 3 Overview</a></li>
+                            <li><a href="content/unit3/3-1_terraform_for_infrastructure_as_code.html" class="nav-link" data-index="301">3.1: Terraform for Infrastructure as Code</a></li>
+                            <li><a href="content/unit3/3-1_study_aids.html" class="nav-link" data-index="302">3.1: Study Aids</a></li>
+                            <li><a href="content/unit3/3-1_quiz.html" class="nav-link" data-index="303">3.1: Quiz</a></li>
+                            <li><a href="content/unit3/3-2_kubernetes_for_container_orchestration.html" class="nav-link" data-index="304">3.2: Kubernetes for Container Orchestration</a></li>
+                            <li><a href="content/unit3/3-2_study_aids.html" class="nav-link" data-index="305">3.2: Study Aids</a></li>
+                            <li><a href="content/unit3/3-2_quiz.html" class="nav-link" data-index="306">3.2: Quiz</a></li>
+                            <li><a href="content/unit3/3-3_github_actions_for_ci_cd.html" class="nav-link" data-index="307">3.3: GitHub Actions for CI/CD</a></li>
+                            <li><a href="content/unit3/3-3_study_aids.html" class="nav-link" data-index="308">3.3: Study Aids</a></li>
+                            <li><a href="content/unit3/3-3_quiz.html" class="nav-link" data-index="309">3.3: Quiz</a></li>
+                            <li><a href="content/unit3/3-4_spinnaker_for_continuous_delivery.html" class="nav-link" data-index="310">3.4: Spinnaker for Continuous Delivery</a></li>
+                            <li><a href="content/unit3/3-4_study_aids.html" class="nav-link" data-index="311">3.4: Study Aids</a></li>
+                            <li><a href="content/unit3/3-4_quiz.html" class="nav-link" data-index="312">3.4: Quiz</a></li>
+                            <li><a href="content/unit3/3-5_unit_3_final_exam.html" class="nav-link" data-index="313">3.5: Unit 3 Final Exam</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Unit 4: Secrets -->
+                    <li class="unit">
+                        <a href="content/unit4/unit4_overview.html" class="nav-link unit-link" data-index="400">
+                            <i class="bi bi-shield-lock"></i> Unit 4: Secrets and Configuration
+                        </a>
+                        <div class="unit-toggle" aria-expanded="false" data-unit="4">
+                            <i class="bi bi-chevron-right unit-toggle-icon"></i>
+                        </div>
+                        <ul class="unit-topics">
+                            <li><a href="content/unit4/unit4_overview.html" class="nav-link" data-index="400">📖 Unit 4 Overview</a></li>
+                            <li><a href="content/unit4/4-1_hashicorp_consul.html" class="nav-link" data-index="401">4.1: HashiCorp Consul</a></li>
+                            <li><a href="content/unit4/4-1_study_aids.html" class="nav-link" data-index="402">4.1: Study Aids</a></li>
+                            <li><a href="content/unit4/4-1_quiz.html" class="nav-link" data-index="403">4.1: Quiz</a></li>
+                            <li><a href="content/unit4/4-2_hashicorp_vault.html" class="nav-link" data-index="404">4.2: HashiCorp Vault</a></li>
+                            <li><a href="content/unit4/4-2_study_aids.html" class="nav-link" data-index="405">4.2: Study Aids</a></li>
+                            <li><a href="content/unit4/4-2_quiz.html" class="nav-link" data-index="406">4.2: Quiz</a></li>
+                            <li><a href="content/unit4/4-3_unit_4_final_exam.html" class="nav-link" data-index="407">4.3: Unit 4 Final Exam</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Unit 5: DevSecOps -->
+                    <li class="unit">
+                        <a href="content/unit5/unit5_overview.html" class="nav-link unit-link" data-index="500">
+                            <i class="bi bi-shield-check"></i> Unit 5: DevSecOps
+                        </a>
+                        <div class="unit-toggle" aria-expanded="false" data-unit="5">
+                            <i class="bi bi-chevron-right unit-toggle-icon"></i>
+                        </div>
+                        <ul class="unit-topics">
+                            <li><a href="content/unit5/unit5_overview.html" class="nav-link" data-index="500">📖 Unit 5 Overview</a></li>
+                            <li><a href="content/unit5/5-1_sast_static_application_security_testing.html" class="nav-link" data-index="501">5.1: SAST (Static Application Security Testing)</a></li>
+                            <li><a href="content/unit5/5-1_study_aids.html" class="nav-link" data-index="502">5.1: Study Aids</a></li>
+                            <li><a href="content/unit5/5-1_quiz.html" class="nav-link" data-index="503">5.1: Quiz</a></li>
+                            <li><a href="content/unit5/5-2_sca_software_composition_analysis.html" class="nav-link" data-index="504">5.2: SCA (Software Composition Analysis)</a></li>
+                            <li><a href="content/unit5/5-2_study_aids.html" class="nav-link" data-index="505">5.2: Study Aids</a></li>
+                            <li><a href="content/unit5/5-2_quiz.html" class="nav-link" data-index="506">5.2: Quiz</a></li>
+                            <li><a href="content/unit5/5-3_container_image_scanning.html" class="nav-link" data-index="507">5.3: Container Image Scanning</a></li>
+                            <li><a href="content/unit5/5-3_study_aids.html" class="nav-link" data-index="508">5.3: Study Aids</a></li>
+                            <li><a href="content/unit5/5-3_quiz.html" class="nav-link" data-index="509">5.3: Quiz</a></li>
+                            <li><a href="content/unit5/5-4_vulnerability_management.html" class="nav-link" data-index="510">5.4: Vulnerability Management</a></li>
+                            <li><a href="content/unit5/5-4_study_aids.html" class="nav-link" data-index="511">5.4: Study Aids</a></li>
+                            <li><a href="content/unit5/5-4_quiz.html" class="nav-link" data-index="512">5.4: Quiz</a></li>
+                            <li><a href="content/unit5/5-5_unit_5_final_exam.html" class="nav-link" data-index="513">5.5: Unit 5 Final Exam</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Unit 6: Automation -->
+                    <li class="unit">
+                        <a href="content/unit6/unit6_overview.html" class="nav-link unit-link" data-index="600">
+                            <i class="bi bi-robot"></i> Unit 6: Automation
+                        </a>
+                        <div class="unit-toggle" aria-expanded="false" data-unit="6">
+                            <i class="bi bi-chevron-right unit-toggle-icon"></i>
+                        </div>
+                        <ul class="unit-topics">
+                            <li><a href="content/unit6/unit6_overview.html" class="nav-link" data-index="600">📖 Unit 6 Overview</a></li>
+                            <li><a href="content/unit6/6-1_renovatebot_for_dependency_automation.html" class="nav-link" data-index="601">6.1: RenovateBot for Dependency Automation</a></li>
+                            <li><a href="content/unit6/6-1_study_aids.html" class="nav-link" data-index="602">6.1: Study Aids</a></li>
+                            <li><a href="content/unit6/6-1_quiz.html" class="nav-link" data-index="603">6.1: Quiz</a></li>
+                            <li><a href="content/unit6/6-2_unit_6_final_exam.html" class="nav-link" data-index="604">6.2: Unit 6 Final Exam</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Unit 7: Serverless -->
+                    <li class="unit">
+                        <a href="content/unit7/unit7_overview.html" class="nav-link unit-link" data-index="700">
+                            <i class="bi bi-cloud"></i> Unit 7: The Serverless Ecosystem on AWS
+                        </a>
+                        <div class="unit-toggle" aria-expanded="false" data-unit="7">
+                            <i class="bi bi-chevron-right unit-toggle-icon"></i>
+                        </div>
+                        <ul class="unit-topics">
+                            <li><a href="content/unit7/unit7_overview.html" class="nav-link" data-index="700">📖 Unit 7 Overview</a></li>
+                            <li><a href="content/unit7/7-1_the_serverless_spectrum.html" class="nav-link" data-index="701">7.1: The Serverless Spectrum</a></li>
+                            <li><a href="content/unit7/7-1_study_aids.html" class="nav-link" data-index="702">7.1: Study Aids</a></li>
+                            <li><a href="content/unit7/7-1_quiz.html" class="nav-link" data-index="703">7.1: Quiz</a></li>
+                            <li><a href="content/unit7/7-2_aws_lambda_in_depth.html" class="nav-link" data-index="704">7.2: AWS Lambda In-Depth</a></li>
+                            <li><a href="content/unit7/7-2_study_aids.html" class="nav-link" data-index="705">7.2: Study Aids</a></li>
+                            <li><a href="content/unit7/7-2_quiz.html" class="nav-link" data-index="706">7.2: Quiz</a></li>
+                            <li><a href="content/unit7/7-3_orchestration_and_workflows.html" class="nav-link" data-index="707">7.3: Orchestration and Workflows</a></li>
+                            <li><a href="content/unit7/7-3_study_aids.html" class="nav-link" data-index="708">7.3: Study Aids</a></li>
+                            <li><a href="content/unit7/7-3_quiz.html" class="nav-link" data-index="709">7.3: Quiz</a></li>
+                            <li><a href="content/unit7/7-4_serverless_deployment_tooling.html" class="nav-link" data-index="710">7.4: Serverless Deployment & Tooling</a></li>
+                            <li><a href="content/unit7/7-4_study_aids.html" class="nav-link" data-index="711">7.4: Study Aids</a></li>
+                            <li><a href="content/unit7/7-4_quiz.html" class="nav-link" data-index="712">7.4: Quiz</a></li>
+                            <li><a href="content/unit7/7-5_aws_developer_certification_guide.html" class="nav-link" data-index="713">7.5: AWS Developer Certification Guide</a></li>
+                            <li><a href="content/unit7/7-5_study_aids.html" class="nav-link" data-index="714">7.5: Study Aids</a></li>
+                            <li><a href="content/unit7/7-5_quiz.html" class="nav-link" data-index="715">7.5: Quiz</a></li>
+                            <li><a href="content/unit7/7-6_unit_7_final_exam.html" class="nav-link" data-index="716">7.6: Unit 7 Final Exam</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Unit 8: Systems Integration -->
+                    <li class="unit">
+                        <a href="content/unit8/unit8_overview.html" class="nav-link unit-link" data-index="800">
+                            <i class="bi bi-diagram-3"></i> Unit 8: Systems Integration and Security
+                        </a>
+                        <div class="unit-toggle" aria-expanded="false" data-unit="8">
+                            <i class="bi bi-chevron-right unit-toggle-icon"></i>
+                        </div>
+                        <ul class="unit-topics">
+                            <li><a href="content/unit8/unit8_overview.html" class="nav-link" data-index="800">📖 Unit 8 Overview</a></li>
+                            <li><a href="content/unit8/8-1_securely_connecting_services.html" class="nav-link" data-index="801">8.1: Securely Connecting Services</a></li>
+                            <li><a href="content/unit8/8-1_study_aids.html" class="nav-link" data-index="802">8.1: Study Aids</a></li>
+                            <li><a href="content/unit8/8-1_quiz.html" class="nav-link" data-index="803">8.1: Quiz</a></li>
+                            <li><a href="content/unit8/8-2_secure_credential_management_in_ci_cd_and_iac.html" class="nav-link" data-index="804">8.2: Secure Credential Management in CI/CD and IaC</a></li>
+                            <li><a href="content/unit8/8-2_study_aids.html" class="nav-link" data-index="805">8.2: Study Aids</a></li>
+                            <li><a href="content/unit8/8-2_quiz.html" class="nav-link" data-index="806">8.2: Quiz</a></li>
+                            <li><a href="content/unit8/8-3_unit_8_final_exam.html" class="nav-link" data-index="807">8.3: Unit 8 Final Exam</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Unit 9: Capstone -->
+                    <li class="unit">
+                        <a href="content/unit9/unit9_overview.html" class="nav-link unit-link" data-index="900">
+                            <i class="bi bi-trophy"></i> Unit 9: Capstone Projects
+                        </a>
+                        <div class="unit-toggle" aria-expanded="false" data-unit="9">
+                            <i class="bi bi-chevron-right unit-toggle-icon"></i>
+                        </div>
+                        <ul class="unit-topics">
+                            <li><a href="content/unit9/unit9_overview.html" class="nav-link" data-index="900">📖 Unit 9 Overview</a></li>
+                            <li><a href="content/unit9/9-1_project_1_python_based_e-commerce_microservices.html" class="nav-link" data-index="901">9.1: Project 1: Python-based E-Commerce Microservices</a></li>
+                            <li><a href="content/unit9/9-2_project_2_go_based_real_time_analytics_pipeline.html" class="nav-link" data-index="902">9.2: Project 2: Go-based Real-Time Analytics Pipeline</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main">
+            <!-- Content Header with Progress -->
+            <header class="content-header">
+                <div class="progress-container">
+                    <!-- Unit Progress -->
+                    <div class="progress-item">
+                        <div class="progress-label">Unit Progress</div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar" id="unit-progress" style="width: 0%">
+                                <span class="progress-text">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Overall Progress -->
+                    <div class="progress-item">
+                        <div class="progress-label">Overall Progress</div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar" id="overall-progress" style="width: 0%">
+                                <span class="progress-text">0/902 (0%)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dynamic Content Area -->
+            <div class="content-area" id="content-area">
+                <div class="text-center">
+                    <h1>Welcome to the Cloud-Native Book</h1>
+                    <p>Master cloud-native technologies through hands-on learning. Navigate through units using the menu or use the floating navigation controls.</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-lg); margin-top: var(--space-xl);">
+                        <div class="feature-card">
+                            <h3><i class="bi bi-search"></i> Search</h3>
+                            <p>Full-text search across all content</p>
+                        </div>
+                        <div class="feature-card">
+                            <h3><i class="bi bi-phone"></i> Mobile Ready</h3>
+                            <p>Optimized for all devices with touch support</p>
+                        </div>
+                        <div class="feature-card">
+                            <h3><i class="bi bi-keyboard"></i> Keyboard Navigation</h3>
+                            <p>Use arrow keys to navigate between topics</p>
+                        </div>
+                        <div class="feature-card">
+                            <h3><i class="bi bi-bar-chart"></i> Progress Tracking</h3>
+                            <p>Track your learning progress through units</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div id="content-area">
-            <!-- Content will be loaded here -->
-            <p>Loading content...</p>
-        </div>
-
-        <div class="nav-buttons mt-4 d-flex justify-content-between">
-            <button id="prev-btn" class="btn btn-secondary" disabled>Previous</button>
-            <button id="next-btn" class="btn btn-primary" disabled>Next</button>
-        </div>
-    </main>
-
-    <!-- Bootstrap Modal for Mermaid Diagrams -->
-    <div class="modal fade" id="mermaidModal" tabindex="-1" aria-labelledby="mermaidModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="mermaidModalLabel">Diagram View</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="genericModalBody">
-                </div>
-            </div>
-        </div>
+        </main>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <!-- Third-party libraries -->
+    <!-- Floating Navigation -->
+    <div class="floating-nav" id="floating-nav">
+        <button class="floating-nav-btn" id="prev-btn" disabled>
+            <i class="bi bi-arrow-left"></i>
+            <span class="desktop-only">Previous</span>
+        </button>
+        <div class="floating-nav-progress" id="nav-progress">0/902</div>
+        <button class="floating-nav-btn" id="next-btn">
+            <span class="desktop-only">Next</span>
+            <i class="bi bi-arrow-right"></i>
+        </button>
+    </div>
+
+    <!-- External Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.9/lunr.min.js"></script>
-    <!-- Custom Script -->
-    <script src="content/script.js"></script>
+    
+    <!-- Modern ES6 Application -->
+    <script type="module" src="content/app.js"></script>
 </body>
 </html>
