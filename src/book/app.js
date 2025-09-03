@@ -217,8 +217,25 @@ class CloudNativeBookApp {
             this.elements.searchInput.addEventListener('blur', () => {
                 setTimeout(() => {
                     this.elements.searchInput.parentElement.classList.remove('search-focused');
-                    this.elements.searchResults.innerHTML = '';
+                    this.hideSearchResults();
                 }, 200);
+            });
+
+            // Close search results when clicking outside
+            document.addEventListener('click', (e) => {
+                const searchContainer = this.elements.searchInput?.parentElement;
+                const searchResults = this.elements.searchResults;
+                
+                if (searchContainer && searchResults && 
+                    !searchContainer.contains(e.target) && 
+                    !searchResults.contains(e.target)) {
+                    this.hideSearchResults();
+                }
+            });
+
+            // Handle window resize for search results positioning
+            window.addEventListener('resize', () => {
+                this.positionSearchResults();
             });
         }
 
@@ -719,7 +736,7 @@ class CloudNativeBookApp {
 
     async handleSearch(query) {
         if (query.length < 2) {
-            this.elements.searchResults.innerHTML = '';
+            this.hideSearchResults();
             return;
         }
 
@@ -771,10 +788,14 @@ class CloudNativeBookApp {
                         this.loadContent(topic.url, index);
                         this.elements.searchInput.value = '';
                         this.elements.searchResults.innerHTML = '';
+                        this.hideSearchResults();
                         this.closeMobileMenu();
                     }
                 });
             });
+
+            // Show and position search results optimally
+            this.showSearchResults();
         } catch (error) {
             console.error('Search error:', error);
             this.elements.searchResults.innerHTML = 
@@ -822,6 +843,42 @@ class CloudNativeBookApp {
             project: '🛠️ Project'
         };
         return labels[type] || '📄 Content';
+    }
+
+    positionSearchResults() {
+        if (!this.elements.searchResults) return;
+        
+        // The search results are now positioned with fixed CSS
+        // This method can be used for additional positioning logic if needed
+        const isMobile = window.innerWidth <= 768;
+        const searchResults = this.elements.searchResults;
+        
+        if (isMobile) {
+            // Mobile: adjust for menu state
+            const mobileMenuOpen = document.querySelector('.sidebar').classList.contains('sidebar-open');
+            if (mobileMenuOpen) {
+                searchResults.style.top = '120px';
+            } else {
+                searchResults.style.top = '80px';
+            }
+        } else {
+            // Desktop: fixed position
+            searchResults.style.top = '80px';
+        }
+    }
+
+    hideSearchResults() {
+        if (this.elements.searchResults) {
+            this.elements.searchResults.style.display = 'none';
+            this.elements.searchResults.innerHTML = '';
+        }
+    }
+
+    showSearchResults() {
+        if (this.elements.searchResults && this.elements.searchResults.innerHTML.trim()) {
+            this.elements.searchResults.style.display = 'block';
+            this.positionSearchResults();
+        }
     }
 
     showError(title, message) {
