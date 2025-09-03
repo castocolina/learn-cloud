@@ -630,6 +630,73 @@ class CloudNativeBookApp {
                 }
             });
         });
+
+        // Add navigation to topic type badges and components
+        this.initializeTopicNavigation();
+    }
+
+    initializeTopicNavigation() {
+        // Make topic cards clickable
+        const topicCards = this.elements.contentArea.querySelectorAll('.topic-card');
+        
+        topicCards.forEach(card => {
+            const header = card.querySelector('.topic-header h3');
+            if (!header) return;
+
+            const topicTitle = header.textContent.trim();
+            const topicMatch = topicTitle.match(/^(\d+)\.(\d+):/);
+            
+            if (topicMatch) {
+                const unitNum = parseInt(topicMatch[1], 10);
+                const topicNum = parseInt(topicMatch[2], 10);
+                const topicIndex = (unitNum * 100) + topicNum;
+                
+                // Find the actual topic in our hierarchy
+                const topic = this.topics.find(t => t.index === topicIndex);
+                if (topic) {
+                    // Make topic type badge clickable
+                    const topicType = card.querySelector('.topic-type');
+                    if (topicType) {
+                        topicType.style.cursor = 'pointer';
+                        topicType.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            this.loadContent(topic.url, topic.index);
+                        });
+                    }
+
+                    // Make individual components clickable
+                    const components = card.querySelectorAll('.component');
+                    components.forEach(component => {
+                        const componentText = component.textContent.trim();
+                        let targetTopic = null;
+
+                        if (componentText.includes('Main Content')) {
+                            targetTopic = topic;
+                        } else if (componentText.includes('Study Aids')) {
+                            targetTopic = this.topics.find(t => t.index === topicIndex + 1 && t.type === 'study_aids');
+                        } else if (componentText.includes('Quiz')) {
+                            targetTopic = this.topics.find(t => t.index === topicIndex + 2 && t.type === 'quiz');
+                        } else if (componentText.includes('Final Assessment')) {
+                            targetTopic = topic; // For final exams
+                        }
+
+                        if (targetTopic) {
+                            component.style.cursor = 'pointer';
+                            component.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                this.loadContent(targetTopic.url, targetTopic.index);
+                            });
+                        }
+                    });
+
+                    // Make entire card clickable (navigate to main content)
+                    card.style.cursor = 'pointer';
+                    card.addEventListener('click', () => {
+                        this.loadContent(topic.url, topic.index);
+                    });
+                }
+            }
+        });
     }
 
     // Unit navigation helpers

@@ -887,6 +887,13 @@ body {
     letter-spacing: 0.5px;
     white-space: nowrap;
     align-self: flex-start;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.topic-type:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-sm);
 }
 
 .topic-type.content {
@@ -922,6 +929,14 @@ body {
     background: var(--gray-100);
     padding: 2px var(--space-xs);
     border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.component:hover {
+    background-color: var(--gray-200);
+    color: var(--gray-700);
+    transform: scale(1.02);
 }
 
 .unit-prerequisites {

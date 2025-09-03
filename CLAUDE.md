@@ -38,6 +38,11 @@ The SPA is built with **modern CSS Grid** architecture and **ES6 modules** for a
 
 ## Modern Architecture Requirements
 
+### File Structure
+- **Content Location:** All book content is located in `src/book/` directory (migrated from `content/`)
+- **Path References:** All JavaScript and HTML references must use `src/book/` paths
+- **GitHub Actions:** Deploy workflow configured to use `src/book/` structure in public directory
+
 ### CSS Grid Layout System
 - **Grid-First Design:** Use CSS Grid for main layout structure, never float or flexbox for layout
 - **Custom CSS Properties:** Use CSS variables for consistent theming and responsive design
@@ -55,6 +60,13 @@ The SPA is built with **modern CSS Grid** architecture and **ES6 modules** for a
 - **Sequential Navigation:** Smart navigation that respects unit boundaries and content flow
 - **Unit Overview Pages:** Each unit must have a dedicated overview page with unit structure
 - **Progress Tracking:** Accurate progress calculation based on hierarchical position
+- **Interactive Elements:** All topic cards, type badges, and components must be clickable for navigation
+
+### Search Implementation
+- **Full-Text Search:** Use Lunr.js for content indexing and full-text search capabilities
+- **Fallback Search:** Implement simple title/content search when Lunr.js unavailable
+- **Content Indexing:** Preload important content (overviews, main content) for search indexing
+- **Visual Feedback:** Proper CSS styling for search results and focused states
 
 ## Content Generation Rules
 
@@ -80,16 +92,24 @@ The book is structured into `Units` and `Topics` with a hierarchical navigation 
 ### Study Aids Structure
 
 ```html
-<div id="flashcards-section">
-  <div class="flashcards-container">
-    <div class="flashcard" onclick="this.classList.toggle('flipped')">
-      <div class="flashcard-front">Question</div>
-      <div class="flashcard-back">Answer</div>
+<div class="study-aids-content">
+    <header class="study-aids-header">
+        <h2>Study Aids: [Topic Name]</h2>
+        <p class="study-aids-intro">[Descriptive introduction]</p>
+    </header>
+    
+    <div class="flashcards-container">
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-front">Question</div>
+            <div class="flashcard-back">Answer</div>
+        </div>
     </div>
-  </div>
 </div>
 ```
 
+- **Standardization:** Each topic must have exactly 5 flashcards
+- **Modern Structure:** Use `study-aids-content` wrapper with descriptive header
+- **No Bootstrap:** Remove all Bootstrap dependencies (btn-, modal, card classes)
 - Place Mermaid diagrams directly in main content (`.html` files), not in study aids
 - Each flashcard should be touch-friendly with proper sizing
 - Use modern CSS for animations and interactions
@@ -97,21 +117,29 @@ The book is structured into `Units` and `Topics` with a hierarchical navigation 
 ### Quiz Structure
 
 ```html
-<div id="quiz-section">
-  <div class="quiz-container">
-    <div class="quiz-card" data-question="1">
-      <div class="question">
-        <p>Question text</p>
-        <ul class="options">
-          <li><label><input type="radio" name="q1" value="a"> Option A</label></li>
-        </ul>
-        <div class="answer" data-correct="a"></div>
-      </div>
+<div class="quiz-content">
+    <header class="quiz-header">
+        <h2>Quiz: [Topic Name]</h2>
+        <p class="quiz-intro">[Descriptive introduction explaining what will be tested]</p>
+    </header>
+    
+    <div class="quiz-container">
+        <div class="quiz-card" data-question="1">
+            <div class="question">
+                <p>Question text</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q1" value="a"> Option A</label></li>
+                </ul>
+                <div class="answer" data-correct="a"></div>
+            </div>
+        </div>
+        
+        <div class="quiz-navigation">
+            <button class="quiz-btn" id="prev-question">Previous</button>
+            <button class="quiz-btn" id="next-question">Next</button>
+            <button class="quiz-btn" id="submit-quiz" style="display: none;">Submit Answers</button>
+        </div>
     </div>
-  </div>
-  <div class="quiz-navigation">
-    <!-- Previous/Next buttons -->
-  </div>
 </div>
 ```
 
@@ -120,7 +148,8 @@ The book is structured into `Units` and `Topics` with a hierarchical navigation 
 - **Multiple-choice:** Use checkboxes with `data-correct` containing comma-separated correct values
 
 **Button Styles:**
-- Use modern CSS button classes: `btn`, `btn-primary`, `btn-secondary`
+- **Modern Navigation:** Use `quiz-btn` class for all quiz navigation buttons
+- **No Bootstrap:** Remove all Bootstrap dependencies (btn-primary, btn-secondary, etc.)
 - Ensure touch-friendly sizing (minimum 44px touch targets)
 
 ## File Structure Requirements
@@ -131,6 +160,41 @@ The book is structured into `Units` and `Topics` with a hierarchical navigation 
 - **Common files:** Shared `style.css` and `app.js` in `src/book/`
 - **No trailing spaces:** Clean HTML with proper formatting
 - **Self-closing tags:** Use proper HTML5 self-closing syntax
+- **Path Consistency:** All internal references must use `src/book/` structure
+
+## Unit Overview Page Requirements
+
+### Interactive Navigation
+- **Clickable Topic Cards:** Entire topic cards must be clickable to navigate to main content
+- **Topic Type Badges:** Make `topic-type` elements clickable to navigate to content  
+- **Component Navigation:** Individual components (📖 Main Content, 🎯 Study Aids, ❓ Quiz) must be clickable
+- **Visual Feedback:** Proper hover states and cursor pointers for all interactive elements
+
+### Content Accuracy
+- **Title Consistency:** Topic titles in overviews must match actual file names and content
+- **Index Alignment:** Ensure topic indices match hierarchical navigation system
+- **Component Mapping:** Verify components map to correct files (study aids, quiz, etc.)
+
+### CSS Requirements for Interactive Elements
+```css
+.topic-type {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.topic-type:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-sm);
+}
+.component {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.component:hover {
+    background-color: var(--gray-200);
+    color: var(--gray-700);
+    transform: scale(1.02);
+}
+```
 
 ## User Experience Requirements
 
