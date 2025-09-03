@@ -1,106 +1,63 @@
-<h2>Study Aids: Terraform for Infrastructure as Code</h2>
+<div class="study-aids-content">
+    <header class="study-aids-header">
+        <h2>Study Aids: Terraform for Infrastructure as Code</h2>
+        <p class="study-aids-intro">Master Infrastructure as Code with Terraform, HCL syntax, and cloud resource management. Click each card to reveal the answer.</p>
+    </header>
 
-<div class="card mb-4">
-    <div class="card-header">
-        Key Takeaways
-    </div>
-    <div class="card-body">
-        <ul>
-            <li><strong>IaC is Foundational:</strong> Infrastructure as Code (IaC) is a core DevOps practice that brings versioning, automation, and reproducibility to infrastructure management. Terraform is the industry-standard tool for IaC.</li>
-            <li><strong>State is Critical:</strong> Terraform relies on a state file to map your configuration to real-world resources. For team collaboration, using <strong>remote state</strong> with a locking mechanism (e.g., AWS S3 and DynamoDB) is non-negotiable to prevent conflicts.</li>
-            <li><strong>Modules Enable Reusability:</strong> Terraform Modules are the primary way to create reusable, maintainable, and shareable infrastructure components. They are essential for managing complexity in large-scale environments.</li>
-            <li><strong>The Core Workflow:</strong> The standard Terraform workflow consists of three commands: <code>terraform init</code> to prepare the environment, <code>terraform plan</code> to preview changes, and <code>terraform apply</code> to execute them.</li>
-        </ul>
-    </div>
-</div>
-
-<div id="flashcards-section">
     <div class="flashcards-container">
-
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What is Infrastructure as Code (IaC)?</p>
+                <h4>Question 1</h4>
+                <p>What is Infrastructure as Code and how does Terraform implement it?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>IaC is the practice of managing and provisioning infrastructure through machine-readable definition files (code), rather than through manual configuration or interactive tools. This enables versioning, automation, and reproducibility.</p>
+                <p>Infrastructure as Code is the practice of managing infrastructure through machine-readable definition files rather than manual processes. Terraform uses HCL to declaratively define resources and maintains state to track infrastructure changes.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What are the five core block types in HCL for Terraform?</p>
+                <h4>Question 2</h4>
+                <p>What are the key benefits of using DevOps practices in cloud-native development?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>1. <code>terraform</code> (configures Terraform itself)<br>2. <code>provider</code> (configures a specific provider like AWS)<br>3. <code>resource</code> (defines a piece of infrastructure)<br>4. <code>variable</code> (defines an input variable)<br>5. <code>output</code> (defines an output value)</p>
+                <p>DevOps practices enable faster delivery cycles, improved collaboration between teams, automated testing and deployment, reduced manual errors, better scalability, and more reliable systems through continuous integration and monitoring.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>Why is using remote state with locking essential for teams using Terraform?</p>
+                <h4>Question 3</h4>
+                <p>How does containerization support DevOps and continuous delivery?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>It provides a shared, central source of truth for the infrastructure's state. The locking mechanism (e.g., a DynamoDB table) prevents multiple team members from running <code>terraform apply</code> at the same time, which would corrupt the state and lead to infrastructure drift.</p>
+                <p>Containers provide consistent environments across development, testing, and production. They enable rapid deployment, easy scaling, resource isolation, and simplified rollbacks, making continuous delivery more reliable and efficient.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What is the purpose of a Terraform module?</p>
+                <h4>Question 4</h4>
+                <p>What is the difference between continuous integration, continuous delivery, and continuous deployment?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>To package and reuse resource configurations. Modules are the primary way to create abstractions, organize code into logical components, and share common infrastructure patterns (e.g., a standardized S3 bucket or VPC).</p>
+                <p><strong>CI:</strong> Automatically build and test code changes. <strong>CD (Delivery):</strong> Automatically prepare releases for deployment with manual approval. <strong>CD (Deployment):</strong> Automatically deploy to production without human intervention.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What are the three core commands in the standard Terraform workflow?</p>
+                <h4>Question 5</h4>
+                <p>Why is monitoring and observability crucial in DevOps environments?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>1. <strong><code>terraform init</code></strong>: Initializes the backend and downloads providers.<br>2. <strong><code>terraform plan</code></strong>: Shows a preview of the changes to be made.<br>3. <strong><code>terraform apply</code></strong>: Executes the changes to create, update, or delete infrastructure.</p>
+                <p>Monitoring provides visibility into system performance, enables early problem detection, supports data-driven decisions for scaling, helps with troubleshooting in distributed systems, and ensures SLA compliance in production environments.</p>
             </div>
         </div>
-
     </div>
 </div>

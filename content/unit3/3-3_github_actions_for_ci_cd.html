@@ -1,11 +1,13 @@
-<div class="container">
-    <div class="page-header">
-        <h1>3.3: GitHub Actions for CI/CD</h1>
+<div class="topic-content">
+<header class="topic-header">
+
+    
+                <h1 class="topic-title">Unit 3.3: GitHub Actions for CI/CD</h1>
     </div>
 
     <p class="lead">Automating the build, test, and deployment process is the heart of modern DevOps. <strong>Continuous Integration (CI)</strong> and <strong>Continuous Delivery/Deployment (CD)</strong> are practices that enable teams to deliver code faster and more reliably. <a href="https://github.com/features/actions" target="_blank">GitHub Actions</a> is a powerful and flexible automation tool built directly into GitHub, allowing you to create sophisticated CI/CD pipelines right where you store your code.</p>
 
-    <hr/>
+    
 
     <!-- Core Concepts -->
     <h2><i class="bi bi-diagram-3"></i> Core Concepts of GitHub Actions</h2>
@@ -34,7 +36,7 @@
         <small class="text-muted">Diagram: The Structure of a GitHub Actions Workflow</small>
     </div>
 
-    <hr/>
+    
 
     <!-- Building a Workflow -->
     <h2><i class="bi bi-gear-wide-connected"></i> 1. Building a CI Workflow for a Go Application</h2>
@@ -105,7 +107,7 @@ jobs:
           path: myapp
     </code></pre>
 
-    <hr/>
+    
 
     <!-- Secrets Management -->
     <h2><i class="bi bi-key"></i> 2. Managing Secrets in GitHub Actions</h2>
@@ -125,7 +127,7 @@ jobs:
         <small class="text-muted">Diagram: Secure Use of GitHub Secrets</small>
     </div>
 
-    <hr/>
+    
 
     <!-- Docker Integration -->
     <h2><i class="bi bi-box-seam"></i> 3. Building and Pushing Docker Images</h2>
@@ -157,7 +159,7 @@ jobs:
     </code></pre>
     <p>This job uses community-developed actions to handle the Docker login and build/push logic, and it dynamically tags the image with the Git commit SHA for traceability.</p>
 
-    <hr/>
+    
 
     <!-- Kubernetes Deployment -->
     <h2><i class="bi bi-cloud-upload"></i> 4. Deploying to Kubernetes</h2>
@@ -192,7 +194,7 @@ jobs:
     </code></pre>
     <p>This job checks out the code, configures <code>kubectl</code> using the provided secret, and then applies the Kubernetes manifests, updating the image tag to the one we just built.</p>
 
-    <hr/>
+    
 
     <!-- Reusable Actions -->
     <h2><i class="bi bi-recycle"></i> 5. Creating Reusable Actions</h2>
@@ -221,4 +223,6 @@ runs:
         uses: ./.github/actions/setup-go-env
     </code></pre>
 
+</div>
+    </div>
 </div>

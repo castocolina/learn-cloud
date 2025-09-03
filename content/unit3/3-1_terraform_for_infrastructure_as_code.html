@@ -1,11 +1,13 @@
-<div class="container">
-    <div class="page-header">
-        <h1>3.1: Terraform for Infrastructure as Code</h1>
+<div class="topic-content">
+<header class="topic-header">
+
+    
+                <h1 class="topic-title">Unit 3.1: Terraform for Infrastructure as Code</h1>
     </div>
 
     <p class="lead">Welcome to Unit 3! We now shift from writing application code to defining the infrastructure that runs it. <strong>Infrastructure as Code (IaC)</strong> is a foundational DevOps practice that involves managing and provisioning infrastructure through machine-readable definition files, rather than manual configuration. <a href="https://www.terraform.io/" target="_blank">Terraform</a> by HashiCorp is the industry-standard tool for IaC, allowing you to declaratively define, version, and automate your cloud and on-premise resources.</p>
 
-    <hr/>
+    
 
     <!-- HCL Syntax -->
     <h2><i class="bi bi-file-code"></i> 1. Deep Dive into HCL Syntax</h2>
@@ -69,7 +71,7 @@ output "bucket_id" {
         <small class="text-muted">Diagram: The Basic Terraform Workflow (init, plan, apply)</small>
     </div>
 
-    <hr/>
+    
 
     <!-- Remote State -->
     <h2><i class="bi bi-cloud-arrow-up"></i> 2. Managing Remote State</h2>
@@ -115,9 +117,9 @@ terraform {
   # ... required_providers ...
 }
     </code></pre>
-    <div class="alert alert-warning">You must create the S3 bucket and DynamoDB table manually before you can initialize this backend. This is a one-time setup task for your organization.</div>
+    <div class="info-box">You must create the S3 bucket and DynamoDB table manually before you can initialize this backend. This is a one-time setup task for your organization.</div>
 
-    <hr/>
+    
 
     <!-- Reusable Modules -->
     <h2><i class="bi bi-box-seam"></i> 3. Creating Reusable Modules</h2>
@@ -194,7 +196,7 @@ output "app_storage_arn" {
 }
     </code></pre>
 
-    <hr/>
+    
 
     <!-- Provisioning Kubernetes -->
     <h2><i class="bi bi-grid-3x3-gap"></i> 4. Provisioning Kubernetes and Cloud Resources (AWS)</h2>
@@ -207,4 +209,6 @@ output "app_storage_arn" {
     <p>Once a cluster is provisioned, Terraform can also manage resources inside it using the <a href="https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs" target="_blank">Kubernetes Provider</a> and the <a href="https://registry.terraform.io/providers/hashicorp/helm/latest/docs" target="_blank">Helm Provider</a>. This allows you to define your infrastructure and your application deployments in the same IaC workflow, which we will explore in the next topic.
     </p>
 
+</div>
+    </div>
 </div>

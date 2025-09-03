@@ -1,11 +1,13 @@
-<div class="container">
-    <div class="page-header">
-        <h1>3.2: Kubernetes for Container Orchestration</h1>
+<div class="topic-content">
+<header class="topic-header">
+
+    
+                <h1 class="topic-title">Unit 3.2: Kubernetes for Container Orchestration</h1>
     </div>
 
     <p class="lead">Now that we can define our infrastructure with Terraform, the next step is to manage the applications running on it. <strong>Kubernetes</strong> is the de facto open-source standard for automating the deployment, scaling, and management of containerized applications. It takes your container images and runs them on a cluster of machines, handling failures, scaling, and networking automatically.</p>
 
-    <hr/>
+    
 
     <!-- Advanced Deployments -->
     <h2><i class="bi bi-fast-forward-circle"></i> 1. Advanced Deployment Strategies</h2>
@@ -51,7 +53,7 @@
         <small class="text-muted">Diagram: Canary Deployment Flow</small>
     </div>
 
-    <hr/>
+    
 
     <!-- StatefulSets -->
     <h2><i class="bi bi-database-lock"></i> 2. StatefulSets and Persistent Volumes</h2>
@@ -114,7 +116,7 @@ spec:
           storage: 1Gi
     </code></pre>
 
-    <hr/>
+    
 
     <!-- Network Policies -->
     <h2><i class="bi bi-shield-lock"></i> 3. Network Policies</h2>
@@ -146,7 +148,7 @@ spec:
       port: 8080
     </code></pre>
 
-    <hr/>
+    
 
     <!-- Helm -->
     <h2><i class="bi bi-box-seam"></i> 4. Helm for Package Management</h2>
@@ -173,4 +175,6 @@ helm install my-prometheus prometheus-community/prometheus
     </code></pre>
     <p>Helm uses a templating engine to generate Kubernetes manifests from a Chart's templates and a <code>values.yaml</code> file, which provides the configuration. This allows you to customize deployments without manually editing the underlying YAML files.</p>
 
+</div>
+    </div>
 </div>

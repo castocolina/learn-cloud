@@ -1,15 +1,17 @@
-<div class="container">
-    <div class="page-header">
-        <h1>3.4: Spinnaker for Continuous Delivery</h1>
+<div class="topic-content">
+<header class="topic-header">
+
+    
+                <h1 class="topic-title">Unit 3.4: Spinnaker for Continuous Delivery</h1>
     </div>
 
     <p class="lead">While GitHub Actions is excellent for Continuous Integration (CI), complex deployment scenarios require a specialized tool. <strong>Continuous Delivery (CD)</strong> is the practice of automating the entire software release process. <a href="https://spinnaker.io/" target="_blank">Spinnaker</a> is an open-source, multi-cloud continuous delivery platform originally developed by Netflix. It is designed for releasing software changes with high velocity and confidence.</p>
 
-    <div class="alert alert-info">
+    <div class="info-box">
         <strong>CI vs. CD:</strong> <strong>Continuous Integration</strong> focuses on building and testing code every time a change is pushed. <strong>Continuous Delivery</strong> picks up after CI, automating the release of that tested code to a production environment.
     </div>
 
-    <hr/>
+    
 
     <!-- Core Concepts -->
     <h2><i class="bi bi-diagram-3"></i> Core Concepts of Spinnaker</h2>
@@ -41,7 +43,7 @@
         <small class="text-muted">Diagram: The Relationship Between Spinnaker Concepts</small>
     </div>
 
-    <hr/>
+    
 
     <!-- Advanced Pipeline Strategies -->
     <h2><i class="bi bi-signpost-split"></i> 1. Advanced Pipeline Strategies</h2>
@@ -60,7 +62,7 @@
     </ol>
     <p>Spinnaker manages the underlying load balancer and server group state, providing a clear, visual workflow and a one-click rollback option (by re-enabling the previous server group).</p>
 
-    <hr/>
+    
 
     <!-- Automated Canary Analysis -->
     <h2><i class="bi bi-clipboard-data"></i> 2. Automated Canary Analysis (ACA)</h2>
@@ -92,7 +94,7 @@
     </ol>
     <p>ACA provides a data-driven, automated way to answer the question: "Is this new version safe to release?"</p>
 
-    <hr/>
+    
 
     <!-- Integrations -->
     <h2><i class="bi bi-plug"></i> 3. Integration with Kubernetes and Cloud Providers</h2>
@@ -104,14 +106,14 @@
         <li><strong>Cloud Providers (AWS, GCP, Azure):</strong> Spinnaker can manage cloud-native resources directly, such as AWS Auto Scaling Groups and Load Balancers, making it a true multi-cloud deployment tool.</li>
     </ul>
 
-    <hr/>
+    
 
     <!-- Spinnaker vs. GitHub Actions -->
     <h2><i class="bi bi-git"></i> Spinnaker vs. GitHub Actions for CD</h2>
     <p>
         A common question is when to use a tool like Spinnaker over a CI tool like GitHub Actions for deployments.
     </p>
-    <table class="table table-bordered">
+    <table class="data-table">
         <thead>
             <tr>
                 <th>Feature</th>
@@ -146,4 +148,6 @@
         The most powerful and common pattern is to <strong>use them together</strong>: GitHub Actions builds and tests the code, pushes a Docker image, and then triggers a Spinnaker pipeline to handle the safe, controlled delivery of that image to production.
     </p>
 
+</div>
+    </div>
 </div>
