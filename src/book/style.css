@@ -1302,6 +1302,11 @@ body {
     color: var(--white);
 }
 
+.flashcard-front {
+    background: linear-gradient(135deg, var(--primary) 0%, #4a90e2 100%);
+    color: var(--white);
+}
+
 .flashcard-back {
     background: linear-gradient(135deg, var(--success) 0%, #27ae60 100%);
     color: var(--white);

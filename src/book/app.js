@@ -566,6 +566,7 @@ class CloudNativeBookApp {
             }
 
             // Build Lunr index
+            const topics = this.topics;
             this.searchIndex = lunr(function () {
                 this.ref('index');
                 this.field('title', { boost: 10 });
@@ -573,7 +574,7 @@ class CloudNativeBookApp {
                 this.field('type');
 
                 // Add documents to index
-                for (const topic of this.topics) {
+                for (const topic of topics) {
                     this.add({
                         index: topic.index,
                         title: topic.title,
@@ -581,7 +582,7 @@ class CloudNativeBookApp {
                         type: topic.type
                     });
                 }
-            }.bind({ topics: this.topics }));
+            });
 
             console.log('✅ Search index built successfully');
         } catch (error) {
@@ -604,15 +605,36 @@ class CloudNativeBookApp {
         this.initializeFlashcards();
         this.initializeQuizzes();
         this.initializeUnitOverviewFeatures();
+        
+        // Setup flashcard modal
+        setupFlashcardModal();
     }
 
     initializeFlashcards() {
         const flashcards = this.elements.contentArea.querySelectorAll('.flashcard');
-        flashcards.forEach(flashcard => {
-            flashcard.addEventListener('click', function(e) {
-                if (e.target.closest('button')) return;
-                this.classList.toggle('flipped');
-            });
+        console.log(`🎴 Found ${flashcards.length} flashcards to initialize`);
+        
+        flashcards.forEach((flashcard, index) => {
+            // Ensure the flashcard has the proper event listener
+            const inner = flashcard.querySelector('.flashcard-inner');
+            if (inner) {
+                // Remove onclick attribute to prevent conflicts
+                inner.removeAttribute('onclick');
+                
+                // Add JavaScript event listener
+                inner.addEventListener('click', function(e) {
+                    // Don't flip if clicking on the expand button
+                    if (e.target.closest('.flashcard-expand-btn')) {
+                        return;
+                    }
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const flashcardElement = this.parentElement;
+                    flashcardElement.classList.toggle('flipped');
+                    console.log(`🔄 Flashcard ${index + 1} flipped:`, flashcardElement.classList.contains('flipped'));
+                });
+            }
         });
     }
 
@@ -891,6 +913,34 @@ class CloudNativeBookApp {
                 </button>
             </div>
         `;
+    }
+}
+
+// Global flashcard modal functions - Define immediately
+window.openFlashcardModal = function(button) {
+    const flashcard = button.parentElement;
+    const question = flashcard.querySelector('.flashcard-front p').textContent;
+    const answer = flashcard.querySelector('.flashcard-back p').innerHTML;
+    
+    document.getElementById('modal-question').textContent = question;
+    document.getElementById('modal-answer-content').innerHTML = answer;
+    document.getElementById('flashcard-modal').showModal();
+};
+
+window.closeFlashcardModal = function() {
+    document.getElementById('flashcard-modal').close();
+};
+
+// Setup modal event listener when content loads
+function setupFlashcardModal() {
+    const modal = document.getElementById('flashcard-modal');
+    if (modal && !modal.hasAttribute('data-listeners-added')) {
+        modal.addEventListener('click', function(event) {
+            if (event.target === this) {
+                window.closeFlashcardModal();
+            }
+        });
+        modal.setAttribute('data-listeners-added', 'true');
     }
 }
 
