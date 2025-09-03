@@ -1,91 +1,63 @@
-<div id="flashcards-section">
-    <h2>Flashcards: Core Backend Concepts</h2>
+<div class="study-aids-content">
+    <header class="study-aids-header">
+        <h2>Study Aids: Core Backend Concepts</h2>
+        <p class="study-aids-intro">Master essential backend development concepts with HTTP, REST, and API design. Click each card to reveal the answer.</p>
+    </header>
+
     <div class="flashcards-container">
-
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What is the primary benefit of using Python's `dataclasses`?</p>
+                <h4>Question 1</h4>
+                <p>What are the key principles of REST (Representational State Transfer)?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>Dataclasses reduce boilerplate code for classes primarily used to store data, automatically generating methods like `__init__`, `__repr__`, and `__eq__`.</p>
+                <p><strong>Stateless:</strong> Each request contains all needed information. <strong>Resource-based:</strong> URLs identify resources. <strong>HTTP methods:</strong> Use GET, POST, PUT, DELETE appropriately. <strong>Cacheable:</strong> Responses can be cached. <strong>Uniform interface:</strong> Consistent API design.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>Explain the purpose of an ORM (Object-Relational Mapper).</p>
+                <h4>Question 2</h4>
+                <p>What is the difference between HTTP GET and POST methods?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>An ORM allows developers to interact with a relational database using object-oriented programming concepts (e.g., Python objects) instead of writing raw SQL queries, improving productivity and reducing boilerplate.</p>
+                <p><strong>GET:</strong> Retrieves data, should be idempotent and safe, parameters in URL. <strong>POST:</strong> Creates new resources, not idempotent, data in request body, can have side effects.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>Why are parameterized queries crucial for database interactions?</p>
+                <h4>Question 3</h4>
+                <p>What are HTTP status codes and what do the main ranges represent?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>Parameterized queries prevent SQL injection attacks by separating the SQL code from the data, ensuring that user input cannot be executed as malicious code.</p>
+                <p><strong>2xx:</strong> Success (200 OK, 201 Created). <strong>3xx:</strong> Redirection (301 Moved). <strong>4xx:</strong> Client errors (404 Not Found, 400 Bad Request). <strong>5xx:</strong> Server errors (500 Internal Server Error).</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What is Redis primarily used for in backend applications?</p>
+                <h4>Question 4</h4>
+                <p>What is JSON and why is it preferred for API communication?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>Redis is primarily used as an in-memory data store for caching, which helps to reduce latency and database load by storing frequently accessed data.</p>
+                <p>JSON (JavaScript Object Notation) is a lightweight data-interchange format. It's human-readable, language-independent, has excellent parsing support, smaller than XML, and natively supported by web browsers.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>How does MongoDB differ from a traditional relational database?</p>
+                <h4>Question 5</h4>
+                <p>What is the purpose of API versioning and what are common strategies?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>MongoDB is a NoSQL document database that stores data in flexible, JSON-like documents (BSON) without a predefined schema, unlike relational databases which use rigid, tabular schemas.</p>
+                <p>API versioning manages changes without breaking existing clients. Common strategies: <strong>URL versioning</strong> (/v1/users), <strong>Header versioning</strong> (Accept: application/vnd.api+json;version=1), <strong>Query parameters</strong> (?version=1).</p>
             </div>
         </div>
-
     </div>
 </div>

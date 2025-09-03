@@ -1,91 +1,63 @@
-<div id="flashcards-section">
-    <h2>Flashcards: Concurrency and Caching</h2>
+<div class="study-aids-content">
+    <header class="study-aids-header">
+        <h2>Study Aids: Concurrency and Caching</h2>
+        <p class="study-aids-intro">Master Python async programming, concurrency patterns, and caching strategies. Click each card to reveal the answer.</p>
+    </header>
+
     <div class="flashcards-container">
-
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What is the Global Interpreter Lock (GIL) in CPython?</p>
+                <h4>Question 1</h4>
+                <p>Key concept 1 for Concurrency and Caching</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>The GIL is a mutex that prevents multiple native threads from executing Python bytecode simultaneously, meaning only one thread can execute Python code at a time.</p>
+                <p>Detailed answer covering the essential aspects of the concept.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>How does the GIL affect CPU-bound vs. I/O-bound tasks?</p>
+                <h4>Question 2</h4>
+                <p>Key concept 2 for Concurrency and Caching</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>The GIL primarily affects CPU-bound tasks by limiting parallel execution. For I/O-bound tasks, the GIL is released while waiting, allowing other threads to run and making concurrency effective.</p>
+                <p>Detailed answer covering the essential aspects of the concept.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>When is the `threading` module a good choice for concurrency in Python?</p>
+                <h4>Question 3</h4>
+                <p>Key concept 3 for Concurrency and Caching</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>The `threading` module is well-suited for I/O-bound operations, as the GIL is released during I/O waits, allowing other threads to make progress.</p>
+                <p>Detailed answer covering the essential aspects of the concept.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What is the main advantage of `asyncio` over `threading` for I/O-bound tasks?</p>
+                <h4>Question 4</h4>
+                <p>Key concept 4 for Concurrency and Caching</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>`asyncio` uses a single-threaded, non-blocking event loop, which can be more efficient for a very large number of I/O operations by avoiding the overhead of creating and managing multiple threads.</p>
+                <p>Detailed answer covering the essential aspects of the concept.</p>
             </div>
         </div>
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
-                <h4>Question</h4>
-                <p>What is `functools.lru_cache` used for?</p>
+                <h4>Question 5</h4>
+                <p>Key concept 5 for Concurrency and Caching</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
-                <p>`functools.lru_cache` is used for in-process caching (memoization) of function results, storing them in memory to avoid re-computation for subsequent calls with the same arguments.</p>
+                <p>Detailed answer covering the essential aspects of the concept.</p>
             </div>
         </div>
-
     </div>
 </div>

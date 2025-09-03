@@ -1,6 +1,6 @@
-<div class="container">
-    <div class="page-header">
-        <h1>1.9 Observability</h1>
+<div class="topic-content">
+    <header class="topic-header">
+        <h1 class="topic-title">Unit 1.9 Observability</h1>
     </div>
 
     <p class="lead">In complex, distributed cloud-native systems, understanding what's happening inside your applications is crucial. This is where <strong>observability</strong> comes in. Unlike traditional monitoring (which tells you <em>if</em> something is broken), observability helps you understand <em>why</em> it's broken by allowing you to ask arbitrary questions about your system's internal state. It relies on three pillars: <strong>Logs</strong>, <strong>Metrics</strong>, and <strong>Traces</strong>.</p>
@@ -15,7 +15,7 @@ graph TD
         <small class="text-muted">Diagram: The Three Pillars of Observability</small>
     </div>
 
-    <hr/>
+    
 
     <!-- Structured Logging -->
     <h2>1. Structured Logging</h2>
@@ -77,7 +77,7 @@ async def simulate_error():
     </code></pre>
     <p>When you run this FastAPI app with Uvicorn and make requests, you'll see JSON formatted logs in your console, including contextual information like <code>request_id</code>, <code>method</code>, and <code>url</code>.</p>
 
-    <hr/>
+    
 
     <!-- Metrics with Prometheus -->
     <h2>2. Metrics with Prometheus</h2>
@@ -159,7 +159,7 @@ graph LR
         <small class="text-muted">Diagram: Prometheus Metrics Collection Architecture</small>
     </div>
 
-    <hr/>
+    
 
     <!-- Tracing with OpenTelemetry -->
     <h2>3. Tracing with OpenTelemetry</h2>
@@ -237,11 +237,12 @@ graph TD
         <small class="text-muted">Diagram: Distributed Tracing with OpenTelemetry and Jaeger</small>
     </div>
 
-    <hr/>
+    
 
     <h2>Conclusion</h2>
     <p>
         Observability is a cornerstone of operating reliable cloud-native applications. By implementing structured logging, collecting metrics with Prometheus, and tracing requests with OpenTelemetry, you gain deep insights into your system's behavior, enabling faster debugging, proactive issue detection, and continuous performance optimization.
     </p>
 
+</div>    </div>
 </div>

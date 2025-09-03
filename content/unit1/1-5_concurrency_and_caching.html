@@ -1,11 +1,11 @@
-<div class="container">
-    <div class="page-header">
-        <h1>1.5 Concurrency and Caching</h1>
+<div class="topic-content">
+    <header class="topic-header">
+        <h1 class="topic-title">Unit 1.5 Concurrency and Caching</h1>
     </div>
 
     <p class="lead">Modern backend services must be fast and responsive. Two fundamental techniques for achieving this are <strong>concurrency</strong> and <strong>caching</strong>. Concurrency allows a service to handle multiple tasks simultaneously, while caching avoids re-computing or re-fetching expensive results. This topic explores Python's powerful built-in tools for both.</p>
 
-    <hr/>
+    
 
     <!-- Concurrency in Python -->
     <h2>Understanding Concurrency in Python: The GIL</h2>
@@ -203,7 +203,7 @@ graph TD
         <small class="text-muted">Diagram: Threading (Preemptive) vs. Asyncio (Cooperative) Multitasking</small>
     </div>
 
-    <hr/>
+    
 
     <!-- In-Process Caching -->
     <h2>In-Process Caching with <code>functools.lru_cache</code></h2>
@@ -286,4 +286,5 @@ print(expensive_api_call.cache_info())
         <strong>Limitations:</strong> The <code>lru_cache</code> is stored in the memory of a single Python process. It is not shared between different processes or servers and will be cleared if the application restarts. It is best used for caching the results of pure functions where the output depends only on the input arguments.
     </div>
 
+</div>    </div>
 </div>

@@ -1,11 +1,11 @@
-<div class="container">
-    <div class="page-header">
-        <h1>1.8 Testing Strategies</h1>
+<div class="topic-content">
+    <header class="topic-header">
+        <h1 class="topic-title">Unit 1.8 Testing Strategies</h1>
     </div>
 
     <p class="lead">In the fast-paced world of cloud-native development, ensuring the reliability and correctness of your backend services is paramount. Robust testing strategies allow you to confidently deploy new features, refactor existing code, and prevent regressions. This topic will cover essential testing practices in Python, from isolated unit tests to comprehensive integration tests using real dependencies.</p>
 
-    <hr/>
+    
 
     <!-- Introduction to Testing -->
     <h2>The Testing Pyramid</h2>
@@ -35,7 +35,7 @@
     </ul>
     <p>This topic will focus on unit and integration testing, which form the foundation of a reliable backend.</p>
 
-    <hr/>
+    
 
     <!-- pytest -->
     <h2>1. Unit and Integration Testing with <code>pytest</code></h2>
@@ -77,7 +77,7 @@ def test_multiply():
     <pre><code class="language-bash">pytest</code></pre>
     <p><code>pytest</code> automatically discovers tests (functions starting with <code>test_</code> in files starting with <code>test_</code> or ending with <code>_test.py</code>) and runs them.</p>
 
-    <hr/>
+    
 
     <!-- Mocking -->
     <h2>2. Mocking Services and Dependencies (<code>unittest.mock</code>)</h2>
@@ -146,7 +146,7 @@ def test_get_user_data_http_error():
         <strong>Trade-offs of Mocking:</strong> While mocking is essential for unit testing, over-reliance can lead to brittle tests that pass even if the real dependency's behavior changes. This is where integration tests come in.
     </div>
 
-    <hr/>
+    
 
     <!-- Testcontainers -->
     <h2>3. Emulating Services with Testcontainers</h2>
@@ -257,11 +257,12 @@ def test_get_non_existent_user(db_session):
     </code></pre>
     <p>When you run <code>pytest</code>, Testcontainers will automatically start a PostgreSQL container, configure your test to connect to it, and tear it down after the tests complete. This provides a clean, isolated database for each test run.</p>
 
-    <hr/>
+    
 
     <h2>Conclusion</h2>
     <p>
         A comprehensive testing strategy is vital for building robust cloud-native backends. By combining fast, isolated unit tests (often with mocks) and realistic integration tests (using Testcontainers), you can achieve high confidence in your codebase, enabling faster development cycles and more reliable deployments.
     </p>
 
+</div>    </div>
 </div>

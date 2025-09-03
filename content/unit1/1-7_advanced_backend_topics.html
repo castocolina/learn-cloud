@@ -1,11 +1,11 @@
-<div class="container">
-    <div class="page-header">
-        <h1>1.7 Advanced Backend Topics</h1>
+<div class="topic-content">
+    <header class="topic-header">
+        <h1 class="topic-title">Unit 1.7 Advanced Backend Topics</h1>
     </div>
 
     <p class="lead">As cloud-native systems grow in complexity, simple REST APIs might not be sufficient for all communication needs. This topic delves into advanced communication patterns and architectural styles that are crucial for building scalable, resilient, and high-performance microservices: event-driven architectures using message queues and high-performance Remote Procedure Calls (RPC) with gRPC and Protocol Buffers.</p>
 
-    <hr/>
+    
 
     <!-- Event-Driven Architecture with Message Queues -->
     <h2>1. Event-Driven Architecture with Message Queues</h2>
@@ -103,7 +103,7 @@ channel.start_consuming()
         While RabbitMQ is a message broker, <a href="https://kafka.apache.org/" target="_blank">Apache Kafka</a> is a distributed streaming platform designed for high-throughput, fault-tolerant, real-time data feeds. It's often used for building event streaming pipelines, real-time analytics, and handling large volumes of log data. For typical task queuing, RabbitMQ is often simpler, but for complex event sourcing or stream processing, Kafka is the industry standard.
     </p>
 
-    <hr/>
+    
 
     <!-- gRPC Communication -->
     <h2>2. Working with Protobuf for gRPC Communication</h2>
@@ -246,7 +246,7 @@ if __name__ == '__main__':
     </code></pre>
     <p>Run the gRPC server in one terminal, then the client in another. You'll see the client making RPC calls and the server responding.</p>
 
-    <hr/>
+    
 
     <h2>3. Communicating with Other Services: Choosing the Right Pattern</h2>
     <p>In a microservices architecture, services need to communicate. The choice of communication pattern depends on the specific requirements:</p>
@@ -287,4 +287,5 @@ graph TD
         <strong>Service Discovery:</strong> In a dynamic cloud environment, services need to find each other. Tools like HashiCorp Consul (covered in Unit 4) provide robust service discovery mechanisms, allowing services to register themselves and discover others without hardcoding network locations.
     </div>
 
+</div>    </div>
 </div>

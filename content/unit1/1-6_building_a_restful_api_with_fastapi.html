@@ -1,12 +1,12 @@
 
-<div class="container">
-    <div class="page-header">
-        <h1>1.6 Building a RESTful API with FastAPI</h1>
+<div class="topic-content">
+    <header class="topic-header">
+        <h1 class="topic-title">Unit 1.6 Building a RESTful API with FastAPI</h1>
     </div>
 
     <p class="lead">Now we arrive at a cornerstone of modern backend development: building APIs. In this topic, we will use <strong>FastAPI</strong>, a high-performance web framework that leverages modern Python features to create robust, scalable, and well-documented RESTful services. It elegantly combines concepts we've already covered, like <code>asyncio</code> and type hints, into a seamless development experience.</p>
 
-    <hr/>
+    
 
     <!-- Introduction to FastAPI -->
     <h2>What is FastAPI?</h2>
@@ -25,7 +25,7 @@
     <p>To get started, you need FastAPI and an ASGI server to run it, such as <a href="https://www.uvicorn.org/" target="_blank">Uvicorn</a>.</p>
     <pre><code class="language-bash">pip install fastapi uvicorn</code></pre>
 
-    <hr/>
+    
 
     <!-- Creating a Simple API -->
     <h2>1. Creating a Simple API</h2>
@@ -62,7 +62,7 @@ async def read_item(item_id: int, q: str | None = None):
     <p>Open your browser and navigate to <a href="http://127.0.0.1:8000" target="_blank">http://127.0.0.1:8000</a>. You will see the JSON response: <code>{"message":"Hello, World!"}</code>.</p>
     <p>Now, for the magic: navigate to <a href="http://127.0.0.1:8000/docs" target="_blank">http://127.0.0.1:8000/docs</a>. You will see the automatic, interactive Swagger UI documentation. FastAPI has generated a complete OpenAPI schema for your API from your Python code, including path parameters, query parameters, and their types.</p>
 
-    <hr/>
+    
 
     <!-- Data Validation with Pydantic -->
     <h2>2. Data Validation with Pydantic</h2>
@@ -120,7 +120,7 @@ graph TD
 
     <p>This eliminates a massive amount of boilerplate code and provides strong data guarantees at the edge of your application.</p>
 
-    <hr/>
+    
 
     <!-- Dependency Injection -->
     <h2>3. Dependency Injection</h2>
@@ -181,4 +181,6 @@ async def create_user(user: UserCreate, db: Session = Depends(get_db)):
         FastAPI's dependency injection system is a key feature for building production-ready applications. It encourages good software design by promoting separation of concerns and making components easily testable by allowing you to "override" dependencies during tests.
     </div>
 
+</div>
+    </div>
 </div>

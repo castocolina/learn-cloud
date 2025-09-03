@@ -1,12 +1,11 @@
 
-<div class="container">
-    <div class="page-header">
-        <h1>1.10 Project: Building a Microservice in Python</h1>
-    </div>
+<div class="topic-content">
+    <header class="topic-header">
+        <h1 class="topic-title">Unit 1.10: Project - Building a Microservice in Python</h1>
+        <p class="topic-intro">This project is your opportunity to apply the knowledge gained throughout Unit 1. We will build a simple, yet functional, <strong>Product Microservice</strong> using Python, FastAPI, and PostgreSQL. This service will demonstrate core backend concepts, including API development, database interaction, structured logging, and basic messaging.</p>
+    </header>
 
-    <p class="lead">This project is your opportunity to apply the knowledge gained throughout Unit 1. We will build a simple, yet functional, <strong>Product Microservice</strong> using Python, FastAPI, and PostgreSQL. This service will demonstrate core backend concepts, including API development, database interaction, structured logging, and basic messaging.</p>
-
-    <hr/>
+    <div class="content-section">
 
     <h2>Project Goal</h2>
     <p>
@@ -23,7 +22,7 @@
         <li><strong><code>pytest</code> & Testcontainers:</strong> Writing unit and integration tests with real database instances.</li>
     </ul>
 
-    <hr/>
+    
 
     <h2>Project Setup</h2>
     <p>Start by creating a project directory and the basic file structure:</p>
@@ -59,7 +58,7 @@ RABBITMQ_URL=amqp://guest:guest@localhost:5672/
     </code></pre>
     <p>Remember to create a `.env` file with actual values or set these as environment variables when running locally.</p>
 
-    <hr/>
+    
 
     <h2>1. Database Setup</h2>
 
@@ -121,7 +120,7 @@ def create_product(db: Session, product: ProductCreate):
     return db_product
     </code></pre>
 
-    <hr/>
+    
 
     <h2>2. Pydantic Schemas</h2>
     <h3><code>app/schemas.py</code></h3>
@@ -145,7 +144,7 @@ class ProductResponse(ProductBase):
         orm_mode = True # Enable ORM mode for SQLAlchemy compatibility
     </code></pre>
 
-    <hr/>
+    
 
     <h2>3. Messaging (RabbitMQ Producer)</h2>
     <h3><code>app/messaging.py</code></h3>
@@ -178,7 +177,7 @@ def publish_product_created_event(product_data: dict):
         print(f"Error publishing message to RabbitMQ: {e}")
     </code></pre>
 
-    <hr/>
+    
 
     <h2>4. FastAPI Application</h2>
     <h3><code>app/main.py</code></h3>
@@ -253,7 +252,7 @@ async def read_product(product_id: int, db: Session = Depends(get_db)):
     return db_product
     </code></pre>
 
-    <hr/>
+    
 
     <h2>5. Testing</h2>
     <p>Robust testing is crucial. We'll use <code>pytest</code> for both unit and integration tests, leveraging <code>unittest.mock</code> for isolation and <code>testcontainers</code> for real database environments.</p>
@@ -408,7 +407,7 @@ def test_read_products_list_api(client, db_session):
     assert any(p["name"] == "List Product 1" for p in data)
     </code></pre>
 
-    <hr/>
+    
 
     <h2>6. Containerization</h2>
     <h3><code>Dockerfile</code></h3>
@@ -434,7 +433,7 @@ EXPOSE 8000
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
     </code></pre>
 
-    <hr/>
+    
 
     <h2>7. Running the Microservice Locally</h2>
     <p>To run the entire setup (PostgreSQL, RabbitMQ, and your FastAPI app) locally, you can use Docker Compose. Create a <code>docker-compose.yml</code> file in your project root:</p>
@@ -480,11 +479,13 @@ volumes:
     <pre><code class="language-bash">docker compose up --build</code></pre>
     <p>Your FastAPI service will be accessible at <a href="http://localhost:8000" target="_blank">http://localhost:8000</a>, and its Swagger UI at <a href="http://localhost:8000/docs" target="_blank">http://localhost:8000/docs</a>.</p>
 
-    <hr/>
+    
 
-    <h2>Conclusion</h2>
-    <p>
-        Congratulations! You've successfully built a Python microservice, integrating many of the core backend concepts and tools discussed in this unit. This project serves as a solid foundation for developing more complex cloud-native applications.
-    </p>
-
+        <section class="conclusion-section">
+            <h2>Conclusion</h2>
+            <p>
+                Congratulations! You've successfully built a Python microservice, integrating many of the core backend concepts and tools discussed in this unit. This project serves as a solid foundation for developing more complex cloud-native applications.
+            </p>
+        </section>
+    </div>
 </div>
