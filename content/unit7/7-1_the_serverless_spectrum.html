@@ -1,13 +1,15 @@
-<div class="container">
-    <div class="page-header">
-        <h1>7.1: The Serverless Spectrum</h1>
-    </div>
+<div class="topic-content">
+    <header class="topic-header">
+        <h1 class="topic-title">Unit 7.1: The Serverless Spectrum</h1>
+    </header>
+    <main class="topic-main">
+        <section class="content-section">
 
     <p class="lead">Welcome to Unit 7. We now enter the world of <strong>serverless computing</strong>, a paradigm that further abstracts away infrastructure management, allowing developers to focus purely on application logic. Serverless doesn't mean there are no servers; it means you, the developer, don't have to manage them. This topic explores the serverless philosophy and introduces the two main models on AWS: Function as a Service (FaaS) with AWS Lambda and serverless containers with AWS Fargate.</p>
 
-    <hr/>
-
-    <h2><i class="bi bi-cloud-check"></i> 1. The Serverless Philosophy</h2>
+        </section>
+        <section class="content-section">
+            <h2><i class="bi bi-cloud-check"></i> 1. The Serverless Philosophy</h2>
     <p>
         The core idea of serverless is to shift the responsibility of managing infrastructure—provisioning, scaling, patching, and maintenance—entirely to the cloud provider. This enables several key benefits:
     </p>
@@ -37,9 +39,9 @@
         <small class="text-muted">Diagram: The Evolution of Abstraction</small>
     </div>
 
-    <hr/>
-
-    <h2><i class="bi bi-box"></i> 2. AWS Lambda: Function as a Service (FaaS)</h2>
+        </section>
+        <section class="content-section">
+            <h2><i class="bi bi-box"></i> 2. AWS Lambda: Function as a Service (FaaS)</h2>
     <p>
         <a href="https://aws.amazon.com/lambda/" target="_blank">AWS Lambda</a> is the quintessential FaaS offering. It allows you to run code in response to events without provisioning or managing servers. You upload your code as a "Lambda function," and the platform handles everything required to run and scale your code with high availability.
     </p>
@@ -77,8 +79,8 @@
     <h2><i class="bi bi-question-lg"></i> 4. Comparing Lambda vs. Fargate</h2>
     <p>Choosing between Lambda and Fargate depends on your application's architecture, performance requirements, and existing codebase.</p>
 
-    <table class="table table-bordered">
-        <thead class="table-dark">
+            <table class="content-table">
+                <thead>
             <tr>
                 <th>Feature</th>
                 <th>AWS Lambda (FaaS)</th>
@@ -120,7 +122,8 @@
                 F -- "Yes" --> G["Traditional EC2 / Self-Managed Kubernetes"];
                 F -- "No" --> H["Consider Fargate or Lambda"];
         </pre>
-        <small class="text-muted">Diagram: Decision Flow for Choosing a Serverless Model</small>
-    </div>
-
+            <small class="text-muted">Diagram: Decision Flow for Choosing a Serverless Model</small>
+            </div>
+        </section>
+    </main>
 </div>

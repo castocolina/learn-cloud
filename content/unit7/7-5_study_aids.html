@@ -1,6 +1,8 @@
-<h2>Study Aids for 7.5: AWS Developer Certification Guide</h2>
-
-<div class="card mb-4">
+<div class="study-aids-content">
+    <header class="study-aids-header">
+        <h2>Study Aids: AWS Developer Certification Guide</h2>
+    </header>
+    <div class="content-card">
     <div class="card-header">
         Key Takeaways
     </div>
@@ -15,21 +17,14 @@
     </div>
 </div>
 
-<div id="flashcards-section">
     <div class="flashcards-container">
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>How does an AWS Lambda function get permission to write to a DynamoDB table?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>Through its <strong>IAM Execution Role</strong>. The policy attached to this role must grant the necessary permissions (e.g., <code>dynamodb:PutItem</code>).</p>
             </div>
@@ -37,16 +32,10 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>What is the difference between a Lambda alias and a version?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>A <strong>version</strong> is an immutable, numbered snapshot of your function's code and configuration. An <strong>alias</strong> is a mutable pointer that can point to a specific version. Aliases are used to create stable endpoints (e.g., `prod`, `dev`) for different environments.</p>
             </div>
@@ -54,16 +43,10 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>What is the "fan-out" pattern and which two services are commonly used to implement it?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>The fan-out pattern is when a single message is delivered to multiple subscribers for parallel processing. It is commonly implemented by publishing a message to an <strong>SNS topic</strong>, which then pushes the message to multiple <strong>SQS queues</strong>.</p>
             </div>
@@ -71,16 +54,10 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>What is the difference between a strongly consistent read and an eventually consistent read in DynamoDB?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>A <strong>strongly consistent read</strong> returns the most up-to-date data, reflecting all successful prior writes, but has higher latency and cost. An <strong>eventually consistent read</strong> (the default) is faster and cheaper but might return slightly stale data a moment after a write.</p>
             </div>
@@ -88,16 +65,10 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>What is the purpose of a Dead-Letter Queue (DLQ) for an asynchronous Lambda invocation?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>A DLQ (typically an SQS queue or SNS topic) is a destination where Lambda can send an event after it has failed all retry attempts. This prevents losing the event and allows for later analysis or reprocessing.</p>
             </div>

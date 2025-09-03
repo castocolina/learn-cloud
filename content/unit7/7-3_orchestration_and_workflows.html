@@ -1,13 +1,15 @@
-<div class="container">
-    <div class="page-header">
-        <h1>7.3: Orchestration and Workflows</h1>
-    </div>
+<div class="topic-content">
+    <header class="topic-header">
+        <h1 class="topic-title">Unit 7.3: Orchestration and Workflows</h1>
+    </header>
+    <main class="topic-main">
+        <section class="content-section">
 
     <p class="lead">While individual Lambda functions are powerful, real-world applications often consist of multiple steps, conditional logic, and error handling. Chaining functions together by having one Lambda directly invoke another can lead to a brittle, hard-to-debug architecture sometimes called "Lambda pinball." A much better approach is to use a dedicated orchestration service. <strong>AWS Step Functions</strong> is a serverless orchestrator that lets you coordinate multiple AWS services into a visual, resilient, and auditable workflow.</p>
 
-    <hr/>
-
-    <h2><i class="bi bi-diagram-3"></i> 1. Introduction to AWS Step Functions</h2>
+        </section>
+        <section class="content-section">
+            <h2><i class="bi bi-diagram-3"></i> 1. Introduction to AWS Step Functions</h2>
     <p>
         AWS Step Functions allows you to define your application's workflow as a <strong>state machine</strong>. Each step in your workflow is a <strong>state</strong>. This approach provides several key advantages over manual orchestration:
     </p>
@@ -32,9 +34,9 @@
         <li><strong>Amazon States Language (ASL):</strong> A JSON-based, structured language used to define your state machine.</li>
     </ul>
 
-    <hr/>
-
-    <h2><i class="bi bi-bezier"></i> 2. Building a Sample Workflow</h2>
+        </section>
+        <section class="content-section">
+            <h2><i class="bi bi-bezier"></i> 2. Building a Sample Workflow</h2>
     <p>Let's model a simplified e-commerce order processing workflow. The goal is to process a payment, and if successful, update the inventory and notify the user in parallel.</p>
 
     <div class="text-center my-4">
@@ -149,6 +151,7 @@ def handler(event, context):
     </code></pre>
 
     <h4>Direct Service Integrations</h4>
-    <p>Notice the `NotifyUser` state in the ASL example. Its `Resource` is an SNS topic ARN, not a Lambda function. Step Functions can integrate directly with many AWS services. Instead of writing a Lambda function that does nothing but publish a message to SNS, you can configure the `Task` state to do it directly. This is a powerful optimization that reduces code, complexity, and cost.</p>
-
+            <p>Notice the `NotifyUser` state in the ASL example. Its `Resource` is an SNS topic ARN, not a Lambda function. Step Functions can integrate directly with many AWS services. Instead of writing a Lambda function that does nothing but publish a message to SNS, you can configure the `Task` state to do it directly. This is a powerful optimization that reduces code, complexity, and cost.</p>
+        </section>
+    </main>
 </div>

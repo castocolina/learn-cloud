@@ -1,6 +1,8 @@
-<h2>Study Aids for 7.3: Orchestration and Workflows</h2>
-
-<div class="card mb-4">
+<div class="study-aids-content">
+    <header class="study-aids-header">
+        <h2>Study Aids: Orchestration and Workflows</h2>
+    </header>
+    <div class="content-card">
     <div class="card-header">
         Key Takeaways
     </div>
@@ -15,21 +17,14 @@
     </div>
 </div>
 
-<div id="flashcards-section">
     <div class="flashcards-container">
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>What problem does AWS Step Functions solve in a serverless architecture?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>It solves the problem of orchestrating multiple services and functions. It prevents the "Lambda Pinball" anti-pattern by providing a managed, visual way to define and execute complex workflows with built-in error handling and retries.</p>
             </div>
@@ -37,16 +32,10 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>What is a "state machine" in the context of Step Functions?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>A state machine is the formal definition of your workflow. It is composed of various "states" (like Task, Choice, Parallel) that represent the individual steps of your process and the transitions between them.</p>
             </div>
@@ -54,16 +43,10 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>What is the Amazon States Language (ASL)?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>ASL is a JSON-based, structured language used to define the states, logic, and transitions of a state machine in AWS Step Functions. It is the "Infrastructure as Code" for the workflow.</p>
             </div>
@@ -71,16 +54,10 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>What is a `Task` state in a Step Function?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>A `Task` state represents a single unit of work in a state machine. It performs this work by invoking an AWS service, most commonly an AWS Lambda function, but it can also be other services like SNS, SQS, or DynamoDB through direct integrations.</p>
             </div>
@@ -88,16 +65,10 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>What is a major benefit of using Step Functions' direct service integrations?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>They can eliminate the need to write, manage, and pay for "glue" Lambda functions that perform simple tasks (e.g., publishing to an SNS topic or putting an item in a DynamoDB table). This reduces code, complexity, and cost.</p>
             </div>

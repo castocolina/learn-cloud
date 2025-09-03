@@ -1,13 +1,15 @@
-<div class="container">
-    <div class="page-header">
-        <h1>7.2: AWS Lambda In-Depth</h1>
-    </div>
+<div class="topic-content">
+    <header class="topic-header">
+        <h1 class="topic-title">Unit 7.2: AWS Lambda In-Depth</h1>
+    </header>
+    <main class="topic-main">
+        <section class="content-section">
 
     <p class="lead">Now that we understand the serverless spectrum, let's take a deep dive into its most popular implementation: AWS Lambda. This topic explores the advantages and limitations of the Lambda model, explains the critical concept of concurrency, and compares the developer experience of using Python and Go for writing Lambda functions.</p>
 
-    <hr/>
-
-    <h2><i class="bi bi-check-circle"></i> 1. Advantages & Limitations</h2>
+        </section>
+        <section class="content-section">
+            <h2><i class="bi bi-check-circle"></i> 1. Advantages & Limitations</h2>
     <p>Lambda's architecture provides powerful benefits but also imposes constraints that you must design your application around.</p>
 
     <h4>Advantages</h4>
@@ -26,9 +28,9 @@
         <li><strong>Statelessness:</strong> Each invocation runs in a fresh, isolated environment. You cannot rely on local state persisting between invocations. State must be stored externally (e.g., in a database like DynamoDB or a cache like Redis).</li>
     </ul>
 
-    <hr/>
-
-    <h2><i class="bi bi-diagram-3"></i> 2. Lambda Concurrency Explained</h2>
+        </section>
+        <section class="content-section">
+            <h2><i class="bi bi-diagram-3"></i> 2. Lambda Concurrency Explained</h2>
     <p>Understanding how Lambda scales is crucial for building reliable applications. Concurrency is the number of requests that your function is serving at any given time.</p>
 
     <div class="text-center my-4">
@@ -60,8 +62,8 @@
     <h2><i class="bi bi-code-slash"></i> 3. Using Lambda with Python vs. Go</h2>
     <p>Both Python and Go are excellent, first-class languages for AWS Lambda. The choice often depends on the specific use case and team expertise.</p>
 
-    <table class="table table-bordered">
-        <thead class="table-dark">
+    <table class="content-table">
+        <thead>
             <tr>
                 <th>Aspect</th>
                 <th>Python</th>
@@ -154,5 +156,6 @@ func main() {
 	lambda.Start(Handler)
 }
     </code></pre>
-
+        </section>
+    </main>
 </div>

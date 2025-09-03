@@ -1,13 +1,15 @@
-<div class="container">
-    <div class="page-header">
-        <h1>7.4: Serverless Deployment & Tooling</h1>
-    </div>
+<div class="topic-content">
+    <header class="topic-header">
+        <h1 class="topic-title">Unit 7.4: Serverless Deployment & Tooling</h1>
+    </header>
+    <main class="topic-main">
+        <section class="content-section">
 
     <p class="lead">Manually deploying and managing all the interconnected resources for a serverless application (Lambda functions, API Gateway endpoints, IAM roles, event source mappings) is complex and error-prone. To do this effectively, you must use an <strong>Infrastructure as Code (IaC)</strong> framework. This topic explores the two leading frameworks for serverless development on AWS: the open-source <strong>Serverless Framework</strong> and the native <strong>AWS Serverless Application Model (SAM)</strong>.</p>
 
-    <hr/>
-
-    <h2><i class="bi bi-braces"></i> 1. The Serverless Framework</h2>
+        </section>
+        <section class="content-section">
+            <h2><i class="bi bi-braces"></i> 1. The Serverless Framework</h2>
     <p>
         The <a href="https://www.serverless.com/" target="_blank">Serverless Framework</a> is a popular, open-source, multi-cloud framework that simplifies serverless development. It uses a single YAML configuration file, <code>serverless.yml</code>, to define your application's entire infrastructure.
     </p>
@@ -114,8 +116,8 @@ sam delete
         <small class="text-muted">Diagram: General workflow for serverless IaC frameworks.</small>
     </div>
 
-    <table class="table table-bordered">
-        <thead class="table-dark">
+            <table class="content-table">
+                <thead>
             <tr>
                 <th>Feature</th>
                 <th>Serverless Framework</th>
@@ -149,6 +151,7 @@ sam delete
                 <td>Teams deeply invested in the AWS ecosystem who want a native IaC experience.</td>
             </tr>
         </tbody>
-    </table>
-
+            </table>
+        </section>
+    </main>
 </div>
