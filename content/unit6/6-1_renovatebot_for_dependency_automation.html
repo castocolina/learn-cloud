@@ -1,13 +1,15 @@
-<div class="container">
-    <div class="page-header">
-        <h1>6.1: RenovateBot for Dependency Automation</h1>
-    </div>
+<div class="topic-content">
+    <header class="topic-header">
+        <h1 class="topic-title">Unit 6.1: RenovateBot for Dependency Automation</h1>
+    </header>
+    <main class="topic-main">
+        <section class="content-section">
 
     <p class="lead">Welcome to Unit 6. In modern software development, our applications rely on dozens or even hundreds of third-party dependencies. Keeping these dependencies up-to-date is a critical but often tedious task. It's a trade-off between staying current with the latest features and security patches, and the risk of introducing breaking changes. This is where automation becomes essential. <strong>RenovateBot</strong> is a powerful, open-source tool that automates dependency updating, making the process manageable, consistent, and safe.</p>
 
-    <hr/>
-
-    <h2><i class="bi bi-question-circle"></i> Why Automate Dependency Updates?</h2>
+        </section>
+        <section class="content-section">
+            <h2><i class="bi bi-question-circle"></i> Why Automate Dependency Updates?</h2>
     <p>Manually checking for updates is inefficient and error-prone. Automated dependency management provides several key benefits:</p>
     <ul>
         <li><strong>Security:</strong> It ensures you receive security patches for vulnerable dependencies as soon as they are released, drastically reducing your window of exposure.</li>
@@ -30,9 +32,9 @@
         <small class="text-muted">Diagram: The Automated Workflow of RenovateBot</small>
     </div>
 
-    <hr/>
-
-    <h2><i class="bi bi-tools"></i> How Renovate Works</h2>
+        </section>
+        <section class="content-section">
+            <h2><i class="bi bi-tools"></i> How Renovate Works</h2>
     <p>
         Renovate is a highly configurable bot that runs against your repositories. It scans your dependency files (like <code>pyproject.toml</code> or <code>go.mod</code>), checks for new versions in their respective registries, and then automatically creates pull requests (PRs) to update them.
     </p>
@@ -43,9 +45,9 @@
     <h3>Configuration</h3>
     <p>You configure Renovate's behavior using a <code>renovate.json</code> or <code>.github/renovate.json</code> file in your repository. This allows for fine-grained control over how and when updates are proposed.</p>
 
-    <hr/>
-
-    <h2><i class="bi bi-file-earmark-code"></i> Configuring Renovate for Python Projects</h2>
+        </section>
+        <section class="content-section">
+            <h2><i class="bi bi-file-earmark-code"></i> Configuring Renovate for Python Projects</h2>
     <p>Renovate has excellent support for Python projects, including those using Poetry (<code>pyproject.toml</code>) or pip (<code>requirements.txt</code>).</p>
 
     <h4>Example: <code>renovate.json</code> for a Python/Poetry Project</h4>
@@ -110,9 +112,9 @@
         <li><code>"go": { "rangeStrategy": "pin" }</code>: This tells Renovate to pin Go dependencies to a specific version rather than using a version range, which is the common practice in the Go ecosystem.</li>
     </ul>
 
-    <hr/>
-
-    <h2><i class="bi bi-sliders"></i> Advanced Configuration and Presets</h2>
+        </section>
+        <section class="content-section">
+            <h2><i class="bi bi-sliders"></i> Advanced Configuration and Presets</h2>
     <p>Renovate's power lies in its flexibility. You can use its vast array of configuration options and presets to tailor its behavior to your exact needs.</p>
     <ul>
         <li><strong>Scheduling:</strong> You can schedule Renovate to run only during specific hours or on certain days to avoid noise.</li>
@@ -146,7 +148,8 @@
     <ul>
         <li>Only run during off-peak hours in the America/New_York timezone.</li>
         <li>Group all packages starting with <code>@aws-sdk/</code> into a single PR named "aws-sdk".</li>
-        <li>Automatically merge all minor and patch updates.</li>
-    </ul>
-
+            <li>Automatically merge all minor and patch updates.</li>
+        </ul>
+        </section>
+    </main>
 </div>

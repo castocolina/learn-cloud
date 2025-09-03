@@ -1,6 +1,8 @@
-<h2>Study Aids: RenovateBot for Dependency Automation</h2>
-
-<div class="card mb-4">
+<div class="study-aids-content">
+    <header class="study-aids-header">
+        <h2>Study Aids: RenovateBot for Dependency Automation</h2>
+    </header>
+    <div class="content-card">
     <div class="card-header">
         Key Takeaways
     </div>
@@ -14,21 +16,14 @@
     </div>
 </div>
 
-<div id="flashcards-section">
     <div class="flashcards-container">
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>What is the primary purpose of RenovateBot?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>To automate the process of updating third-party dependencies in your software projects by automatically creating pull requests for new versions.</p>
             </div>
@@ -36,16 +31,10 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>How do you configure RenovateBot's behavior for a specific repository?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>Using a `renovate.json` file (or a similar file like `.github/renovate.json`) in the root of the repository.</p>
             </div>
@@ -53,16 +42,10 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>What is a common strategy for handling major version updates in Renovate?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>To disable automerging for major updates (e.g., `{"matchUpdateTypes": ["major"], "automerge": false}`). This ensures that updates with potential breaking changes are always manually reviewed by a developer.</p>
             </div>
@@ -70,16 +53,10 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>What does the `"extends": ["config:base"]` option do in a `renovate.json` file?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>It inherits from Renovate's official base configuration, which provides a set of sensible defaults and best practices, such as grouping related packages and using intelligent commit messages.</p>
             </div>
@@ -87,16 +64,10 @@
 
         <div class="flashcard" onclick="this.classList.toggle('flipped')">
             <div class="flashcard-front">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Question</h4>
                 <p>Besides security, what is a key benefit of updating dependencies frequently with Renovate?</p>
             </div>
             <div class="flashcard-back">
-                <button type="button" class="btn btn-sm btn-outline-secondary view-diagram-btn" data-bs-toggle="modal" data-bs-target="#mermaidModal" title="Expand View">
-                    <i class="bi bi-arrows-angle-expand"></i>
-                </button>
                 <h4>Answer</h4>
                 <p>It promotes stability. Small, incremental updates are much easier to test and debug than large, infrequent updates that can introduce many breaking changes at once.</p>
             </div>
