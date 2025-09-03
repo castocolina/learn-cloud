@@ -125,10 +125,10 @@ The book is structured into `Units` and `Topics` with a hierarchical navigation 
 
 ## File Structure Requirements
 
-- **`content/` directory:** Essential for website function - DO NOT DELETE
-- **Unit directories:** Each unit has subdirectory (e.g., `content/unit1/`)
+- **`src/book/` directory:** Essential for website function - DO NOT DELETE
+- **Unit directories:** Each unit has subdirectory (e.g., `src/book/unit1/`)
 - **Topic files:** HTML fragments (not complete pages) for dynamic loading
-- **Common files:** Shared `style.css` and `app.js` in `content/`
+- **Common files:** Shared `style.css` and `app.js` in `src/book/`
 - **No trailing spaces:** Clean HTML with proper formatting
 - **Self-closing tags:** Use proper HTML5 self-closing syntax
 

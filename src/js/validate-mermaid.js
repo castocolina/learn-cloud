@@ -13,7 +13,7 @@ const tempFilePath = '/tmp/mermaid-validate.mmd';
 
 async function validateMermaid() {
     console.log('Starting Mermaid diagram validation...');
-    const files = await glob('content/**/*.html');
+    const files = await glob('src/book/**/*.html');
     files.sort(); // Sort files alphabetically for consistent order
     let hasErrors = false;
 

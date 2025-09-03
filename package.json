@@ -6,9 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "validate:mermaid": "node src/js/validate-mermaid.js",
-    "validate:html": "html-validate index.html content/**/*.html",
+    "validate:html": "html-validate index.html src/book/**/*.html",
     "validate:js": "eslint .",
-    "validate:css": "stylelint \"content/**/*.css\""
+    "validate:css": "stylelint \"src/book/**/*.css\""
   },
   "repository": {
     "type": "git",

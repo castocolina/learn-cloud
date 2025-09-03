@@ -32,12 +32,12 @@ Additionally, ensure that for this unit, the study aids ('X-Y_study_aids.html'),
 EOM
 # --- End of Prompt Templates ---
 
-find content/unit[6-9]* -maxdepth 0 -type d -printf "%p\n" \
+find src/book/unit[6-9]* -maxdepth 0 -type d -printf "%p\n" \
     | sort -V | while IFS= read -r unit_dir; do
         echo "---"
         echo "Processing unit directory: $unit_dir"
 
-        # Extract unit number (e.g., 1 from content/unit1)
+        # Extract unit number (e.g., 1 from src/book/unit1)
         unit=$(basename "$unit_dir" | sed 's/unit//')
 
         PROMPT_TEMPLATE="$UNIT_PROCESSING_PROMPT"

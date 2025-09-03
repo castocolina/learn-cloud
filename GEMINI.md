@@ -26,89 +26,136 @@ The authoritative structure for this book—its units and topics—is defined in
 *   **Secure by Default:** Security is not an afterthought. All code and architectural patterns should be designed with security as a primary consideration.
 *   **Production-Ready Code:** Examples should be robust, well-documented, and ready for production environments.
 ### Interactivity, Diagrams, and Visualization
+## Technology Stack Requirements
 
-The SPA will be built on a foundation of **Bootstrap** for styling and **Vue.js** for reactivity. To create a rich, modern, and effective learning experience, we will standardize on the following specialized libraries:
+The SPA is built with **modern CSS Grid** architecture and **ES6 modules** for a clean, performant application. **No Bootstrap or framework dependencies**. Use these standardized libraries:
 
-*   **Icons:** Use **[Bootstrap Icons](https://icons.getbootstrap.com/)** for all icons to ensure a consistent and modern look. The library is included in `index.html`.
-*   **Diagrams as Code:** Use **Mermaid.js** for all diagrams. **Crucial Rule:** All text descriptions for both **nodes** (e.g., `A["Node Text"]`, `B("Node description")`, `C{"Node description"}`) and **connectors/links** (e.g., `A --|"Link Text"|--> B`) **must always** be enclosed in double quotes, regardless of content. This is a mandatory rule to prevent rendering errors. Ensure the entire description is enclosed in double quotes. Fix any existing diagrams that do not follow this rule. Vertically (TD) direction diagrams is better than horizontally (LR) direction ones.
-*   **Code Highlighting:** Use **[Prism.js](https://prismjs.com/)** for syntax highlighting in all code blocks. This improves readability and provides a professional look, complete with a theme (Okaidia) and an autoloader for supporting multiple languages.
-*   **Data Visualization:** Use **[Chart.js](https://www.chartjs.org/)** to create interactive charts and graphs. This is essential for visualizing metrics, comparing performance, and explaining complex data-driven concepts.
-*   **Client-Side Search:** Use **[Lunr.js](https://lunrjs.com/)** to provide a fast and responsive full-text search experience. The search index will be built dynamically in the browser, allowing users to find content across all topics instantly.
-*   **Enhanced SPA Content:** We can incorporate any other technology that enhances learning, such as using external libraries for 3D visualizations (e.g., Three.js), implementing code playgrounds (e.g., CodeMirror), or downloading relevant images from the web to create rich, didactic material.
+- **Icons:** Use **Bootstrap Icons** for all icons. The CDN is included in `index.html`.
+- **Diagrams as Code:** Use **Mermaid.js** for all diagrams. **Critical Rule:** All text descriptions for both **nodes** (e.g., `A["Node Text"]`, `B("Node description")`, `C{"Node description"}`) and **connectors/links** (e.g., `A --|"Link Text"|--> B`) **must always** be enclosed in double quotes. This prevents rendering errors. Use vertical (TD) direction over horizontal (LR) when possible.
+- **Code Highlighting:** Use **Prism.js** for syntax highlighting in all code blocks.
+- **Data Visualization:** Use **Chart.js** to create interactive charts and graphs.
+- **Client-Side Search:** Use **Lunr.js** for fast, responsive full-text search.
 
-## Content Generation Workflow
+## Modern Architecture Requirements
 
-The book is structured into `Units` and `Topics`, as defined in `CONTENT.md`.
+### CSS Grid Layout System
+- **Grid-First Design:** Use CSS Grid for main layout structure, never float or flexbox for layout
+- **Custom CSS Properties:** Use CSS variables for consistent theming and responsive design
+- **No Framework Dependencies:** Pure CSS with semantic class names, no Bootstrap or utility frameworks
+- **Mobile-First Responsive:** Design for mobile first, then progressively enhance for larger screens
 
-*   **Unit:** A high-level container for a specific area of knowledge (e.g., "Unit 1: Python for Cloud-Native Backend Development").
-*   **Topic:** A specific subject within a Unit (e.g., "x.x: Code Quality and Standards").
+### ES6 Module Architecture
+- **Modern JavaScript:** Use ES6 modules, classes, and modern JavaScript patterns
+- **Modular Design:** Separate concerns into distinct modules (navigation.js, search.js, etc.)
+- **Clean State Management:** Use class-based state management, avoid global variables
+- **Event Delegation:** Use proper event delegation patterns for performance
 
-Our pedagogical structure is sequential and iterative. Follow this process strictly:
+### Hierarchical Navigation System
+- **Book Structure:** Book Overview (-1) → Unit Overview (100, 200, etc.) → Topics (101, 102, etc.)
+- **Sequential Navigation:** Smart navigation that respects unit boundaries and content flow
+- **Unit Overview Pages:** Each unit must have a dedicated overview page with unit structure
+- **Progress Tracking:** Accurate progress calculation based on hierarchical position
 
-1.  **After completing each Topic:** It is mandatory to generate the following before moving to the next topic:
-    *   **Topic Content:** The main didactic material for the topic.
-    *   **Study aids:** Create at least 5 flashcards for the key concepts introduced. These should be generated as a separate HTML file (e.g., `x-x_study_aids.html`) and intended as a distinct menu entry.
-    *   **Structure:** Study aids should be contained within `<div id="flashcards-section">`.
-        *   Flashcards are within `<div class="flashcards-container">`.
-        *   Each flashcard is a `<div class="flashcard" onclick="this.classList.toggle('flipped')">`.
-        *   Inside each flashcard, there are two divs: `<div class="flashcard-front">` for the question and `<div class="flashcard-back">` for the answer.
-        *   **Diagrams in Main Content**: To better reinforce concepts, Mermaid diagrams should be placed directly within the main topic content (`.html` files), close to the text that describes them. They should not be placed in study aids.
-        *   **Flashcard Expand Button**: Each flashcard face (`.flashcard-front` and `.flashcard-back`) should contain a button in the top-right corner to expand the card's content in a modal view.
-        *   **Centralized Modal:** The HTML structure for the Bootstrap modal (`#mermaidModal`) will be defined once in `index.html` (or a common layout file) and its JavaScript logic will reside in `script.js`.
-    *   **Size:** Flashcards should be slightly larger to accommodate content better.
-    *   **Quiz:** Create a quiz with at least 5 questions to review the material. This should be generated as a separate HTML file (e.g., `x-x_quiz.html`) and intended as a distinct menu entry.
-        *   **Single-choice questions:** Use radio buttons (`<input type="radio">`). The correct answer is indicated in a `div` with class `answer` and a `data-correct` attribute with the value of the correct option.
-        *   **Multiple-choice questions:** Use checkboxes (`<input type="checkbox">`). The correct answers are indicated in a `div` with class `answer` and a `data-correct` attribute with a comma-separated list of the values of the correct options.
+## Content Generation Rules
 
-2.  **After completing all Topics in a Unit:**
-    *   Create a comprehensive **Unit Test** with at least 20 questions that covers all material in the unit. This should be generated as a separate HTML file (e.g., `x-x_unit_test.html`) and intended as a distinct menu entry.
+### Mandatory Workflow
 
-## Website Structure & Design
+The book is structured into `Units` and `Topics` with a hierarchical navigation system. Follow this process strictly:
 
-The final output will be a modern, interactive web-based book. While I will generate the text content, keep this structure in mind:
+**Book Structure:**
+1. **Book Overview** (index -1): Main book introduction and unit overview
+2. **Unit Overview** (index X00): Each unit starts with dedicated overview page
+3. **Topic Content** (index X01, X02, etc.): Main didactic material
+4. **Study Aids** (index X01+1): Interactive flashcards
+5. **Quiz** (index X01+2): Assessment with multiple choice questions
 
-*   **`content/` directory:**
-    *   This directory and its contents are essential for the website to function. Do not delete them.
-    *   It contains a common `style.css` and `script.js` for the entire book.
-    *   Each **Unit** has its own subdirectory (e.g., `content/unit1/`).
-    *   Inside each unit's folder, individual topics are stored as HTML fragments (e.g., `1-2_code_quality.html`). These are not complete HTML pages but snippets that are dynamically loaded into the main page.
-*   **User Experience (UX):**
-    *   **Initial View:** The landing page should be a general overview of the book.
-    *   **Navigation:**
-        *   A persistent navigation menu on the left, showing all Units and their Topics.
-        *   "Previous" and "Next" buttons for sequential navigation through topics.
-        *   The navigation should be fluid and seamless, loading content snippets dynamically.
-    *   **Progress Tracking:** A progress bar should always be visible, showing `n/m` topics completed and the overall percentage.
-    *   **Design:** The aesthetic should be modern and clean.
+**After completing each Topic:**
+1. **Topic Content:** Generate the main didactic material
+2. **Study Aids:** Create at least 5 flashcards as `x-x_study_aids.html`
+3. **Quiz:** Create a quiz with at least 5 questions as `x-x_quiz.html`
 
-## Collaboration and Style Guide
+**After completing all Topics in a Unit:**
+1. **Unit Test:** Create comprehensive test with at least 20 questions as `x-x_unit_test.html`
 
-### Feedback Loop
+### Study Aids Structure
 
-This document is a living document. Feedback from our interactions will be used to update these guidelines to ensure consistency and quality in the book's content and user experience.
+```html
+<div id="flashcards-section">
+  <div class="flashcards-container">
+    <div class="flashcard" onclick="this.classList.toggle('flipped')">
+      <div class="flashcard-front">Question</div>
+      <div class="flashcard-back">Answer</div>
+    </div>
+  </div>
+</div>
+```
 
-### UI/UX Style Guide
+- Place Mermaid diagrams directly in main content (`.html` files), not in study aids
+- Each flashcard should be touch-friendly with proper sizing
+- Use modern CSS for animations and interactions
 
-This section defines the UI/UX for the different components of the book.
+### Quiz Structure
 
-#### Quizzes
+```html
+<div id="quiz-section">
+  <div class="quiz-container">
+    <div class="quiz-card" data-question="1">
+      <div class="question">
+        <p>Question text</p>
+        <ul class="options">
+          <li><label><input type="radio" name="q1" value="a"> Option A</label></li>
+        </ul>
+        <div class="answer" data-correct="a"></div>
+      </div>
+    </div>
+  </div>
+  <div class="quiz-navigation">
+    <!-- Previous/Next buttons -->
+  </div>
+</div>
+```
 
-*   **Structure:** Quizzes are presented as a series of navigable cards, with one question per card.
-    *   Outer container: `<div id="quiz-section">`
-    *   Inner container: `<div class="quiz-container">`
-    *   Question cards: `<div class="quiz-card" data-question="X">`
-        *   Inside `quiz-card`: `<div class="question">`
-        *   Question text: `<p>`
-        *   Options list: `<ul class="options">` with `<li><label><input type="radio/checkbox"></label></li>`
-        *   Answer div: `<div class="answer" data-correct="X"></div>`
-*   **Navigation:** "Previous" and "Next" buttons are used to navigate between questions. The "Submit Answers" button is only visible on the last question.
-    *   Navigation buttons container: `<div class="quiz-navigation">`
-*   **Options:** Answer options are presented as labels that can be clicked to select the corresponding radio button or checkbox.
-    *   **Single-choice questions:** Use radio buttons (`<input type="radio">`). The correct answer is indicated in a `div` with class `answer` and a `data-correct` attribute with the value of the correct option.
-    *   **Multiple-choice questions:** Use checkboxes (`<input type="checkbox">`). The correct answers are indicated in a `div` with class `answer` and a `data-correct` attribute with a comma-separated list of the values of the correct options.
-*   **Submission:** After submitting the quiz, the questions are hidden and the results are displayed, showing the score, percentage, and a pass/fail message. A "Try Again" button is provided to reset the quiz.
-    *   Results container: `<div class="quiz-results-container"></div>`
-*   **Button Styles:**
-    *   Quiz navigation (Previous/Next): `btn-outline-secondary` and `btn-outline-primary`.
-    *   Quiz submission: `btn-success`.
-    *   Try Again: `btn-primary`.
+**Question Types:**
+- **Single-choice:** Use radio buttons with `data-correct` containing the correct option value
+- **Multiple-choice:** Use checkboxes with `data-correct` containing comma-separated correct values
+
+**Button Styles:**
+- Use modern CSS button classes: `btn`, `btn-primary`, `btn-secondary`
+- Ensure touch-friendly sizing (minimum 44px touch targets)
+
+## File Structure Requirements
+
+- **`src/book/` directory:** Essential for website function - DO NOT DELETE
+- **Unit directories:** Each unit has subdirectory (e.g., `src/book/unit1/`)
+- **Topic files:** HTML fragments (not complete pages) for dynamic loading
+- **Common files:** Shared `style.css` and `app.js` in `src/book/`
+- **No trailing spaces:** Clean HTML with proper formatting
+- **Self-closing tags:** Use proper HTML5 self-closing syntax
+
+## User Experience Requirements
+
+### Modern Responsive Design
+
+- **CSS Grid Layout:** Main application uses CSS Grid for layout structure
+- **Mobile-First Approach:** Design for mobile first, then progressively enhance
+- **Fluid Typography:** Use CSS clamp() and viewport units for responsive text
+- **Touch-Optimized:** All interactive elements are touch-friendly (44px minimum)
+- **Performance-First:** Fast loading, minimal dependencies, optimized assets
+
+### Core UX Requirements
+
+- **Initial View:** Book overview page with unit navigation cards
+- **Hierarchical Navigation:** 
+  - **Mobile:** Collapsible hamburger menu with smooth transitions
+  - **Desktop:** Persistent sidebar with unit toggles and topic lists
+  - **Unit Overviews:** Dedicated overview pages for each unit
+- **Sequential Navigation:** Smart Previous/Next buttons that respect content hierarchy
+- **Progress Tracking:** Dual progress bars (unit progress + overall progress)
+- **Search Integration:** Full-text search across all content with type indicators
+
+### Navigation Flow
+
+1. **Book Overview** → Unit selection or sequential start
+2. **Unit Overview** → Topic selection or start unit
+3. **Topic Content** → Study Aids → Quiz → Next Topic
+4. **Unit Completion** → Unit Test → Next Unit Overview

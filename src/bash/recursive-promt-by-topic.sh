@@ -53,12 +53,12 @@ Perfect. Now, to conclude **Topic {unit_topic}**, please create a **quiz with fi
 EOM
 # --- End of Prompt Templates ---
 
-find content/unit* \( -path content/unit1 -o -path "content/unit2/2-[1-4]*" \) -prune -o -type f -name "*.html" -printf "%p\n" \
+find src/book/unit* \( -path src/book/unit1 -o -path "src/book/unit2/2-[1-4]*" \) -prune -o -type f -name "*.html" -printf "%p\n" \
     | sort -V | while IFS= read -r filename; do
         echo "---"
         echo "Processing file: $filename"
 
-        # Extract unit and topic from the filename (e.g., content/unit1/1-4_... -> 1-4)
+        # Extract unit and topic from the filename (e.g., src/book/unit1/1-4_... -> 1-4)
         base_name=$(basename "$filename" .html)
         unit_topic=$(echo "$base_name" | cut -d'_' -f1)
         unit=$(echo "$unit_topic" | cut -d'-' -f1)

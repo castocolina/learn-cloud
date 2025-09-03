@@ -77,7 +77,7 @@ class CloudNativeBookApp {
         // Add book overview
         this.topics.push({
             index: -1,
-            url: 'content/overview.html',
+            url: 'src/book/overview.html',
             title: 'Book Overview',
             type: 'overview'
         });
