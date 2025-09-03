@@ -30,6 +30,7 @@ class CloudNativeBookApp {
             this.buildHierarchicalStructure();
             this.setupEventListeners();
             this.initializeLibraries();
+            this.buildSearchIndex();
             this.loadBookOverview();
             
             console.log('✅ App initialization complete');
@@ -515,6 +516,62 @@ class CloudNativeBookApp {
         console.log('🎨 Prism syntax highlighting ready');
     }
 
+    async buildSearchIndex() {
+        // Build search index with Lunr.js if available
+        if (typeof lunr === 'undefined') {
+            console.log('🔍 Lunr.js not available, using fallback search');
+            return;
+        }
+
+        try {
+            console.log('🔍 Building search index...');
+            
+            // Preload some content for indexing (sample a few important pages)
+            const importantTopics = this.topics.filter(topic => 
+                topic.type === 'unit_overview' || 
+                topic.type === 'content' || 
+                topic.type === 'overview'
+            ).slice(0, 20); // Limit to prevent too many requests
+
+            for (const topic of importantTopics) {
+                try {
+                    const response = await fetch(topic.url);
+                    if (response.ok) {
+                        const html = await response.text();
+                        // Extract text content from HTML
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        topic.content = doc.body.textContent || doc.body.innerText || '';
+                    }
+                } catch (error) {
+                    console.warn(`Failed to load content for indexing: ${topic.url}`);
+                }
+            }
+
+            // Build Lunr index
+            this.searchIndex = lunr(function () {
+                this.ref('index');
+                this.field('title', { boost: 10 });
+                this.field('content');
+                this.field('type');
+
+                // Add documents to index
+                for (const topic of this.topics) {
+                    this.add({
+                        index: topic.index,
+                        title: topic.title,
+                        content: topic.content || '',
+                        type: topic.type
+                    });
+                }
+            }.bind({ topics: this.topics }));
+
+            console.log('✅ Search index built successfully');
+        } catch (error) {
+            console.error('❌ Failed to build search index:', error);
+        }
+    }
+
     initializeContentFeatures() {
         // Re-run Mermaid on new content
         if (typeof mermaid !== 'undefined') {
@@ -599,34 +656,53 @@ class CloudNativeBookApp {
             return;
         }
 
-        // Simple search implementation
-        const results = this.topics.filter(topic => 
-            topic.title.toLowerCase().includes(query.toLowerCase())
-        ).slice(0, 8);
+        try {
+            // Enhanced search implementation with content indexing
+            let results = [];
+            
+            if (typeof lunr !== 'undefined' && this.searchIndex) {
+                // Use Lunr.js for full-text search if available
+                const searchResults = this.searchIndex.search(query);
+                results = searchResults.map(result => {
+                    return this.topics.find(topic => topic.index.toString() === result.ref);
+                }).filter(Boolean).slice(0, 8);
+            } else {
+                // Fallback to simple title and content search
+                const queryLower = query.toLowerCase();
+                results = this.topics.filter(topic => {
+                    return topic.title.toLowerCase().includes(queryLower) ||
+                           (topic.content && topic.content.toLowerCase().includes(queryLower));
+                }).slice(0, 8);
+            }
 
-        const resultHtml = results.map(result => `
-            <div class="search-result-item" data-index="${result.index}">
-                <div class="search-result-title">${result.title}</div>
-                <div class="search-result-type">${this.getTypeLabel(result.type)}</div>
-            </div>
-        `).join('');
+            const resultHtml = results.map(result => `
+                <div class="search-result-item" data-index="${result.index}">
+                    <div class="search-result-title">${result.title}</div>
+                    <div class="search-result-type">${this.getTypeLabel(result.type)}</div>
+                </div>
+            `).join('');
 
-        this.elements.searchResults.innerHTML = resultHtml || 
-            '<div class="search-result-item">No results found</div>';
+            this.elements.searchResults.innerHTML = resultHtml || 
+                '<div class="search-result-item">No results found</div>';
 
-        // Add click handlers to results
-        this.elements.searchResults.querySelectorAll('[data-index]').forEach(item => {
-            item.addEventListener('click', () => {
-                const index = parseInt(item.dataset.index, 10);
-                const topic = this.topics.find(t => t.index === index);
-                if (topic) {
-                    this.loadContent(topic.url, index);
-                    this.elements.searchInput.value = '';
-                    this.elements.searchResults.innerHTML = '';
-                    this.closeMobileMenu();
-                }
+            // Add click handlers to results
+            this.elements.searchResults.querySelectorAll('[data-index]').forEach(item => {
+                item.addEventListener('click', () => {
+                    const index = parseInt(item.dataset.index, 10);
+                    const topic = this.topics.find(t => t.index === index);
+                    if (topic) {
+                        this.loadContent(topic.url, index);
+                        this.elements.searchInput.value = '';
+                        this.elements.searchResults.innerHTML = '';
+                        this.closeMobileMenu();
+                    }
+                });
             });
-        });
+        } catch (error) {
+            console.error('Search error:', error);
+            this.elements.searchResults.innerHTML = 
+                '<div class="search-result-item">Search temporarily unavailable</div>';
+        }
     }
 
     getTypeLabel(type) {
