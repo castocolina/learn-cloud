@@ -1,7 +1,7 @@
 <div class="topic-content">
     <header class="topic-header">
         <h1 class="topic-title">Unit 1.4 Core Backend Concepts</h1>
-    </div>
+    </header>
 
     <p class="lead">With a solid foundation in Python's syntax and quality standards, we now move to the core of backend development: defining application logic and managing data. This topic covers how to structure your code using Object-Oriented Programming (OOP) and how to interact with the two main categories of databases you'll encounter in cloud-native applications: relational (SQL) and NoSQL.</p>
 
@@ -250,7 +250,12 @@ graph TD
         <strong>MongoDB</strong> is a leading document database that stores data in flexible, JSON-like documents called BSON. This schema-less approach is ideal for applications with rapidly evolving data models.
     </p>
     <p>Run MongoDB with Docker:</p>
-    <pre><code class="language-bash">docker run --name mongo-db -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=example -d mongo:6</code></pre>
+    <pre><code class="language-bash">docker run \
+  --name mongo-db \
+  -p 27017:27017 \
+  -e MONGO_INITDB_ROOT_USERNAME=root \
+  -e MONGO_INITDB_ROOT_PASSWORD=example \
+  -d mongo:6</code></pre>
     <p>Install the official Python driver:</p>
     <pre><code class="language-bash">poetry add pymongo</code></pre>
 
@@ -288,7 +293,7 @@ client.close()
 
     <div class="text-center my-4">
         <pre class="mermaid">
-graph LR
+graph TD
     A["Database Types"] --> B("Relational Databases");
     A --> C("NoSQL Databases");
 

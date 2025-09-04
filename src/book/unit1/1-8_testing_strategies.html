@@ -86,7 +86,7 @@ def test_multiply():
     </p>
     <div class="text-center my-4">
         <pre class="mermaid">
-graph LR
+graph TD
     A["Component Under Test"] --> B{"Real Dependency?"};
     B -- "Yes (Integration Test)" --> C["Real Dependency"];
     B -- "No (Unit Test)" --> D["Mock Object"];

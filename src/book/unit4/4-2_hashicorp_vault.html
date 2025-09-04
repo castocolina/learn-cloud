@@ -23,7 +23,12 @@
     <p>For development, you can run Vault in "dev" mode, which is an in-memory server with a pre-known root token.</p>
     <pre><code class="language-bash">
 # The root token will be printed to the console. You will need this!
-docker run -d --cap-add=IPC_LOCK -p 8200:8200 --name=vault hashicorp/vault:1.16 server -dev -dev-root-token-id="root"
+docker run -d \
+  --cap-add=IPC_LOCK \
+  -p 8200:8200 \
+  --name=vault \
+  hashicorp/vault:1.16 \
+  server -dev -dev-root-token-id="root"
     </code></pre>
     <p>The Vault UI is available at <a href="http://localhost:8200" target="_blank">http://localhost:8200</a>. You can log in with the root token (`root`).</p>
 

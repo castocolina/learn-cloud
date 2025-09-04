@@ -83,7 +83,8 @@ func main() {
     <h4>Installation</h4>
     <p>You can install it using the official script or via package managers. Full instructions are on their <a href="https://golangci-lint.run/" target="_blank">website</a>.</p>
     <pre><code class="language-bash"># Example installation on macOS/Linux
-curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.55.2</code></pre>
+curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh \
+  | sh -s -- -b $(go env GOPATH)/bin v1.55.2</code></pre>
 
     <h4>Configuration and Usage</h4>
     <p>You configure `golangci-lint` with a <code>.golangci.yml</code> file in your project root.</p>

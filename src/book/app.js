@@ -246,6 +246,9 @@ class CloudNativeBookApp {
         if (this.elements.nextBtn) {
             this.elements.nextBtn.addEventListener('click', () => this.navigate(1));
         }
+        
+        // Mermaid diagram expand functionality
+        this.setupMermaidExpansion();
 
         // Keyboard navigation
         document.addEventListener('keydown', (e) => {
@@ -600,6 +603,9 @@ class CloudNativeBookApp {
         if (typeof Prism !== 'undefined') {
             Prism.highlightAllUnder(this.elements.contentArea);
         }
+
+        // Initialize Mermaid interactivity for new content
+        this.initializeMermaidInteractivity();
 
         // Initialize any interactive content
         this.initializeFlashcards();
@@ -1237,6 +1243,101 @@ class CloudNativeBookApp {
                 </button>
             </div>
         `;
+    }
+
+    setupMermaidExpansion() {
+        // Only setup global listeners once
+        if (!this.mermaidListenersSetup) {
+            // Set up event delegation from the document level
+            document.addEventListener('click', (e) => {
+                // Check if clicked element is within a Mermaid diagram
+                const mermaidPre = e.target.closest('pre.mermaid');
+                if (mermaidPre && !mermaidPre.classList.contains('modal-diagram')) {
+                    // Only open modal if it's not already a modal diagram
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.openMermaidModal(mermaidPre);
+                } else if (e.target.closest('.mermaid-modal-close') || 
+                           (e.target.classList.contains('mermaid-modal') && e.target === e.currentTarget)) {
+                    this.closeMermaidModal();
+                }
+            });
+
+            // ESC key to close modal
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    this.closeMermaidModal();
+                }
+            });
+
+            this.mermaidListenersSetup = true;
+        }
+
+        // Setup Mermaid interactivity after content loads
+        this.initializeMermaidInteractivity();
+    }
+
+    initializeMermaidInteractivity() {
+        const mermaidElements = this.elements.contentArea.querySelectorAll('pre.mermaid');
+        
+        mermaidElements.forEach((pre, index) => {
+            // Skip if already processed or is a modal diagram
+            if (pre.hasAttribute('data-interactive') || pre.classList.contains('modal-diagram')) {
+                return;
+            }
+
+            // Make diagram clickable - styles are handled by CSS
+            pre.setAttribute('data-interactive', 'true');
+        });
+    }
+
+    openMermaidModal(mermaidPre) {
+        const mermaidContent = mermaidPre.cloneNode(true);
+        
+        // Remove interactivity from cloned diagram
+        mermaidContent.style.cursor = 'default';
+        mermaidContent.title = '';
+        mermaidContent.removeAttribute('data-interactive');
+        mermaidContent.classList.add('modal-diagram');
+        
+        // Remove any hover effects and scale
+        mermaidContent.style.transform = 'none';
+        mermaidContent.style.transition = 'none';
+        
+        // Create modal
+        const modal = document.createElement('div');
+        modal.className = 'mermaid-modal';
+        
+        const modalContent = document.createElement('div');
+        modalContent.className = 'mermaid-modal-content';
+        
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'mermaid-modal-close';
+        closeBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
+        closeBtn.title = 'Close diagram';
+        
+        modalContent.appendChild(closeBtn);
+        modalContent.appendChild(mermaidContent);
+        modal.appendChild(modalContent);
+        
+        // Add to DOM
+        document.body.appendChild(modal);
+        
+        // Re-render Mermaid in modal if needed
+        if (typeof mermaid !== 'undefined') {
+            mermaid.init(undefined, mermaidContent);
+        }
+        
+        // Prevent body scroll
+        document.body.style.overflow = 'hidden';
+    }
+
+    closeMermaidModal() {
+        const modal = document.querySelector('.mermaid-modal');
+        if (modal) {
+            modal.remove();
+            document.body.style.overflow = '';
+        }
     }
 }
 

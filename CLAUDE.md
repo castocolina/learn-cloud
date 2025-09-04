@@ -31,7 +31,7 @@ The authoritative structure for this book—its units and topics—is defined in
 The SPA is built with **modern CSS Grid** architecture and **ES6 modules** for a clean, performant application. **No Bootstrap or framework dependencies**. Use these standardized libraries:
 
 - **Icons:** Use **[Bootstrap Icons](https://icons.getbootstrap.com/)** for all icons. The CDN is included in `index.html`.
-- **Diagrams as Code:** Use **Mermaid.js** for all diagrams. **Critical Rule:** All text descriptions for both **nodes** (e.g., `A["Node Text"]`, `B("Node description")`, `C{"Node description"}`) and **connectors/links** (e.g., `A --|"Link Text"|--> B`) **must always** be enclosed in double quotes. This prevents rendering errors. Use vertical (TD) direction over horizontal (LR) when possible.
+- **Diagrams as Code:** Use **Mermaid.js** for all diagrams. **Critical Rule:** All text descriptions for both **nodes** (e.g., `A["Node Text"]`, `B("Node description")`, `C{"Node description"}`) and **connectors/links** (e.g., `A --|"Link Text"|--> B`) **must always** be enclosed in double quotes. This prevents rendering errors. Use vertical (TD) direction over horizontal (LR) when possible. **All Mermaid diagrams are automatically interactive** - clicking any diagram opens it in a full-screen modal view for better visibility on all devices.
 - **Code Highlighting:** Use **[Prism.js](https://prismjs.com/)** for syntax highlighting in all code blocks.
 - **Data Visualization:** Use **[Chart.js](https://www.chartjs.org/)** to create interactive charts and graphs.
 - **Client-Side Search:** Use **[Lunr.js](https://lunrjs.com/)** for fast, responsive full-text search.
@@ -48,6 +48,23 @@ The SPA is built with **modern CSS Grid** architecture and **ES6 modules** for a
 - **Custom CSS Properties:** Use CSS variables for consistent theming and responsive design
 - **No Framework Dependencies:** Pure CSS with semantic class names, no Bootstrap or utility frameworks
 - **Mobile-First Responsive:** Design for mobile first, then progressively enhance for larger screens
+- **Mobile Grid Standards:** 
+  - Use `@media (max-width: 390px)` breakpoints for extra small devices
+  - Convert grid layouts to single column (`grid-template-columns: 1fr`) on mobile
+  - Avoid `minmax()` values larger than 200px that can cause horizontal overflow
+  - Set `min-width: 100%` for buttons and components on mobile to prevent overflow
+  - Apply `box-sizing: border-box` and `max-width: 100%` globally for small screens
+- **Z-Index Hierarchy Standards:**
+  - Always use CSS variables from the standardized hierarchy defined in `:root`
+  - `--z-content: 10` - Base content layer
+  - `--z-page-navigation: 20` - Previous/Next navigation buttons  
+  - `--z-floating-nav: 30` - Floating navigation elements
+  - `--z-sidebar: 40` - Desktop sidebar
+  - `--z-mobile-header: 50` - Mobile header bar
+  - `--z-mobile-sidebar: 60` - Mobile sidebar (when open) - **CRITICAL for menu visibility**
+  - `--z-dropdowns: 70` - Search results, dropdowns
+  - `--z-modals: 90` - Modal dialogs (flashcards, diagrams)
+  - `--z-tooltips: 100` - Tooltips and overlays
 
 ### ES6 Module Architecture
 - **Modern JavaScript:** Use ES6 modules, classes, and modern JavaScript patterns
@@ -169,6 +186,30 @@ document.getElementById('flashcard-modal').addEventListener('click', function(ev
 - **Touch-Friendly:** Proper sizing and hover states for all device types
 - **No External Libraries:** Use native HTML5 dialog and CSS animations (no external modal library needed)
 - Place Mermaid diagrams directly in main content (`.html` files), not in study aids
+
+### Mermaid Diagram Standards
+
+**Interactive Diagram Requirements:**
+
+All Mermaid diagrams are automatically interactive and expandable:
+
+- **Click to Expand:** Every diagram can be clicked/touched to open in full-screen modal
+- **Mobile Optimized:** Diagrams automatically scale down on mobile devices (≤768px)
+- **Hover Effects:** Subtle hover animations indicate interactivity
+- **Universal Experience:** Same behavior across all devices (desktop/tablet/mobile)
+- **Simple Implementation:** Just use standard `<pre class="mermaid">` - no additional wrappers needed
+- **Responsive Design:** Prefer vertical (TD) layouts over horizontal (LR) for mobile compatibility
+
+**Standard Format:**
+```html
+<div class="text-center my-4">
+    <pre class="mermaid">
+    graph TD
+        A["Node Text"] --> B["Another Node"];
+    </pre>
+    <small class="text-muted">Diagram: Description of the diagram</small>
+</div>
+```
 
 ### Quiz & Exam System
 

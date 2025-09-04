@@ -118,7 +118,7 @@ jobs:
 
     <div class="text-center my-4">
         <pre class="mermaid">
-            graph LR
+            graph TD
                 A["GitHub Secrets UI"] -- "User adds secret" --> B["Encrypted Storage"];
                 B -- "Injects at runtime" --> C["Workflow Runner"];
                 C -- "Exposes as Env Var or Input" --> D["Step using the secret"];

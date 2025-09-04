@@ -43,7 +43,12 @@ graph LR
 
     <h4>Setup: Running RabbitMQ with Docker</h4>
     <pre><code class="language-bash">
-docker run -d --hostname my-rabbit --name some-rabbit -p 5672:5672 -p 15672:15672 rabbitmq:3-management-alpine
+docker run -d \
+  --hostname my-rabbit \
+  --name some-rabbit \
+  -p 5672:5672 \
+  -p 15672:15672 \
+  rabbitmq:3-management-alpine
 </code></pre>
     <div class="alert alert-info">
         The <code>-p 15672:15672</code> port exposes the RabbitMQ Management UI, which you can access at <a href="http://localhost:15672" target="_blank">http://localhost:15672</a> (default guest/guest credentials).
@@ -119,7 +124,7 @@ channel.start_consuming()
 
     <div class="text-center my-4">
         <pre class="mermaid">
-            graph LR
+            graph TD
                 Client["gRPC Client"] --> Stub["Client Stub (Generated Code)"];
                 Stub --> Network["Network (HTTP/2)"];
                 Network --> ServerStub["Server Stub (Generated Code)"];

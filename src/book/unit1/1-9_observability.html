@@ -149,12 +149,12 @@ docker run \
 
     <div class="text-center my-4">
         <pre class="mermaid">
-graph LR
-    App1["Application 1"] -- "Exposes Metrics" --> Prometheus["Prometheus Server"];
-    App2["Application 2"] -- "Exposes Metrics" --> Prometheus;
-    Prometheus -- "Stores" --> TimeSeriesDB["Time-Series Database"];
-    Prometheus -- "Alerts" --> Alertmanager["Alertmanager"];
-    Prometheus -- "Queries" --> Grafana["Grafana (Visualization)"];
+graph TD
+    App1["Application 1"] --> Prometheus["Prometheus Server"];
+    App2["Application 2"] --> Prometheus;
+    Prometheus --> TimeSeriesDB["Time-Series Database"];
+    Prometheus --> Alertmanager["Alertmanager"];
+    Prometheus --> Grafana["Grafana (Visualization)"];
         </pre>
         <small class="text-muted">Diagram: Prometheus Metrics Collection Architecture</small>
     </div>
@@ -215,7 +215,12 @@ async def get_user(user_id: int):
 
     <h4>Setup: Running Jaeger with Docker</h4>
     <pre><code class="language-bash">
-docker run -d --name jaeger -p 16686:16686 -p 4317:4317 -p 4318:4318 jaegertracing/all-in-one:latest
+docker run -d \
+  --name jaeger \
+  -p 16686:16686 \
+  -p 4317:4317 \
+  -p 4318:4318 \
+  jaegertracing/all-in-one:latest
     </code></pre>
     <p>Access Jaeger UI at <a href="http://localhost:16686" target="_blank">http://localhost:16686</a>. You can search for traces and visualize the flow of requests through your services.</p>
 
