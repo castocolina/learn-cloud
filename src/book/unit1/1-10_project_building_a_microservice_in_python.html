@@ -1,32 +1,38 @@
-
 <div class="topic-content">
-    <header class="topic-header">
+    <header class="topic-header" aria-label="Header">
         <h1 class="topic-title">Unit 1.10: Project - Building a Microservice in Python</h1>
-        <p class="topic-intro">This project is your opportunity to apply the knowledge gained throughout Unit 1. We will build a simple, yet functional, <strong>Product Microservice</strong> using Python, FastAPI, and PostgreSQL. This service will demonstrate core backend concepts, including API development, database interaction, structured logging, and basic messaging.</p>
+        <p>
+            using Python, FastAPI, and PostgreSQL. This service will demonstrate core backend concepts, including API
+            development, database interaction, structured logging, and basic messaging.
+        </p>
     </header>
 
     <div class="content-section">
+        <h2>Project Goal</h2>
+        <p>
+            To create a RESTful API for managing products. The service will allow creating new products, retrieving product
+            details, and listing all products. It will interact with a PostgreSQL database and send a message to a RabbitMQ
+            queue upon product creation.
+        </p>
 
-    <h2>Project Goal</h2>
-    <p>
-        To create a RESTful API for managing products. The service will allow creating new products, retrieving product details, and listing all products. It will interact with a PostgreSQL database and send a message to a RabbitMQ queue upon product creation.
-    </p>
+        <h3>Key Concepts Integrated:</h3>
+        <ul>
+            <li><strong>FastAPI:</strong> Building the RESTful API, data validation with Pydantic, Dependency Injection.</li>
+            <li><strong>SQLAlchemy:</strong> Object-Relational Mapping (ORM) for PostgreSQL database interactions.</li>
+            <li>
+                <strong><code>asyncio</code>:</strong> Leveraging FastAPI's asynchronous nature.
+            </li>
+            <li><strong>Structured Logging:</strong> Implementing JSON-formatted logs for better observability.</li>
+            <li><strong>RabbitMQ:</strong> Sending messages to a queue for asynchronous processing.</li>
+            <li>
+                <strong><code>pytest</code> &amp; Testcontainers:</strong> Writing unit and integration tests with real database
+                instances.
+            </li>
+        </ul>
 
-    <h3>Key Concepts Integrated:</h3>
-    <ul>
-        <li><strong>FastAPI:</strong> Building the RESTful API, data validation with Pydantic, Dependency Injection.</li>
-        <li><strong>SQLAlchemy:</strong> Object-Relational Mapping (ORM) for PostgreSQL database interactions.</li>
-        <li><strong><code>asyncio</code>:</strong> Leveraging FastAPI's asynchronous nature.</li>
-        <li><strong>Structured Logging:</strong> Implementing JSON-formatted logs for better observability.</li>
-        <li><strong>RabbitMQ:</strong> Sending messages to a queue for asynchronous processing.</li>
-        <li><strong><code>pytest</code> & Testcontainers:</strong> Writing unit and integration tests with real database instances.</li>
-    </ul>
-
-    
-
-    <h2>Project Setup</h2>
-    <p>Start by creating a project directory and the basic file structure:</p>
-    <pre><code class="language-bash">
+        <h2>Project Setup</h2>
+        <p>Start by creating a project directory and the basic file structure:</p>
+        <pre><code class="language-bash">
 mkdir product-service
 cd product-service
 mkdir app tests
@@ -35,9 +41,9 @@ touch tests/__init__.py tests/test_api.py tests/test_crud.py
 touch requirements.txt Dockerfile .env.example README.md
     </code></pre>
 
-    <h3><code>requirements.txt</code></h3>
-    <p>Add the necessary Python packages:</p>
-    <pre><code class="language-text">
+        <h3><code>requirements.txt</code></h3>
+        <p>Add the necessary Python packages:</p>
+        <pre><code class="language-text">
 fastapi==0.103.2
 uvicorn==0.23.2
 sqlalchemy==2.0.21
@@ -50,27 +56,27 @@ testcontainers-python[postgresql]==3.7.0
 httpx==0.25.0 # For testing FastAPI
     </code></pre>
 
-    <h3><code>.env.example</code></h3>
-    <p>Define environment variables for database connection:</p>
-    <pre><code class="language-text">
+        <h3><code>.env.example</code></h3>
+        <p>Define environment variables for database connection:</p>
+        <pre><code class="language-text">
 DATABASE_URL=postgresql://user:password@localhost:5432/mydatabase
 RABBITMQ_URL=amqp://guest:guest@localhost:5672/
     </code></pre>
-    <p>Remember to create a `.env` file with actual values or set these as environment variables when running locally.</p>
+        <p>
+            Remember to create a `.env` file with actual values or set these as environment variables when running locally.
+        </p>
 
-    
+        <h2>1. Database Setup</h2>
 
-    <h2>1. Database Setup</h2>
-
-    <h3><code>app/database.py</code></h3>
-    <p>This file will configure our SQLAlchemy engine and session.</p>
-    <pre><code class="language-python">
+        <h3><code>app/database.py</code></h3>
+        <p>This file will configure our SQLAlchemy engine and session.</p>
+        <pre><code class="language-python">
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 # Use environment variable for database URL
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:password@localhost:5432/mydatabase")
+DATABASE_URL = os.getenv(&quot;DATABASE_URL&quot;, &quot;postgresql://user:password@localhost:5432/mydatabase&quot;)
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -84,14 +90,14 @@ def get_db():
         db.close()
     </code></pre>
 
-    <h3><code>app/models.py</code></h3>
-    <p>Define the SQLAlchemy ORM model for our <code>Product</code> entity.</p>
-    <pre><code class="language-python">
+        <h3><code>app/models.py</code></h3>
+        <p>Define the SQLAlchemy ORM model for our <code>Product</code> entity.</p>
+        <pre><code class="language-python">
 from sqlalchemy import Column, Integer, String, Float
 from app.database import Base
 
 class Product(Base):
-    __tablename__ = "products"
+    __tablename__ = &quot;products&quot;
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
@@ -99,9 +105,9 @@ class Product(Base):
     price = Column(Float)
     </code></pre>
 
-    <h3><code>app/crud.py</code></h3>
-    <p>Implement Create, Read, Update, Delete (CRUD) operations for products.</p>
-    <pre><code class="language-python">
+        <h3><code>app/crud.py</code></h3>
+        <p>Implement Create, Read, Update, Delete (CRUD) operations for products.</p>
+        <pre><code class="language-python">
 from sqlalchemy.orm import Session
 from app.models import Product
 from app.schemas import ProductCreate
@@ -120,12 +126,10 @@ def create_product(db: Session, product: ProductCreate):
     return db_product
     </code></pre>
 
-    
-
-    <h2>2. Pydantic Schemas</h2>
-    <h3><code>app/schemas.py</code></h3>
-    <p>Define Pydantic models for data validation and serialization.</p>
-    <pre><code class="language-python">
+        <h2>2. Pydantic Schemas</h2>
+        <h3><code>app/schemas.py</code></h3>
+        <p>Define Pydantic models for data validation and serialization.</p>
+        <pre><code class="language-python">
 from pydantic import BaseModel
 from typing import Optional
 
@@ -144,45 +148,41 @@ class ProductResponse(ProductBase):
         orm_mode = True # Enable ORM mode for SQLAlchemy compatibility
     </code></pre>
 
-    
-
-    <h2>3. Messaging (RabbitMQ Producer)</h2>
-    <h3><code>app/messaging.py</code></h3>
-    <p>A simple function to send a message to RabbitMQ when a product is created.</p>
-    <pre><code class="language-python">
+        <h2>3. Messaging (RabbitMQ Producer)</h2>
+        <h3><code>app/messaging.py</code></h3>
+        <p>A simple function to send a message to RabbitMQ when a product is created.</p>
+        <pre><code class="language-python">
 import pika
 import os
 import json
 
-RABBITMQ_URL = os.getenv("RABBITMQ_URL", "amqp://guest:guest@localhost:5672/")
+RABBITMQ_URL = os.getenv(&quot;RABBITMQ_URL&quot;, &quot;amqp://guest:guest@localhost:5672/&quot;)
 
 def publish_product_created_event(product_data: dict):
     try:
         connection = pika.BlockingConnection(pika.URLParameters(RABBITMQ_URL))
         channel = connection.channel()
-        channel.queue_declare(queue='product_events', durable=True)
+        channel.queue_declare(queue=&#x27;product_events&#x27;, durable=True)
 
         message = json.dumps(product_data)
         channel.basic_publish(
-            exchange='',
-            routing_key='product_events',
+            exchange=&#x27;&#x27;,
+            routing_key=&#x27;product_events&#x27;,
             body=message,
             properties=pika.BasicProperties(
                 delivery_mode=pika.DeliveryMode.Persistent # Make message persistent
             )
         )
-        print(f" [x] Sent 'Product Created' event: {product_data['id']}")
+        print(f&quot; [x] Sent &#x27;Product Created&#x27; event: {product_data[&#x27;id&#x27;]}&quot;)
         connection.close()
     except Exception as e:
-        print(f"Error publishing message to RabbitMQ: {e}")
+        print(f&quot;Error publishing message to RabbitMQ: {e}&quot;)
     </code></pre>
 
-    
-
-    <h2>4. FastAPI Application</h2>
-    <h3><code>app/main.py</code></h3>
-    <p>The main FastAPI application, integrating all components.</p>
-    <pre><code class="language-python">
+        <h2>4. FastAPI Application</h2>
+        <h3><code>app/main.py</code></h3>
+        <p>The main FastAPI application, integrating all components.</p>
+        <pre><code class="language-python">
 import logging
 from pythonjsonlogger import jsonlogger
 from typing import List
@@ -198,111 +198,112 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
 formatter = jsonlogger.JsonFormatter(
-    '%(asctime)s %(levelname)s %(name)s %(message)s %(filename)s %(lineno)d %(process)d %(thread)d'
+    &#x27;%(asctime)s %(levelname)s %(name)s %(message)s %(filename)s %(lineno)d %(process)d %(thread)d&#x27;
 )
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 # --- Database Table Creation (for initial setup) ---
-# This will create tables if they don't exist. In production, use migrations.
+# This will create tables if they don&#x27;t exist. In production, use migrations.
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
-    title="Product Microservice",
-    description="A simple microservice for managing products.",
-    version="1.0.0",
+    title=&quot;Product Microservice&quot;,
+    description=&quot;A simple microservice for managing products.&quot;,
+    version=&quot;1.0.0&quot;,
 )
 
-@app.middleware("http")
+@app.middleware(&quot;http&quot;)
 async def log_requests(request: Request, call_next):
-    request_id = request.headers.get("X-Request-ID") or "no-request-id"
-    with logging.Logger.manager.emitted_events.context({"request_id": request_id}):
-        logger.info("Incoming request", extra={
-            "method": request.method,
-            "url": str(request.url),
-            "client_host": request.client.host
+    request_id = request.headers.get(&quot;X-Request-ID&quot;) or &quot;no-request-id&quot;
+    with logging.Logger.manager.emitted_events.context({&quot;request_id&quot;: request_id}):
+        logger.info(&quot;Incoming request&quot;, extra={
+            &quot;method&quot;: request.method,
+            &quot;url&quot;: str(request.url),
+            &quot;client_host&quot;: request.client.host
         })
         response = await call_next(request)
-        logger.info("Outgoing response", extra={
-            "status_code": response.status_code
+        logger.info(&quot;Outgoing response&quot;, extra={
+            &quot;status_code&quot;: response.status_code
         })
         return response
 
-@app.post("/products/", response_model=schemas.ProductResponse, status_code=status.HTTP_201_CREATED)
+@app.post(&quot;/products/&quot;, response_model=schemas.ProductResponse, status_code=status.HTTP_201_CREATED)
 async def create_product(product: schemas.ProductCreate, db: Session = Depends(get_db)):
     db_product = crud.create_product(db=db, product=product)
     # Publish event to RabbitMQ
     messaging.publish_product_created_event(db_product.dict())
-    logger.info("Product created successfully", extra={"product_id": db_product.id})
+    logger.info(&quot;Product created successfully&quot;, extra={&quot;product_id&quot;: db_product.id})
     return db_product
 
-@app.get("/products/", response_model=List[schemas.ProductResponse])
+@app.get(&quot;/products/&quot;, response_model=List[schemas.ProductResponse])
 async def read_products(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     products = crud.get_products(db, skip=skip, limit=limit)
-    logger.info("Products retrieved", extra={"count": len(products), "skip": skip, "limit": limit})
+    logger.info(&quot;Products retrieved&quot;, extra={&quot;count&quot;: len(products), &quot;skip&quot;: skip, &quot;limit&quot;: limit})
     return products
 
-@app.get("/products/{product_id}", response_model=schemas.ProductResponse)
+@app.get(&quot;/products/{product_id}&quot;, response_model=schemas.ProductResponse)
 async def read_product(product_id: int, db: Session = Depends(get_db)):
     db_product = crud.get_product(db, product_id=product_id)
     if db_product is None:
-        logger.warning("Product not found", extra={"product_id": product_id})
-        raise HTTPException(status_code=404, detail="Product not found")
-    logger.info("Product retrieved", extra={"product_id": product_id})
+        logger.warning(&quot;Product not found&quot;, extra={&quot;product_id&quot;: product_id})
+        raise HTTPException(status_code=404, detail=&quot;Product not found&quot;)
+    logger.info(&quot;Product retrieved&quot;, extra={&quot;product_id&quot;: product_id})
     return db_product
     </code></pre>
 
-    
+        <h2>5. Testing</h2>
+        <p>
+            Robust testing is crucial. We'll use <code>pytest</code> for both unit and integration tests, leveraging
+            <code>unittest.mock</code> for isolation and <code>testcontainers</code> for real database environments.
+        </p>
 
-    <h2>5. Testing</h2>
-    <p>Robust testing is crucial. We'll use <code>pytest</code> for both unit and integration tests, leveraging <code>unittest.mock</code> for isolation and <code>testcontainers</code> for real database environments.</p>
-
-    <h3><code>tests/test_crud.py</code> (Unit Tests for CRUD operations)</h3>
-    <pre><code class="language-python">
+        <h3><code>tests/test_crud.py</code> (Unit Tests for CRUD operations)</h3>
+        <pre><code class="language-python">
 from unittest.mock import MagicMock
 from app import crud, models, schemas
 
 def test_create_product():
     db_session = MagicMock() # Mock the database session
-    product_data = schemas.ProductCreate(name="Test Product", description="A test description", price=10.99)
-    
+    product_data = schemas.ProductCreate(name=&quot;Test Product&quot;, description=&quot;A test description&quot;, price=10.99)
+
     # Configure the mock to return a product when add/commit/refresh are called
-    mock_db_product = models.Product(id=1, name="Test Product", description="A test description", price=10.99)
+    mock_db_product = models.Product(id=1, name=&quot;Test Product&quot;, description=&quot;A test description&quot;, price=10.99)
     db_session.add.return_value = None
     db_session.commit.return_value = None
-    db_session.refresh.side_effect = lambda x: setattr(x, 'id', 1) # Simulate ID assignment
+    db_session.refresh.side_effect = lambda x: setattr(x, &#x27;id&#x27;, 1) # Simulate ID assignment
 
     created_product = crud.create_product(db=db_session, product=product_data)
 
     db_session.add.assert_called_once()
     db_session.commit.assert_called_once()
     db_session.refresh.assert_called_once_with(created_product)
-    assert created_product.name == "Test Product"
+    assert created_product.name == &quot;Test Product&quot;
     assert created_product.id == 1
 
 def test_get_product():
     db_session = MagicMock()
-    mock_product = models.Product(id=1, name="Existing Product", description="Desc", price=20.0)
+    mock_product = models.Product(id=1, name=&quot;Existing Product&quot;, description=&quot;Desc&quot;, price=20.0)
     db_session.query.return_value.filter.return_value.first.return_value = mock_product
 
     product = crud.get_product(db=db_session, product_id=1)
-    assert product.name == "Existing Product"
+    assert product.name == &quot;Existing Product&quot;
 
 def test_get_products():
     db_session = MagicMock()
     mock_products = [
-        models.Product(id=1, name="P1", description="D1", price=10.0),
-        models.Product(id=2, name="P2", description="D2", price=20.0),
+        models.Product(id=1, name=&quot;P1&quot;, description=&quot;D1&quot;, price=10.0),
+        models.Product(id=2, name=&quot;P2&quot;, description=&quot;D2&quot;, price=20.0),
     ]
     db_session.query.return_value.offset.return_value.limit.return_value.all.return_value = mock_products
 
     products = crud.get_products(db=db_session, skip=0, limit=10)
     assert len(products) == 2
-    assert products[0].name == "P1"
+    assert products[0].name == &quot;P1&quot;
     </code></pre>
 
-    <h3><code>tests/test_api.py</code> (Integration Tests for FastAPI Endpoints)</h3>
-    <pre><code class="language-python">
+        <h3><code>tests/test_api.py</code> (Integration Tests for FastAPI Endpoints)</h3>
+        <pre><code class="language-python">
 import pytest
 from fastapi.testclient import TestClient
 from testcontainers.postgres import PostgreSQLContainer
@@ -314,20 +315,20 @@ from app import models, crud, schemas
 
 # Override the DATABASE_URL for tests
 import os
-os.environ["DATABASE_URL"] = "postgresql://test:test@localhost:5432/testdb"
-os.environ["RABBITMQ_URL"] = "amqp://guest:guest@localhost:5672/"
+os.environ[&quot;DATABASE_URL&quot;] = &quot;postgresql://test:test@localhost:5432/testdb&quot;
+os.environ[&quot;RABBITMQ_URL&quot;] = &quot;amqp://guest:guest@localhost:5672/&quot;
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope=&quot;module&quot;)
 def postgres_container():
-    with PostgreSQLContainer("postgres:15-alpine") as postgres:
+    with PostgreSQLContainer(&quot;postgres:15-alpine&quot;) as postgres:
         yield postgres
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope=&quot;module&quot;)
 def rabbitmq_container():
-    with RabbitMqContainer("rabbitmq:3-management-alpine") as rabbitmq:
+    with RabbitMqContainer(&quot;rabbitmq:3-management-alpine&quot;) as rabbitmq:
         yield rabbitmq
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope=&quot;function&quot;)
 def db_session(postgres_container):
     # Set the test database URL for the app
     test_db_url = postgres_container.get_connection_url()
@@ -337,7 +338,7 @@ def db_session(postgres_container):
     # Create tables for the test database
     Base.metadata.create_all(bind=test_engine)
 
-    # Override the app's get_db dependency to use the test database
+    # Override the app&#x27;s get_db dependency to use the test database
     def override_get_db():
         try:
             db = TestSessionLocal()
@@ -356,7 +357,7 @@ def db_session(postgres_container):
         # Clean up tables after each test function
         Base.metadata.drop_all(bind=test_engine)
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope=&quot;module&quot;)
 def client(db_session, rabbitmq_container):
     # The db_session fixture already sets up the DB override
     # The rabbitmq_container fixture ensures RabbitMQ is running
@@ -365,54 +366,52 @@ def client(db_session, rabbitmq_container):
 
 def test_create_product_api(client, db_session):
     response = client.post(
-        "/products/",
+        &quot;/products/&quot;,
         json={
-            "name": "Test Product API",
-            "description": "Description for API test",
-            "price": 99.99
+            &quot;name&quot;: &quot;Test Product API&quot;,
+            &quot;description&quot;: &quot;Description for API test&quot;,
+            &quot;price&quot;: 99.99
         }
     )
     assert response.status_code == 201
     data = response.json()
-    assert data["name"] == "Test Product API"
-    assert data["id"] is not None
+    assert data[&quot;name&quot;] == &quot;Test Product API&quot;
+    assert data[&quot;id&quot;] is not None
 
     # Verify product is in DB
-    db_product = db_session.query(models.Product).filter(models.Product.id == data["id"]).first()
-    assert db_product.name == "Test Product API"
+    db_product = db_session.query(models.Product).filter(models.Product.id == data[&quot;id&quot;]).first()
+    assert db_product.name == &quot;Test Product API&quot;
 
 def test_read_product_api(client, db_session):
     # First create a product directly in DB for testing read
-    new_product = crud.create_product(db_session, schemas.ProductCreate(name="Read Test Product", price=50.0))
+    new_product = crud.create_product(db_session, schemas.ProductCreate(name=&quot;Read Test Product&quot;, price=50.0))
 
-    response = client.get(f"/products/{new_product.id}")
+    response = client.get(f&quot;/products/{new_product.id}&quot;)
     assert response.status_code == 200
     data = response.json()
-    assert data["name"] == "Read Test Product"
-    assert data["id"] == new_product.id
+    assert data[&quot;name&quot;] == &quot;Read Test Product&quot;
+    assert data[&quot;id&quot;] == new_product.id
 
 def test_read_non_existent_product_api(client):
-    response = client.get("/products/99999")
+    response = client.get(&quot;/products/99999&quot;)
     assert response.status_code == 404
-    assert response.json() == {"detail": "Product not found"}
+    assert response.json() == {&quot;detail&quot;: &quot;Product not found&quot;}
 
 def test_read_products_list_api(client, db_session):
-    crud.create_product(db_session, schemas.ProductCreate(name="List Product 1", price=10.0))
-    crud.create_product(db_session, schemas.ProductCreate(name="List Product 2", price=20.0))
+    crud.create_product(db_session, schemas.ProductCreate(name=&quot;List Product 1&quot;, price=10.0))
+    crud.create_product(db_session, schemas.ProductCreate(name=&quot;List Product 2&quot;, price=20.0))
 
-    response = client.get("/products/")
+    response = client.get(&quot;/products/&quot;)
     assert response.status_code == 200
     data = response.json()
-    assert len(data) >= 2 # Could be more if other tests left data
-    assert any(p["name"] == "List Product 1" for p in data)
+    assert len(data) &gt;= 2 # Could be more if other tests left data
+    assert any(p[&quot;name&quot;] == &quot;List Product 1&quot; for p in data)
     </code></pre>
 
-    
-
-    <h2>6. Containerization</h2>
-    <h3><code>Dockerfile</code></h3>
-    <p>To package your microservice into a Docker image:</p>
-    <pre><code class="language-dockerfile">
+        <h2>6. Containerization</h2>
+        <h3><code>Dockerfile</code></h3>
+        <p>To package your microservice into a Docker image:</p>
+        <pre><code class="language-dockerfile">
 # Use a lightweight Python base image
 FROM python:3.10-slim-buster
 
@@ -430,15 +429,16 @@ COPY ./app .
 EXPOSE 8000
 
 # Command to run the application
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD [&quot;uvicorn&quot;, &quot;main:app&quot;, &quot;--host&quot;, &quot;0.0.0.0&quot;, &quot;--port&quot;, &quot;8000&quot;]
     </code></pre>
 
-    
-
-    <h2>7. Running the Microservice Locally</h2>
-    <p>To run the entire setup (PostgreSQL, RabbitMQ, and your FastAPI app) locally, you can use Docker Compose. Create a <code>docker-compose.yml</code> file in your project root:</p>
-    <pre><code class="language-yaml">
-version: '3.8'
+        <h2>7. Running the Microservice Locally</h2>
+        <p>
+            To run the entire setup (PostgreSQL, RabbitMQ, and your FastAPI app) locally, you can use Docker Compose. Create a
+            <code>docker-compose.yml</code> file in your project root:
+        </p>
+        <pre><code class="language-yaml">
+version: &#x27;3.8&#x27;
 
 services:
   db:
@@ -448,22 +448,22 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: mydatabase
     ports:
-      - "5432:5432"
+      - &quot;5432:5432&quot;
     volumes:
       - pg_data:/var/lib/postgresql/data
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
     ports:
-      - "5672:5672"
-      - "15672:15672" # Management UI
+      - &quot;5672:5672&quot;
+      - &quot;15672:15672&quot; # Management UI
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
 
   app:
     build: .
     ports:
-      - "8000:8000"
+      - &quot;8000:8000&quot;
     environment:
       DATABASE_URL: postgresql://user:password@db:5432/mydatabase
       RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
@@ -475,16 +475,20 @@ volumes:
   pg_data:
   rabbitmq_data:
     </code></pre>
-    <p>Then, from your project root, run:</p>
-    <pre><code class="language-bash">docker compose up --build</code></pre>
-    <p>Your FastAPI service will be accessible at <a href="http://localhost:8000" target="_blank">http://localhost:8000</a>, and its Swagger UI at <a href="http://localhost:8000/docs" target="_blank">http://localhost:8000/docs</a>.</p>
-
-    
+        <p>Then, from your project root, run:</p>
+        <pre><code class="language-bash">docker compose up --build</code></pre>
+        <p>
+            Your FastAPI service will be accessible at
+            <a href="http://localhost:8000" target="_blank">http://localhost:8000</a>, and its Swagger UI at
+            <a href="http://localhost:8000/docs" target="_blank">http://localhost:8000/docs</a>.
+        </p>
 
         <section class="conclusion-section">
             <h2>Conclusion</h2>
             <p>
-                Congratulations! You've successfully built a Python microservice, integrating many of the core backend concepts and tools discussed in this unit. This project serves as a solid foundation for developing more complex cloud-native applications.
+                Congratulations! You've successfully built a Python microservice, integrating many of the core backend concepts
+                and tools discussed in this unit. This project serves as a solid foundation for developing more complex
+                cloud-native applications.
             </p>
         </section>
     </div>

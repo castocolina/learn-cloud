@@ -1016,6 +1016,13 @@ pre.mermaid.modal-diagram::after {
     font-size: var(--font-sm);
 }
 
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--space-lg);
+  margin-top: var(--space-xl);
+}
+
 /* ==============================================
    UNIT OVERVIEW PAGES
    ============================================== */
@@ -1789,6 +1796,8 @@ pre.mermaid.modal-diagram::after {
     border-radius: var(--radius-lg);
     margin-top: var(--space-lg);
     gap: var(--space-md);
+    position: relative;
+    z-index: var(--z-dropdowns);
 }
 
 /* Quiz Navigation Buttons - Distinct from page navigation */

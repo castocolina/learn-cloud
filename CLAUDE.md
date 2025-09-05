@@ -31,7 +31,7 @@ The authoritative structure for this book—its units and topics—is defined in
 The SPA is built with **modern CSS Grid** architecture and **ES6 modules** for a clean, performant application. **No Bootstrap or framework dependencies**. Use these standardized libraries:
 
 - **Icons:** Use **[Bootstrap Icons](https://icons.getbootstrap.com/)** for all icons. The CDN is included in `index.html`.
-- **Diagrams as Code:** Use **Mermaid.js** for all diagrams. **Critical Rule:** All text descriptions for both **nodes** (e.g., `A["Node Text"]`, `B("Node description")`, `C{"Node description"}`) and **connectors/links** (e.g., `A --|"Link Text"|--> B`) **must always** be enclosed in double quotes. This prevents rendering errors. Use vertical (TD) direction over horizontal (LR) when possible. **All Mermaid diagrams are automatically interactive** - clicking any diagram opens it in a full-screen modal view for better visibility on all devices.
+- **Diagrams as Code:** Use **Mermaid.js** for all diagrams. **Critical Rule:** All text descriptions for both **nodes** (e.g., `A["Node Text"]`, `B("Node description")`, `C{"Node description"}`) and **connectors/links** (e.g., `A --|"Link Text"|--> B`) **must always** be enclosed in double quotes. This prevents rendering errors. Use vertical (TB) direction over horizontal (LR) when possible. **All Mermaid diagrams are automatically interactive** - clicking any diagram opens it in a full-screen modal view for better visibility on all devices.
 - **Code Highlighting:** Use **[Prism.js](https://prismjs.com/)** for syntax highlighting in all code blocks.
 - **Data Visualization:** Use **[Chart.js](https://www.chartjs.org/)** to create interactive charts and graphs.
 - **Client-Side Search:** Use **[Lunr.js](https://lunrjs.com/)** for fast, responsive full-text search.
@@ -200,16 +200,32 @@ All Mermaid diagrams are automatically interactive and expandable:
 - **Simple Implementation:** Just use standard `<pre class="mermaid">` - no additional wrappers needed
 - **Responsive Design:** Prefer vertical (TD) layouts over horizontal (LR) for mobile compatibility
 
-**Standard Format:**
+**Standard Format with Nested Script Tags:**
 ```html
 <div class="text-center my-4">
     <pre class="mermaid">
-    graph TD
-        A["Node Text"] --> B["Another Node"];
+     <script type="text/plain">
+        graph TD
+            A["Node Text"] --> B["Another Node"];
+     </script>
     </pre>
     <small class="text-muted">Diagram: Description of the diagram</small>
 </div>
 ```
+
+**CRITICAL: HTML Entity Encoding for Mermaid Scripts**
+- **Nested Script Structure:** All Mermaid diagrams MUST use nested `<script type="text/plain">` tags within `<pre class="mermaid">` blocks
+- **Character Encoding Rules:**
+  - **WITH script tags:** Characters like `>`, `&`, `"` are valid inside `<script type="text/plain">` → entities cause Mermaid parsing errors
+  - **WITHOUT script tags:** Characters like `>`, `&`, `"` are invalid HTML → HTML validator requires entities (`&quot;`, `&gt;`, `&lt;`, `&#x27;`, `&amp;`)
+- **Preferred Approach:** Use `<script type="text/plain">` tags with raw characters (no entities) for:
+  - **Better readability:** Raw syntax is easier to read and maintain
+  - **Mermaid compatibility:** Avoids parsing errors caused by HTML entities
+  - **HTML validation:** Script content is treated as plain text, so special characters are valid
+- **Migration Workflow:**
+  - **Legacy diagrams:** Some existing diagrams may have HTML entities within script tags
+  - **Restoration tool:** Use `make restore-mermaid-entities [path]` to convert entities back to raw characters
+  - **Validation:** Always run `make validate-mermaid [file.html]` to verify diagrams render correctly after changes
 
 ### Quiz & Exam System
 
@@ -418,6 +434,69 @@ generateSearchPreview(topic, query) {
 
 ## Claude-Specific Guidelines
 
+### Interactive Component Architecture Rules
+
+**CRITICAL: JavaScript and Modal Management**
+- ❌ **NEVER** add inline JavaScript to individual content files
+- ❌ **NEVER** include `<dialog>` elements in study aids files  
+- ❌ **NEVER** use `onclick` attributes (app.js removes them automatically)
+- ✅ **ALWAYS** use the centralized modal in `index.html`
+- ✅ **ALWAYS** let `app.js` handle all interactivity via event listeners
+- ✅ **SINGLE SOURCE OF TRUTH:** Only one `<dialog id="flashcard-modal">` exists in `index.html`
+
+**Quiz Structure Requirements:**
+```html
+<div class="quiz-content">
+    <header class="quiz-header">
+        <h2>Quiz: [Topic Name]</h2>
+        <p class="quiz-intro">[Description]</p>
+    </header>
+    <div class="quiz-container">
+        <div class="quiz-card active-card" data-question="1">
+            <!-- First question with active-card class -->
+        </div>
+        <div class="quiz-card" data-question="2">
+            <!-- Subsequent questions -->
+        </div>
+        <div class="quiz-navigation">
+            <button class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <div class="quiz-progress">Question 1 of [N]</div>
+            <button class="btn btn-outline-primary" id="next-question">Next</button>
+            <button class="btn btn-success" id="submit-quiz" style="display: none;">Submit</button>
+        </div>
+        <div class="quiz-results-container"></div>
+    </div>
+</div>
+```
+
+**Flashcard Structure Requirements:**
+```html
+<div class="study-aids-content">
+    <header class="study-aids-header">
+        <h2>Study Aids: [Topic Name]</h2>
+        <p class="study-aids-intro">[Description]</p>
+    </header>
+    <div class="flashcards-container">
+        <div class="flashcard">
+            <div class="flashcard-inner">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
+                    <p>[Question text]</p>
+                </div>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
+                    <p>[Answer text]</p>
+                </div>
+            </div>
+            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
+        </div>
+    </div>
+    <!-- NO <dialog> element here - uses centralized modal -->
+</div>
+```
+
 ### Content Generation
 - Always use the TodoWrite tool to track tasks when working on content generation
 - When creating diagrams, verify Mermaid syntax follows the double-quote rule
@@ -447,6 +526,150 @@ generateSearchPreview(topic, query) {
 - **Modern CSS Classes:** Use custom CSS classes, avoid framework-specific classes
 - **Touch Targets:** Ensure all interactive elements meet accessibility guidelines
 
+## HTML Validation & Quality Assurance
+
+### Automated Validation Standards
+- **HTML Validation:** All HTML files must pass validation via `make validate` command
+- **Void Elements:** Use self-closing syntax (`<meta />`, `<input />`, `<hr />`, `<br />`)
+- **Character Encoding:** Properly encode HTML entities (`&amp;`, `&lt;`, `&gt;`)
+- **Button Types:** Add explicit `type="button"` to all buttons without specific types
+- **Label Relationships:** Remove redundant `for` attributes when labels wrap inputs
+- **Clean Formatting:** No trailing whitespace, proper indentation
+- **Inline Styles:** Avoid inline styles, use CSS classes instead
+
+### Standard HTML Validation Tools
+
+This project uses industry-standard tools for HTML validation and formatting:
+
+**🎨 Prettier (Code Formatting):**
+- Automatically formats HTML, CSS, and JavaScript
+- Consistent code style across the entire project
+- Configuration in `.prettierrc` with project-specific rules
+
+**🔍 File-Specific Validation:**
+- `make validate` - Runs comprehensive validation (HTML/CSS/JS/Mermaid/Links)
+- `make validate-html` - Validate HTML structure with html-validate
+- `make validate-css` - Validate CSS files with stylelint  
+- `make validate-js` - Validate JavaScript files with eslint
+- `make validate-mermaid` - Validate Mermaid diagram syntax
+- `make validate-links` - Validate internal and external links
+- `make format-html` - Auto-format HTML files with Prettier
+- `make fix-html` - Combined formatting and validation
+- `make restore-mermaid-entities` - Restore HTML entities in Mermaid diagrams
+
+**💡 Key Benefits:**
+- **Industry Standard:** Uses widely-adopted tools (Prettier, xmllint)
+- **No Custom Scripts:** Reliable, well-maintained tools instead of custom Python
+- **Automatic Formatting:** Consistent code style without manual effort
+- **Fast Validation:** Quick feedback on HTML structure issues
+
+### Pre-commit Hook Integration (Alternative)
+```bash
+# Install pre-commit hooks (optional - Claude hook is preferred)
+pip install pre-commit
+pre-commit install
+
+# Manual validation run
+make validate
+```
+
+### Quality Assurance Workflow
+1. **Development:** Write code following HTML5 standards
+2. **Pre-commit:** Automated validation fixes and checks before commit  
+3. **Validation:** Run `make validate` to verify compliance
+4. **CI/CD:** Automated validation in deployment pipeline
+
+### Standard Tools Configuration
+
+**Prettier Configuration (`.prettierrc`):**
+```json
+{
+  "tabWidth": 2,
+  "useTabs": false,
+  "printWidth": 120,
+  "htmlWhitespaceSensitivity": "css",
+  "endOfLine": "lf",
+  "singleAttributePerLine": false
+}
+```
+
+**Available Make Commands with File-Specific Support:**
+```bash
+# Comprehensive validation - all file types (or specific path)
+make validate [path]
+
+# File-specific validation commands
+make validate-html [path]     # Validate HTML structure with html-validate
+make validate-css [path]      # Validate CSS files with stylelint
+make validate-js [path]       # Validate JavaScript files with eslint
+make validate-mermaid [path]  # Validate Mermaid diagram syntax
+make validate-links [path]    # Validate internal and external links
+
+# HTML formatting and repair
+make format-html [path]       # Format HTML files with Prettier
+make fix-html [path]          # Combined formatting and validation
+
+# Mermaid diagram utilities
+make restore-mermaid-entities [path]  # Restore HTML entities in Mermaid scripts
+
+# Utility commands
+make clean-tmp                # Clean temporary files and backups
+make help                     # Show all available commands with examples
+```
+
+**File-Specific Examples:**
+```bash
+# Validate specific files by type
+make validate-html index.html
+make validate-css src/book/style.css
+make validate-js src/book/app.js
+make validate-mermaid src/book/unit9/9-1_project_1.html
+
+# Validate entire directories
+make validate src/book/unit1/            # All validation types
+make validate-mermaid src/book/unit9/    # Only Mermaid diagrams
+
+# Fix and restore operations
+make fix-html src/book/unit1/1-1.html
+make restore-mermaid-entities src/book/unit9/  # Restore HTML entities
+```
+
+### File-Type Specific Validation Rules
+
+**HTML Files (.html):**
+- Use `make validate-html` for structure validation with html-validate
+- Use `make fix-html` for combined formatting and validation
+- Automatically validates semantic structure, void elements, and ARIA labels
+- Validates Mermaid diagrams embedded in HTML if present
+
+**CSS Files (.css):**
+- Use `make validate-css` for style validation with stylelint
+- Validates CSS syntax, property usage, and code organization
+- Enforces consistent formatting and best practices
+
+**JavaScript Files (.js, .cjs):**
+- Use `make validate-js` for code validation with eslint
+- Validates syntax, code quality, and adherence to ES6+ standards
+- Enforces consistent code style and identifies potential issues
+
+**Mermaid Diagrams:**
+- Use `make validate-mermaid` for diagram syntax validation
+- Validates diagram syntax and renders test output
+- Use `make restore-mermaid-entities` when HTML entities break validation
+- **Critical:** HTML entities (`&quot;`, `&gt;`, etc.) in script tags are valid HTML but break Mermaid parsing
+
+**Smart Hook Integration:**
+- **Automatic:** Claude Code automatically validates only the edited file
+- **Fast:** No full project scan, only processes changed files
+- **Non-Blocking:** Hook never blocks file operations, runs in background
+- **Smart Detection:** Chooses appropriate validation based on file type
+
+**Best Practices:**
+- Use `make fix-html FILE=specific.html` for targeted fixes
+- File-specific validation is much faster than full scans
+- Smart hook handles validation automatically after edits
+- Manual commands useful for batch operations or troubleshooting
+
 ### Mandatory Quality Checks
 Before considering any implementation complete, verify:
 1. **Mobile Functionality:** All features work properly on mobile devices
@@ -454,4 +677,5 @@ Before considering any implementation complete, verify:
 3. **Progress Accuracy:** Progress bars reflect actual completion state
 4. **Search Integration:** Search works across all content types
 5. **Performance:** Fast loading and smooth interactions
-6. **HTML Validation:** Clean, standards-compliant HTML structure
+6. **HTML Validation:** Clean, standards-compliant HTML structure - **ALWAYS run `make validate`**
+7. **Pre-commit Hooks:** Validation hooks installed and functioning correctly

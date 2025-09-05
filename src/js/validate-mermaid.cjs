@@ -13,8 +13,34 @@ const tempFilePath = '/tmp/mermaid-validate.mmd';
 
 async function validateMermaid() {
     console.log('Starting Mermaid diagram validation...');
-    const files = await glob('src/book/**/*.html');
-    files.sort(); // Sort files alphabetically for consistent order
+    
+    // Check for file argument from command line
+    const targetFile = process.argv[2];
+    let files;
+    
+    if (targetFile && targetFile.trim() !== '""' && targetFile.trim() !== "") {
+        // Check if target is a directory
+        if (fs.existsSync(targetFile) && fs.lstatSync(targetFile).isDirectory()) {
+            console.log(`Validating Mermaid diagrams in directory: ${targetFile}`);
+            files = await glob(`${targetFile}/**/*.html`);
+            files.sort();
+        } else if (targetFile.endsWith('/')) {
+            // Directory path ending with /
+            console.log(`Validating Mermaid diagrams in directory: ${targetFile}`);
+            files = await glob(`${targetFile}**/*.html`);
+            files.sort();
+        } else {
+            // Single file
+            console.log(`Validating specific file: ${targetFile}`);
+            files = [targetFile];
+        }
+    } else {
+        // Default: validate all HTML files
+        console.log('Validating all HTML files...');
+        files = await glob('src/book/**/*.html');
+        files.sort(); // Sort files alphabetically for consistent order
+    }
+    
     let hasErrors = false;
 
     for (const file of files) {
@@ -30,14 +56,20 @@ async function validateMermaid() {
 
         for (let i = 0; i < mermaidElements.length; i++) {
             const element = mermaidElements[i];
-            const diagram = $(element).text().trim();
+            let diagram = $(element).text().trim();
 
             if (!diagram) {
                 console.log(`  - Diagram ${i + 1} is empty. Skipping.`);
                 continue;
             }
 
-            
+            // Decode HTML entities that might be present in the diagram text
+            diagram = diagram
+                .replace(/&quot;/g, '"')
+                .replace(/&gt;/g, '>')
+                .replace(/&lt;/g, '<')
+                .replace(/&amp;/g, '&')
+                .replace(/&#x27;/g, "'");
 
             fs.writeFileSync(tempFilePath, diagram);
 

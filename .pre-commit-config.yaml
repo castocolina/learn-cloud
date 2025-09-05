@@ -1,0 +1,52 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+        name: Remove trailing whitespace
+        description: Removes trailing whitespace from all files
+        stages: [commit]
+      - id: end-of-file-fixer
+        name: Fix end of files
+        description: Ensures files end with a newline
+        stages: [commit]
+      - id: check-html
+        name: Check HTML syntax
+        description: Basic HTML syntax validation
+        stages: [commit]
+        exclude: ^node_modules/
+      - id: check-yaml
+        name: Check YAML syntax
+        description: Validates YAML files
+        stages: [commit]
+
+  - repo: local
+    hooks:
+      - id: html-validation-fixer
+        name: HTML Validation Fixer
+        entry: python3 fix_html_validation.py --no-backup
+        language: system
+        files: \.html$
+        exclude: ^node_modules/
+        description: Automatically fixes common HTML validation issues
+        stages: [commit]
+        
+      - id: html-validate
+        name: HTML Validator
+        entry: npm run validate:html
+        language: system
+        files: \.html$
+        exclude: ^node_modules/
+        description: Validates HTML files using html-validate
+        stages: [commit]
+        pass_filenames: false
+
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v8.50.0
+    hooks:
+      - id: eslint
+        name: ESLint JavaScript
+        files: \.js$
+        exclude: ^node_modules/
+        args: [--fix]
+        additional_dependencies: [eslint@8.50.0]

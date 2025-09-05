@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+/bower_components
+
+# Build artifacts
+/build
+/dist
+/out
+
+# Temporary files
+tmp/
+*.backup*
+
+# Logs
+*.log
+
+# Git
+.git/
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db

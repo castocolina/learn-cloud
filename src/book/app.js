@@ -60,13 +60,13 @@ class CloudNativeBookApp {
             contentArea: document.getElementById('content-area'),
             
             // Progress
-            unitProgress: document.getElementById('unit-progress'),
-            overallProgress: document.getElementById('overall-progress'),
+            unitProgress: document.getElementById('unit-progress-bar'),
+            overallProgress: document.getElementById('overall-progress-bar'),
             navProgress: document.getElementById('nav-progress'),
             
             // Navigation buttons
-            prevBtn: document.getElementById('prev-btn'),
-            nextBtn: document.getElementById('next-btn'),
+            prevBtn: document.getElementById('floating-prev'),
+            nextBtn: document.getElementById('floating-next'),
             floatingNav: document.getElementById('floating-nav')
         };
     }
@@ -371,7 +371,7 @@ class CloudNativeBookApp {
             this.currentIndex = index;
 
             this.updateUI();
-            this.initializeContentFeatures();
+            await this.initializeContentFeatures();
 
         } catch (error) {
             console.error('Error loading content:', error);
@@ -438,24 +438,33 @@ class CloudNativeBookApp {
     }
 
     updateProgress() {
-        const currentTopicIndex = this.topics.findIndex(topic => topic.index === this.currentIndex);
-        const totalTopics = this.topics.length - 1; // Exclude book overview
+        // Get only content topics (excluding overview)
+        const contentTopics = this.topics.filter(topic => topic.index >= 0);
+        const totalTopics = contentTopics.length;
         
         let overallCompleted, overallPercentage, overallText;
 
         if (this.currentIndex === -1) {
-            // Book overview page
+            // Book overview page - no progress yet
             overallCompleted = 0;
             overallPercentage = 0;
             overallText = `0/${totalTopics} (0%)`;
         } else {
-            // Regular topics (currentTopicIndex - 1 because overview is at index 0)
-            overallCompleted = Math.max(0, currentTopicIndex);
-            overallPercentage = totalTopics > 0 ? (overallCompleted / totalTopics) * 100 : 0;
-            overallText = `${overallCompleted}/${totalTopics} (${Math.round(overallPercentage)}%)`;
+            // Regular topics - find position in contentTopics array
+            const topicPosition = contentTopics.findIndex(topic => topic.index === this.currentIndex);
+            if (topicPosition >= 0) {
+                overallCompleted = topicPosition + 1;
+                overallPercentage = totalTopics > 0 ? (overallCompleted / totalTopics) * 100 : 0;
+                overallText = `${overallCompleted}/${totalTopics} (${Math.round(overallPercentage)}%)`;
+            } else {
+                // Fallback
+                overallCompleted = 0;
+                overallPercentage = 0;
+                overallText = `0/${totalTopics} (0%)`;
+            }
         }
 
-        // Update overall progress
+        // Update overall progress bar
         if (this.elements.overallProgress) {
             this.elements.overallProgress.style.width = `${overallPercentage}%`;
             const progressText = this.elements.overallProgress.querySelector('.progress-text');
@@ -477,34 +486,54 @@ class CloudNativeBookApp {
     updateUnitProgress() {
         if (!this.elements.unitProgress) return;
 
-        const currentTopic = this.topics.find(topic => topic.index === this.currentIndex);
-        
-        if (!currentTopic || currentTopic.index === -1) {
-            // Book overview or not found
+        // Get unit progress label element
+        const unitProgressLabel = document.getElementById('unit-progress-label');
+        const unitTextSpan = this.elements.unitProgress.querySelector('.progress-text');
+
+        if (this.currentIndex === -1) {
+            // Overview page - no unit progress
             this.elements.unitProgress.style.width = '0%';
-            const unitProgressText = this.elements.unitProgress.querySelector('.progress-text');
-            if (unitProgressText) {
-                unitProgressText.textContent = '0%';
-            }
+            if (unitTextSpan) unitTextSpan.textContent = 'Select a topic to begin';
+            if (unitProgressLabel) unitProgressLabel.textContent = 'Unit Progress';
             return;
         }
 
+        // Find the current topic and its unit
+        const currentTopic = this.topics.find(topic => topic.index === this.currentIndex);
+        if (!currentTopic) {
+            this.elements.unitProgress.style.width = '0%';
+            if (unitTextSpan) unitTextSpan.textContent = '0%';
+            if (unitProgressLabel) unitProgressLabel.textContent = 'Unit Progress';
+            return;
+        }
+
+        // Find the unit that contains this topic
         const currentUnit = this.units.find(unit => unit.number === currentTopic.unit);
         if (currentUnit) {
-            const unitTopics = currentUnit.topics.filter(topic => topic.type !== 'unit_overview');
-            const currentTopicInUnit = unitTopics.findIndex(topic => topic.index === this.currentIndex);
+            // Calculate position within the unit
+            const unitTopics = currentUnit.topics;
+            const currentTopicPositionInUnit = unitTopics.findIndex(topic => topic.index === this.currentIndex);
             
-            if (currentTopicInUnit >= 0) {
-                const completedInUnit = currentTopicInUnit + 1;
+            if (currentTopicPositionInUnit >= 0) {
                 const totalInUnit = unitTopics.length;
+                const completedInUnit = currentTopicPositionInUnit + 1;
                 const unitProgressPercentage = (completedInUnit / totalInUnit) * 100;
+                const unitText = `${completedInUnit}/${totalInUnit} (${Math.round(unitProgressPercentage)}%)`;
                 
                 this.elements.unitProgress.style.width = `${unitProgressPercentage}%`;
-                const unitProgressText = this.elements.unitProgress.querySelector('.progress-text');
-                if (unitProgressText) {
-                    unitProgressText.textContent = `${Math.round(unitProgressPercentage)}%`;
-                }
+                if (unitTextSpan) unitTextSpan.textContent = unitText;
+                if (unitProgressLabel) unitProgressLabel.textContent = currentUnit.name;
+            } else {
+                // Fallback
+                this.elements.unitProgress.style.width = '0%';
+                if (unitTextSpan) unitTextSpan.textContent = '0%';
+                if (unitProgressLabel) unitProgressLabel.textContent = currentUnit.name;
             }
+        } else {
+            // Topic doesn't belong to any unit - reset
+            this.elements.unitProgress.style.width = '0%';
+            if (unitTextSpan) unitTextSpan.textContent = '0%';
+            if (unitProgressLabel) unitProgressLabel.textContent = 'Unit Progress';
         }
     }
 
@@ -593,10 +622,41 @@ class CloudNativeBookApp {
         }
     }
 
-    initializeContentFeatures() {
-        // Re-run Mermaid on new content
+    async initializeContentFeatures() {
+        // Re-run Mermaid on new content with error handling
         if (typeof mermaid !== 'undefined') {
-            mermaid.run({ nodes: this.elements.contentArea.querySelectorAll('.mermaid') });
+            try {
+                const mermaidNodes = this.elements.contentArea.querySelectorAll('.mermaid');
+                if (mermaidNodes.length > 0) {
+                    console.log(`🧩 Initializing ${mermaidNodes.length} Mermaid diagram(s)...`);
+                    
+                    // Extract content from nested script tags if present
+                    mermaidNodes.forEach((node) => {
+                        const scriptTag = node.querySelector('script[type="text/plain"]');
+                        if (scriptTag) {
+                            // Replace the content with the script content
+                            node.textContent = scriptTag.textContent.trim();
+                            console.log('📜 Extracted Mermaid content from script tag');
+                        }
+                    });
+                    
+                    await mermaid.run({ nodes: mermaidNodes });
+                    console.log('✅ Mermaid diagrams initialized successfully');
+                }
+            } catch (error) {
+                console.error('❌ Mermaid initialization failed:', error);
+                console.error('📋 Mermaid error details:', {
+                    message: error.message || 'Unknown error',
+                    stack: error.stack || 'No stack trace available'
+                });
+                
+                // Try to identify which diagram failed
+                const mermaidNodes = this.elements.contentArea.querySelectorAll('.mermaid');
+                mermaidNodes.forEach((node, index) => {
+                    const diagramText = node.textContent.trim();
+                    console.log(`📊 Diagram ${index + 1} content:`, diagramText.substring(0, 100) + '...');
+                });
+            }
         }
 
         // Re-run Prism on new content

@@ -39,4 +39,7 @@ yarn-error.log*
 .DS_Store
 Thumbs.db
 
+# Temporary files and build artifacts
+# HTML validation backups, logs, and other temporary files
 tmp/
+*.backup*

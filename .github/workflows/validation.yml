@@ -39,4 +39,4 @@ jobs:
         run: npm install
 
       - name: Run Mermaid Validation Script
-        run: node src/js/validate-mermaid.js
+        run: node src/js/validate-mermaid.cjs
