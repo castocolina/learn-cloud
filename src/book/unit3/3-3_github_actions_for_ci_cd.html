@@ -1,27 +1,24 @@
 <div class="topic-content">
-<header class="topic-header">
+    <header class="topic-header" aria-label="Header">
+        <h1 class="topic-title">Unit 3.3: GitHub Actions for CI/CD</h1>
+        <p class="topic-intro"><strong>Continuous Integration (CI)</strong> and <strong>Continuous Delivery/Deployment (CD)</strong> are practices that enable teams to deliver code faster and more reliably. <a href="https://github.com/features/actions" target="_blank">GitHub Actions</a> is a powerful and flexible automation tool built directly into GitHub, allowing you to create sophisticated CI/CD pipelines right where you store your code.</p>
+    </header>
 
-    
-                <h1 class="topic-title">Unit 3.3: GitHub Actions for CI/CD</h1>
-    </div>
+    <section>
+        <!-- Core Concepts -->
+        <h2><i class="bi bi-diagram-3"></i> Core Concepts of GitHub Actions</h2>
+        <ul>
+            <li><strong>Workflow:</strong> An automated process defined by a YAML file in the <code>.github/workflows</code> directory of your repository.</li>
+            <li><strong>Event:</strong> A specific activity that triggers a workflow, such as a <code>push</code>, <code>pull_request</code>, or a schedule.</li>
+            <li><strong>Job:</strong> A set of steps that execute on the same runner. Jobs can run in parallel or sequentially.</li>
+            <li><strong>Step:</strong> An individual task that can run commands or an <strong>action</strong>.</li>
+            <li><strong>Action:</strong> A reusable piece of code that performs a complex but common task (e.g., checking out code, logging into a cloud provider).</li>
+        </ul>
 
-    <p class="lead">Automating the build, test, and deployment process is the heart of modern DevOps. <strong>Continuous Integration (CI)</strong> and <strong>Continuous Delivery/Deployment (CD)</strong> are practices that enable teams to deliver code faster and more reliably. <a href="https://github.com/features/actions" target="_blank">GitHub Actions</a> is a powerful and flexible automation tool built directly into GitHub, allowing you to create sophisticated CI/CD pipelines right where you store your code.</p>
-
-    
-
-    <!-- Core Concepts -->
-    <h2><i class="bi bi-diagram-3"></i> Core Concepts of GitHub Actions</h2>
-    <ul>
-        <li><strong>Workflow:</strong> An automated process defined by a YAML file in the <code>.github/workflows</code> directory of your repository.</li>
-        <li><strong>Event:</strong> A specific activity that triggers a workflow, such as a <code>push</code>, <code>pull_request</code>, or a schedule.</li>
-        <li><strong>Job:</strong> A set of steps that execute on the same runner. Jobs can run in parallel or sequentially.</li>
-        <li><strong>Step:</strong> An individual task that can run commands or an <strong>action</strong>.</li>
-        <li><strong>Action:</strong> A reusable piece of code that performs a complex but common task (e.g., checking out code, logging into a cloud provider).</li>
-    </ul>
-
-    <div class="text-center my-4">
-        <pre class="mermaid">
-            graph TD
+        <div class="text-center my-4">
+            <pre class="mermaid">
+  <script type="text/plain">
+    graph LR
                 A["Event (e.g., Push to main)"] -- "Triggers" --> B[Workflow];
                 subgraph Workflow
                     C[Job 1: Build & Test] --> D[Job 2: Deploy];
@@ -32,24 +29,25 @@
                         D1[Step 1: Login to Cloud] --> D2[Step 2: Deploy App];
                     end
                 end
-        </pre>
-        <small class="text-muted">Diagram: The Structure of a GitHub Actions Workflow</small>
-    </div>
+  </script>
+</pre>
+            <small class="text-muted">Diagram: The Structure of a GitHub Actions Workflow</small>
+        </div>
+    </section>
 
-    
-
-    <!-- Building a Workflow -->
-    <h2><i class="bi bi-gear-wide-connected"></i> 1. Building a CI Workflow for a Go Application</h2>
-    <p>Let's create a CI pipeline for a typical Go project. This workflow will trigger on every push and pull request, and will have jobs for linting, testing, and building the application.</p>
-    <p>Create the file <code>.github/workflows/ci.yml</code>:</p>
-    <pre><code class="language-yaml">
+    <section>
+        <!-- Building a Workflow -->
+        <h2><i class="bi bi-gear-wide-connected"></i> 1. Building a CI Workflow for a Go Application</h2>
+        <p>Let's create a CI pipeline for a typical Go project. This workflow will trigger on every push and pull request, and will have jobs for linting, testing, and building the application.</p>
+        <p>Create the file <code>.github/workflows/ci.yml</code>:</p>
+        <pre><code class="language-yaml">
 name: Go CI Pipeline
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ &quot;main&quot; ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ &quot;main&quot; ]
 
 jobs:
   lint:
@@ -62,7 +60,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.22'
+          go-version: &#x27;1.22&#x27;
 
       - name: Run linter
         uses: golangci/golangci-lint-action@v3
@@ -79,7 +77,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.22'
+          go-version: &#x27;1.22&#x27;
 
       - name: Run tests
         run: go test -v ./...
@@ -95,7 +93,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.22'
+          go-version: &#x27;1.22&#x27;
 
       - name: Build binary
         run: go build -v -o myapp ./cmd/server
@@ -106,35 +104,37 @@ jobs:
           name: myapp-binary
           path: myapp
     </code></pre>
+    </section>
 
-    
+    <section>
+        <!-- Secrets Management -->
+        <h2><i class="bi bi-key"></i> 2. Managing Secrets in GitHub Actions</h2>
+        <p>
+            You should never hardcode secrets (like passwords, API keys, or tokens) in your workflow files. GitHub provides <strong>Encrypted Secrets</strong> for this purpose. You can store secrets at the repository or organization level, and they are exposed to workflows as environment variables.
+        </p>
+        <p>To add a secret, go to your repository's <code>Settings &gt; Secrets and variables &gt; Actions</code>.</p>
 
-    <!-- Secrets Management -->
-    <h2><i class="bi bi-key"></i> 2. Managing Secrets in GitHub Actions</h2>
-    <p>
-        You should never hardcode secrets (like passwords, API keys, or tokens) in your workflow files. GitHub provides <strong>Encrypted Secrets</strong> for this purpose. You can store secrets at the repository or organization level, and they are exposed to workflows as environment variables.
-    </p>
-    <p>To add a secret, go to your repository's <code>Settings > Secrets and variables > Actions</code>.</p>
-
-    <div class="text-center my-4">
-        <pre class="mermaid">
-            graph TD
+        <div class="text-center my-4">
+            <pre class="mermaid">
+  <script type="text/plain">
+    graph TD
                 A["GitHub Secrets UI"] -- "User adds secret" --> B["Encrypted Storage"];
                 B -- "Injects at runtime" --> C["Workflow Runner"];
                 C -- "Exposes as Env Var or Input" --> D["Step using the secret"];
                 D -- "e.g., docker login -u user -p ***" --> E["External Service"];
-        </pre>
-        <small class="text-muted">Diagram: Secure Use of GitHub Secrets</small>
-    </div>
+  </script>
+</pre>
+            <small class="text-muted">Diagram: Secure Use of GitHub Secrets</small>
+        </div>
+    </section>
 
-    
-
-    <!-- Docker Integration -->
-    <h2><i class="bi bi-box-seam"></i> 3. Building and Pushing Docker Images</h2>
-    <p>
-        A common CI/CD task is to build a Docker image and push it to a container registry like Docker Hub or GitHub Container Registry (GHCR). We can add a new job to our workflow for this, using the secrets we just learned about.
-    </p>
-    <pre><code class="language-yaml">
+    <section>
+        <!-- Docker Integration -->
+        <h2><i class="bi bi-box-seam"></i> 3. Building and Pushing Docker Images</h2>
+        <p>
+            A common CI/CD task is to build a Docker image and push it to a container registry like Docker Hub or GitHub Container Registry (GHCR). We can add a new job to our workflow for this, using the secrets we just learned about.
+        </p>
+        <pre><code class="language-yaml">
 # Add this job to your ci.yml file
   build-and-push-docker:
     name: Build and Push Docker Image
@@ -157,16 +157,16 @@ jobs:
           push: true
           tags: yourdockerhubusername/myapp:${{ github.sha }}
     </code></pre>
-    <p>This job uses community-developed actions to handle the Docker login and build/push logic, and it dynamically tags the image with the Git commit SHA for traceability.</p>
+        <p>This job uses community-developed actions to handle the Docker login and build/push logic, and it dynamically tags the image with the Git commit SHA for traceability.</p>
+    </section>
 
-    
-
-    <!-- Kubernetes Deployment -->
-    <h2><i class="bi bi-cloud-upload"></i> 4. Deploying to Kubernetes</h2>
-    <p>
-        The final step is deploying our containerized application to Kubernetes. This requires giving the GitHub Actions runner secure access to your cluster. This is typically done by storing a <code>kubeconfig</code> file as a secret.
-    </p>
-    <pre><code class="language-yaml">
+    <section>
+        <!-- Kubernetes Deployment -->
+        <h2><i class="bi bi-cloud-upload"></i> 4. Deploying to Kubernetes</h2>
+        <p>
+            The final step is deploying our containerized application to Kubernetes. This requires giving the GitHub Actions runner secure access to your cluster. This is typically done by storing a <code>kubeconfig</code> file as a secret.
+        </p>
+        <pre><code class="language-yaml">
 # Add this job to your ci.yml file
   deploy-to-k8s:
     name: Deploy to Kubernetes
@@ -185,28 +185,28 @@ jobs:
       - name: Deploy to Kubernetes
         uses: azure/k8s-deploy@v4
         with:
-          action: 'deploy'
+          action: &#x27;deploy&#x27;
           manifests: |
             k8s/deployment.yaml
             k8s/service.yaml
           images: |
             yourdockerhubusername/myapp:${{ github.sha }}
     </code></pre>
-    <p>This job checks out the code, configures <code>kubectl</code> using the provided secret, and then applies the Kubernetes manifests, updating the image tag to the one we just built.</p>
+        <p>This job checks out the code, configures <code>kubectl</code> using the provided secret, and then applies the Kubernetes manifests, updating the image tag to the one we just built.</p>
+    </section>
 
-    
-
-    <!-- Reusable Actions -->
-    <h2><i class="bi bi-recycle"></i> 5. Creating Reusable Actions</h2>
-    <p>
-        To avoid duplicating code across multiple workflows, you can create your own reusable actions. A <strong>composite action</strong> allows you to bundle multiple workflow steps into a single action.
-    </p>
-    <p>Create the file <code>.github/actions/setup-go-env/action.yml</code>:</p>
-    <pre><code class="language-yaml">
-name: 'Setup Go Environment'
-description: 'Checks out code and sets up a specific Go version'
+    <section>
+        <!-- Reusable Actions -->
+        <h2><i class="bi bi-recycle"></i> 5. Creating Reusable Actions</h2>
+        <p>
+            To avoid duplicating code across multiple workflows, you can create your own reusable actions. A <strong>composite action</strong> allows you to bundle multiple workflow steps into a single action.
+        </p>
+        <p>Create the file <code>.github/actions/setup-go-env/action.yml</code>:</p>
+        <pre><code class="language-yaml">
+name: &#x27;Setup Go Environment&#x27;
+description: &#x27;Checks out code and sets up a specific Go version&#x27;
 runs:
-  using: "composite"
+  using: &quot;composite&quot;
   steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -214,15 +214,13 @@ runs:
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
-        go-version: '1.22'
+        go-version: &#x27;1.22&#x27;
     </code></pre>
-    <p>Now you can replace the first two steps in your jobs with a single line:</p>
-    <pre><code class="language-yaml">
+        <p>Now you can replace the first two steps in your jobs with a single line:</p>
+        <pre><code class="language-yaml">
     steps:
       - name: Setup Go Environment
         uses: ./.github/actions/setup-go-env
     </code></pre>
-
-</div>
-    </div>
+    </section>
 </div>

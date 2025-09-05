@@ -1,120 +1,97 @@
 <div class="study-aids-content">
-    <header class="study-aids-header">
-        <h2>Study Aids: Python E-Commerce Microservices Project</h2>
+    <header class="study-aids-header" aria-label="Header">
+        <h1>Unit 9-1: Study Aids - E-Commerce Microservices Project</h1>
+        <p class="study-aids-intro">
+            Review key concepts from the Python-based E-Commerce Microservices capstone project. These flashcards cover architecture patterns, FastAPI implementation, and cloud-native deployment strategies.
+        </p>
     </header>
-    <div class="content-card">
-        <div class="card-header">
-            Key Takeaways
-        </div>
-        <div class="card-body">
-            <ul>
-                <li><strong>Microservices Architecture:</strong> Build loosely coupled services that communicate via REST APIs and message queues for better scalability and maintainability.</li>
-                <li><strong>FastAPI Framework:</strong> Use FastAPI for high-performance REST API development with automatic OpenAPI documentation and async support.</li>
-                <li><strong>Event-Driven Communication:</strong> Use message queues (RabbitMQ/Redis) to decouple services and enable asynchronous processing.</li>
-                <li><strong>Infrastructure as Code:</strong> Use Terraform to provision cloud resources and Kubernetes to orchestrate containerized services.</li>
-                <li><strong>Security Integration:</strong> Integrate HashiCorp Vault for secrets management and implement proper authentication/authorization patterns.</li>
-            </ul>
-        </div>
-    </div>
     <div class="flashcards-container">
-
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What are the three core services in the Python E-commerce microservices project?</p>
-            </div>
+                    <p>What are the three core microservices in the e-commerce platform and their primary responsibilities?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p><strong>Product Service</strong> (REST API for managing products), <strong>Order Service</strong> (REST API for creating orders and publishing events), and <strong>Payment Worker</strong> (background service consuming order events and processing payments).</p>
+                    <p>
+                        <strong>1. Product Service (FastAPI):</strong> Manages product catalog with RESTful endpoints for CRUD operations.<br />
+                        <strong>2. Order Service (FastAPI):</strong> Handles order creation and publishes OrderCreated events to message queue.<br />
+                        <strong>3. Payment Worker:</strong> Background service that consumes order events and processes payments asynchronously.
+                    </p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand">
                 <i class="bi bi-arrows-angle-expand"></i>
             </button>
         </div>
-
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>Why is a message queue essential in this microservices architecture?</p>
-            </div>
+                    <p>How does the system implement event-driven architecture for order processing?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>It enables <strong>asynchronous communication</strong> between services, decouples the Order Service from the Payment Worker, provides reliability through message persistence, and allows for better scalability and fault tolerance.</p>
+                    <p>
+                        When the Order Service receives a POST request, it creates an order in PostgreSQL and publishes an "OrderCreated" event to a message queue. The Payment Worker consumes these events asynchronously, simulates payment processing, and updates the order status back in the database.
+                    </p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand">
                 <i class="bi bi-arrows-angle-expand"></i>
             </button>
         </div>
-
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What key technologies are integrated in this capstone project?</p>
-            </div>
+                    <p>What role does HashiCorp Vault play in the microservices architecture?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p><strong>Python/FastAPI</strong> (services), <strong>PostgreSQL</strong> (data persistence), <strong>RabbitMQ/Redis</strong> (messaging), <strong>Kubernetes</strong> (orchestration), <strong>Terraform</strong> (IaC), <strong>Vault</strong> (secrets), <strong>GitHub Actions</strong> (CI/CD).</p>
+                    <p>
+                        Vault serves as the centralized secrets management system, securely injecting database credentials into all three services (Product Service, Order Service, and Payment Worker). This eliminates hardcoded secrets and provides secure, auditable access to sensitive configuration data.
+                    </p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand">
                 <i class="bi bi-arrows-angle-expand"></i>
             </button>
         </div>
-
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>How should database credentials be handled securely in this architecture?</p>
-            </div>
+                    <p>What infrastructure components are managed by Terraform in this project?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Use <strong>HashiCorp Vault</strong> with the Vault Agent Injector pattern in Kubernetes. Services authenticate via their service account, retrieve database credentials dynamically at runtime, and never hardcode secrets in code or config files.</p>
+                    <p>
+                        Terraform manages the complete infrastructure stack: EKS Cluster for container orchestration, PostgreSQL databases for both services, Message Queue for event processing, and HashiCorp Vault for secrets management. This Infrastructure as Code approach ensures consistent, reproducible deployments.
+                    </p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand">
                 <i class="bi bi-arrows-angle-expand"></i>
             </button>
         </div>
-
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What CI/CD pipeline features should be implemented for this project?</p>
-            </div>
+                    <p>How does Kubernetes Ingress enhance the system's architecture?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p><strong>Automated testing</strong> (Pytest), <strong>code linting</strong> (Ruff), <strong>Docker image building</strong> and pushing to registry, <strong>SAST/SCA scanning</strong> (Bandit, pip-audit), and <strong>automated deployment</strong> to Kubernetes on main branch merges.</p>
+                    <p>
+                        Kubernetes Ingress acts as the single entry point for external traffic, providing load balancing, SSL termination, and routing to the appropriate microservices. It eliminates the need for individual service load balancers and provides centralized traffic management with path-based routing.
+                    </p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand">
                 <i class="bi bi-arrows-angle-expand"></i>
             </button>
         </div>
-
     </div>
-
-    <!-- Flashcard Modal -->
-    <dialog id="flashcard-modal" class="flashcard-modal">
-        <div class="modal-content">
-            <header class="modal-header">
-                <h3 id="modal-question">Question</h3>
-                <button class="modal-close-btn" onclick="closeFlashcardModal()">
-                    <i class="bi bi-x-lg"></i>
-                </button>
-            </header>
-            <div class="modal-body">
-                <div class="modal-answer">
-                    <h4>Answer</h4>
-                    <div id="modal-answer-content">Answer content will appear here</div>
-                </div>
-            </div>
-        </div>
-    </dialog>
 </div>

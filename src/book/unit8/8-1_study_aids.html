@@ -1,23 +1,27 @@
 <div class="study-aids-content">
-    <header class="study-aids-header">
-        <h2>Study Aids: Securely Connecting Services</h2>
-        <p class="study-aids-intro">Master the key concepts of secure service-to-service communication and credential management patterns.</p>
+    <header class="study-aids-header" aria-label="Header">
+        <h1>8-1: Study Aids - Securely Connecting Services</h1>
+        <p class="study-aids-intro">
+            Master the key concepts of secure service-to-service communication and credential management patterns. Review flashcards covering Vault Agent Injector, Kubernetes secrets, AWS IRSA, and mTLS security.
+        </p>
     </header>
 
     <div class="flashcards-container">
-
         <div class="flashcard">
             <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What is the primary problem with hardcoding secrets in source code or config files?</p>
-            </div>
+                    <p>What is the primary problem with hardcoding secrets in source code or config files?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>It leads to "secret sprawl," making secrets difficult to manage, rotate, and audit. It also means anyone with source code access has access to production credentials, which is a major security risk.</p>
+                    <p>
+                        It leads to "secret sprawl," making secrets difficult to manage, rotate, and audit. It also means anyone with
+                        source code access has access to production credentials, which is a major security risk.
+                    </p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand">
                 <i class="bi bi-arrows-angle-expand"></i>
             </button>
         </div>
@@ -26,14 +30,17 @@
             <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What is the recommended pattern for getting secrets from HashiCorp Vault into a Kubernetes pod?</p>
-            </div>
+                    <p>What is the recommended pattern for getting secrets from HashiCorp Vault into a Kubernetes pod?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>The <strong>Vault Agent Injector</strong>. It adds a sidecar container to the pod that authenticates to Vault, retrieves secrets, and writes them to a shared in-memory volume for the application to consume.</p>
+                    <p>
+                        The <strong>Vault Agent Injector</strong>. It adds a sidecar container to the pod that authenticates to Vault,
+                        retrieves secrets, and writes them to a shared in-memory volume for the application to consume.
+                    </p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand">
                 <i class="bi bi-arrows-angle-expand"></i>
             </button>
         </div>
@@ -42,14 +49,17 @@
             <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What is the main security weakness of default Kubernetes <code>Secret</code> objects?</p>
-            </div>
+                    <p>What is the main security weakness of default Kubernetes <code>Secret</code> objects?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>They are only base64 encoded, not encrypted. Anyone with API access to read the secret can easily decode it. True security requires enabling encryption at rest for the etcd database.</p>
+                    <p>
+                        They are only base64 encoded, not encrypted. Anyone with API access to read the secret can easily decode it.
+                        True security requires enabling encryption at rest for the etcd database.
+                    </p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand">
                 <i class="bi bi-arrows-angle-expand"></i>
             </button>
         </div>
@@ -58,14 +68,18 @@
             <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What is IRSA (IAM Roles for Service Accounts) on AWS EKS?</p>
-            </div>
+                    <p>What is IRSA (IAM Roles for Service Accounts) on AWS EKS?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>It is a feature that allows a Kubernetes Service Account to be associated with an IAM Role. Pods using that service account can then assume the role to securely access AWS services (like Secrets Manager) without needing long-lived AWS credentials stored in the cluster.</p>
+                    <p>
+                        It is a feature that allows a Kubernetes Service Account to be associated with an IAM Role. Pods using that
+                        service account can then assume the role to securely access AWS services (like Secrets Manager) without
+                        needing long-lived AWS credentials stored in the cluster.
+                    </p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand">
                 <i class="bi bi-arrows-angle-expand"></i>
             </button>
         </div>
@@ -74,35 +88,19 @@
             <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>How does mutual TLS (mTLS) differ from standard TLS?</p>
-            </div>
+                    <p>How does mutual TLS (mTLS) differ from standard TLS?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>In standard TLS, only the client verifies the server's identity. In <strong>mTLS</strong>, both the client and the server present and validate each other's certificates, providing stronger, two-way authentication.</p>
+                    <p>
+                        In standard TLS, only the client verifies the server's identity. In <strong>mTLS</strong>, both the client and
+                        the server present and validate each other's certificates, providing stronger, two-way authentication.
+                    </p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand">
                 <i class="bi bi-arrows-angle-expand"></i>
             </button>
         </div>
-
     </div>
-
-    <!-- Flashcard Modal -->
-    <dialog id="flashcard-modal" class="flashcard-modal">
-        <div class="modal-content">
-            <header class="modal-header">
-                <h3 id="modal-question">Question</h3>
-                <button class="modal-close-btn" onclick="closeFlashcardModal()">
-                    <i class="bi bi-x-lg"></i>
-                </button>
-            </header>
-            <div class="modal-body">
-                <div class="modal-answer">
-                    <h4>Answer</h4>
-                    <div id="modal-answer-content">Answer content will appear here</div>
-                </div>
-            </div>
-        </div>
-    </dialog>
 </div>

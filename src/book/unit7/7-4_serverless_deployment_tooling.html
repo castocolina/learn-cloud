@@ -1,29 +1,35 @@
 <div class="topic-content">
-    <header class="topic-header">
-        <h1 class="topic-title">Unit 7.4: Serverless Deployment & Tooling</h1>
+    <header class="topic-header" aria-label="Header">
+        <h1 class="topic-title">Unit 7.4: Serverless Deployment &amp; Tooling</h1>
+        <p class="topic-intro">Manually deploying and managing all the interconnected resources for a serverless application (Lambda functions, API Gateway endpoints, IAM roles, event source mappings) is complex and error-prone. To do this effectively, you must use an <strong>Infrastructure as Code (IaC)</strong> framework. This topic explores the two leading frameworks for serverless development on AWS: the open-source <strong>Serverless Framework</strong> and the native <strong>AWS Serverless Application Model (SAM)</strong>.</p>
     </header>
-    <main class="topic-main">
-        <section class="content-section">
+    <section class="content-section">
+        <h2><i class="bi bi-braces"></i> 1. The Serverless Framework</h2>
+        <p>
+            The <a href="https://www.serverless.com/" target="_blank">Serverless Framework</a> is a popular, open-source,
+            multi-cloud framework that simplifies serverless development. It uses a single YAML configuration file,
+            <code>serverless.yml</code>, to define your application's entire infrastructure.
+        </p>
 
-    <p class="lead">Manually deploying and managing all the interconnected resources for a serverless application (Lambda functions, API Gateway endpoints, IAM roles, event source mappings) is complex and error-prone. To do this effectively, you must use an <strong>Infrastructure as Code (IaC)</strong> framework. This topic explores the two leading frameworks for serverless development on AWS: the open-source <strong>Serverless Framework</strong> and the native <strong>AWS Serverless Application Model (SAM)</strong>.</p>
+        <h4>Core Concepts</h4>
+        <ul>
+            <li>
+                <strong><code>serverless.yml</code>:</strong> The manifest file where you define your service, provider,
+                functions, and events.
+            </li>
+            <li><strong>Provider:</strong> The cloud provider you are deploying to (e.g., `aws`, `azure`, `gcp`).</li>
+            <li>
+                <strong>Functions:</strong> The definitions of your Lambda functions, including their handler, runtime, and
+                memory allocation.
+            </li>
+            <li>
+                <strong>Events:</strong> The triggers for your functions, such as HTTP endpoints, S3 bucket notifications, or
+                SQS queues.
+            </li>
+        </ul>
 
-        </section>
-        <section class="content-section">
-            <h2><i class="bi bi-braces"></i> 1. The Serverless Framework</h2>
-    <p>
-        The <a href="https://www.serverless.com/" target="_blank">Serverless Framework</a> is a popular, open-source, multi-cloud framework that simplifies serverless development. It uses a single YAML configuration file, <code>serverless.yml</code>, to define your application's entire infrastructure.
-    </p>
-
-    <h4>Core Concepts</h4>
-    <ul>
-        <li><strong><code>serverless.yml</code>:</strong> The manifest file where you define your service, provider, functions, and events.</li>
-        <li><strong>Provider:</strong> The cloud provider you are deploying to (e.g., `aws`, `azure`, `gcp`).</li>
-        <li><strong>Functions:</strong> The definitions of your Lambda functions, including their handler, runtime, and memory allocation.</li>
-        <li><strong>Events:</strong> The triggers for your functions, such as HTTP endpoints, S3 bucket notifications, or SQS queues.</li>
-    </ul>
-
-    <h4>Example: <code>serverless.yml</code> for a Python API</h4>
-    <pre><code class="language-yaml">
+        <h4>Example: <code>serverless.yml</code> for a Python API</h4>
+        <pre><code class="language-yaml">
 service: my-python-api
 
 provider:
@@ -40,9 +46,9 @@ functions:
           method: get
     </code></pre>
 
-    <h4>Deployment Workflow</h4>
-    <p>The framework handles packaging your code and deploying the entire stack using AWS CloudFormation.</p>
-    <pre><code class="language-bash">
+        <h4>Deployment Workflow</h4>
+        <p>The framework handles packaging your code and deploying the entire stack using AWS CloudFormation.</p>
+        <pre><code class="language-bash">
 # Install the Serverless Framework CLI
 # npm install -g serverless
 
@@ -53,23 +59,34 @@ serverless deploy
 serverless remove
     </code></pre>
 
-    <hr/>
+        <hr />
 
-    <h2><i class="bi bi-box-seam"></i> 2. AWS Serverless Application Model (SAM)</h2>
-    <p>
-        <a href="https://aws.amazon.com/serverless/sam/" target="_blank">AWS SAM</a> is an open-source framework developed and supported by AWS for building serverless applications. It is essentially an extension of AWS CloudFormation, providing a simplified syntax for defining serverless resources.
-    </p>
+        <h2><i class="bi bi-box-seam"></i> 2. AWS Serverless Application Model (SAM)</h2>
+        <p>
+            <a href="https://aws.amazon.com/serverless/sam/" target="_blank">AWS SAM</a> is an open-source framework
+            developed and supported by AWS for building serverless applications. It is essentially an extension of AWS
+            CloudFormation, providing a simplified syntax for defining serverless resources.
+        </p>
 
-    <h4>Core Concepts</h4>
-    <ul>
-        <li><strong><code>template.yaml</code>:</strong> The SAM template file, which is a superset of a CloudFormation template.</li>
-        <li><strong><code>AWS::Serverless::Function</code>:</strong> A simplified resource type for defining a Lambda function and its IAM role.</li>
-        <li><strong><code>AWS::Serverless::Api</code>:</strong> A simplified resource for defining an API Gateway endpoint.</li>
-    </ul>
+        <h4>Core Concepts</h4>
+        <ul>
+            <li>
+                <strong><code>template.yaml</code>:</strong> The SAM template file, which is a superset of a CloudFormation
+                template.
+            </li>
+            <li>
+                <strong><code>AWS::Serverless::Function</code>:</strong> A simplified resource type for defining a Lambda
+                function and its IAM role.
+            </li>
+            <li>
+                <strong><code>AWS::Serverless::Api</code>:</strong> A simplified resource for defining an API Gateway
+                endpoint.
+            </li>
+        </ul>
 
-    <h4>Example: <code>template.yaml</code> for the Same Python API</h4>
-    <pre><code class="language-yaml">
-AWSTemplateFormatVersion: '2010-09-09'
+        <h4>Example: <code>template.yaml</code> for the Same Python API</h4>
+        <pre><code class="language-yaml">
+AWSTemplateFormatVersion: &#x27;2010-09-09&#x27;
 Transform: AWS::Serverless-2016-10-31
 Description: A simple serverless API
 
@@ -88,9 +105,9 @@ Resources:
             Method: GET
     </code></pre>
 
-    <h4>Deployment Workflow</h4>
-    <p>The SAM CLI is used to build, package, and deploy your application.</p>
-    <pre><code class="language-bash">
+        <h4>Deployment Workflow</h4>
+        <p>The SAM CLI is used to build, package, and deploy your application.</p>
+        <pre><code class="language-bash">
 # Build the application (packages dependencies)
 sam build
 
@@ -100,58 +117,62 @@ sam deploy --guided
 # Remove the deployed stack
 sam delete
     </code></pre>
-    <p>A key feature of SAM is the <strong><code>sam local</code></strong> command, which allows you to test your functions and API locally in a Docker container that simulates the Lambda environment.</p>
+        <p>
+            A key feature of SAM is the <strong><code>sam local</code></strong> command, which allows you to test your
+            functions and API locally in a Docker container that simulates the Lambda environment.
+        </p>
 
-    <hr/>
+        <hr />
 
-    <h2><i class="bi bi-question-lg"></i> 3. Serverless Framework vs. AWS SAM</h2>
-    <div class="text-center my-4">
-        <pre class="mermaid">
-            graph TD
+        <h2><i class="bi bi-question-lg"></i> 3. Serverless Framework vs. AWS SAM</h2>
+        <div class="text-center my-4">
+            <pre class="mermaid">
+  <script type="text/plain">
+    graph TD
                 A["Developer"] --> B["serverless.yml / template.yaml"];
                 B --> C["Framework CLI (serverless/sam)"];
                 C -- "Packages & Translates" --> D["AWS CloudFormation"];
                 D -- "Provisions Resources" --> E["AWS Cloud (API Gateway, Lambda, IAM)"];
-        </pre>
-        <small class="text-muted">Diagram: General workflow for serverless IaC frameworks.</small>
-    </div>
+  </script>
+</pre>
+            <small class="text-muted">Diagram: General workflow for serverless IaC frameworks.</small>
+        </div>
 
-            <table class="content-table">
-                <thead>
-            <tr>
-                <th>Feature</th>
-                <th>Serverless Framework</th>
-                <th>AWS SAM</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><strong>Provider Support</strong></td>
-                <td>Multi-cloud (AWS, Azure, GCP, etc.)</td>
-                <td>AWS only</td>
-            </tr>
-            <tr>
-                <td><strong>Underlying Technology</strong></td>
-                <td>Its own deployment engine that creates CloudFormation stacks on AWS.</td>
-                <td>A direct extension of AWS CloudFormation.</td>
-            </tr>
-            <tr>
-                <td><strong>Extensibility</strong></td>
-                <td>Very extensible through a large ecosystem of third-party plugins.</td>
-                <td>Less extensible; relies on standard CloudFormation capabilities.</td>
-            </tr>
-            <tr>
-                <td><strong>Local Testing</strong></td>
-                <td>Possible with plugins, but not as integrated.</td>
-                <td>Excellent, built-in local testing and debugging with <code>sam local</code>.</td>
-            </tr>
-            <tr>
-                <td><strong>Best For</strong></td>
-                <td>Teams needing multi-cloud support or functionality provided by a specific plugin.</td>
-                <td>Teams deeply invested in the AWS ecosystem who want a native IaC experience.</td>
-            </tr>
-        </tbody>
-            </table>
-        </section>
-    </main>
+        <table class="content-table">
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>Serverless Framework</th>
+                    <th>AWS SAM</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Provider Support</strong></td>
+                    <td>Multi-cloud (AWS, Azure, GCP, etc.)</td>
+                    <td>AWS only</td>
+                </tr>
+                <tr>
+                    <td><strong>Underlying Technology</strong></td>
+                    <td>Its own deployment engine that creates CloudFormation stacks on AWS.</td>
+                    <td>A direct extension of AWS CloudFormation.</td>
+                </tr>
+                <tr>
+                    <td><strong>Extensibility</strong></td>
+                    <td>Very extensible through a large ecosystem of third-party plugins.</td>
+                    <td>Less extensible; relies on standard CloudFormation capabilities.</td>
+                </tr>
+                <tr>
+                    <td><strong>Local Testing</strong></td>
+                    <td>Possible with plugins, but not as integrated.</td>
+                    <td>Excellent, built-in local testing and debugging with <code>sam local</code>.</td>
+                </tr>
+                <tr>
+                    <td><strong>Best For</strong></td>
+                    <td>Teams needing multi-cloud support or functionality provided by a specific plugin.</td>
+                    <td>Teams deeply invested in the AWS ecosystem who want a native IaC experience.</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
 </div>

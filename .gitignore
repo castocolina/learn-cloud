@@ -39,4 +39,13 @@ yarn-error.log*
 .DS_Store
 Thumbs.db
 
+# Temporary files and build artifacts
+# HTML validation backups, logs, and other temporary files
 tmp/
+*.backup*
+
+# Python cache files
+# These improve performance but are machine-specific
+__pycache__/
+*.py[cod]
+*$py.class

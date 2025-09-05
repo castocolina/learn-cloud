@@ -1,18 +1,17 @@
 <div class="quiz-content">
-    <header class="quiz-header">
-        <h2>Quiz: Orchestration and Workflows</h2>
-        <p class="quiz-intro">Test your understanding of AWS Step Functions, state machines, and serverless workflow orchestration.</p>
+    <header class="quiz-header" aria-label="Header">
+        <h1>Unit 7-3: Quiz - Orchestration and Workflows</h1>
+        <p class="quiz-intro">Assess your understanding of AWS Step Functions, state machines, and serverless workflow patterns.</p>
     </header>
-
     <div class="quiz-container">
         <div class="quiz-card active-card" data-question="1">
             <div class="question">
                 <p>1. What is the "Lambda pinball" anti-pattern?</p>
                 <ul class="options">
-                    <li><label><input type="radio" name="q1" value="a"> a) A Lambda function that calls itself recursively.</label></li>
-                    <li><label><input type="radio" name="q1" value="b"> b) A complex chain of Lambda functions that trigger each other directly, making the architecture brittle and hard to debug.</label></li>
-                    <li><label><input type="radio" name="q1" value="c"> c) A workflow that uses too many different AWS services.</label></li>
-                    <li><label><input type="radio" name="q1" value="d"> d) A visual tool for designing Lambda functions.</label></li>
+                    <li><label><input type="radio" name="q1" value="a" /> a) A Lambda function that calls itself recursively.</label></li>
+                    <li><label><input type="radio" name="q1" value="b" /> b) A complex chain of Lambda functions that trigger each other directly, making the architecture brittle and hard to debug.</label></li>
+                    <li><label><input type="radio" name="q1" value="c" /> c) A workflow that uses too many different AWS services.</label></li>
+                    <li><label><input type="radio" name="q1" value="d" /> d) A visual tool for designing Lambda functions.</label></li>
                 </ul>
                 <div class="answer" data-correct="b"></div>
             </div>
@@ -22,10 +21,10 @@
             <div class="question">
                 <p>2. What is the primary function of AWS Step Functions?</p>
                 <ul class="options">
-                    <li><label><input type="radio" name="q2" value="a"> a) To run containerized applications without managing servers.</label></li>
-                    <li><label><input type="radio" name="q2" value="b"> b) To provide a relational database service.</label></li>
-                    <li><label><input type="radio" name="q2" value="c"> c) To act as a serverless orchestrator for coordinating multiple AWS services into a visual workflow.</label></li>
-                    <li><label><input type="radio" name="q2" value="d"> d) To provide a CI/CD pipeline for serverless applications.</label></li>
+                    <li><label><input type="radio" name="q2" value="a" /> a) To run containerized applications without managing servers.</label></li>
+                    <li><label><input type="radio" name="q2" value="b" /> b) To provide a relational database service.</label></li>
+                    <li><label><input type="radio" name="q2" value="c" /> c) To act as a serverless orchestrator for coordinating multiple AWS services into a visual workflow.</label></li>
+                    <li><label><input type="radio" name="q2" value="d" /> d) To provide a CI/CD pipeline for serverless applications.</label></li>
                 </ul>
                 <div class="answer" data-correct="c"></div>
             </div>
@@ -35,10 +34,10 @@
             <div class="question">
                 <p>3. In a Step Functions state machine, which state type is used to add branching logic to a workflow?</p>
                 <ul class="options">
-                    <li><label><input type="radio" name="q3" value="a"> a) `Task`</label></li>
-                    <li><label><input type="radio" name="q3" value="b"> b) `Parallel`</label></li>
-                    <li><label><input type="radio" name="q3" value="c"> c) `Wait`</label></li>
-                    <li><label><input type="radio" name="q3" value="d"> d) `Choice`</label></li>
+                    <li><label><input type="radio" name="q3" value="a" /> a) `Task`</label></li>
+                    <li><label><input type="radio" name="q3" value="b" /> b) `Parallel`</label></li>
+                    <li><label><input type="radio" name="q3" value="c" /> c) `Wait`</label></li>
+                    <li><label><input type="radio" name="q3" value="d" /> d) `Choice`</label></li>
                 </ul>
                 <div class="answer" data-correct="d"></div>
             </div>
@@ -48,10 +47,10 @@
             <div class="question">
                 <p>4. What is the Amazon States Language (ASL)?</p>
                 <ul class="options">
-                    <li><label><input type="radio" name="q4" value="a"> a) A Python-based SDK for interacting with Step Functions.</label></li>
-                    <li><label><input type="radio" name="q4" value="b"> b) A graphical drag-and-drop interface for building workflows.</label></li>
-                    <li><label><input type="radio" name="q4" value="c"> c) A JSON-based, structured language used to define a state machine.</label></li>
-                    <li><label><input type="radio" name="q4" value="d"> d) A query language for retrieving execution history.</label></li>
+                    <li><label><input type="radio" name="q4" value="a" /> a) A Python-based SDK for interacting with Step Functions.</label></li>
+                    <li><label><input type="radio" name="q4" value="b" /> b) A graphical drag-and-drop interface for building workflows.</label></li>
+                    <li><label><input type="radio" name="q4" value="c" /> c) A JSON-based, structured language used to define a state machine.</label></li>
+                    <li><label><input type="radio" name="q4" value="d" /> d) A query language for retrieving execution history.</label></li>
                 </ul>
                 <div class="answer" data-correct="c"></div>
             </div>
@@ -61,19 +60,20 @@
             <div class="question">
                 <p>5. What is a key advantage of using a direct service integration (e.g., with SNS or SQS) in a Step Functions `Task` state?</p>
                 <ul class="options">
-                    <li><label><input type="radio" name="q5" value="a"> a) It allows the task to run for longer than 15 minutes.</label></li>
-                    <li><label><input type="radio" name="q5" value="b"> b) It is more secure than invoking a Lambda function.</label></li>
-                    <li><label><input type="radio" name="q5" value="c"> c) It can eliminate the need for a "glue" Lambda function, reducing code and cost.</label></li>
-                    <li><label><input type="radio" name="q5" value="d"> d) It provides more detailed logging than a Lambda invocation.</label></li>
+                    <li><label><input type="radio" name="q5" value="a" /> a) It allows the task to run for longer than 15 minutes.</label></li>
+                    <li><label><input type="radio" name="q5" value="b" /> b) It is more secure than invoking a Lambda function.</label></li>
+                    <li><label><input type="radio" name="q5" value="c" /> c) It can eliminate the need for a "glue" Lambda function, reducing code and cost.</label></li>
+                    <li><label><input type="radio" name="q5" value="d" /> d) It provides more detailed logging than a Lambda invocation.</label></li>
                 </ul>
                 <div class="answer" data-correct="c"></div>
             </div>
         </div>
 
         <div class="quiz-navigation">
-            <button class="quiz-btn" id="prev-question">Previous</button>
-            <button class="quiz-btn" id="next-question">Next</button>
-            <button class="quiz-btn" id="submit-quiz" style="display: none;">Submit Answers</button>
+            <button type="button" class="quiz-btn" id="prev-question">Previous</button>
+            <div class="quiz-progress">Question 1 of 5</div>
+            <button type="button" class="quiz-btn" id="next-question">Next</button>
+            <button type="button" class="quiz-btn" id="submit-quiz" style="display: none;">Submit Answers</button>
         </div>
         <div class="quiz-results-container"></div>
     </div>

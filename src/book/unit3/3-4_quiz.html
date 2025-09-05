@@ -1,17 +1,29 @@
 <div class="quiz-content">
-<header class="quiz-header">
-
-            <h2>Quiz: Spinnaker for Continuous Delivery</h2>
-
-        <div class="quiz-container">
+    <header class="quiz-header" aria-label="Header">
+        <h1>3-4: Quiz - Monitoring and Observability</h1>
+        <p class="quiz-intro">Test your knowledge of production monitoring, alerting, and observability strategies.</p>
+    </header>
+    <div class="quiz-container">
         <div class="quiz-card active-card" data-question="1">
             <div class="question">
                 <p>1. What is the primary focus of Spinnaker?</p>
                 <ul class="options">
-                    <li><label for="q1a"><input type="radio" id="q1a" name="q1" value="a"> a) Continuous Integration (building and testing code).</label></li>
-                    <li><label for="q1b"><input type="radio" id="q1b" name="q1" value="b"> b) Continuous Delivery (automating the safe release of software).</label></li>
-                    <li><label for="q1c"><input type="radio" id="q1c" name="q1" value="c"> c) Infrastructure as Code (provisioning infrastructure).</label></li>
-                    <li><label for="q1d"><input type="radio" id="q1d" name="q1" value="d"> d) Source code management and version control.</label></li>
+                    <li>
+                        <label><input type="radio" id="q1a" name="q1" value="a" /> a) Continuous Integration (building and testing
+                            code).</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q1b" name="q1" value="b" /> b) Continuous Delivery (automating the safe
+                            release of software).</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q1c" name="q1" value="c" /> c) Infrastructure as Code (provisioning
+                            infrastructure).</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q1d" name="q1" value="d" /> d) Source code management and version
+                            control.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="b"></div>
             </div>
@@ -21,10 +33,22 @@
             <div class="question">
                 <p>2. In Spinnaker's terminology, what does a "Server Group" represent?</p>
                 <ul class="options">
-                    <li><label for="q2a"><input type="radio" id="q2a" name="q2" value="a"> a) A logical grouping of deployment pipelines.</label></li>
-                    <li><label for="q2b"><input type="radio" id="q2b" name="q2" value="b"> b) A single step in a deployment pipeline, such as a manual judgment stage.</label></li>
-                    <li><label for="q2c"><input type="radio" id="q2c" name="q2" value="c"> c) The running, versioned instance of your application (e.g., a Kubernetes Deployment).</label></li>
-                    <li><label for="q2d"><input type="radio" id="q2d" name="q2" value="d"> d) A collection of monitoring dashboards for an application.</label></li>
+                    <li>
+                        <label><input type="radio" id="q2a" name="q2" value="a" /> a) A logical grouping of deployment
+                            pipelines.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q2b" name="q2" value="b" /> b) A single step in a deployment pipeline, such
+                            as a manual judgment stage.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q2c" name="q2" value="c" /> c) The running, versioned instance of your
+                            application (e.g., a Kubernetes Deployment).</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q2d" name="q2" value="d" /> d) A collection of monitoring dashboards for an
+                            application.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="c"></div>
             </div>
@@ -34,10 +58,22 @@
             <div class="question">
                 <p>3. What is the main goal of Automated Canary Analysis (ACA) in Spinnaker?</p>
                 <ul class="options">
-                    <li><label for="q3a"><input type="radio" id="q3a" name="q3" value="a"> a) To run unit and integration tests on a new software release.</label></li>
-                    <li><label for="q3b"><input type="radio" id="q3b" name="q3" value="b"> b) To automatically provision the infrastructure required for a canary deployment.</label></li>
-                    <li><label for="q3c"><input type="radio" id="q3c" name="q3" value="c"> c) To automatically compare metrics between a canary and baseline release to make a data-driven decision about its safety.</label></li>
-                    <li><label for="q3d"><input type="radio" id="q3d" name="q3" value="d"> d) To require a developer to manually inspect the canary release before promoting it.</label></li>
+                    <li>
+                        <label><input type="radio" id="q3a" name="q3" value="a" /> a) To run unit and integration tests on a new
+                            software release.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q3b" name="q3" value="b" /> b) To automatically provision the infrastructure
+                            required for a canary deployment.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q3c" name="q3" value="c" /> c) To automatically compare metrics between a
+                            canary and baseline release to make a data-driven decision about its safety.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q3d" name="q3" value="d" /> d) To require a developer to manually inspect the
+                            canary release before promoting it.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="c"></div>
             </div>
@@ -45,12 +81,23 @@
 
         <div class="quiz-card" data-question="4">
             <div class="question">
-                <p>4. Which advanced deployment strategy involves deploying a new version alongside the old one and then switching all traffic at once after verification?</p>
+                <p>
+                    4. Which advanced deployment strategy involves deploying a new version alongside the old one and then
+                    switching all traffic at once after verification?
+                </p>
                 <ul class="options">
-                    <li><label for="q4a"><input type="radio" id="q4a" name="q4" value="a"> a) Rolling Update</label></li>
-                    <li><label for="q4b"><input type="radio" id="q4b" name="q4" value="b"> b) Red/Black (or Blue/Green) Deployment</label></li>
-                    <li><label for="q4c"><input type="radio" id="q4c" name="q4" value="c"> c) Canary Deployment</label></li>
-                    <li><label for="q4d"><input type="radio" id="q4d" name="q4" value="d"> d) A/B Testing</label></li>
+                    <li>
+                        <label><input type="radio" id="q4a" name="q4" value="a" /> a) Rolling Update</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q4b" name="q4" value="b" /> b) Red/Black (or Blue/Green) Deployment</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q4c" name="q4" value="c" /> c) Canary Deployment</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q4d" name="q4" value="d" /> d) A/B Testing</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="b"></div>
             </div>
@@ -60,21 +107,33 @@
             <div class="question">
                 <p>5. What is the most common and effective pattern for using GitHub Actions and Spinnaker together?</p>
                 <ul class="options">
-                    <li><label for="q5a"><input type="radio" id="q5a" name="q5" value="a"> a) Use Spinnaker for CI (building and testing) and GitHub Actions for CD (deployment).</label></li>
-                    <li><label for="q5b"><input type="radio" id="q5b" name="q5" value="b"> b) Use GitHub Actions for the entire CI/CD process, including complex canary deployments.</label></li>
-                    <li><label for="q5c"><input type="radio" id="q5c" name="q5" value="c"> c) Use GitHub Actions for CI (build/test/push artifact) and then trigger a Spinnaker pipeline to handle CD (deploy/release).</label></li>
-                    <li><label for="q5d"><input type="radio" id="q5d" name="q5" value="d"> d) Use Spinnaker to monitor a git repository and trigger GitHub Actions workflows.</label></li>
+                    <li>
+                        <label><input type="radio" id="q5a" name="q5" value="a" /> a) Use Spinnaker for CI (building and testing) and
+                            GitHub Actions for CD (deployment).</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q5b" name="q5" value="b" /> b) Use GitHub Actions for the entire CI/CD
+                            process, including complex canary deployments.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q5c" name="q5" value="c" /> c) Use GitHub Actions for CI (build/test/push
+                            artifact) and then trigger a Spinnaker pipeline to handle CD (deploy/release).</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q5d" name="q5" value="d" /> d) Use Spinnaker to monitor a git repository and
+                            trigger GitHub Actions workflows.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="c"></div>
             </div>
         </div>
 
         <div class="quiz-navigation">
-            <button class="quiz-btn" id="prev-question">Previous</button>
-            <button class="quiz-btn" id="next-question">Next</button>
-            <button class="quiz-btn" id="submit-quiz" style="display: none;">Submit Answers</button>
+            <button type="button" class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <div class="quiz-progress">Question 1 of 5</div>
+            <button type="button" class="btn btn-outline-primary" id="next-question">Next</button>
+            <button type="button" class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
         </div>
         <div class="quiz-results-container"></div>
     </div>
-</div>
 </div>

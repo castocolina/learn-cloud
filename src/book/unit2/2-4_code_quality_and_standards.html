@@ -1,94 +1,88 @@
 <div class="topic-content">
-<header class="topic-header">
+    <header class="topic-header" aria-label="Header">
+        <h1 class="topic-title">Unit 2.4: Code Quality and Standards</h1>
+    </header>
 
-    
-                <h1 class="topic-title">Unit 2.4 Code Quality and Standards</h1>
-    </div>
-
-    <p class="lead">In the world of professional software development, the quality of the code is as important as its functionality. Go takes a strong, opinionated stance on code quality, with tools and conventions designed to ensure consistency and readability across all projects. This topic covers the essential tools and philosophies that define idiomatic Go code.</p>
-
-    
-
-    <!-- Idiomatic Go -->
-    <h2><i class="bi bi-check-circle-fill"></i> 1. Idiomatic Go: Writing Code the "Go Way"</h2>
-    <p>
-        Every language has its own set of conventions and best practices. In Go, writing "idiomatic" code is highly valued. It means writing code that is simple, readable, and leverages the language's features as they were intended. For developers coming from other languages, this might mean unlearning some patterns.
-    </p>
-    <p>Key principles of idiomatic Go include:</p>
-    <ul>
-        <li><i class="bi bi-lightbulb"></i> <strong>Simplicity:</strong> Prefer simple, clear code over clever or complex solutions.</li>
-        <li><i class="bi bi-book"></i> <strong>Readability:</strong> Code is read far more often than it is written. Prioritize clarity for the next developer who will read your code.</li>
-        <li><i class="bi bi-exclamation-triangle"></i> <strong>Explicit Error Handling:</strong> Embrace the `if err != nil` pattern. Don't hide errors.</li>
-        <li><i class="bi bi-bounding-box-circles"></i> <strong>Small Interfaces:</strong> Define interfaces with as few methods as possible.</li>
-    </ul>
-    <p>
-        The best resources for learning idiomatic Go are the official documents:
+    <section>
+        <h2><i class="bi bi-check-circle-fill"></i> 1. Idiomatic Go: Writing Code the "Go Way"</h2>
+        <p>
+            Every language has its own set of conventions and best practices. In Go, writing "idiomatic" code is highly valued. It means writing code that is simple, readable, and leverages the language's features as they were intended. For developers coming from other languages, this might mean unlearning some patterns.
+        </p>
+        <p>Key principles of idiomatic Go include:</p>
+        <ul>
+            <li><i class="bi bi-lightbulb"></i> <strong>Simplicity:</strong> Prefer simple, clear code over clever or complex solutions.</li>
+            <li><i class="bi bi-book"></i> <strong>Readability:</strong> Code is read far more often than it is written. Prioritize clarity for the next developer who will read your code.</li>
+            <li><i class="bi bi-exclamation-triangle"></i> <strong>Explicit Error Handling:</strong> Embrace the `if err != nil` pattern. Don't hide errors.</li>
+            <li><i class="bi bi-bounding-box-circles"></i> <strong>Small Interfaces:</strong> Define interfaces with as few methods as possible.</li>
+        </ul>
+        <p>
+            The best resources for learning idiomatic Go are the official documents:
+        </p>
         <ul>
             <li><a href="https://go.dev/doc/effective_go" target="_blank">Effective Go</a></li>
             <li><a href="https://github.com/golang/go/wiki/CodeReviewComments" target="_blank">Go Code Review Comments</a></li>
         </ul>
-    </p>
 
-    
 
-    <!-- gofmt -->
-    <h2><i class="bi bi-paint-bucket"></i> 2. Formatting with `gofmt`</h2>
-    <p>
-        Go completely eliminates debates over code formatting with one official, non-negotiable tool: <strong><code>gofmt</code></strong>. It is built into the Go toolchain and has no configuration options. There is only one correct way to format Go code, and `gofmt` enforces it.
-    </p>
-    <p>
-        A related tool, <strong><code>goimports</code></strong>, does everything `gofmt` does, but also automatically adds missing and removes unused import statements. Most IDEs and editors are configured to use `goimports` by default when you save a file.
-    </p>
 
-    <h4>Usage Example</h4>
-    <p>Consider this poorly formatted Go code:</p>
-    <pre><code class="language-go">
+        <!-- gofmt -->
+        <h2><i class="bi bi-paint-bucket"></i> 2. Formatting with `gofmt`</h2>
+        <p>
+            Go completely eliminates debates over code formatting with one official, non-negotiable tool: <strong><code>gofmt</code></strong>. It is built into the Go toolchain and has no configuration options. There is only one correct way to format Go code, and `gofmt` enforces it.
+        </p>
+        <p>
+            A related tool, <strong><code>goimports</code></strong>, does everything `gofmt` does, but also automatically adds missing and removes unused import statements. Most IDEs and editors are configured to use `goimports` by default when you save a file.
+        </p>
+
+        <h4>Usage Example</h4>
+        <p>Consider this poorly formatted Go code:</p>
+        <pre><code class="language-go">
 package main
-import ("fmt"; "os")
+import (&quot;fmt&quot;; &quot;os&quot;)
 
 func main() {
     x:=10
-  if x > 5 { fmt.Println("x is greater than 5") }
+  if x &gt; 5 { fmt.Println(&quot;x is greater than 5&quot;) }
 }
     </code></pre>
 
-    <p>Running `gofmt -w` or `goimports -w` on the file will reformat it in place:</p>
-    <pre><code class="language-go">
+        <p>Running `gofmt -w` or `goimports -w` on the file will reformat it in place:</p>
+        <pre><code class="language-go">
 package main
 
-import "fmt"
+import &quot;fmt&quot;
 
 func main() {
 	x := 10
-	if x > 5 {
-		fmt.Println("x is greater than 5")
+	if x &gt; 5 {
+		fmt.Println(&quot;x is greater than 5&quot;)
 	}
 }
     </code></pre>
-    <div class="alert alert-info">
-        <i class="bi bi-info-circle-fill"></i> <strong>Note:</strong> The Go community's universal adoption of `gofmt` means you can read any Go project and it will have the same style, which significantly reduces cognitive load.
-    </div>
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle-fill"></i> <strong>Note:</strong> The Go community's universal adoption of `gofmt` means you can read any Go project and it will have the same style, which significantly reduces cognitive load.
+        </div>
 
-    
 
-    <!-- golangci-lint -->
-    <h2><i class="bi bi-search"></i> 3. Linting with `golangci-lint`</h2>
-    <p>
-        While `gofmt` handles formatting, a <strong>linter</strong> analyzes your code for a much wider range of issues, including potential bugs, performance problems, and stylistic errors. The de facto standard linter for Go is <strong><code>golangci-lint</code></strong>.
-    </p>
-    <p>
-        It's a powerful meta-linter that runs dozens of different linters in parallel, making it incredibly fast and comprehensive.
-    </p>
 
-    <h4>Installation</h4>
-    <p>You can install it using the official script or via package managers. Full instructions are on their <a href="https://golangci-lint.run/" target="_blank">website</a>.</p>
-    <pre><code class="language-bash"># Example installation on macOS/Linux
+        <!-- golangci-lint -->
+        <h2><i class="bi bi-search"></i> 3. Linting with `golangci-lint`</h2>
+        <p>
+            While `gofmt` handles formatting, a <strong>linter</strong> analyzes your code for a much wider range of issues, including potential bugs, performance problems, and stylistic errors. The de facto standard linter for Go is <strong><code>golangci-lint</code></strong>.
+        </p>
+        <p>
+            It's a powerful meta-linter that runs dozens of different linters in parallel, making it incredibly fast and comprehensive.
+        </p>
+
+        <h4>Installation</h4>
+        <p>You can install it using the official script or via package managers. Full instructions are on their <a href="https://golangci-lint.run/" target="_blank">website</a>.</p>
+        <pre><code class="language-bash"># Example installation on macOS/Linux
 curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh \
   | sh -s -- -b $(go env GOPATH)/bin v1.55.2</code></pre>
 
-    <h4>Configuration and Usage</h4>
-    <p>You configure `golangci-lint` with a <code>.golangci.yml</code> file in your project root.</p>
-    <pre><code class="language-yaml">
+        <h4>Configuration and Usage</h4>
+        <p>You configure `golangci-lint` with a <code>.golangci.yml</code> file in your project root.</p>
+        <pre><code class="language-yaml">
 # .golangci.yml
 run:
   timeout: 5m
@@ -116,19 +110,19 @@ issues:
         - funlen
     </code></pre>
 
-    <p>To run the linter on your project, simply execute:</p>
-    <pre><code class="language-bash">golangci-lint run ./...</code></pre>
+        <p>To run the linter on your project, simply execute:</p>
+        <pre><code class="language-bash">golangci-lint run ./...</code></pre>
 
-    
 
-    <h3><i class="bi bi-robot"></i> Automation with Pre-commit Hooks</h3>
-    <p>
-        Just as with Python, we can use pre-commit hooks to automate these checks, ensuring that no unformatted or un-linted code ever gets committed to the repository.
-    </p>
-    <p>
-        Create a <code>.pre-commit-config.yaml</code> file in your project root:
-    </p>
-    <pre><code class="language-yaml">
+
+        <h3><i class="bi bi-robot"></i> Automation with Pre-commit Hooks</h3>
+        <p>
+            Just as with Python, we can use pre-commit hooks to automate these checks, ensuring that no unformatted or un-linted code ever gets committed to the repository.
+        </p>
+        <p>
+            Create a <code>.pre-commit-config.yaml</code> file in your project root:
+        </p>
+        <pre><code class="language-yaml">
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
@@ -146,13 +140,14 @@ repos:
     -   id: go-fmt
     -   id: go-imports
     </code></pre>
-    <p>
-        After installing the <a href="https://pre-commit.com/" target="_blank">pre-commit framework</a>, run <code>pre-commit install</code> to set up the git hooks.
-    </p>
+        <p>
+            After installing the <a href="https://pre-commit.com/" target="_blank">pre-commit framework</a>, run <code>pre-commit install</code> to set up the git hooks.
+        </p>
 
-    <div class="text-center my-4">
-        <pre class="mermaid">
-            graph TD
+        <div class="text-center my-4">
+            <pre class="mermaid">
+  <script type="text/plain">
+    graph LR
                 subgraph "Developer Workflow"
                     A["1. Developer writes code"] --> B{"2. Runs `git commit`"};
                 end
@@ -178,16 +173,16 @@ repos:
                 class A,B,G dev;
                 class C,D,E hook;
                 class F,H,I outcome;
-        </pre>
-        <small class="text-muted">Diagram: The Pre-commit Git Hook Workflow for Go</small>
-    </div>
+  </script>
+</pre>
+            <small class="text-muted">Diagram: The Pre-commit Git Hook Workflow for Go</small>
+        </div>
 
-    
 
-    <h2>Conclusion</h2>
-    <p>
-        Go's ecosystem is built around the principle that consistency and readability are paramount. By embracing the built-in tools like `gofmt` and adopting community standards like `golangci-lint`, you can ensure your codebase remains high-quality, maintainable, and easy for any Go developer to understand. Automating these checks with pre-commit hooks makes maintaining these standards effortless.
-    </p>
 
-</div>    </div>
+        <h2>Conclusion</h2>
+        <p>
+            Go's ecosystem is built around the principle that consistency and readability are paramount. By embracing the built-in tools like `gofmt` and adopting community standards like `golangci-lint`, you can ensure your codebase remains high-quality, maintainable, and easy for any Go developer to understand. Automating these checks with pre-commit hooks makes maintaining these standards effortless.
+        </p>
+    </section>
 </div>

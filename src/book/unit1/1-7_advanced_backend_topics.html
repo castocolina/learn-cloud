@@ -1,27 +1,34 @@
 <div class="topic-content">
-    <header class="topic-header">
-        <h1 class="topic-title">Unit 1.7 Advanced Backend Topics</h1>
-    </div>
+    <header class="topic-header" aria-label="Header">
+        <h1 class="topic-title">Unit 1.7: Advanced Backend Topics</h1>
+        <p class="topic-intro">
+            Take your backend development skills to the next level with advanced patterns and architectures.
+            This topic explores event-driven architecture, message queues, security patterns, and microservices
+            communication strategies that are essential for building robust, scalable cloud-native systems.
+        </p>
+    </header>
 
-    <p class="lead">As cloud-native systems grow in complexity, simple REST APIs might not be sufficient for all communication needs. This topic delves into advanced communication patterns and architectural styles that are crucial for building scalable, resilient, and high-performance microservices: event-driven architectures using message queues and high-performance Remote Procedure Calls (RPC) with gRPC and Protocol Buffers.</p>
+    <section class="topic-section">
+        <h2>Event-Driven Architecture with Message Queues</h2>
+        <p>
+            <strong>Event-driven architecture (EDA)</strong> is a design paradigm where services communicate asynchronously by
+            producing and consuming events. This approach decouples services, making them more independent, scalable, and
+            resilient. The core component enabling EDA is a <strong>message queue</strong> or <strong>message broker</strong>.
+        </p>
+        <p><strong>Benefits of EDA:</strong></p>
+        <ul>
+            <li><strong>Decoupling:</strong> Services don't need to know about each other directly.</li>
+            <li><strong>Scalability:</strong> Producers and consumers can scale independently.</li>
+            <li><strong>Resilience:</strong> Messages can be retried if a consumer fails.</li>
+            <li>
+                <strong>Asynchronous Processing:</strong> Long-running tasks can be offloaded without blocking the main request
+                flow.
+            </li>
+        </ul>
 
-    
-
-    <!-- Event-Driven Architecture with Message Queues -->
-    <h2>1. Event-Driven Architecture with Message Queues</h2>
-    <p>
-        <strong>Event-driven architecture (EDA)</strong> is a design paradigm where services communicate asynchronously by producing and consuming events. This approach decouples services, making them more independent, scalable, and resilient. The core component enabling EDA is a <strong>message queue</strong> or <strong>message broker</strong>.
-    </p>
-    <p><strong>Benefits of EDA:</strong></p>
-    <ul>
-        <li><strong>Decoupling:</strong> Services don't need to know about each other directly.</li>
-        <li><strong>Scalability:</strong> Producers and consumers can scale independently.</li>
-        <li><strong>Resilience:</strong> Messages can be retried if a consumer fails.</li>
-        <li><strong>Asynchronous Processing:</strong> Long-running tasks can be offloaded without blocking the main request flow.</li>
-    </ul>
-
-    <div class="text-center my-4">
-        <pre class="mermaid">
+        <div class="text-center my-4">
+            <pre class="mermaid">
+ <script type="text/plain">
 graph LR
     Producer["Service A (Producer)"] --> MessageQueue["Message Queue"];
     MessageQueue --> Consumer["Service B (Consumer)"];
@@ -32,17 +39,20 @@ graph LR
         MessageQueue -- "Delivers Event" --> Consumer;
         MessageQueue -- "Delivers Event" --> AnotherConsumer;
     end
-        </pre>
-        <small class="text-muted">Diagram: Simple Event-Driven Architecture</small>
-    </div>
+ </script>
+</pre>
+            <small class="text-muted">Diagram: Simple Event-Driven Architecture</small>
+        </div>
 
-    <h3>RabbitMQ: A General-Purpose Message Broker</h3>
-    <p>
-        <a href="https://www.rabbitmq.com/" target="_blank">RabbitMQ</a> is a widely used open-source message broker that implements the Advanced Message Queuing Protocol (AMQP). It's excellent for general-purpose messaging, task queues, and publish/subscribe patterns.
-    </p>
+        <h3>RabbitMQ: A General-Purpose Message Broker</h3>
+        <p>
+            <a href="https://www.rabbitmq.com/" target="_blank">RabbitMQ</a> is a widely used open-source message broker that
+            implements the Advanced Message Queuing Protocol (AMQP). It's excellent for general-purpose messaging, task queues,
+            and publish/subscribe patterns.
+        </p>
 
-    <h4>Setup: Running RabbitMQ with Docker</h4>
-    <pre><code class="language-bash">
+        <h4>Setup: Running RabbitMQ with Docker</h4>
+        <pre><code class="language-bash">
 docker run -d \
   --hostname my-rabbit \
   --name some-rabbit \
@@ -50,81 +60,99 @@ docker run -d \
   -p 15672:15672 \
   rabbitmq:3-management-alpine
 </code></pre>
-    <div class="alert alert-info">
-        The <code>-p 15672:15672</code> port exposes the RabbitMQ Management UI, which you can access at <a href="http://localhost:15672" target="_blank">http://localhost:15672</a> (default guest/guest credentials).
-    </div>
+        <div class="alert alert-info">
+            The <code>-p 15672:15672</code> port exposes the RabbitMQ Management UI, which you can access at
+            <a href="http://localhost:15672" target="_blank">http://localhost:15672</a> (default guest/guest credentials).
+        </div>
 
-    <h4>Python Client: <code>pika</code></h4>
-    <p>Install the <code>pika</code> library:</p>
-    <pre><code class="language-bash">pip install pika</code></pre>
+        <h4>Python Client: <code>pika</code></h4>
+        <p>Install the <code>pika</code> library:</p>
+        <pre><code class="language-bash">pip install pika</code></pre>
 
-    <h4>Producer Example (<code>producer.py</code>)</h4>
-    <pre><code class="language-python">
+        <h4>Producer Example (<code>producer.py</code>)</h4>
+        <pre><code class="language-python">
 import pika
 import time
 
-connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+connection = pika.BlockingConnection(pika.ConnectionParameters(&#x27;localhost&#x27;))
 channel = connection.channel()
 
-# Declare a queue named 'hello'
-channel.queue_declare(queue='hello')
+# Declare a queue named &#x27;hello&#x27;
+channel.queue_declare(queue=&#x27;hello&#x27;)
 
 message_count = 0
 while True:
-    message = f"Hello World! Message {message_count}"
-    channel.basic_publish(exchange='', routing_key='hello', body=message)
-    print(f" [x] Sent '{message}'")
+    message = f&quot;Hello World! Message {message_count}&quot;
+    channel.basic_publish(exchange=&#x27;&#x27;, routing_key=&#x27;hello&#x27;, body=message)
+    print(f&quot; [x] Sent &#x27;{message}&#x27;&quot;)
     message_count += 1
     time.sleep(1) # Send a message every second
 
 connection.close()
     </code></pre>
 
-    <h4>Consumer Example (<code>consumer.py</code>)</h4>
-    <pre><code class="language-python">
-import pika
-import time
+        <h4>Consumer Example (<code>consumer.py</code>)</h4>
+        <pre><code class="language-python">
+                import pika
+                import time
 
-connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
-channel = connection.channel()
+                connection = pika.BlockingConnection(pika.ConnectionParameters(&#x27;localhost&#x27;))
+                channel = connection.channel()
 
-channel.queue_declare(queue='hello')
+                channel.queue_declare(queue=&#x27;hello&#x27;)
 
-def callback(ch, method, properties, body):
-    print(f" [x] Received '{body.decode()}'")
-    time.sleep(body.count(b'.')) # Simulate work
-    ch.basic_ack(delivery_tag=method.delivery_tag)
+                def callback(ch, method, properties, body):
+                print(f&quot; [x] Received &#x27;{body.decode()}&#x27;&quot;)
+                time.sleep(body.count(b&#x27;.&#x27;)) # Simulate work
+                ch.basic_ack(delivery_tag=method.delivery_tag)
 
-# Tell RabbitMQ to send messages to our callback function
-channel.basic_consume(queue='hello', on_message_callback=callback)
+                # Tell RabbitMQ to send messages to our callback function
+                channel.basic_consume(queue=&#x27;hello&#x27;, on_message_callback=callback)
 
-print(' [*] Waiting for messages. To exit press CTRL+C')
-channel.start_consuming()
-    </code></pre>
-    <p>Run the producer and consumer in separate terminals. You'll see messages being sent and received asynchronously.</p>
+                print(&#x27; [*] Waiting for messages. To exit press CTRL+C&#x27;)
+                channel.start_consuming()
+            </code></pre>
+        <p>
+            Run the producer and consumer in separate terminals. You'll see messages being sent and received asynchronously.
+        </p>
 
-    <h3>Kafka: A Distributed Streaming Platform (Briefly)</h3>
-    <p>
-        While RabbitMQ is a message broker, <a href="https://kafka.apache.org/" target="_blank">Apache Kafka</a> is a distributed streaming platform designed for high-throughput, fault-tolerant, real-time data feeds. It's often used for building event streaming pipelines, real-time analytics, and handling large volumes of log data. For typical task queuing, RabbitMQ is often simpler, but for complex event sourcing or stream processing, Kafka is the industry standard.
-    </p>
+        <h3>Kafka: A Distributed Streaming Platform (Briefly)</h3>
+        <p>
+            While RabbitMQ is a message broker, <a href="https://kafka.apache.org/" target="_blank">Apache Kafka</a> is a
+            distributed streaming platform designed for high-throughput, fault-tolerant, real-time data feeds. It's often used
+            for building event streaming pipelines, real-time analytics, and handling large volumes of log data. For typical
+            task queuing, RabbitMQ is often simpler, but for complex event sourcing or stream processing, Kafka is the industry
+            standard.
+        </p>
 
-    
+    </section>
 
-    <!-- gRPC Communication -->
-    <h2>2. Working with Protobuf for gRPC Communication</h2>
-    <p>
-        <strong>gRPC</strong> is a modern, high-performance Remote Procedure Call (RPC) framework developed by Google. It's designed for efficient communication between services, especially in polyglot microservice environments.
-    </p>
-    <p><strong>Why gRPC over REST for internal communication?</strong></p>
-    <ul>
-        <li><strong>Performance:</strong> Uses HTTP/2 for multiplexing and streaming, and Protocol Buffers for efficient binary serialization.</li>
-        <li><strong>Strongly Typed Contracts:</strong> Defines service interfaces and message structures using Protocol Buffers (Protobuf), ensuring strict type checking and code generation across different languages.</li>
-        <li><strong>Bidirectional Streaming:</strong> Supports various communication patterns, including client-side streaming, server-side streaming, and bidirectional streaming.</li>
-    </ul>
+    <section class="topic-section">
+        <h2>Working with Protobuf for gRPC Communication</h2>
+        <p>
+            <strong>gRPC</strong> is a modern, high-performance Remote Procedure Call (RPC) framework developed by Google. It's
+            designed for efficient communication between services, especially in polyglot microservice environments.
+        </p>
+        <p><strong>Why gRPC over REST for internal communication?</strong></p>
+        <ul>
+            <li>
+                <strong>Performance:</strong> Uses HTTP/2 for multiplexing and streaming, and Protocol Buffers for efficient
+                binary serialization.
+            </li>
+            <li>
+                <strong>Strongly Typed Contracts:</strong> Defines service interfaces and message structures using Protocol
+                Buffers (Protobuf), ensuring strict type checking and code generation across different languages.
+            </li>
+            <li>
+                <strong>Bidirectional Streaming:</strong> Supports various communication patterns, including client-side
+                streaming, server-side streaming, and bidirectional streaming.
+            </li>
+        </ul>
 
-    <div class="text-center my-4">
-        <pre class="mermaid">
-            graph TD
+        <div class="text-center my-4">
+            <pre class="mermaid">
+ <script type="text/plain">
+graph LR
                 Client["gRPC Client"] --> Stub["Client Stub (Generated Code)"];
                 Stub --> Network["Network (HTTP/2)"];
                 Network --> ServerStub["Server Stub (Generated Code)"];
@@ -133,18 +161,22 @@ channel.start_consuming()
                 ServerStub --> Network;
                 Network --> Stub;
                 Stub --> Client;
-        </pre>
-        <small class="text-muted">Diagram: gRPC Communication Flow</small>
-    </div>
+ </script>
+</pre>
+            <small class="text-muted">Diagram: gRPC Communication Flow</small>
+        </div>
 
-    <h3>Protocol Buffers (Protobuf)</h3>
-    <p>
-        <a href="https://developers.google.com/protocol-buffers" target="_blank">Protocol Buffers</a> are a language-neutral, platform-neutral, extensible mechanism for serializing structured data. You define your data structures and service interfaces in a <code>.proto</code> file, and then use the Protobuf compiler to generate code in your chosen language.
-    </p>
+        <h3>Protocol Buffers (Protobuf)</h3>
+        <p>
+            <a href="https://developers.google.com/protocol-buffers" target="_blank">Protocol Buffers</a> are a
+            language-neutral, platform-neutral, extensible mechanism for serializing structured data. You define your data
+            structures and service interfaces in a <code>.proto</code> file, and then use the Protobuf compiler to generate code
+            in your chosen language.
+        </p>
 
-    <h4>Example <code>.proto</code> file (<code>user.proto</code>)</h4>
-    <pre><code class="language-protobuf">
-syntax = "proto3";
+        <h4>Example <code>.proto</code> file (<code>user.proto</code>)</h4>
+        <pre><code class="language-protobuf">
+syntax = &quot;proto3&quot;;
 
 package user;
 
@@ -169,111 +201,136 @@ message UserResponse {
 }
     </code></pre>
 
-    <h4>Compiling Protobuf to Python</h4>
-    <p>First, install the gRPC tools:</p>
-    <pre><code class="language-bash">pip install grpcio grpcio-tools</code></pre>
-    <p>Then, compile your <code>.proto</code> file. Make sure you are in the directory containing <code>user.proto</code>:</p>
-    <pre><code class="language-bash">
+        <h4>Compiling Protobuf to Python</h4>
+        <p>First, install the gRPC tools:</p>
+        <pre><code class="language-bash">pip install grpcio grpcio-tools</code></pre>
+        <p>
+            Then, compile your <code>.proto</code> file. Make sure you are in the directory containing <code>user.proto</code>:
+        </p>
+        <pre><code class="language-bash">
 python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. user.proto
     </code></pre>
-    <p>This command generates two Python files: <code>user_pb2.py</code> (for messages) and <code>user_pb2_grpc.py</code> (for service stubs and servers).</p>
+        <p>
+            This command generates two Python files: <code>user_pb2.py</code> (for messages) and
+            <code>user_pb2_grpc.py</code> (for service stubs and servers).
+        </p>
 
-    <h4>gRPC Server Example (<code>grpc_server.py</code>)</h4>
-    <pre><code class="language-python">
-import grpc
-from concurrent import futures
-import time
+        <h4>gRPC Server Example (<code>grpc_server.py</code>)</h4>
+        <pre><code class="language-python">
+                    import grpc
+                    from concurrent import futures
+                    import time
 
-import user_pb2
-import user_pb2_grpc
+                    import user_pb2
+                    import user_pb2_grpc
 
-class UserServiceServicer(user_pb2_grpc.UserServiceServicer):
-    """Implements the gRPC UserService."""
-    def GetUser(self, request, context):
-        print(f"Received GetUser request for user_id: {request.user_id}")
-        # In a real application, you would fetch this from a database
-        if request.user_id == 1:
-            return user_pb2.UserResponse(user_id=1, username="alice", email="alice@example.com")
-        context.set_details('User not found')
-        context.set_code(grpc.StatusCode.NOT_FOUND)
-        return user_pb2.UserResponse()
+                    class UserServiceServicer(user_pb2_grpc.UserServiceServicer):
+                    &quot;&quot;&quot;Implements the gRPC UserService.&quot;&quot;&quot;
+                    def GetUser(self, request, context):
+                    print(f&quot;Received GetUser request for user_id: {request.user_id}&quot;)
+                    # In a real application, you would fetch this from a database
+                    if request.user_id == 1:
+                    return user_pb2.UserResponse(user_id=1, username=&quot;alice&quot;, email=&quot;alice@example.com&quot;)
+                    context.set_details(&#x27;User not found&#x27;)
+                    context.set_code(grpc.StatusCode.NOT_FOUND)
+                    return user_pb2.UserResponse()
 
-    def CreateUser(self, request, context):
-        print(f"Received CreateUser request for username: {request.username}")
-        # Simulate creating a user and assigning an ID
-        new_user_id = int(time.time())
-        return user_pb2.UserResponse(
-            user_id=new_user_id,
-            username=request.username,
-            email=request.email
-        )
+                    def CreateUser(self, request, context):
+                    print(f&quot;Received CreateUser request for username: {request.username}&quot;)
+                    # Simulate creating a user and assigning an ID
+                    new_user_id = int(time.time())
+                    return user_pb2.UserResponse(
+                    user_id=new_user_id,
+                    username=request.username,
+                    email=request.email
+                    )
 
-def serve():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    user_pb2_grpc.add_UserServiceServicer_to_server(
-        UserServiceServicer(), server)
-    server.add_insecure_port('[::]:50051')
-    server.start()
-    print("gRPC Server started on port 50051")
-    server.wait_for_termination()
+                    def serve():
+                    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+                    user_pb2_grpc.add_UserServiceServicer_to_server(
+                    UserServiceServicer(), server)
+                    server.add_insecure_port(&#x27;[::]:50051&#x27;)
+                    server.start()
+                    print(&quot;gRPC Server started on port 50051&quot;)
+                    server.wait_for_termination()
 
-if __name__ == '__main__':
-    serve()
-    </code></pre>
+                    if __name__ == &#x27;__main__&#x27;:
+                    serve()
+                </code></pre>
 
-    <h4>gRPC Client Example (<code>grpc_client.py</code>)</h4>
-    <pre><code class="language-python">
-import grpc
+        <h4>gRPC Client Example (<code>grpc_client.py</code>)</h4>
+        <pre><code class="language-python">
+                        import grpc
 
-import user_pb2
-import user_pb2_grpc
+                        import user_pb2
+                        import user_pb2_grpc
 
-def run():
-    with grpc.insecure_channel('localhost:50051') as channel:
-        stub = user_pb2_grpc.UserServiceStub(channel)
+                        def run():
+                        with grpc.insecure_channel(&#x27;localhost:50051&#x27;) as channel:
+                        stub = user_pb2_grpc.UserServiceStub(channel)
 
-        # Call GetUser
-        print("\n--- Calling GetUser ---")
-        response = stub.GetUser(user_pb2.GetUserRequest(user_id=1))
-        print(f"GetUser response: {response.username} ({response.email})")
+                        # Call GetUser
+                        print(&quot;\n--- Calling GetUser ---&quot;)
+                        response = stub.GetUser(user_pb2.GetUserRequest(user_id=1))
+                        print(f&quot;GetUser response: {response.username} ({response.email})&quot;)
 
-        response = stub.GetUser(user_pb2.GetUserRequest(user_id=99))
-        print(f"GetUser response (not found): {response}")
+                        response = stub.GetUser(user_pb2.GetUserRequest(user_id=99))
+                        print(f&quot;GetUser response (not found): {response}&quot;)
 
-        # Call CreateUser
-        print("\n--- Calling CreateUser ---")
-        new_user = user_pb2.CreateUserRequest(username="charlie", email="charlie@example.com")
-        response = stub.CreateUser(new_user)
-        print(f"CreateUser response: User ID {response.user_id}, Username: {response.username}")
+                        # Call CreateUser
+                        print(&quot;\n--- Calling CreateUser ---&quot;)
+                        new_user = user_pb2.CreateUserRequest(username=&quot;charlie&quot;, email=&quot;charlie@example.com&quot;)
+                        response = stub.CreateUser(new_user)
+                        print(f&quot;CreateUser response: User ID {response.user_id}, Username: {response.username}&quot;)
 
-if __name__ == '__main__':
-    run()
-    </code></pre>
-    <p>Run the gRPC server in one terminal, then the client in another. You'll see the client making RPC calls and the server responding.</p>
+                        if __name__ == &#x27;__main__&#x27;:
+                        run()
+                    </code></pre>
+        <p>
+            Run the gRPC server in one terminal, then the client in another. You'll see the client making RPC calls and the
+            server responding.
+        </p>
 
-    
+    </section>
 
-    <h2>3. Communicating with Other Services: Choosing the Right Pattern</h2>
-    <p>In a microservices architecture, services need to communicate. The choice of communication pattern depends on the specific requirements:</p>
-    <ul>
-        <li>
-            <strong>Synchronous (Request/Response):</strong>
-            <ul>
-                <li><strong>REST (HTTP/1.1, HTTP/2):</strong> Best for public APIs, browser-based clients, and simple request-response interactions. Widely understood and easy to debug.</li>
-                <li><strong>gRPC (HTTP/2 + Protobuf):</strong> Ideal for internal microservice communication where performance, strong typing, and efficient serialization are critical. Supports various streaming patterns.</li>
-            </ul>
-        </li>
-        <li>
-            <strong>Asynchronous (Event-Driven):</strong>
-            <ul>
-                <li><strong>Message Queues (e.g., RabbitMQ):</strong> For decoupling services, offloading long-running tasks, handling spikes in traffic, and implementing fan-out patterns.</li>
-                <li><strong>Streaming Platforms (e.g., Kafka):</strong> For high-throughput, fault-tolerant event streams, real-time analytics, and event sourcing.</li>
-            </ul>
-        </li>
-    </ul>
-    <div class="text-center my-4">
-        <pre class="mermaid">
-graph TD
+    <section class="topic-section">
+        <h2>Communicating with Other Services: Choosing the Right Pattern</h2>
+        <p>
+            In a microservices architecture, services need to communicate. The choice of communication pattern depends on the
+            specific requirements:
+        </p>
+        <ul>
+            <li>
+                <strong>Synchronous (Request/Response):</strong>
+                <ul>
+                    <li>
+                        <strong>REST (HTTP/1.1, HTTP/2):</strong> Best for public APIs, browser-based clients, and simple
+                        request-response interactions. Widely understood and easy to debug.
+                    </li>
+                    <li>
+                        <strong>gRPC (HTTP/2 + Protobuf):</strong> Ideal for internal microservice communication where performance,
+                        strong typing, and efficient serialization are critical. Supports various streaming patterns.
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <strong>Asynchronous (Event-Driven):</strong>
+                <ul>
+                    <li>
+                        <strong>Message Queues (e.g., RabbitMQ):</strong> For decoupling services, offloading long-running tasks,
+                        handling spikes in traffic, and implementing fan-out patterns.
+                    </li>
+                    <li>
+                        <strong>Streaming Platforms (e.g., Kafka):</strong> For high-throughput, fault-tolerant event streams,
+                        real-time analytics, and event sourcing.
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <div class="text-center my-4">
+            <pre class="mermaid">
+ <script type="text/plain">
+graph LR
     Start["Choose Communication Pattern"] --> Sync{"Synchronous?"};
 
     Sync -- "Yes" --> SyncType{"Type?"};
@@ -284,13 +341,15 @@ graph TD
     Async -- "Yes" --> AsyncType{"Type?"};
     AsyncType -- "Decoupling / Task Offloading" --> MessageQueue["Message Queues (e.g., RabbitMQ)"];
     AsyncType -- "High-Throughput / Event Streams" --> StreamingPlatform["Streaming Platforms (e.g., Kafka)"];
-        </pre>
-        <small class="text-muted">Diagram: Choosing Communication Patterns</small>
-    </div>
+ </script>
+</pre>
+            <small class="text-muted">Diagram: Choosing Communication Patterns</small>
+        </div>
 
-    <div class="alert alert-info">
-        <strong>Service Discovery:</strong> In a dynamic cloud environment, services need to find each other. Tools like HashiCorp Consul (covered in Unit 4) provide robust service discovery mechanisms, allowing services to register themselves and discover others without hardcoding network locations.
-    </div>
-
-</div>    </div>
+        <div class="alert alert-info">
+            <strong>Service Discovery:</strong> In a dynamic cloud environment, services need to find each other. Tools like
+            HashiCorp Consul (covered in Unit 4) provide robust service discovery mechanisms, allowing services to register
+            themselves and discover others without hardcoding network locations.
+        </div>
+    </section>
 </div>

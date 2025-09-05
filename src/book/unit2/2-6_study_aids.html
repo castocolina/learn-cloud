@@ -1,7 +1,7 @@
 <div class="study-aids-content">
-    <header class="study-aids-header">
-        <h2>Study Aids: Building a RESTful API</h2>
-        <p class="study-aids-intro">Build performant REST APIs using Go's standard library and popular frameworks. Click each card to reveal the answer.</p>
+    <header class="study-aids-header" aria-label="Header">
+        <h1>2-6: Study Aids - Building a RESTful API</h1>
+        <p class="study-aids-intro">Review and reinforce key building a restful api concepts through interactive flashcards.</p>
     </header>
 
     <div class="flashcards-container">
@@ -9,14 +9,14 @@
             <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What advantages does Go's standard HTTP package provide for building web services?</p>
-            </div>
+                    <p>What advantages does Go's standard HTTP package provide for building web services?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Go's net/http package offers high performance, built-in concurrency, middleware support, and comprehensive HTTP features without external dependencies.</p>
+                    <p>Go's net/http package offers high performance, built-in concurrency, middleware support, and comprehensive HTTP features without external dependencies.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+            <button type="button" class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" aria-label="Expand flashcard">
                 <i class="bi bi-arrows-angle-expand"></i>
             </button>
         </div>
@@ -25,14 +25,14 @@
             <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What are the key benefits of using Go for cloud-native development?</p>
-            </div>
+                    <p>What are the key benefits of using Go for cloud-native development?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Go offers fast compilation, excellent concurrency support, low memory footprint, static binaries, and strong standard library - ideal for microservices and containerized applications.</p>
+                    <p>Go offers fast compilation, excellent concurrency support, low memory footprint, static binaries, and strong standard library - ideal for microservices and containerized applications.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+            <button type="button" class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" aria-label="Expand flashcard">
                 <i class="bi bi-arrows-angle-expand"></i>
             </button>
         </div>
@@ -41,14 +41,14 @@
             <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>How does Go handle memory management compared to languages like C++ or Java?</p>
-            </div>
+                    <p>How does Go handle memory management compared to languages like C++ or Java?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Go uses automatic garbage collection to manage memory, eliminating manual memory management like C++ while providing better performance predictability than JVM-based languages.</p>
+                    <p>Go uses automatic garbage collection to manage memory, eliminating manual memory management like C++ while providing better performance predictability than JVM-based languages.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+            <button type="button" class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" aria-label="Expand flashcard">
                 <i class="bi bi-arrows-angle-expand"></i>
             </button>
         </div>
@@ -57,14 +57,14 @@
             <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What is the significance of Go's "less is more" philosophy in language design?</p>
-            </div>
+                    <p>What is the significance of Go's "less is more" philosophy in language design?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Go deliberately limits language features to improve readability, maintainability, and compilation speed. This simplicity reduces cognitive load and makes code more predictable.</p>
+                    <p>Go deliberately limits language features to improve readability, maintainability, and compilation speed. This simplicity reduces cognitive load and makes code more predictable.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+            <button type="button" class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" aria-label="Expand flashcard">
                 <i class="bi bi-arrows-angle-expand"></i>
             </button>
         </div>
@@ -73,34 +73,17 @@
             <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>How do Go interfaces promote clean architecture and testability?</p>
-            </div>
+                    <p>How do Go interfaces promote clean architecture and testability?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Go interfaces are implicit and behavior-focused, enabling dependency injection, easy mocking for tests, and loose coupling between components without inheritance complexity.</p>
+                    <p>Go interfaces are implicit and behavior-focused, enabling dependency injection, easy mocking for tests, and loose coupling between components without inheritance complexity.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+            <button type="button" class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" aria-label="Expand flashcard">
                 <i class="bi bi-arrows-angle-expand"></i>
             </button>
         </div>
     </div>
-
-    <!-- Flashcard Modal -->
-    <dialog id="flashcard-modal" class="flashcard-modal">
-        <div class="modal-content">
-            <header class="modal-header">
-                <h3 id="modal-question">Question</h3>
-                <button class="modal-close-btn" onclick="closeFlashcardModal()">
-                    <i class="bi bi-x-lg"></i>
-                </button>
-            </header>
-            <div class="modal-body">
-                <div class="modal-answer">
-                    <h4>Answer</h4>
-                    <div id="modal-answer-content">Answer content will appear here</div>
-                </div>
-            </div>
-        </div>
-    </dialog>
 </div>
+

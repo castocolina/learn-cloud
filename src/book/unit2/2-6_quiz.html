@@ -1,17 +1,29 @@
 <div class="quiz-content">
-<header class="quiz-header">
+    <header class="quiz-header" aria-label="Header">
+        <h1>2-6: Quiz - Building a RESTful API</h1>
+        <p class="quiz-intro">Test your understanding of building a restful api concepts and best practices.</p>
+    </header>
 
-            <h2>Quiz: Building a RESTful API</h2>
-
-        <div class="quiz-container">
+    <div class="quiz-container">
         <div class="quiz-card active-card" data-question="1">
             <div class="question">
-                <p>1. In Go's standard <code>net/http</code> package, which function is typically used to start the web server and listen for requests?</p>
+                <p>
+                    1. In Go's standard <code>net/http</code> package, which function is typically used to start the web server
+                    and listen for requests?
+                </p>
                 <ul class="options">
-                    <li><label for="q1a"><input type="radio" id="q1a" name="q1" value="a"> a) <code>http.StartServer</code></label></li>
-                    <li><label for="q1b"><input type="radio" id="q1b" name="q1" value="b"> b) <code>http.HandleFunc</code></label></li>
-                    <li><label for="q1c"><input type="radio" id="q1c" name="q1" value="c"> c) <code>http.ListenAndServe</code></label></li>
-                    <li><label for="q1d"><input type="radio" id="q1d" name="q1" value="d"> d) <code>http.NewRouter</code></label></li>
+                    <li>
+                        <label><input type="radio" id="q1a" name="q1" value="a" /> a) <code>http.StartServer</code></label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q1b" name="q1" value="b" /> b) <code>http.HandleFunc</code></label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q1c" name="q1" value="c" /> c) <code>http.ListenAndServe</code></label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q1d" name="q1" value="d" /> d) <code>http.NewRouter</code></label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="c"></div>
             </div>
@@ -19,12 +31,25 @@
 
         <div class="quiz-card" data-question="2">
             <div class="question">
-                <p>2. What is a primary advantage of using a framework like Gin for routing compared to the standard library?</p>
+                <p>
+                    2. What is a primary advantage of using a framework like Gin for routing compared to the standard library?
+                </p>
                 <ul class="options">
-                    <li><label for="q2a"><input type="radio" id="q2a" name="q2" value="a"> a) The standard library cannot handle POST requests.</label></li>
-                    <li><label for="q2b"><input type="radio" id="q2b" name="q2" value="b"> b) Gin provides a simpler syntax for handling path parameters (e.g., <code>/users/:id</code>).</label></li>
-                    <li><label for="q2c"><input type="radio" id="q2c" name="q2" value="c"> c) The standard library requires a separate file for each route.</label></li>
-                    <li><label for="q2d"><input type="radio" id="q2d" name="q2" value="d"> d) Gin does not require a running server.</label></li>
+                    <li>
+                        <label><input type="radio" id="q2a" name="q2" value="a" /> a) The standard library cannot handle POST
+                            requests.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q2b" name="q2" value="b" /> b) Gin provides a simpler syntax for handling
+                            path parameters (e.g., <code>/users/:id</code>).</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q2c" name="q2" value="c" /> c) The standard library requires a separate file
+                            for each route.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q2d" name="q2" value="d" /> d) Gin does not require a running server.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="b"></div>
             </div>
@@ -32,12 +57,25 @@
 
         <div class="quiz-card" data-question="3">
             <div class="question">
-                <p>3. In a standard <code>net/http</code> handler, which function is used to serialize a Go struct into a JSON response and write it to the <code>http.ResponseWriter</code>?</p>
+                <p>
+                    3. In a standard <code>net/http</code> handler, which function is used to serialize a Go struct into a JSON
+                    response and write it to the <code>http.ResponseWriter</code>?
+                </p>
                 <ul class="options">
-                    <li><label for="q3a"><input type="radio" id="q3a" name="q3" value="a"> a) <code>json.Marshal(myStruct)</code></label></li>
-                    <li><label for="q3b"><input type="radio" id="q3b" name="q3" value="b"> b) <code>w.Write(myStruct)</code></label></li>
-                    <li><label for="q3c"><input type="radio" id="q3c" name="q3" value="c"> c) <code>fmt.Fprintf(w, "%v", myStruct)</code></label></li>
-                    <li><label for="q3d"><input type="radio" id="q3d" name="q3" value="d"> d) <code>json.NewEncoder(w).Encode(myStruct)</code></label></li>
+                    <li>
+                        <label><input type="radio" id="q3a" name="q3" value="a" /> a) <code>json.Marshal(myStruct)</code></label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q3b" name="q3" value="b" /> b) <code>w.Write(myStruct)</code></label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q3c" name="q3" value="c" /> c)
+                            <code>fmt.Fprintf(w, &quot;%v&quot;, myStruct)</code></label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q3d" name="q3" value="d" /> d)
+                            <code>json.NewEncoder(w).Encode(myStruct)</code></label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="d"></div>
             </div>
@@ -45,12 +83,23 @@
 
         <div class="quiz-card" data-question="4">
             <div class="question">
-                <p>4. In the Gin framework, what does the <code>c.ShouldBindJSON(&myStruct)</code> function do?</p>
+                <p>4. In the Gin framework, what does the <code>c.ShouldBindJSON(&amp;myStruct)</code> function do?</p>
                 <ul class="options">
-                    <li><label for="q4a"><input type="radio" id="q4a" name="q4" value="a"> a) It sends a JSON response to the client.</label></li>
-                    <li><label for="q4b"><input type="radio" id="q4b" name="q4" value="b"> b) It parses the incoming JSON request body and populates the provided struct.</label></li>
-                    <li><label for="q4c"><input type="radio" id="q4c" name="q4" value="c"> c) It validates an outgoing struct before sending it as a response.</label></li>
-                    <li><label for="q4d"><input type="radio" id="q4d" name="q4" value="d"> d) It creates a new JSON file on the server's filesystem.</label></li>
+                    <li>
+                        <label><input type="radio" id="q4a" name="q4" value="a" /> a) It sends a JSON response to the client.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q4b" name="q4" value="b" /> b) It parses the incoming JSON request body and
+                            populates the provided struct.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q4c" name="q4" value="c" /> c) It validates an outgoing struct before sending
+                            it as a response.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q4d" name="q4" value="d" /> d) It creates a new JSON file on the server's
+                            filesystem.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="b"></div>
             </div>
@@ -58,23 +107,38 @@
 
         <div class="quiz-card" data-question="5">
             <div class="question">
-                <p>5. When would it be most appropriate to choose the standard <code>net/http</code> package over a framework like Gin?</p>
+                <p>
+                    5. When would it be most appropriate to choose the standard <code>net/http</code> package over a framework
+                    like Gin?
+                </p>
                 <ul class="options">
-                    <li><label for="q5a"><input type="radio" id="q5a" name="q5" value="a"> a) For a large, complex application with dozens of routes and middleware requirements.</label></li>
-                    <li><label for="q5b"><input type="radio" id="q5b" name="q5" value="b"> b) For a simple microservice where minimizing external dependencies is a priority.</label></li>
-                    <li><label for="q5c"><input type="radio" id="q5c" name="q5" value="c"> c) When you need the absolute fastest routing performance possible.</label></li>
-                    <li><label for="q5d"><input type="radio" id="q5d" name="q5" value="d"> d) When you need automatic interactive API documentation out of the box.</label></li>
+                    <li>
+                        <label><input type="radio" id="q5a" name="q5" value="a" /> a) For a large, complex application with dozens of
+                            routes and middleware requirements.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q5b" name="q5" value="b" /> b) For a simple microservice where minimizing
+                            external dependencies is a priority.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q5c" name="q5" value="c" /> c) When you need the absolute fastest routing
+                            performance possible.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q5d" name="q5" value="d" /> d) When you need automatic interactive API
+                            documentation out of the box.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="b"></div>
             </div>
         </div>
 
         <div class="quiz-navigation">
-            <button class="quiz-btn" id="prev-question">Previous</button>
-            <button class="quiz-btn" id="next-question">Next</button>
-            <button class="quiz-btn" id="submit-quiz" style="display: none;">Submit Answers</button>
+            <button type="button" class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <div class="quiz-progress">Question 1 of 5</div>
+            <button type="button" class="btn btn-outline-primary" id="next-question">Next</button>
+            <button type="button" class="btn btn-success" style="display: none;" id="submit-quiz">Submit Answers</button>
         </div>
         <div class="quiz-results-container"></div>
     </div>
-</div>
 </div>

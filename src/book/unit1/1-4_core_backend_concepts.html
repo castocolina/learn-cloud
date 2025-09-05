@@ -1,33 +1,40 @@
 <div class="topic-content">
-    <header class="topic-header">
-        <h1 class="topic-title">Unit 1.4 Core Backend Concepts</h1>
+    <header class="topic-header" aria-label="Header">
+        <h1 class="topic-title">Unit 1.4: Core Backend Concepts</h1>
+        <p class="topic-intro">
+            Building robust backend services requires mastery of core programming concepts and architectural patterns.
+            This section explores object-oriented programming, HTTP fundamentals, REST API design principles, and
+            essential patterns that form the backbone of modern web services.
+        </p>
     </header>
 
-    <p class="lead">With a solid foundation in Python's syntax and quality standards, we now move to the core of backend development: defining application logic and managing data. This topic covers how to structure your code using Object-Oriented Programming (OOP) and how to interact with the two main categories of databases you'll encounter in cloud-native applications: relational (SQL) and NoSQL.</p>
+    <section class="topic-section">
+        <h2>Object-Oriented Programming (OOP) in Python</h2>
+        <p>
+            As an experienced developer, you are already familiar with OOP principles like encapsulation, inheritance, and
+            polymorphism. Python fully supports these paradigms, but it often does so with a more flexible and dynamic approach
+            than statically-typed languages like Java or C#.
+        </p>
+        <p>
+            In backend development, OOP is essential for modeling real-world entities. For example, in an e-commerce
+            application, you might have classes for <code>User</code>, <code>Product</code>, and <code>Order</code>. These
+            classes encapsulate both data (attributes) and behavior (methods).
+        </p>
 
-    
+        <h4>Using Dataclasses for Simplicity</h4>
+        <p>
+            For classes that primarily store data, Python offers a powerful decorator called <code>@dataclass</code> (introduced
+            in Python 3.7) that automatically generates boilerplate code like <code>__init__()</code>, <code>__repr__()</code>,
+            and <code>__eq__()</code>.
+        </p>
 
-    <!-- OOP in Python -->
-    <h2>Object-Oriented Programming (OOP) in Python</h2>
-    <p>
-        As an experienced developer, you are already familiar with OOP principles like encapsulation, inheritance, and polymorphism. Python fully supports these paradigms, but it often does so with a more flexible and dynamic approach than statically-typed languages like Java or C#.
-    </p>
-    <p>
-        In backend development, OOP is essential for modeling real-world entities. For example, in an e-commerce application, you might have classes for <code>User</code>, <code>Product</code>, and <code>Order</code>. These classes encapsulate both data (attributes) and behavior (methods).
-    </p>
-
-    <h4>Using Dataclasses for Simplicity</h4>
-    <p>
-        For classes that primarily store data, Python offers a powerful decorator called <code>@dataclass</code> (introduced in Python 3.7) that automatically generates boilerplate code like <code>__init__()</code>, <code>__repr__()</code>, and <code>__eq__()</code>.
-    </p>
-
-    <pre><code class="language-python">
+        <pre><code class="language-python">
 from dataclasses import dataclass, field
 from typing import List, Optional
 
 @dataclass
 class User:
-    """A dataclass representing a user in the system."""
+    &quot;&quot;&quot;A dataclass representing a user in the system.&quot;&quot;&quot;
     user_id: int
     username: str
     email: str
@@ -35,60 +42,71 @@ class User:
     # A field with a default value that is mutable (like a list) requires a default_factory.
     roles: List[str] = field(default_factory=list)
 
-    def has_role(self, role: str) -> bool:
-        """A method to check if the user has a specific role."""
+    def has_role(self, role: str) -&gt; bool:
+        &quot;&quot;&quot;A method to check if the user has a specific role.&quot;&quot;&quot;
         return role in self.roles
 
 # Creating an instance is clean and simple
 admin_user = User(
     user_id=1,
-    username="admin",
-    email="admin@example.com",
-    roles=["admin", "editor"]
+    username=&quot;admin&quot;,
+    email=&quot;admin@example.com&quot;,
+    roles=[&quot;admin&quot;, &quot;editor&quot;]
 )
 
 print(admin_user)
-# Output: User(user_id=1, username='admin', email='admin@example.com', is_active=True, roles=['admin', 'editor'])
+# Output: User(user_id=1, username=&#x27;admin&#x27;, email=&#x27;admin@example.com&#x27;, is_active=True, roles=[&#x27;admin&#x27;, &#x27;editor&#x27;])
 
-print(f"Is admin? {admin_user.has_role('admin')}")
+print(f&quot;Is admin? {admin_user.has_role(&#x27;admin&#x27;)}&quot;)
 # Output: Is admin? True
     </code></pre>
 
-    
+        <!-- Relational Databases -->
+        <h2>Working with Relational Databases (SQL)</h2>
+        <p>
+            Relational databases like PostgreSQL are the backbone of many applications, providing data integrity and structured
+            querying capabilities through SQL. We will explore two ways to interact with them: direct access and through an ORM.
+        </p>
 
-    <!-- Relational Databases -->
-    <h2>Working with Relational Databases (SQL)</h2>
-    <p>Relational databases like PostgreSQL are the backbone of many applications, providing data integrity and structured querying capabilities through SQL. We will explore two ways to interact with them: direct access and through an ORM.</p>
-
-    <h4>Setup: Running PostgreSQL with Docker</h4>
-    <p>To get a PostgreSQL instance running locally, execute the following Docker command. This will start a container named <code>postgres-db</code>, set a password, and expose the default port <code>5432</code>.</p>
-    <pre><code class="language-bash">
+        <h4>Setup: Running PostgreSQL with Docker</h4>
+        <p>
+            To get a PostgreSQL instance running locally, execute the following Docker command. This will start a container
+            named <code>postgres-db</code>, set a password, and expose the default port <code>5432</code>.
+        </p>
+        <pre><code class="language-bash">
 docker run --name postgres-db -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -d postgres:15-alpine
     </code></pre>
-    <div class="alert alert-warning">Remember to stop and remove the container when you're done: <code>docker stop postgres-db && docker rm postgres-db</code>.</div>
+        <div class="alert alert-warning">
+            Remember to stop and remove the container when you're done:
+            <code>docker stop postgres-db &amp;&amp; docker rm postgres-db</code>.
+        </div>
 
-    <h3>1. Direct Database Access with <code>psycopg2</code></h3>
-    <p>
-        Direct access involves writing raw SQL queries. This gives you maximum control but requires careful handling of connections and protection against SQL injection.
-        The most popular library for connecting to PostgreSQL in Python is <code>psycopg2</code>.
-    </p>
-    <p>Install the library (the binary version is recommended for ease of installation):</p>
-    <pre><code class="language-bash">poetry add psycopg2-binary</code></pre>
+        <h3>1. Direct Database Access with <code>psycopg2</code></h3>
+        <p>
+            Direct access involves writing raw SQL queries. This gives you maximum control but requires careful handling of
+            connections and protection against SQL injection. The most popular library for connecting to PostgreSQL in Python is
+            <code>psycopg2</code>.
+        </p>
+        <p>Install the library (the binary version is recommended for ease of installation):</p>
+        <pre><code class="language-bash">poetry add psycopg2-binary</code></pre>
 
-    <p>The following example demonstrates how to securely query the database using a <strong>parameterized query</strong>. This is critical for preventing SQL injection.</p>
-    <pre><code class="language-python">
+        <p>
+            The following example demonstrates how to securely query the database using a <strong>parameterized query</strong>.
+            This is critical for preventing SQL injection.
+        </p>
+        <pre><code class="language-python">
 import psycopg2
 import os
 
 # Best practice: load credentials from environment variables, not hardcoded.
-DB_NAME = "postgres"
-DB_USER = "postgres"
-DB_PASS = os.getenv("DB_PASSWORD", "mysecretpassword")
-DB_HOST = "localhost"
-DB_PORT = "5432"
+DB_NAME = &quot;postgres&quot;
+DB_USER = &quot;postgres&quot;
+DB_PASS = os.getenv(&quot;DB_PASSWORD&quot;, &quot;mysecretpassword&quot;)
+DB_HOST = &quot;localhost&quot;
+DB_PORT = &quot;5432&quot;
 
 def get_user_by_username(username: str):
-    """Fetches a user from the database using a secure parameterized query."""
+    &quot;&quot;&quot;Fetches a user from the database using a secure parameterized query.&quot;&quot;&quot;
     conn = None
     try:
         # The `with` statement ensures the connection is always closed.
@@ -99,31 +117,35 @@ def get_user_by_username(username: str):
             with conn.cursor() as cursor:
                 # This is NOT string formatting. The library safely substitutes the %s.
                 # This is the ONLY secure way to pass parameters.
-                sql = "SELECT user_id, username, email FROM users WHERE username = %s;"
+                sql = &quot;SELECT user_id, username, email FROM users WHERE username = %s;&quot;
                 cursor.execute(sql, (username,))
-                
+
                 user_data = cursor.fetchone()
                 if user_data:
-                    return {"id": user_data[0], "username": user_data[1], "email": user_data[2]}
+                    return {&quot;id&quot;: user_data[0], &quot;username&quot;: user_data[1], &quot;email&quot;: user_data[2]}
                 return None
     except psycopg2.Error as e:
-        print(f"Database error: {e}")
+        print(f&quot;Database error: {e}&quot;)
         return None
     finally:
         if conn is not None:
             conn.close()
 
-# Note: This code assumes a 'users' table exists.
+# Note: This code assumes a &#x27;users&#x27; table exists.
 # You would need to create it first with a separate SQL script.
     </code></pre>
 
-    <h3>2. Relational Databases with an ORM (SQLAlchemy 2.0)</h3>
-    <p>
-        An Object-Relational Mapper (ORM) abstracts away the SQL, allowing you to interact with your database using Python objects. This dramatically increases productivity and reduces boilerplate code. <strong>SQLAlchemy</strong> is the most powerful and widely used ORM in the Python ecosystem. We will use the modern, type-annotated style introduced in SQLAlchemy 2.0.
-    </p>
-    <div class="text-center my-4">
-        <pre class="mermaid">
-graph TB
+        <h3>2. Relational Databases with an ORM (SQLAlchemy 2.0)</h3>
+        <p>
+            An Object-Relational Mapper (ORM) abstracts away the SQL, allowing you to interact with your database using Python
+            objects. This dramatically increases productivity and reduces boilerplate code. <strong>SQLAlchemy</strong> is the
+            most powerful and widely used ORM in the Python ecosystem. We will use the modern, type-annotated style introduced
+            in SQLAlchemy 2.0.
+        </p>
+        <div class="text-center my-4">
+            <pre class="mermaid">
+ <script type="text/plain">
+graph LR
     A["Application Code"] --> User("User Object");
     User -- "Interacts with" --> B["ORM Session"];
     B -- "Translates to" --> SQL["SQL Queries (SELECT, INSERT, etc.)"];
@@ -131,20 +153,24 @@ graph TB
     C -- "Returns Data" --> SQL;
     SQL -- "Translates to" --> B;
     B -- "Populates" --> User;
-        </pre>
-        <small class="text-muted">Diagram: Application-ORM-Database Interaction</small>
-    </div>
-    <p>Install SQLAlchemy and the psycopg2 driver:</p>
-    <pre><code class="language-bash">poetry add sqlalchemy psycopg2-binary</code></pre>
+ </script>
+</pre>
+            <small class="text-muted">Diagram: Application-ORM-Database Interaction</small>
+        </div>
+        <p>Install SQLAlchemy and the psycopg2 driver:</p>
+        <pre><code class="language-bash">poetry add sqlalchemy psycopg2-binary</code></pre>
 
-    <p>Now, let's refactor the previous example using the SQLAlchemy 2.0 ORM style. Notice how we define a class with type hints that maps to our table.</p>
-    <pre><code class="language-python">
+        <p>
+            Now, let's refactor the previous example using the SQLAlchemy 2.0 ORM style. Notice how we define a class with type
+            hints that maps to our table.
+        </p>
+        <pre><code class="language-python">
 from sqlalchemy import create_engine, String, select
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, Session
 import os
 
 # --- Database Setup ---
-DB_URL = f"postgresql://postgres:{os.getenv('DB_PASSWORD', 'mysecretpassword')}@localhost/postgres"
+DB_URL = f&quot;postgresql://postgres:{os.getenv(&#x27;DB_PASSWORD&#x27;, &#x27;mysecretpassword&#x27;)}@localhost/postgres&quot;
 engine = create_engine(DB_URL)
 
 # --- ORM Model Definition (SQLAlchemy 2.0 style) ---
@@ -155,23 +181,23 @@ class Base(DeclarativeBase):
 
 # 2. Define the User model with type annotations
 class User(Base):
-    __tablename__ = "users"
+    __tablename__ = &quot;users&quot;
 
     # Mapped columns with Python 3 type hints
     user_id: Mapped[int] = mapped_column(primary_key=True)
     username: Mapped[str] = mapped_column(String(50), unique=True, index=True)
     email: Mapped[str] = mapped_column(String(100), unique=True)
 
-    def __repr__(self) -> str:
-        return f"User(id={self.user_id!r}, username={self.username!r})"
+    def __repr__(self) -&gt; str:
+        return f&quot;User(id={self.user_id!r}, username={self.username!r})&quot;
 
 # You would run this once to create the table
 # Base.metadata.create_all(bind=engine)
 
 # --- Data Access Logic ---
-def get_user_by_username_orm(username: str) -> User | None:
-    """Fetches a user using the SQLAlchemy 2.0 ORM style."""
-    # Use a `with` statement for session management to ensure it's always closed
+def get_user_by_username_orm(username: str) -&gt; User | None:
+    &quot;&quot;&quot;Fetches a user using the SQLAlchemy 2.0 ORM style.&quot;&quot;&quot;
+    # Use a `with` statement for session management to ensure it&#x27;s always closed
     with Session(engine) as session:
         # The `select` statement is more explicit and type-safe
         statement = select(User).where(User.username == username)
@@ -179,92 +205,102 @@ def get_user_by_username_orm(username: str) -> User | None:
         return user
 
 # --- Usage ---
-found_user = get_user_by_username_orm("some_user")
+found_user = get_user_by_username_orm(&quot;some_user&quot;)
 if found_user:
-    print(f"Found user: {found_user.username} ({found_user.email})")
+    print(f&quot;Found user: {found_user.username} ({found_user.email})&quot;)
     </code></pre>
-    <div class="alert alert-info">
-        <strong>ORM vs. Direct Access:</strong> While ORMs are great for productivity, direct SQL access is sometimes necessary for highly complex or performance-critical queries. A good backend developer knows when to use each approach.
-    </div>
+        <div class="alert alert-info">
+            <strong>ORM vs. Direct Access:</strong> While ORMs are great for productivity, direct SQL access is sometimes
+            necessary for highly complex or performance-critical queries. A good backend developer knows when to use each
+            approach.
+        </div>
 
-    
+        <!-- NoSQL Databases -->
+        <h2>Working with Popular NoSQL Databases</h2>
+        <p>
+            NoSQL databases are designed for scale, flexibility, and speed. They are a cornerstone of modern microservices and
+            cloud-native architectures. We'll look at two popular examples: Redis and MongoDB.
+        </p>
 
-    <!-- NoSQL Databases -->
-    <h2>Working with Popular NoSQL Databases</h2>
-    <p>NoSQL databases are designed for scale, flexibility, and speed. They are a cornerstone of modern microservices and cloud-native architectures. We'll look at two popular examples: Redis and MongoDB.</p>
+        <h3>1. Redis for Caching and Key-Value Storage</h3>
+        <p>
+            <strong>Redis</strong> is an extremely fast, in-memory key-value store. Its primary use case is caching—storing the
+            results of expensive operations (like database queries) to reduce latency and load.
+        </p>
+        <p>Run Redis with Docker:</p>
+        <pre><code class="language-bash">docker run --name redis-db -p 6379:6379 -d redis:7-alpine</code></pre>
+        <p>Install the Python client:</p>
+        <pre><code class="language-bash">poetry add redis</code></pre>
 
-    <h3>1. Redis for Caching and Key-Value Storage</h3>
-    <p>
-        <strong>Redis</strong> is an extremely fast, in-memory key-value store. Its primary use case is caching—storing the results of expensive operations (like database queries) to reduce latency and load.
-    </p>
-    <p>Run Redis with Docker:</p>
-    <pre><code class="language-bash">docker run --name redis-db -p 6379:6379 -d redis:7-alpine</code></pre>
-    <p>Install the Python client:</p>
-    <pre><code class="language-bash">poetry add redis</code></pre>
-
-    <p>This example shows a common caching pattern: check for a result in Redis first. If it's not there (a "cache miss"), fetch it from the database and store it in Redis for future requests.</p>
-    <pre><code class="language-python">
+        <p>
+            This example shows a common caching pattern: check for a result in Redis first. If it's not there (a "cache miss"),
+            fetch it from the database and store it in Redis for future requests.
+        </p>
+        <pre><code class="language-python">
 import redis
 import json
 
 # Connect to Redis
-r = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
+r = redis.Redis(host=&#x27;localhost&#x27;, port=6379, db=0, decode_responses=True)
 
 def get_user_with_caching(username: str):
-    """Attempts to fetch a user from cache, falling back to the database."""
-    cache_key = f"user:{username}"
-    
+    &quot;&quot;&quot;Attempts to fetch a user from cache, falling back to the database.&quot;&quot;&quot;
+    cache_key = f&quot;user:{username}&quot;
+
     # 1. Check cache first
     cached_user_json = r.get(cache_key)
     if cached_user_json:
-        print("Cache hit!")
+        print(&quot;Cache hit!&quot;)
         return json.loads(cached_user_json)
-    
+
     # 2. Cache miss: fetch from the database (using our ORM function)
-    print("Cache miss, querying database...")
+    print(&quot;Cache miss, querying database...&quot;)
     user = get_user_by_username_orm(username)
     if user:
-        user_dict = {"id": user.user_id, "username": user.username, "email": user.email}
+        user_dict = {&quot;id&quot;: user.user_id, &quot;username&quot;: user.username, &quot;email&quot;: user.email}
         # 3. Store in cache for next time with an expiration of 1 hour (3600 seconds)
         r.setex(cache_key, 3600, json.dumps(user_dict))
         return user_dict
-        
+
     return None
     </code></pre>
 
-    <div class="text-center my-4">
-        <pre class="mermaid">
-graph TD
+        <div class="text-center my-4">
+            <pre class="mermaid">
+ <script type="text/plain">
+graph LR
     A["Application Request"] --> B{"Is data in Cache?"};
     B -- "Yes" --> C["Return Cached Data"];
     B -- "No" --> D["Query Database"];
     D --> E["Get Data from DB"];
     E --> F["Store Data in Cache"];
     F --> C;
-        </pre>
-        <small class="text-muted">Diagram: Caching Workflow with Redis</small>
-    </div>
+ </script>
+</pre>
+            <small class="text-muted">Diagram: Caching Workflow with Redis</small>
+        </div>
 
-    <h3>2. MongoDB for Document-Oriented Storage</h3>
-    <p>
-        <strong>MongoDB</strong> is a leading document database that stores data in flexible, JSON-like documents called BSON. This schema-less approach is ideal for applications with rapidly evolving data models.
-    </p>
-    <p>Run MongoDB with Docker:</p>
-    <pre><code class="language-bash">docker run \
+        <h3>2. MongoDB for Document-Oriented Storage</h3>
+        <p>
+            <strong>MongoDB</strong> is a leading document database that stores data in flexible, JSON-like documents called
+            BSON. This schema-less approach is ideal for applications with rapidly evolving data models.
+        </p>
+        <p>Run MongoDB with Docker:</p>
+        <pre><code class="language-bash">docker run \
   --name mongo-db \
   -p 27017:27017 \
   -e MONGO_INITDB_ROOT_USERNAME=root \
   -e MONGO_INITDB_ROOT_PASSWORD=example \
   -d mongo:6</code></pre>
-    <p>Install the official Python driver:</p>
-    <pre><code class="language-bash">poetry add pymongo</code></pre>
+        <p>Install the official Python driver:</p>
+        <pre><code class="language-bash">poetry add pymongo</code></pre>
 
-    <p>The example below shows how to connect to MongoDB, insert a document, and then query for it.</p>
-    <pre><code class="language-python">
+        <p>The example below shows how to connect to MongoDB, insert a document, and then query for it.</p>
+        <pre><code class="language-python">
 from pymongo import MongoClient
 
 # Connect to MongoDB
-client = MongoClient('mongodb://root:example@localhost:27017/')
+client = MongoClient(&#x27;mongodb://root:example@localhost:27017/&#x27;)
 db = client.mydatabase # Select a database
 
 # Get a collection (similar to a table)
@@ -272,28 +308,29 @@ users_collection = db.users
 
 # Insert a document
 new_user_doc = {
-    "username": "mongofan",
-    "email": "mongofan@example.com",
-    "attributes": {
-        "theme": "dark",
-        "notifications": True
+    &quot;username&quot;: &quot;mongofan&quot;,
+    &quot;email&quot;: &quot;mongofan@example.com&quot;,
+    &quot;attributes&quot;: {
+        &quot;theme&quot;: &quot;dark&quot;,
+        &quot;notifications&quot;: True
     }
 }
 users_collection.insert_one(new_user_doc)
 
 # Query for the document
-found_doc = users_collection.find_one({"username": "mongofan"})
+found_doc = users_collection.find_one({&quot;username&quot;: &quot;mongofan&quot;})
 
 if found_doc:
-    print("Found document in MongoDB:")
+    print(&quot;Found document in MongoDB:&quot;)
     print(found_doc)
 
 client.close()
     </code></pre>
 
-    <div class="text-center my-4">
-        <pre class="mermaid">
-graph TD
+        <div class="text-center my-4">
+            <pre class="mermaid">
+ <script type="text/plain">
+graph LR
     A["Database Types"] --> B("Relational Databases");
     A --> C("NoSQL Databases");
 
@@ -323,9 +360,9 @@ graph TD
     style C fill:#ccf,stroke:#333,stroke-width:2px;
     linkStyle 0 stroke-width:2px,fill:none,stroke:green;
     linkStyle 1 stroke-width:2px,fill:none,stroke:blue;
-        </pre>
-        <small class="text-muted">Diagram: Comparison of Relational vs. NoSQL Databases</small>
-    </div>
-
-</div>    </div>
+ </script>
+</pre>
+            <small class="text-muted">Diagram: Comparison of Relational vs. NoSQL Databases</small>
+        </div>
+    </section>
 </div>

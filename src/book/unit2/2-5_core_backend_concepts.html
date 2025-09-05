@@ -1,29 +1,23 @@
 <div class="topic-content">
-<header class="topic-header">
+    <header class="topic-header" aria-label="Header">
+        <h1 class="topic-title">Unit 2.5: Core Backend Concepts</h1>
+    </header>
 
-    
-                <h1 class="topic-title">Unit 2.5: Core Backend Concepts</h1>
-    </div>
+    <section>
+        <h2><i class="bi bi-box"></i> 1. Structs, Interfaces, and Object-Oriented Principles in Go</h2>
+        <p>
+            Go is not a traditional object-oriented programming language. It doesn't have classes, inheritance, or keywords like `protected` or `private`. However, it achieves the same goals of OOP through a simpler, more flexible set of features based on <strong>composition over inheritance</strong>.
+        </p>
+        <ul>
+            <li><strong>Encapsulation:</strong> Go uses <code>structs</code> to hold data (state) and <code>methods</code> (functions with a receiver) to define behavior on that data. Visibility (public/private) is controlled by capitalization: a name starting with a capital letter is <strong>exported</strong> (public), while a lowercase name is <strong>unexported</strong> (private to the package).</li>
+            <li><strong>Composition:</strong> Go uses struct embedding to achieve code reuse. You embed one struct within another, and the methods of the embedded struct are "promoted" to the containing struct.</li>
+            <li><strong>Polymorphism:</strong> Achieved through interfaces, as covered in the previous topic. Any type that implements the methods of an interface can be treated as that interface type.</li>
+        </ul>
 
-    <p class="lead">With a grasp of Go's fundamentals, we can now apply them to the core tasks of backend development: structuring application logic and managing data. This topic explores how Go approaches object-oriented principles and demonstrates how to interact with the essential data stores of modern applications: relational (SQL) and NoSQL databases, along with various caching strategies.</p>
-
-    
-
-    <!-- OOP in Go -->
-    <h2><i class="bi bi-box"></i> 1. Structs, Interfaces, and Object-Oriented Principles in Go</h2>
-    <p>
-        Go is not a traditional object-oriented programming language. It doesn't have classes, inheritance, or keywords like `protected` or `private`. However, it achieves the same goals of OOP through a simpler, more flexible set of features based on <strong>composition over inheritance</strong>.
-    </p>
-    <ul>
-        <li><strong>Encapsulation:</strong> Go uses <code>structs</code> to hold data (state) and <code>methods</code> (functions with a receiver) to define behavior on that data. Visibility (public/private) is controlled by capitalization: a name starting with a capital letter is <strong>exported</strong> (public), while a lowercase name is <strong>unexported</strong> (private to the package).</li>
-        <li><strong>Composition:</strong> Go uses struct embedding to achieve code reuse. You embed one struct within another, and the methods of the embedded struct are "promoted" to the containing struct.</li>
-        <li><strong>Polymorphism:</strong> Achieved through interfaces, as covered in the previous topic. Any type that implements the methods of an interface can be treated as that interface type.</li>
-    </ul>
-
-    <pre><code class="language-go">
+        <pre><code class="language-go">
 package main
 
-import "fmt"
+import &quot;fmt&quot;
 
 // User struct holds the data. Capitalized fields are exported (public).
 type User struct {
@@ -33,234 +27,236 @@ type User struct {
 }
 
 // Greet is a method associated with the User struct.
-// It has a "value receiver" (u User), meaning it operates on a copy of the User.
+// It has a &quot;value receiver&quot; (u User), meaning it operates on a copy of the User.
 func (u User) Greet() {
-    fmt.Printf("Hello, my name is %s
-", u.Username)
+    fmt.Printf(&quot;Hello, my name is %s
+&quot;, u.Username)
 }
 
 // SetEmail is a method that modifies the User struct.
-// It must have a "pointer receiver" (u *User) to modify the original instance.
+// It must have a &quot;pointer receiver&quot; (u *User) to modify the original instance.
 func (u *User) SetEmail(email string) {
     u.email = email
 }
 
 func main() {
-    user := User{ID: 1, Username: "gopher"}
+    user := User{ID: 1, Username: &quot;gopher&quot;}
     user.Greet()
-    user.SetEmail("gopher@example.com")
-    fmt.Printf("User details: %+v
-", user)
-    // Note: The private 'email' field is still accessible within the same package.
+    user.SetEmail(&quot;gopher@example.com&quot;)
+    fmt.Printf(&quot;User details: %+v
+&quot;, user)
+    // Note: The private &#x27;email&#x27; field is still accessible within the same package.
 }
     </code></pre>
 
-    
 
-    <!-- Relational Databases -->
-    <h2><i class="bi bi-server"></i> 2. Relational Databases with an ORM (GORM)</h2>
-    <p>
-        While direct database access offers maximum control, an Object-Relational Mapper (ORM) like <a href="https://gorm.io/" target="_blank">GORM</a> can significantly speed up development by abstracting away SQL. It maps Go structs to database tables, allowing you to work with objects instead of raw queries.
-    </p>
-    <p>Install GORM and its PostgreSQL driver:</p>
-    <pre><code class="language-bash">go get -u gorm.io/gorm
+
+        <!-- Relational Databases -->
+        <h2><i class="bi bi-server"></i> 2. Relational Databases with an ORM (GORM)</h2>
+        <p>
+            While direct database access offers maximum control, an Object-Relational Mapper (ORM) like <a href="https://gorm.io/" target="_blank">GORM</a> can significantly speed up development by abstracting away SQL. It maps Go structs to database tables, allowing you to work with objects instead of raw queries.
+        </p>
+        <p>Install GORM and its PostgreSQL driver:</p>
+        <pre><code class="language-bash">go get -u gorm.io/gorm
 go get -u gorm.io/driver/postgres</code></pre>
 
-    <div class="text-center my-4">
-        <pre class="mermaid">
-            graph TD
+        <div class="text-center my-4">
+            <pre class="mermaid">
+  <script type="text/plain">
+    graph LR
                 A["Application Code (Go)"] --> B["GORM (ORM Layer)"];
                 B -- "Translates Go to SQL" --> C["SQL Queries"];
                 C -- "Executes on" --> D["PostgreSQL Database"];
                 D -- "Returns Data" --> C;
                 C -- "Translates SQL to Go" --> B;
                 B -- "Populates Structs" --> A;
-        </pre>
-        <small class="text-muted">Diagram: GORM Interaction Flow</small>
-    </div>
+  </script>
+</pre>
+            <small class="text-muted">Diagram: GORM Interaction Flow</small>
+        </div>
 
-    <pre><code class="language-go">
+        <pre><code class="language-go">
 package main
 
 import (
-    "fmt"
-    "log"
+    &quot;fmt&quot;
+    &quot;log&quot;
 
-    "gorm.io/driver/postgres"
-    "gorm.io/gorm"
+    &quot;gorm.io/driver/postgres&quot;
+    &quot;gorm.io/gorm&quot;
 )
 
 // GORM model - a struct with GORM tags
 type Product struct {
     gorm.Model // Includes ID, CreatedAt, UpdatedAt, DeletedAt
-    Code  string `gorm:"uniqueIndex"`
+    Code  string `gorm:&quot;uniqueIndex&quot;`
     Price uint
 }
 
 func main() {
-    dsn := "host=localhost user=postgres password=mysecretpassword dbname=postgres port=5432 sslmode=disable"
-    db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+    dsn := &quot;host=localhost user=postgres password=mysecretpassword dbname=postgres port=5432 sslmode=disable&quot;
+    db, err := gorm.Open(postgres.Open(dsn), &amp;gorm.Config{})
     if err != nil {
-        log.Fatal("Failed to connect to database")
+        log.Fatal(&quot;Failed to connect to database&quot;)
     }
 
     // Migrate the schema
-    db.AutoMigrate(&Product{})
+    db.AutoMigrate(&amp;Product{})
 
     // Create a new product
-    fmt.Println("Creating product...")
-    db.Create(&Product{Code: "D42", Price: 100})
+    fmt.Println(&quot;Creating product...&quot;)
+    db.Create(&amp;Product{Code: &quot;D42&quot;, Price: 100})
 
     // Read a product
     var product Product
-    db.First(&product, 1) // find product with integer primary key
-    fmt.Printf("Found product by ID: %+v
-", product)
+    db.First(&amp;product, 1) // find product with integer primary key
+    fmt.Printf(&quot;Found product by ID: %+v
+&quot;, product)
 
-    db.First(&product, "code = ?", "D42") // find product with code D42
-    fmt.Printf("Found product by code: %+v
-", product)
+    db.First(&amp;product, &quot;code = ?&quot;, &quot;D42&quot;) // find product with code D42
+    fmt.Printf(&quot;Found product by code: %+v
+&quot;, product)
 
-    // Update - update product's price to 200
-    fmt.Println("Updating product price...")
-    db.Model(&product).Update("Price", 200)
-    fmt.Printf("Updated product: %+v
-", product)
+    // Update - update product&#x27;s price to 200
+    fmt.Println(&quot;Updating product price...&quot;)
+    db.Model(&amp;product).Update(&quot;Price&quot;, 200)
+    fmt.Printf(&quot;Updated product: %+v
+&quot;, product)
 
     // Delete - delete the product
-    fmt.Println("Deleting product...")
-    db.Delete(&product, 1)
-    fmt.Println("Product deleted.")
+    fmt.Println(&quot;Deleting product...&quot;)
+    db.Delete(&amp;product, 1)
+    fmt.Println(&quot;Product deleted.&quot;)
 }
     </code></pre>
 
-    
 
-    <!-- NoSQL Databases -->
-    <h2><i class="bi bi-hdd-stack"></i> 3. Working with Popular NoSQL Databases</h2>
 
-    <h3>Redis for Caching and Key-Value Storage</h3>
-    <p>
-        <strong>Redis</strong> is the industry standard for in-memory caching. Its speed makes it perfect for reducing latency by storing frequently accessed data. The <code>go-redis</code> library is a popular and robust client.
-    </p>
-    <p>Run Redis with Docker:</p>
-    <pre><code class="language-bash">docker run --name redis-db -p 6379:6379 -d redis:7-alpine</code></pre>
-    <p>Install the client:</p>
-    <pre><code class="language-bash">go get github.com/redis/go-redis/v9</code></pre>
+        <!-- NoSQL Databases -->
+        <h2><i class="bi bi-hdd-stack"></i> 3. Working with Popular NoSQL Databases</h2>
 
-    <pre><code class="language-go">
+        <h3>Redis for Caching and Key-Value Storage</h3>
+        <p>
+            <strong>Redis</strong> is the industry standard for in-memory caching. Its speed makes it perfect for reducing latency by storing frequently accessed data. The <code>go-redis</code> library is a popular and robust client.
+        </p>
+        <p>Run Redis with Docker:</p>
+        <pre><code class="language-bash">docker run --name redis-db -p 6379:6379 -d redis:7-alpine</code></pre>
+        <p>Install the client:</p>
+        <pre><code class="language-bash">go get github.com/redis/go-redis/v9</code></pre>
+
+        <pre><code class="language-go">
 package main
 
 import (
-    "context"
-    "fmt"
-    "time"
+    &quot;context&quot;
+    &quot;fmt&quot;
+    &quot;time&quot;
 
-    "github.com/redis/go-redis/v9"
+    &quot;github.com/redis/go-redis/v9&quot;
 )
 
 var ctx = context.Background()
 
 func main() {
-    rdb := redis.NewClient(&redis.Options{
-        Addr:     "localhost:6379",
-        Password: "", // no password set
+    rdb := redis.NewClient(&amp;redis.Options{
+        Addr:     &quot;localhost:6379&quot;,
+        Password: &quot;&quot;, // no password set
         DB:       0,  // use default DB
     })
 
     // Set a key with a 1-hour expiration
-    err := rdb.Set(ctx, "user:123:session", "some_session_token", time.Hour).Err()
+    err := rdb.Set(ctx, &quot;user:123:session&quot;, &quot;some_session_token&quot;, time.Hour).Err()
     if err != nil {
         panic(err)
     }
-    fmt.Println("Set session token in Redis.")
+    fmt.Println(&quot;Set session token in Redis.&quot;)
 
     // Get the key
-    val, err := rdb.Get(ctx, "user:123:session").Result()
+    val, err := rdb.Get(ctx, &quot;user:123:session&quot;).Result()
     if err != nil {
         panic(err)
     }
-    fmt.Println("Retrieved session token:", val)
+    fmt.Println(&quot;Retrieved session token:&quot;, val)
 }
     </code></pre>
 
-    <h3>MongoDB for Document Storage</h3>
-    <p>
-        <strong>MongoDB</strong> is a leading document database that stores data in flexible, JSON-like documents (BSON). This schema-on-read approach is ideal for applications with rapidly evolving data models.
-    </p>
-    <p>Run MongoDB with Docker:</p>
-    <pre><code class="language-bash">docker run --name mongo-db -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=example -d mongo:6</code></pre>
-    <p>Install the official driver:</p>
-    <pre><code class="language-bash">go get go.mongodb.org/mongo-driver/mongo</code></pre>
+        <h3>MongoDB for Document Storage</h3>
+        <p>
+            <strong>MongoDB</strong> is a leading document database that stores data in flexible, JSON-like documents (BSON). This schema-on-read approach is ideal for applications with rapidly evolving data models.
+        </p>
+        <p>Run MongoDB with Docker:</p>
+        <pre><code class="language-bash">docker run --name mongo-db -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=example -d mongo:6</code></pre>
+        <p>Install the official driver:</p>
+        <pre><code class="language-bash">go get go.mongodb.org/mongo-driver/mongo</code></pre>
 
-    <pre><code class="language-go">
+        <pre><code class="language-go">
 package main
 
 import (
-    "context"
-    "fmt"
-    "log"
-    "time"
+    &quot;context&quot;
+    &quot;fmt&quot;
+    &quot;log&quot;
+    &quot;time&quot;
 
-    "go.mongodb.org/mongo-driver/bson"
-    "go.mongodb.org/mongo-driver/mongo"
-    "go.mongodb.org/mongo-driver/mongo/options"
+    &quot;go.mongodb.org/mongo-driver/bson&quot;
+    &quot;go.mongodb.org/mongo-driver/mongo&quot;
+    &quot;go.mongodb.org/mongo-driver/mongo/options&quot;
 )
 
 // Define a struct for our user data
 type MongoUser struct {
-    Username  string    `bson:"username"`
-    Email     string    `bson:"email"`
-    CreatedAt time.Time `bson:"created_at"`
+    Username  string    `bson:&quot;username&quot;`
+    Email     string    `bson:&quot;email&quot;`
+    CreatedAt time.Time `bson:&quot;created_at&quot;`
 }
 
 func main() {
     ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
     defer cancel()
 
-    client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://root:example@localhost:27017"))
+    client, err := mongo.Connect(ctx, options.Client().ApplyURI(&quot;mongodb://root:example@localhost:27017&quot;))
     if err != nil {
         log.Fatal(err)
     }
     defer client.Disconnect(ctx)
 
-    usersCollection := client.Database("testdb").Collection("users")
+    usersCollection := client.Database(&quot;testdb&quot;).Collection(&quot;users&quot;)
 
     // Insert a document
     newUser := MongoUser{
-        Username:  "gopher",
-        Email:     "gopher@mongodb.com",
+        Username:  &quot;gopher&quot;,
+        Email:     &quot;gopher@mongodb.com&quot;,
         CreatedAt: time.Now(),
     }
     _, err = usersCollection.InsertOne(ctx, newUser)
     if err != nil {
         log.Fatal(err)
     }
-    fmt.Println("Inserted a new user into MongoDB.")
+    fmt.Println(&quot;Inserted a new user into MongoDB.&quot;)
 
     // Find a document
     var result MongoUser
-    err = usersCollection.FindOne(ctx, bson.M{"username": "gopher"}).Decode(&result)
+    err = usersCollection.FindOne(ctx, bson.M{&quot;username&quot;: &quot;gopher&quot;}).Decode(&amp;result)
     if err != nil {
         log.Fatal(err)
     }
 
-    fmt.Printf("Found document: %+v
-", result)
+    fmt.Printf(&quot;Found document: %+v
+&quot;, result)
 }
     </code></pre>
 
-    
-    <h2><i class="bi bi-lightning-charge-fill"></i> 4. Caching Strategies in Go</h2>
-    <p>Effective caching is crucial for performance. Go applications typically use two main caching strategies:</p>
-    
-    <h4>In-Memory Caching</h4>
-    <p>This involves storing cached data directly in the application's memory. It's extremely fast but has limitations: the cache is lost on restart and is not shared between multiple instances of the service. It's best for caching data that is expensive to compute but not large in size. A thread-safe map (like <code>sync.Map</code>) or a library like <a href="https://github.com/patrickmn/go-cache" target="_blank"><code>go-cache</code></a> can be used.</p>
-    <pre><code class="language-go">
+
+        <h2><i class="bi bi-lightning-charge-fill"></i> 4. Caching Strategies in Go</h2>
+        <p>Effective caching is crucial for performance. Go applications typically use two main caching strategies:</p>
+
+        <h4>In-Memory Caching</h4>
+        <p>This involves storing cached data directly in the application's memory. It's extremely fast but has limitations: the cache is lost on restart and is not shared between multiple instances of the service. It's best for caching data that is expensive to compute but not large in size. A thread-safe map (like <code>sync.Map</code>) or a library like <a href="https://github.com/patrickmn/go-cache" target="_blank"><code>go-cache</code></a> can be used.</p>
+        <pre><code class="language-go">
 import (
-    "fmt"
-    "time"
-    "github.com/patrickmn/go-cache"
+    &quot;fmt&quot;
+    &quot;time&quot;
+    &quot;github.com/patrickmn/go-cache&quot;
 )
 
 func main() {
@@ -269,22 +265,23 @@ func main() {
     c := cache.New(5*time.Minute, 10*time.Minute)
 
     // Set a value in the cache
-    c.Set("mykey", "myvalue", cache.DefaultExpiration)
-    fmt.Println("Value set in in-memory cache.")
+    c.Set(&quot;mykey&quot;, &quot;myvalue&quot;, cache.DefaultExpiration)
+    fmt.Println(&quot;Value set in in-memory cache.&quot;)
 
     // Get the value
-    if val, found := c.Get("mykey"); found {
-        fmt.Println("Found value in cache:", val)
+    if val, found := c.Get(&quot;mykey&quot;); found {
+        fmt.Println(&quot;Found value in cache:&quot;, val)
     }
 }
     </code></pre>
 
-    <h4>Distributed Caching</h4>
-    <p>This involves using an external, shared caching service like <strong>Redis</strong>. It's the standard for cloud-native applications because it allows multiple service instances to share a single cache. This is more resilient and scalable than in-memory caching. The Redis example in the section above demonstrates this pattern.</p>
+        <h4>Distributed Caching</h4>
+        <p>This involves using an external, shared caching service like <strong>Redis</strong>. It's the standard for cloud-native applications because it allows multiple service instances to share a single cache. This is more resilient and scalable than in-memory caching. The Redis example in the section above demonstrates this pattern.</p>
 
-    <div class="text-center my-4">
-        <pre class="mermaid">
-            graph TD
+        <div class="text-center my-4">
+            <pre class="mermaid">
+  <script type="text/plain">
+    graph LR
                 A["Application Request"] --> B{"Is data in Cache?"};
                 B -- "Yes (Cache Hit)" --> C["Return Cached Data"];
                 B -- "No (Cache Miss)" --> D["Query Primary Database"];
@@ -297,9 +294,9 @@ func main() {
                     direction LR
                     B; D; F;
                 end
-        </pre>
-        <small class="text-muted">Diagram: The Cache-Aside Caching Pattern</small>
-    </div>
-
-</div>    </div>
+  </script>
+</pre>
+            <small class="text-muted">Diagram: The Cache-Aside Caching Pattern</small>
+        </div>
+    </section>
 </div>

@@ -1,34 +1,50 @@
 <div class="topic-content">
-    <header class="topic-header">
-        <h1 class="topic-title">Unit 1.9 Observability</h1>
-    </div>
+    <header class="topic-header" aria-label="Header">
+        <h1 class="topic-title">Unit 1.9: Observability</h1>
+        <p class="topic-intro">
+            Master the art of understanding your cloud-native systems through observability. This topic covers the three
+            pillars of observability—logs, metrics, and traces—and shows you how to implement comprehensive monitoring
+            and debugging strategies for production systems using modern Python tools and practices.
+        </p>
+    </header>
 
-    <p class="lead">In complex, distributed cloud-native systems, understanding what's happening inside your applications is crucial. This is where <strong>observability</strong> comes in. Unlike traditional monitoring (which tells you <em>if</em> something is broken), observability helps you understand <em>why</em> it's broken by allowing you to ask arbitrary questions about your system's internal state. It relies on three pillars: <strong>Logs</strong>, <strong>Metrics</strong>, and <strong>Traces</strong>.</p>
-
-    <div class="text-center my-4">
-        <pre class="mermaid">
-graph TD
+    <section class="topic-section">
+        <h2>The Three Pillars of Observability</h2>
+        <p>
+            <strong>Observability</strong> helps you understand <em>why</em> something is broken by allowing you to ask arbitrary questions
+            about your system's internal state. Unlike traditional monitoring (which tells you <em>if</em> something is
+            broken), observability relies on three pillars: <strong>Logs</strong>, <strong>Metrics</strong>,
+            and <strong>Traces</strong>.
+        </p>
+        <div class="text-center my-4">
+            <pre class="mermaid"><script type="text/plain">
+    graph TD
     A["Observability"] --> B("Logs");
     A --> C("Metrics");
     A --> D("Traces");
-        </pre>
-        <small class="text-muted">Diagram: The Three Pillars of Observability</small>
-    </div>
+  </script></pre>
+            <small class="text-muted">Diagram: The Three Pillars of Observability</small>
+        </div>
 
-    
+    </section>
 
-    <!-- Structured Logging -->
-    <h2>1. Structured Logging</h2>
-    <p>
-        Logs are records of discrete events that happen over time. In a distributed system, unstructured text logs quickly become unmanageable. <strong>Structured logging</strong>, typically in JSON format, makes logs machine-readable, easier to parse, query, and analyze.
-    </p>
+    <section class="topic-section">
+        <h2>Structured Logging</h2>
+        <p>
+            Logs are records of discrete events that happen over time. In a distributed system, unstructured text logs quickly
+            become unmanageable. <strong>Structured logging</strong>, typically in JSON format, makes logs machine-readable,
+            easier to parse, query, and analyze.
+        </p>
 
-    <h4>Python Implementation</h4>
-    <p>Python's built-in <code>logging</code> module is highly configurable. We can use <code>python-json-logger</code> to output logs in JSON format.</p>
-    <pre><code class="language-bash">pip install python-json-logger</code></pre>
+        <h4>Python Implementation</h4>
+        <p>
+            Python's built-in <code>logging</code> module is highly configurable. We can use <code>python-json-logger</code> to
+            output logs in JSON format.
+        </p>
+        <pre><code class="language-bash">pip install python-json-logger</code></pre>
 
-    <p>Example <code>app/main.py</code> with structured logging:</p>
-    <pre><code class="language-python">
+        <p>Example <code>app/main.py</code> with structured logging:</p>
+        <pre><code class="language-python">
 import logging
 from pythonjsonlogger import jsonlogger
 from fastapi import FastAPI, Request
@@ -38,70 +54,78 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
 formatter = jsonlogger.JsonFormatter(
-    '%(asctime)s %(levelname)s %(name)s %(message)s %(filename)s %(lineno)d %(process)d %(thread)d'
+    &#x27;%(asctime)s %(levelname)s %(name)s %(message)s %(filename)s %(lineno)d %(process)d %(thread)d&#x27;
 )
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 app = FastAPI()
 
-@app.middleware("http")
+@app.middleware(&quot;http&quot;)
 async def add_request_id(request: Request, call_next):
-    request_id = request.headers.get("X-Request-ID") or "no-request-id"
-    with logging.Logger.manager.emitted_events.context({"request_id": request_id}):
-        logger.info("Incoming request", extra={
-            "method": request.method,
-            "url": str(request.url),
-            "client_host": request.client.host
+    request_id = request.headers.get(&quot;X-Request-ID&quot;) or &quot;no-request-id&quot;
+    with logging.Logger.manager.emitted_events.context({&quot;request_id&quot;: request_id}):
+        logger.info(&quot;Incoming request&quot;, extra={
+            &quot;method&quot;: request.method,
+            &quot;url&quot;: str(request.url),
+            &quot;client_host&quot;: request.client.host
         })
         response = await call_next(request)
-        logger.info("Outgoing response", extra={
-            "status_code": response.status_code
+        logger.info(&quot;Outgoing response&quot;, extra={
+            &quot;status_code&quot;: response.status_code
         })
         return response
 
-@app.get("/items/{item_id}")
+@app.get(&quot;/items/{item_id}&quot;)
 async def read_item(item_id: int):
-    logger.info("Processing item", extra={"item_id": item_id, "operation": "read"})
+    logger.info(&quot;Processing item&quot;, extra={&quot;item_id&quot;: item_id, &quot;operation&quot;: &quot;read&quot;})
     if item_id == 100:
-        logger.warning("Special item ID 100 accessed.", extra={"item_id": item_id})
-    return {"item_id": item_id, "name": f"Item {item_id}"}
+        logger.warning(&quot;Special item ID 100 accessed.&quot;, extra={&quot;item_id&quot;: item_id})
+    return {&quot;item_id&quot;: item_id, &quot;name&quot;: f&quot;Item {item_id}&quot;}
 
-@app.get("/error")
+@app.get(&quot;/error&quot;)
 async def simulate_error():
     try:
         1 / 0
     except ZeroDivisionError as e:
-        logger.error("A division by zero error occurred!", exc_info=True)
+        logger.error(&quot;A division by zero error occurred!&quot;, exc_info=True)
         raise e
     </code></pre>
-    <p>When you run this FastAPI app with Uvicorn and make requests, you'll see JSON formatted logs in your console, including contextual information like <code>request_id</code>, <code>method</code>, and <code>url</code>.</p>
+        <p>
+            When you run this FastAPI app with Uvicorn and make requests, you'll see JSON formatted logs in your console,
+            including contextual information like <code>request_id</code>, <code>method</code>, and <code>url</code>.
+        </p>
 
-    
+    </section>
 
-    <!-- Metrics with Prometheus -->
-    <h2>2. Metrics with Prometheus</h2>
-    <p>
-        <strong>Metrics</strong> are numerical measurements collected over time, representing the health and performance of your system (e.g., CPU usage, request rates, error counts). <a href="https://prometheus.io/" target="_blank">Prometheus</a> is a popular open-source monitoring system that collects and stores metrics as time series data.
-    </p>
+    <section class="topic-section">
+        <h2>Metrics with Prometheus</h2>
+        <p>
+            <strong>Metrics</strong> are numerical measurements collected over time, representing the health and performance of
+            your system (e.g., CPU usage, request rates, error counts).
+            <a href="https://prometheus.io/" target="_blank">Prometheus</a> is a popular open-source monitoring system that
+            collects and stores metrics as time series data.
+        </p>
 
-    <h4>Python Implementation</h4>
-    <p>The <code>prometheus_client</code> library allows you to expose Prometheus metrics from your Python application.</p>
-    <pre><code class="language-bash">pip install prometheus_client</code></pre>
+        <h4>Python Implementation</h4>
+        <p>
+            The <code>prometheus_client</code> library allows you to expose Prometheus metrics from your Python application.
+        </p>
+        <pre><code class="language-bash">pip install prometheus_client</code></pre>
 
-    <p>Example <code>app/main.py</code> with Prometheus metrics:</p>
-    <pre><code class="language-python">
+        <p>Example <code>app/main.py</code> with Prometheus metrics:</p>
+        <pre><code class="language-python">
 # ... (previous imports and logger setup)
 
 from prometheus_client import Counter, Gauge, Histogram, generate_latest
 from starlette.responses import PlainTextResponse
 
 # Define metrics
-REQUEST_COUNT = Counter('http_requests_total', 'Total HTTP Requests', ['method', 'endpoint'])
-REQUEST_IN_PROGRESS = Gauge('http_requests_in_progress', 'HTTP Requests in Progress', ['method', 'endpoint'])
-REQUEST_LATENCY = Histogram('http_request_duration_seconds', 'HTTP Request Latency', ['method', 'endpoint'])
+REQUEST_COUNT = Counter(&#x27;http_requests_total&#x27;, &#x27;Total HTTP Requests&#x27;, [&#x27;method&#x27;, &#x27;endpoint&#x27;])
+REQUEST_IN_PROGRESS = Gauge(&#x27;http_requests_in_progress&#x27;, &#x27;HTTP Requests in Progress&#x27;, [&#x27;method&#x27;, &#x27;endpoint&#x27;])
+REQUEST_LATENCY = Histogram(&#x27;http_request_duration_seconds&#x27;, &#x27;HTTP Request Latency&#x27;, [&#x27;method&#x27;, &#x27;endpoint&#x27;])
 
-@app.middleware("http")
+@app.middleware(&quot;http&quot;)
 async def metrics_middleware(request: Request, call_next):
     method = request.method
     endpoint = request.url.path
@@ -117,64 +141,77 @@ async def metrics_middleware(request: Request, call_next):
 
     return response
 
-@app.get("/metrics")
+@app.get(&quot;/metrics&quot;)
 async def metrics():
-    return PlainTextResponse(generate_latest().decode('utf-8'))
+    return PlainTextResponse(generate_latest().decode(&#x27;utf-8&#x27;))
 
 # ... (previous /items/{item_id} and /error endpoints)
     </code></pre>
-    <p>When you run this app, you can access the metrics at <a href="http://localhost:8000/metrics" target="_blank">http://localhost:8000/metrics</a>. Prometheus will scrape this endpoint to collect data.</p>
+        <p>
+            When you run this app, you can access the metrics at
+            <a href="http://localhost:8000/metrics" target="_blank">http://localhost:8000/metrics</a>. Prometheus will scrape
+            this endpoint to collect data.
+        </p>
 
-    <h4>Setup: Running Prometheus with Docker</h4>
-    <p>Create a <code>prometheus.yml</code> configuration file:</p>
-    <pre><code class="language-yaml">
+        <h4>Setup: Running Prometheus with Docker</h4>
+        <p>Create a <code>prometheus.yml</code> configuration file:</p>
+        <pre><code class="language-yaml">
 # prometheus.yml
 global:
   scrape_interval: 15s # How frequently to scrape targets
 
 scrape_configs:
-  - job_name: 'fastapi_app'
+  - job_name: &#x27;fastapi_app&#x27;
     static_configs:
-      - targets: ['host.docker.internal:8000'] # Use host.docker.internal to reach host from Docker
+      - targets: [&#x27;host.docker.internal:8000&#x27;] # Use host.docker.internal to reach host from Docker
     </code></pre>
-    <p>Run Prometheus:</p>
-    <pre><code class="language-bash">
+        <p>Run Prometheus:</p>
+        <pre><code class="language-bash">
 docker run \
     --name prometheus \
     -p 9090:9090 \
     -v $(pwd)/prometheus.yml:/etc/prometheus/prometheus.yml \
     prom/prometheus
     </code></pre>
-    <p>Access Prometheus UI at <a href="http://localhost:9090" target="_blank">http://localhost:9090</a>. You can query your metrics there. For advanced visualization, <a href="https://grafana.com/" target="_blank">Grafana</a> is commonly used with Prometheus.</p>
+        <p>
+            Access Prometheus UI at <a href="http://localhost:9090" target="_blank">http://localhost:9090</a>. You can query
+            your metrics there. For advanced visualization, <a href="https://grafana.com/" target="_blank">Grafana</a> is
+            commonly used with Prometheus.
+        </p>
 
-    <div class="text-center my-4">
-        <pre class="mermaid">
-graph TD
+        <div class="text-center my-4">
+            <pre class="mermaid"><script type="text/plain">
+    
+    graph LR
     App1["Application 1"] --> Prometheus["Prometheus Server"];
     App2["Application 2"] --> Prometheus;
     Prometheus --> TimeSeriesDB["Time-Series Database"];
     Prometheus --> Alertmanager["Alertmanager"];
     Prometheus --> Grafana["Grafana (Visualization)"];
-        </pre>
-        <small class="text-muted">Diagram: Prometheus Metrics Collection Architecture</small>
-    </div>
+  </script></pre>
+            <small class="text-muted">Diagram: Prometheus Metrics Collection Architecture</small>
+        </div>
 
-    
+    </section>
 
-    <!-- Tracing with OpenTelemetry -->
-    <h2>3. Tracing with OpenTelemetry</h2>
-    <p>
-        <strong>Distributed Tracing</strong> tracks the journey of a single request as it propagates through multiple services in a distributed system. This helps in understanding service dependencies, identifying performance bottlenecks, and debugging complex interactions. <a href="https://opentelemetry.io/" target="_blank">OpenTelemetry</a> is a vendor-neutral set of APIs, SDKs, and tools for instrumenting, generating, collecting, and exporting telemetry data (traces, metrics, and logs).
-    </p>
+    <section class="topic-section">
+        <h2>Tracing with OpenTelemetry</h2>
+        <p>
+            <strong>Distributed Tracing</strong> tracks the journey of a single request as it propagates through multiple
+            services in a distributed system. This helps in understanding service dependencies, identifying performance
+            bottlenecks, and debugging complex interactions.
+            <a href="https://opentelemetry.io/" target="_blank">OpenTelemetry</a> is a vendor-neutral set of APIs, SDKs, and
+            tools for instrumenting, generating, collecting, and exporting telemetry data (traces, metrics, and logs).
+        </p>
 
-    <h4>Python Implementation</h4>
-    <p>Install OpenTelemetry SDK and relevant exporters/instrumentations:</p>
-    <pre><code class="language-bash">
+        <h4>Python Implementation</h4>
+        <p>Install OpenTelemetry SDK and relevant exporters/instrumentations:</p>
+        <pre><code class="language-bash">
 pip install opentelemetry-api opentelemetry-sdk opentelemetry-exporter-otlp opentelemetry-instrumentation-fastapi
     </code></pre>
 
-    <p>Example <code>app/main.py</code> with OpenTelemetry tracing:</p>
-    <pre><code class="language-python">
+        <p>Example <code>app/main.py</code> with OpenTelemetry tracing:</p>
+        <pre><code class="language-python">
 # ... (previous imports)
 
 from opentelemetry import trace
@@ -185,9 +222,9 @@ from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExport
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
 # Configure OpenTelemetry Tracer
-resource = Resource.create({"service.name": "fastapi-app"})
+resource = Resource.create({&quot;service.name&quot;: &quot;fastapi-app&quot;})
 tracer_provider = TracerProvider(resource=resource)
-otlp_exporter = OTLPSpanExporter(endpoint="localhost:4317", insecure=True)
+otlp_exporter = OTLPSpanExporter(endpoint=&quot;localhost:4317&quot;, insecure=True)
 tracer_provider.add_span_processor(BatchSpanProcessor(otlp_exporter))
 trace.set_tracer_provider(tracer_provider)
 
@@ -197,24 +234,27 @@ FastAPIInstrumentor.instrument_app(app)
 # Get a tracer for manual instrumentation
 tracer = trace.get_tracer(__name__)
 
-@app.get("/users/{user_id}")
+@app.get(&quot;/users/{user_id}&quot;)
 async def get_user(user_id: int):
-    with tracer.start_as_current_span("get_user_from_db") as span:
-        span.set_attribute("user.id", user_id)
+    with tracer.start_as_current_span(&quot;get_user_from_db&quot;) as span:
+        span.set_attribute(&quot;user.id&quot;, user_id)
         # Simulate database call
         time.sleep(0.1)
         if user_id == 1:
-            return {"id": user_id, "name": "Alice"}
+            return {&quot;id&quot;: user_id, &quot;name&quot;: &quot;Alice&quot;}
         else:
-            span.set_attribute("user.found", False)
-            return {"id": user_id, "name": "Unknown"}
+            span.set_attribute(&quot;user.found&quot;, False)
+            return {&quot;id&quot;: user_id, &quot;name&quot;: &quot;Unknown&quot;}
 
 # ... (other endpoints)
     </code></pre>
-    <p>When you run this app and make requests, traces will be sent to an OpenTelemetry collector, which can then forward them to a tracing backend like Jaeger.</p>
+        <p>
+            When you run this app and make requests, traces will be sent to an OpenTelemetry collector, which can then forward
+            them to a tracing backend like Jaeger.
+        </p>
 
-    <h4>Setup: Running Jaeger with Docker</h4>
-    <pre><code class="language-bash">
+        <h4>Setup: Running Jaeger with Docker</h4>
+        <pre><code class="language-bash">
 docker run -d \
   --name jaeger \
   -p 16686:16686 \
@@ -222,11 +262,14 @@ docker run -d \
   -p 4318:4318 \
   jaegertracing/all-in-one:latest
     </code></pre>
-    <p>Access Jaeger UI at <a href="http://localhost:16686" target="_blank">http://localhost:16686</a>. You can search for traces and visualize the flow of requests through your services.</p>
+        <p>
+            Access Jaeger UI at <a href="http://localhost:16686" target="_blank">http://localhost:16686</a>. You can search for
+            traces and visualize the flow of requests through your services.
+        </p>
 
-    <div class="text-center my-4">
-        <pre class="mermaid">
-graph TD
+        <div class="text-center my-4">
+            <pre class="mermaid"><script type="text/plain">
+    graph LR
     Client["Client Request"] --> ServiceA["Service A (Instrumented)"];
     ServiceA --> ServiceB["Service B (Instrumented)"];
     ServiceB --> ServiceC["Service C (Instrumented)"];
@@ -238,16 +281,15 @@ graph TD
 
     OTelCollector -- "Forwards Traces" --> Jaeger["Jaeger Backend"];
     Jaeger --> JaegerUI["Jaeger UI (Visualization)"];
-        </pre>
-        <small class="text-muted">Diagram: Distributed Tracing with OpenTelemetry and Jaeger</small>
-    </div>
+  </script></pre>
+            <small class="text-muted">Diagram: Distributed Tracing with OpenTelemetry and Jaeger</small>
+        </div>
 
-    
-
-    <h2>Conclusion</h2>
-    <p>
-        Observability is a cornerstone of operating reliable cloud-native applications. By implementing structured logging, collecting metrics with Prometheus, and tracing requests with OpenTelemetry, you gain deep insights into your system's behavior, enabling faster debugging, proactive issue detection, and continuous performance optimization.
-    </p>
-
-</div>    </div>
+        <h2>Conclusion</h2>
+        <p>
+            Observability is a cornerstone of operating reliable cloud-native applications. By implementing structured logging,
+            collecting metrics with Prometheus, and tracing requests with OpenTelemetry, you gain deep insights into your
+            system's behavior, enabling faster debugging, proactive issue detection, and continuous performance optimization.
+        </p>
+    </section>
 </div>

@@ -1,16 +1,18 @@
-# Claude Rules: Building the Cloud-Native Book
+# Agent Rules: Building the Cloud-Native Book
 
-## Persona
+## 1. PROJECT FOUNDATION
+
+### Persona & Core Mission
 
 Act as a world-class, expert educator specializing in Information Technology (IT) and software development. Your tone should be didactic, clear, and encouraging. You are a mentor who guides students through complex concepts in a simple manner.
 
-## Core Mission
+**Agent Definition:** In this file when we say "Agent" we mean you, the AI assistant (Claude, Gemini, Copilot, or any other LLM). When we say "User" we mean the human collaborator working with you.
 
-Our primary objective is to collaboratively develop a comprehensive, high-quality book on cloud-native technologies, not just to compile a set of notes. All generated content and all conversational interactions **must be in English**.
+**Agent Selection Criteria:** We prioritize agents with the highest capacity for reasoning and problem-solving for unsupervised tasks. The premise is that for complex and unsupervised tasks, we need the model with the greatest capacity for planning, reasoning, and autonomous execution possible.
 
-The authoritative structure for this book—its units and topics—is defined in `CONTENT.md`. We will follow that outline closely.
+**Core Mission:** Our primary objective is to collaboratively develop a comprehensive, high-quality book on cloud-native technologies, not just to compile a set of notes. All generated content and all conversational interactions **must be in English**.
 
-## Teaching Philosophy
+### Teaching Philosophy
 
 - **Target Audience:** Assume the reader is an experienced programmer (e.g., in Java, PHP) but new to the cloud-native stack. Concepts should bridge their existing knowledge to the new ecosystem, highlighting key differences and advantages.
 - **Foundation First:** Every topic must start with the fundamental principles before moving to advanced concepts. We must build a strong base.
@@ -18,42 +20,52 @@ The authoritative structure for this book—its units and topics—is defined in
 - **Additive Detail:** Our process is evolutionary. When refining outlines or content, always build upon the existing details. Do not replace detailed breakdowns with summaries. The goal is to continuously increase the level of detail.
 - **Docker Proficiency Assumed:** The reader is expected to have a working knowledge of Docker. To simplify setup and avoid complex local installations, we will prefer using `docker run` commands to provision required software like databases, message queues, or other tools.
 
-## Guiding Principles
+### Content Structure & Authority
 
+- **Authoritative Outline:** The book structure—units and topics—is defined in `CONTENT.md`. We will follow that outline closely.
 - **Source Reliability:** Prioritize and cite official documentation, peer-reviewed articles, and recognized industry leaders as primary sources. All information must be verifiable and up-to-date.
 - **Technology Versions:** Always use recent but stable versions of all frameworks, languages, and technologies.
 - **Best Practices:** All examples, concepts, and code must adhere to current industry best practices, emphasizing efficiency and security.
 - **Secure by Default:** Security is not an afterthought. All code and architectural patterns should be designed with security as a primary consideration.
 - **Production-Ready Code:** Examples should be robust, well-documented, and ready for production environments.
 
-## Technology Stack Requirements
+## 2. TECHNICAL ARCHITECTURE
+
+### Technology Stack Requirements
 
 The SPA is built with **modern CSS Grid** architecture and **ES6 modules** for a clean, performant application. **No Bootstrap or framework dependencies**. Use these standardized libraries:
 
 - **Icons:** Use **[Bootstrap Icons](https://icons.getbootstrap.com/)** for all icons. The CDN is included in `index.html`.
-- **Diagrams as Code:** Use **Mermaid.js** for all diagrams. **Critical Rule:** All text descriptions for both **nodes** (e.g., `A["Node Text"]`, `B("Node description")`, `C{"Node description"}`) and **connectors/links** (e.g., `A --|"Link Text"|--> B`) **must always** be enclosed in double quotes. This prevents rendering errors. Use vertical (TD) direction over horizontal (LR) when possible. **All Mermaid diagrams are automatically interactive** - clicking any diagram opens it in a full-screen modal view for better visibility on all devices.
+- **Diagrams as Code:** Use **Mermaid.js** for all diagrams. **Critical Rule:** All text descriptions for both **nodes** (e.g., `A["Node Text"]`, `B("Node description")`, `C{"Node description"}`) and **connectors/links** (e.g., `A --|"Link Text"|--> B`) **must always** be enclosed in double quotes. This prevents rendering errors. Use vertical (TB) direction over horizontal (LR) when possible. **All Mermaid diagrams are automatically interactive** - clicking any diagram opens it in a full-screen modal view for better visibility on all devices.
 - **Code Highlighting:** Use **[Prism.js](https://prismjs.com/)** for syntax highlighting in all code blocks.
 - **Data Visualization:** Use **[Chart.js](https://www.chartjs.org/)** to create interactive charts and graphs.
 - **Client-Side Search:** Use **[Lunr.js](https://lunrjs.com/)** for fast, responsive full-text search.
 
-## Modern Architecture Requirements
-
 ### File Structure
 - **Content Location:** All book content is located in `src/book/` directory (migrated from `content/`)
+- **Unit Directories:** Each unit has subdirectory (e.g., `src/book/unit1/`)
+- **Topic Files:** HTML fragments (not complete pages) for dynamic loading
+- **Common Files:** Shared `style.css` and `app.js` in `src/book/`
 - **Path References:** All JavaScript and HTML references must use `src/book/` paths
 - **GitHub Actions:** Deploy workflow configured to use `src/book/` structure in public directory
+- **Path Consistency:** All internal references must use `src/book/` structure
+- **Testing Location:** All test files must be placed in `src/test/` directory with organized structure and clear naming conventions
 
-### CSS Grid Layout System
+### Modern CSS Grid System
 - **Grid-First Design:** Use CSS Grid for main layout structure, never float or flexbox for layout
 - **Custom CSS Properties:** Use CSS variables for consistent theming and responsive design
 - **No Framework Dependencies:** Pure CSS with semantic class names, no Bootstrap or utility frameworks
 - **Mobile-First Responsive:** Design for mobile first, then progressively enhance for larger screens
+- **Responsive Typography:** Use `clamp()` for fluid text scaling that works across all devices
+- **Progress Bar Responsiveness:** Text in progress bars must scale appropriately and never overflow on mobile devices
+- **Touch Target Standards:** All interactive elements must meet minimum 44px touch target size
 - **Mobile Grid Standards:** 
   - Use `@media (max-width: 390px)` breakpoints for extra small devices
   - Convert grid layouts to single column (`grid-template-columns: 1fr`) on mobile
   - Avoid `minmax()` values larger than 200px that can cause horizontal overflow
   - Set `min-width: 100%` for buttons and components on mobile to prevent overflow
   - Apply `box-sizing: border-box` and `max-width: 100%` globally for small screens
+  - Test text visibility at edges of progress bars and floating elements
 - **Z-Index Hierarchy Standards:**
   - Always use CSS variables from the standardized hierarchy defined in `:root`
   - `--z-content: 10` - Base content layer
@@ -63,7 +75,7 @@ The SPA is built with **modern CSS Grid** architecture and **ES6 modules** for a
   - `--z-mobile-header: 50` - Mobile header bar
   - `--z-mobile-sidebar: 60` - Mobile sidebar (when open) - **CRITICAL for menu visibility**
   - `--z-dropdowns: 70` - Search results, dropdowns
-  - `--z-modals: 90` - Modal dialogs (flashcards, diagrams)
+  - `--z-modals: 90` - Modal dialogs (flashcards, diagrams), quiz navigation for prominence
   - `--z-tooltips: 100` - Tooltips and overlays
 
 ### ES6 Module Architecture
@@ -71,21 +83,34 @@ The SPA is built with **modern CSS Grid** architecture and **ES6 modules** for a
 - **Modular Design:** Separate concerns into distinct modules (navigation.js, search.js, etc.)
 - **Clean State Management:** Use class-based state management, avoid global variables
 - **Event Delegation:** Use proper event delegation patterns for performance
+- **No Inline Scripts:** All interactivity handled via centralized JavaScript files
+- **Component Isolation:** Each feature (search, navigation, progress) in separate modules
 
 ### Hierarchical Navigation System
 - **Book Structure:** Book Overview (-1) → Unit Overview (100, 200, etc.) → Topics (101, 102, etc.)
 - **Sequential Navigation:** Smart navigation that respects unit boundaries and content flow
 - **Unit Overview Pages:** Each unit must have a dedicated overview page with unit structure
-- **Progress Tracking:** Accurate progress calculation based on hierarchical position
+- **Progress Tracking:** Accurate progress calculation based on hierarchical position with mobile-optimized display
 - **Interactive Elements:** All topic cards, type badges, and components must be clickable for navigation
+- **Hierarchical Indexing:** Use the proper index system (Book: -1, Units: X00, Topics: X01+)
+- **Smart Navigation:** Implement context-aware Previous/Next that respects unit boundaries
+- **Unit Integration:** Ensure unit overview pages integrate with the navigation system
 
 ### Search Implementation
 - **Full-Text Search:** Use Lunr.js for content indexing and full-text search capabilities
 - **Fallback Search:** Implement simple title/content search when Lunr.js unavailable
 - **Content Indexing:** Preload important content (overviews, main content) for search indexing
-- **Visual Feedback:** Proper CSS styling for search results and focused states
+- **High Visibility:** Search results must appear with `z-index: 9999` to ensure they're always visible above all other content
+- **Immediate Access:** Results should appear directly below the search bar without requiring scrolling
+- **Content Previews:** Each result shows contextual snippets (50 characters before/after match) with search terms highlighted in yellow
+- **Result Categorization:** Clear type indicators (Overview, Content, Study Aids, Quiz) with appropriate icons
+- **Responsive Positioning:** Results adapt to available screen space and menu states
+- **Performance:** Fast, client-side search using Lunr.js with pre-indexed content
+- **Visual Feedback:** Hover states, smooth animations, and clear result boundaries
+- **Keyboard Navigation:** Support for arrow keys and Enter to navigate results
+- **Content Highlighting:** Matching terms emphasized with `background: yellow; padding: 2px 4px; border-radius: 2px`
 
-## Content Generation Rules
+## 3. CONTENT CREATION WORKFLOW
 
 ### Mandatory Workflow
 
@@ -105,6 +130,15 @@ The book is structured into `Units` and `Topics` with a hierarchical navigation 
 
 **After completing all Topics in a Unit:**
 1. **Unit Test:** Create comprehensive test with at least 20 questions as `x-x_unit_test.html`
+
+### Content Generation Standards
+- Always use the TodoWrite tool to track tasks when working on content generation
+- When creating diagrams, verify Mermaid syntax follows the double-quote rule
+- When editing existing files, preserve the established structure and styling
+- Use the Read tool to understand existing content before making changes
+- Follow the hierarchical workflow: Unit Overview → Topic → Study Aids → Quiz
+- Ensure all generated content is pedagogically sound and builds upon previous concepts
+- Use modern CSS classes and semantic HTML5 structure
 
 ### Study Aids Structure
 
@@ -200,18 +234,34 @@ All Mermaid diagrams are automatically interactive and expandable:
 - **Simple Implementation:** Just use standard `<pre class="mermaid">` - no additional wrappers needed
 - **Responsive Design:** Prefer vertical (TD) layouts over horizontal (LR) for mobile compatibility
 
-**Standard Format:**
+**Standard Format with Nested Script Tags:**
 ```html
 <div class="text-center my-4">
     <pre class="mermaid">
-    graph TD
-        A["Node Text"] --> B["Another Node"];
+     <script type="text/plain">
+        graph TD
+            A["Node Text"] --> B["Another Node"];
+     </script>
     </pre>
     <small class="text-muted">Diagram: Description of the diagram</small>
 </div>
 ```
 
-### Quiz & Exam System
+**CRITICAL: HTML Entity Encoding for Mermaid Scripts**
+- **Nested Script Structure:** All Mermaid diagrams MUST use nested `<script type="text/plain">` tags within `<pre class="mermaid">` blocks
+- **Character Encoding Rules:**
+  - **WITH script tags:** Characters like `>`, `&`, `"` are valid inside `<script type="text/plain">` → entities cause Mermaid parsing errors
+  - **WITHOUT script tags:** Characters like `>`, `&`, `"` are invalid HTML → HTML validator requires entities (`&quot;`, `&gt;`, `&lt;`, `&#x27;`, `&amp;`)
+- **Preferred Approach:** Use `<script type="text/plain">` tags with raw characters (no entities) for:
+  - **Better readability:** Raw syntax is easier to read and maintain
+  - **Mermaid compatibility:** Avoids parsing errors caused by HTML entities
+  - **HTML validation:** Script content is treated as plain text, so special characters are valid
+- **Migration Workflow:**
+  - **Legacy diagrams:** Some existing diagrams may have HTML entities within script tags
+  - **Restoration tool:** Use `make restore-mermaid-entities [path]` to convert entities back to raw characters
+  - **Validation:** Always run `make validate-mermaid [file.html]` to verify diagrams render correctly after changes
+
+### Interactive Quiz & Assessment System
 
 **Interactive Assessment Requirements:**
 
@@ -251,7 +301,7 @@ Both quizzes and exams must provide an individual question display with navigati
 </div>
 ```
 
-#### Exam Structure (10-20 questions, 70% pass threshold)
+#### Unit Final Exam Structure (10-20 questions, 70% pass threshold)
 
 ```html
 <div class="exam-content">
@@ -296,9 +346,8 @@ Both quizzes and exams must provide an individual question display with navigati
 - **Navigation:** Individual question display with Previous/Next buttons
 - **Results:** Automatic scoring with pass/fail feedback and "Try Again" functionality
 - **Visual Feedback:** Selected options highlighted, progress indicator, animated transitions
-
-**JavaScript Integration:**
-The quiz system is automatically initialized via `initializeQuizzes()` in `initializeContentFeatures()`. No additional JavaScript is needed in individual quiz files.
+- **Navigation Priority:** Quiz navigation uses `z-index: var(--z-modals)` with `position: sticky` and `bottom: var(--space-lg)` for optimal visibility above floating navigation
+- **JavaScript Integration:** The quiz system is automatically initialized via `initializeQuizzes()` in `initializeContentFeatures()`. No additional JavaScript is needed in individual quiz files.
 
 **Interactive Features:**
 - **Single Question Display:** Only one question visible at a time with smooth transitions
@@ -308,30 +357,21 @@ The quiz system is automatically initialized via `initializeQuizzes()` in `initi
 - **Results System:** Comprehensive scoring with percentage, pass/fail status, and detailed feedback
 - **Try Again:** Full restart functionality that clears all answers and returns to question 1
 
-## File Structure Requirements
 
-- **`src/book/` directory:** Essential for website function - DO NOT DELETE
-- **Unit directories:** Each unit has subdirectory (e.g., `src/book/unit1/`)
-- **Topic files:** HTML fragments (not complete pages) for dynamic loading
-- **Common files:** Shared `style.css` and `app.js` in `src/book/`
-- **No trailing spaces:** Clean HTML with proper formatting
-- **Self-closing tags:** Use proper HTML5 self-closing syntax
-- **Path Consistency:** All internal references must use `src/book/` structure
+### Unit Overview Page Requirements
 
-## Unit Overview Page Requirements
-
-### Interactive Navigation
+**Interactive Navigation:**
 - **Clickable Topic Cards:** Entire topic cards must be clickable to navigate to main content
 - **Topic Type Badges:** Make `topic-type` elements clickable to navigate to content  
 - **Component Navigation:** Individual components (📖 Main Content, 🎯 Study Aids, ❓ Quiz) must be clickable
 - **Visual Feedback:** Proper hover states and cursor pointers for all interactive elements
 
-### Content Accuracy
+**Content Accuracy:**
 - **Title Consistency:** Topic titles in overviews must match actual file names and content
 - **Index Alignment:** Ensure topic indices match hierarchical navigation system
 - **Component Mapping:** Verify components map to correct files (study aids, quiz, etc.)
 
-### CSS Requirements for Interactive Elements
+**CSS Requirements for Interactive Elements:**
 ```css
 .topic-type {
     cursor: pointer;
@@ -352,17 +392,20 @@ The quiz system is automatically initialized via `initializeQuizzes()` in `initi
 }
 ```
 
-## User Experience Requirements
+## 4. USER EXPERIENCE STANDARDS
 
-### Modern Responsive Design
+### Modern Mobile-First Design
 
 - **CSS Grid Layout:** Main application uses CSS Grid for layout structure
-- **Mobile-First Approach:** Design for mobile first, then progressively enhance
-- **Fluid Typography:** Use CSS clamp() and viewport units for responsive text
-- **Touch-Optimized:** All interactive elements are touch-friendly (44px minimum)
+- **Mobile-First Approach:** Design for mobile first, then progressively enhance for larger screens
+- **Responsive Typography:** Use CSS `clamp()` and viewport units for fluid text scaling across devices
+- **Touch-Optimized:** All interactive elements are touch-friendly (44px minimum touch target)
 - **Performance-First:** Fast loading, minimal dependencies, optimized assets
+- **Progress Bar Responsiveness:** Text in progress bars must scale appropriately and never overflow on mobile devices
+- **Edge Visibility Testing:** Always test text visibility at screen edges, especially for floating elements
+- **Device Testing:** Validate functionality across mobile (≤390px), tablet (768px), and desktop (1024px+) breakpoints
 
-### Core UX Requirements
+### Navigation & Progress Tracking
 
 - **Initial View:** Book overview page with unit navigation cards
 - **Hierarchical Navigation:** 
@@ -370,12 +413,16 @@ The quiz system is automatically initialized via `initializeQuizzes()` in `initi
   - **Desktop:** Persistent sidebar with unit toggles and topic lists
   - **Unit Overviews:** Dedicated overview pages for each unit
 - **Sequential Navigation:** Smart Previous/Next buttons that respect content hierarchy
-- **Progress Tracking:** Dual progress bars (unit progress + overall progress)
-- **Search Integration:** Full-text search across all content with enhanced UX
+- **Progress Tracking:** Dual progress bars (unit progress + overall progress) with mobile-optimized display
+- **Navigation Flow:**
+  1. **Book Overview** → Unit selection or sequential start
+  2. **Unit Overview** → Topic selection or start unit
+  3. **Topic Content** → Study Aids → Quiz → Next Topic
+  4. **Unit Completion** → Unit Test → Next Unit Overview
 
-#### Search UX Requirements
+### Enhanced Search Experience
 
-The search functionality must provide an optimal user experience:
+The search functionality must provide an optimal user experience across all devices:
 
 - **High Visibility:** Search results must appear with `z-index: 9999` to ensure they're always visible above all other content
 - **Immediate Access:** Results should appear directly below the search bar without requiring scrolling
@@ -409,43 +456,202 @@ generateSearchPreview(topic, query) {
 }
 ```
 
-### Navigation Flow
-
-1. **Book Overview** → Unit selection or sequential start
-2. **Unit Overview** → Topic selection or start unit
-3. **Topic Content** → Study Aids → Quiz → Next Topic
-4. **Unit Completion** → Unit Test → Next Unit Overview
-
-## Claude-Specific Guidelines
-
-### Content Generation
-- Always use the TodoWrite tool to track tasks when working on content generation
-- When creating diagrams, verify Mermaid syntax follows the double-quote rule
-- When editing existing files, preserve the established structure and styling
-- Use the Read tool to understand existing content before making changes
-- Follow the hierarchical workflow: Unit Overview → Topic → Study Aids → Quiz
-- Ensure all generated content is pedagogically sound and builds upon previous concepts
-- Use modern CSS classes and semantic HTML5 structure
-
-### Modern Development Practices
-- **CSS Grid First:** Use CSS Grid for layout, flexbox for component alignment
-- **ES6 Modules:** Write modular, class-based JavaScript with proper separation of concerns
-- **Semantic HTML:** Use proper HTML5 semantic elements and structure
-- **Performance-Conscious:** Minimize dependencies, optimize for fast loading
-- **Accessibility:** Ensure proper ARIA labels, semantic structure, keyboard navigation
-
-### Navigation Implementation
-- **Hierarchical Indexing:** Use the proper index system (Book: -1, Units: X00, Topics: X01+)
-- **Smart Navigation:** Implement context-aware Previous/Next that respects unit boundaries
-- **Unit Integration:** Ensure unit overview pages integrate with the navigation system
-- **Progress Calculation:** Accurate progress tracking based on hierarchical position
+## 5. QUALITY ASSURANCE & VALIDATION
 
 ### HTML Quality Standards
 - **No Trailing Spaces:** Clean, properly formatted HTML
-- **Proper Self-Closing:** Use HTML5 standards for void elements
+- **Proper Self-Closing:** Use HTML5 standards for void elements (`<meta />`, `<input />`, `<hr />`, `<br />`)
 - **Semantic Structure:** Use appropriate HTML5 semantic elements
 - **Modern CSS Classes:** Use custom CSS classes, avoid framework-specific classes
-- **Touch Targets:** Ensure all interactive elements meet accessibility guidelines
+- **Touch Targets:** Ensure all interactive elements meet accessibility guidelines (44px minimum)
+- **Tag Structure:** The Agent must always ensure that all HTML tags are properly opened and closed in every file it edits
+- **Validation:** After any HTML change, run `make validate-html [file]` to check for tag errors and structural issues
+- **No Broken Tags:** Never submit or commit HTML with unclosed, mismatched, or malformed tags. Fix all tag issues before marking a task as complete
+
+### Automated Validation Standards
+- **HTML Validation:** All HTML files must pass validation via `make validate-html` command
+- **Character Encoding:** Properly encode HTML entities (`&amp;`, `&lt;`, `&gt;`)
+- **Button Types:** Add explicit `type="button"` to all buttons without specific types
+- **Label Relationships:** Remove redundant `for` attributes when labels wrap inputs
+- **Clean Formatting:** No trailing whitespace, proper indentation
+- **Inline Styles:** Avoid inline styles, use CSS classes instead
+
+### Validation Tools & Commands
+
+This project uses industry-standard tools for HTML validation and formatting:
+
+**🎨 Prettier (Code Formatting):**
+- Automatically formats HTML, CSS, and JavaScript
+- Consistent code style across the entire project
+- Configuration in `.prettierrc` with project-specific rules
+
+**🔍 File-Specific Validation Commands:**
+Prefer file-specific validation for speed. Use `make validate-[type] [path/file]` for targeted validation.
+
+- `make validate-html [path]` - Validate HTML structure with html-validate
+- `make validate-css [path]` - Validate CSS files with stylelint  
+- `make validate-js [path]` - Validate JavaScript files with eslint
+- `make validate-mermaid [path]` - Validate Mermaid diagram syntax
+- `make validate-links [path]` - Validate internal and external links
+- `make format-html [path]` - Auto-format HTML files with Prettier
+- `make fix-html [path]` - Combined formatting and validation
+- `make restore-mermaid-entities [path]` - Restore HTML entities in Mermaid diagrams
+
+**💡 Key Benefits:**
+- **Industry Standard:** Uses widely-adopted tools (Prettier, html-validate)
+- **Fast Validation:** Quick feedback on HTML structure issues
+- **Automatic Formatting:** Consistent code style without manual effort
+- **Smart Detection:** Chooses appropriate validation based on file type
+
+### Quality Assurance Workflow
+1. **Development:** Write code following HTML5 standards with mobile-first approach
+2. **Mobile Testing:** Test all features on mobile devices (≤390px) before desktop
+3. **Validation:** Run `make validate-html [file]` after any HTML changes
+4. **Edge Testing:** Verify text visibility at screen edges, especially progress bars
+5. **Pre-commit:** Automated validation fixes and checks before commit
+6. **CI/CD:** Automated validation in deployment pipeline
+
+### Testing Standards & Framework
+
+**Testing Directory Structure:**
+All test files must be organized in `src/test/` with the following structure:
+
+```
+src/test/
+├── unit/                    # Unit tests for individual components
+├── integration/             # Integration tests for component interactions
+├── e2e/                     # End-to-end tests for complete user flows
+├── accessibility/           # Accessibility compliance tests
+├── performance/             # Performance and load testing
+└── fixtures/                # Test data and mock content
+```
+
+**Testing Requirements:**
+- **Framework Standards:** Use modern testing frameworks (Jest, Playwright, Cypress) for comprehensive coverage
+- **Test Categories:**
+  - **Navigation Tests:** Verify hierarchical navigation, progress tracking, and menu functionality
+  - **Interactive Component Tests:** Validate quiz systems, flashcards, search functionality, and modal behaviors
+  - **Responsive Design Tests:** Ensure proper functionality across mobile (≤390px), tablet (768px), and desktop (1024px+) breakpoints
+  - **Content Validation Tests:** Verify Mermaid diagram rendering, code highlighting, and dynamic content loading
+  - **Accessibility Tests:** Validate ARIA labels, keyboard navigation, screen reader compatibility, and touch target sizes
+  - **Performance Tests:** Measure loading times, search response times, and overall application performance
+
+**Testing Naming Conventions:**
+- **Unit Tests:** `[component].test.js` (e.g., `navigation.test.js`, `search.test.js`)
+- **Integration Tests:** `[feature].integration.test.js` (e.g., `quiz-navigation.integration.test.js`)
+- **E2E Tests:** `[user-flow].e2e.test.js` (e.g., `complete-unit.e2e.test.js`)
+- **Test Files:** Use descriptive names that clearly indicate what functionality is being tested
+
+**Automated Testing Pipeline:**
+- **Pre-commit:** Run unit tests and basic integration tests before commits
+- **CI/CD Integration:** Execute full test suite including E2E tests in deployment pipeline
+- **Mobile Testing:** Automated testing on various device sizes and orientations
+- **Cross-browser Testing:** Validate functionality across major browsers (Chrome, Firefox, Safari, Edge)
+
+**Test Coverage Requirements:**
+- **Minimum Coverage:** 80% code coverage for JavaScript modules
+- **Critical Path Coverage:** 100% coverage for navigation, quiz systems, and search functionality
+- **Error Handling:** Comprehensive testing of error states and edge cases
+- **User Experience:** Validate smooth transitions, loading states, and interactive feedback
+
+### Standard Tools Configuration
+
+**Prettier Configuration (`.prettierrc`):**
+```json
+{
+  "tabWidth": 2,
+  "useTabs": false,
+  "printWidth": 120,
+  "htmlWhitespaceSensitivity": "css",
+  "endOfLine": "lf",
+  "singleAttributePerLine": false
+}
+```
+
+**Common Validation Examples:**
+```bash
+# Validate specific files by type
+make validate-html src/book/unit1/1-1.html
+make validate-css src/book/style.css
+make validate-mermaid src/book/unit1/1-1.html
+
+# Fix and restore operations
+make fix-html src/book/unit1/1-1.html
+make restore-mermaid-entities src/book/unit1/
+
+# Utility commands
+make clean-tmp                # Clean temporary files and backups
+make help                     # Show all available commands
+```
+
+### Mobile-First Testing Standards
+
+**Device Testing Requirements:**
+- **Primary Testing:** Always test on mobile devices (≤390px) BEFORE desktop
+- **Progress Elements:** Verify progress bar text visibility at all screen edges
+- **Typography:** Ensure `clamp()` scaling works properly across breakpoints
+- **Touch Targets:** Validate 44px minimum touch target size for all interactive elements
+- **Navigation:** Test hamburger menu functionality and sidebar behavior
+- **Floating Elements:** Check z-index hierarchy and text visibility in overlays
+
+**File-Type Specific Validation:**
+
+**HTML Files (.html):**
+- Use `make validate-html [path]` for structure validation with html-validate
+- Use `make fix-html [path]` for combined formatting and validation
+- Automatically validates semantic structure, void elements, and ARIA labels
+- Validates Mermaid diagrams embedded in HTML if present
+
+**Mermaid Diagrams:**
+- Use `make validate-mermaid [path]` for diagram syntax validation
+- Use `make restore-mermaid-entities [path]` when HTML entities break validation
+- **Critical:** HTML entities (`&quot;`, `&gt;`, etc.) in script tags are valid HTML but break Mermaid parsing
+
+**CSS Files (.css):**
+- Use `make validate-css [path]` for style validation with stylelint
+- Focus on mobile-first responsive design patterns
+- Validate CSS Grid implementations and media queries
+
+**JavaScript Files (.js):**
+- Use `make validate-js [path]` for code validation with eslint
+- Validates ES6+ module architecture and class-based patterns
+
+### Content Header Standards
+
+All topic content pages must follow a standardized header structure for consistency and optimal user experience:
+
+**Mandatory HTML Structure:**
+```html
+<div class="topic-content">
+    <header class="topic-header" aria-label="Header">
+        <h1 class="topic-title">Unit X.Y: Topic Title</h1>
+        <p class="topic-intro">Comprehensive introduction explaining the topic scope and learning objectives.</p>
+    </header>
+    <section class="content-section">
+        <!-- Topic content here -->
+    </section>
+</div>
+```
+
+**Critical Layout Requirements:**
+- **Flexbox Column Layout:** The `.topic-header` element MUST use `display: flex` with `flex-direction: column` to ensure proper vertical stacking
+- **Required Elements:** Every topic page MUST include both `h1.topic-title` and `p.topic-intro` elements within the header
+- **Proper Order:** The introduction paragraph must always be positioned directly below the title (never side-by-side)
+- **CSS Structure:** Use `order: 1` for title and `order: 2` for intro to guarantee proper positioning
+- **Mobile Responsiveness:** Headers must scale properly on mobile devices with appropriate touch targets
+
+**Sticky Mini Header Functionality:**
+- The application automatically creates a persistent mini header when users scroll past the main topic header
+- This provides continuous context by showing only the topic title in a compact, sticky format
+- The mini header uses `z-index: var(--z-page-navigation)` to appear above other content while scrolling
+- Responsive design ensures proper positioning on both desktop and mobile devices
+
+**CSS Requirements:**
+- Use `.topic-title` for main page titles with responsive font sizing using `clamp()`
+- Use `.topic-intro` (not `.lead`) for introductory paragraphs below the title
+- Ensure flexbox column layout so introduction always appears directly below the title
+- Apply proper semantic heading hierarchy (`h1`, `h2`, `h3`) throughout content
+- Main sections should use `h2` headings, subsections use `h3`, and so on
 
 ### Mandatory Quality Checks
 Before considering any implementation complete, verify:
@@ -454,4 +660,71 @@ Before considering any implementation complete, verify:
 3. **Progress Accuracy:** Progress bars reflect actual completion state
 4. **Search Integration:** Search works across all content types
 5. **Performance:** Fast loading and smooth interactions
-6. **HTML Validation:** Clean, standards-compliant HTML structure
+6. **HTML Validation:** Clean, standards-compliant HTML structure - **ALWAYS run `make validate-html`**
+7. **Pre-commit Hooks:** Validation hooks installed and functioning correctly
+
+
+## 6. AGENT IMPLEMENTATION GUIDELINES
+
+### Critical Architecture Rules
+
+**CRITICAL: JavaScript and Modal Management**
+- ❌ **NEVER** add inline JavaScript to individual content files
+- ❌ **NEVER** include `<dialog>` elements in study aids files  
+- ❌ **NEVER** use `onclick` attributes (app.js removes them automatically)
+- ✅ **ALWAYS** use the centralized modal in `index.html`
+- ✅ **ALWAYS** let `app.js` handle all interactivity via event listeners
+- ✅ **SINGLE SOURCE OF TRUTH:** Only one `<dialog id="flashcard-modal">` exists in `index.html`
+
+**Clean Code Standards:**
+- **No Inline JavaScript:** All interactivity handled via centralized JavaScript files
+- **No Inline CSS:** Use CSS classes instead of inline styles
+- **Centralized Architecture:** Functions in JS, classes in CSS, semantic HTML structure
+
+### Modern Development Practices
+- **CSS Grid First:** Use CSS Grid for layout, flexbox for component alignment
+- **ES6 Modules:** Write modular, class-based JavaScript with proper separation of concerns
+- **Semantic HTML:** Use proper HTML5 semantic elements and structure
+- **Performance-Conscious:** Minimize dependencies, optimize for fast loading
+- **Accessibility:** Ensure proper ARIA labels, semantic structure, keyboard navigation
+- **Mobile-First Development:** Always design and test mobile experience first
+- **Progress Tracking:** Always use the TodoWrite tool to track tasks when working on content generation
+
+### Content Generation Workflow
+- When creating diagrams, verify Mermaid syntax follows the double-quote rule
+- When editing existing files, preserve the established structure and styling
+- Use the Read tool to understand existing content before making changes
+- Follow the hierarchical workflow: Unit Overview → Topic → Study Aids → Quiz
+- Ensure all generated content is pedagogically sound and builds upon previous concepts
+- Use modern CSS classes and semantic HTML5 structure
+
+### Script & File Management
+
+**Script Placement:**
+- **User-Requested:** `src/bash/` and `src/python/` for permanent scripts
+- **Temporary/Agent:** `./tmp/bash/` and `./tmp/python/` for one-off solutions with cleanup headers
+- **Validation:** Always run `shellcheck` on Bash scripts before completion
+- **Python Cache:** NEVER compile .py files in their source directories - always use `make` commands which set `PYTHONPYCACHEPREFIX=tmp/pycache` to keep cache in `./tmp/` directory
+- **TUI Framework Issues:** If curses-based TUI applications fail with `nocbreak()` errors, prefer simple CLI implementations over complex TUI frameworks for better compatibility
+
+**Configuration File Placement:**
+- **Permanent Configs:** `src/conf/` for YAML/JSON configuration files (agent definitions, build configs, app settings)
+- **Temporary Configs:** `./tmp/conf/` for temporary configuration files generated by scripts
+- **No Root Configs:** Avoid placing configuration files in project root unless required by specific tools
+
+**File Modification Scope:**
+- **Strict Scope:** Modify only requested files/paths unless global functionality requires shared resources
+- **Shared Resources:** May modify `src/book/style.css` or `src/book/app.js` for global features
+- **Documentation:** Avoid creating docs unless explicitly requested
+
+---
+
+## IMPORTANT INSTRUCTION REMINDERS
+
+- Do what has been asked; nothing more, nothing less
+- NEVER create files unless they're absolutely necessary for achieving your goal
+- ALWAYS prefer editing an existing file to creating a new one
+- NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User
+- **MOBILE-FIRST MANDATE:** Always test mobile experience (≤390px) before desktop
+- **PROGRESS BAR CRITICAL:** Always verify text visibility at screen edges
+- **VALIDATION MANDATORY:** Run `make validate-html [file]` after any HTML changes

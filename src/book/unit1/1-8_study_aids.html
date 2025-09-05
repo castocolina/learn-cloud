@@ -1,106 +1,163 @@
 <div class="study-aids-content">
-    <header class="study-aids-header">
-        <h2>Study Aids: Testing Strategies</h2>
-        <p class="study-aids-intro">Implement comprehensive testing strategies with pytest and TDD practices. Click each card to reveal the answer.</p>
+    <header class="study-aids-header" aria-label="Header">
+        <h1>Unit 1-8: Study Aids - Testing Strategies</h1>
+        <p class="study-aids-intro">
+            Review key concepts from Topic 1-8 with these interactive flashcards. Click each card to reveal the answer.
+        </p>
     </header>
-
     <div class="flashcards-container">
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>Key concept 1 for Testing Strategies</p>
-            </div>
+                    <p>What are the three levels of the Testing Pyramid and their relative proportions?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Detailed answer covering the essential aspects of the concept.</p>
+                    <p>
+                        <strong>1. Unit Tests (Many, Fast):</strong> Test individual functions or methods in isolation.<br />
+                        <strong>2. Integration Tests (Fewer, Medium Speed):</strong> Verify interactions between components.<br />
+                        <strong>3. End-to-End Tests (Few, Slow):</strong> Simulate real user scenarios across the entire system.
+                    </p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand">
                 <i class="bi bi-arrows-angle-expand"></i>
             </button>
         </div>
-
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>Key concept 2 for Testing Strategies</p>
-            </div>
+                    <p>What is the purpose of mocking in unit tests?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Detailed answer covering the essential aspects of the concept.</p>
+                    <p>
+                        Mocking allows you to replace external dependencies (like databases, APIs, or services) with fake objects
+                        that return predictable responses. This ensures tests are isolated, fast, and don't depend on external
+                        systems being available.
+                    </p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand">
                 <i class="bi bi-arrows-angle-expand"></i>
             </button>
         </div>
-
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>Key concept 3 for Testing Strategies</p>
-            </div>
+                    <p>What pytest decorator is used to parameterize test functions?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Detailed answer covering the essential aspects of the concept.</p>
+                    <p>
+                        <code>@pytest.mark.parametrize</code> allows you to run the same test function with multiple sets of
+                        arguments. This is useful for testing edge cases and different input combinations efficiently.
+                    </p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand">
                 <i class="bi bi-arrows-angle-expand"></i>
             </button>
         </div>
-
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>Key concept 4 for Testing Strategies</p>
-            </div>
+                    <p>What is test coverage and why is it important?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Detailed answer covering the essential aspects of the concept.</p>
+                    <p>
+                        Test coverage measures the percentage of your code that is executed during tests. While 100% coverage
+                        doesn't guarantee bug-free code, it helps identify untested areas and ensures critical paths are validated.
+                        Tools like <code>pytest-cov</code> can generate coverage reports.
+                    </p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand">
                 <i class="bi bi-arrows-angle-expand"></i>
             </button>
         </div>
-
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>Key concept 5 for Testing Strategies</p>
-            </div>
+                    <p>What is the difference between unit tests and integration tests?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Detailed answer covering the essential aspects of the concept.</p>
+                    <p>
+                        <strong>Unit Tests:</strong> Test individual components in isolation, using mocks for dependencies. They're
+                        fast and provide precise feedback.<br /><br />
+                        <strong>Integration Tests:</strong> Test how multiple components work together, often with real dependencies
+                        like databases. They're slower but provide more confidence in system behavior.
+                    </p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
+        </div>
+        <div class="flashcard">
+            <div class="flashcard-inner">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
+                    <p>What is Test-Driven Development (TDD) and what are its three phases?</p>
+                </div>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
+                    <p>
+                        TDD is a development approach where you write tests before writing the implementation code. The three phases are:<br />
+                        <strong>1. Red:</strong> Write a failing test<br />
+                        <strong>2. Green:</strong> Write minimal code to make the test pass<br />
+                        <strong>3. Refactor:</strong> Improve the code while keeping tests green
+                    </p>
+                </div>
+            </div>
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
+        </div>
+        <div class="flashcard">
+            <div class="flashcard-inner">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
+                    <p>What are pytest fixtures and how are they useful?</p>
+                </div>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
+                    <p>
+                        Pytest fixtures are reusable setup and teardown code for tests. They can provide test data, database
+                        connections, or mock objects. Fixtures help eliminate code duplication and ensure consistent test
+                        environments. They're defined with the <code>@pytest.fixture</code> decorator.
+                    </p>
+                </div>
+            </div>
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand">
+                <i class="bi bi-arrows-angle-expand"></i>
+            </button>
+        </div>
+        <div class="flashcard">
+            <div class="flashcard-inner">
+                <div class="flashcard-front">
+                    <h4>Question</h4>
+                    <p>Why is testing particularly important for cloud-native applications?</p>
+                </div>
+                <div class="flashcard-back">
+                    <h4>Answer</h4>
+                    <p>
+                        Cloud-native applications are distributed, often involving multiple services, containers, and external
+                        dependencies. Comprehensive testing ensures reliability across different environments, helps catch
+                        integration issues early, and provides confidence when deploying to production via CI/CD pipelines.
+                    </p>
+                </div>
+            </div>
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand">
                 <i class="bi bi-arrows-angle-expand"></i>
             </button>
         </div>
     </div>
-
-    <!-- Flashcard Modal -->
-    <dialog id="flashcard-modal" class="flashcard-modal">
-        <div class="modal-content">
-            <header class="modal-header">
-                <h3 id="modal-question">Question</h3>
-                <button class="modal-close-btn" onclick="closeFlashcardModal()">
-                    <i class="bi bi-x-lg"></i>
-                </button>
-            </header>
-            <div class="modal-body">
-                <div class="modal-answer">
-                    <h4>Answer</h4>
-                    <div id="modal-answer-content">Answer content will appear here</div>
-                </div>
-            </div>
-        </div>
-    </dialog>
 </div>

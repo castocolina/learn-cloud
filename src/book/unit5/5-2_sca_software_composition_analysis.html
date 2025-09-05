@@ -1,22 +1,20 @@
 <div class="topic-content">
-    <header class="topic-header">
+    <header class="topic-header" aria-label="Header">
         <h1 class="topic-title">Unit 5.2: SCA (Software Composition Analysis)</h1>
+        <p class="lead">Modern applications are rarely built from scratch. We rely on a vast ecosystem of open-source libraries and third-party dependencies to accelerate development. While this is powerful, it also introduces risk. <strong>Software Composition Analysis (SCA)</strong> is the automated process of identifying the open-source components in a codebase and scanning them for known security vulnerabilities.</p>
+        <p>If SAST is about finding flaws in your own code, SCA is about finding flaws in the code you import. Managing this "software supply chain" is a critical part of DevSecOps.</p>
     </header>
-    <main class="topic-main">
-        <section class="content-section">
-
-    <p class="lead">Modern applications are rarely built from scratch. We rely on a vast ecosystem of open-source libraries and third-party dependencies to accelerate development. While this is powerful, it also introduces risk. <strong>Software Composition Analysis (SCA)</strong> is the automated process of identifying the open-source components in a codebase and scanning them for known security vulnerabilities.</p>
-    <p>If SAST is about finding flaws in your own code, SCA is about finding flaws in the code you import. Managing this "software supply chain" is a critical part of DevSecOps.</p>
 
     <div class="text-center my-4">
         <pre class="mermaid">
-            graph TD
+  <script type="text/plain">
+    graph LR
                 A["Your Application Code"] --> B["Dependency 1 (e.g., requests)"];
                 A --> C["Dependency 2 (e.g., gin)"];
                 B --> D["Transitive Dependency 1.1"];
                 C --> E["Transitive Dependency 2.1"];
                 C --> F["Transitive Dependency 2.2"];
-                
+
                 subgraph "SCA Scan"
                     B -- "Scans for CVEs" --> B;
                     C -- "Scans for CVEs" --> C;
@@ -27,20 +25,20 @@
 
                 style B fill:#f9f,stroke:#333,stroke-width:2px
                 style C fill:#f9f,stroke:#333,stroke-width:2px
-        </pre>
+  </script>
+</pre>
         <small class="text-muted">Diagram: SCA scans both direct and transitive dependencies for vulnerabilities.</small>
     </div>
 
-        </section>
-        <section class="content-section">
-            <h2><i class="bi bi-file-earmark-code"></i> SCA for Python</h2>
-    <p>
-        For Python, several tools can scan your dependencies. We'll look at two popular ones: <code>pip-audit</code> and <code>safety</code>. They both check your installed packages against vulnerability databases.
-    </p>
+    <section class="content-section">
+        <h2><i class="bi bi-file-earmark-code"></i> SCA for Python</h2>
+        <p>
+            For Python, several tools can scan your dependencies. We'll look at two popular ones: <code>pip-audit</code> and <code>safety</code>. They both check your installed packages against vulnerability databases.
+        </p>
 
-    <h4>Tooling: <code>pip-audit</code></h4>
-    <p><code>pip-audit</code> is a tool developed by the Python Packaging Authority (PyPA) that audits your environment against the Python Packaging Advisory Database (PyPI Advisory Database).</p>
-    <pre><code class="language-bash">
+        <h4>Tooling: <code>pip-audit</code></h4>
+        <p><code>pip-audit</code> is a tool developed by the Python Packaging Authority (PyPA) that audits your environment against the Python Packaging Advisory Database (PyPI Advisory Database).</p>
+        <pre><code class="language-bash">
 # Install the tool
 pip install pip-audit
 
@@ -48,14 +46,14 @@ pip install pip-audit
 pip-audit -r requirements.txt
     </code></pre>
 
-    <h4>Example: Finding a Vulnerable Package</h4>
-    <p>Let's say your <code>requirements.txt</code> contains an old, vulnerable version of a library:</p>
-    <pre><code class="language-text">
+        <h4>Example: Finding a Vulnerable Package</h4>
+        <p>Let's say your <code>requirements.txt</code> contains an old, vulnerable version of a library:</p>
+        <pre><code class="language-text">
 # requirements.txt
 requests==2.20.0
     </code></pre>
-    <p>Running `pip-audit` would produce a report:</p>
-    <pre><code class="language-bash">
+        <p>Running `pip-audit` would produce a report:</p>
+        <pre><code class="language-bash">
 $ pip-audit -r requirements.txt
 ...
 Vulnerability found in requests version 2.20.0
@@ -65,9 +63,9 @@ Vulnerability found in requests version 2.20.0
 ...
     </code></pre>
 
-    <h4>Integrating SCA into CI/CD</h4>
-    <p>You can add an SCA check as a step in your GitHub Actions workflow.</p>
-    <pre><code class="language-yaml">
+        <h4>Integrating SCA into CI/CD</h4>
+        <p>You can add an SCA check as a step in your GitHub Actions workflow.</p>
+        <pre><code class="language-yaml">
 # .github/workflows/ci.yml
 jobs:
   sca-scan:
@@ -86,23 +84,23 @@ jobs:
           pip-audit
     </code></pre>
 
-        </section>
-        <section class="content-section">
-            <h2><i class="bi bi-file-earmark-code-fill"></i> SCA for Go: govulncheck</h2>
-    <p>
-        The official tool for finding known vulnerabilities in Go projects is <strong><code>govulncheck</code></strong>. It's integrated into the Go toolchain and provides a key advantage: it analyzes your codebase to see if your code actually calls the vulnerable functions in a dependency. This reduces noise by only reporting vulnerabilities in code paths that are reachable by your application.
-    </p>
+    </section>
+    <section class="content-section">
+        <h2><i class="bi bi-file-earmark-code-fill"></i> SCA for Go: govulncheck</h2>
+        <p>
+            The official tool for finding known vulnerabilities in Go projects is <strong><code>govulncheck</code></strong>. It's integrated into the Go toolchain and provides a key advantage: it analyzes your codebase to see if your code actually calls the vulnerable functions in a dependency. This reduces noise by only reporting vulnerabilities in code paths that are reachable by your application.
+        </p>
 
-    <h4>Installation & Usage</h4>
-    <p><code>govulncheck</code> is part of the standard Go distribution as of Go 1.21.</p>
-    <pre><code class="language-bash">
+        <h4>Installation &amp; Usage</h4>
+        <p><code>govulncheck</code> is part of the standard Go distribution as of Go 1.21.</p>
+        <pre><code class="language-bash">
 # Run govulncheck on your entire module
 govulncheck ./...
     </code></pre>
 
-    <h4>Example Output</h4>
-    <p>If a vulnerability is found, `govulncheck` provides detailed information:</p>
-    <pre><code class="language-text">
+        <h4>Example Output</h4>
+        <p>If a vulnerability is found, `govulncheck` provides detailed information:</p>
+        <pre><code class="language-text">
 Vulnerability #1: GO-2022-0123
   A vulnerability in the `example.com/vulnerable/module` library allows for...
   Found in: example.com/vulnerable/module@v1.2.3
@@ -112,9 +110,9 @@ Vulnerability #1: GO-2022-0123
       /path/to/your/project/main.go:42:23
     </code></pre>
 
-    <h4>Integrating `govulncheck` into CI/CD</h4>
-    <p>You can add `govulncheck` as a step in your GitHub Actions workflow.</p>
-    <pre><code class="language-yaml">
+        <h4>Integrating `govulncheck` into CI/CD</h4>
+        <p>You can add `govulncheck` as a step in your GitHub Actions workflow.</p>
+        <pre><code class="language-yaml">
 # .github/workflows/ci.yml
 jobs:
   govulncheck:
@@ -126,10 +124,9 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.22'
+          go-version: &#x27;1.22&#x27;
       - name: Run govulncheck
-        run: go install golang.org/x/vuln/cmd/govulncheck@latest && govulncheck ./...
+        run: go install golang.org/x/vuln/cmd/govulncheck@latest &amp;&amp; govulncheck ./...
     </code></pre>
-        </section>
-    </main>
+    </section>
 </div>

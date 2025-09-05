@@ -1,12 +1,13 @@
 <div class="study-aids-content">
-    <header class="study-aids-header">
-        <h2>Study Aids: RenovateBot for Dependency Automation</h2>
+    <header class="study-aids-header" aria-label="Header">
+        <h1 class="study-aids-title">6-1: Study Aids - RenovateBot for Dependency Automation</h1>
+        <p class="study-aids-intro">Review key concepts with these interactive flashcards. Click each card to reveal the answer.</p>
     </header>
+
     <div class="content-card">
-    <div class="card-header">
-        Key Takeaways
-    </div>
-    <div class="card-body">
+        <div class="card-header">
+            Key Takeaways
+        </div>
         <ul>
             <li><strong>Automation is Key:</strong> Manually managing dependency updates is insecure and inefficient. Tools like RenovateBot automate this process, saving developer time and reducing risk.</li>
             <li><strong>Incremental Updates are Safer:</strong> Renovate encourages small, frequent updates, which are much safer and easier to validate than large, infrequent "big bang" updates.</li>
@@ -14,107 +15,76 @@
             <li><strong>Highly Configurable:</strong> While simple to start with, Renovate offers deep configuration options for grouping, scheduling, and automerging to fit any team's workflow.</li>
         </ul>
     </div>
-</div>
 
     <div class="flashcards-container">
-
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What is the primary purpose of RenovateBot?</p>
-            </div>
+                    <p>What is the primary purpose of RenovateBot?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>To automate the process of updating third-party dependencies in your software projects by automatically creating pull requests for new versions.</p>
+                    <p>To automate the process of updating third-party dependencies in your software projects by automatically creating pull requests for new versions.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
 
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>How do you configure RenovateBot's behavior for a specific repository?</p>
-            </div>
+                    <p>How is RenovateBot typically configured?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Using a `renovate.json` file (or a similar file like `.github/renovate.json`) in the root of the repository.</p>
+                    <p>Through a <code>renovate.json</code> file placed in the root of your repository, which allows you to version control your dependency management strategy.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
 
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What is a common strategy for handling major version updates in Renovate?</p>
-            </div>
+                    <p>What strategy should you use for major version updates?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>To disable automerging for major updates (e.g., `{"matchUpdateTypes": ["major"], "automerge": false}`). This ensures that updates with potential breaking changes are always manually reviewed by a developer.</p>
+                    <p>Disable automerging for major updates to ensure they are manually reviewed by a developer, as they may contain breaking changes that require code modifications.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
 
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What does the `"extends": ["config:base"]` option do in a `renovate.json` file?</p>
-            </div>
+                    <p>What does the "config:base" preset provide?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>It inherits from Renovate's official base configuration, which provides a set of sensible defaults and best practices, such as grouping related packages and using intelligent commit messages.</p>
+                    <p>It provides a set of sensible defaults and best practices curated by the Renovate team, giving you a solid starting point for dependency automation.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
 
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>Besides security, what is a key benefit of updating dependencies frequently with Renovate?</p>
-            </div>
+                    <p>Why are small, frequent updates better than infrequent large updates?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>It promotes stability. Small, incremental updates are much easier to test and debug than large, infrequent updates that can introduce many breaking changes at once.</p>
+                    <p>Small updates improve stability by making it easier to identify the source of breaking changes, while large "big bang" updates often lead to complex, hard-to-debug integration issues.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
-
     </div>
-
-    <!-- Flashcard Modal -->
-    <dialog id="flashcard-modal" class="flashcard-modal">
-        <div class="modal-content">
-            <header class="modal-header">
-                <h3 id="modal-question">Question</h3>
-                <button class="modal-close-btn" onclick="closeFlashcardModal()">
-                    <i class="bi bi-x-lg"></i>
-                </button>
-            </header>
-            <div class="modal-body">
-                <div class="modal-answer">
-                    <h4>Answer</h4>
-                    <div id="modal-answer-content">Answer content will appear here</div>
-                </div>
-            </div>
-        </div>
-    </dialog>
 </div>

@@ -1,49 +1,51 @@
 <div class="topic-content">
-<header class="topic-header">
+    <header class="topic-header" aria-label="Header">
+        <h1 class="topic-title">Unit 4.2: HashiCorp Vault</h1>
+        <p class="topic-intro">
+            <a href="https://www.vaultproject.io/" target="_blank">HashiCorp Vault</a> is the industry-standard tool for solving this problem by providing a centralized, secure, and auditable platform for all secrets management.
+        </p>
+    </header>
 
-    
-                <h1 class="topic-title">Unit 4.2: HashiCorp Vault</h1>
-    </div>
+    <section class="topic-content-wrapper">
 
-    <p class="lead">In any application, you have secrets: database credentials, API keys, TLS certificates, and more. A common anti-pattern is "secret sprawl," where these secrets are hardcoded in source code, stored in plaintext configuration files, or scattered across CI/CD environment variables. <a href="https://www.vaultproject.io/" target="_blank">HashiCorp Vault</a> is the industry-standard tool for solving this problem by providing a centralized, secure, and auditable platform for all secrets management.</p>
 
-    
 
-    <!-- Core Concepts -->
-    <h2><i class="bi bi-key-fill"></i> 1. Vault Core Concepts</h2>
-    <p>Vault's power comes from its flexible, plugin-based architecture.</p>
-    <ul>
-        <li><strong>Secrets Engines:</strong> These are the components that store, generate, or encrypt data. Examples include the Key-Value store, a Database engine for generating dynamic credentials, and an AWS engine for creating dynamic IAM users.</li>
-        <li><strong>Auth Methods:</strong> These are the components that authenticate users or applications to Vault. Examples include a username/password, a token, or platform-based methods like Kubernetes Service Accounts or AWS IAM.</li>
-        <li><strong>Policies:</strong> Once authenticated, policies define what a user or application is authorized to do (e.g., which secret paths they can read from).</li>
-        <li><strong>Tokens:</strong> The core of Vault authentication. After authenticating, a client receives a token with policies attached. This token is used for all subsequent requests to Vault.</li>
-    </ul>
+        <!-- Core Concepts -->
+        <h2><i class="bi bi-key-fill"></i> 1. Vault Core Concepts</h2>
+        <p>Vault's power comes from its flexible, plugin-based architecture.</p>
+        <ul>
+            <li><strong>Secrets Engines:</strong> These are the components that store, generate, or encrypt data. Examples include the Key-Value store, a Database engine for generating dynamic credentials, and an AWS engine for creating dynamic IAM users.</li>
+            <li><strong>Auth Methods:</strong> These are the components that authenticate users or applications to Vault. Examples include a username/password, a token, or platform-based methods like Kubernetes Service Accounts or AWS IAM.</li>
+            <li><strong>Policies:</strong> Once authenticated, policies define what a user or application is authorized to do (e.g., which secret paths they can read from).</li>
+            <li><strong>Tokens:</strong> The core of Vault authentication. After authenticating, a client receives a token with policies attached. This token is used for all subsequent requests to Vault.</li>
+        </ul>
 
-    <h4>Setup: A Simple Dev Server with Docker</h4>
-    <p>For development, you can run Vault in "dev" mode, which is an in-memory server with a pre-known root token.</p>
-    <pre><code class="language-bash">
+        <h4>Setup: A Simple Dev Server with Docker</h4>
+        <p>For development, you can run Vault in "dev" mode, which is an in-memory server with a pre-known root token.</p>
+        <pre><code class="language-bash">
 # The root token will be printed to the console. You will need this!
 docker run -d \
   --cap-add=IPC_LOCK \
   -p 8200:8200 \
   --name=vault \
   hashicorp/vault:1.16 \
-  server -dev -dev-root-token-id="root"
+  server -dev -dev-root-token-id=&quot;root&quot;
     </code></pre>
-    <p>The Vault UI is available at <a href="http://localhost:8200" target="_blank">http://localhost:8200</a>. You can log in with the root token (`root`).</p>
+        <p>The Vault UI is available at <a href="http://localhost:8200" target="_blank">http://localhost:8200</a>. You can log in with the root token (`root`).</p>
 
-    
 
-    <!-- Dynamic Secrets -->
-    <h2><i class="bi bi-arrow-repeat"></i> 2. Dynamic Secrets: Vault's Killer Feature</h2>
-    <p>
-        While Vault can store static secrets (like in its Key-Value engine), its most powerful feature is <strong>dynamic secrets</strong>. Instead of storing a long-lived database password, you configure Vault with the database's admin credentials. Applications then request credentials from Vault, and Vault generates a <em>new, unique, short-lived</em> database user on-demand. When the lease (Time-To-Live) for that secret expires, Vault automatically revokes the user from the database.
-    </p>
-    <p>This pattern dramatically reduces the risk of a leaked credential, as each secret is temporary and tied to a specific application instance.</p>
 
-    <div class="text-center my-4">
-        <pre class="mermaid">
-            graph TD
+        <!-- Dynamic Secrets -->
+        <h2><i class="bi bi-arrow-repeat"></i> 2. Dynamic Secrets: Vault's Killer Feature</h2>
+        <p>
+            While Vault can store static secrets (like in its Key-Value engine), its most powerful feature is <strong>dynamic secrets</strong>. Instead of storing a long-lived database password, you configure Vault with the database's admin credentials. Applications then request credentials from Vault, and Vault generates a <em>new, unique, short-lived</em> database user on-demand. When the lease (Time-To-Live) for that secret expires, Vault automatically revokes the user from the database.
+        </p>
+        <p>This pattern dramatically reduces the risk of a leaked credential, as each secret is temporary and tied to a specific application instance.</p>
+
+        <div class="text-center my-4">
+            <pre class="mermaid">
+  <script type="text/plain">
+    graph TD
                 A["App Instance"] -- "1. Authenticates to Vault" --> V[Vault];
                 V -- "2. App requests DB credentials" --> A;
                 V -- "3. Connects to DB with admin user" --> DB[(Database)];
@@ -53,32 +55,34 @@ docker run -d \
                 subgraph "Later"
                     V2[Vault] -- "7. Lease expires, revokes 'app-xyz'" --> DB2[(Database)];
                 end
-        </pre>
-        <small class="text-muted">Diagram: Dynamic Database Credential Workflow</small>
-    </div>
+  </script>
+</pre>
+            <small class="text-muted">Diagram: Dynamic Database Credential Workflow</small>
+        </div>
 
-    
 
-    <!-- Kubernetes Integration -->
-    <h2><i class="bi bi-box-seam"></i> 3. Integrating Vault with Kubernetes</h2>
-    <p>
-        A key challenge is securely getting secrets into your Kubernetes pods. The recommended approach is using the <strong>Vault Kubernetes Auth Method</strong> and the <strong>Vault Agent Injector</strong>.
-    </p>
-    <p>The workflow is as follows:</p>
-    <ol>
-        <li>A developer annotates a Kubernetes <code>Deployment</code> to request specific secrets from Vault.</li>
-        <li>When a Pod is created from this deployment, the Vault Agent Injector (an admission webhook) intercepts the request.</li>
-        <li>It injects a lightweight <strong>Vault Agent sidecar container</strong> into the Pod.</li>
-        <li>This sidecar authenticates to Vault using the Pod's own Kubernetes Service Account Token.</li>
-        <li>Vault validates this token with the Kubernetes API and, if successful, returns a Vault token.</li>
-        <li>The sidecar uses this Vault token to fetch the requested secrets and write them to a shared in-memory volume.</li>
-        <li>Your application container can then read the secrets from this volume as if they were files on disk.</li>
-    </ol>
-    <p>This process ensures that Pods only get the specific secrets they are authorized to access, and the secrets never leave the Pod or get written to disk.</p>
 
-    <div class="text-center my-4">
-        <pre class="mermaid">
-            graph TD
+        <!-- Kubernetes Integration -->
+        <h2><i class="bi bi-box-seam"></i> 3. Integrating Vault with Kubernetes</h2>
+        <p>
+            A key challenge is securely getting secrets into your Kubernetes pods. The recommended approach is using the <strong>Vault Kubernetes Auth Method</strong> and the <strong>Vault Agent Injector</strong>.
+        </p>
+        <p>The workflow is as follows:</p>
+        <ol>
+            <li>A developer annotates a Kubernetes <code>Deployment</code> to request specific secrets from Vault.</li>
+            <li>When a Pod is created from this deployment, the Vault Agent Injector (an admission webhook) intercepts the request.</li>
+            <li>It injects a lightweight <strong>Vault Agent sidecar container</strong> into the Pod.</li>
+            <li>This sidecar authenticates to Vault using the Pod's own Kubernetes Service Account Token.</li>
+            <li>Vault validates this token with the Kubernetes API and, if successful, returns a Vault token.</li>
+            <li>The sidecar uses this Vault token to fetch the requested secrets and write them to a shared in-memory volume.</li>
+            <li>Your application container can then read the secrets from this volume as if they were files on disk.</li>
+        </ol>
+        <p>This process ensures that Pods only get the specific secrets they are authorized to access, and the secrets never leave the Pod or get written to disk.</p>
+
+        <div class="text-center my-4">
+            <pre class="mermaid">
+  <script type="text/plain">
+    graph LR
                 subgraph "Kubernetes Cluster"
                     A["Pod Creation Request"] --> B["K8s API Server"];
                     B --> C["Vault Agent Injector Webhook"];
@@ -94,81 +98,81 @@ docker run -d \
                     Vault -- "Fetches secrets" --> AgentSidecar;
                     AgentSidecar -- "Writes secrets to" --> SharedVolume;
                 end
-        </pre>
-        <small class="text-muted">Diagram: Vault Agent Injection Process in Kubernetes</small>
-    </div>
+  </script>
+</pre>
+            <small class="text-muted">Diagram: Vault Agent Injection Process in Kubernetes</small>
+        </div>
 
-    
 
-    <!-- Application Integration -->
-    <h2><i class="bi bi-code-slash"></i> 4. Integrating Vault with Applications</h2>
-    <p>
-        Once the Vault Agent has placed secrets into the shared volume (e.g., at <code>/vault/secrets/db-creds</code>), your application simply needs to read them from the filesystem. This decouples your application from the Vault API entirely.
-    </p>
 
-    <h4>Python Example</h4>
-    <pre><code class="language-python">
+        <!-- Application Integration -->
+        <h2><i class="bi bi-code-slash"></i> 4. Integrating Vault with Applications</h2>
+        <p>
+            Once the Vault Agent has placed secrets into the shared volume (e.g., at <code>/vault/secrets/db-creds</code>), your application simply needs to read them from the filesystem. This decouples your application from the Vault API entirely.
+        </p>
+
+        <h4>Python Example</h4>
+        <pre><code class="language-python">
 import os
 import json
 
-SECRET_PATH = "/vault/secrets/db-creds"
+SECRET_PATH = &quot;/vault/secrets/db-creds&quot;
 
 def get_database_credentials():
     if not os.path.exists(SECRET_PATH):
-        raise FileNotFoundError("Secret file not found!")
+        raise FileNotFoundError(&quot;Secret file not found!&quot;)
 
-    with open(SECRET_PATH, 'r') as f:
+    with open(SECRET_PATH, &#x27;r&#x27;) as f:
         secret_data = json.load(f)
-    
-    username = secret_data.get("username")
-    password = secret_data.get("password")
+
+    username = secret_data.get(&quot;username&quot;)
+    password = secret_data.get(&quot;password&quot;)
 
     # Now use these credentials to connect to the database
-    print(f"Connecting with user: {username}")
+    print(f&quot;Connecting with user: {username}&quot;)
     return username, password
     </code></pre>
 
-    <h4>Go Example</h4>
-    <pre><code class="language-go">
+        <h4>Go Example</h4>
+        <pre><code class="language-go">
 package main
 
 import (
-    "encoding/json"
-    "fmt"
-    "os"
+    &quot;encoding/json&quot;
+    &quot;fmt&quot;
+    &quot;os&quot;
 )
 
-const secretPath = "/vault/secrets/db-creds"
+const secretPath = &quot;/vault/secrets/db-creds&quot;
 
 type dbCreds struct {
-    Username string `json:"username"`
-    Password string `json:"password"`
+    Username string `json:&quot;username&quot;`
+    Password string `json:&quot;password&quot;`
 }
 
 func getDatabaseCredentials() (*dbCreds, error) {
     data, err := os.ReadFile(secretPath)
     if err != nil {
-        return nil, fmt.Errorf("could not read secret file: %w", err)
+        return nil, fmt.Errorf(&quot;could not read secret file: %w&quot;, err)
     }
 
     var creds dbCreds
-    if err := json.Unmarshal(data, &creds); err != nil {
-        return nil, fmt.Errorf("could not unmarshal secret: %w", err)
+    if err := json.Unmarshal(data, &amp;creds); err != nil {
+        return nil, fmt.Errorf(&quot;could not unmarshal secret: %w&quot;, err)
     }
 
-    fmt.Printf("Connecting with user: %s\n", creds.Username)
-    return &creds, nil
+    fmt.Printf(&quot;Connecting with user: %s\n&quot;, creds.Username)
+    return &amp;creds, nil
 }
     </code></pre>
 
-    
 
-    <!-- Certificate Management -->
-    <h2><i class="bi bi-patch-check"></i> 5. Certificate Management</h2>
-    <p>
-        In addition to secrets, Vault has a powerful Public Key Infrastructure (PKI) secrets engine that can act as a private Certificate Authority (CA). This allows Vault to dynamically generate short-lived X.509 certificates for your services, enabling automated and secure mutual TLS (mTLS) communication. This is an alternative to using a service mesh like Consul Connect, but it often requires more application-level integration to handle certificate rotation.
-    </p>
 
-</div>
-    </div>
+        <!-- Certificate Management -->
+        <h2><i class="bi bi-patch-check"></i> 5. Certificate Management</h2>
+        <p>
+            In addition to secrets, Vault has a powerful Public Key Infrastructure (PKI) secrets engine that can act as a private Certificate Authority (CA). This allows Vault to dynamically generate short-lived X.509 certificates for your services, enabling automated and secure mutual TLS (mTLS) communication. This is an alternative to using a service mesh like Consul Connect, but it often requires more application-level integration to handle certificate rotation.
+        </p>
+
+    </section>
 </div>

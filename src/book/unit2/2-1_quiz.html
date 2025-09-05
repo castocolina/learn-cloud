@@ -1,17 +1,26 @@
 <div class="quiz-content">
-<header class="quiz-header">
+    <header class="quiz-header" aria-label="Header">
+        <h1>2-1: Quiz - Development Environment &amp; Tooling</h1>
+        <p class="quiz-intro">Test your understanding of development environment &amp; tooling concepts and best practices.</p>
+    </header>
 
-            <h2>Quiz: Development Environment & Tooling</h2>
-
-        <div class="quiz-container">
+    <div class="quiz-container">
         <div class="quiz-card active-card" data-question="1">
             <div class="question">
                 <p>1. What is a key advantage of Go for containerized applications?</p>
                 <ul class="options">
-                    <li><label><input type="radio" name="q1" value="a"> a) Its large number of third-party frameworks.</label></li>
-                    <li><label><input type="radio" name="q1" value="b"> b) Its dynamic typing system.</label></li>
-                    <li><label><input type="radio" name="q1" value="c"> c) It compiles to a single, statically-linked binary.</label></li>
-                    <li><label><input type="radio" name="q1" value="d"> d) Its requirement for a runtime interpreter in the container.</label></li>
+                    <li>
+                        <label><input type="radio" name="q1" value="a" /> a) Its large number of third-party frameworks.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q1" value="b" /> b) Its dynamic typing system.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q1" value="c" /> c) It compiles to a single, statically-linked binary.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q1" value="d" /> d) Its requirement for a runtime interpreter in the container.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="c"></div>
             </div>
@@ -21,10 +30,18 @@
             <div class="question">
                 <p>2. Which files are central to dependency management in Go Modules? (Select all that apply)</p>
                 <ul class="options">
-                    <li><label><input type="checkbox" name="q2" value="a"> a) <code>go.mod</code></label></li>
-                    <li><label><input type="checkbox" name="q2" value="b"> b) <code>go.sum</code></label></li>
-                    <li><label><input type="checkbox" name="q2" value="c"> c) <code>Gopkg.lock</code></label></li>
-                    <li><label><input type="checkbox" name="q2" value="d"> d) <code>vendor/</code></label></li>
+                    <li>
+                        <label><input type="checkbox" name="q2" value="a" /> a) <code>go.mod</code></label>
+                    </li>
+                    <li>
+                        <label><input type="checkbox" name="q2" value="b" /> b) <code>go.sum</code></label>
+                    </li>
+                    <li>
+                        <label><input type="checkbox" name="q2" value="c" /> c) <code>Gopkg.lock</code></label>
+                    </li>
+                    <li>
+                        <label><input type="checkbox" name="q2" value="d" /> d) <code>vendor/</code></label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="a,b"></div>
             </div>
@@ -34,10 +51,18 @@
             <div class="question">
                 <p>3. What is the main benefit of using a multi-stage Docker build for a Go application?</p>
                 <ul class="options">
-                    <li><label><input type="radio" name="q3" value="a"> a) It makes the build process faster.</label></li>
-                    <li><label><input type="radio" name="q3" value="b"> b) It creates a final image containing the Go compiler for debugging.</label></li>
-                    <li><label><input type="radio" name="q3" value="c"> c) It separates the build environment from the runtime environment, creating a minimal and secure final image.</label></li>
-                    <li><label><input type="radio" name="q3" value="d"> d) It automatically versions the Docker images.</label></li>
+                    <li>
+                        <label><input type="radio" name="q3" value="a" /> a) It makes the build process faster.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q3" value="b" /> b) It creates a final image containing the Go compiler for debugging.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q3" value="c" /> c) It separates the build environment from the runtime environment, creating a minimal and secure final image.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q3" value="d" /> d) It automatically versions the Docker images.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="c"></div>
             </div>
@@ -47,10 +72,18 @@
             <div class="question">
                 <p>4. What is the purpose of the <code>go mod tidy</code> command?</p>
                 <ul class="options">
-                    <li><label><input type="radio" name="q4" value="a"> a) To format all Go source files in the module.</label></li>
-                    <li><label><input type="radio" name="q4" value="b"> b) To run all the tests for the module.</label></li>
-                    <li><label><input type="radio" name="q4" value="c"> c) To initialize a new module with a <code>go.mod</code> file.</label></li>
-                    <li><label><input type="radio" name="q4" value="d"> d) To add missing and remove unused dependencies from <code>go.mod</code>.</label></li>
+                    <li>
+                        <label><input type="radio" name="q4" value="a" /> a) To format all Go source files in the module.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q4" value="b" /> b) To run all the tests for the module.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q4" value="c" /> c) To initialize a new module with a <code>go.mod</code> file.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q4" value="d" /> d) To add missing and remove unused dependencies from <code>go.mod</code>.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="d"></div>
             </div>
@@ -58,23 +91,34 @@
 
         <div class="quiz-card" data-question="5">
             <div class="question">
-                <p>5. In the standard Go project layout, which directory is used for private application code that cannot be imported by external projects?</p>
+                <p>
+                    5. In the standard Go project layout, which directory is used for private application code that cannot be
+                    imported by external projects?
+                </p>
                 <ul class="options">
-                    <li><label><input type="radio" name="q5" value="a"> a) <code>/pkg</code></label></li>
-                    <li><label><input type="radio" name="q5" value="b"> b) <code>/cmd</code></label></li>
-                    <li><label><input type="radio" name="q5" value="c"> c) <code>/internal</code></label></li>
-                    <li><label><input type="radio" name="q5" value="d"> d) <code>/api</code></label></li>
+                    <li>
+                        <label><input type="radio" name="q5" value="a" /> a) <code>/pkg</code></label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q5" value="b" /> b) <code>/cmd</code></label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q5" value="c" /> c) <code>/internal</code></label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q5" value="d" /> d) <code>/api</code></label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="c"></div>
             </div>
         </div>
 
         <div class="quiz-navigation">
-            <button class="quiz-btn" id="prev-question" disabled>Previous</button>
-            <button class="quiz-btn" id="next-question">Next</button>
-            <button class="quiz-btn" id="submit-quiz" style="display: none;">Submit Answers</button>
+            <button type="button" class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <div class="quiz-progress">Question 1 of 5</div>
+            <button type="button" class="btn btn-outline-primary" id="next-question">Next</button>
+            <button type="button" class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
         </div>
         <div class="quiz-results-container"></div>
     </div>
-</div>
 </div>

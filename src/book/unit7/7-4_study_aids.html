@@ -1,12 +1,11 @@
 <div class="study-aids-content">
-    <header class="study-aids-header">
-        <h2>Study Aids: Serverless Deployment & Tooling</h2>
+    <header class="study-aids-header" aria-label="Header">
+        <h2>Study Aids: Serverless Deployment &amp; Tooling</h2>
     </header>
     <div class="content-card">
-    <div class="card-header">
-        Key Takeaways
-    </div>
-    <div class="card-body">
+        <div class="card-header">
+            Key Takeaways
+        </div>
         <ul>
             <li><strong>IaC is Essential for Serverless:</strong> Manually managing the many interconnected resources of a serverless application is not scalable. An Infrastructure as Code (IaC) framework is necessary to define, version, and reliably deploy the entire application stack.</li>
             <li><strong>Serverless Framework: The Multi-Cloud Option:</strong> The Serverless Framework is a popular, open-source tool known for its multi-cloud support (AWS, Azure, GCP) and its rich ecosystem of plugins. It uses a <code>serverless.yml</code> file for configuration.</li>
@@ -15,107 +14,77 @@
             <li><strong>Choosing a Framework:</strong> The choice depends on your needs. Use the Serverless Framework for multi-cloud requirements or its extensive plugin ecosystem. Use AWS SAM for a native AWS-centric experience and strong local testing capabilities.</li>
         </ul>
     </div>
-</div>
 
     <div class="flashcards-container">
 
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>Why is Infrastructure as Code (IaC) critical for serverless applications?</p>
-            </div>
+                    <p>Why is Infrastructure as Code (IaC) critical for serverless applications?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Because serverless applications are composed of many small, interconnected resources (Lambda, API Gateway, IAM Roles, etc.). IaC allows you to define, version, and reliably deploy this entire stack as a single unit, which is unmanageable to do manually.</p>
+                    <p>Because serverless applications are composed of many small, interconnected resources (Lambda, API Gateway, IAM Roles, etc.). IaC allows you to define, version, and reliably deploy this entire stack as a single unit, which is unmanageable to do manually.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand flashcard"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
 
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What is the name of the configuration file used by the Serverless Framework?</p>
-            </div>
+                    <p>What is the name of the configuration file used by the Serverless Framework?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p><code>serverless.yml</code></p>
+                    <p><code>serverless.yml</code></p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand flashcard"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
 
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What is the name of the configuration file used by the AWS Serverless Application Model (SAM)?</p>
-            </div>
+                    <p>What is the name of the configuration file used by the AWS Serverless Application Model (SAM)?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p><code>template.yaml</code></p>
+                    <p><code>template.yaml</code></p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand flashcard"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
 
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What is a key advantage of AWS SAM for local development?</p>
-            </div>
+                    <p>What is a key advantage of AWS SAM for local development?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>The <code>sam local</code> command set, which allows you to invoke functions and run a local API Gateway in a Docker container that simulates the real AWS Lambda environment, enabling rapid local testing and debugging.</p>
+                    <p>The <code>sam local</code> command set, which allows you to invoke functions and run a local API Gateway in a Docker container that simulates the real AWS Lambda environment, enabling rapid local testing and debugging.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand flashcard"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
 
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What underlying AWS service do both the Serverless Framework and AWS SAM use to deploy resources on AWS?</p>
-            </div>
+                    <p>What underlying AWS service do both the Serverless Framework and AWS SAM use to deploy resources on AWS?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>AWS CloudFormation. Both frameworks translate their respective YAML configurations into a CloudFormation template and use it to create, update, or delete the application stack.</p>
+                    <p>AWS CloudFormation. Both frameworks translate their respective YAML configurations into a CloudFormation template and use it to create, update, or delete the application stack.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand flashcard"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
-
     </div>
-
-    <!-- Flashcard Modal -->
-    <dialog id="flashcard-modal" class="flashcard-modal">
-        <div class="modal-content">
-            <header class="modal-header">
-                <h3 id="modal-question">Question</h3>
-                <button class="modal-close-btn" onclick="closeFlashcardModal()">
-                    <i class="bi bi-x-lg"></i>
-                </button>
-            </header>
-            <div class="modal-body">
-                <div class="modal-answer">
-                    <h4>Answer</h4>
-                    <div id="modal-answer-content">Answer content will appear here</div>
-                </div>
-            </div>
-        </div>
-    </dialog>
 </div>

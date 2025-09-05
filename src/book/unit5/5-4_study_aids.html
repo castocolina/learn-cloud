@@ -1,119 +1,80 @@
 <div class="study-aids-content">
-    <header class="study-aids-header">
-        <h2>Study Aids: Vulnerability Management</h2>
+    <header class="study-aids-header" aria-label="Header">
+        <h1>5-4: Study Aids - Vulnerability Management</h1>
+        <p class="study-aids-intro">
+            Master the critical concepts of vulnerability management through these interactive flashcards. Explore the complete vulnerability lifecycle from discovery to verification, understand CVSS scoring and its contextual limitations, learn effective prioritization strategies, and review best practices for establishing remediation SLAs and verification processes.
+        </p>
     </header>
-    <div class="content-card">
-        <div class="card-header">
-            Key Takeaways
-        </div>
-        <div class="card-body">
-            <ul>
-                <li><strong>It's a Cycle, Not a Project:</strong> Vulnerability management is a continuous lifecycle of discovering, prioritizing, remediating, and verifying vulnerabilities.</li>
-                <li><strong>Prioritization is Essential:</strong> You can't fix everything at once. Use the CVSS score as a starting point, but add business context (e.g., reachability, exposure) to determine the true risk of a vulnerability.</li>
-                <li><strong>Define Clear SLAs:</strong> Service Level Agreements (SLAs) for remediation, based on vulnerability severity, create clear expectations for development teams and provide a measurable way to track security posture.</li>
-                <li><strong>Automate Verification:</strong> Always re-scan after a fix is applied to verify that the vulnerability has been successfully remediated. This should be an automated part of the CI/CD process.</li>
-            </ul>
-        </div>
-    </div>
     <div class="flashcards-container">
 
         <div class="flashcard">
             <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What are the four stages of the vulnerability management lifecycle?</p>
-            </div>
+                    <p>What are the four stages of the vulnerability management lifecycle?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>1. <strong>Discover:</strong> Find vulnerabilities using tools like SAST, SCA, and image scanners.<br>2. <strong>Prioritize:</strong> Assess the risk and urgency of each vulnerability.<br>3. <strong>Remediate:</strong> Fix the vulnerability.<br>4. <strong>Verify:</strong> Confirm the fix by re-scanning.</p>
+                    <p>1. <strong>Discover:</strong> Find vulnerabilities using tools like SAST, SCA, and image scanners.<br />2. <strong>Prioritize:</strong> Assess the risk and urgency of each vulnerability.<br />3. <strong>Remediate:</strong> Fix the vulnerability.<br />4. <strong>Verify:</strong> Confirm the fix by re-scanning.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand flashcard"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
 
         <div class="flashcard">
             <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What is CVSS?</p>
-            </div>
+                    <p>What is CVSS?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>The <strong>Common Vulnerability Scoring System (CVSS)</strong> is the industry standard for rating the severity of security vulnerabilities. It provides a numerical score from 0.0 to 10.0, which helps in prioritizing remediation efforts.</p>
+                    <p>The <strong>Common Vulnerability Scoring System (CVSS)</strong> is the industry standard for rating the severity of security vulnerabilities. It provides a numerical score from 0.0 to 10.0, which helps in prioritizing remediation efforts.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand flashcard"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
 
         <div class="flashcard">
             <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>Why is business context important for prioritizing vulnerabilities beyond just the CVSS score?</p>
-            </div>
+                    <p>Why is business context important for prioritizing vulnerabilities beyond just the CVSS score?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Context determines the actual risk. A high-severity vulnerability in a non-critical, internal service might be lower risk than a medium-severity one in a public-facing service that handles sensitive data. Factors include reachability, data sensitivity, and exposure.</p>
+                    <p>Context determines the actual risk. A high-severity vulnerability in a non-critical, internal service might be lower risk than a medium-severity one in a public-facing service that handles sensitive data. Factors include reachability, data sensitivity, and exposure.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand flashcard"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
 
         <div class="flashcard">
             <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What is a remediation SLA in vulnerability management?</p>
-            </div>
+                    <p>What is a remediation SLA in vulnerability management?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>A Service Level Agreement (SLA) for remediation is a policy that defines the maximum amount of time a team has to fix a vulnerability after it has been discovered, usually based on its severity level (e.g., "Critical vulnerabilities must be fixed within 72 hours").</p>
+                    <p>A Service Level Agreement (SLA) for remediation is a policy that defines the maximum amount of time a team has to fix a vulnerability after it has been discovered, usually based on its severity level (e.g., "Critical vulnerabilities must be fixed within 72 hours").</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand flashcard"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
 
         <div class="flashcard">
             <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What is the final step in the vulnerability management lifecycle after a patch has been applied?</p>
-            </div>
+                    <p>What is the final step in the vulnerability management lifecycle after a patch has been applied?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p><strong>Verification.</strong> The same tool that found the vulnerability should be re-run to confirm that the fix is effective and the vulnerability is no longer present.</p>
+                    <p><strong>Verification.</strong> The same tool that found the vulnerability should be re-run to confirm that the fix is effective and the vulnerability is no longer present.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand flashcard"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
-
     </div>
-
-    <!-- Flashcard Modal -->
-    <dialog id="flashcard-modal" class="flashcard-modal">
-        <div class="modal-content">
-            <header class="modal-header">
-                <h3 id="modal-question">Question</h3>
-                <button class="modal-close-btn" onclick="closeFlashcardModal()">
-                    <i class="bi bi-x-lg"></i>
-                </button>
-            </header>
-            <div class="modal-body">
-                <div class="modal-answer">
-                    <h4>Answer</h4>
-                    <div id="modal-answer-content">Answer content will appear here</div>
-                </div>
-            </div>
-        </div>
-    </dialog>
 </div>

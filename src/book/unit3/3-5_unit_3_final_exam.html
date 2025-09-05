@@ -1,5 +1,5 @@
 <div class="exam-content">
-    <header class="exam-header">
+    <header class="exam-header" aria-label="Header">
         <h1>Unit 3 Final Exam: DevOps, IaC, and CI/CD</h1>
         <p class="exam-intro">This comprehensive exam covers all the material from Unit 3, testing your understanding of the core DevOps practices and tools for automating infrastructure, deployments, and delivery pipelines.</p>
         <div class="exam-instructions">
@@ -8,293 +8,292 @@
     </header>
 
     <div class="quiz-container">
-            <!-- Question 1 -->
-            <div class="quiz-card active-card" data-question="1">
-                <div class="question">
-                    <p>1. (3.1) What is the purpose of the <code>terraform plan</code> command?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q1" value="a"> a) To initialize the Terraform backend and download providers.</label></li>
-                        <li><label><input type="radio" name="q1" value="b"> b) To apply the infrastructure changes immediately.</label></li>
-                        <li><label><input type="radio" name="q1" value="c"> c) To create an execution plan and preview the changes that will be made.</label></li>
-                        <li><label><input type="radio" name="q1" value="d"> d) To destroy all managed infrastructure.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="c"></div>
-                </div>
+        <!-- Question 1 -->
+        <div class="quiz-card active-card" data-question="1">
+            <div class="question">
+                <p>1. (3.1) What is the purpose of the <code>terraform plan</code> command?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q1" value="a" /> a) To initialize the Terraform backend and download providers.</label></li>
+                    <li><label><input type="radio" name="q1" value="b" /> b) To apply the infrastructure changes immediately.</label></li>
+                    <li><label><input type="radio" name="q1" value="c" /> c) To create an execution plan and preview the changes that will be made.</label></li>
+                    <li><label><input type="radio" name="q1" value="d" /> d) To destroy all managed infrastructure.</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
             </div>
-
-            <!-- Question 2 -->
-            <div class="quiz-card" data-question="2">
-                <div class="question">
-                    <p>2. (3.1) Why is using remote state with locking considered a best practice for teams using Terraform?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q2" value="a"> a) It makes Terraform apply changes much faster.</label></li>
-                        <li><label><input type="radio" name="q2" value="b"> b) It prevents multiple users from running conflicting changes simultaneously, which could corrupt the state.</label></li>
-                        <li><label><input type="radio" name="q2" value="c"> c) It eliminates the need to run <code>terraform init</code>.</label></li>
-                        <li><label><input type="radio" name="q2" value="d"> d) It encrypts the provider credentials.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 3 -->
-            <div class="quiz-card" data-question="3">
-                <div class="question">
-                    <p>3. (3.1) What is the primary benefit of using Terraform modules?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q3" value="a"> a) To manage and reuse common infrastructure patterns as configurable, versioned units.</label></li>
-                        <li><label><input type="radio" name="q3" value="b"> b) To define which cloud provider to use.</label></li>
-                        <li><label><input type="radio" name="q3" value="c"> c) To store sensitive data like passwords and API keys.</label></li>
-                        <li><label><input type="radio" name="q3" value="d"> d) To run shell scripts during a Terraform apply.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="a"></div>
-                </div>
-            </div>
-
-            <!-- Question 4 -->
-            <div class="quiz-card" data-question="4">
-                <div class="question">
-                    <p>4. (3.2) Which Kubernetes deployment strategy involves releasing a new version to a small subset of users to monitor its performance before a full rollout?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q4" value="a"> a) Blue/Green Deployment</label></li>
-                        <li><label><input type="radio" name="q4" value="b"> b) Rolling Update</label></li>
-                        <li><label><input type="radio" name="q4" value="c"> c) Canary Deployment</label></li>
-                        <li><label><input type="radio" name="q4" value="d"> d) Recreate Deployment</label></li>
-                    </ul>
-                    <div class="answer" data-correct="c"></div>
-                </div>
-            </div>
-
-            <!-- Question 5 -->
-            <div class="quiz-card" data-question="5">
-                <div class="question">
-                    <p>5. (3.2) What Kubernetes object is specifically designed for running stateful applications like databases that require stable network identity and storage?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q5" value="a"> a) <code>Deployment</code></label></li>
-                        <li><label><input type="radio" name="q5" value="b"> b) <code>StatefulSet</code></label></li>
-                        <li><label><input type="radio" name="q5" value="c"> c) <code>DaemonSet</code></label></li>
-                        <li><label><input type="radio" name="q5" value="d"> d) <code>Job</code></label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 6 -->
-            <div class="quiz-card" data-question="6">
-                <div class="question">
-                    <p>6. (3.2) What is the function of a Kubernetes <code>NetworkPolicy</code>?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q6" value="a"> a) To manage external access to services, like a load balancer.</label></li>
-                        <li><label><input type="radio" name="q6" value="b"> b) To define how pods should be scheduled onto nodes.</label></li>
-                        <li><label><input type="radio" name="q6" value="c"> c) To act as a firewall for pods, controlling ingress and egress traffic.</label></li>
-                        <li><label><input type="radio" name="q6" value="d"> d) To request persistent storage for a pod.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="c"></div>
-                </div>
-            </div>
-
-            <!-- Question 7 -->
-            <div class="quiz-card" data-question="7">
-                <div class="question">
-                    <p>7. (3.2) What is Helm?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q7" value="a"> a) A Kubernetes monitoring tool.</label></li>
-                        <li><label><input type="radio" name="q7" value="b"> b) The command-line interface for Kubernetes.</label></li>
-                        <li><label><input type="radio" name="q7" value="c"> c) A security scanner for container images.</label></li>
-                        <li><label><input type="radio" name="q7" value="d"> d) A package manager for Kubernetes that uses Charts to manage applications.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="d"></div>
-                </div>
-            </div>
-
-            <!-- Question 8 -->
-            <div class="quiz-card" data-question="8">
-                <div class="question">
-                    <p>8. (3.3) In a GitHub Actions workflow, what does the <code>on</code> keyword define?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q8" value="a"> a) The operating system the job will run on.</label></li>
-                        <li><label><input type="radio" name="q8" value="b"> b) The events that trigger the workflow to run.</label></li>
-                        <li><label><input type="radio" name="q8" value="c"> c) The dependencies between jobs.</label></li>
-                        <li><label><input type="radio" name="q8" value="d"> d) The list of steps to execute.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 9 -->
-            <div class="quiz-card" data-question="9">
-                <div class="question">
-                    <p>9. (3.3) How should you securely provide a password or API key to a GitHub Actions workflow?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q9" value="a"> a) Hardcode it in the YAML file.</label></li>
-                        <li><label><input type="radio" name="q9" value="b"> b) Store it in a public text file in the repository.</label></li>
-                        <li><label><input type="radio" name="q9" value="c"> c) Store it as an encrypted secret in the repository settings.</label></li>
-                        <li><label><input type="radio" name="q9" value="d"> d) Pass it as a plain text argument when running the workflow.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="c"></div>
-                </div>
-            </div>
-
-            <!-- Question 10 -->
-            <div class="quiz-card" data-question="10">
-                <div class="question">
-                    <p>10. (3.3) In a workflow step, what is the purpose of the <code>uses</code> keyword?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q10" value="a"> a) To run a shell command.</label></li>
-                        <li><label><input type="radio" name="q10" value="b"> b) To define an environment variable.</label></li>
-                        <li><label><input type="radio" name="q10" value="c"> c) To specify a reusable action to be executed.</label></li>
-                        <li><label><input type="radio" name="q10" value="d"> d) To set a timeout for the step.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="c"></div>
-                </div>
-            </div>
-
-            <!-- Question 11 -->
-            <div class="quiz-card" data-question="11">
-                <div class="question">
-                    <p>11. (3.3) How can you make a job named `deploy` dependent on the successful completion of jobs `lint` and `test`?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q11" value="a"> a) <code>deploy:<br>  after: [lint, test]</code></label></li>
-                        <li><label><input type="radio" name="q11" value="b"> b) <code>deploy:<br>  requires: [lint, test]</code></label></li>
-                        <li><label><input type="radio" name="q11" value="c"> c) <code>deploy:<br>  needs: [lint, test]</code></label></li>
-                        <li><label><input type="radio" name="q11" value="d"> d) <code>deploy:<br>  depends_on: [lint, test]</code></label></li>
-                    </ul>
-                    <div class="answer" data-correct="c"></div>
-                </div>
-            </div>
-
-            <!-- Question 12 -->
-            <div class="quiz-card" data-question="12">
-                <div class="question">
-                    <p>12. (3.4) What is the primary focus of Spinnaker?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q12" value="a"> a) Continuous Integration</label></li>
-                        <li><label><input type="radio" name="q12" value="b"> b) Source Code Management</label></li>
-                        <li><label><input type="radio" name="q12" value="c"> c) Infrastructure Provisioning</label></li>
-                        <li><label><input type="radio" name="q12" value="d"> d) Continuous Delivery</label></li>
-                    </ul>
-                    <div class="answer" data-correct="d"></div>
-                </div>
-            </div>
-
-            <!-- Question 13 -->
-            <div class="quiz-card" data-question="13">
-                <div class="question">
-                    <p>13. (3.4) What is Automated Canary Analysis (ACA) in Spinnaker?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q13" value="a"> a) A security scan of the canary deployment.</label></li>
-                        <li><label><input type="radio" name="q13" value="b"> b) A data-driven process that compares metrics from a canary and baseline to assess the risk of a release.</label></li>
-                        <li><label><input type="radio" name="q13" value="c"> c) A manual approval gate for promoting a canary.</label></li>
-                        <li><label><input type="radio" name="q13" value="d"> d) A tool for running performance tests against the canary.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 14 -->
-            <div class="quiz-card" data-question="14">
-                <div class="question">
-                    <p>14. (3.4) In Spinnaker's terminology, what does a "Server Group" typically map to in a Kubernetes environment?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q14" value="a"> a) A Namespace</label></li>
-                        <li><label><input type="radio" name="q14" value="b"> b) A Deployment or ReplicaSet</label></li>
-                        <li><label><input type="radio" name="q14" value="c"> c) A Service</label></li>
-                        <li><label><input type="radio" name="q14" value="d"> d) A PersistentVolume</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 15 -->
-            <div class="quiz-card" data-question="15">
-                <div class="question">
-                    <p>15. (3.4) What is the recommended pattern for using GitHub Actions and Spinnaker together?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q15" value="a"> a) Use Spinnaker for CI and GitHub Actions for CD.</label></li>
-                        <li><label><input type="radio" name="q15" value="b"> b) Use GitHub Actions for CI (build/test/push artifact) and then trigger a Spinnaker pipeline for CD.</label></li>
-                        <li><label><input type="radio" name="q15" value="c"> c) Replace GitHub Actions entirely with Spinnaker.</label></li>
-                        <li><label><input type="radio" name="q15" value="d"> d) Use Spinnaker to manage source code and trigger GitHub Actions.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 16 -->
-            <div class="quiz-card" data-question="16">
-                <div class="question">
-                    <p>16. (3.1) In Terraform, what is the first command you should run in a new or cloned repository to prepare your working directory?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q16" value="a"> a) <code>terraform apply</code></label></li>
-                        <li><label><input type="radio" name="q16" value="b"> b) <code>terraform plan</code></label></li>
-                        <li><label><input type="radio" name="q16" value="c"> c) <code>terraform init</code></label></li>
-                        <li><label><input type="radio" name="q16" value="d"> d) <code>terraform validate</code></label></li>
-                    </ul>
-                    <div class="answer" data-correct="c"></div>
-                </div>
-            </div>
-
-            <!-- Question 17 -->
-            <div class="quiz-card" data-question="17">
-                <div class="question">
-                    <p>17. (3.2) In Kubernetes, what is the difference between a PersistentVolume (PV) and a PersistentVolumeClaim (PVC)?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q17" value="a"> a) They are the same thing.</label></li>
-                        <li><label><input type="radio" name="q17" value="b"> b) A PV is a request for storage, and a PVC is the actual storage resource.</label></li>
-                        <li><label><input type="radio" name="q17" value="c"> c) A PV is a storage resource in the cluster, and a PVC is a request for that storage by an application.</label></li>
-                        <li><label><input type="radio" name="q17" value="d"> d) A PV is for network storage, and a PVC is for local storage.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="c"></div>
-                </div>
-            </div>
-
-            <!-- Question 18 -->
-            <div class="quiz-card" data-question="18">
-                <div class="question">
-                    <p>18. (3.3) What is a composite action in GitHub Actions?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q18" value="a"> a) A workflow that runs on multiple operating systems.</label></li>
-                        <li><label><input type="radio" name="q18" value="b"> b) A reusable action created within your repository that bundles multiple steps.</label></li>
-                        <li><label><input type="radio" name="q18" value="c"> c) An action that can only be used with Docker.</label></li>
-                        <li><label><input type="radio" name="q18" value="d"> d) A special type of job that runs with elevated permissions.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 19 -->
-            <div class="quiz-card" data-question="19">
-                <div class="question">
-                    <p>19. (3.4) Which of the following is a key benefit of Spinnaker's native cloud integrations?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q19" value="a"> a) It can run shell scripts on a runner.</label></li>
-                        <li><label><input type="radio" name="q19" value="b"> b) It understands cloud-specific resources (like AWS ASGs or Kubernetes Deployments) and can manage them intelligently.</label></li>
-                        <li><label><input type="radio" name="q19" value="c"> c) It can store secrets for multiple cloud providers.</label></li>
-                        <li><label><input type="radio" name="q19" value="d"> d) It provides a web-based terminal into cloud resources.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 20 -->
-            <div class="quiz-card" data-question="20">
-                <div class="question">
-                    <p>20. (3.1) In Terraform, if you define a resource block <code>resource "aws_s3_bucket" "app_storage" { ... }</code>, how would you reference its ID attribute elsewhere in your code?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q20" value="a"> a) <code>aws_s3_bucket.id</code></label></li>
-                        <li><label><input type="radio" name="q20" value="b"> b) <code>app_storage.id</code></label></li>
-                        <li><label><input type="radio" name="q20" value="c"> c) <code>aws_s3_bucket.app_storage.id</code></label></li>
-                        <li><label><input type="radio" name="q20" value="d"> d) <code>resource.app_storage.id</code></label></li>
-                    </ul>
-                    <div class="answer" data-correct="c"></div>
-                </div>
-            </div>
-
-            <div class="quiz-navigation">
-                <button class="quiz-btn" id="prev-question">Previous</button>
-                <button class="quiz-btn" id="next-question">Next</button>
-                <button class="quiz-btn" id="submit-quiz" style="display: none;">Submit Answers</button>
-            </div>
-            <div class="quiz-results-container"></div>
         </div>
+
+        <!-- Question 2 -->
+        <div class="quiz-card" data-question="2">
+            <div class="question">
+                <p>2. (3.1) Why is using remote state with locking considered a best practice for teams using Terraform?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q2" value="a" /> a) It makes Terraform apply changes much faster.</label></li>
+                    <li><label><input type="radio" name="q2" value="b" /> b) It prevents multiple users from running conflicting changes simultaneously, which could corrupt the state.</label></li>
+                    <li><label><input type="radio" name="q2" value="c" /> c) It eliminates the need to run <code>terraform init</code>.</label></li>
+                    <li><label><input type="radio" name="q2" value="d" /> d) It encrypts the provider credentials.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="quiz-card" data-question="3">
+            <div class="question">
+                <p>3. (3.1) What is the primary benefit of using Terraform modules?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q3" value="a" /> a) To manage and reuse common infrastructure patterns as configurable, versioned units.</label></li>
+                    <li><label><input type="radio" name="q3" value="b" /> b) To define which cloud provider to use.</label></li>
+                    <li><label><input type="radio" name="q3" value="c" /> c) To store sensitive data like passwords and API keys.</label></li>
+                    <li><label><input type="radio" name="q3" value="d" /> d) To run shell scripts during a Terraform apply.</label></li>
+                </ul>
+                <div class="answer" data-correct="a"></div>
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="quiz-card" data-question="4">
+            <div class="question">
+                <p>4. (3.2) Which Kubernetes deployment strategy involves releasing a new version to a small subset of users to monitor its performance before a full rollout?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q4" value="a" /> a) Blue/Green Deployment</label></li>
+                    <li><label><input type="radio" name="q4" value="b" /> b) Rolling Update</label></li>
+                    <li><label><input type="radio" name="q4" value="c" /> c) Canary Deployment</label></li>
+                    <li><label><input type="radio" name="q4" value="d" /> d) Recreate Deployment</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="quiz-card" data-question="5">
+            <div class="question">
+                <p>5. (3.2) What Kubernetes object is specifically designed for running stateful applications like databases that require stable network identity and storage?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q5" value="a" /> a) <code>Deployment</code></label></li>
+                    <li><label><input type="radio" name="q5" value="b" /> b) <code>StatefulSet</code></label></li>
+                    <li><label><input type="radio" name="q5" value="c" /> c) <code>DaemonSet</code></label></li>
+                    <li><label><input type="radio" name="q5" value="d" /> d) <code>Job</code></label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="quiz-card" data-question="6">
+            <div class="question">
+                <p>6. (3.2) What is the function of a Kubernetes <code>NetworkPolicy</code>?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q6" value="a" /> a) To manage external access to services, like a load balancer.</label></li>
+                    <li><label><input type="radio" name="q6" value="b" /> b) To define how pods should be scheduled onto nodes.</label></li>
+                    <li><label><input type="radio" name="q6" value="c" /> c) To act as a firewall for pods, controlling ingress and egress traffic.</label></li>
+                    <li><label><input type="radio" name="q6" value="d" /> d) To request persistent storage for a pod.</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="quiz-card" data-question="7">
+            <div class="question">
+                <p>7. (3.2) What is Helm?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q7" value="a" /> a) A Kubernetes monitoring tool.</label></li>
+                    <li><label><input type="radio" name="q7" value="b" /> b) The command-line interface for Kubernetes.</label></li>
+                    <li><label><input type="radio" name="q7" value="c" /> c) A security scanner for container images.</label></li>
+                    <li><label><input type="radio" name="q7" value="d" /> d) A package manager for Kubernetes that uses Charts to manage applications.</label></li>
+                </ul>
+                <div class="answer" data-correct="d"></div>
+            </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="quiz-card" data-question="8">
+            <div class="question">
+                <p>8. (3.3) In a GitHub Actions workflow, what does the <code>on</code> keyword define?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q8" value="a" /> a) The operating system the job will run on.</label></li>
+                    <li><label><input type="radio" name="q8" value="b" /> b) The events that trigger the workflow to run.</label></li>
+                    <li><label><input type="radio" name="q8" value="c" /> c) The dependencies between jobs.</label></li>
+                    <li><label><input type="radio" name="q8" value="d" /> d) The list of steps to execute.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="quiz-card" data-question="9">
+            <div class="question">
+                <p>9. (3.3) How should you securely provide a password or API key to a GitHub Actions workflow?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q9" value="a" /> a) Hardcode it in the YAML file.</label></li>
+                    <li><label><input type="radio" name="q9" value="b" /> b) Store it in a public text file in the repository.</label></li>
+                    <li><label><input type="radio" name="q9" value="c" /> c) Store it as an encrypted secret in the repository settings.</label></li>
+                    <li><label><input type="radio" name="q9" value="d" /> d) Pass it as a plain text argument when running the workflow.</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="quiz-card" data-question="10">
+            <div class="question">
+                <p>10. (3.3) In a workflow step, what is the purpose of the <code>uses</code> keyword?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q10" value="a" /> a) To run a shell command.</label></li>
+                    <li><label><input type="radio" name="q10" value="b" /> b) To define an environment variable.</label></li>
+                    <li><label><input type="radio" name="q10" value="c" /> c) To specify a reusable action to be executed.</label></li>
+                    <li><label><input type="radio" name="q10" value="d" /> d) To set a timeout for the step.</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <!-- Question 11 -->
+        <div class="quiz-card" data-question="11">
+            <div class="question">
+                <p>11. (3.3) How can you make a job named `deploy` dependent on the successful completion of jobs `lint` and `test`?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q11" value="a" /> a) <code>deploy:&lt;br /&gt; after: [lint, test]</code></label></li>
+                    <li><label><input type="radio" name="q11" value="b" /> b) <code>deploy:&lt;br /&gt; requires: [lint, test]</code></label></li>
+                    <li><label><input type="radio" name="q11" value="c" /> c) <code>deploy:&lt;br /&gt; needs: [lint, test]</code></label></li>
+                    <li><label><input type="radio" name="q11" value="d" /> d) <code>deploy:&lt;br /&gt; depends_on: [lint, test]</code></label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <!-- Question 12 -->
+        <div class="quiz-card" data-question="12">
+            <div class="question">
+                <p>12. (3.4) What is the primary focus of Spinnaker?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q12" value="a" /> a) Continuous Integration</label></li>
+                    <li><label><input type="radio" name="q12" value="b" /> b) Source Code Management</label></li>
+                    <li><label><input type="radio" name="q12" value="c" /> c) Infrastructure Provisioning</label></li>
+                    <li><label><input type="radio" name="q12" value="d" /> d) Continuous Delivery</label></li>
+                </ul>
+                <div class="answer" data-correct="d"></div>
+            </div>
+        </div>
+
+        <!-- Question 13 -->
+        <div class="quiz-card" data-question="13">
+            <div class="question">
+                <p>13. (3.4) What is Automated Canary Analysis (ACA) in Spinnaker?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q13" value="a" /> a) A security scan of the canary deployment.</label></li>
+                    <li><label><input type="radio" name="q13" value="b" /> b) A data-driven process that compares metrics from a canary and baseline to assess the risk of a release.</label></li>
+                    <li><label><input type="radio" name="q13" value="c" /> c) A manual approval gate for promoting a canary.</label></li>
+                    <li><label><input type="radio" name="q13" value="d" /> d) A tool for running performance tests against the canary.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 14 -->
+        <div class="quiz-card" data-question="14">
+            <div class="question">
+                <p>14. (3.4) In Spinnaker's terminology, what does a "Server Group" typically map to in a Kubernetes environment?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q14" value="a" /> a) A Namespace</label></li>
+                    <li><label><input type="radio" name="q14" value="b" /> b) A Deployment or ReplicaSet</label></li>
+                    <li><label><input type="radio" name="q14" value="c" /> c) A Service</label></li>
+                    <li><label><input type="radio" name="q14" value="d" /> d) A PersistentVolume</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 15 -->
+        <div class="quiz-card" data-question="15">
+            <div class="question">
+                <p>15. (3.4) What is the recommended pattern for using GitHub Actions and Spinnaker together?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q15" value="a" /> a) Use Spinnaker for CI and GitHub Actions for CD.</label></li>
+                    <li><label><input type="radio" name="q15" value="b" /> b) Use GitHub Actions for CI (build/test/push artifact) and then trigger a Spinnaker pipeline for CD.</label></li>
+                    <li><label><input type="radio" name="q15" value="c" /> c) Replace GitHub Actions entirely with Spinnaker.</label></li>
+                    <li><label><input type="radio" name="q15" value="d" /> d) Use Spinnaker to manage source code and trigger GitHub Actions.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 16 -->
+        <div class="quiz-card" data-question="16">
+            <div class="question">
+                <p>16. (3.1) In Terraform, what is the first command you should run in a new or cloned repository to prepare your working directory?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q16" value="a" /> a) <code>terraform apply</code></label></li>
+                    <li><label><input type="radio" name="q16" value="b" /> b) <code>terraform plan</code></label></li>
+                    <li><label><input type="radio" name="q16" value="c" /> c) <code>terraform init</code></label></li>
+                    <li><label><input type="radio" name="q16" value="d" /> d) <code>terraform validate</code></label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <!-- Question 17 -->
+        <div class="quiz-card" data-question="17">
+            <div class="question">
+                <p>17. (3.2) In Kubernetes, what is the difference between a PersistentVolume (PV) and a PersistentVolumeClaim (PVC)?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q17" value="a" /> a) They are the same thing.</label></li>
+                    <li><label><input type="radio" name="q17" value="b" /> b) A PV is a request for storage, and a PVC is the actual storage resource.</label></li>
+                    <li><label><input type="radio" name="q17" value="c" /> c) A PV is a storage resource in the cluster, and a PVC is a request for that storage by an application.</label></li>
+                    <li><label><input type="radio" name="q17" value="d" /> d) A PV is for network storage, and a PVC is for local storage.</label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <!-- Question 18 -->
+        <div class="quiz-card" data-question="18">
+            <div class="question">
+                <p>18. (3.3) What is a composite action in GitHub Actions?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q18" value="a" /> a) A workflow that runs on multiple operating systems.</label></li>
+                    <li><label><input type="radio" name="q18" value="b" /> b) A reusable action created within your repository that bundles multiple steps.</label></li>
+                    <li><label><input type="radio" name="q18" value="c" /> c) An action that can only be used with Docker.</label></li>
+                    <li><label><input type="radio" name="q18" value="d" /> d) A special type of job that runs with elevated permissions.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 19 -->
+        <div class="quiz-card" data-question="19">
+            <div class="question">
+                <p>19. (3.4) Which of the following is a key benefit of Spinnaker's native cloud integrations?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q19" value="a" /> a) It can run shell scripts on a runner.</label></li>
+                    <li><label><input type="radio" name="q19" value="b" /> b) It understands cloud-specific resources (like AWS ASGs or Kubernetes Deployments) and can manage them intelligently.</label></li>
+                    <li><label><input type="radio" name="q19" value="c" /> c) It can store secrets for multiple cloud providers.</label></li>
+                    <li><label><input type="radio" name="q19" value="d" /> d) It provides a web-based terminal into cloud resources.</label></li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 20 -->
+        <div class="quiz-card" data-question="20">
+            <div class="question">
+                <p>20. (3.1) In Terraform, if you define a resource block <code>resource &quot;aws_s3_bucket&quot; &quot;app_storage&quot; { ... }</code>, how would you reference its ID attribute elsewhere in your code?</p>
+                <ul class="options">
+                    <li><label><input type="radio" name="q20" value="a" /> a) <code>aws_s3_bucket.id</code></label></li>
+                    <li><label><input type="radio" name="q20" value="b" /> b) <code>app_storage.id</code></label></li>
+                    <li><label><input type="radio" name="q20" value="c" /> c) <code>aws_s3_bucket.app_storage.id</code></label></li>
+                    <li><label><input type="radio" name="q20" value="d" /> d) <code>resource.app_storage.id</code></label></li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button type="button" class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <div class="quiz-progress">Question 1 of 20</div>
+            <button type="button" class="btn btn-outline-primary" id="next-question">Next</button>
+            <button type="button" class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
+        </div>
+        <div class="quiz-results-container"></div>
     </div>
-</div>
 </div>
