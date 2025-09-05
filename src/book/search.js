@@ -18,14 +18,8 @@ export class SearchManager {
     
     initializeElements() {
         return {
-            searchInputs: [
-                document.getElementById('search-input'),
-                document.getElementById('search-input-mobile')
-            ].filter(Boolean),
-            searchResults: [
-                document.getElementById('search-results'),
-                document.getElementById('search-results-mobile')
-            ].filter(Boolean)
+            searchInputs: Array.from(document.querySelectorAll('.search-input')),
+            searchResults: Array.from(document.querySelectorAll('.search-results'))
         };
     }
     
@@ -44,13 +38,15 @@ export class SearchManager {
                 topics.map(async (topic) => {
                     try {
                         const response = await fetch(topic.url);
-                        if (!response.ok) return null;
+                        if (!response.ok) {
+                            console.warn(`Failed to fetch content for indexing ${topic.url}: HTTP status ${response.status}`);
+                            return null;
+                        }
                         
                         const htmlContent = await response.text();
                         const parser = new DOMParser();
                         const doc = parser.parseFromString(htmlContent, 'text/html');
                         const textContent = doc.body.textContent || "";
-                        
                         return {
                             id: topic.url,
                             title: topic.title,
@@ -70,17 +66,18 @@ export class SearchManager {
             
             // Build Lunr index
             if (typeof lunr !== 'undefined') {
+                const self = this; // Capture SearchManager's 'this'
                 this.lunrIndex = lunr(function () {
                     this.ref('id');
                     this.field('title', { boost: 10 });
                     this.field('content');
                     
-                    this.documents.forEach(doc => {
+                    self.documents.forEach(doc => {
                         this.add(doc);
-                    }, this);
-                }.bind(this));
+                    });
+                });
                 
-                console.log(`Search index built with ${this.documents.length} documents`);
+                console.log(`🔍 Search index built with ${this.documents.length} documents`);
             } else {
                 console.warn('Lunr.js not available - search functionality disabled');
             }
@@ -98,31 +95,43 @@ export class SearchManager {
     }
     
     setupEventListeners() {
+        // Setting up search event listeners
+        if (!this.elements.searchInputs.length || !this.elements.searchResults.length) {
+            console.error('Search elements not found in DOM:', {
+                searchInputs: this.elements.searchInputs,
+                searchResults: this.elements.searchResults
+            });
+            return;
+        }
+        
         this.elements.searchInputs.forEach((input, index) => {
             if (!input) return;
-            
-            const resultsContainer = this.elements.searchResults[index];
+
+            // Add name and id attributes dynamically
+            if (!input.name) input.name = 'search';
+            if (!input.id) input.id = 'search-input';
+
+            // Find the closest results container in the DOM
+            let resultsContainer = this.elements.searchResults[index];
+            if (!resultsContainer) {
+                // Fallback: look for a .search-results element within the same parent container
+                resultsContainer = input.parentElement.querySelector('.search-results');
+            }
             if (!resultsContainer) return;
-            
-            // Search on keyup
-            input.addEventListener('keyup', (e) => {
+
+            input.addEventListener('keyup', () => {
                 const query = input.value.trim();
                 this.handleSearch(query, resultsContainer);
             });
-            
-            // Focus/blur handling
             input.addEventListener('focus', () => {
                 input.parentElement.classList.add('search-focused');
             });
-            
             input.addEventListener('blur', () => {
                 setTimeout(() => {
                     input.parentElement.classList.remove('search-focused');
                     resultsContainer.innerHTML = '';
                 }, 200);
             });
-            
-            // Result click handling
             resultsContainer.addEventListener('click', (e) => {
                 this.handleResultClick(e, input, resultsContainer);
             });
@@ -137,11 +146,11 @@ export class SearchManager {
         
         if (!this.lunrIndex) {
             resultsContainer.innerHTML = '<div class="search-result-item">Search not available</div>';
+            console.warn('Lunr index not available.');
             return;
         }
         
         try {
-            // Search with fuzzy matching
             const results = this.lunrIndex.search(`${query}~1 ${query}*`);
             this.displaySearchResults(results, resultsContainer);
         } catch (error) {
@@ -153,6 +162,7 @@ export class SearchManager {
     displaySearchResults(results, targetElement) {
         if (results.length === 0) {
             targetElement.innerHTML = '<div class="search-result-item">No results found</div>';
+            targetElement.style.display = 'none';
             return;
         }
         
@@ -160,8 +170,10 @@ export class SearchManager {
             .slice(0, 10) // Limit to 10 results
             .map(result => {
                 const doc = this.documents.find(d => d.id === result.ref);
-                if (!doc) return '';
-                
+                if (!doc) {
+                    console.warn(`Document with ref ${result.ref} not found in this.documents.`);
+                    return '';
+                }
                 const preview = this.generatePreview(doc.content, 100);
                 const relevanceScore = (result.score * 100).toFixed(1);
                 
@@ -177,6 +189,7 @@ export class SearchManager {
             .join('');
         
         targetElement.innerHTML = resultHtml;
+        targetElement.style.display = 'block';
     }
     
     generatePreview(content, maxLength) {
@@ -208,9 +221,15 @@ export class SearchManager {
         // Clear search
         input.value = '';
         resultsContainer.innerHTML = '';
+        resultsContainer.style.display = 'none';
         
         // Close mobile navigation if open
-        this.navigationManager.closeMobileNavigation();
+        if (typeof this.navigationManager.closeMobileMenu === 'function') {
+            // Add a small delay to ensure the navigation has time to process
+            setTimeout(() => {
+                this.navigationManager.closeMobileMenu();
+            }, 100);
+        }
         
         // Remove focus from search input
         input.blur();
@@ -237,7 +256,6 @@ export class SearchManager {
     
     // Rebuild index (useful if content changes)
     async rebuildIndex() {
-        console.log('Rebuilding search index...');
         await this.buildSearchIndex();
     }
 }

@@ -1,17 +1,30 @@
 <div class="quiz-content">
-<header class="quiz-header">
+    <header class="quiz-header" aria-label="Header">
+        <h1>Unit 1-2: Quiz - Overview and Foundational Concepts</h1>
+        <p class="quiz-intro">
+            Test your understanding of the concepts covered in Topic 1-2.
+        </p>
+    </header>
 
-            <h2>Quiz: Foundational Concepts</h2>
-
-        <div class="quiz-container">
+    <div class="quiz-container">
         <div class="quiz-card active-card" data-question="1">
             <div class="question">
                 <p>1. Why is Python considered highly productive for cloud-native development?</p>
                 <ul class="options">
-                    <li><label for="q1a"><input type="radio" id="q1a" name="q1" value="a"> a) Its strict compile-time type checking.</label></li>
-                    <li><label for="q1b"><input type="radio" id="q1b" name="q1" value="b"> b) Its extensive use of boilerplate code.</label></li>
-                    <li><label for="q1c"><input type="radio" id="q1c" name="q1" value="c"> c) The combination of simple syntax and a rich ecosystem.</label></li>
-                    <li><label for="q1d"><input type="radio" id="q1d" name="q1" value="d"> d) Its exclusive focus on low-level memory management.</label></li>
+                    <li>
+                        <label><input type="radio" id="q1a" name="q1" value="a" /> a) Its strict compile-time type checking.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q1b" name="q1" value="b" /> b) Its extensive use of boilerplate code.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q1c" name="q1" value="c" /> c) The combination of simple syntax and a rich
+                            ecosystem.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q1d" name="q1" value="d" /> d) Its exclusive focus on low-level memory
+                            management.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="c"></div>
             </div>
@@ -21,10 +34,18 @@
             <div class="question">
                 <p>2. Which of the following are core built-in data structures in Python? (Select all that apply)</p>
                 <ul class="options">
-                    <li><label for="q2a"><input type="checkbox" id="q2a" name="q2" value="a"> a) Dictionaries</label></li>
-                    <li><label for="q2b"><input type="checkbox" id="q2b" name="q2" value="b"> b) Arrays</label></li>
-                    <li><label for="q2c"><input type="checkbox" id="q2c" name="q2" value="c"> c) Lists</label></li>
-                    <li><label for="q2d"><input type="checkbox" id="q2d" name="q2" value="d"> d) Tuples</label></li>
+                    <li>
+                        <label><input type="checkbox" id="q2a" name="q2" value="a" /> a) Dictionaries</label>
+                    </li>
+                    <li>
+                        <label><input type="checkbox" id="q2b" name="q2" value="b" /> b) Arrays</label>
+                    </li>
+                    <li>
+                        <label><input type="checkbox" id="q2c" name="q2" value="c" /> c) Lists</label>
+                    </li>
+                    <li>
+                        <label><input type="checkbox" id="q2d" name="q2" value="d" /> d) Tuples</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="a,c,d"></div>
             </div>
@@ -34,10 +55,21 @@
             <div class="question">
                 <p>3. What is the primary purpose of Python's type hints (PEP 484)?</p>
                 <ul class="options">
-                    <li><label for="q3a"><input type="radio" id="q3a" name="q3" value="a"> a) To enforce strict type checking at runtime.</label></li>
-                    <li><label for="q3b"><input type="radio" id="q3b" name="q3" value="b"> b) To provide clarity and enable static analysis tools to catch errors early.</label></li>
-                    <li><label for="q3c"><input type="radio" id="q3c" name="q3" value="c"> c) To automatically convert data types during serialization.</label></li>
-                    <li><label for="q3d"><input type="radio" id="q3d" name="q3" value="d"> d) To define database schemas directly within Python code.</label></li>
+                    <li>
+                        <label><input type="radio" id="q3a" name="q3" value="a" /> a) To enforce strict type checking at runtime.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q3b" name="q3" value="b" /> b) To provide clarity and enable static analysis
+                            tools to catch errors early.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q3c" name="q3" value="c" /> c) To automatically convert data types during
+                            serialization.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q3d" name="q3" value="d" /> d) To define database schemas directly within
+                            Python code.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="b"></div>
             </div>
@@ -47,10 +79,22 @@
             <div class="question">
                 <p>4. What is the main benefit of using Pydantic in cloud-native Python applications?</p>
                 <ul class="options">
-                    <li><label for="q4a"><input type="radio" id="q4a" name="q4" value="a"> a) It replaces the need for traditional database ORMs.</label></li>
-                    <li><label for="q4b"><input type="radio" id="q4b" name="q4" value="b"> b) It provides runtime type checking and data validation for incoming data.</label></li>
-                    <li><label for="q4c"><input type="radio" id="q4c" name="q4" value="c"> c) It enables asynchronous programming without `async`/`await`.</label></li>
-                    <li><label for="q4d"><input type="radio" id="q4d" name="q4" value="d"> d) It compiles Python code to native machine code for faster execution.</label></li>
+                    <li>
+                        <label><input type="radio" id="q4a" name="q4" value="a" /> a) It replaces the need for traditional database
+                            ORMs.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q4b" name="q4" value="b" /> b) It provides runtime type checking and data
+                            validation for incoming data.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q4c" name="q4" value="c" /> c) It enables asynchronous programming without
+                            `async`/`await`.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q4d" name="q4" value="d" /> d) It compiles Python code to native machine code
+                            for faster execution.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="b"></div>
             </div>
@@ -60,20 +104,33 @@
             <div class="question">
                 <p>5. In cloud-native Python development, when are functions typically preferred over classes?</p>
                 <ul class="options">
-                    <li><label for="q5a"><input type="radio" id="q5a" name="q5" value="a"> a) When modeling complex entities with encapsulated state and behavior.</label></li>
-                    <li><label for="q5b"><input type="radio" id="q5b" name="q5" value="b"> b) For stateless operations, such as in serverless functions or utility logic.</label></li>
-                    <li><label for="q5c"><input type="radio" id="q5c" name="q5" value="c"> c) When defining data schemas for API request validation.</label></li>
-                    <li><label for="q5d"><input type="radio" id="q5d" name="q5" value="d"> d) When building a graphical user interface (GUI).</label></li>
+                    <li>
+                        <label><input type="radio" id="q5a" name="q5" value="a" /> a) When modeling complex entities with encapsulated
+                            state and behavior.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q5b" name="q5" value="b" /> b) For stateless operations, such as in serverless
+                            functions or utility logic.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q5c" name="q5" value="c" /> c) When defining data schemas for API request
+                            validation.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q5d" name="q5" value="d" /> d) When building a graphical user interface
+                            (GUI).</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="b"></div>
             </div>
         </div>
 
         <div class="quiz-navigation">
-            <button class="btn btn-outline-secondary" id="prev-question">Previous</button>
-            <button class="btn btn-outline-primary" id="next-question">Next</button>
-            <button class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
+            <button type="button" class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <div class="quiz-progress">Question 1 of 5</div>
+            <button type="button" class="btn btn-outline-primary" id="next-question">Next</button>
+            <button type="button" class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
         </div>
         <div class="quiz-results-container"></div>
     </div>
-</div></div>
+</div>

@@ -1,20 +1,25 @@
 <div class="topic-content">
-    <header class="topic-header">
-        <h1 class="topic-title">Unit 1.8 Testing Strategies</h1>
-    </div>
+    <header class="topic-header" aria-label="Header">
+        <h1 class="topic-title">Unit 1.8: Testing Strategies</h1>
+        <p class="topic-intro">
+            Build confidence in your cloud-native applications with comprehensive testing strategies.
+            This topic covers the testing pyramid, practical testing patterns with pytest, mocking,
+            integration testing, and ensuring your code is production-ready through automated testing.
+        </p>
+    </header>
 
-    <p class="lead">In the fast-paced world of cloud-native development, ensuring the reliability and correctness of your backend services is paramount. Robust testing strategies allow you to confidently deploy new features, refactor existing code, and prevent regressions. This topic will cover essential testing practices in Python, from isolated unit tests to comprehensive integration tests using real dependencies.</p>
-
-    
-
-    <!-- Introduction to Testing -->
-    <h2>The Testing Pyramid</h2>
-    <p>
-        The concept of the <a href="https://martinfowler.com/bliki/TestPyramid.html" target="_blank">Testing Pyramid</a> suggests that you should have many fast, isolated <strong>unit tests</strong>, fewer <strong>integration tests</strong> that verify interactions between components, and even fewer slow, comprehensive <strong>end-to-end tests</strong>.
-    </p>
-    <div class="text-center my-4">
-        <pre class="mermaid">
-            graph TD
+    <section class="topic-section">
+        <h2>The Testing Pyramid</h2>
+        <p>
+            The concept of the
+            <a href="https://martinfowler.com/bliki/TestPyramid.html" target="_blank">Testing Pyramid</a> suggests that you
+            should have many fast, isolated <strong>unit tests</strong>, fewer <strong>integration tests</strong> that verify
+            interactions between components, and even fewer slow, comprehensive <strong>end-to-end tests</strong>.
+        </p>
+        <div class="text-center my-4">
+            <pre class="mermaid">
+ <script type="text/plain">
+graph TD
                 A["End-to-End Tests (Few, Slow)"]
                 B["Integration Tests (More, Medium Speed)"]
                 C["Unit Tests (Many, Fast)"]
@@ -25,41 +30,54 @@
                 style A fill:#fcc,stroke:#333,stroke-width:2px
                 style B fill:#f99,stroke:#333,stroke-width:2px
                 style C fill:#f66,stroke:#333,stroke-width:2px
-        </pre>
-        <small class="text-muted">Diagram: The Testing Pyramid</small>
-    </div>
-    <ul>
-        <li><strong>Unit Tests:</strong> Test individual functions or methods in isolation. They are fast and provide precise feedback on where a bug is located.</li>
-        <li><strong>Integration Tests:</strong> Verify that different components or services work correctly together (e.g., your application interacting with a database, or two microservices communicating). They are slower than unit tests but provide more confidence.</li>
-        <li><strong>End-to-End Tests:</strong> Simulate real user scenarios across the entire system, including UI, backend, and all external services. They are the slowest and most brittle but offer the highest confidence.</li>
-    </ul>
-    <p>This topic will focus on unit and integration testing, which form the foundation of a reliable backend.</p>
+ </script>
+</pre>
+            <small class="text-muted">Diagram: The Testing Pyramid</small>
+        </div>
+        <ul>
+            <li>
+                <strong>Unit Tests:</strong> Test individual functions or methods in isolation. They are fast and provide precise
+                feedback on where a bug is located.
+            </li>
+            <li>
+                <strong>Integration Tests:</strong> Verify that different components or services work correctly together (e.g.,
+                your application interacting with a database, or two microservices communicating). They are slower than unit tests
+                but provide more confidence.
+            </li>
+            <li>
+                <strong>End-to-End Tests:</strong> Simulate real user scenarios across the entire system, including UI, backend,
+                and all external services. They are the slowest and most brittle but offer the highest confidence.
+            </li>
+        </ul>
+        <p>This topic will focus on unit and integration testing, which form the foundation of a reliable backend.</p>
 
-    
+    </section>
 
-    <!-- pytest -->
-    <h2>1. Unit and Integration Testing with <code>pytest</code></h2>
-    <p>
-        <a href="https://docs.pytest.org/en/stable/" target="_blank"><code>pytest</code></a> is the most popular and powerful testing framework for Python. It simplifies writing tests, provides rich assertion introspection, and has a vast ecosystem of plugins.
-    </p>
+    <section class="topic-section">
+        <h2>Unit and Integration Testing with <code>pytest</code></h2>
+        <p>
+            <a href="https://docs.pytest.org/en/stable/" target="_blank"><code>pytest</code></a> is the most popular and
+            powerful testing framework for Python. It simplifies writing tests, provides rich assertion introspection, and has a
+            vast ecosystem of plugins.
+        </p>
 
-    <h4>Installation</h4>
-    <pre><code class="language-bash">pip install pytest</code></pre>
+        <h4>Installation</h4>
+        <pre><code class="language-bash">pip install pytest</code></pre>
 
-    <h4>Unit Testing Example</h4>
-    <p>Let's say you have a simple utility function in <code>app/utils.py</code>:</p>
-    <pre><code class="language-python">
+        <h4>Unit Testing Example</h4>
+        <p>Let's say you have a simple utility function in <code>app/utils.py</code>:</p>
+        <pre><code class="language-python">
 # app/utils.py
-def add(a: int, b: int) -> int:
-    """Adds two numbers."""
+def add(a: int, b: int) -&gt; int:
+    &quot;&quot;&quot;Adds two numbers.&quot;&quot;&quot;
     return a + b
 
-def multiply(a: int, b: int) -> int:
-    """Multiplies two numbers."""
+def multiply(a: int, b: int) -&gt; int:
+    &quot;&quot;&quot;Multiplies two numbers.&quot;&quot;&quot;
     return a * b
     </code></pre>
-    <p>You would create a test file, typically named <code>test_utils.py</code>, in a <code>tests/</code> directory:</p>
-    <pre><code class="language-python">
+        <p>You would create a test file, typically named <code>test_utils.py</code>, in a <code>tests/</code> directory:</p>
+        <pre><code class="language-python">
 # tests/test_utils.py
 from app.utils import add, multiply
 
@@ -73,65 +91,74 @@ def test_multiply():
     assert multiply(-1, 5) == -5
     assert multiply(0, 10) == 0
     </code></pre>
-    <p>Run the tests from your terminal:</p>
-    <pre><code class="language-bash">pytest</code></pre>
-    <p><code>pytest</code> automatically discovers tests (functions starting with <code>test_</code> in files starting with <code>test_</code> or ending with <code>_test.py</code>) and runs them.</p>
+        <p>Run the tests from your terminal:</p>
+        <pre><code class="language-bash">pytest</code></pre>
+        <p>
+            <code>pytest</code> automatically discovers tests (functions starting with <code>test_</code> in files starting with
+            <code>test_</code> or ending with <code>_test.py</code>) and runs them.
+        </p>
+    </section>
 
-    
-
-    <!-- Mocking -->
-    <h2>2. Mocking Services and Dependencies (<code>unittest.mock</code>)</h2>
-    <p>
-        When writing unit tests, you often need to test a component that interacts with external services (like databases, APIs, or message queues). To keep unit tests fast and isolated, you can use <strong>mocking</strong>: replacing real objects with controlled, fake objects.
-    </p>
-    <div class="text-center my-4">
-        <pre class="mermaid">
-graph TD
+    <section class="topic-section">
+        <h2>Mocking Services and Dependencies (<code>unittest.mock</code>)</h2>
+        <p>
+            When writing unit tests, you often need to test a component that interacts with external services (like databases,
+            APIs, or message queues). To keep unit tests fast and isolated, you can use <strong>mocking</strong>: replacing real
+            objects with controlled, fake objects.
+        </p>
+        <div class="text-center my-4">
+            <pre class="mermaid">
+ <script type="text/plain">
+graph LR
     A["Component Under Test"] --> B{"Real Dependency?"};
     B -- "Yes (Integration Test)" --> C["Real Dependency"];
     B -- "No (Unit Test)" --> D["Mock Object"];
     D -- "Simulates Behavior" --> A;
-        </pre>
-        <small class="text-muted">Diagram: Mocking Workflow</small>
-    </div>
-    <p>
-        Python's standard library provides the powerful <code>unittest.mock</code> module, which includes <code>MagicMock</code> and the <code>patch</code> function.
-    </p>
+ </script>
+</pre>
+            <small class="text-muted">Diagram: Mocking Workflow</small>
+        </div>
+        <p>
+            Python's standard library provides the powerful <code>unittest.mock</code> module, which includes
+            <code>MagicMock</code> and the <code>patch</code> function.
+        </p>
 
-    <h4>Example: Mocking an External API Call</h4>
-    <p>Consider a function that fetches user data from an external API:</p>
-    <pre><code class="language-python">
+        <h4>Example: Mocking an External API Call</h4>
+        <p>Consider a function that fetches user data from an external API:</p>
+        <pre><code class="language-python">
 # app/services.py
 import requests
 
 def get_user_data(user_id: int):
-    """Fetches user data from an external API."""
-    response = requests.get(f"https://api.example.com/users/{user_id}")
+    &quot;&quot;&quot;Fetches user data from an external API.&quot;&quot;&quot;
+    response = requests.get(f&quot;https://api.example.com/users/{user_id}&quot;)
     response.raise_for_status() # Raise an exception for HTTP errors
     return response.json()
     </code></pre>
-    <p>To test <code>get_user_data</code> without actually hitting the external API, we can mock <code>requests.get</code>:</p>
-    <pre><code class="language-python">
+        <p>
+            To test <code>get_user_data</code> without actually hitting the external API, we can mock <code>requests.get</code>:
+        </p>
+        <pre><code class="language-python">
 # tests/test_services.py
 from unittest.mock import patch
 from app.services import get_user_data
 
 def test_get_user_data_success():
     # Use patch as a context manager to mock requests.get
-    with patch('app.services.requests.get') as mock_get:
-        # Configure the mock's return value
+    with patch(&#x27;app.services.requests.get&#x27;) as mock_get:
+        # Configure the mock&#x27;s return value
         mock_get.return_value.status_code = 200
-        mock_get.return_value.json.return_value = {"id": 1, "name": "Alice"}
+        mock_get.return_value.json.return_value = {&quot;id&quot;: 1, &quot;name&quot;: &quot;Alice&quot;}
 
         user_data = get_user_data(1)
 
         # Assert that requests.get was called with the correct URL
-        mock_get.assert_called_once_with("https://api.example.com/users/1")
+        mock_get.assert_called_once_with(&quot;https://api.example.com/users/1&quot;)
         # Assert the function returned the expected data
-        assert user_data == {"id": 1, "name": "Alice"}
+        assert user_data == {&quot;id&quot;: 1, &quot;name&quot;: &quot;Alice&quot;}
 
 def test_get_user_data_http_error():
-    with patch('app.services.requests.get') as mock_get:
+    with patch(&#x27;app.services.requests.get&#x27;) as mock_get:
         mock_get.return_value.status_code = 404
         # Simulate an HTTP error response
         mock_get.return_value.raise_for_status.side_effect = requests.exceptions.HTTPError
@@ -140,44 +167,53 @@ def test_get_user_data_http_error():
         with pytest.raises(requests.exceptions.HTTPError):
             get_user_data(999)
 
-        mock_get.assert_called_once_with("https://api.example.com/users/999")
+        mock_get.assert_called_once_with(&quot;https://api.example.com/users/999&quot;)
     </code></pre>
-    <div class="alert alert-warning">
-        <strong>Trade-offs of Mocking:</strong> While mocking is essential for unit testing, over-reliance can lead to brittle tests that pass even if the real dependency's behavior changes. This is where integration tests come in.
-    </div>
+        <div class="alert alert-warning">
+            <strong>Trade-offs of Mocking:</strong> While mocking is essential for unit testing, over-reliance can lead to
+            brittle tests that pass even if the real dependency's behavior changes. This is where integration tests come in.
+        </div>
 
-    
+    </section>
 
-    <!-- Testcontainers -->
-    <h2>3. Emulating Services with Testcontainers</h2>
-    <p>
-        For true integration tests, you need to interact with real instances of your dependencies (databases, message queues, etc.).         <strong>Testcontainers</strong> is an open-source library that provides lightweight, throwaway instances of common databases, message brokers, web browsers, or anything else that can run in a Docker container.
-    </p>
+    <section class="topic-section">
+        <h2>Emulating Services with Testcontainers</h2>
+        <p>
+            For true integration tests, you need to interact with real instances of your dependencies (databases, message
+            queues, etc.). <strong>Testcontainers</strong> is an open-source library that provides lightweight, throwaway
+            instances of common databases, message brokers, web browsers, or anything else that can run in a Docker container.
+        </p>
 
-    <div class="text-center my-4">
-        <pre class="mermaid">
+        <div class="text-center my-4">
+            <pre class="mermaid">
+ <script type="text/plain">
 graph TD
     A["Test Code"] --> B["Testcontainers Library"];
     B --> C["Docker Daemon"];
     C --> D["Ephemeral Docker Container (e.g., PostgreSQL)"];
     D -- "Provides Service" --> A;
-        </pre>
-        <small class="text-muted">Diagram: Testcontainers Workflow</small>
-    </div>
+ </script>
+</pre>
+            <small class="text-muted">Diagram: Testcontainers Workflow</small>
+        </div>
 
-    <p>
-        This allows you to write integration tests that are realistic, isolated, and run consistently across different development environments and CI/CD pipelines.
-    </p>
+        <p>
+            This allows you to write integration tests that are realistic, isolated, and run consistently across different
+            development environments and CI/CD pipelines.
+        </p>
 
-    <h4>Setup</h4>
-    <p>Ensure Docker is running on your system. Then install the Python Testcontainers library:</p>
-    <pre><code class="language-bash">pip install pytest-testcontainers # Includes pytest integration
+        <h4>Setup</h4>
+        <p>Ensure Docker is running on your system. Then install the Python Testcontainers library:</p>
+        <pre><code class="language-bash">pip install pytest-testcontainers # Includes pytest integration
 # Or just pip install testcontainers if not using pytest integration
     </code></pre>
 
-    <h4>Example: Testing with a Real PostgreSQL Database</h4>
-    <p>Let's reuse our SQLAlchemy setup from Topic 1.4. Assume you have a <code>database.py</code> with your SQLAlchemy engine and session setup, and a <code>models.py</code> with your <code>User</code> ORM model.</p>
-    <pre><code class="language-python">
+        <h4>Example: Testing with a Real PostgreSQL Database</h4>
+        <p>
+            Let's reuse our SQLAlchemy setup from Topic 1.4. Assume you have a <code>database.py</code> with your SQLAlchemy
+            engine and session setup, and a <code>models.py</code> with your <code>User</code> ORM model.
+        </p>
+        <pre><code class="language-python">
 # app/database.py (simplified for example)
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import sessionmaker
@@ -186,7 +222,7 @@ from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
 class User(Base):
-    __tablename__ = "users"
+    __tablename__ = &quot;users&quot;
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     email = Column(String, unique=True)
@@ -209,24 +245,24 @@ def get_user_by_username(db_session, username: str):
     return db_session.query(User).filter(User.username == username).first()
     </code></pre>
 
-    <p>Now, write an integration test using Testcontainers:</p>
-    <pre><code class="language-python">
+        <p>Now, write an integration test using Testcontainers:</p>
+        <pre><code class="language-python">
 # tests/test_integration.py
 import pytest
 from testcontainers.postgres import PostgreSQLContainer
 
-# Import your application's database and CRUD functions
+# Import your application&#x27;s database and CRUD functions
 from app.database import get_db_session, Base, User
 from app.crud import create_user, get_user_by_username
 
 # Define a pytest fixture that spins up a PostgreSQL container
-@pytest.fixture(scope="module")
+@pytest.fixture(scope=&quot;module&quot;)
 def postgres_container():
-    with PostgreSQLContainer("postgres:15-alpine") as postgres:
+    with PostgreSQLContainer(&quot;postgres:15-alpine&quot;) as postgres:
         yield postgres
 
 # Define a pytest fixture that provides a database session for tests
-@pytest.fixture(scope="function")
+@pytest.fixture(scope=&quot;function&quot;)
 def db_session(postgres_container):
     # Get the connection URL from the running container
     db_url = postgres_container.get_connection_url()
@@ -241,28 +277,31 @@ def db_session(postgres_container):
 
 def test_create_and_get_user(db_session):
     # Use the real database session provided by the fixture
-    created_user = create_user(db_session, "testuser", "test@example.com")
-    assert created_user.username == "testuser"
-    assert created_user.email == "test@example.com"
+    created_user = create_user(db_session, &quot;testuser&quot;, &quot;test@example.com&quot;)
+    assert created_user.username == &quot;testuser&quot;
+    assert created_user.email == &quot;test@example.com&quot;
     assert created_user.id is not None
 
-    found_user = get_user_by_username(db_session, "testuser")
-    assert found_user.username == "testuser"
-    assert found_user.email == "test@example.com"
+    found_user = get_user_by_username(db_session, &quot;testuser&quot;)
+    assert found_user.username == &quot;testuser&quot;
+    assert found_user.email == &quot;test@example.com&quot;
     assert found_user.id == created_user.id
 
 def test_get_non_existent_user(db_session):
-    found_user = get_user_by_username(db_session, "nonexistent")
+    found_user = get_user_by_username(db_session, &quot;nonexistent&quot;)
     assert found_user is None
     </code></pre>
-    <p>When you run <code>pytest</code>, Testcontainers will automatically start a PostgreSQL container, configure your test to connect to it, and tear it down after the tests complete. This provides a clean, isolated database for each test run.</p>
+        <p>
+            When you run <code>pytest</code>, Testcontainers will automatically start a PostgreSQL container, configure your
+            test to connect to it, and tear it down after the tests complete. This provides a clean, isolated database for each
+            test run.
+        </p>
 
-    
-
-    <h2>Conclusion</h2>
-    <p>
-        A comprehensive testing strategy is vital for building robust cloud-native backends. By combining fast, isolated unit tests (often with mocks) and realistic integration tests (using Testcontainers), you can achieve high confidence in your codebase, enabling faster development cycles and more reliable deployments.
-    </p>
-
-</div>    </div>
+        <h2>Conclusion</h2>
+        <p>
+            A comprehensive testing strategy is vital for building robust cloud-native backends. By combining fast, isolated
+            unit tests (often with mocks) and realistic integration tests (using Testcontainers), you can achieve high
+            confidence in your codebase, enabling faster development cycles and more reliable deployments.
+        </p>
+    </section>
 </div>

@@ -1,157 +1,268 @@
 <div class="exam-content">
-    <header class="exam-header">
-        <h1>Unit 8 Final Exam: Service Security</h1>
-        <p class="exam-intro">This comprehensive exam covers all the material from Unit 8, testing your understanding of secure service connections, credential management, and CI/CD security patterns.</p>
+    <header class="exam-header" aria-label="Header">
+        <h1>8-3: Unit 8 Final Exam - Systems Integration</h1>
+        <p class="exam-intro">
+            This comprehensive exam covers all the material from Unit 8, testing your understanding of secure service connections, credential management, CI/CD security patterns, mTLS communication, and Infrastructure as Code security practices.
+        </p>
     </header>
 
-    <div class="quiz-section">
-        <div class="quiz-container">
-            <!-- Question 1 -->
-            <div class="quiz-card active-card" data-question="1">
-                <div class="question">
-                    <p>1. (8.1) What is the most significant security risk of hardcoding secrets like API keys in source code?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q1" value="a"> a) It makes the code harder to read.</label></li>
-                        <li><label><input type="radio" name="q1" value="b"> b) It can lead to "secret sprawl," making secrets difficult to rotate and audit, and exposes them to anyone with code access.</label></li>
-                        <li><label><input type="radio" name="q1" value="c"> c) It slows down the application's startup time.</label></li>
-                        <li><label><input type="radio" name="q1" value="d"> d) It increases the size of the final container image.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
+    <div class="quiz-container">
+        <!-- Question 1 -->
+        <div class="quiz-card active-card" data-question="1">
+            <div class="question">
+                <p>1. (8.1) What is the most significant security risk of hardcoding secrets like API keys in source code?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q1" value="a" /> a) It makes the code harder to read.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q1" value="b" /> b) It can lead to "secret sprawl," making secrets difficult
+                            to rotate and audit, and exposes them to anyone with code access.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q1" value="c" /> c) It slows down the application's startup time.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q1" value="d" /> d) It increases the size of the final container
+                            image.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
             </div>
-
-            <!-- Question 2 -->
-            <div class="quiz-card" data-question="2">
-                <div class="question">
-                    <p>2. (8.1) What is the primary function of the Vault Agent Injector in a Kubernetes environment?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q2" value="a"> a) To scan pods for security vulnerabilities.</label></li>
-                        <li><label><input type="radio" name="q2" value="b"> b) To automatically add a sidecar container to pods, which handles Vault authentication and secret retrieval.</label></li>
-                        <li><label><input type="radio" name="q2" value="c"> c) To provide a UI for managing Vault secrets from within the Kubernetes dashboard.</label></li>
-                        <li><label><input type="radio" name="q2" value="d"> d) To encrypt network traffic between pods.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 3 -->
-            <div class="quiz-card" data-question="3">
-                <div class="question">
-                    <p>3. (8.1) What is a major security limitation of using standard Kubernetes Secrets by default?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q3" value="a"> a) They can only store a single key-value pair.</label></li>
-                        <li><label><input type="radio" name="q3" value="b"> b) They are only base64 encoded, not encrypted at rest in etcd unless explicitly configured.</label></li>
-                        <li><label><input type="radio" name="q3" value="c"> c) They cannot be mounted as environment variables.</label></li>
-                        <li><label><input type="radio" name="q3" value="d"> d) They automatically expire after 24 hours.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 4 -->
-            <div class="quiz-card" data-question="4">
-                <div class="question">
-                    <p>4. (8.1) How does IAM Roles for Service Accounts (IRSA) improve the security of pods running on AWS EKS?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q4" value="a"> a) It gives every pod administrator-level access to the AWS API.</label></li>
-                        <li><label><input type="radio" name="q4" value="b"> b) It allows pods to assume an IAM Role and receive temporary, short-lived AWS credentials, avoiding static keys.</label></li>
-                        <li><label><input type="radio" name="q4" value="c"> c) It forces all pods to use the same shared IAM Role.</label></li>
-                        <li><label><input type="radio" name="q4" value="d"> d) It encrypts the pod's memory.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 5 -->
-            <div class="quiz-card" data-question="5">
-                <div class="question">
-                    <p>5. (8.1) What is the key difference between standard TLS and mutual TLS (mTLS)?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q5" value="a"> a) mTLS uses a stronger encryption algorithm.</label></li>
-                        <li><label><input type="radio" name="q5" value="b"> b) In mTLS, both the client and the server authenticate each other using certificates; in standard TLS, only the client authenticates the server.</label></li>
-                        <li><label><input type="radio" name="q5" value="c"> c) mTLS does not require a Certificate Authority (CA).</label></li>
-                        <li><label><input type="radio" name="q5" value="d"> d) mTLS is a feature of TCP, while TLS is a feature of HTTP.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 6 -->
-            <div class="quiz-card" data-question="6">
-                <div class="question">
-                    <p>6. (8.2) Why is a CI/CD pipeline considered a highly privileged and sensitive system?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q6" value="a"> a) Because it runs on the most powerful servers.</label></li>
-                        <li><label><input type="radio" name="q6" value="b"> b) Because it typically holds the credentials needed to deploy applications and modify production infrastructure.</label></li>
-                        <li><label><input type="radio" name="q6" value="c"> c) Because it stores the entire git history of the project.</label></li>
-                        <li><label><input type="radio" name="q6" value="d"> d) Because it is the only system that developers have access to.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 7 -->
-            <div class="quiz-card" data-question="7">
-                <div class="question">
-                    <p>7. (8.2) What is the modern, recommended pattern for allowing a CI/CD job (e.g., in GitHub Actions) to authenticate to a cloud provider or Vault?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q7" value="a"> a) Storing a permanent, static API key as a secret and using it for all jobs.</label></li>
-                        <li><label><input type="radio" name="q7" value="b"> b) Using OpenID Connect (OIDC) to exchange a short-lived JWT for temporary credentials.</label></li>
-                        <li><label><input type="radio" name="q7" value="c"> c) Allowing anonymous access from the CI/CD system's IP address.</label></li>
-                        <li><label><input type="radio" name="q7" value="d"> d) Embedding the credentials in the CI/CD configuration file.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 8 -->
-            <div class="quiz-card" data-question="8">
-                <div class="question">
-                    <p>8. (8.2) What is the primary purpose of a tool like Atlantis?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q8" value="a"> a) To manage Kubernetes clusters.</label></li>
-                        <li><label><input type="radio" name="q8" value="b"> b) To automate Terraform workflows by running `plan` and `apply` from pull request comments.</label></li>
-                        <li><label><input type="radio" name="q8" value="c"> c) To scan Terraform code for security issues.</label></li>
-                        <li><label><input type="radio" name="q8" value="d"> d) To provide a graphical UI for writing Terraform code.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 9 -->
-            <div class="quiz-card" data-question="9">
-                <div class="question">
-                    <p>9. (8.2) When configuring an IAM Role in AWS to be assumed by a GitHub Actions workflow via OIDC, what is configured in the role's "Trust Policy"?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q9" value="a"> a) The specific AWS permissions the role should have.</label></li>
-                        <li><label><input type="radio" name="q9" value="b"> b) The identity of the OIDC provider (GitHub) and conditions (like the repository name) that are allowed to assume the role.</label></li>
-                        <li><label><input type="radio" name="q9" value="c"> c) A list of GitHub usernames that can use the role.</label></li>
-                        <li><label><input type="radio" name="q9" value="d"> d) The AWS access key and secret key.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 10 -->
-            <div class="quiz-card" data-question="10">
-                <div class="question">
-                    <p>10. (8.1) A service mesh like Istio or Consul provides which of the following security benefits automatically?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q10" value="a"> a) Static Application Security Testing (SAST).</label></li>
-                        <li><label><input type="radio" name="q10" value="b"> b) Software Composition Analysis (SCA).</label></li>
-                        <li><label><input type="radio" name="q10" value="c"> c) Secure, encrypted, and authenticated service-to-service communication via mTLS.</label></li>
-                        <li><label><input type="radio" name="q10" value="d"> d) Dynamic secrets management for databases.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="c"></div>
-                </div>
-            </div>
-
-            <div class="quiz-navigation">
-                <button class="quiz-btn" id="prev-question">Previous</button>
-                <button class="quiz-btn" id="next-question">Next</button>
-                <button class="quiz-btn" id="submit-quiz" style="display: none;">Submit Answers</button>
-            </div>
-            <div class="quiz-results-container"></div>
         </div>
+
+        <!-- Question 2 -->
+        <div class="quiz-card" data-question="2">
+            <div class="question">
+                <p>2. (8.1) What is the primary function of the Vault Agent Injector in a Kubernetes environment?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q2" value="a" /> a) To scan pods for security vulnerabilities.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q2" value="b" /> b) To automatically add a sidecar container to pods, which
+                            handles Vault authentication and secret retrieval.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q2" value="c" /> c) To provide a UI for managing Vault secrets from within
+                            the Kubernetes dashboard.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q2" value="d" /> d) To encrypt network traffic between pods.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="quiz-card" data-question="3">
+            <div class="question">
+                <p>3. (8.1) What is a major security limitation of using standard Kubernetes Secrets by default?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q3" value="a" /> a) They can only store a single key-value pair.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q3" value="b" /> b) They are only base64 encoded, not encrypted at rest in
+                            etcd unless explicitly configured.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q3" value="c" /> c) They cannot be mounted as environment variables.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q3" value="d" /> d) They automatically expire after 24 hours.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="quiz-card" data-question="4">
+            <div class="question">
+                <p>4. (8.1) How does IAM Roles for Service Accounts (IRSA) improve the security of pods running on AWS EKS?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q4" value="a" /> a) It gives every pod administrator-level access to the AWS
+                            API.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q4" value="b" /> b) It allows pods to assume an IAM Role and receive
+                            temporary, short-lived AWS credentials, avoiding static keys.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q4" value="c" /> c) It forces all pods to use the same shared IAM
+                            Role.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q4" value="d" /> d) It encrypts the pod's memory.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="quiz-card" data-question="5">
+            <div class="question">
+                <p>5. (8.1) What is the key difference between standard TLS and mutual TLS (mTLS)?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q5" value="a" /> a) mTLS uses a stronger encryption algorithm.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q5" value="b" /> b) In mTLS, both the client and the server authenticate each
+                            other using certificates; in standard TLS, only the client authenticates the server.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q5" value="c" /> c) mTLS does not require a Certificate Authority
+                            (CA).</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q5" value="d" /> d) mTLS is a feature of TCP, while TLS is a feature of
+                            HTTP.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="quiz-card" data-question="6">
+            <div class="question">
+                <p>6. (8.2) Why is a CI/CD pipeline considered a highly privileged and sensitive system?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q6" value="a" /> a) Because it runs on the most powerful servers.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q6" value="b" /> b) Because it typically holds the credentials needed to
+                            deploy applications and modify production infrastructure.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q6" value="c" /> c) Because it stores the entire git history of the
+                            project.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q6" value="d" /> d) Because it is the only system that developers have access
+                            to.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="quiz-card" data-question="7">
+            <div class="question">
+                <p>
+                    7. (8.2) What is the modern, recommended pattern for allowing a CI/CD job (e.g., in GitHub Actions) to
+                    authenticate to a cloud provider or Vault?
+                </p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q7" value="a" /> a) Storing a permanent, static API key as a secret and using
+                            it for all jobs.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q7" value="b" /> b) Using OpenID Connect (OIDC) to exchange a short-lived JWT
+                            for temporary credentials.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q7" value="c" /> c) Allowing anonymous access from the CI/CD system's IP
+                            address.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q7" value="d" /> d) Embedding the credentials in the CI/CD configuration
+                            file.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="quiz-card" data-question="8">
+            <div class="question">
+                <p>8. (8.2) What is the primary purpose of a tool like Atlantis?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q8" value="a" /> a) To manage Kubernetes clusters.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q8" value="b" /> b) To automate Terraform workflows by running `plan` and
+                            `apply` from pull request comments.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q8" value="c" /> c) To scan Terraform code for security issues.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q8" value="d" /> d) To provide a graphical UI for writing Terraform
+                            code.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="quiz-card" data-question="9">
+            <div class="question">
+                <p>
+                    9. (8.2) When configuring an IAM Role in AWS to be assumed by a GitHub Actions workflow via OIDC, what is
+                    configured in the role's "Trust Policy"?
+                </p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q9" value="a" /> a) The specific AWS permissions the role should have.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q9" value="b" /> b) The identity of the OIDC provider (GitHub) and conditions
+                            (like the repository name) that are allowed to assume the role.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q9" value="c" /> c) A list of GitHub usernames that can use the role.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q9" value="d" /> d) The AWS access key and secret key.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="quiz-card" data-question="10">
+            <div class="question">
+                <p>
+                    10. (8.1) A service mesh like Istio or Consul provides which of the following security benefits automatically?
+                </p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q10" value="a" /> a) Static Application Security Testing (SAST).</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q10" value="b" /> b) Software Composition Analysis (SCA).</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q10" value="c" /> c) Secure, encrypted, and authenticated service-to-service
+                            communication via mTLS.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q10" value="d" /> d) Dynamic secrets management for databases.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button type="button" class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <div class="quiz-progress">Question 1 of 10</div>
+            <button type="button" class="btn btn-outline-primary" id="next-question">Next</button>
+            <button type="button" class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
+        </div>
+        <div class="quiz-results-container"></div>
     </div>
 </div>

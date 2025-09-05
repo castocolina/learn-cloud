@@ -1,17 +1,29 @@
 <div class="quiz-content">
-<header class="quiz-header">
+    <header class="quiz-header" aria-label="Header">
+        <h1>2-2: Quiz - Overview &amp; Foundational Concepts</h1>
+        <p class="quiz-intro">Test your understanding of overview &amp; foundational concepts concepts and best practices.</p>
+    </header>
 
-            <h2>Quiz: Overview & Foundational Concepts</h2>
-
-        <div class="quiz-container">
+    <div class="quiz-container">
         <div class="quiz-card active-card" data-question="1">
             <div class="question">
                 <p>1. Which of the following best describes Go's type system?</p>
                 <ul class="options">
-                    <li><label for="q1a"><input type="radio" id="q1a" name="q1" value="a"> a) Dynamically typed, like Python.</label></li>
-                    <li><label for="q1b"><input type="radio" id="q1b" name="q1" value="b"> b) Statically typed, where types are checked at compile time.</label></li>
-                    <li><label for="q1c"><input type="radio" id="q1c" name="q1" value="c"> c) Duck-typed, where types are determined by behavior at runtime.</label></li>
-                    <li><label for="q1d"><input type="radio" id="q1d" name="q1" value="d"> d) Optionally typed, where type hints are not enforced.</label></li>
+                    <li>
+                        <label><input type="radio" id="q1a" name="q1" value="a" /> a) Dynamically typed, like Python.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q1b" name="q1" value="b" /> b) Statically typed, where types are checked at
+                            compile time.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q1c" name="q1" value="c" /> c) Duck-typed, where types are determined by
+                            behavior at runtime.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q1d" name="q1" value="d" /> d) Optionally typed, where type hints are not
+                            enforced.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="b"></div>
             </div>
@@ -21,10 +33,21 @@
             <div class="question">
                 <p>2. What is the idiomatic way to handle errors in Go?</p>
                 <ul class="options">
-                    <li><label for="q2a"><input type="radio" id="q2a" name="q2" value="a"> a) Using `try...catch` blocks.</label></li>
-                    <li><label for="q2b"><input type="radio" id="q2b" name="q2" value="b"> b) Returning an error value and checking `if err != nil`.</label></li>
-                    <li><label for="q2c"><input type="radio" id="q2c" name="q2" value="c"> c) Raising exceptions that bubble up the call stack.</label></li>
-                    <li><label for="q2d"><input type="radio" id="q2d" name="q2" value="d"> d) Ignoring errors and letting the program crash.</label></li>
+                    <li>
+                        <label><input type="radio" id="q2a" name="q2" value="a" /> a) Using `try...catch` blocks.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q2b" name="q2" value="b" /> b) Returning an error value and checking `if err
+                            != nil`.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q2c" name="q2" value="c" /> c) Raising exceptions that bubble up the call
+                            stack.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q2d" name="q2" value="d" /> d) Ignoring errors and letting the program
+                            crash.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="b"></div>
             </div>
@@ -34,10 +57,21 @@
             <div class="question">
                 <p>3. How does a type implement an interface in Go?</p>
                 <ul class="options">
-                    <li><label for="q3a"><input type="radio" id="q3a" name="q3" value="a"> a) By explicitly using the `implements` keyword.</label></li>
-                    <li><label for="q3b"><input type="radio" id="q3b" name="q3" value="b"> b) By inheriting from the interface type.</label></li>
-                    <li><label for="q3c"><input type="radio" id="q3c" name="q3" value="c"> c) Implicitly, by defining all the methods required by the interface.</label></li>
-                    <li><label for="q3d"><input type="radio" id="q3d" name="q3" value="d"> d) By registering the type with a central interface manager.</label></li>
+                    <li>
+                        <label><input type="radio" id="q3a" name="q3" value="a" /> a) By explicitly using the `implements`
+                            keyword.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q3b" name="q3" value="b" /> b) By inheriting from the interface type.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q3c" name="q3" value="c" /> c) Implicitly, by defining all the methods
+                            required by the interface.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q3d" name="q3" value="d" /> d) By registering the type with a central
+                            interface manager.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="c"></div>
             </div>
@@ -47,10 +81,18 @@
             <div class="question">
                 <p>4. Which composite type in Go is most similar to a Python class for grouping data fields?</p>
                 <ul class="options">
-                    <li><label for="q4a"><input type="radio" id="q4a" name="q4" value="a"> a) Slice</label></li>
-                    <li><label for="q4b"><input type="radio" id="q4b" name="q4" value="b"> b) Map</label></li>
-                    <li><label for="q4c"><input type="radio" id="q4c" name="q4" value="c"> c) Interface</label></li>
-                    <li><label for="q4d"><input type="radio" id="q4d" name="q4" value="d"> d) Struct</label></li>
+                    <li>
+                        <label><input type="radio" id="q4a" name="q4" value="a" /> a) Slice</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q4b" name="q4" value="b" /> b) Map</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q4c" name="q4" value="c" /> c) Interface</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q4d" name="q4" value="d" /> d) Struct</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="d"></div>
             </div>
@@ -58,22 +100,37 @@
 
         <div class="quiz-card" data-question="5">
             <div class="question">
-                <p>5. What are the primary reasons for using a pointer (`*User`) as a function parameter in Go? (Select all that apply)</p>
+                <p>
+                    5. What are the primary reasons for using a pointer (`*User`) as a function parameter in Go? (Select all
+                    that apply)
+                </p>
                 <ul class="options">
-                    <li><label for="q5a"><input type="checkbox" id="q5a" name="q5" value="a"> a) To allow the function to modify the original object.</label></li>
-                    <li><label for="q5b"><input type="checkbox" id="q5b" name="q5" value="b"> b) To prevent the garbage collector from deleting the object.</label></li>
-                    <li><label for="q5c"><input type="checkbox" id="q5c" name="q5" value="c"> c) To avoid copying a large data structure, improving performance.</label></li>
-                    <li><label for="q5d"><input type="checkbox" id="q5d" name="q5" value="d"> d) To make the parameter optional.</label></li>
+                    <li>
+                        <label><input type="checkbox" id="q5a" name="q5" value="a" /> a) To allow the function to modify the original
+                            object.</label>
+                    </li>
+                    <li>
+                        <label><input type="checkbox" id="q5b" name="q5" value="b" /> b) To prevent the garbage collector from
+                            deleting the object.</label>
+                    </li>
+                    <li>
+                        <label><input type="checkbox" id="q5c" name="q5" value="c" /> c) To avoid copying a large data structure,
+                            improving performance.</label>
+                    </li>
+                    <li>
+                        <label><input type="checkbox" id="q5d" name="q5" value="d" /> d) To make the parameter optional.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="a,c"></div>
             </div>
         </div>
 
         <div class="quiz-navigation">
-            <button class="quiz-btn" id="prev-question">Previous</button>
-            <button class="quiz-btn" id="next-question">Next</button>
-            <button class="quiz-btn" id="submit-quiz" style="display: none;">Submit Answers</button>
+            <button type="button" class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <div class="quiz-progress">Question 1 of 5</div>
+            <button type="button" class="btn btn-outline-primary" id="next-question">Next</button>
+            <button type="button" class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
         </div>
         <div class="quiz-results-container"></div>
     </div>
-</div></div>
+</div>

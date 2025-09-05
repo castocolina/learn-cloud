@@ -1,120 +1,95 @@
 <div class="study-aids-content">
-    <header class="study-aids-header">
-        <h2>Study Aids: Go Real-Time Analytics Pipeline Project</h2>
+    <header class="study-aids-header" aria-label="Header">
+        <h1>Unit 9-2: Study Aids - Go Real-Time Analytics Pipeline</h1>
+        <p class="study-aids-intro">
+            Review key concepts from the Go-based Real-Time Analytics Pipeline capstone project. These flashcards cover gRPC streaming, Apache Kafka, time-series databases, and distributed system architecture.
+        </p>
     </header>
-    <div class="content-card">
-        <div class="card-header">
-            Key Takeaways
-        </div>
-        <div class="card-body">
-            <ul>
-                <li><strong>High-Performance Architecture:</strong> Use Go's concurrency (goroutines) and gRPC for maximum throughput and low-latency data ingestion and processing.</li>
-                <li><strong>Event Streaming:</strong> Apache Kafka provides durable, scalable message streaming for real-time data pipelines with strong guarantees.</li>
-                <li><strong>Time-Series Storage:</strong> Specialized databases like InfluxDB or TimescaleDB are optimized for time-based analytics and aggregations.</li>
-                <li><strong>Protocol Buffers:</strong> Use protobuf with gRPC for strongly-typed, efficient serialization in high-performance systems.</li>
-                <li><strong>Microservices Separation:</strong> Separate ingestion, processing, and query concerns for better scalability and maintainability.</li>
-            </ul>
-        </div>
-    </div>
     <div class="flashcards-container">
-
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What are the three core services in the Go real-time analytics pipeline project?</p>
-            </div>
+                    <p>What are the main components in the real-time analytics pipeline and their data flow?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p><strong>Ingestion Service</strong> (gRPC endpoint for high-volume event data), <strong>Processing Service</strong> (background worker consuming from Kafka and performing aggregations), and <strong>Query Service</strong> (REST API for retrieving analytics data).</p>
+                    <p>
+                        <strong>Data Flow:</strong> Data Source → Ingestion Service (gRPC) → Apache Kafka → Processing Service → Time-Series DB → Query Service (REST API). Each component handles a specific aspect: ingestion via gRPC streams, event publishing to Kafka, stream processing for aggregations, and query serving via REST API.
+                    </p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand">
                 <i class="bi bi-arrows-angle-expand"></i>
             </button>
         </div>
-
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>Why is gRPC chosen over REST for the data ingestion endpoint?</p>
-            </div>
+                    <p>Why is gRPC chosen for the data ingestion interface instead of REST?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>gRPC provides <strong>higher performance</strong> through HTTP/2 and binary serialization, <strong>strongly-typed contracts</strong> via Protocol Buffers, <strong>streaming support</strong> for continuous data ingestion, and <strong>efficient resource utilization</strong> for high-volume scenarios.</p>
+                    <p>
+                        gRPC provides bidirectional streaming capabilities essential for real-time data ingestion, with lower latency and better performance than REST. It supports efficient binary serialization (Protocol Buffers), built-in load balancing, and maintains persistent connections ideal for high-throughput data streams.
+                    </p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand">
                 <i class="bi bi-arrows-angle-expand"></i>
             </button>
         </div>
-
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What role does Apache Kafka play in this architecture?</p>
-            </div>
+                    <p>What role does Apache Kafka play in the analytics pipeline architecture?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Kafka acts as a <strong>durable event streaming platform</strong> that decouples ingestion from processing, provides <strong>message persistence</strong> and replay capabilities, enables <strong>horizontal scaling</strong>, and offers <strong>fault tolerance</strong> for real-time data pipelines.</p>
+                    <p>
+                        Kafka serves as the central event streaming platform, decoupling the Ingestion Service from Processing Service. It provides durable message storage, horizontal scaling, fault tolerance, and replay capabilities. This enables the system to handle high-volume data streams while maintaining reliability and processing guarantees.
+                    </p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand">
                 <i class="bi bi-arrows-angle-expand"></i>
             </button>
         </div>
-
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>How does Go's concurrency model benefit the Processing Service?</p>
-            </div>
+                    <p>Why is a Time-Series Database specifically chosen for storing aggregated analytics data?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Go's <strong>goroutines</strong> enable processing multiple Kafka events in parallel with minimal overhead, the <strong>channel system</strong> facilitates safe communication between goroutines, and the <strong>lightweight threading model</strong> allows handling thousands of concurrent operations efficiently.</p>
+                    <p>
+                        Time-Series DBs are optimized for timestamp-indexed data with high write throughput and efficient range queries. They provide built-in compression, retention policies, and aggregation functions essential for analytics workloads. This makes them ideal for IoT data, metrics, and real-time analytics scenarios requiring temporal data operations.
+                    </p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand">
                 <i class="bi bi-arrows-angle-expand"></i>
             </button>
         </div>
-
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>Why use a specialized time-series database instead of a traditional relational database?</p>
-            </div>
+                    <p>How does the Query Service provide access to processed analytics data?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Time-series databases like <strong>InfluxDB or TimescaleDB</strong> are optimized for <strong>time-based data storage</strong>, provide efficient <strong>data compression</strong> for historical data, offer built-in <strong>aggregation functions</strong>, and support <strong>high-throughput writes</strong> with time-based retention policies.</p>
+                    <p>
+                        The Query Service exposes a REST API that allows users and applications to retrieve aggregated analytics data from the Time-Series Database. It handles query optimization, data formatting, and provides a standard HTTP interface that can be easily consumed by dashboards, applications, and monitoring tools.
+                    </p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand">
                 <i class="bi bi-arrows-angle-expand"></i>
             </button>
         </div>
-
     </div>
-
-    <!-- Flashcard Modal -->
-    <dialog id="flashcard-modal" class="flashcard-modal">
-        <div class="modal-content">
-            <header class="modal-header">
-                <h3 id="modal-question">Question</h3>
-                <button class="modal-close-btn" onclick="closeFlashcardModal()">
-                    <i class="bi bi-x-lg"></i>
-                </button>
-            </header>
-            <div class="modal-body">
-                <div class="modal-answer">
-                    <h4>Answer</h4>
-                    <div id="modal-answer-content">Answer content will appear here</div>
-                </div>
-            </div>
-        </div>
-    </dialog>
 </div>

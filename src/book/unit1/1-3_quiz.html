@@ -1,17 +1,29 @@
 <div class="quiz-content">
-<header class="quiz-header">
+    <header class="quiz-header" aria-label="Header">
+        <h1>Unit 1-3: Quiz - Code Quality and Standards</h1>
+        <p class="quiz-intro">
+            Test your understanding of the concepts covered in Topic 1-3.
+        </p>
+    </header>
 
-            <h2>Quiz: Code Quality and Standards</h2>
-
-        <div class="quiz-container">
+    <div class="quiz-container">
         <div class="quiz-card active-card" data-question="1">
             <div class="question">
                 <p>1. What is the primary purpose of PEP 8?</p>
                 <ul class="options">
-                    <li><label for="q1a"><input type="radio" id="q1a" name="q1" value="a"> a) To define Python's syntax rules.</label></li>
-                    <li><label for="q1b"><input type="radio" id="q1b" name="q1" value="b"> b) To provide style conventions for Python code.</label></li>
-                    <li><label for="q1c"><input type="radio" id="q1c" name="q1" value="c"> c) To manage Python package dependencies.</label></li>
-                    <li><label for="q1d"><input type="radio" id="q1d" name="q1" value="d"> d) To optimize Python code for performance.</label></li>
+                    <li>
+                        <label><input type="radio" id="q1a" name="q1" value="a" /> a) To define Python's syntax rules.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q1b" name="q1" value="b" /> b) To provide style conventions for Python
+                            code.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q1c" name="q1" value="c" /> c) To manage Python package dependencies.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q1d" name="q1" value="d" /> d) To optimize Python code for performance.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="b"></div>
             </div>
@@ -21,10 +33,18 @@
             <div class="question">
                 <p>2. Which tool is known as "The Uncompromising Code Formatter" for Python?</p>
                 <ul class="options">
-                    <li><label for="q2a"><input type="radio" id="q2a" name="q2" value="a"> a) Ruff</label></li>
-                    <li><label for="q2b"><input type="radio" id="q2b" name="q2" value="b"> b) Flake8</label></li>
-                    <li><label for="q2c"><input type="radio" id="q2c" name="q2" value="c"> c) Black</label></li>
-                    <li><label for="q2d"><input type="radio" id="q2d" name="q2" value="d"> d) Pylint</label></li>
+                    <li>
+                        <label><input type="radio" id="q2a" name="q2" value="a" /> a) Ruff</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q2b" name="q2" value="b" /> b) Flake8</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q2c" name="q2" value="c" /> c) Black</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q2d" name="q2" value="d" /> d) Pylint</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="c"></div>
             </div>
@@ -34,10 +54,21 @@
             <div class="question">
                 <p>3. Which of the following are benefits of using a linter like Ruff? (Select all that apply)</p>
                 <ul class="options">
-                    <li><label for="q3a"><input type="checkbox" id="q3a" name="q3" value="a"> a) Automatically reformatting code to a consistent style.</label></li>
-                    <li><label for="q3b"><input type="checkbox" id="q3b" name="q3" value="b"> b) Identifying unused imports or variables.</label></li>
-                    <li><label for="q3c"><input type="checkbox" id="q3c" name="q3" value="c"> c) Detecting potential bugs and suspicious constructs.</label></li>
-                    <li><label for="q3d"><input type="checkbox" id="q3d" name="q3" value="d"> d) Enforcing strict naming conventions.</label></li>
+                    <li>
+                        <label><input type="checkbox" id="q3a" name="q3" value="a" /> a) Automatically reformatting code to a consistent
+                            style.</label>
+                    </li>
+                    <li>
+                        <label><input type="checkbox" id="q3b" name="q3" value="b" /> b) Identifying unused imports or
+                            variables.</label>
+                    </li>
+                    <li>
+                        <label><input type="checkbox" id="q3c" name="q3" value="c" /> c) Detecting potential bugs and suspicious
+                            constructs.</label>
+                    </li>
+                    <li>
+                        <label><input type="checkbox" id="q3d" name="q3" value="d" /> d) Enforcing strict naming conventions.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="b,c,d"></div>
             </div>
@@ -47,10 +78,22 @@
             <div class="question">
                 <p>4. What is the main advantage of using pre-commit hooks in a development workflow?</p>
                 <ul class="options">
-                    <li><label for="q4a"><input type="radio" id="q4a" name="q4" value="a"> a) They automatically deploy code to production environments.</label></li>
-                    <li><label for="q4b"><input type="radio" id="q4b" name="q4" value="b"> b) They ensure code quality standards are met before a commit is created.</label></li>
-                    <li><label for="q4c"><input type="radio" id="q4c" name="q4" value="c"> c) They provide real-time monitoring of application performance.</label></li>
-                    <li><label for="q4d"><input type="radio" id="q4d" name="q4" value="d"> d) They generate comprehensive documentation for the codebase.</label></li>
+                    <li>
+                        <label><input type="radio" id="q4a" name="q4" value="a" /> a) They automatically deploy code to production
+                            environments.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q4b" name="q4" value="b" /> b) They ensure code quality standards are met
+                            before a commit is created.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q4c" name="q4" value="c" /> c) They provide real-time monitoring of application
+                            performance.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q4d" name="q4" value="d" /> d) They generate comprehensive documentation for
+                            the codebase.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="b"></div>
             </div>
@@ -60,20 +103,29 @@
             <div class="question">
                 <p>5. According to PEP 8, what is the recommended indentation level for Python code?</p>
                 <ul class="options">
-                    <li><label for="q5a"><input type="radio" id="q5a" name="q5" value="a"> a) 2 spaces</label></li>
-                    <li><label for="q5b"><input type="radio" id="q5b" name="q5" value="b"> b) 3 spaces</label></li>
-                    <li><label for="q5c"><input type="radio" id="q5c" name="q5" value="c"> c) 4 spaces</label></li>
-                    <li><label for="q5d"><input type="radio" id="q5d" name="q5" value="d"> d) 1 tab</label></li>
+                    <li>
+                        <label><input type="radio" id="q5a" name="q5" value="a" /> a) 2 spaces</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q5b" name="q5" value="b" /> b) 3 spaces</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q5c" name="q5" value="c" /> c) 4 spaces</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q5d" name="q5" value="d" /> d) 1 tab</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="c"></div>
             </div>
         </div>
 
         <div class="quiz-navigation">
-            <button class="btn btn-outline-secondary" id="prev-question">Previous</button>
-            <button class="btn btn-outline-primary" id="next-question">Next</button>
-            <button class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
+            <button type="button" class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <div class="quiz-progress">Question 1 of 5</div>
+            <button type="button" class="btn btn-outline-primary" id="next-question">Next</button>
+            <button type="button" class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
         </div>
         <div class="quiz-results-container"></div>
     </div>
-</div></div>
+</div>

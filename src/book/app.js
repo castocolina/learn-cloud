@@ -3,6 +3,10 @@
  * Modern ES6 Single Page Application with Hierarchical Navigation
  */
 
+import { initializeFlashcards, setupGlobalFlashcardModal } from './study-aids.js';
+import { initializeQuizzes } from './quiz.js';
+import { SearchManager } from './search.js';
+
 class CloudNativeBookApp {
     constructor() {
         // Application state
@@ -29,9 +33,17 @@ class CloudNativeBookApp {
             this.cacheElements();
             this.buildHierarchicalStructure();
             this.setupEventListeners();
+            this.setupUniversalModal();
             this.initializeLibraries();
-            this.buildSearchIndex();
+            this.setupGlobalErrorHandling();
+            
+            this.searchManager = new SearchManager(this);
             this.loadBookOverview();
+            
+            setupGlobalFlashcardModal();
+            
+            // Expose global instance for use by other modules
+            window.navigationManager = this;
             
             console.log('✅ App initialization complete');
         } catch (error) {
@@ -60,14 +72,18 @@ class CloudNativeBookApp {
             contentArea: document.getElementById('content-area'),
             
             // Progress
-            unitProgress: document.getElementById('unit-progress'),
-            overallProgress: document.getElementById('overall-progress'),
+            unitProgress: document.getElementById('unit-progress-bar'),
+            overallProgress: document.getElementById('overall-progress-bar'),
             navProgress: document.getElementById('nav-progress'),
             
             // Navigation buttons
-            prevBtn: document.getElementById('prev-btn'),
-            nextBtn: document.getElementById('next-btn'),
-            floatingNav: document.getElementById('floating-nav')
+            prevBtn: document.getElementById('floating-prev'),
+            nextBtn: document.getElementById('floating-next'),
+            floatingNav: document.getElementById('floating-nav'),
+            
+            // Sticky mini header
+            stickyMiniHeader: document.getElementById('sticky-mini-header'),
+            miniTitleText: document.getElementById('mini-title-text')
         };
     }
 
@@ -204,40 +220,7 @@ class CloudNativeBookApp {
             });
         });
 
-        // Search functionality
-        if (this.elements.searchInput) {
-            this.elements.searchInput.addEventListener('input', (e) => {
-                this.handleSearch(e.target.value);
-            });
-
-            this.elements.searchInput.addEventListener('focus', () => {
-                this.elements.searchInput.parentElement.classList.add('search-focused');
-            });
-
-            this.elements.searchInput.addEventListener('blur', () => {
-                setTimeout(() => {
-                    this.elements.searchInput.parentElement.classList.remove('search-focused');
-                    this.hideSearchResults();
-                }, 200);
-            });
-
-            // Close search results when clicking outside
-            document.addEventListener('click', (e) => {
-                const searchContainer = this.elements.searchInput?.parentElement;
-                const searchResults = this.elements.searchResults;
-                
-                if (searchContainer && searchResults && 
-                    !searchContainer.contains(e.target) && 
-                    !searchResults.contains(e.target)) {
-                    this.hideSearchResults();
-                }
-            });
-
-            // Handle window resize for search results positioning
-            window.addEventListener('resize', () => {
-                this.positionSearchResults();
-            });
-        }
+        
 
         // Navigation buttons
         if (this.elements.prevBtn) {
@@ -281,6 +264,69 @@ class CloudNativeBookApp {
                 this.closeMobileMenu();
             }
         });
+
+        // Setup sticky mini header scroll listener
+        this.setupStickyMiniHeader();
+    }
+
+    setupUniversalModal() {
+        const modal = document.getElementById('universal-modal');
+        const closeBtn = modal?.querySelector('.modal-close-btn');
+        
+        if (!modal || !closeBtn) {
+            console.warn('Universal modal elements not found');
+            return;
+        }
+        
+        // Close button click handler
+        const closeHandler = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.closeUniversalModal();
+        };
+        
+        closeBtn.addEventListener('click', closeHandler);
+        closeBtn.addEventListener('touchend', closeHandler);
+        
+        // Close when clicking outside the modal content
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                this.closeUniversalModal();
+            }
+        });
+        
+        // Store modal reference for easy access
+        this.universalModal = modal;
+    }
+
+    setupStickyMiniHeader() {
+        let lastScrollY = window.scrollY;
+        
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+            
+            // Find topic header in current content
+            const topicHeader = this.elements.contentArea.querySelector('.topic-header');
+            const topicTitle = this.elements.contentArea.querySelector('.topic-title');
+            
+            if (topicHeader && topicTitle && this.elements.stickyMiniHeader && this.elements.miniTitleText) {
+                // Get the topic header's bottom position relative to the viewport
+                const headerRect = topicHeader.getBoundingClientRect();
+                const headerBottom = headerRect.bottom;
+                
+                // Show sticky header when the topic header is completely out of view
+                if (headerBottom < 0 && currentScrollY > lastScrollY) {
+                    // Scrolling down and header is out of view
+                    this.elements.miniTitleText.textContent = topicTitle.textContent;
+                    this.elements.stickyMiniHeader.classList.add('visible');
+                } else if (headerBottom > 60) {
+                    // Header is back in view
+                    this.elements.stickyMiniHeader.classList.remove('visible');
+                }
+            }
+            
+            lastScrollY = currentScrollY;
+        }, { passive: true });
     }
 
     setupTouchNavigation() {
@@ -359,7 +405,8 @@ class CloudNativeBookApp {
 
     async loadContent(url, index) {
         try {
-            console.log(`📄 Loading content: ${url} (index: ${index})`);
+            // Clean up previous sticky headers
+            this.cleanupStickyHeaders();
             
             const response = await fetch(url);
             if (!response.ok) {
@@ -371,7 +418,7 @@ class CloudNativeBookApp {
             this.currentIndex = index;
 
             this.updateUI();
-            this.initializeContentFeatures();
+            await this.initializeContentFeatures();
 
         } catch (error) {
             console.error('Error loading content:', error);
@@ -398,7 +445,6 @@ class CloudNativeBookApp {
 
         // Boundary checks
         if (newTopicIndex < 0 || newTopicIndex >= this.topics.length) {
-            console.log('Navigation boundary reached');
             return;
         }
 
@@ -438,24 +484,33 @@ class CloudNativeBookApp {
     }
 
     updateProgress() {
-        const currentTopicIndex = this.topics.findIndex(topic => topic.index === this.currentIndex);
-        const totalTopics = this.topics.length - 1; // Exclude book overview
+        // Get only content topics (excluding overview)
+        const contentTopics = this.topics.filter(topic => topic.index >= 0);
+        const totalTopics = contentTopics.length;
         
         let overallCompleted, overallPercentage, overallText;
 
         if (this.currentIndex === -1) {
-            // Book overview page
+            // Book overview page - no progress yet
             overallCompleted = 0;
             overallPercentage = 0;
             overallText = `0/${totalTopics} (0%)`;
         } else {
-            // Regular topics (currentTopicIndex - 1 because overview is at index 0)
-            overallCompleted = Math.max(0, currentTopicIndex);
-            overallPercentage = totalTopics > 0 ? (overallCompleted / totalTopics) * 100 : 0;
-            overallText = `${overallCompleted}/${totalTopics} (${Math.round(overallPercentage)}%)`;
+            // Regular topics - find position in contentTopics array
+            const topicPosition = contentTopics.findIndex(topic => topic.index === this.currentIndex);
+            if (topicPosition >= 0) {
+                overallCompleted = topicPosition + 1;
+                overallPercentage = totalTopics > 0 ? (overallCompleted / totalTopics) * 100 : 0;
+                overallText = `${overallCompleted}/${totalTopics} (${Math.round(overallPercentage)}%)`;
+            } else {
+                // Fallback
+                overallCompleted = 0;
+                overallPercentage = 0;
+                overallText = `0/${totalTopics} (0%)`;
+            }
         }
 
-        // Update overall progress
+        // Update overall progress bar
         if (this.elements.overallProgress) {
             this.elements.overallProgress.style.width = `${overallPercentage}%`;
             const progressText = this.elements.overallProgress.querySelector('.progress-text');
@@ -477,34 +532,54 @@ class CloudNativeBookApp {
     updateUnitProgress() {
         if (!this.elements.unitProgress) return;
 
-        const currentTopic = this.topics.find(topic => topic.index === this.currentIndex);
-        
-        if (!currentTopic || currentTopic.index === -1) {
-            // Book overview or not found
+        // Get unit progress label element
+        const unitProgressLabel = document.getElementById('unit-progress-label');
+        const unitTextSpan = this.elements.unitProgress.querySelector('.progress-text');
+
+        if (this.currentIndex === -1) {
+            // Overview page - no unit progress
             this.elements.unitProgress.style.width = '0%';
-            const unitProgressText = this.elements.unitProgress.querySelector('.progress-text');
-            if (unitProgressText) {
-                unitProgressText.textContent = '0%';
-            }
+            if (unitTextSpan) unitTextSpan.textContent = 'Select a topic to begin';
+            if (unitProgressLabel) unitProgressLabel.textContent = 'Unit Progress';
             return;
         }
 
+        // Find the current topic and its unit
+        const currentTopic = this.topics.find(topic => topic.index === this.currentIndex);
+        if (!currentTopic) {
+            this.elements.unitProgress.style.width = '0%';
+            if (unitTextSpan) unitTextSpan.textContent = '0%';
+            if (unitProgressLabel) unitProgressLabel.textContent = 'Unit Progress';
+            return;
+        }
+
+        // Find the unit that contains this topic
         const currentUnit = this.units.find(unit => unit.number === currentTopic.unit);
         if (currentUnit) {
-            const unitTopics = currentUnit.topics.filter(topic => topic.type !== 'unit_overview');
-            const currentTopicInUnit = unitTopics.findIndex(topic => topic.index === this.currentIndex);
+            // Calculate position within the unit
+            const unitTopics = currentUnit.topics;
+            const currentTopicPositionInUnit = unitTopics.findIndex(topic => topic.index === this.currentIndex);
             
-            if (currentTopicInUnit >= 0) {
-                const completedInUnit = currentTopicInUnit + 1;
+            if (currentTopicPositionInUnit >= 0) {
                 const totalInUnit = unitTopics.length;
+                const completedInUnit = currentTopicPositionInUnit + 1;
                 const unitProgressPercentage = (completedInUnit / totalInUnit) * 100;
+                const unitText = `${completedInUnit}/${totalInUnit} (${Math.round(unitProgressPercentage)}%)`;
                 
                 this.elements.unitProgress.style.width = `${unitProgressPercentage}%`;
-                const unitProgressText = this.elements.unitProgress.querySelector('.progress-text');
-                if (unitProgressText) {
-                    unitProgressText.textContent = `${Math.round(unitProgressPercentage)}%`;
-                }
+                if (unitTextSpan) unitTextSpan.textContent = unitText;
+                if (unitProgressLabel) unitProgressLabel.textContent = currentUnit.name;
+            } else {
+                // Fallback
+                this.elements.unitProgress.style.width = '0%';
+                if (unitTextSpan) unitTextSpan.textContent = '0%';
+                if (unitProgressLabel) unitProgressLabel.textContent = currentUnit.name;
             }
+        } else {
+            // Topic doesn't belong to any unit - reset
+            this.elements.unitProgress.style.width = '0%';
+            if (unitTextSpan) unitTextSpan.textContent = '0%';
+            if (unitProgressLabel) unitProgressLabel.textContent = 'Unit Progress';
         }
     }
 
@@ -536,67 +611,52 @@ class CloudNativeBookApp {
         console.log('🎨 Prism syntax highlighting ready');
     }
 
-    async buildSearchIndex() {
-        // Build search index with Lunr.js if available
-        if (typeof lunr === 'undefined') {
-            console.log('🔍 Lunr.js not available, using fallback search');
-            return;
-        }
-
-        try {
-            console.log('🔍 Building search index...');
-            
-            // Preload some content for indexing (sample a few important pages)
-            const importantTopics = this.topics.filter(topic => 
-                topic.type === 'unit_overview' || 
-                topic.type === 'content' || 
-                topic.type === 'overview'
-            ).slice(0, 20); // Limit to prevent too many requests
-
-            for (const topic of importantTopics) {
-                try {
-                    const response = await fetch(topic.url);
-                    if (response.ok) {
-                        const html = await response.text();
-                        // Extract text content from HTML
-                        const parser = new DOMParser();
-                        const doc = parser.parseFromString(html, 'text/html');
-                        topic.content = doc.body.textContent || doc.body.innerText || '';
-                    }
-                } catch (error) {
-                    console.warn(`Failed to load content for indexing: ${topic.url}`);
-                }
-            }
-
-            // Build Lunr index
-            const topics = this.topics;
-            this.searchIndex = lunr(function () {
-                this.ref('index');
-                this.field('title', { boost: 10 });
-                this.field('content');
-                this.field('type');
-
-                // Add documents to index
-                for (const topic of topics) {
-                    this.add({
-                        index: topic.index,
-                        title: topic.title,
-                        content: topic.content || '',
-                        type: topic.type
-                    });
-                }
-            });
-
-            console.log('✅ Search index built successfully');
-        } catch (error) {
-            console.error('❌ Failed to build search index:', error);
-        }
+    setupGlobalErrorHandling() {
+        // Handle unhandled promise rejections
+        window.addEventListener('unhandledrejection', (event) => {
+            console.error('Unhandled promise rejection:', event.reason);
+            event.preventDefault();
+        });
+        
+        // Handle global errors
+        window.addEventListener('error', (event) => {
+            console.error('Global error:', event.error);
+        });
     }
 
-    initializeContentFeatures() {
-        // Re-run Mermaid on new content
+    
+
+    async initializeContentFeatures() {
+        // Re-run Mermaid on new content with error handling
         if (typeof mermaid !== 'undefined') {
-            mermaid.run({ nodes: this.elements.contentArea.querySelectorAll('.mermaid') });
+            try {
+                const mermaidNodes = this.elements.contentArea.querySelectorAll('.mermaid');
+                if (mermaidNodes.length > 0) {
+                    // Extract content from nested script tags if present
+                    mermaidNodes.forEach((node) => {
+                        const scriptTag = node.querySelector('script[type="text/plain"]');
+                        if (scriptTag) {
+                            // Replace the content with the script content
+                            node.textContent = scriptTag.textContent.trim();
+                        }
+                    });
+                    
+                    await mermaid.run({ nodes: mermaidNodes });
+                }
+            } catch (error) {
+                console.error('❌ Mermaid initialization failed:', error);
+                console.error('📋 Mermaid error details:', {
+                    message: error.message || 'Unknown error',
+                    stack: error.stack || 'No stack trace available'
+                });
+                
+                // Try to identify which diagram failed
+                const mermaidNodes = this.elements.contentArea.querySelectorAll('.mermaid');
+                mermaidNodes.forEach((node, index) => {
+                    const diagramText = node.textContent.trim();
+                    console.log(`📊 Diagram ${index + 1} content:`, diagramText.substring(0, 100) + '...');
+                });
+            }
         }
 
         // Re-run Prism on new content
@@ -608,371 +668,119 @@ class CloudNativeBookApp {
         this.initializeMermaidInteractivity();
 
         // Initialize any interactive content
-        this.initializeFlashcards();
-        this.initializeQuizzes();
+        initializeFlashcards(this.elements.contentArea);
+        initializeQuizzes(this.elements.contentArea);
         this.initializeUnitOverviewFeatures();
         
-        // Setup flashcard modal
-        setupFlashcardModal();
+        
+        
+        // Initialize sticky header functionality
+        this.initializeStickyHeader();
     }
 
-    initializeFlashcards() {
-        const flashcards = this.elements.contentArea.querySelectorAll('.flashcard');
-        console.log(`🎴 Found ${flashcards.length} flashcards to initialize`);
+    initializeStickyHeader() {
+        // Find any title that could be sticky (topic, quiz, study aids)
+        let titleElement = null;
+        let headerElement = null;
         
-        flashcards.forEach((flashcard, index) => {
-            // Ensure the flashcard has the proper event listener
-            const inner = flashcard.querySelector('.flashcard-inner');
-            if (inner) {
-                // Remove onclick attribute to prevent conflicts
-                inner.removeAttribute('onclick');
-                
-                // Add JavaScript event listener
-                inner.addEventListener('click', function(e) {
-                    // Don't flip if clicking on the expand button
-                    if (e.target.closest('.flashcard-expand-btn')) {
-                        return;
-                    }
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
-                    const flashcardElement = this.parentElement;
-                    flashcardElement.classList.toggle('flipped');
-                    console.log(`🔄 Flashcard ${index + 1} flipped:`, flashcardElement.classList.contains('flipped'));
-                });
+        // Check for different page types
+        const topicTitle = this.elements.contentArea.querySelector('.topic-title');
+        const quizTitle = this.elements.contentArea.querySelector('.quiz-header h2, .exam-header h1');
+        const studyAidsTitle = this.elements.contentArea.querySelector('.study-aids-header h2');
+        const unitTitle = this.elements.contentArea.querySelector('.unit-header h1');
+        
+        if (topicTitle) {
+            titleElement = topicTitle;
+            headerElement = this.elements.contentArea.querySelector('.topic-header');
+        } else if (quizTitle) {
+            titleElement = quizTitle;
+            headerElement = this.elements.contentArea.querySelector('.quiz-header, .exam-header');
+        } else if (studyAidsTitle) {
+            titleElement = studyAidsTitle;
+            headerElement = this.elements.contentArea.querySelector('.study-aids-header');
+        } else if (unitTitle) {
+            titleElement = unitTitle;
+            headerElement = this.elements.contentArea.querySelector('.unit-header');
+        }
+        
+        if (!titleElement || !headerElement) {
+            // Hide sticky header if no title found
+            if (this.elements.stickyMiniHeader) {
+                this.elements.stickyMiniHeader.classList.remove('visible');
             }
-        });
-    }
-
-    initializeQuizzes() {
-        const quizContainers = this.elements.contentArea.querySelectorAll('.quiz-container');
-        console.log(`🧪 Found ${quizContainers.length} quiz/exam containers`);
-        
-        quizContainers.forEach(container => {
-            this.setupQuizContainer(container);
-        });
-    }
-
-    setupQuizContainer(container) {
-        const cards = container.querySelectorAll('.quiz-card');
-        const navigation = container.querySelector('.quiz-navigation');
-        const resultsContainer = container.querySelector('.quiz-results-container');
-        
-        if (cards.length === 0) {
-            console.warn('No quiz cards found in container');
             return;
         }
 
-        // Quiz state
-        const quizState = {
-            currentQuestion: 0,
-            totalQuestions: cards.length,
-            answers: {},
-            isExam: container.closest('.exam-content') !== null
+        // Use the existing sticky mini header from HTML
+        const stickyMiniHeader = this.elements.stickyMiniHeader;
+        const miniTitleText = this.elements.miniTitleText;
+        
+        if (!stickyMiniHeader || !miniTitleText) {
+            return; // Elements not found
+        }
+
+        // Update the mini header text with original title (preserve all prefixes)
+        const titleText = titleElement.textContent.trim();
+        miniTitleText.textContent = titleText;
+
+        // Setup scroll detection - show mini header when main title is not visible
+        let isVisible = false;
+        const handleScroll = () => {
+            const headerRect = headerElement.getBoundingClientRect();
+            
+            // Improved scroll detection with responsive thresholds
+            const isMobile = window.innerWidth <= 768;
+            const threshold = isMobile ? 100 : 120; // Mobile: below mobile header + progress, Desktop: below progress bar
+            
+            // Use header bottom position for more consistent detection
+            // This ensures mini header appears when the main header is scrolled out of visible area
+            const shouldShow = headerRect.bottom <= threshold && headerRect.top < 0;
+            
+            // Desktop: No sticky detection needed - titles are not sticky anymore
+            // Only the mini header provides sticky behavior
+            
+            if (shouldShow && !isVisible) {
+                stickyMiniHeader.classList.add('visible');
+                isVisible = true;
+            } else if (!shouldShow && isVisible) {
+                stickyMiniHeader.classList.remove('visible');
+                isVisible = false;
+            }
         };
 
-        // Store state on container for access
-        container.quizState = quizState;
-
-        // Initialize UI
-        this.updateQuizUI(container, quizState);
-        this.setupQuizNavigation(container, quizState);
-        this.setupQuizInteractions(container, quizState);
-
-        console.log(`🎯 Initialized ${quizState.isExam ? 'exam' : 'quiz'} with ${quizState.totalQuestions} questions`);
-    }
-
-    updateQuizUI(container, state) {
-        const cards = container.querySelectorAll('.quiz-card');
-        const navigation = container.querySelector('.quiz-navigation');
-
-        // Hide all cards
-        cards.forEach(card => card.classList.remove('active-card'));
+        // Add scroll listener
+        window.addEventListener('scroll', handleScroll, { passive: true });
         
-        // Show current card
-        if (cards[state.currentQuestion]) {
-            cards[state.currentQuestion].classList.add('active-card');
+        // Store reference for cleanup
+        if (!this.stickyHeaderCleanup) {
+            this.stickyHeaderCleanup = [];
         }
-
-        // Update navigation buttons
-        const prevBtn = navigation?.querySelector('#prev-question, [data-action="prev"]');
-        const nextBtn = navigation?.querySelector('#next-question, [data-action="next"]');
-        const submitBtn = navigation?.querySelector('#submit-quiz, [data-action="submit"]');
-
-        if (prevBtn) {
-            prevBtn.style.display = state.currentQuestion > 0 ? 'inline-block' : 'none';
-        }
-
-        if (nextBtn) {
-            nextBtn.style.display = state.currentQuestion < state.totalQuestions - 1 ? 'inline-block' : 'none';
-        }
-
-        if (submitBtn) {
-            submitBtn.style.display = state.currentQuestion === state.totalQuestions - 1 ? 'inline-block' : 'none';
-        }
-
-        // Update progress indicator
-        const progressElement = navigation?.querySelector('.quiz-progress');
-        if (progressElement) {
-            progressElement.textContent = `Question ${state.currentQuestion + 1} of ${state.totalQuestions}`;
-        } else if (navigation) {
-            // Create progress indicator if it doesn't exist
-            const progress = document.createElement('div');
-            progress.className = 'quiz-progress';
-            progress.textContent = `Question ${state.currentQuestion + 1} of ${state.totalQuestions}`;
-            navigation.appendChild(progress);
-        }
-    }
-
-    setupQuizNavigation(container, state) {
-        const navigation = container.querySelector('.quiz-navigation');
-        if (!navigation) return;
-
-        // Remove existing listeners by cloning
-        const newNavigation = navigation.cloneNode(true);
-        navigation.parentNode.replaceChild(newNavigation, navigation);
-
-        // Add new listeners
-        newNavigation.addEventListener('click', (e) => {
-            const action = e.target.id || e.target.getAttribute('data-action');
-            
-            switch (action) {
-                case 'prev-question':
-                case 'prev':
-                    if (state.currentQuestion > 0) {
-                        state.currentQuestion--;
-                        this.updateQuizUI(container, state);
-                    }
-                    break;
-                
-                case 'next-question':
-                case 'next':
-                    if (state.currentQuestion < state.totalQuestions - 1) {
-                        state.currentQuestion++;
-                        this.updateQuizUI(container, state);
-                    }
-                    break;
-                
-                case 'submit-quiz':
-                case 'submit':
-                    this.submitQuiz(container, state);
-                    break;
-
-                case 'try-again':
-                case 'restart':
-                    this.restartQuiz(container, state);
-                    break;
-            }
+        this.stickyHeaderCleanup.push(() => {
+            window.removeEventListener('scroll', handleScroll);
+            stickyMiniHeader.classList.remove('visible');
         });
     }
 
-    setupQuizInteractions(container, state) {
-        const cards = container.querySelectorAll('.quiz-card');
-        
-        cards.forEach((card, questionIndex) => {
-            const questionNumber = questionIndex + 1;
-            const options = card.querySelectorAll('input[type="radio"], input[type="checkbox"]');
-            
-            options.forEach(option => {
-                option.addEventListener('change', () => {
-                    this.handleAnswerSelection(container, state, questionNumber, option);
-                });
-
-                // Add click handler to parent li for better UX
-                const li = option.closest('li');
-                if (li) {
-                    li.addEventListener('click', () => {
-                        if (!option.checked) {
-                            option.checked = true;
-                            option.dispatchEvent(new Event('change'));
-                        }
-                    });
-                }
-            });
-        });
-    }
-
-    handleAnswerSelection(container, state, questionNumber, selectedOption) {
-        const questionName = selectedOption.name;
-        const isMultipleChoice = selectedOption.type === 'checkbox';
-
-        if (isMultipleChoice) {
-            // Handle multiple choice questions
-            if (!state.answers[questionNumber]) {
-                state.answers[questionNumber] = [];
-            }
-            
-            if (selectedOption.checked) {
-                if (!state.answers[questionNumber].includes(selectedOption.value)) {
-                    state.answers[questionNumber].push(selectedOption.value);
-                }
-            } else {
-                state.answers[questionNumber] = state.answers[questionNumber].filter(
-                    answer => answer !== selectedOption.value
-                );
-            }
-        } else {
-            // Handle single choice questions
-            state.answers[questionNumber] = selectedOption.value;
-        }
-
-        // Update visual feedback
-        const card = container.querySelectorAll('.quiz-card')[questionNumber - 1];
-        const allOptions = card.querySelectorAll('.options li');
-        allOptions.forEach(li => li.classList.remove('selected'));
-        
-        const selectedLi = selectedOption.closest('li');
-        if (selectedLi && selectedOption.checked) {
-            selectedLi.classList.add('selected');
-        }
-
-        console.log(`📝 Question ${questionNumber} answered:`, state.answers[questionNumber]);
-    }
-
-    submitQuiz(container, state) {
-        const results = this.calculateQuizResults(container, state);
-        this.displayQuizResults(container, state, results);
-    }
-
-    calculateQuizResults(container, state) {
-        const cards = container.querySelectorAll('.quiz-card');
-        let correctAnswers = 0;
-        const results = {
-            totalQuestions: state.totalQuestions,
-            answeredQuestions: Object.keys(state.answers).length,
-            correctAnswers: 0,
-            percentage: 0,
-            passed: false,
-            details: []
-        };
-
-        cards.forEach((card, index) => {
-            const questionNumber = index + 1;
-            const answerElement = card.querySelector('.answer');
-            const correctAnswer = answerElement?.getAttribute('data-correct');
-            const userAnswer = state.answers[questionNumber];
-
-            if (!correctAnswer) {
-                console.warn(`No correct answer found for question ${questionNumber}`);
-                return;
-            }
-
-            let isCorrect = false;
-            
-            if (correctAnswer.includes(',')) {
-                // Multiple choice question
-                const correctAnswers = correctAnswer.split(',').map(a => a.trim()).sort();
-                const userAnswers = (Array.isArray(userAnswer) ? userAnswer : []).sort();
-                isCorrect = JSON.stringify(correctAnswers) === JSON.stringify(userAnswers);
-            } else {
-                // Single choice question
-                isCorrect = correctAnswer === userAnswer;
-            }
-
-            if (isCorrect) {
-                results.correctAnswers++;
-            }
-
-            results.details.push({
-                question: questionNumber,
-                correct: correctAnswer,
-                user: userAnswer,
-                isCorrect
-            });
-        });
-
-        results.percentage = Math.round((results.correctAnswers / results.totalQuestions) * 100);
-        
-        // Pass threshold: 80% for quizzes, 70% for exams
-        const passThreshold = state.isExam ? 70 : 80;
-        results.passed = results.percentage >= passThreshold;
-        results.passThreshold = passThreshold;
-
-        return results;
-    }
-
-    displayQuizResults(container, state, results) {
-        const resultsContainer = container.querySelector('.quiz-results-container');
-        if (!resultsContainer) {
-            console.error('Results container not found');
-            return;
-        }
-
-        // Hide quiz cards and navigation
-        const cards = container.querySelectorAll('.quiz-card');
-        const navigation = container.querySelector('.quiz-navigation');
-        
-        cards.forEach(card => card.style.display = 'none');
-        if (navigation) navigation.style.display = 'none';
-
-        // Show results
-        resultsContainer.innerHTML = `
-            <div class="quiz-score ${results.passed ? 'pass' : 'fail'}">
-                ${results.percentage}%
-            </div>
-            <div class="quiz-feedback">
-                <h3>${results.passed ? '🎉 Congratulations!' : '📚 Keep Studying!'}</h3>
-                <p>You answered ${results.correctAnswers} out of ${results.totalQuestions} questions correctly.</p>
-                <p>${results.passed ? 
-                    `Great job! You've passed with ${results.percentage}% (required: ${results.passThreshold}%).` :
-                    `You need ${results.passThreshold}% to pass. Review the material and try again.`
-                }</p>
-            </div>
-            <div class="quiz-actions">
-                <button class="btn btn-outline-primary" data-action="try-again">Try Again</button>
-                <button class="btn btn-primary" onclick="app.navigate(1)">Continue Learning</button>
-            </div>
-        `;
-
-        resultsContainer.classList.add('show');
-
-        // Add try again functionality
-        const tryAgainBtn = resultsContainer.querySelector('[data-action="try-again"]');
-        if (tryAgainBtn) {
-            tryAgainBtn.addEventListener('click', () => {
-                this.restartQuiz(container, state);
-            });
-        }
-
-        console.log(`📊 ${state.isExam ? 'Exam' : 'Quiz'} completed: ${results.percentage}% (${results.passed ? 'PASSED' : 'FAILED'})`);
-    }
-
-    restartQuiz(container, state) {
-        // Reset state
-        state.currentQuestion = 0;
-        state.answers = {};
-
-        // Clear all selections
-        const inputs = container.querySelectorAll('input[type="radio"], input[type="checkbox"]');
-        inputs.forEach(input => {
-            input.checked = false;
-        });
-
-        // Remove selected classes
-        const selectedOptions = container.querySelectorAll('.options li.selected');
-        selectedOptions.forEach(option => option.classList.remove('selected'));
-
-        // Reset quiz cards and navigation display
-        const cards = container.querySelectorAll('.quiz-card');
-        const navigation = container.querySelector('.quiz-navigation');
-        const resultsContainer = container.querySelector('.quiz-results-container');
-
-        // Remove inline styles that were set during results display
-        cards.forEach(card => {
-            card.style.display = '';  // Remove inline display style
-        });
-        
-        if (navigation) {
-            navigation.style.display = '';  // Remove inline display style
+    cleanupStickyHeaders() {
+        // Clean up existing sticky headers
+        if (this.stickyHeaderCleanup) {
+            this.stickyHeaderCleanup.forEach(cleanup => cleanup());
+            this.stickyHeaderCleanup = [];
         }
         
-        resultsContainer.classList.remove('show');
-
-        // Update UI to show first question only
-        this.updateQuizUI(container, state);
-
-        console.log(`🔄 ${state.isExam ? 'Exam' : 'Quiz'} restarted`);
+        // Hide the sticky mini header (don't remove it, just hide it)
+        if (this.elements.stickyMiniHeader) {
+            this.elements.stickyMiniHeader.classList.remove('visible');
+        }
+        
+        // Remove any dynamically created sticky topic headers
+        const existingTopicHeaders = document.querySelectorAll('.sticky-topic-header');
+        existingTopicHeaders.forEach(header => header.remove());
     }
+
+    
+
+    
 
     initializeUnitOverviewFeatures() {
         // Initialize unit overview page features
@@ -982,7 +790,13 @@ class CloudNativeBookApp {
         startButtons.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
-                // Extract unit number from onclick attribute or data
+                // Extract unit number from data-unit attribute first, fallback to onclick
+                const unitFromData = btn.getAttribute('data-unit');
+                if (unitFromData) {
+                    this.startUnit(parseInt(unitFromData, 10));
+                    return;
+                }
+                // Fallback for legacy onclick attributes
                 const unitMatch = btn.getAttribute('onclick')?.match(/startUnit\((\d+)\)/);
                 if (unitMatch) {
                     this.startUnit(parseInt(unitMatch[1], 10));
@@ -993,6 +807,13 @@ class CloudNativeBookApp {
         continueButtons.forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
+                // Extract unit number from data-unit attribute first, fallback to onclick
+                const unitFromData = btn.getAttribute('data-unit');
+                if (unitFromData) {
+                    this.continueUnit(parseInt(unitFromData, 10));
+                    return;
+                }
+                // Fallback for legacy onclick attributes
                 const unitMatch = btn.getAttribute('onclick')?.match(/continueUnit\((\d+)\)/);
                 if (unitMatch) {
                     this.continueUnit(parseInt(unitMatch[1], 10));
@@ -1047,6 +868,8 @@ class CloudNativeBookApp {
                             targetTopic = this.topics.find(t => t.index === topicIndex + 2 && t.type === 'quiz');
                         } else if (componentText.includes('Final Assessment')) {
                             targetTopic = topic; // For final exams
+                        } else if (componentText.includes('Hands-on Project')) {
+                            targetTopic = topic; // For projects, navigate to main content
                         }
 
                         if (targetTopic) {
@@ -1086,152 +909,7 @@ class CloudNativeBookApp {
         this.startUnit(unitNumber);
     }
 
-    async handleSearch(query) {
-        if (query.length < 2) {
-            this.hideSearchResults();
-            return;
-        }
-
-        try {
-            // Enhanced search implementation with content indexing
-            let results = [];
-            const queryLower = query.toLowerCase();
-            
-            if (typeof lunr !== 'undefined' && this.searchIndex) {
-                // Use Lunr.js for full-text search if available
-                const searchResults = this.searchIndex.search(query);
-                results = searchResults.map(result => {
-                    const topic = this.topics.find(topic => topic.index.toString() === result.ref);
-                    if (topic) {
-                        topic.searchScore = result.score;
-                    }
-                    return topic;
-                }).filter(Boolean).slice(0, 6);
-            } else {
-                // Fallback to simple title and content search
-                results = this.topics.filter(topic => {
-                    return topic.title.toLowerCase().includes(queryLower) ||
-                           (topic.content && topic.content.toLowerCase().includes(queryLower));
-                }).slice(0, 6);
-            }
-
-            const resultHtml = results.map(result => {
-                const preview = this.generateSearchPreview(result, query);
-                const highlightedTitle = this.highlightSearchTerms(result.title, query);
-                
-                return `
-                    <div class="search-result-item" data-index="${result.index}">
-                        <div class="search-result-title">${highlightedTitle}</div>
-                        <div class="search-result-type">${this.getTypeLabel(result.type)}</div>
-                        ${preview ? `<div class="search-result-preview">${preview}</div>` : ''}
-                    </div>
-                `;
-            }).join('');
-
-            this.elements.searchResults.innerHTML = resultHtml || 
-                '<div class="search-result-item"><div class="search-result-title">No results found</div><div class="search-result-preview">Try different keywords or browse the navigation menu.</div></div>';
-
-            // Add click handlers to results
-            this.elements.searchResults.querySelectorAll('[data-index]').forEach(item => {
-                item.addEventListener('click', () => {
-                    const index = parseInt(item.dataset.index, 10);
-                    const topic = this.topics.find(t => t.index === index);
-                    if (topic) {
-                        this.loadContent(topic.url, index);
-                        this.elements.searchInput.value = '';
-                        this.elements.searchResults.innerHTML = '';
-                        this.hideSearchResults();
-                        this.closeMobileMenu();
-                    }
-                });
-            });
-
-            // Show and position search results optimally
-            this.showSearchResults();
-        } catch (error) {
-            console.error('Search error:', error);
-            this.elements.searchResults.innerHTML = 
-                '<div class="search-result-item"><div class="search-result-title">Search temporarily unavailable</div></div>';
-        }
-    }
-
-    generateSearchPreview(topic, query) {
-        if (!topic.content) return '';
-        
-        const queryLower = query.toLowerCase();
-        const contentLower = topic.content.toLowerCase();
-        const queryIndex = contentLower.indexOf(queryLower);
-        
-        if (queryIndex === -1) return '';
-        
-        // Extract context around the match
-        const contextStart = Math.max(0, queryIndex - 60);
-        const contextEnd = Math.min(topic.content.length, queryIndex + query.length + 60);
-        let preview = topic.content.slice(contextStart, contextEnd);
-        
-        // Add ellipsis if we truncated
-        if (contextStart > 0) preview = '...' + preview;
-        if (contextEnd < topic.content.length) preview = preview + '...';
-        
-        // Highlight search terms
-        return this.highlightSearchTerms(preview, query);
-    }
-
-    highlightSearchTerms(text, query) {
-        if (!query || query.length < 2) return text;
-        
-        const regex = new RegExp(`(${query})`, 'gi');
-        return text.replace(regex, '<span class="search-result-match">$1</span>');
-    }
-
-    getTypeLabel(type) {
-        const labels = {
-            overview: '📖 Overview',
-            unit_overview: '📚 Unit Overview',
-            content: '📄 Content',
-            study_aids: '🎯 Study Aids',
-            quiz: '❓ Quiz',
-            exam: '📝 Exam',
-            project: '🛠️ Project'
-        };
-        return labels[type] || '📄 Content';
-    }
-
-    positionSearchResults() {
-        if (!this.elements.searchResults) return;
-        
-        // The search results are now positioned with fixed CSS
-        // This method can be used for additional positioning logic if needed
-        const isMobile = window.innerWidth <= 768;
-        const searchResults = this.elements.searchResults;
-        
-        if (isMobile) {
-            // Mobile: adjust for menu state
-            const mobileMenuOpen = document.querySelector('.sidebar').classList.contains('sidebar-open');
-            if (mobileMenuOpen) {
-                searchResults.style.top = '120px';
-            } else {
-                searchResults.style.top = '80px';
-            }
-        } else {
-            // Desktop: fixed position
-            searchResults.style.top = '80px';
-        }
-    }
-
-    hideSearchResults() {
-        if (this.elements.searchResults) {
-            this.elements.searchResults.style.display = 'none';
-            this.elements.searchResults.innerHTML = '';
-        }
-    }
-
-    showSearchResults() {
-        if (this.elements.searchResults && this.elements.searchResults.innerHTML.trim()) {
-            this.elements.searchResults.style.display = 'block';
-            this.positionSearchResults();
-        }
-    }
+    
 
     showError(title, message) {
         this.elements.contentArea.innerHTML = `
@@ -1257,16 +935,17 @@ class CloudNativeBookApp {
                     e.preventDefault();
                     e.stopPropagation();
                     this.openMermaidModal(mermaidPre);
-                } else if (e.target.closest('.mermaid-modal-close') || 
-                           (e.target.classList.contains('mermaid-modal') && e.target === e.currentTarget)) {
-                    this.closeMermaidModal();
                 }
             });
 
             // ESC key to close modal
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
-                    this.closeMermaidModal();
+                    const modal = document.getElementById('universal-modal');
+                    if (modal && modal.open) {
+                        e.preventDefault();
+                        this.closeUniversalModal();
+                    }
                 }
             });
 
@@ -1280,7 +959,7 @@ class CloudNativeBookApp {
     initializeMermaidInteractivity() {
         const mermaidElements = this.elements.contentArea.querySelectorAll('pre.mermaid');
         
-        mermaidElements.forEach((pre, index) => {
+        mermaidElements.forEach((pre) => {
             // Skip if already processed or is a modal diagram
             if (pre.hasAttribute('data-interactive') || pre.classList.contains('modal-diagram')) {
                 return;
@@ -1291,83 +970,96 @@ class CloudNativeBookApp {
         });
     }
 
-    openMermaidModal(mermaidPre) {
-        const mermaidContent = mermaidPre.cloneNode(true);
+    openUniversalModal(type, content) {
+        const modal = this.universalModal;
+        const modalTitle = document.getElementById('modal-title');
+        const modalBody = document.getElementById('modal-body');
         
-        // Remove interactivity from cloned diagram
-        mermaidContent.style.cursor = 'default';
-        mermaidContent.title = '';
-        mermaidContent.removeAttribute('data-interactive');
-        mermaidContent.classList.add('modal-diagram');
-        
-        // Remove any hover effects and scale
-        mermaidContent.style.transform = 'none';
-        mermaidContent.style.transition = 'none';
-        
-        // Create modal
-        const modal = document.createElement('div');
-        modal.className = 'mermaid-modal';
-        
-        const modalContent = document.createElement('div');
-        modalContent.className = 'mermaid-modal-content';
-        
-        const closeBtn = document.createElement('button');
-        closeBtn.className = 'mermaid-modal-close';
-        closeBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
-        closeBtn.title = 'Close diagram';
-        
-        modalContent.appendChild(closeBtn);
-        modalContent.appendChild(mermaidContent);
-        modal.appendChild(modalContent);
-        
-        // Add to DOM
-        document.body.appendChild(modal);
-        
-        // Re-render Mermaid in modal if needed
-        if (typeof mermaid !== 'undefined') {
-            mermaid.init(undefined, mermaidContent);
+        if (!modal || !modalTitle || !modalBody) {
+            console.error('Universal modal elements not found');
+            return;
         }
         
-        // Prevent body scroll
-        document.body.style.overflow = 'hidden';
-    }
-
-    closeMermaidModal() {
-        const modal = document.querySelector('.mermaid-modal');
-        if (modal) {
-            modal.remove();
-            document.body.style.overflow = '';
-        }
-    }
-}
-
-// Global flashcard modal functions - Define immediately
-window.openFlashcardModal = function(button) {
-    const flashcard = button.parentElement;
-    const question = flashcard.querySelector('.flashcard-front p').textContent;
-    const answer = flashcard.querySelector('.flashcard-back p').innerHTML;
-    
-    document.getElementById('modal-question').textContent = question;
-    document.getElementById('modal-answer-content').innerHTML = answer;
-    document.getElementById('flashcard-modal').showModal();
-};
-
-window.closeFlashcardModal = function() {
-    document.getElementById('flashcard-modal').close();
-};
-
-// Setup modal event listener when content loads
-function setupFlashcardModal() {
-    const modal = document.getElementById('flashcard-modal');
-    if (modal && !modal.hasAttribute('data-listeners-added')) {
-        modal.addEventListener('click', function(event) {
-            if (event.target === this) {
-                window.closeFlashcardModal();
+        // Configure modal based on type
+        switch (type) {
+            case 'flashcard': {
+                modalTitle.textContent = content.question || 'Flashcard';
+                modalBody.innerHTML = `
+                    <div class="modal-answer">
+                        <h4>Answer</h4>
+                        <div>${content.answer || 'No answer provided'}</div>
+                    </div>
+                `;
+                break;
             }
-        });
-        modal.setAttribute('data-listeners-added', 'true');
+                
+            case 'diagram': {
+                modalTitle.textContent = 'Diagram Viewer';
+                modalBody.innerHTML = '<div class="modal-diagram"></div>';
+                
+                const diagramContainer = modalBody.querySelector('.modal-diagram');
+                const mermaidContent = content.cloneNode(true);
+                
+                // Remove interactivity from cloned diagram
+                mermaidContent.style.cursor = 'default';
+                mermaidContent.title = '';
+                mermaidContent.removeAttribute('data-interactive');
+                mermaidContent.classList.add('modal-diagram');
+                
+                // Remove any hover effects and scale
+                mermaidContent.style.transform = 'none';
+                mermaidContent.style.transition = 'none';
+                
+                diagramContainer.appendChild(mermaidContent);
+                
+                // Re-render Mermaid in modal if needed
+                if (typeof mermaid !== 'undefined') {
+                    mermaid.init(undefined, mermaidContent);
+                }
+                break;
+            }
+                
+            default: {
+                modalTitle.textContent = content.title || 'Modal';
+                modalBody.innerHTML = content.body || 'No content provided';
+                break;
+            }
+        }
+        
+        // Show modal using native dialog API
+        modal.showModal();
+        
+        // Focus the close button for accessibility
+        const closeBtn = modal.querySelector('.modal-close-btn');
+        if (closeBtn) {
+            setTimeout(() => {
+                closeBtn.focus();
+            }, 100);
+        }
+    }
+    
+    // Convenience methods for specific modal types
+    openMermaidModal(mermaidPre) {
+        this.openUniversalModal('diagram', mermaidPre);
+    }
+    
+    openFlashcardModal(question, answer) {
+        this.openUniversalModal('flashcard', { question, answer });
+    }
+
+    closeUniversalModal() {
+        if (this.universalModal && this.universalModal.open) {
+            this.universalModal.close();
+        }
+    }
+    
+    // Legacy methods for backward compatibility
+    closeMermaidModal() {
+        this.closeUniversalModal();
     }
 }
+
+
 
 // Initialize the application
 const app = new CloudNativeBookApp();

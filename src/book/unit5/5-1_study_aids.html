@@ -1,119 +1,81 @@
 <div class="study-aids-content">
-    <header class="study-aids-header">
-        <h2>Study Aids: SAST (Static Application Security Testing)</h2>
+    <header class="study-aids-header" aria-label="Header">
+        <h1>5-1: Study Aids - SAST (Static Application Security Testing)</h1>
+        <p class="study-aids-intro">
+            Review key concepts with these interactive flashcards. Click each card to reveal the answer. Master the fundamentals of Static Application Security Testing and the "Shift Left" security paradigm.
+        </p>
     </header>
-    <div class="content-card">
-        <div class="card-header">
-            Key Takeaways
-        </div>
-        <div class="card-body">
-            <ul>
-                <li><strong>Shift Left:</strong> DevSecOps is about integrating security early into the development lifecycle ("shifting left") to find and fix vulnerabilities faster and cheaper.</li>
-                <li><strong>SAST Analyzes Source Code:</strong> SAST tools scan an application's source code without running it to find potential security flaws like hardcoded credentials, SQL injection, and use of insecure libraries.</li>
-                <li><strong>Tooling for Your Language:</strong> Use language-specific SAST tools. <strong>Bandit</strong> is the standard for Python, and <strong>gosec</strong> is the standard for Go.</li>
-                <li><strong>Automate in CI/CD:</strong> The most effective way to use SAST is to automate it. Integrate SAST scans into your CI/CD pipeline (e.g., GitHub Actions) to check every code change automatically.</li>
-            </ul>
-        </div>
-    </div>
     <div class="flashcards-container">
 
         <div class="flashcard">
             <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What is "Shifting Left" in the context of DevSecOps?</p>
-            </div>
+                    <p>What is "Shifting Left" in the context of DevSecOps?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>It is the practice of moving security checks and processes to the earliest possible point in the development lifecycle (i.e., further to the left on a typical project timeline diagram). This helps find and fix vulnerabilities when they are cheapest and easiest to address.</p>
+                    <p>It is the practice of moving security checks and processes to the earliest possible point in the development lifecycle (i.e., further to the left on a typical project timeline diagram). This helps find and fix vulnerabilities when they are cheapest and easiest to address.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand flashcard"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
 
         <div class="flashcard">
             <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What is Static Application Security Testing (SAST)?</p>
-            </div>
+                    <p>What is Static Application Security Testing (SAST)?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>SAST is a "white-box" testing methodology that analyzes an application's source code, bytecode, or binary for security vulnerabilities without executing the program.</p>
+                    <p>SAST is a "white-box" testing methodology that analyzes an application's source code, bytecode, or binary for security vulnerabilities without executing the program.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand flashcard"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
 
         <div class="flashcard">
             <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What is the standard SAST tool for Python, and what kind of issues can it find?</p>
-            </div>
+                    <p>What is the standard SAST tool for Python, and what kind of issues can it find?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p><strong>Bandit</strong> is the standard SAST tool for Python. It can find issues like hardcoded passwords, insecure use of subprocess, known insecure XML parsing, and weak cryptographic functions.</p>
+                    <p><strong>Bandit</strong> is the standard SAST tool for Python. It can find issues like hardcoded passwords, insecure use of subprocess, known insecure XML parsing, and weak cryptographic functions.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand flashcard"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
 
         <div class="flashcard">
             <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What is the standard SAST tool for Go?</p>
-            </div>
+                    <p>What is the standard SAST tool for Go?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p><strong>gosec</strong> is the standard SAST tool for Go. It analyzes the Go AST (Abstract Syntax Tree) to find security weaknesses.</p>
+                    <p><strong>gosec</strong> is the standard SAST tool for Go. It analyzes the Go AST (Abstract Syntax Tree) to find security weaknesses.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand flashcard"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
 
         <div class="flashcard">
             <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>Why is it critical to integrate SAST tools into a CI/CD pipeline?</p>
-            </div>
+                    <p>Why is it critical to integrate SAST tools into a CI/CD pipeline?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Integrating SAST into the CI/CD pipeline automates the security scanning process. It ensures that every code change (e.g., on every push or pull request) is automatically checked for vulnerabilities, providing rapid feedback to developers and preventing insecure code from reaching production.</p>
+                    <p>Integrating SAST into the CI/CD pipeline automates the security scanning process. It ensures that every code change (e.g., on every push or pull request) is automatically checked for vulnerabilities, providing rapid feedback to developers and preventing insecure code from reaching production.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand flashcard"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
-
     </div>
-
-    <!-- Flashcard Modal -->
-    <dialog id="flashcard-modal" class="flashcard-modal">
-        <div class="modal-content">
-            <header class="modal-header">
-                <h3 id="modal-question">Question</h3>
-                <button class="modal-close-btn" onclick="closeFlashcardModal()">
-                    <i class="bi bi-x-lg"></i>
-                </button>
-            </header>
-            <div class="modal-body">
-                <div class="modal-answer">
-                    <h4>Answer</h4>
-                    <div id="modal-answer-content">Answer content will appear here</div>
-                </div>
-            </div>
-        </div>
-    </dialog>
 </div>
+

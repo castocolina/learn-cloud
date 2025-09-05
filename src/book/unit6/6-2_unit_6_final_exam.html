@@ -1,157 +1,259 @@
 <div class="exam-content">
-    <header class="exam-header">
-        <h1>Unit 6 Final Exam: Dependency Management Automation</h1>
-        <p class="exam-intro">This comprehensive exam covers all the material from Unit 6, testing your understanding of the principles and practices of automated dependency management with RenovateBot.</p>
-    </header>
-
-    <div class="quiz-section">
-        <div class="quiz-container">
-            <!-- Question 1 -->
-            <div class="quiz-card active-card" data-question="1">
-                <div class="question">
-                    <p>1. What is the primary security benefit of using an automated dependency update tool like Renovate?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q1" value="a"> a) It encrypts your source code.</label></li>
-                        <li><label><input type="radio" name="q1" value="b"> b) It reduces the attack surface of your application.</label></li>
-                        <li><label><input type="radio" name="q1" value="c"> c) It ensures you receive security patches for vulnerable dependencies quickly, reducing the window of exposure.</label></li>
-                        <li><label><input type="radio" name="q1" value="d"> d) It performs static analysis on your code.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="c"></div>
-                </div>
-            </div>
-
-            <!-- Question 2 -->
-            <div class="quiz-card" data-question="2">
-                <div class="question">
-                    <p>2. In a `renovate.json` file, what is the purpose of the `packageRules` block?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q2" value="a"> a) To define the schedule for when Renovate should run.</label></li>
-                        <li><label><input type="radio" name="q2" value="b"> b) To define custom rules for how to handle updates for specific packages or types of updates.</label></li>
-                        <li><label><input type="radio" name="q2" value="c"> c) To list all the packages that Renovate should ignore.</label></li>
-                        <li><label><input type="radio" name="q2" value="d"> d) To specify the programming language of the project.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 3 -->
-            <div class="quiz-card" data-question="3">
-                <div class="question">
-                    <p>3. How does RenovateBot typically notify a team about a new dependency update?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q3" value="a"> a) By sending an email to the repository owner.</label></li>
-                        <li><label><input type="radio" name="q3" value="b"> b) By creating a new Issue in the repository.</label></li>
-                        <li><label><input type="radio" name="q3" value="c"> c) By creating a Pull Request (or Merge Request) with the proposed changes.</label></li>
-                        <li><label><input type="radio" name="q3" value="d"> d) By posting a message in a Slack channel.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="c"></div>
-                </div>
-            </div>
-
-            <!-- Question 4 -->
-            <div class="quiz-card" data-question="4">
-                <div class="question">
-                    <p>4. What is a "big bang" update, and why does Renovate help avoid it?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q4" value="a"> a) A major version update; Renovate can be configured to ignore them.</label></li>
-                        <li><label><input type="radio" name="q4" value="b"> b) An update that includes many breaking changes; Renovate's CI integration catches them.</label></li>
-                        <li><label><input type="radio" name="q4" value="c"> c) Updating many outdated dependencies at once; Renovate avoids this by proposing small, frequent updates.</label></li>
-                        <li><label><input type="radio" name="q4" value="d"> d) An update to the Renovate tool itself.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="c"></div>
-                </div>
-            </div>
-
-            <!-- Question 5 -->
-            <div class="quiz-card" data-question="5">
-                <div class="question">
-                    <p>5. You want to group all updates for your Python testing libraries (pytest, pytest-cov, etc.) into a single pull request. How would you achieve this in `renovate.json`?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q5" value="a"> a) `{"group": "testing"}`</label></li>
-                        <li><label><input type="radio" name="q5" value="b"> b) `{"packageRules": [{"matchPackagePatterns": ["pytest*"], "groupName": "pytest testing libraries"}]}`</label></li>
-                        <li><label><input type="radio" name="q5" value="c"> c) `{"automerge": "testing"}`</label></li>
-                        <li><label><input type="radio" name="q5" value="d"> d) `{"schedule": ["group-testing-updates"]}`</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 6 -->
-            <div class="quiz-card" data-question="6">
-                <div class="question">
-                    <p>6. What does the `automerge` feature in Renovate typically depend on to ensure safety?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q6" value="a"> a) The approval of at least two senior developers.</label></li>
-                        <li><label><input type="radio" name="q6" value="b"> b) The time of day the PR is created.</label></li>
-                        <li><label><input type="radio" name="q6" value="c"> c) The successful completion of the CI pipeline (tests, linting, scans).</label></li>
-                        <li><label><input type="radio" name="q6" value="d"> d) The size of the dependency being updated.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="c"></div>
-                </div>
-            </div>
-
-            <!-- Question 7 -->
-            <div class="quiz-card" data-question="7">
-                <div class="question">
-                    <p>7. For a Go project, what is the recommended `rangeStrategy` for Renovate and why?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q7" value="a"> a) `"update-lockfile"`, to only update `go.sum`.</label></li>
-                        <li><label><input type="radio" name="q7" value="b"> b) `"auto"`, to let Renovate decide.</label></li>
-                        <li><label><input type="radio" name="q7" value="c"> c) `"pin"`, to pin the dependency to a specific version, which is idiomatic for Go modules.</label></li>
-                        <li><label><input type="radio" name="q7" value="d"> d) `"widen"`, to allow a broader range of compatible versions.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="c"></div>
-                </div>
-            </div>
-
-            <!-- Question 8 -->
-            <div class="quiz-card" data-question="8">
-                <div class="question">
-                    <p>8. How does Renovate discover which dependencies a Python Poetry project uses?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q8" value="a"> a) By scanning all `.py` files for `import` statements.</label></li>
-                        <li><label><input type="radio" name="q8" value="b"> b) By parsing the `poetry.lock` file.</label></li>
-                        <li><label><input type="radio" name="q8" value="c"> c) By parsing the `pyproject.toml` file.</label></li>
-                        <li><label><input type="radio" name="q8" value="d"> d) By running `poetry show`.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="c"></div>
-                </div>
-            </div>
-
-            <!-- Question 9 -->
-            <div class="quiz-card" data-question="9">
-                <div class="question">
-                    <p>9. You want Renovate to run only on weekends. How would you configure this?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q9" value="a"> a) `{"enabled": "weekends"}`</label></li>
-                        <li><label><input type="radio" name="q9" value="b"> b) `{"schedule": ["on weekends"]}`</label></li>
-                        <li><label><input type="radio" name="q9" value="c"> c) By configuring a cron job on your own server.</label></li>
-                        <li><label><input type="radio" name="q9" value="d"> d) By using a preset like `":schedule(on weekends)"` or defining a schedule like `["every saturday", "every sunday"]`.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="d"></div>
-                </div>
-            </div>
-
-            <!-- Question 10 -->
-            <div class="quiz-card" data-question="10">
-                <div class="question">
-                    <p>10. What is the primary benefit of using shareable configuration presets (`extends`) in Renovate?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q10" value="a"> a) It allows you to use features that are otherwise unavailable.</label></li>
-                        <li><label><input type="radio" name="q10" value="b"> b) It ensures a consistent dependency update strategy across multiple repositories in an organization.</label></li>
-                        <li><label><input type="radio" name="q10" value="c"> c) It makes Renovate run faster.</label></li>
-                        <li><label><input type="radio" name="q10" value="d"> d) It is the only way to enable automerging.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <div class="quiz-navigation">
-                <button class="quiz-btn" id="prev-question">Previous</button>
-                <button class="quiz-btn" id="next-question">Next</button>
-                <button class="quiz-btn" id="submit-quiz" style="display: none;">Submit Answers</button>
-            </div>
-            <div class="quiz-results-container"></div>
+    <header class="exam-header" aria-label="Header">
+        <h1 class="exam-title">6-2: Unit 6 Final Exam - Dependency Management Automation</h1>
+        <p class="exam-intro">
+            This comprehensive exam covers all the material from Unit 6, testing your understanding of the principles and
+            practices of automated dependency management with RenovateBot.
+        </p>
+        <div class="exam-instructions">
+            <p><strong>Instructions:</strong> Answer all questions to the best of your ability. You need 70% or higher to pass.</p>
         </div>
+    </header>
+    <div class="quiz-container">
+        <!-- Question 1 -->
+        <div class="quiz-card active-card" data-question="1">
+            <div class="question">
+                <p>1. What is the primary security benefit of using an automated dependency update tool like Renovate?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q1" value="a" /> a) It encrypts your source code.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q1" value="b" /> b) It reduces the attack surface of your application.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q1" value="c" /> c) It ensures you receive security patches for vulnerable
+                            dependencies quickly, reducing the window of exposure.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q1" value="d" /> d) It performs static analysis on your code.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="quiz-card" data-question="2">
+            <div class="question">
+                <p>2. In a `renovate.json` file, what is the purpose of the `packageRules` block?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q2" value="a" /> a) To define the schedule for when Renovate should run.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q2" value="b" /> b) To define custom rules for how to handle updates for
+                            specific packages or types of updates.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q2" value="c" /> c) To list all the packages that Renovate should
+                            ignore.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q2" value="d" /> d) To specify the programming language of the
+                            project.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="quiz-card" data-question="3">
+            <div class="question">
+                <p>3. How does RenovateBot typically notify a team about a new dependency update?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q3" value="a" /> a) By sending an email to the repository owner.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q3" value="b" /> b) By creating a new Issue in the repository.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q3" value="c" /> c) By creating a Pull Request (or Merge Request) with the
+                            proposed changes.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q3" value="d" /> d) By posting a message in a Slack channel.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="quiz-card" data-question="4">
+            <div class="question">
+                <p>4. What is a "big bang" update, and why does Renovate help avoid it?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q4" value="a" /> a) A major version update; Renovate can be configured to
+                            ignore them.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q4" value="b" /> b) An update that includes many breaking changes; Renovate's
+                            CI integration catches them.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q4" value="c" /> c) Updating many outdated dependencies at once; Renovate
+                            avoids this by proposing small, frequent updates.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q4" value="d" /> d) An update to the Renovate tool itself.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="quiz-card" data-question="5">
+            <div class="question">
+                <p>
+                    5. You want to group all updates for your Python testing libraries (pytest, pytest-cov, etc.) into a single
+                    pull request. How would you achieve this in `renovate.json`?
+                </p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q5" value="a" /> a) `{"group": "testing"}`</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q5" value="b" /> b) `{"packageRules": [{"matchPackagePatterns": ["pytest*"],
+                            "groupName": "pytest testing libraries"}]}`</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q5" value="c" /> c) `{"automerge": "testing"}`</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q5" value="d" /> d) `{"schedule": ["group-testing-updates"]}`</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="quiz-card" data-question="6">
+            <div class="question">
+                <p>6. What does the `automerge` feature in Renovate typically depend on to ensure safety?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q6" value="a" /> a) The approval of at least two senior developers.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q6" value="b" /> b) The time of day the PR is created.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q6" value="c" /> c) The successful completion of the CI pipeline (tests,
+                            linting, scans).</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q6" value="d" /> d) The size of the dependency being updated.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="quiz-card" data-question="7">
+            <div class="question">
+                <p>7. For a Go project, what is the recommended `rangeStrategy` for Renovate and why?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q7" value="a" /> a) `"update-lockfile"`, to only update `go.sum`.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q7" value="b" /> b) `"auto"`, to let Renovate decide.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q7" value="c" /> c) `"pin"`, to pin the dependency to a specific version,
+                            which is idiomatic for Go modules.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q7" value="d" /> d) `"widen"`, to allow a broader range of compatible
+                            versions.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="quiz-card" data-question="8">
+            <div class="question">
+                <p>8. How does Renovate discover which dependencies a Python Poetry project uses?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q8" value="a" /> a) By scanning all `.py` files for `import` statements.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q8" value="b" /> b) By parsing the `poetry.lock` file.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q8" value="c" /> c) By parsing the `pyproject.toml` file.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q8" value="d" /> d) By running `poetry show`.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="quiz-card" data-question="9">
+            <div class="question">
+                <p>9. You want Renovate to run only on weekends. How would you configure this?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q9" value="a" /> a) `{"enabled": "weekends"}`</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q9" value="b" /> b) `{"schedule": ["on weekends"]}`</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q9" value="c" /> c) By configuring a cron job on your own server.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q9" value="d" /> d) By using a preset like `":schedule(on weekends)"` or
+                            defining a schedule like `["every saturday", "every sunday"]`.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="d"></div>
+            </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="quiz-card" data-question="10">
+            <div class="question">
+                <p>10. What is the primary benefit of using shareable configuration presets (`extends`) in Renovate?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q10" value="a" /> a) It allows you to use features that are otherwise
+                            unavailable.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q10" value="b" /> b) It ensures a consistent dependency update strategy
+                            across multiple repositories in an organization.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q10" value="c" /> c) It makes Renovate run faster.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q10" value="d" /> d) It is the only way to enable automerging.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button type="button" class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <div class="quiz-progress">Question 1 of 10</div>
+            <button type="button" class="btn btn-outline-primary" id="next-question">Next</button>
+            <button type="button" class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
+        </div>
+        <div class="quiz-results-container"></div>
     </div>
 </div>

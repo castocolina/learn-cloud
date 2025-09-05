@@ -1,15 +1,12 @@
 <div class="unit-overview-content">
-    <header class="unit-header">
+    <header class="unit-header" aria-label="Header">
         <div class="unit-icon">
             <i class="bi bi-shield-check"></i>
         </div>
-        <div class="unit-title">
-            <h1>Unit 5: DevSecOps</h1>
-            <p class="unit-subtitle">Security integration in development and operations</p>
-        </div>
+        <h1>Unit 5: DevSecOps</h1>
     </header>
-
-    <div class="unit-summary">
+    <div class="unit-title">
+        <p class="unit-subtitle">Security integration in development and operations</p>
         <div class="unit-stats">
             <div class="stat-item">
                 <span class="stat-number">4</span>
@@ -24,11 +21,14 @@
                 <span class="stat-label">Pages</span>
             </div>
         </div>
-        
+
         <div class="unit-description">
             <h2>What You'll Learn</h2>
-            <p>This unit integrates security practices throughout the development and operations lifecycle. Learn to implement security scanning, vulnerability management, and compliance automation in your DevOps pipelines.</p>
-            
+            <p>
+                This unit integrates security practices throughout the development and operations lifecycle. Learn to implement
+                security scanning, vulnerability management, and compliance automation in your DevOps pipelines.
+            </p>
+
             <div class="learning-objectives">
                 <h3>Learning Objectives</h3>
                 <ul>
@@ -51,70 +51,70 @@
             <div class="topic-card">
                 <div class="topic-header">
                     <h3>5.1: DevSecOps Fundamentals</h3>
-                    <span class="topic-type content">Content</span>
+                    <span class="topic-type clickable content">Content</span>
                 </div>
                 <p>Security integration principles and cultural practices.</p>
                 <div class="topic-components">
-                    <span class="component">📖 Main Content</span>
-                    <span class="component">🎯 Study Aids</span>
-                    <span class="component">❓ Quiz</span>
+                    <span class="component clickable">📖 Main Content</span>
+                    <span class="component clickable">🎯 Study Aids</span>
+                    <span class="component clickable">❓ Quiz</span>
                 </div>
             </div>
 
             <div class="topic-card">
                 <div class="topic-header">
                     <h3>5.2: Security Scanning and Testing</h3>
-                    <span class="topic-type content">Content</span>
+                    <span class="topic-type clickable content">Content</span>
                 </div>
                 <p>Automated security testing and vulnerability scanning.</p>
                 <div class="topic-components">
-                    <span class="component">📖 Main Content</span>
-                    <span class="component">🎯 Study Aids</span>
-                    <span class="component">❓ Quiz</span>
+                    <span class="component clickable">📖 Main Content</span>
+                    <span class="component clickable">🎯 Study Aids</span>
+                    <span class="component clickable">❓ Quiz</span>
                 </div>
             </div>
 
             <div class="topic-card">
                 <div class="topic-header">
                     <h3>5.3: Container Security</h3>
-                    <span class="topic-type content">Content</span>
+                    <span class="topic-type clickable content">Content</span>
                 </div>
                 <p>Securing containerized applications and runtime environments.</p>
                 <div class="topic-components">
-                    <span class="component">📖 Main Content</span>
-                    <span class="component">🎯 Study Aids</span>
-                    <span class="component">❓ Quiz</span>
+                    <span class="component clickable">📖 Main Content</span>
+                    <span class="component clickable">🎯 Study Aids</span>
+                    <span class="component clickable">❓ Quiz</span>
                 </div>
             </div>
 
             <div class="topic-card">
                 <div class="topic-header">
                     <h3>5.4: Compliance and Governance</h3>
-                    <span class="topic-type content">Content</span>
+                    <span class="topic-type clickable content">Content</span>
                 </div>
                 <p>Automated compliance checking and governance frameworks.</p>
                 <div class="topic-components">
-                    <span class="component">📖 Main Content</span>
-                    <span class="component">🎯 Study Aids</span>
-                    <span class="component">❓ Quiz</span>
+                    <span class="component clickable">📖 Main Content</span>
+                    <span class="component clickable">🎯 Study Aids</span>
+                    <span class="component clickable">❓ Quiz</span>
                 </div>
             </div>
 
             <div class="topic-card final-exam">
                 <div class="topic-header">
                     <h3>5.5: Unit 5 Final Exam</h3>
-                    <span class="topic-type exam">Assessment</span>
+                    <span class="topic-type clickable exam">Assessment</span>
                 </div>
                 <p>Assessment covering DevSecOps practices and security integration.</p>
                 <div class="topic-components">
-                    <span class="component">📝 Final Assessment</span>
+                    <span class="component clickable">📝 Final Assessment</span>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="unit-prerequisites">
-        <h2>Prerequisites & Next Steps</h2>
+        <h2>Prerequisites &amp; Next Steps</h2>
         <div class="prereq-grid">
             <div class="prereq-card">
                 <h3>📚 Prerequisites</h3>
@@ -139,11 +139,11 @@
 
     <div class="unit-actions">
         <div class="action-buttons">
-            <button class="btn btn-primary btn-start" onclick="app.startUnit(5)">
+            <button type="button" class="btn btn-primary btn-start" onclick="app.startUnit(5)">
                 <i class="bi bi-play-fill"></i>
                 Start Unit 5
             </button>
-            <button class="btn btn-secondary btn-continue" onclick="app.continueUnit(5)" style="display: none;">
+            <button type="button" class="btn btn-secondary btn-continue hidden" onclick="app.continueUnit(5)">
                 <i class="bi bi-arrow-right"></i>
                 Continue Unit 5
             </button>

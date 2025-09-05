@@ -1,98 +1,192 @@
 <div class="topic-content">
-    <header class="topic-header">
+    <header class="topic-header" aria-label="Header">
         <h1 class="topic-title">Unit 9.2: Project 2: Go-based Real-Time Analytics Pipeline</h1>
+        <p class="topic-intro">Build a high-performance backend system for a real-time analytics platform, leveraging Go's strengths in concurrency and performance, deployed on a modern DevOps stack including Kubernetes, Terraform, and gRPC.</p>
     </header>
-    <main class="topic-main">
-        <section class="content-section">
 
-    <h2><i class="bi bi-briefcase"></i> Project Brief</h2>
-    <p class="lead">
-        Build a high-performance backend system for a real-time analytics platform. This project will leverage Go's strengths in concurrency and performance, and will be deployed on a modern DevOps stack including Kubernetes, Terraform, and gRPC.
-    </p>
+    <section class="project-overview">
+        <h2><i class="bi bi-briefcase"></i> Project Brief</h2>
+        <p class="lead">
+            Build a high-performance backend system for a real-time analytics platform. This project will leverage Go's strengths in concurrency and performance, and will be deployed on a modern DevOps stack including Kubernetes, Terraform, and gRPC.
+        </p>
 
-        </section>
-        <section class="content-section">
-            <h3>Core Services to Build:</h3>
-    <ol>
-        <li>
-            <strong>Ingestion Service (Go):</strong>
-            <ul>
-                <li>Exposes a <strong>gRPC</strong> endpoint to receive high-volume event data from clients.</li>
-                <li>Upon receiving an event, it publishes the event to a Kafka topic for durable, real-time processing.</li>
-                <li>Designed for maximum throughput and low latency.</li>
-            </ul>
-        </li>
-        <li>
-            <strong>Processing Service (Go):</strong>
-            <ul>
-                <li>A background worker service that consumes events from the Kafka topic.</li>
-                <li>Performs some form of aggregation or transformation on the data (e.g., counting event types over a time window).</li>
-                <li>Leverages Go's concurrency (goroutines) to process multiple events in parallel.</li>
-                <li>Writes the aggregated results to a time-series database (e.g., InfluxDB or TimescaleDB).</li>
-            </ul>
-        </li>
-        <li>
-            <strong>Query Service (Go):</strong>
-            <ul>
-                <li>Exposes a minimal REST API (using Gin) with an endpoint like <code>GET /analytics</code>.</li>
-                <li>Queries the time-series database to retrieve aggregated analytics data.</li>
-                <li>Presents the results to the user.</li>
-            </ul>
-        </li>
-    </ol>
+        <h3>Core Services to Build:</h3>
+        <ol>
+            <li>
+                <strong>Ingestion Service (Go):</strong>
+                <ul>
+                    <li>Exposes a <strong>gRPC</strong> endpoint to receive high-volume event data from clients.</li>
+                    <li>Upon receiving an event, it publishes the event to a Kafka topic for durable, real-time processing.</li>
+                    <li>Designed for maximum throughput and low latency.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Processing Service (Go):</strong>
+                <ul>
+                    <li>A background worker service that consumes events from the Kafka topic.</li>
+                    <li>Performs some form of aggregation or transformation on the data (e.g., counting event types over a time window).</li>
+                    <li>Leverages Go's concurrency (goroutines) to process multiple events in parallel.</li>
+                    <li>Writes the aggregated results to a time-series database (e.g., InfluxDB or TimescaleDB).</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Query Service (Go):</strong>
+                <ul>
+                    <li>Exposes a minimal REST API (using Gin) with an endpoint like <code>GET /analytics</code>.</li>
+                    <li>Queries the time-series database to retrieve aggregated analytics data.</li>
+                    <li>Presents the results to the user.</li>
+                </ul>
+            </li>
+        </ol>
+    </section>
 
-    <h3>Technical Requirements & Architecture:</h3>
-    <div class="text-center my-4">
-        <pre class="mermaid">
-            graph TD
-                Client["Data Source (Client)"] -- "gRPC Stream" --> Ingestion["Ingestion Service"];
-                Ingestion -- "Publishes Events" --> Kafka["Apache Kafka"];
-                Kafka -- "Consumes Events" --> Processing["Processing Service"];
-                Processing -- "Writes Aggregates" --> TSDB[("Time-Series DB")];
-                
-                User["User"] --> QueryAPI["Query Service (REST API)"];
-                QueryAPI -- "Queries Aggregates" --> TSDB;
+    <section class="architecture-section">
+        <h2>Technical Requirements &amp; Architecture</h2>
+        <div class="text-center my-4">
+            <pre class="mermaid">
+  <script type="text/plain">
+    graph LR
+            Client["Data Source (Client)"] -- "gRPC Stream" --> Ingestion["Ingestion Service"];
+            Ingestion -- "Publishes Events" --> Kafka["Apache Kafka"];
+            Kafka -- "Consumes Events" --> Processing["Processing Service"];
+            Processing -- "Writes Aggregates" --> TSDB[("Time-Series DB")];
 
-                subgraph "Infrastructure (Managed by Terraform)"
-                    direction LR
-                    Cluster["EKS Cluster"];
-                    Kafka["Kafka"];
-                    TSDB["TSDB"];
-                end
-        </pre>
-        <small class="text-muted">Diagram: Target Architecture for the Go Capstone Project</small>
-    </div>
+            User["User"] --> QueryAPI["Query Service (REST API)"];
+            QueryAPI -- "Queries Aggregates" --> TSDB;
 
-    <ul>
-        <li>
-            <strong>Infrastructure as Code:</strong>
-            <ul>
-                <li>Use <strong>Terraform</strong> to provision all necessary AWS infrastructure, including an EKS cluster, a managed Kafka service (e.g., Amazon MSK), and a time-series database.</li>
-            </ul>
-        </li>
-        <li>
-            <strong>Containerization & Orchestration:</strong>
-            <ul>
-                <li>Each Go service must be containerized using a multi-stage <strong>Dockerfile</strong> to produce a minimal static binary.</li>
-                <li>All services must be deployed to the EKS cluster using <strong>Kubernetes manifests</strong>.</li>
-            </ul>
-        </li>
-        <li>
-            <strong>High-Performance Communication:</strong>
-            <ul>
-                <li>Use <strong>gRPC</strong> with Protocol Buffers for the data ingestion endpoint to ensure a high-performance, strongly-typed contract.</li>
-            </ul>
-        </li>
-        <li>
-            <strong>CI/CD:</strong>
-            <ul>
-                <li>Create a <strong>GitHub Actions</strong> workflow that automates:</li>
-                <li>Linting (gosec, golangci-lint) and testing (go test).</li>
-                <li>Building minimal Docker images from the static Go binaries.</li>
-                <li>Pushing the images to a container registry.</li>
+            subgraph "Infrastructure (Managed by Terraform)"
+              direction TB
+              Cluster["EKS Cluster"];
+              Kafka;
+              TSDB;
+            end
+  </script>
+</pre>
+            <small class="text-muted">Diagram: Target Architecture for the Go Capstone Project</small>
+        </div>
+
+        <ul>
+            <li>
+                <strong>Infrastructure as Code:</strong>
+                <ul>
+                    <li>Use <strong>Terraform</strong> to provision all necessary AWS infrastructure, including an EKS cluster, a managed Kafka service (e.g., Amazon MSK), and a time-series database.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Containerization &amp; Orchestration:</strong>
+                <ul>
+                    <li>Each Go service must be containerized using a multi-stage <strong>Dockerfile</strong> to produce a minimal static binary.</li>
+                    <li>All services must be deployed to the EKS cluster using <strong>Kubernetes manifests</strong>.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>High-Performance Communication:</strong>
+                <ul>
+                    <li>Use <strong>gRPC</strong> with Protocol Buffers for the data ingestion endpoint to ensure a high-performance, strongly-typed contract.</li>
+                </ul>
+            </li>
+            <li>
+                <strong>CI/CD:</strong>
+                <ul>
+                    <li>Create a <strong>GitHub Actions</strong> workflow that automates:</li>
+                    <li>Linting (gosec, golangci-lint) and testing (go test).</li>
+                    <li>Building minimal Docker images from the static Go binaries.</li>
+                    <li>Pushing the images to a container registry.</li>
                 </ul>
             </li>
         </ul>
-        </section>
-    </main>
+    </section>
+
+    <section class="implementation-guide">
+        <h2>Implementation Steps</h2>
+        <div class="step-cards">
+            <div class="step-card">
+                <h4>Step 1: gRPC Service Development</h4>
+                <ul>
+                    <li>Define Protocol Buffer schemas for event data</li>
+                    <li>Implement high-throughput Ingestion Service with gRPC streaming</li>
+                    <li>Build Processing Service with Kafka consumer integration</li>
+                    <li>Develop Query Service with Gin REST API framework</li>
+                </ul>
+            </div>
+
+            <div class="step-card">
+                <h4>Step 2: Event Streaming Infrastructure</h4>
+                <ul>
+                    <li>Set up Apache Kafka or Amazon MSK for event streaming</li>
+                    <li>Configure topic partitioning for scalability</li>
+                    <li>Implement producer-consumer patterns with error handling</li>
+                    <li>Set up time-series database (InfluxDB or TimescaleDB)</li>
+                </ul>
+            </div>
+
+            <div class="step-card">
+                <h4>Step 3: Concurrency &amp; Performance</h4>
+                <ul>
+                    <li>Implement goroutine-based parallel processing</li>
+                    <li>Use channels for safe inter-goroutine communication</li>
+                    <li>Optimize for high-throughput data ingestion</li>
+                    <li>Implement proper connection pooling and resource management</li>
+                </ul>
+            </div>
+
+            <div class="step-card">
+                <h4>Step 4: Deployment &amp; Monitoring</h4>
+                <ul>
+                    <li>Create multi-stage Dockerfiles for minimal Go binaries</li>
+                    <li>Deploy to Kubernetes with proper resource limits</li>
+                    <li>Implement health checks and readiness probes</li>
+                    <li>Set up monitoring with Prometheus and Grafana</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="performance-considerations">
+        <h2>Performance Optimization</h2>
+        <div class="performance-grid">
+            <div class="performance-item">
+                <h4>⚡ gRPC Streaming</h4>
+                <p>HTTP/2 multiplexing and binary serialization for maximum throughput</p>
+            </div>
+            <div class="performance-item">
+                <h4>🔄 Goroutine Concurrency</h4>
+                <p>Lightweight threads for parallel event processing with minimal overhead</p>
+            </div>
+            <div class="performance-item">
+                <h4>📊 Time-Series Optimization</h4>
+                <p>Specialized database for time-based analytics with efficient aggregations</p>
+            </div>
+            <div class="performance-item">
+                <h4>🚀 Static Binaries</h4>
+                <p>Minimal Docker images with no dependencies for fast startup</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="success-metrics">
+        <h2>Success Criteria</h2>
+        <div class="metrics-list">
+            <div class="metric-item">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>High-throughput event ingestion (10k+ events/second)</span>
+            </div>
+            <div class="metric-item">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Real-time data processing with sub-second latency</span>
+            </div>
+            <div class="metric-item">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Scalable Kafka-based event streaming architecture</span>
+            </div>
+            <div class="metric-item">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Optimized time-series data storage and querying</span>
+            </div>
+            <div class="metric-item">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Production-ready Kubernetes deployment</span>
+            </div>
+        </div>
+    </section>
 </div>

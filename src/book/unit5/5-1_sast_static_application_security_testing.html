@@ -1,15 +1,14 @@
 <div class="topic-content">
-    <header class="topic-header">
+    <header class="topic-header" aria-label="Header">
         <h1 class="topic-title">Unit 5.1: SAST (Static Application Security Testing)</h1>
+        <p>Welcome to Unit 5, where we integrate security directly into our development lifecycle. <strong>DevSecOps</strong> is a cultural shift that makes security a shared responsibility. Instead of treating security as a final gate before release, we embed it into every phase of the DevOps process. This is often called <strong>"Shifting Left"</strong>—moving security checks to the earliest possible point in development.</p>
+        <p>Our first tool in the DevSecOps arsenal is <strong>Static Application Security Testing (SAST)</strong>. SAST tools analyze an application's source code from the inside out to find security vulnerabilities without actually running the code.</p>
     </header>
-    <main class="topic-main">
-
-    <p class="lead">Welcome to Unit 5, where we integrate security directly into our development lifecycle. <strong>DevSecOps</strong> is a cultural shift that makes security a shared responsibility. Instead of treating security as a final gate before release, we embed it into every phase of the DevOps process. This is often called <strong>"Shifting Left"</strong>—moving security checks to the earliest possible point in development.</p>
-    <p>Our first tool in the DevSecOps arsenal is <strong>Static Application Security Testing (SAST)</strong>. SAST tools analyze an application's source code from the inside out to find security vulnerabilities without actually running the code.</p>
 
     <div class="text-center my-4">
         <pre class="mermaid">
-            graph TD
+  <script type="text/plain">
+    graph LR
                 A["Plan"] --> B["Code"];
                 B -- "Run SAST Here" --> C["Build"];
                 C --> D["Test"];
@@ -17,48 +16,49 @@
                 E --> F["Deploy"];
                 F --> G["Operate"];
                 style B fill:#f9f,stroke:#333,stroke-width:2px
-        </pre>
+  </script>
+</pre>
         <small class="text-muted">Diagram: "Shifting Left" - Integrating SAST into the CI Pipeline</small>
     </div>
 
-        <section class="content-section">
-            <h2><i class="bi bi-file-earmark-code"></i> SAST for Python: Bandit</h2>
-    <p>
-        <a href="https://bandit.readthedocs.io/en/latest/" target="_blank">Bandit</a> is a tool designed to find common security issues in Python code. It works by processing each file, building an Abstract Syntax Tree (AST) from it, and running plugins against the AST nodes.
-    </p>
+    <section class="content-section">
+        <h2><i class="bi bi-file-earmark-code"></i> SAST for Python: Bandit</h2>
+        <p>
+            <a href="https://bandit.readthedocs.io/en/latest/" target="_blank">Bandit</a> is a tool designed to find common security issues in Python code. It works by processing each file, building an Abstract Syntax Tree (AST) from it, and running plugins against the AST nodes.
+        </p>
 
-    <h4>Installation</h4>
-    <pre><code class="language-bash">poetry add bandit --group dev</code></pre>
+        <h4>Installation</h4>
+        <pre><code class="language-bash">poetry add bandit --group dev</code></pre>
 
-    <h4>Example: Finding a Hardcoded Password</h4>
-    <p>Consider this insecure Python code:</p>
-    <pre><code class="language-python">
+        <h4>Example: Finding a Hardcoded Password</h4>
+        <p>Consider this insecure Python code:</p>
+        <pre><code class="language-python">
 # insecure_app.py
 import subprocess
 
 def connect_to_db():
-    password = "my-super-secret-password"  # Hardcoded password
-    db_host = "database.example.com"
-    
+    password = &quot;my-super-secret-password&quot;  # Hardcoded password
+    db_host = &quot;database.example.com&quot;
+
     # Insecure command execution
-    subprocess.call(f"ssh user@{db_host} 'connect_db --password {password}'", shell=True)
+    subprocess.call(f&quot;ssh user@{db_host} &#x27;connect_db --password {password}&#x27;&quot;, shell=True)
 
 connect_to_db()
     </code></pre>
 
-    <p>Running Bandit will immediately flag these issues:</p>
-    <pre><code class="language-bash">
+        <p>Running Bandit will immediately flag these issues:</p>
+        <pre><code class="language-bash">
 $ bandit -r .
 ...
-[B105] hardcoded_password_string: Possible hardcoded password: '"my-super-secret-password"'
+[B105] hardcoded_password_string: Possible hardcoded password: &#x27;&quot;my-super-secret-password&quot;&#x27;
    ...
 [B602] subprocess_popen_with_shell_equals_true: `subprocess.call` with `shell=True` can be dangerous.
    ...
     </code></pre>
 
-    <h4>Integrating Bandit into CI/CD</h4>
-    <p>You can easily add Bandit to your GitHub Actions workflow to scan every code change.</p>
-    <pre><code class="language-yaml">
+        <h4>Integrating Bandit into CI/CD</h4>
+        <p>You can easily add Bandit to your GitHub Actions workflow to scan every code change.</p>
+        <pre><code class="language-yaml">
 # .github/workflows/ci.yml
 jobs:
   security:
@@ -70,7 +70,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: &#x27;3.11&#x27;
       - name: Install dependencies
         run: pip install bandit
       - name: Run Bandit
@@ -82,55 +82,55 @@ jobs:
           path: bandit-report.json
     </code></pre>
 
-        </section>
-        <section class="content-section">
-            <h2><i class="bi bi-file-earmark-code-fill"></i> SAST for Go: gosec</h2>
-    <p>
-        For Go, the community standard is <a href="https://github.com/securego/gosec" target="_blank">gosec</a>. It scans Go source code for security problems by inspecting the Go AST.
-    </p>
+    </section>
+    <section class="content-section">
+        <h2><i class="bi bi-file-earmark-code-fill"></i> SAST for Go: gosec</h2>
+        <p>
+            For Go, the community standard is <a href="https://github.com/securego/gosec" target="_blank">gosec</a>. It scans Go source code for security problems by inspecting the Go AST.
+        </p>
 
-    <h4>Installation</h4>
-    <pre><code class="language-bash">go install github.com/securego/gosec/v2/cmd/gosec@latest</code></pre>
+        <h4>Installation</h4>
+        <pre><code class="language-bash">go install github.com/securego/gosec/v2/cmd/gosec@latest</code></pre>
 
-    <h4>Example: Finding Insecure Code</h4>
-    <p>Consider this insecure Go code:</p>
-    <pre><code class="language-go">
+        <h4>Example: Finding Insecure Code</h4>
+        <p>Consider this insecure Go code:</p>
+        <pre><code class="language-go">
 // insecure.go
 package main
 
 import (
-    "crypto/md5" // Insecure hashing algorithm
-    "fmt"
-    "os/exec"
+    &quot;crypto/md5&quot; // Insecure hashing algorithm
+    &quot;fmt&quot;
+    &quot;os/exec&quot;
 )
 
 func main() {
-    password := "password123"
+    password := &quot;password123&quot;
     hash := md5.Sum([]byte(password))
-    fmt.Printf("MD5 hash: %x
-", hash)
+    fmt.Printf(&quot;MD5 hash: %x
+&quot;, hash)
 
-    userInput := "some-untrusted-input"
+    userInput := &quot;some-untrusted-input&quot;
     // Insecure command execution
-    cmd := exec.Command("sh", "-c", "echo "+userInput)
+    cmd := exec.Command(&quot;sh&quot;, &quot;-c&quot;, &quot;echo &quot;+userInput)
     cmd.Run()
 }
     </code></pre>
 
-    <p>Running `gosec` will highlight the vulnerabilities:</p>
-    <pre><code class="language-bash">
+        <p>Running `gosec` will highlight the vulnerabilities:</p>
+        <pre><code class="language-bash">
 $ gosec ./...
 [gosec] G401: Use of weak cryptographic primitive (Confidence: HIGH, Severity: MEDIUM)
- > insecure.go:9:10: hash := md5.Sum([]byte(password))
+ &gt; insecure.go:9:10: hash := md5.Sum([]byte(password))
 
 [gosec] G204: Subprocess launched with variable (Confidence: HIGH, Severity: HIGH)
- > insecure.go:14:10: cmd := exec.Command("sh", "-c", "echo "+userInput)
+ &gt; insecure.go:14:10: cmd := exec.Command(&quot;sh&quot;, &quot;-c&quot;, &quot;echo &quot;+userInput)
 ...
     </code></pre>
 
-    <h4>Integrating gosec into CI/CD</h4>
-    <p>You can use the official `gosec` action in your GitHub workflow.</p>
-    <pre><code class="language-yaml">
+        <h4>Integrating gosec into CI/CD</h4>
+        <p>You can use the official `gosec` action in your GitHub workflow.</p>
+        <pre><code class="language-yaml">
 # .github/workflows/ci.yml
 jobs:
   gosec:
@@ -142,8 +142,7 @@ jobs:
       - name: Run gosec
         uses: securego/gosec-action@v1
         with:
-          args: './...'
+          args: &#x27;./...&#x27;
     </code></pre>
-        </section>
-    </main>
+    </section>
 </div>

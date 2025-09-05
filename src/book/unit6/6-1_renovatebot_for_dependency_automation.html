@@ -1,155 +1,154 @@
 <div class="topic-content">
-    <header class="topic-header">
+    <header class="topic-header" aria-label="Header">
         <h1 class="topic-title">Unit 6.1: RenovateBot for Dependency Automation</h1>
+        <p class="topic-intro">Welcome to Unit 6. In modern software development, our applications rely on dozens or even hundreds of third-party dependencies. Keeping these dependencies up-to-date is a critical but often tedious task. It's a trade-off between staying current with the latest features and security patches, and the risk of introducing breaking changes. This is where automation becomes essential. <strong>RenovateBot</strong> is a powerful, open-source tool that automates dependency updating, making the process manageable, consistent, and safe.</p>
     </header>
-    <main class="topic-main">
-        <section class="content-section">
 
-    <p class="lead">Welcome to Unit 6. In modern software development, our applications rely on dozens or even hundreds of third-party dependencies. Keeping these dependencies up-to-date is a critical but often tedious task. It's a trade-off between staying current with the latest features and security patches, and the risk of introducing breaking changes. This is where automation becomes essential. <strong>RenovateBot</strong> is a powerful, open-source tool that automates dependency updating, making the process manageable, consistent, and safe.</p>
-
-        </section>
+    <main class="topic-content-wrapper">
         <section class="content-section">
             <h2><i class="bi bi-question-circle"></i> Why Automate Dependency Updates?</h2>
-    <p>Manually checking for updates is inefficient and error-prone. Automated dependency management provides several key benefits:</p>
-    <ul>
-        <li><strong>Security:</strong> It ensures you receive security patches for vulnerable dependencies as soon as they are released, drastically reducing your window of exposure.</li>
-        <li><strong>Stability:</strong> By updating frequently in small increments, you avoid the "big bang" update where you try to update dozens of outdated dependencies at once, which often leads to complex, hard-to-debug integration issues.</li>
-        <li><strong>Velocity:</strong> It frees up developer time from the manual chore of checking for updates, allowing them to focus on building features.</li>
-        <li><strong>Consistency:</strong> It enforces a consistent process for updates across all repositories in an organization.</li>
-    </ul>
+            <p>Manually checking for updates is inefficient and error-prone. Automated dependency management provides several key benefits:</p>
+            <ul>
+                <li><strong>Security:</strong> It ensures you receive security patches for vulnerable dependencies as soon as they are released, drastically reducing your window of exposure.</li>
+                <li><strong>Stability:</strong> By updating frequently in small increments, you avoid the "big bang" update where you try to update dozens of outdated dependencies at once, which often leads to complex, hard-to-debug integration issues.</li>
+                <li><strong>Velocity:</strong> It frees up developer time from the manual chore of checking for updates, allowing them to focus on building features.</li>
+                <li><strong>Consistency:</strong> It enforces a consistent process for updates across all repositories in an organization.</li>
+            </ul>
 
-    <div class="text-center my-4">
-        <pre class="mermaid">
-            graph TD
-                A["RenovateBot Monitors<br>Upstream Registries<br>(PyPI, Go Modules, etc.)"] --> B{"Finds New Version"};
-                B -- "Yes" --> C["Creates Pull/Merge Request<br>with Release Notes"];
+            <div class="text-center my-4">
+                <pre class="mermaid">
+  <script type="text/plain">
+    graph LR
+                A["RenovateBot Monitors<br />Upstream Registries<br />(PyPI, Go Modules, etc.)"] --> B{"Finds New Version"};
+                B -- "Yes" --> C["Creates Pull/Merge Request<br />with Release Notes"];
                 B -- "No" --> A;
-                C --> D{"CI Pipeline Runs<br>(Tests, Scans, etc.)"};
-                D -- "Pass" --> E["Developer Reviews<br>& Merges PR"];
-                D -- "Fail" --> F["Developer Investigates<br>CI Failure"];
+                C --> D{"CI Pipeline Runs<br />(Tests, Scans, etc.)"};
+                D -- "Pass" --> E["Developer Reviews<br />& Merges PR"];
+                D -- "Fail" --> F["Developer Investigates<br />CI Failure"];
                 E --> G["Dependency is Updated"];
-        </pre>
-        <small class="text-muted">Diagram: The Automated Workflow of RenovateBot</small>
-    </div>
+  </script>
+</pre>
+                <small class="text-muted">Diagram: The Automated Workflow of RenovateBot</small>
+            </div>
 
         </section>
         <section class="content-section">
             <h2><i class="bi bi-tools"></i> How Renovate Works</h2>
-    <p>
-        Renovate is a highly configurable bot that runs against your repositories. It scans your dependency files (like <code>pyproject.toml</code> or <code>go.mod</code>), checks for new versions in their respective registries, and then automatically creates pull requests (PRs) to update them.
-    </p>
-    <p>
-        It can be run as a GitHub App, a GitLab CI job, or a self-hosted service. For most users, the <a href="https://github.com/apps/renovate" target="_blank">Renovate GitHub App</a> is the easiest way to get started.
-    </p>
+            <p>
+                Renovate is a highly configurable bot that runs against your repositories. It scans your dependency files (like <code>pyproject.toml</code> or <code>go.mod</code>), checks for new versions in their respective registries, and then automatically creates pull requests (PRs) to update them.
+            </p>
+            <p>
+                It can be run as a GitHub App, a GitLab CI job, or a self-hosted service. For most users, the <a href="https://github.com/apps/renovate" target="_blank">Renovate GitHub App</a> is the easiest way to get started.
+            </p>
 
-    <h3>Configuration</h3>
-    <p>You configure Renovate's behavior using a <code>renovate.json</code> or <code>.github/renovate.json</code> file in your repository. This allows for fine-grained control over how and when updates are proposed.</p>
+            <h3>Configuration</h3>
+            <p>You configure Renovate's behavior using a <code>renovate.json</code> or <code>.github/renovate.json</code> file in your repository. This allows for fine-grained control over how and when updates are proposed.</p>
 
         </section>
         <section class="content-section">
             <h2><i class="bi bi-file-earmark-code"></i> Configuring Renovate for Python Projects</h2>
-    <p>Renovate has excellent support for Python projects, including those using Poetry (<code>pyproject.toml</code>) or pip (<code>requirements.txt</code>).</p>
+            <p>Renovate has excellent support for Python projects, including those using Poetry (<code>pyproject.toml</code>) or pip (<code>requirements.txt</code>).</p>
 
-    <h4>Example: <code>renovate.json</code> for a Python/Poetry Project</h4>
-    <pre><code class="language-json">
+            <h4>Example: <code>renovate.json</code> for a Python/Poetry Project</h4>
+            <pre><code class="language-json">
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base"
+  &quot;$schema&quot;: &quot;https://docs.renovatebot.com/renovate-schema.json&quot;,
+  &quot;extends&quot;: [
+    &quot;config:base&quot;
   ],
-  "packageRules": [
+  &quot;packageRules&quot;: [
     {
-      "matchPackagePatterns": ["*"],
-      "automerge": true,
-      "automergeType": "pr",
-      "platformAutomerge": true
+      &quot;matchPackagePatterns&quot;: [&quot;*&quot;],
+      &quot;automerge&quot;: true,
+      &quot;automergeType&quot;: &quot;pr&quot;,
+      &quot;platformAutomerge&quot;: true
     },
     {
-      "matchUpdateTypes": ["major"],
-      "automerge": false
+      &quot;matchUpdateTypes&quot;: [&quot;major&quot;],
+      &quot;automerge&quot;: false
     }
   ]
 }
     </code></pre>
-    <p>This configuration does the following:</p>
-    <ul>
-        <li><code>"extends": ["config:base"]</code>: Inherits from Renovate's curated base configuration, which provides sensible defaults like grouping related packages together.</li>
-        <li>The first <code>packageRules</code> block enables automerge for all packages.</li>
-        <li>The second <code>packageRules</code> block disables automerge for <code>major</code> version updates, as these are the most likely to contain breaking changes and require manual review.</li>
-    </ul>
+            <p>This configuration does the following:</p>
+            <ul>
+                <li><code>&quot;extends&quot;: [&quot;config:base&quot;]</code>: Inherits from Renovate's curated base configuration, which provides sensible defaults like grouping related packages together.</li>
+                <li>The first <code>packageRules</code> block enables automerge for all packages.</li>
+                <li>The second <code>packageRules</code> block disables automerge for <code>major</code> version updates, as these are the most likely to contain breaking changes and require manual review.</li>
+            </ul>
 
-    <hr/>
+        </section>
 
-    <h2><i class="bi bi-file-earmark-code-fill"></i> Configuring Renovate for Go Projects</h2>
-    <p>Renovate seamlessly handles Go modules by parsing the <code>go.mod</code> file.</p>
+        <section class="content-section">
+            <h2><i class="bi bi-file-earmark-code-fill"></i> Configuring Renovate for Go Projects</h2>
+            <p>Renovate seamlessly handles Go modules by parsing the <code>go.mod</code> file.</p>
 
-    <h4>Example: <code>renovate.json</code> for a Go Project</h4>
-    <pre><code class="language-json">
+            <h4>Example: <code>renovate.json</code> for a Go Project</h4>
+            <pre><code class="language-json">
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base"
+  &quot;$schema&quot;: &quot;https://docs.renovatebot.com/renovate-schema.json&quot;,
+  &quot;extends&quot;: [
+    &quot;config:base&quot;
   ],
-  "go": {
-    "rangeStrategy": "pin"
+  &quot;go&quot;: {
+    &quot;rangeStrategy&quot;: &quot;pin&quot;
   },
-  "packageRules": [
+  &quot;packageRules&quot;: [
     {
-      "matchPackagePatterns": ["*"],
-      "automerge": true,
-      "automergeType": "pr",
-      "platformAutomerge": true
+      &quot;matchPackagePatterns&quot;: [&quot;*&quot;],
+      &quot;automerge&quot;: true,
+      &quot;automergeType&quot;: &quot;pr&quot;,
+      &quot;platformAutomerge&quot;: true
     },
     {
-      "matchUpdateTypes": ["major"],
-      "automerge": false
+      &quot;matchUpdateTypes&quot;: [&quot;major&quot;],
+      &quot;automerge&quot;: false
     }
   ]
 }
     </code></pre>
-    <p>This configuration is very similar to the Python one, with one addition:</p>
-    <ul>
-        <li><code>"go": { "rangeStrategy": "pin" }</code>: This tells Renovate to pin Go dependencies to a specific version rather than using a version range, which is the common practice in the Go ecosystem.</li>
-    </ul>
-
+            <p>This configuration is very similar to the Python one, with one addition:</p>
+            <ul>
+                <li><code>&quot;go&quot;: { &quot;rangeStrategy&quot;: &quot;pin&quot; }</code>: This tells Renovate to pin Go dependencies to a specific version rather than using a version range, which is the common practice in the Go ecosystem.</li>
+            </ul>
         </section>
         <section class="content-section">
             <h2><i class="bi bi-sliders"></i> Advanced Configuration and Presets</h2>
-    <p>Renovate's power lies in its flexibility. You can use its vast array of configuration options and presets to tailor its behavior to your exact needs.</p>
-    <ul>
-        <li><strong>Scheduling:</strong> You can schedule Renovate to run only during specific hours or on certain days to avoid noise.</li>
-        <li><strong>Grouping:</strong> You can control how dependencies are grouped. For example, group all AWS SDK updates into a single PR.</li>
-        <li><strong>Automerging:</strong> Define rules for when it's safe to merge a PR automatically (e.g., for minor patches after CI passes).</li>
-        <li><strong>Presets:</strong> Renovate offers shareable configuration presets. You can create a preset for your organization and have all repositories extend it for consistency.</li>
-    </ul>
+            <p>Renovate's power lies in its flexibility. You can use its vast array of configuration options and presets to tailor its behavior to your exact needs.</p>
+            <ul>
+                <li><strong>Scheduling:</strong> You can schedule Renovate to run only during specific hours or on certain days to avoid noise.</li>
+                <li><strong>Grouping:</strong> You can control how dependencies are grouped. For example, group all AWS SDK updates into a single PR.</li>
+                <li><strong>Automerging:</strong> Define rules for when it's safe to merge a PR automatically (e.g., for minor patches after CI passes).</li>
+                <li><strong>Presets:</strong> Renovate offers shareable configuration presets. You can create a preset for your organization and have all repositories extend it for consistency.</li>
+            </ul>
 
-    <h4>Example: Advanced Grouping and Scheduling</h4>
-    <pre><code class="language-json">
+            <h4>Example: Advanced Grouping and Scheduling</h4>
+            <pre><code class="language-json">
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base",
-    ":timezone(America/New_York)"
+  &quot;$schema&quot;: &quot;https://docs.renovatebot.com/renovate-schema.json&quot;,
+  &quot;extends&quot;: [
+    &quot;config:base&quot;,
+    &quot;:timezone(America/New_York)&quot;
   ],
-  "schedule": ["after 10pm every weekday", "before 5am every weekday"],
-  "packageRules": [
+  &quot;schedule&quot;: [&quot;after 10pm every weekday&quot;, &quot;before 5am every weekday&quot;],
+  &quot;packageRules&quot;: [
     {
-      "matchPackagePatterns": ["^@aws-sdk/"],
-      "groupName": "aws-sdk"
+      &quot;matchPackagePatterns&quot;: [&quot;^@aws-sdk/&quot;],
+      &quot;groupName&quot;: &quot;aws-sdk&quot;
     },
     {
-      "matchUpdateTypes": ["minor", "patch"],
-      "automerge": true
+      &quot;matchUpdateTypes&quot;: [&quot;minor&quot;, &quot;patch&quot;],
+      &quot;automerge&quot;: true
     }
   ]
 }
     </code></pre>
-    <p>This configuration tells Renovate to:</p>
-    <ul>
-        <li>Only run during off-peak hours in the America/New_York timezone.</li>
-        <li>Group all packages starting with <code>@aws-sdk/</code> into a single PR named "aws-sdk".</li>
-            <li>Automatically merge all minor and patch updates.</li>
-        </ul>
+            <p>This configuration tells Renovate to:</p>
+            <ul>
+                <li>Only run during off-peak hours in the America/New_York timezone.</li>
+                <li>Group all packages starting with <code>@aws-sdk/</code> into a single PR named "aws-sdk".</li>
+                <li>Automatically merge all minor and patch updates.</li>
+            </ul>
         </section>
     </main>
 </div>

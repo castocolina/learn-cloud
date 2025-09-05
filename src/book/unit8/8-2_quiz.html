@@ -1,18 +1,34 @@
 <div class="quiz-content">
-    <header class="quiz-header">
-        <h2>Quiz: Secure Credential Management in CI/CD and IaC</h2>
-        <p class="quiz-intro">Test your knowledge of secure credential management patterns for CI/CD pipelines and Infrastructure as Code.</p>
+    <header class="quiz-header" aria-label="Header">
+        <h1>8-2: Quiz - Secure Credential Management in CI/CD and IaC</h1>
+        <p class="quiz-intro">
+            Test your knowledge of secure credential management patterns for CI/CD pipelines and Infrastructure as Code. This quiz covers OIDC authentication, Vault integration, Terraform Cloud workflows, and secure IaC practices.
+        </p>
     </header>
-
     <div class="quiz-container">
         <div class="quiz-card active-card" data-question="1">
             <div class="question">
-                <p>1. What is the most secure, modern method for a GitHub Actions workflow to authenticate to a cloud provider like AWS?</p>
+                <p>
+                    1. What is the most secure, modern method for a GitHub Actions workflow to authenticate to a cloud provider like
+                    AWS?
+                </p>
                 <ul class="options">
-                    <li><label><input type="radio" name="q1" value="a"> a) Storing a long-lived IAM user's access key and secret key as GitHub Secrets.</label></li>
-                    <li><label><input type="radio" name="q1" value="b"> b) Using OIDC to exchange a short-lived JWT for temporary cloud credentials.</label></li>
-                    <li><label><input type="radio" name="q1" value="c"> c) Committing the credentials directly to the repository in a private file.</label></li>
-                    <li><label><input type="radio" name="q1" value="d"> d) Hardcoding the credentials as environment variables in the workflow YAML file.</label></li>
+                    <li>
+                        <label><input type="radio" name="q1" value="a" /> a) Storing a long-lived IAM user's access key and secret key as
+                            GitHub Secrets.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q1" value="b" /> b) Using OIDC to exchange a short-lived JWT for temporary cloud
+                            credentials.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q1" value="c" /> c) Committing the credentials directly to the repository in a
+                            private file.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q1" value="d" /> d) Hardcoding the credentials as environment variables in the
+                            workflow YAML file.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="b"></div>
             </div>
@@ -22,10 +38,22 @@
             <div class="question">
                 <p>2. What is the "principle of least privilege" as it applies to CI/CD security?</p>
                 <ul class="options">
-                    <li><label><input type="radio" name="q2" value="a"> a) Granting all CI/CD jobs administrator-level access to simplify pipeline creation.</label></li>
-                    <li><label><input type="radio" name="q2" value="b"> b) Ensuring that a CI/CD job has only the minimum permissions necessary to perform its specific task.</label></li>
-                    <li><label><input type="radio" name="q2" value="c"> c) Using the same set of credentials for all jobs in a pipeline.</label></li>
-                    <li><label><input type="radio" name="q2" value="d"> d) Storing all secrets in a single, easily accessible location.</label></li>
+                    <li>
+                        <label><input type="radio" name="q2" value="a" /> a) Granting all CI/CD jobs administrator-level access to
+                            simplify pipeline creation.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q2" value="b" /> b) Ensuring that a CI/CD job has only the minimum permissions
+                            necessary to perform its specific task.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q2" value="c" /> c) Using the same set of credentials for all jobs in a
+                            pipeline.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q2" value="d" /> d) Storing all secrets in a single, easily accessible
+                            location.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="b"></div>
             </div>
@@ -35,10 +63,20 @@
             <div class="question">
                 <p>3. What is the primary function of Atlantis in an IaC workflow?</p>
                 <ul class="options">
-                    <li><label><input type="radio" name="q3" value="a"> a) To scan Terraform code for security vulnerabilities.</label></li>
-                    <li><label><input type="radio" name="q3" value="b"> b) To provide a central state file backend for Terraform.</label></li>
-                    <li><label><input type="radio" name="q3" value="c"> c) To automate the execution of `terraform plan` and `apply` based on pull request comments.</label></li>
-                    <li><label><input type="radio" name="q3" value="d"> d) To replace Terraform with a different IaC tool.</label></li>
+                    <li>
+                        <label><input type="radio" name="q3" value="a" /> a) To scan Terraform code for security vulnerabilities.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q3" value="b" /> b) To provide a central state file backend for
+                            Terraform.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q3" value="c" /> c) To automate the execution of `terraform plan` and `apply`
+                            based on pull request comments.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q3" value="d" /> d) To replace Terraform with a different IaC tool.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="c"></div>
             </div>
@@ -46,12 +84,25 @@
 
         <div class="quiz-card" data-question="4">
             <div class="question">
-                <p>4. When integrating a CI/CD pipeline with HashiCorp Vault, what is the recommended approach for the CI/CD job to authenticate?</p>
+                <p>
+                    4. When integrating a CI/CD pipeline with HashiCorp Vault, what is the recommended approach for the CI/CD job to
+                    authenticate?
+                </p>
                 <ul class="options">
-                    <li><label><input type="radio" name="q4" value="a"> a) Using a long-lived root token stored as a CI/CD secret.</label></li>
-                    <li><label><input type="radio" name="q4" value="b"> b) Using a username and password.</label></li>
-                    <li><label><input type="radio" name="q4" value="c"> c) Using a trusted authentication method like JWT/OIDC to get a short-lived Vault token.</label></li>
-                    <li><label><input type="radio" name="q4" value="d"> d) Allowing anonymous access to the Vault server.</label></li>
+                    <li>
+                        <label><input type="radio" name="q4" value="a" /> a) Using a long-lived root token stored as a CI/CD
+                            secret.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q4" value="b" /> b) Using a username and password.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q4" value="c" /> c) Using a trusted authentication method like JWT/OIDC to get
+                            a short-lived Vault token.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q4" value="d" /> d) Allowing anonymous access to the Vault server.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="c"></div>
             </div>
@@ -59,21 +110,36 @@
 
         <div class="quiz-card" data-question="5">
             <div class="question">
-                <p>5. Why is it more secure to generate a short-lived `kubeconfig` for each deployment job rather than storing a static one?</p>
+                <p>
+                    5. Why is it more secure to generate a short-lived `kubeconfig` for each deployment job rather than storing a
+                    static one?
+                </p>
                 <ul class="options">
-                    <li><label><input type="radio" name="q5" value="a"> a) It makes the deployment process faster.</label></li>
-                    <li><label><input type="radio" name="q5" value="b"> b) It reduces the risk of a compromised credential providing long-term access to the cluster.</label></li>
-                    <li><label><input type="radio" name="q5" value="c"> c) It allows multiple developers to use the same `kubeconfig`.</label></li>
-                    <li><label><input type="radio" name="q5" value="d"> d) It is the only way to connect to a Kubernetes cluster from a CI/CD pipeline.</label></li>
+                    <li>
+                        <label><input type="radio" name="q5" value="a" /> a) It makes the deployment process faster.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q5" value="b" /> b) It reduces the risk of a compromised credential providing
+                            long-term access to the cluster.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q5" value="c" /> c) It allows multiple developers to use the same
+                            `kubeconfig`.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q5" value="d" /> d) It is the only way to connect to a Kubernetes cluster from
+                            a CI/CD pipeline.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="b"></div>
             </div>
         </div>
 
         <div class="quiz-navigation">
-            <button class="quiz-btn" id="prev-question">Previous</button>
-            <button class="quiz-btn" id="next-question">Next</button>
-            <button class="quiz-btn" id="submit-quiz" style="display: none;">Submit Answers</button>
+            <button type="button" class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <div class="quiz-progress">Question 1 of 5</div>
+            <button type="button" class="btn btn-outline-primary" id="next-question">Next</button>
+            <button type="button" class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
         </div>
         <div class="quiz-results-container"></div>
     </div>

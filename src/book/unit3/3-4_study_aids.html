@@ -1,6 +1,6 @@
 <div class="study-aids-content">
-    <header class="study-aids-header">
-        <h2>Study Aids: Spinnaker for Continuous Delivery</h2>
+    <header class="study-aids-header" aria-label="Header">
+        <h1>3-4: Study Aids - Spinnaker for Continuous Delivery</h1>
         <p class="study-aids-intro">Implement advanced continuous delivery with Spinnaker, automated canary analysis, and deployment strategies. Click each card to reveal the answer.</p>
     </header>
 
@@ -9,98 +9,70 @@
             <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What is Automated Canary Analysis in Spinnaker and how does it work?</p>
-            </div>
+                    <p>What is Automated Canary Analysis in Spinnaker and how does it work?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>ACA is Spinnaker's feature that automatically compares a new canary version against a baseline using real-time metrics. It uses statistical analysis to produce a risk score and can automatically promote, fail, or wait for human approval based on thresholds.</p>
+                    <p>ACA is Spinnaker's feature that automatically compares a new canary version against a baseline using real-time metrics. It uses statistical analysis to produce a risk score and can automatically promote, fail, or wait for human approval based on thresholds.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand flashcard"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
 
         <div class="flashcard">
             <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What are the key benefits of using DevOps practices in cloud-native development?</p>
-            </div>
+                    <p>What are the key benefits of using DevOps practices in cloud-native development?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>DevOps practices enable faster delivery cycles, improved collaboration between teams, automated testing and deployment, reduced manual errors, better scalability, and more reliable systems through continuous integration and monitoring.</p>
+                    <p>DevOps practices enable faster delivery cycles, improved collaboration between teams, automated testing and deployment, reduced manual errors, better scalability, and more reliable systems through continuous integration and monitoring.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand flashcard"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
 
         <div class="flashcard">
             <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>How does containerization support DevOps and continuous delivery?</p>
-            </div>
+                    <p>How does containerization support DevOps and continuous delivery?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Containers provide consistent environments across development, testing, and production. They enable rapid deployment, easy scaling, resource isolation, and simplified rollbacks, making continuous delivery more reliable and efficient.</p>
+                    <p>Containers provide consistent environments across development, testing, and production. They enable rapid deployment, easy scaling, resource isolation, and simplified rollbacks, making continuous delivery more reliable and efficient.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand flashcard"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
 
         <div class="flashcard">
             <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What is the difference between continuous integration, continuous delivery, and continuous deployment?</p>
-            </div>
+                    <p>What is the difference between continuous integration, continuous delivery, and continuous deployment?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p><strong>CI:</strong> Automatically build and test code changes. <strong>CD (Delivery):</strong> Automatically prepare releases for deployment with manual approval. <strong>CD (Deployment):</strong> Automatically deploy to production without human intervention.</p>
+                    <p><strong>CI:</strong> Automatically build and test code changes. <strong>CD (Delivery):</strong> Automatically prepare releases for deployment with manual approval. <strong>CD (Deployment):</strong> Automatically deploy to production without human intervention.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand flashcard"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
 
         <div class="flashcard">
             <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>Why is monitoring and observability crucial in DevOps environments?</p>
-            </div>
+                    <p>Why is monitoring and observability crucial in DevOps environments?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Monitoring provides visibility into system performance, enables early problem detection, supports data-driven decisions for scaling, helps with troubleshooting in distributed systems, and ensures SLA compliance in production environments.</p>
+                    <p>Monitoring provides visibility into system performance, enables early problem detection, supports data-driven decisions for scaling, helps with troubleshooting in distributed systems, and ensures SLA compliance in production environments.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" aria-label="Expand flashcard"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
     </div>
-
-    <!-- Flashcard Modal -->
-    <dialog id="flashcard-modal" class="flashcard-modal">
-        <div class="modal-content">
-            <header class="modal-header">
-                <h3 id="modal-question">Question</h3>
-                <button class="modal-close-btn" onclick="closeFlashcardModal()">
-                    <i class="bi bi-x-lg"></i>
-                </button>
-            </header>
-            <div class="modal-body">
-                <div class="modal-answer">
-                    <h4>Answer</h4>
-                    <div id="modal-answer-content">Answer content will appear here</div>
-                </div>
-            </div>
-        </div>
-    </dialog>
 </div>

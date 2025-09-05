@@ -11,5 +11,8 @@
   ],
   "transform": {
     "^.*\\.vue$": "html-validate-vue"
+  },
+  "rules": {
+    "form-dup-name": "off"
   }
 }

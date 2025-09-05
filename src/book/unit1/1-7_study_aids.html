@@ -1,106 +1,75 @@
 <div class="study-aids-content">
-    <header class="study-aids-header">
-        <h2>Study Aids: Advanced Backend Topics</h2>
-        <p class="study-aids-intro">Explore middleware, dependency injection, authentication, and advanced patterns. Click each card to reveal the answer.</p>
+    <header class="study-aids-header" aria-label="Header">
+        <h1>Unit 1-7: Study Aids - Advanced Backend Topics</h1>
+        <p class="study-aids-intro">
+            Review key concepts from Topic 1-7 with these interactive flashcards. Click each card to reveal the answer.
+        </p>
     </header>
-
     <div class="flashcards-container">
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>Key concept 1 for Advanced Backend Topics</p>
-            </div>
+                    <p>Key concept 1 for Advanced Backend Topics</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Detailed answer covering the essential aspects of the concept.</p>
+                    <p>Detailed answer covering the essential aspects of the concept.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
-
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>Key concept 2 for Advanced Backend Topics</p>
-            </div>
+                    <p>Key concept 2 for Advanced Backend Topics</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Detailed answer covering the essential aspects of the concept.</p>
+                    <p>Detailed answer covering the essential aspects of the concept.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
-
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>Key concept 3 for Advanced Backend Topics</p>
-            </div>
+                    <p>Key concept 3 for Advanced Backend Topics</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Detailed answer covering the essential aspects of the concept.</p>
+                    <p>Detailed answer covering the essential aspects of the concept.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
-
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>Key concept 4 for Advanced Backend Topics</p>
-            </div>
+                    <p>Key concept 4 for Advanced Backend Topics</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Detailed answer covering the essential aspects of the concept.</p>
+                    <p>Detailed answer covering the essential aspects of the concept.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
-
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>Key concept 5 for Advanced Backend Topics</p>
-            </div>
+                    <p>Key concept 5 for Advanced Backend Topics</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Detailed answer covering the essential aspects of the concept.</p>
+                    <p>Detailed answer covering the essential aspects of the concept.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
     </div>
-
-    <!-- Flashcard Modal -->
-    <dialog id="flashcard-modal" class="flashcard-modal">
-        <div class="modal-content">
-            <header class="modal-header">
-                <h3 id="modal-question">Question</h3>
-                <button class="modal-close-btn" onclick="closeFlashcardModal()">
-                    <i class="bi bi-x-lg"></i>
-                </button>
-            </header>
-            <div class="modal-body">
-                <div class="modal-answer">
-                    <h4>Answer</h4>
-                    <div id="modal-answer-content">Answer content will appear here</div>
-                </div>
-            </div>
-        </div>
-    </dialog>
 </div>

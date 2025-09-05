@@ -1,106 +1,80 @@
 <div class="study-aids-content">
-    <header class="study-aids-header">
-        <h2>Study Aids: Concurrency and Caching</h2>
-        <p class="study-aids-intro">Master Python async programming, concurrency patterns, and caching strategies. Click each card to reveal the answer.</p>
+    <header class="study-aids-header" aria-label="Header">
+        <h1>Unit 1-5: Study Aids - Concurrency and Caching</h1>
+        <p class="study-aids-intro">
+            Review key concepts from Topic 1-5 with these interactive flashcards. Click each card to reveal the answer.
+        </p>
     </header>
 
     <div class="flashcards-container">
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>Key concept 1 for Concurrency and Caching</p>
-            </div>
+                    <p>What is the Global Interpreter Lock (GIL) and how does it affect Python concurrency?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Detailed answer covering the essential aspects of the concept.</p>
+                    <p>The GIL is a mutex that protects access to Python objects, preventing multiple threads from executing Python bytecode simultaneously. It primarily affects CPU-bound tasks but is released during I/O operations, making threading effective for I/O-bound workloads typical in cloud-native applications.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
 
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>Key concept 2 for Concurrency and Caching</p>
-            </div>
+                    <p>When should you use async/await vs threading in Python for concurrent programming?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Detailed answer covering the essential aspects of the concept.</p>
+                    <p><strong>async/await:</strong> Best for I/O-bound tasks with many concurrent operations (e.g., web requests, database queries). Single-threaded with cooperative multitasking.<br /><strong>Threading:</strong> Good for mixed I/O and CPU tasks, or when using libraries that don't support async.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
 
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>Key concept 3 for Concurrency and Caching</p>
-            </div>
+                    <p>What are the key differences between @lru_cache and manual caching implementations?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Detailed answer covering the essential aspects of the concept.</p>
+                    <p><strong>@lru_cache:</strong> Built-in decorator, automatic LRU eviction, thread-safe, simple to use. Limited to hashable arguments.<br /><strong>Manual caching:</strong> Full control over eviction policies, can handle complex objects, supports TTL, custom storage backends (Redis, Memcached).</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
 
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>Key concept 4 for Concurrency and Caching</p>
-            </div>
+                    <p>What is a semaphore and how is it used to control concurrent access to resources?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Detailed answer covering the essential aspects of the concept.</p>
+                    <p>A semaphore is a synchronization primitive that maintains a counter representing available resources. It allows a specified number of concurrent operations. Common use cases include limiting database connections, API rate limiting, and controlling parallel processing workers.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
 
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>Key concept 5 for Concurrency and Caching</p>
-            </div>
+                    <p>What are the main caching strategies and when should each be used?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Detailed answer covering the essential aspects of the concept.</p>
+                    <p><strong>Cache-Aside:</strong> App manages cache directly, good for read-heavy workloads.<br /><strong>Write-Through:</strong> Write to cache and DB simultaneously, ensures consistency.<br /><strong>Write-Behind:</strong> Write to cache first, DB later, better performance but risk of data loss.<br /><strong>Refresh-Ahead:</strong> Proactively refresh before expiration.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
     </div>
-
-    <!-- Flashcard Modal -->
-    <dialog id="flashcard-modal" class="flashcard-modal">
-        <div class="modal-content">
-            <header class="modal-header">
-                <h3 id="modal-question">Question</h3>
-                <button class="modal-close-btn" onclick="closeFlashcardModal()">
-                    <i class="bi bi-x-lg"></i>
-                </button>
-            </header>
-            <div class="modal-body">
-                <div class="modal-answer">
-                    <h4>Answer</h4>
-                    <div id="modal-answer-content">Answer content will appear here</div>
-                </div>
-            </div>
-        </div>
-    </dialog>
 </div>

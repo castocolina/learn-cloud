@@ -1,17 +1,29 @@
 <div class="quiz-content">
-<header class="quiz-header">
-
-            <h2>Quiz: GitHub Actions for CI/CD</h2>
-
-        <div class="quiz-container">
+    <header class="quiz-header" aria-label="Header">
+        <h1>3-3: Quiz - GitHub Actions for CI/CD</h1>
+        <p class="quiz-intro">Test your understanding of GitHub Actions workflows and CI/CD pipeline implementation.</p>
+    </header>
+    <div class="quiz-container">
         <div class="quiz-card active-card" data-question="1">
             <div class="question">
                 <p>1. In a GitHub Actions workflow file, what does the <code>on</code> keyword define?</p>
                 <ul class="options">
-                    <li><label for="q1a"><input type="radio" id="q1a" name="q1" value="a"> a) The operating system the job will run on (e.g., ubuntu-latest).</label></li>
-                    <li><label for="q1b"><input type="radio" id="q1b" name="q1" value="b"> b) The sequence of steps that make up a job.</label></li>
-                    <li><label for="q1c"><input type="radio" id="q1c" name="q1" value="c"> c) The events that trigger the workflow to run (e.g., push, pull_request).</label></li>
-                    <li><label for="q1d"><input type="radio" id="q1d" name="q1" value="d"> d) The dependencies between different jobs in the workflow.</label></li>
+                    <li>
+                        <label><input type="radio" id="q1a" name="q1" value="a" /> a) The operating system the job will run on (e.g.,
+                            ubuntu-latest).</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q1b" name="q1" value="b" /> b) The sequence of steps that make up a
+                            job.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q1c" name="q1" value="c" /> c) The events that trigger the workflow to run
+                            (e.g., push, pull_request).</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q1d" name="q1" value="d" /> d) The dependencies between different jobs in the
+                            workflow.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="c"></div>
             </div>
@@ -19,12 +31,27 @@
 
         <div class="quiz-card" data-question="2">
             <div class="question">
-                <p>2. How do you specify that a job named <code>deploy</code> should only run after a job named <code>build</code> has completed successfully?</p>
+                <p>
+                    2. How do you specify that a job named <code>deploy</code> should only run after a job named
+                    <code>build</code> has completed successfully?
+                </p>
                 <ul class="options">
-                    <li><label for="q2a"><input type="radio" id="q2a" name="q2" value="a"> a) In the <code>deploy</code> job, add <code>requires: build</code></label></li>
-                    <li><label for="q2b"><input type="radio" id="q2b" name="q2" value="b"> b) In the <code>deploy</code> job, add <code>depends_on: build</code></label></li>
-                    <li><label for="q2c"><input type="radio" id="q2c" name="q2" value="c"> c) In the <code>deploy</code> job, add <code>after: build</code></label></li>
-                    <li><label for="q2d"><input type="radio" id="q2d" name="q2" value="d"> d) In the <code>deploy</code> job, add <code>needs: build</code></label></li>
+                    <li>
+                        <label><input type="radio" id="q2a" name="q2" value="a" /> a) In the <code>deploy</code> job, add
+                            <code>requires: build</code></label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q2b" name="q2" value="b" /> b) In the <code>deploy</code> job, add
+                            <code>depends_on: build</code></label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q2c" name="q2" value="c" /> c) In the <code>deploy</code> job, add
+                            <code>after: build</code></label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q2d" name="q2" value="d" /> d) In the <code>deploy</code> job, add
+                            <code>needs: build</code></label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="d"></div>
             </div>
@@ -32,12 +59,22 @@
 
         <div class="quiz-card" data-question="3">
             <div class="question">
-                <p>3. What is the correct syntax to use a repository secret named <code>API_KEY</code> within a workflow step?</p>
+                <p>
+                    3. What is the correct syntax to use a repository secret named <code>API_KEY</code> within a workflow step?
+                </p>
                 <ul class="options">
-                    <li><label for="q3a"><input type="radio" id="q3a" name="q3" value="a"> a) <code>$API_KEY</code></label></li>
-                    <li><label for="q3b"><input type="radio" id="q3b" name="q3" value="b"> b) <code>secrets.API_KEY</code></label></li>
-                    <li><label for="q3c"><input type="radio" id="q3c" name="q3" value="c"> c) <code>${{ secrets.API_KEY }}</code></label></li>
-                    <li><label for="q3d"><input type="radio" id="q3d" name="q3" value="d"> d) <code>env.API_KEY</code></label></li>
+                    <li>
+                        <label><input type="radio" id="q3a" name="q3" value="a" /> a) <code>$API_KEY</code></label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q3b" name="q3" value="b" /> b) <code>secrets.API_KEY</code></label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q3c" name="q3" value="c" /> c) <code>${{ secrets.API_KEY }}</code></label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q3d" name="q3" value="d" /> d) <code>env.API_KEY</code></label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="c"></div>
             </div>
@@ -47,10 +84,21 @@
             <div class="question">
                 <p>4. What is the primary purpose of the <code>uses</code> keyword in a workflow step?</p>
                 <ul class="options">
-                    <li><label for="q4a"><input type="radio" id="q4a" name="q4" value="a"> a) To define an environment variable for the step.</label></li>
-                    <li><label for="q4b"><input type="radio" id="q4b" name="q4" value="b"> b) To specify a reusable action to be executed as the step.</label></li>
-                    <li><label for="q4c"><input type="radio" id="q4c" name="q4" value="c"> c) To run a multi-line shell command.</label></li>
-                    <li><label for="q4d"><input type="radio" id="q4d" name="q4" value="d"> d) To select the programming language version for the step.</label></li>
+                    <li>
+                        <label><input type="radio" id="q4a" name="q4" value="a" /> a) To define an environment variable for the
+                            step.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q4b" name="q4" value="b" /> b) To specify a reusable action to be executed as
+                            the step.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q4c" name="q4" value="c" /> c) To run a multi-line shell command.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q4d" name="q4" value="d" /> d) To select the programming language version for
+                            the step.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="b"></div>
             </div>
@@ -58,23 +106,38 @@
 
         <div class="quiz-card" data-question="5">
             <div class="question">
-                <p>5. When building and pushing a Docker image in a workflow, what is the best practice for handling your container registry credentials?</p>
+                <p>
+                    5. When building and pushing a Docker image in a workflow, what is the best practice for handling your
+                    container registry credentials?
+                </p>
                 <ul class="options">
-                    <li><label for="q5a"><input type="radio" id="q5a" name="q5" value="a"> a) Hardcode them directly in the workflow YAML file for simplicity.</label></li>
-                    <li><label for="q5b"><input type="radio" id="q5b" name="q5" value="b"> b) Store them in a text file in the root of the repository.</label></li>
-                    <li><label for="q5c"><input type="radio" id="q5c" name="q5" value="c"> c) Store them as encrypted secrets in the repository settings and reference them in the workflow.</label></li>
-                    <li><label for="q5d"><input type="radio" id="q5d" name="q5" value="d"> d) Pass them as command-line arguments when manually triggering the workflow.</label></li>
+                    <li>
+                        <label><input type="radio" id="q5a" name="q5" value="a" /> a) Hardcode them directly in the workflow YAML file
+                            for simplicity.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q5b" name="q5" value="b" /> b) Store them in a text file in the root of the
+                            repository.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q5c" name="q5" value="c" /> c) Store them as encrypted secrets in the
+                            repository settings and reference them in the workflow.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" id="q5d" name="q5" value="d" /> d) Pass them as command-line arguments when
+                            manually triggering the workflow.</label>
+                    </li>
                 </ul>
                 <div class="answer" data-correct="c"></div>
             </div>
         </div>
 
         <div class="quiz-navigation">
-            <button class="quiz-btn" id="prev-question">Previous</button>
-            <button class="quiz-btn" id="next-question">Next</button>
-            <button class="quiz-btn" id="submit-quiz" style="display: none;">Submit Answers</button>
+            <button type="button" class="btn btn-outline-secondary" id="prev-question">Previous</button>
+            <div class="quiz-progress">Question 1 of 5</div>
+            <button type="button" class="btn btn-outline-primary" id="next-question">Next</button>
+            <button type="button" class="btn btn-success" id="submit-quiz" style="display: none;">Submit Answers</button>
         </div>
         <div class="quiz-results-container"></div>
     </div>
-</div>
 </div>

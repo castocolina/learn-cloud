@@ -37,15 +37,14 @@ export class NavigationManager {
             unitProgressBar: document.getElementById('unit-progress-bar'),
             unitProgressLabel: document.getElementById('unit-progress-label'),
             overallProgressBar: document.getElementById('overall-progress-bar'),
-            overallProgressBarMobile: document.getElementById('overall-progress-bar-mobile'),
             
             // Navigation buttons
-            prevButton: document.getElementById('prev-btn'),
-            nextButton: document.getElementById('next-btn'),
+            prevButton: document.getElementById('floating-prev'),
+            nextButton: document.getElementById('floating-next'),
             floatingNav: document.getElementById('floating-nav'),
             floatingPrev: document.getElementById('floating-prev'),
             floatingNext: document.getElementById('floating-next'),
-            floatingProgress: document.getElementById('floating-progress'),
+            floatingProgress: document.getElementById('nav-progress'),
             
             // Indicators
             swipeLeft: document.getElementById('swipe-left'),
@@ -111,7 +110,7 @@ export class NavigationManager {
     
     syncMobileMenuIndices() {
         const mobileTopics = document.querySelectorAll('#nav-menu-mobile .nav-link');
-        mobileTopics.forEach((link, index) => {
+        mobileTopics.forEach((link) => {
             if (link.href.includes('overview.html')) {
                 link.dataset.index = -1;
             } else {
@@ -358,70 +357,102 @@ export class NavigationManager {
     }
     
     updateProgressBars() {
-        const totalTopics = this.topics.filter(topic => topic.index >= 0).length;
+        // Get only the actual content topics (index >= 0, excluding overview)
+        const contentTopics = this.topics.filter(topic => topic.index >= 0);
+        const totalTopics = contentTopics.length;
+        
         let overallCompleted, overallPercentage, overallText;
         
         if (this.currentIndex === -1) {
-            // Overview page
+            // Overview page - no progress yet
             overallCompleted = 0;
             overallPercentage = 0;
             overallText = `0/${totalTopics} (0%)`;
         } else {
-            // Regular topics
-            overallCompleted = this.currentIndex + 1;
-            overallPercentage = totalTopics > 0 ? (overallCompleted / totalTopics) * 100 : 0;
-            overallText = `${overallCompleted}/${totalTopics} (${Math.round(overallPercentage)}%)`;
+            // Regular topics - find position in contentTopics array
+            const topicPosition = contentTopics.findIndex(topic => topic.index === this.currentIndex);
+            if (topicPosition >= 0) {
+                overallCompleted = topicPosition + 1;
+                overallPercentage = totalTopics > 0 ? (overallCompleted / totalTopics) * 100 : 0;
+                overallText = `${overallCompleted}/${totalTopics} (${Math.round(overallPercentage)}%)`;
+            } else {
+                // Fallback - shouldn't happen
+                overallCompleted = 0;
+                overallPercentage = 0;
+                overallText = `0/${totalTopics} (0%)`;
+            }
         }
         
-        // Update progress bars
-        [this.elements.overallProgressBar, this.elements.overallProgressBarMobile].forEach(bar => {
-            if (bar) {
-                bar.style.width = `${overallPercentage}%`;
-                const textSpan = bar.querySelector('.progress-text');
-                if (textSpan) {
-                    textSpan.textContent = overallText;
-                }
+        // Update overall progress bar
+        if (this.elements.overallProgressBar) {
+            this.elements.overallProgressBar.style.width = `${overallPercentage}%`;
+            const textSpan = this.elements.overallProgressBar.querySelector('.progress-text');
+            if (textSpan) {
+                textSpan.textContent = overallText;
             }
-        });
+        }
         
         // Update unit progress
         this.updateUnitProgress();
+        
+        // Update floating navigation progress
+        if (this.elements.floatingProgress) {
+            const currentDisplay = this.currentIndex === -1 ? 0 : overallCompleted;
+            this.elements.floatingProgress.textContent = `${currentDisplay}/${totalTopics}`;
+        }
     }
     
     updateUnitProgress() {
         if (!this.elements.unitProgressBar || !this.elements.unitProgressLabel) return;
         
-        // Reset unit progress
-        this.elements.unitProgressBar.style.width = '0%';
+        // Get text span element
         const unitTextSpan = this.elements.unitProgressBar.querySelector('.progress-text');
-        if (unitTextSpan) unitTextSpan.textContent = '0%';
-        
-        this.elements.unitProgressLabel.textContent = 'Unit Progress';
         
         if (this.currentIndex === -1) {
-            this.elements.unitProgressLabel.textContent = 'Select a unit to begin';
+            // Overview page - no unit progress
+            this.elements.unitProgressBar.style.width = '0%';
+            if (unitTextSpan) unitTextSpan.textContent = 'Select a topic to begin';
+            this.elements.unitProgressLabel.textContent = 'Unit Progress';
         } else if (this.currentIndex >= 0) {
+            // Find the current unit that contains this topic
             const currentUnit = this.units.find(unit => 
                 unit.topics.some(topic => topic.index === this.currentIndex)
             );
             
             if (currentUnit) {
-                const totalInUnit = currentUnit.topics.length;
-                const firstTopicIndexInUnit = currentUnit.topics[0].index;
-                const completedInUnit = this.currentIndex - firstTopicIndexInUnit + 1;
-                const unitProgressPercentage = (completedInUnit / totalInUnit) * 100;
-                const unitText = `${completedInUnit}/${totalInUnit} (${Math.round(unitProgressPercentage)}%)`;
+                // Calculate position within the unit
+                const unitTopics = currentUnit.topics;
+                const currentTopicPositionInUnit = unitTopics.findIndex(topic => topic.index === this.currentIndex);
                 
-                this.elements.unitProgressBar.style.width = `${unitProgressPercentage}%`;
-                if (unitTextSpan) unitTextSpan.textContent = unitText;
-                this.elements.unitProgressLabel.textContent = currentUnit.name;
+                if (currentTopicPositionInUnit >= 0) {
+                    const totalInUnit = unitTopics.length;
+                    const completedInUnit = currentTopicPositionInUnit + 1;
+                    const unitProgressPercentage = (completedInUnit / totalInUnit) * 100;
+                    const unitText = `${completedInUnit}/${totalInUnit} (${Math.round(unitProgressPercentage)}%)`;
+                    
+                    this.elements.unitProgressBar.style.width = `${unitProgressPercentage}%`;
+                    if (unitTextSpan) unitTextSpan.textContent = unitText;
+                    this.elements.unitProgressLabel.textContent = currentUnit.name;
+                } else {
+                    // Fallback - topic not found in unit
+                    this.elements.unitProgressBar.style.width = '0%';
+                    if (unitTextSpan) unitTextSpan.textContent = '0%';
+                    this.elements.unitProgressLabel.textContent = currentUnit.name;
+                }
+            } else {
+                // Topic doesn't belong to any unit - reset
+                this.elements.unitProgressBar.style.width = '0%';
+                if (unitTextSpan) unitTextSpan.textContent = '0%';
+                this.elements.unitProgressLabel.textContent = 'Unit Progress';
             }
         }
     }
     
     updateNavigationButtons() {
+        const contentTopics = this.topics.filter(t => t.index >= 0);
         const isOverview = this.currentIndex === -1;
-        const isLastTopic = this.currentIndex === this.topics.filter(t => t.index >= 0).length - 1;
+        const currentTopicPosition = contentTopics.findIndex(topic => topic.index === this.currentIndex);
+        const isLastTopic = currentTopicPosition === contentTopics.length - 1;
         
         // Update button states
         [this.elements.prevButton, this.elements.floatingPrev].forEach(btn => {
@@ -429,15 +460,8 @@ export class NavigationManager {
         });
         
         [this.elements.nextButton, this.elements.floatingNext].forEach(btn => {
-            if (btn) btn.disabled = isLastTopic;
+            if (btn) btn.disabled = isLastTopic && this.currentIndex >= 0;
         });
-        
-        // Update floating progress
-        if (this.elements.floatingProgress) {
-            const totalTopics = this.topics.filter(topic => topic.index >= 0).length;
-            const currentDisplay = this.currentIndex === -1 ? 0 : this.currentIndex + 1;
-            this.elements.floatingProgress.textContent = `${currentDisplay}/${totalTopics}`;
-        }
         
         // Show/hide floating nav
         if (this.elements.floatingNav) {

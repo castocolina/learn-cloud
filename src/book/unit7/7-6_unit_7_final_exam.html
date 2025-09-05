@@ -1,297 +1,513 @@
 <div class="exam-content">
-    <header class="exam-header">
+    <header class="exam-header" aria-label="Header">
         <h1>Unit 7 Final Exam: The Serverless Ecosystem on AWS</h1>
-        <p class="exam-intro">This comprehensive exam covers all the material from Unit 7, testing your understanding of the core AWS serverless services, architecture patterns, and deployment methodologies.</p>
-    </header>
-
-    <div class="quiz-section">
-        <div class="quiz-container">
-            <!-- Question 1 -->
-            <div class="quiz-card active-card" data-question="1">
-                <div class="question">
-                    <p>1. (7.1) Which statement best describes the "pay-for-value" model of serverless computing?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q1" value="a"> a) You pay a fixed monthly fee for a pre-allocated amount of server capacity.</label></li>
-                        <li><label><input type="radio" name="q1" value="b"> b) You pay only for the compute time and resources consumed during execution, never for idle time.</label></li>
-                        <li><label><input type="radio" name="q1" value="c"> c) You pay for the number of developers on your team.</label></li>
-                        <li><label><input type="radio" name="q1" value="d"> d) You pay for the number of servers, even if they are not being used.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
+        <p class="exam-intro">
+            This comprehensive exam covers all the material from Unit 7, testing your understanding of the core AWS serverless
+            services, architecture patterns, and deployment methodologies.
+        </p>
+        <!-- Question 1 -->
+        <div class="quiz-card active-card" data-question="1">
+            <div class="question">
+                <p>1. (7.1) Which statement best describes the "pay-for-value" model of serverless computing?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q1" value="a" /> a) You pay a fixed monthly fee for a pre-allocated amount of
+                            server capacity.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q1" value="b" /> b) You pay only for the compute time and resources consumed
+                            during execution, never for idle time.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q1" value="c" /> c) You pay for the number of developers on your team.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q1" value="d" /> d) You pay for the number of servers, even if they are not
+                            being used.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
             </div>
-
-            <!-- Question 2 -->
-            <div class="quiz-card" data-question="2">
-                <div class="question">
-                    <p>2. (7.1) When would you choose AWS Fargate over AWS Lambda?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q2" value="a"> a) For a short-running, event-triggered function that processes an S3 object.</label></li>
-                        <li><label><input type="radio" name="q2" value="b"> b) To run an existing, long-running web application packaged in a Docker container without managing servers.</label></li>
-                        <li><label><input type="radio" name="q2" value="c"> c) When you want the absolute fastest cold start time possible.</label></li>
-                        <li><label><input type="radio" name="q2" value="d"> d) When you want to pay per-millisecond of execution time for a spiky workload.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 3 -->
-            <div class="quiz-card" data-question="3">
-                <div class="question">
-                    <p>3. (7.2) What is a "cold start" in AWS Lambda?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q3" value="a"> a) An error caused by running a function in a cold climate.</label></li>
-                        <li><label><input type="radio" name="q3" value="b"> b) The latency incurred when Lambda has to create a new execution environment for an invocation.</label></li>
-                        <li><label><input type="radio" name="q3" value="c"> c) A feature to make functions start faster.</label></li>
-                        <li><label><input type="radio" name="q3" value="d"> d) A function that has been frozen due to inactivity.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 4 -->
-            <div class="quiz-card" data-question="4">
-                <div class="question">
-                    <p>4. (7.2) What is the maximum execution duration for a single Lambda invocation?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q4" value="a"> a) 5 minutes</label></li>
-                        <li><label><input type="radio" name="q4" value="b"> b) 10 minutes</label></li>
-                        <li><label><input type="radio" name="q4" value="c"> c) 15 minutes</label></li>
-                        <li><label><input type="radio" name="q4" value="d"> d) 60 minutes</label></li>
-                    </ul>
-                    <div class="answer" data-correct="c"></div>
-                </div>
-            </div>
-
-            <!-- Question 5 -->
-            <div class="quiz-card" data-question="5">
-                <div class="question">
-                    <p>5. (7.2) What is the primary reason to configure Provisioned Concurrency for a Lambda function?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q5" value="a"> a) To reduce the cost of the function.</label></li>
-                        <li><label><input type="radio" name="q5" value="b"> b) To increase the maximum execution duration.</label></li>
-                        <li><label><input type="radio" name="q5" value="c"> c) To eliminate cold starts and ensure low latency for a predictable number of requests.</label></li>
-                        <li><label><input type="radio" name="q5" value="d"> d) To allow the function to access resources in a VPC.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="c"></div>
-                </div>
-            </div>
-
-            <!-- Question 6 -->
-            <div class="quiz-card" data-question="6">
-                <div class="question">
-                    <p>6. (7.2) When comparing Python and Go for Lambda development, which statement is most accurate?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q6" value="a"> a) Python has faster cold starts due to its dynamic nature.</label></li>
-                        <li><label><input type="radio" name="q6" value="b"> b) Go generally offers lower latency and faster cold starts due to being a compiled language.</label></li>
-                        <li><label><input type="radio" name="q6" value="c"> c) Python is always more cost-effective than Go.</label></li>
-                        <li><label><input type="radio" name="q6" value="d"> d) Go is better for data science and machine learning tasks.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 7 -->
-            <div class="quiz-card" data-question="7">
-                <div class="question">
-                    <p>7. (7.3) What is the primary problem that AWS Step Functions is designed to solve?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q7" value="a"> a) Storing large amounts of data.</label></li>
-                        <li><label><input type="radio" name="q7" value="b"> b) Orchestrating complex workflows and coordinating multiple AWS services.</label></li>
-                        <li><label><input type="radio" name="q7" value="c"> c) Providing a content delivery network (CDN) for web assets.</label></li>
-                        <li><label><input type="radio" name="q7" value="d"> d) Running containerized applications.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 8 -->
-            <div class="quiz-card" data-question="8">
-                <div class="question">
-                    <p>8. (7.3) In a Step Functions state machine, what is the purpose of a `Choice` state?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q8" value="a"> a) To run multiple branches of the workflow concurrently.</label></li>
-                        <li><label><input type="radio" name="q8" value="b"> b) To pause the workflow for a specified duration.</label></li>
-                        <li><label><input type="radio" name="q8" value="c"> c) To add conditional, branching logic to the workflow.</label></li>
-                        <li><label><input type="radio" name="q8" value="d"> d) To invoke a Lambda function to perform a task.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="c"></div>
-                </div>
-            </div>
-
-            <!-- Question 9 -->
-            <div class="quiz-card" data-question="9">
-                <div class="question">
-                    <p>9. (7.3) What is a key benefit of using a direct service integration in Step Functions (e.g., calling SNS directly) instead of using a Lambda function as glue?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q9" value="a"> a) It allows for more complex logic to be executed.</label></li>
-                        <li><label><input type="radio" name="q9" value="b"> b) It reduces cost, code, and complexity for simple tasks.</label></li>
-                        <li><label><input type="radio" name="q9" value="c"> c) It provides better error handling capabilities.</label></li>
-                        <li><label><input type="radio" name="q9" value="d"> d) It is the only way to interact with other AWS services.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 10 -->
-            <div class="quiz-card" data-question="10">
-                <div class="question">
-                    <p>10. (7.4) What is the relationship between AWS SAM and AWS CloudFormation?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q10" value="a"> a) They are two completely independent and unrelated services.</label></li>
-                        <li><label><input type="radio" name="q10" value="b"> b) SAM is a third-party tool that replaces CloudFormation.</label></li>
-                        <li><label><input type="radio" name="q10" value="c"> c) SAM is an extension of CloudFormation that provides a simplified syntax for defining serverless resources.</label></li>
-                        <li><label><input type="radio" name="q10" value="d"> d) CloudFormation is a feature of SAM used for local testing.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="c"></div>
-                </div>
-            </div>
-
-            <!-- Question 11 -->
-            <div class="quiz-card" data-question="11">
-                <div class="question">
-                    <p>11. (7.4) Which command from the AWS SAM CLI allows you to test your Lambda functions and API locally in a simulated environment?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q11" value="a"> a) `sam deploy`</label></li>
-                        <li><label><input type="radio" name="q11" value="b"> b) `sam package`</label></li>
-                        <li><label><input type="radio" name="q11" value="c"> c) `sam build`</label></li>
-                        <li><label><input type="radio" name="q11" value="d"> d) `sam local start-api`</label></li>
-                    </ul>
-                    <div class="answer" data-correct="d"></div>
-                </div>
-            </div>
-
-            <!-- Question 12 -->
-            <div class="quiz-card" data-question="12">
-                <div class="question">
-                    <p>12. (7.4) When would you choose the Serverless Framework over AWS SAM?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q12" value="a"> a) When you want the tightest possible integration with AWS CloudFormation.</label></li>
-                        <li><label><input type="radio" name="q12" value="b"> b) When you need to deploy your application to multiple cloud providers like Azure or GCP.</label></li>
-                        <li><label><input type="radio" name="q12" value="c"> c) When you want to use the `sam local` command for testing.</label></li>
-                        <li><label><input type="radio" name="q12" value="d"> d) When you want to avoid using third-party tools.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 13 -->
-            <div class="quiz-card" data-question="13">
-                <div class="question">
-                    <p>13. (7.5) A Lambda function needs permission to write logs to CloudWatch. Where is this permission granted?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q13" value="a"> a) In the function's source code.</label></li>
-                        <li><label><input type="radio" name="q13" value="b"> b) In the function's IAM Execution Role.</label></li>
-                        <li><label><input type="radio" name="q13" value="c"> c) In the CloudWatch Logs configuration.</label></li>
-                        <li><label><input type="radio" name="q13" value="d"> d) In the Lambda function's environment variables.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 14 -->
-            <div class="quiz-card" data-question="14">
-                <div class="question">
-                    <p>14. (7.5) What is the difference between a Lambda version and an alias?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q14" value="a"> a) A version is a pointer to an alias.</label></li>
-                        <li><label><input type="radio" name="q14" value="b"> b) A version is an immutable snapshot of code, while an alias is a mutable pointer to a specific version.</label></li>
-                        <li><label><input type="radio" name="q14" value="c"> c) An alias is an immutable snapshot of code, while a version is a mutable pointer.</label></li>
-                        <li><label><input type="radio" name="q14" value="d"> d) There is no difference; the terms are interchangeable.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 15 -->
-            <div class="quiz-card" data-question="15">
-                <div class="question">
-                    <p>15. (7.5) What is the most common use case for the "fan-out" pattern using SNS and SQS?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q15" value="a"> a) To send a single message to a single consumer for processing.</label></li>
-                        <li><label><input type="radio" name="q15" value="b"> b) To have a single message be processed by multiple, different consumer services in parallel.</label></li>
-                        <li><label><input type="radio" name="q15" value="c"> c) To guarantee the ordering of messages.</label></li>
-                        <li><label><input type="radio" name="q15" value="d"> d) To store messages for long-term archival.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 16 -->
-            <div class="quiz-card" data-question="16">
-                <div class="question">
-                    <p>16. (7.5) What is a Dead-Letter Queue (DLQ) used for in the context of an asynchronous Lambda invocation?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q16" value="a"> a) To store successfully processed events for auditing.</label></li>
-                        <li><label><input type="radio" name="q16" value="b"> b) To send events that failed processing after all retries have been exhausted, preventing data loss.</label></li>
-                        <li><label><input type="radio" name="q16" value="c"> c) To temporarily hold events while a function is experiencing a cold start.</label></li>
-                        <li><label><input type="radio" name="q16" value="d"> d) To filter out events that do not match a specific pattern.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 17 -->
-            <div class="quiz-card" data-question="17">
-                <div class="question">
-                    <p>17. (7.5) In DynamoDB, what is the difference between a strongly consistent read and an eventually consistent read?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q17" value="a"> a) Strongly consistent reads are faster and cheaper.</label></li>
-                        <li><label><input type="radio" name="q17" value="b"> b) Eventually consistent reads always return the most up-to-date data.</label></li>
-                        <li><label><input type="radio" name="q17" value="c"> c) Strongly consistent reads return the most up-to-date data but have higher latency and cost, while eventually consistent reads are faster but may return slightly stale data.</label></li>
-                        <li><label><input type="radio" name="q17" value="d"> d) There is no difference in the returned data, only in the API call used.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="c"></div>
-                </div>
-            </div>
-
-            <!-- Question 18 -->
-            <div class="quiz-card" data-question="18">
-                <div class="question">
-                    <p>18. (7.2) A Lambda function is configured with 128 MB of memory. How does this affect its performance?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q18" value="a"> a) It has no effect on performance, only on cost.</label></li>
-                        <li><label><input type="radio" name="q18" value="b"> b) The amount of CPU power allocated to the function is proportional to the amount of memory configured.</label></li>
-                        <li><label><input type="radio" name="q18" value="c"> c) It only affects the maximum size of the deployment package.</label></li>
-                        <li><label><input type="radio" name="q18" value="d"> d) It only affects the maximum execution time.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 19 -->
-            <div class="quiz-card" data-question="19">
-                <div class="question">
-                    <p>19. (7.3) In a Step Functions workflow, how is data passed from one state to the next?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q19" value="a"> a) Using a shared S3 bucket.</label></li>
-                        <li><label><input type="radio" name="q19" value="b"> b) The JSON output of a state becomes the JSON input of the next state.</label></li>
-                        <li><label><input type="radio" name="q19" value="c"> c) Through environment variables.</label></li>
-                        <li><label><input type="radio" name="q19" value="d"> d) Using an SQS queue between each state.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <!-- Question 20 -->
-            <div class="quiz-card" data-question="20">
-                <div class="question">
-                    <p>20. (7.4) What does the `Transform: AWS::Serverless-2016-10-31` declaration at the top of a `template.yaml` file signify?</p>
-                    <ul class="options">
-                        <li><label><input type="radio" name="q20" value="a"> a) It specifies the version of the AWS CLI to use.</label></li>
-                        <li><label><input type="radio" name="q20" value="b"> b) It tells CloudFormation that this is a SAM template and that it needs to be transformed into standard CloudFormation syntax before deployment.</label></li>
-                        <li><label><input type="radio" name="q20" value="c"> c) It sets the region for the deployment.</label></li>
-                        <li><label><input type="radio" name="q20" value="d"> d) It indicates the date the template was created.</label></li>
-                    </ul>
-                    <div class="answer" data-correct="b"></div>
-                </div>
-            </div>
-
-            <div class="quiz-navigation">
-                <button class="quiz-btn" id="prev-question">Previous</button>
-                <button class="quiz-btn" id="next-question">Next</button>
-                <button class="quiz-btn" id="submit-quiz" style="display: none;">Submit Answers</button>
-            </div>
-            <div class="quiz-results-container"></div>
         </div>
-    </div>
+
+        <!-- Question 2 -->
+        <div class="quiz-card" data-question="2">
+            <div class="question">
+                <p>2. (7.1) When would you choose AWS Fargate over AWS Lambda?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q2" value="a" /> a) For a short-running, event-triggered function that
+                            processes an S3 object.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q2" value="b" /> b) To run an existing, long-running web application packaged
+                            in a Docker container without managing servers.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q2" value="c" /> c) When you want the absolute fastest cold start time
+                            possible.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q2" value="d" /> d) When you want to pay per-millisecond of execution time
+                            for a spiky workload.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="quiz-card" data-question="3">
+            <div class="question">
+                <p>3. (7.2) What is a "cold start" in AWS Lambda?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q3" value="a" /> a) An error caused by running a function in a cold
+                            climate.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q3" value="b" /> b) The latency incurred when Lambda has to create a new
+                            execution environment for an invocation.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q3" value="c" /> c) A feature to make functions start faster.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q3" value="d" /> d) A function that has been frozen due to inactivity.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="quiz-card" data-question="4">
+            <div class="question">
+                <p>4. (7.2) What is the maximum execution duration for a single Lambda invocation?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q4" value="a" /> a) 5 minutes</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q4" value="b" /> b) 10 minutes</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q4" value="c" /> c) 15 minutes</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q4" value="d" /> d) 60 minutes</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="quiz-card" data-question="5">
+            <div class="question">
+                <p>5. (7.2) What is the primary reason to configure Provisioned Concurrency for a Lambda function?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q5" value="a" /> a) To reduce the cost of the function.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q5" value="b" /> b) To increase the maximum execution duration.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q5" value="c" /> c) To eliminate cold starts and ensure low latency for a
+                            predictable number of requests.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q5" value="d" /> d) To allow the function to access resources in a
+                            VPC.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <!-- Question 6 -->
+        <div class="quiz-card" data-question="6">
+            <div class="question">
+                <p>6. (7.2) When comparing Python and Go for Lambda development, which statement is most accurate?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q6" value="a" /> a) Python has faster cold starts due to its dynamic
+                            nature.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q6" value="b" /> b) Go generally offers lower latency and faster cold starts
+                            due to being a compiled language.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q6" value="c" /> c) Python is always more cost-effective than Go.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q6" value="d" /> d) Go is better for data science and machine learning
+                            tasks.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 7 -->
+        <div class="quiz-card" data-question="7">
+            <div class="question">
+                <p>7. (7.3) What is the primary problem that AWS Step Functions is designed to solve?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q7" value="a" /> a) Storing large amounts of data.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q7" value="b" /> b) Orchestrating complex workflows and coordinating multiple
+                            AWS services.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q7" value="c" /> c) Providing a content delivery network (CDN) for web
+                            assets.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q7" value="d" /> d) Running containerized applications.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 8 -->
+        <div class="quiz-card" data-question="8">
+            <div class="question">
+                <p>8. (7.3) In a Step Functions state machine, what is the purpose of a `Choice` state?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q8" value="a" /> a) To run multiple branches of the workflow
+                            concurrently.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q8" value="b" /> b) To pause the workflow for a specified duration.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q8" value="c" /> c) To add conditional, branching logic to the
+                            workflow.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q8" value="d" /> d) To invoke a Lambda function to perform a task.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <!-- Question 9 -->
+        <div class="quiz-card" data-question="9">
+            <div class="question">
+                <p>
+                    9. (7.3) What is a key benefit of using a direct service integration in Step Functions (e.g., calling SNS
+                    directly) instead of using a Lambda function as glue?
+                </p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q9" value="a" /> a) It allows for more complex logic to be executed.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q9" value="b" /> b) It reduces cost, code, and complexity for simple
+                            tasks.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q9" value="c" /> c) It provides better error handling capabilities.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q9" value="d" /> d) It is the only way to interact with other AWS
+                            services.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 10 -->
+        <div class="quiz-card" data-question="10">
+            <div class="question">
+                <p>10. (7.4) What is the relationship between AWS SAM and AWS CloudFormation?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q10" value="a" /> a) They are two completely independent and unrelated
+                            services.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q10" value="b" /> b) SAM is a third-party tool that replaces
+                            CloudFormation.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q10" value="c" /> c) SAM is an extension of CloudFormation that provides a
+                            simplified syntax for defining serverless resources.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q10" value="d" /> d) CloudFormation is a feature of SAM used for local
+                            testing.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <!-- Question 11 -->
+        <div class="quiz-card" data-question="11">
+            <div class="question">
+                <p>
+                    11. (7.4) Which command from the AWS SAM CLI allows you to test your Lambda functions and API locally in a
+                    simulated environment?
+                </p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q11" value="a" /> a) `sam deploy`</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q11" value="b" /> b) `sam package`</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q11" value="c" /> c) `sam build`</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q11" value="d" /> d) `sam local start-api`</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="d"></div>
+            </div>
+        </div>
+
+        <!-- Question 12 -->
+        <div class="quiz-card" data-question="12">
+            <div class="question">
+                <p>12. (7.4) When would you choose the Serverless Framework over AWS SAM?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q12" value="a" /> a) When you want the tightest possible integration with AWS
+                            CloudFormation.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q12" value="b" /> b) When you need to deploy your application to multiple
+                            cloud providers like Azure or GCP.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q12" value="c" /> c) When you want to use the `sam local` command for
+                            testing.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q12" value="d" /> d) When you want to avoid using third-party tools.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 13 -->
+        <div class="quiz-card" data-question="13">
+            <div class="question">
+                <p>
+                    13. (7.5) A Lambda function needs permission to write logs to CloudWatch. Where is this permission granted?
+                </p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q13" value="a" /> a) In the function's source code.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q13" value="b" /> b) In the function's IAM Execution Role.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q13" value="c" /> c) In the CloudWatch Logs configuration.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q13" value="d" /> d) In the Lambda function's environment variables.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 14 -->
+        <div class="quiz-card" data-question="14">
+            <div class="question">
+                <p>14. (7.5) What is the difference between a Lambda version and an alias?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q14" value="a" /> a) A version is a pointer to an alias.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q14" value="b" /> b) A version is an immutable snapshot of code, while an
+                            alias is a mutable pointer to a specific version.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q14" value="c" /> c) An alias is an immutable snapshot of code, while a
+                            version is a mutable pointer.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q14" value="d" /> d) There is no difference; the terms are
+                            interchangeable.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 15 -->
+        <div class="quiz-card" data-question="15">
+            <div class="question">
+                <p>15. (7.5) What is the most common use case for the "fan-out" pattern using SNS and SQS?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q15" value="a" /> a) To send a single message to a single consumer for
+                            processing.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q15" value="b" /> b) To have a single message be processed by multiple,
+                            different consumer services in parallel.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q15" value="c" /> c) To guarantee the ordering of messages.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q15" value="d" /> d) To store messages for long-term archival.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 16 -->
+        <div class="quiz-card" data-question="16">
+            <div class="question">
+                <p>16. (7.5) What is a Dead-Letter Queue (DLQ) used for in the context of an asynchronous Lambda invocation?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q16" value="a" /> a) To store successfully processed events for
+                            auditing.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q16" value="b" /> b) To send events that failed processing after all retries
+                            have been exhausted, preventing data loss.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q16" value="c" /> c) To temporarily hold events while a function is
+                            experiencing a cold start.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q16" value="d" /> d) To filter out events that do not match a specific
+                            pattern.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 17 -->
+        <div class="quiz-card" data-question="17">
+            <div class="question">
+                <p>
+                    17. (7.5) In DynamoDB, what is the difference between a strongly consistent read and an eventually consistent
+                    read?
+                </p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q17" value="a" /> a) Strongly consistent reads are faster and cheaper.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q17" value="b" /> b) Eventually consistent reads always return the most
+                            up-to-date data.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q17" value="c" /> c) Strongly consistent reads return the most up-to-date
+                            data but have higher latency and cost, while eventually consistent reads are faster but may return
+                            slightly stale data.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q17" value="d" /> d) There is no difference in the returned data, only in the
+                            API call used.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="c"></div>
+            </div>
+        </div>
+
+        <!-- Question 18 -->
+        <div class="quiz-card" data-question="18">
+            <div class="question">
+                <p>18. (7.2) A Lambda function is configured with 128 MB of memory. How does this affect its performance?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q18" value="a" /> a) It has no effect on performance, only on cost.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q18" value="b" /> b) The amount of CPU power allocated to the function is
+                            proportional to the amount of memory configured.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q18" value="c" /> c) It only affects the maximum size of the deployment
+                            package.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q18" value="d" /> d) It only affects the maximum execution time.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 19 -->
+        <div class="quiz-card" data-question="19">
+            <div class="question">
+                <p>19. (7.3) In a Step Functions workflow, how is data passed from one state to the next?</p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q19" value="a" /> a) Using a shared S3 bucket.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q19" value="b" /> b) The JSON output of a state becomes the JSON input of the
+                            next state.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q19" value="c" /> c) Through environment variables.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q19" value="d" /> d) Using an SQS queue between each state.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <!-- Question 20 -->
+        <div class="quiz-card" data-question="20">
+            <div class="question">
+                <p>
+                    20. (7.4) What does the `Transform: AWS::Serverless-2016-10-31` declaration at the top of a `template.yaml`
+                    file signify?
+                </p>
+                <ul class="options">
+                    <li>
+                        <label><input type="radio" name="q20" value="a" /> a) It specifies the version of the AWS CLI to use.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q20" value="b" /> b) It tells CloudFormation that this is a SAM template and
+                            that it needs to be transformed into standard CloudFormation syntax before deployment.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q20" value="c" /> c) It sets the region for the deployment.</label>
+                    </li>
+                    <li>
+                        <label><input type="radio" name="q20" value="d" /> d) It indicates the date the template was created.</label>
+                    </li>
+                </ul>
+                <div class="answer" data-correct="b"></div>
+            </div>
+        </div>
+
+        <div class="quiz-navigation">
+            <button type="button" class="quiz-btn" id="prev-question">Previous</button>
+            <button type="button" class="quiz-btn" id="next-question">Next</button>
+            <button type="button" class="quiz-btn hidden" id="submit-quiz">Submit Answers</button>
+        </div>
+        <div class="quiz-results-container"></div>
+    </header>
 </div>

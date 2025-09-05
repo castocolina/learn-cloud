@@ -1,95 +1,95 @@
 <div class="unit-overview-content">
-    <header class="unit-header">
+    <header class="unit-header" aria-label="Header">
         <div class="unit-icon">
             <i class="bi bi-trophy"></i>
         </div>
         <div class="unit-title">
             <h1>Unit 9: Capstone Projects</h1>
             <p class="unit-subtitle">Real-world projects integrating all concepts</p>
+            <div class="unit-stats">
+                <div class="stat-item">
+                    <span class="stat-number">2</span>
+                    <span class="stat-label">Projects</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">~20h</span>
+                    <span class="stat-label">Est. Time</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">25</span>
+                    <span class="stat-label">Pages</span>
+                </div>
+            </div>
         </div>
     </header>
 
-    <div class="unit-summary">
-        <div class="unit-stats">
-            <div class="stat-item">
-                <span class="stat-number">2</span>
-                <span class="stat-label">Projects</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number">~20h</span>
-                <span class="stat-label">Est. Time</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number">25</span>
-                <span class="stat-label">Pages</span>
-            </div>
-        </div>
-        
-        <div class="unit-description">
-            <h2>What You'll Build</h2>
-            <p>This capstone unit brings together all concepts from previous units in comprehensive, real-world projects. You'll design and implement complete cloud-native solutions that demonstrate mastery of the entire technology stack.</p>
-            
-            <div class="learning-objectives">
-                <h3>Project Goals</h3>
-                <ul>
-                    <li>Integrate Python and Go microservices in a distributed system</li>
-                    <li>Implement comprehensive DevOps pipelines with security integration</li>
-                    <li>Deploy applications using Infrastructure as Code</li>
-                    <li>Configure secrets management and service discovery</li>
-                    <li>Build serverless components alongside containerized services</li>
-                    <li>Implement monitoring, logging, and observability</li>
-                    <li>Apply security best practices throughout the architecture</li>
-                    <li>Create production-ready documentation and runbooks</li>
-                </ul>
-            </div>
+    <div class="unit-description">
+        <h2>What You'll Build</h2>
+        <p>
+            This capstone unit brings together all concepts from previous units in comprehensive, real-world projects. You'll
+            design and implement complete cloud-native solutions that demonstrate mastery of the entire technology stack.
+        </p>
+
+        <div class="learning-objectives">
+            <h3>Project Goals</h3>
+            <ul>
+                <li>Integrate Python and Go microservices in a distributed system</li>
+                <li>Implement comprehensive DevOps pipelines with security integration</li>
+                <li>Deploy applications using Infrastructure as Code</li>
+                <li>Configure secrets management and service discovery</li>
+                <li>Build serverless components alongside containerized services</li>
+                <li>Implement monitoring, logging, and observability</li>
+                <li>Apply security best practices throughout the architecture</li>
+                <li>Create production-ready documentation and runbooks</li>
+            </ul>
         </div>
     </div>
 
     <div class="unit-structure">
         <h2>Capstone Projects</h2>
         <div class="topics-grid">
-            <div class="topic-card">
+            <div class="topic-card" onclick="app.navigateToTopic(901)">
                 <div class="topic-header">
                     <h3>9.1: E-Commerce Platform</h3>
-                    <span class="topic-type project">Capstone Project</span>
+                    <span class="topic-type project" onclick="event.stopPropagation(); app.navigateToTopic(901)">Capstone Project</span>
                 </div>
                 <p>Build a complete e-commerce platform with microservices, CI/CD, and cloud deployment.</p>
                 <div class="topic-components">
-                    <span class="component">🛠️ Full-Stack Project</span>
-                    <span class="component">📁 Documentation</span>
-                    <span class="component">📊 Portfolio Piece</span>
+                    <span class="component" onclick="event.stopPropagation(); app.navigateToTopic(901)">🛠️ Full-Stack Project</span>
+                    <span class="component" onclick="event.stopPropagation(); app.navigateToTopic(902)">🎯 Study Aids</span>
+                    <span class="component" onclick="event.stopPropagation(); app.navigateToTopic(903)">❓ Quiz</span>
                 </div>
             </div>
 
-            <div class="topic-card">
+            <div class="topic-card" onclick="app.navigateToTopic(904)">
                 <div class="topic-header">
                     <h3>9.2: IoT Data Processing Pipeline</h3>
-                    <span class="topic-type project">Capstone Project</span>
+                    <span class="topic-type project" onclick="event.stopPropagation(); app.navigateToTopic(904)">Capstone Project</span>
                 </div>
                 <p>Create a serverless data processing system with real-time analytics and monitoring.</p>
                 <div class="topic-components">
-                    <span class="component">🛠️ Full-Stack Project</span>
-                    <span class="component">📁 Documentation</span>
-                    <span class="component">📊 Portfolio Piece</span>
+                    <span class="component" onclick="event.stopPropagation(); app.navigateToTopic(904)">🛠️ Full-Stack Project</span>
+                    <span class="component" onclick="event.stopPropagation(); app.navigateToTopic(905)">🎯 Study Aids</span>
+                    <span class="component" onclick="event.stopPropagation(); app.navigateToTopic(906)">❓ Quiz</span>
                 </div>
             </div>
 
-            <div class="topic-card final-exam">
+            <div class="topic-card final-exam" onclick="app.navigateToTopic(907)">
                 <div class="topic-header">
                     <h3>9.3: Final Course Assessment</h3>
-                    <span class="topic-type exam">Final Assessment</span>
+                    <span class="topic-type exam" onclick="event.stopPropagation(); app.navigateToTopic(907)">Final Assessment</span>
                 </div>
                 <p>Comprehensive evaluation covering all course concepts and practical applications.</p>
                 <div class="topic-components">
-                    <span class="component">📝 Course Completion</span>
-                    <span class="component">🏆 Certificate Eligible</span>
+                    <span class="component" onclick="event.stopPropagation(); app.navigateToTopic(907)">📝 Course Completion</span>
+                    <span class="component" onclick="event.stopPropagation(); app.navigateToTopic(907)">🏆 Certificate Eligible</span>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="unit-prerequisites">
-        <h2>Prerequisites & Outcomes</h2>
+        <h2>Prerequisites &amp; Outcomes</h2>
         <div class="prereq-grid">
             <div class="prereq-card">
                 <h3>📚 Prerequisites</h3>
@@ -114,11 +114,11 @@
 
     <div class="unit-actions">
         <div class="action-buttons">
-            <button class="btn btn-primary btn-start" onclick="app.startUnit(9)">
+            <button type="button" class="btn btn-primary btn-start" onclick="app.startUnit(9)">
                 <i class="bi bi-play-fill"></i>
                 Start Capstone Projects
             </button>
-            <button class="btn btn-secondary btn-continue" onclick="app.continueUnit(9)" style="display: none;">
+            <button type="button" class="btn btn-secondary btn-continue hidden" onclick="app.continueUnit(9)">
                 <i class="bi bi-arrow-right"></i>
                 Continue Projects
             </button>

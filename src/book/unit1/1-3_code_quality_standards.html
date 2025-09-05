@@ -1,123 +1,145 @@
-
 <div class="topic-content">
-    <header class="topic-header">
+    <header class="topic-header" aria-label="Header">
         <h1 class="topic-title">Unit 1.3: Code Quality and Standards</h1>
-        <p class="topic-intro">In professional software development, writing code that works is only the first step. Writing code that is readable, maintainable, and consistent is just as critical, especially in a collaborative, cloud-native environment where multiple developers and teams will interact with the same codebase. This topic introduces the essential tools and standards for maintaining high code quality in Python.</p>
+        <p class="topic-intro">
+            Quality code is the foundation of maintainable cloud-native applications. As systems scale and teams grow,
+            consistent code standards become critical for productivity and reliability. This section covers the tools
+            and practices that will keep your Python code clean, consistent, and production-ready.
+        </p>
     </header>
 
-    <div class="content-section">
+    <section class="topic-section">
+        <!-- PEP 8 -->
+        <h2>PEP 8: The Python Code Style Guide</h2>
+        <p>
+            As an experienced programmer, you know that every language has its own idioms and conventions. In Python, the
+            foundational style guide is <strong>PEP 8</strong>. PEP stands for Python Enhancement Proposal, and PEP 8 is the
+            specific proposal that outlines the style conventions for writing Python code.
+        </p>
+        <p>
+            Its primary goal is to improve code readability and consistency. When everyone follows the same guidelines, it
+            becomes much easier to read, understand, and contribute to projects. You can read the full document on the
+            official Python website:
+            <a href="https://www.python.org/dev/peps/pep-0008/" target="_blank">PEP 8 -- Style Guide for Python Code</a>.
+        </p>
+        <p>Key areas covered by PEP 8 include:</p>
+        <ul>
+            <li>
+                <strong>Naming Conventions:</strong> <code>snake_case</code> for functions and variables,
+                <code>PascalCase</code> for classes.
+            </li>
+            <li><strong>Code Layout:</strong> Use 4 spaces per indentation level, and limit lines to 79-99 characters.</li>
+            <li>
+                <strong>Imports:</strong> Imports should be at the top of the file, grouped in a specific order (standard
+                library, third-party, local application).
+            </li>
+            <li>
+                <strong>Whitespace:</strong> Use whitespace judiciously to improve readability, for example, around operators.
+            </li>
+        </ul>
+        <p>
+            While you could try to memorize and apply these rules manually, it's inefficient and prone to error. That's why
+            the Python ecosystem relies on automated tools to enforce these standards.
+        </p>
 
-    <!-- PEP 8 -->
-    <h2>PEP 8: The Python Code Style Guide</h2>
-    <p>
-        As an experienced programmer, you know that every language has its own idioms and conventions. In Python, the foundational style guide is <strong>PEP 8</strong>. PEP stands for Python Enhancement Proposal, and PEP 8 is the specific proposal that outlines the style conventions for writing Python code.
-    </p>
-    <p>
-        Its primary goal is to improve code readability and consistency. When everyone follows the same guidelines, it becomes much easier to read, understand, and contribute to projects. You can read the full document on the official Python website: <a href="https://www.python.org/dev/peps/pep-0008/" target="_blank">PEP 8 -- Style Guide for Python Code</a>.
-    </p>
-    <p>Key areas covered by PEP 8 include:</p>
-    <ul>
-        <li><strong>Naming Conventions:</strong> <code>snake_case</code> for functions and variables, <code>PascalCase</code> for classes.</li>
-        <li><strong>Code Layout:</strong> Use 4 spaces per indentation level, and limit lines to 79-99 characters.</li>
-        <li><strong>Imports:</strong> Imports should be at the top of the file, grouped in a specific order (standard library, third-party, local application).</li>
-        <li><strong>Whitespace:</strong> Use whitespace judiciously to improve readability, for example, around operators.</li>
-    </ul>
-    <p>
-        While you could try to memorize and apply these rules manually, it's inefficient and prone to error. That's why the Python ecosystem relies on automated tools to enforce these standards.
-    </p>
+        <hr />
 
-    <hr/>
+        <!-- Black -->
+        <h2>Formatting with Black</h2>
+        <p>
+            <strong>Black</strong> is a powerful, opinionated code formatter. It's known as "The Uncompromising Code
+            Formatter" because it doesn't provide many configuration options. Instead, it enforces a single, consistent style
+            for all Python code.
+        </p>
+        <p>
+            <strong>Why is this a good thing?</strong> It completely eliminates debates over formatting. No more discussions
+            in code reviews about comma placement or line breaks. The team agrees to use Black, and the tool handles the rest,
+            allowing developers to focus on the logic.
+        </p>
 
-    <!-- Black -->
-    <h2>Formatting with Black</h2>
-    <p>
-        <strong>Black</strong> is a powerful, opinionated code formatter. It's known as "The Uncompromising Code Formatter" because it doesn't provide many configuration options. Instead, it enforces a single, consistent style for all Python code.
-    </p>
-    <p>
-        <strong>Why is this a good thing?</strong> It completely eliminates debates over formatting. No more discussions in code reviews about comma placement or line breaks. The team agrees to use Black, and the tool handles the rest, allowing developers to focus on the logic.
-    </p>
+        <h4>Installation</h4>
+        <p>You can install Black as a development dependency using Poetry:</p>
+        <pre><code class="language-bash">poetry add black --group dev</code></pre>
 
-    <h4>Installation</h4>
-    <p>You can install Black as a development dependency using Poetry:</p>
-    <pre><code class="language-bash">poetry add black --group dev</code></pre>
-
-    <h4>Usage Example</h4>
-    <p>Consider this poorly formatted Python code in a file named <code>messy_code.py</code>:</p>
-    <pre><code class="language-python">
+        <h4>Usage Example</h4>
+        <p>Consider this poorly formatted Python code in a file named <code>messy_code.py</code>:</p>
+        <pre><code class="language-python">
 import os, sys
 
 def my_function( a,b,c,d,e,f,g,h ):
-    print("This is a very long line that will definitely exceed the standard line length limit and needs to be wrapped.")
+    print(&quot;This is a very long line that will definitely exceed the standard line length limit and needs to be wrapped.&quot;)
     result = a+b+c+d+e+f+g+h
     return result
 
-data = {'key1':'value1', 'key2':'value2'}
+data = {&#x27;key1&#x27;:&#x27;value1&#x27;, &#x27;key2&#x27;:&#x27;value2&#x27;}
     </code></pre>
 
-    <p>Now, run Black on this file from your terminal:</p>
-    <pre><code class="language-bash">black messy_code.py</code></pre>
+        <p>Now, run Black on this file from your terminal:</p>
+        <pre><code class="language-bash">black messy_code.py</code></pre>
 
-    <p>Black will reformat the file in place. The code will now look like this:</p>
-    <pre><code class="language-python">
+        <p>Black will reformat the file in place. The code will now look like this:</p>
+        <pre><code class="language-python">
 import os
 import sys
 
 
 def my_function(a, b, c, d, e, f, g, h):
     print(
-        "This is a very long line that will definitely exceed the standard line length limit and needs to be wrapped."
+        &quot;This is a very long line that will definitely exceed the standard line length limit and needs to be wrapped.&quot;
     )
     result = a + b + c + d + e + f + g + h
     return result
 
 
-data = {"key1": "value1", "key2": "value2"}
+data = {&quot;key1&quot;: &quot;value1&quot;, &quot;key2&quot;: &quot;value2&quot;}
     </code></pre>
-    <div class="alert alert-info">
-        <strong>Note:</strong> Black automatically handles line wrapping, spacing, and quote normalization (preferring double quotes).
-    </div>
+        <div class="alert alert-info">
+            <strong>Note:</strong> Black automatically handles line wrapping, spacing, and quote normalization (preferring
+            double quotes).
+        </div>
 
-    <hr/>
+        <hr />
 
-    <!-- Ruff -->
-    <h2>Linting with Ruff</h2>
-    <p>
-        While Black handles formatting, a <strong>linter</strong> analyzes your code for potential errors, bugs, stylistic issues, and suspicious constructs. <strong>Ruff</strong> is a modern, extremely fast Python linter written in Rust. It can be over 100 times faster than older linters like Flake8 and can replace multiple tools in your toolchain.
-    </p>
-    <p>
-        Ruff checks for a vast range of issues, including:
-    </p>
-    <ul>
-        <li>Unused imports or variables.</li>
-        <li>Undefined names.</li>
-        <li>Code complexity.</li>
-        <li>Security vulnerabilities.</li>
-        <li>Violations of PEP 8 that are not purely about formatting.</li>
-    </ul>
+        <!-- Ruff -->
+        <h2>Linting with Ruff</h2>
+        <p>
+            While Black handles formatting, a <strong>linter</strong> analyzes your code for potential errors, bugs, stylistic
+            issues, and suspicious constructs. <strong>Ruff</strong> is a modern, extremely fast Python linter written in
+            Rust. It can be over 100 times faster than older linters like Flake8 and can replace multiple tools in your
+            toolchain.
+        </p>
+        <p>Ruff checks for a vast range of issues, including:</p>
+        <ul>
+            <li>Unused imports or variables.</li>
+            <li>Undefined names.</li>
+            <li>Code complexity.</li>
+            <li>Security vulnerabilities.</li>
+            <li>Violations of PEP 8 that are not purely about formatting.</li>
+        </ul>
 
-    <h4>Installation</h4>
-    <pre><code class="language-bash">poetry add ruff --group dev</code></pre>
+        <h4>Installation</h4>
+        <pre><code class="language-bash">poetry add ruff --group dev</code></pre>
 
-    <h4>Usage Example</h4>
-    <p>Let's create a file <code>buggy_code.py</code> with some common issues:</p>
-    <pre><code class="language-python">
+        <h4>Usage Example</h4>
+        <p>Let's create a file <code>buggy_code.py</code> with some common issues:</p>
+        <pre><code class="language-python">
 import sys
 import os # Unused import
 
 def process_data(data):
-    if "user" in data:
-        print(f"Processing data for {user}") # Undefined name 'user'
+    if &quot;user&quot; in data:
+        print(f&quot;Processing data for {user}&quot;) # Undefined name &#x27;user&#x27;
     return True
 
 def another_function():
     pass # Unnecessary pass statement
     </code></pre>
 
-    <p>Run Ruff to check the file:</p>
-    <pre><code class="language-bash">ruff check buggy_code.py</code></pre>
+        <p>Run Ruff to check the file:</p>
+        <pre><code class="language-bash">ruff check buggy_code.py</code></pre>
 
-    <p>Ruff will produce a clear report of the issues it found:</p>
-    <pre><code class="language-text">
+        <p>Ruff will produce a clear report of the issues it found:</p>
+        <pre><code class="language-text">
 buggy_code.py:2:8: F401 [*] `os` imported but unused
 buggy_code.py:6:38: F821 [*] Undefined name `user`
 buggy_code.py:10:5: PIE790 [*] Unnecessary `pass` statement
@@ -125,48 +147,62 @@ Found 3 errors.
 [*] 3 fixable with the `--fix` option.
     </code></pre>
 
-    <h4>Automatic Fixes</h4>
-    <p>
-        One of Ruff's most powerful features is its ability to automatically fix many of the issues it finds. You can use the <code>--fix</code> flag:
-    </p>
-    <pre><code class="language-bash">ruff check --fix buggy_code.py</code></pre>
-    <p>
-        After running this command, Ruff will remove the unused import and the unnecessary pass statement. It cannot fix the undefined name `user` (as that's a logic error), but it has already cleaned up a significant portion of the file.
-    </p>
+        <h4>Automatic Fixes</h4>
+        <p>
+            One of Ruff's most powerful features is its ability to automatically fix many of the issues it finds. You can use
+            the <code>--fix</code> flag:
+        </p>
+        <pre><code class="language-bash">ruff check --fix buggy_code.py</code></pre>
+        <p>
+            After running this command, Ruff will remove the unused import and the unnecessary pass statement. It cannot fix
+            the undefined name `user` (as that's a logic error), but it has already cleaned up a significant portion of the
+            file.
+        </p>
 
-    <hr/>
+        <hr />
 
-    <h3>Centralized Configuration with <code>pyproject.toml</code></h3>
-    <p>To ensure that Black and Ruff behave consistently for every developer and in your CI/CD pipeline, you should configure them in your <code>pyproject.toml</code> file. This keeps all project configuration in one place.</p>
-    <p>You can add a <code>[tool.black]</code> and <code>[tool.ruff]</code> section to your <code>pyproject.toml</code>:</p>
-    <pre><code class="language-toml">
+        <h3>Centralized Configuration with <code>pyproject.toml</code></h3>
+        <p>
+            To ensure that Black and Ruff behave consistently for every developer and in your CI/CD pipeline, you should
+            configure them in your <code>pyproject.toml</code> file. This keeps all project configuration in one place.
+        </p>
+        <p>
+            You can add a <code>[tool.black]</code> and <code>[tool.ruff]</code> section to your <code>pyproject.toml</code>:
+        </p>
+        <pre><code class="language-toml">
 # ... other pyproject.toml content ...
 
 [tool.black]
 line-length = 88
-target-version = ['py311']
+target-version = [&#x27;py311&#x27;]
 
 [tool.ruff]
 line-length = 88
-select = ["E", "F", "W", "I", "UP", "S"] # Select which rules to enable
-ignore = ["E501"] # Ignore specific rules (line length is handled by Black)
+select = [&quot;E&quot;, &quot;F&quot;, &quot;W&quot;, &quot;I&quot;, &quot;UP&quot;, &quot;S&quot;] # Select which rules to enable
+ignore = [&quot;E501&quot;] # Ignore specific rules (line length is handled by Black)
 
-target-version = "py311"
+target-version = &quot;py311&quot;
     </code></pre>
-    <p>By defining this configuration, you guarantee that running <code>black .</code> and <code>ruff check .</code> will use the same settings everywhere, ensuring consistency across the board.</p>
+        <p>
+            By defining this configuration, you guarantee that running <code>black .</code> and <code>ruff check .</code> will
+            use the same settings everywhere, ensuring consistency across the board.
+        </p>
 
-    <h2>Integration and Workflow with Pre-commit</h2>
-    <p>
-        To ensure these checks are run consistently without relying on developers to remember, we can automate them using <strong>pre-commit hooks</strong>. These are scripts that run automatically before a commit is created.
-    </p>
-    <p>
-        The <a href="https://pre-commit.com/" target="_blank">pre-commit framework</a> makes this easy to manage. First, install it as a development dependency:
-    </p>
-    <pre><code class="language-bash">poetry add pre-commit --group dev</code></pre>
-    <p>
-        Next, create a file named <code>.pre-commit-config.yaml</code> in the root of your project with the following content:
-    </p>
-    <pre><code class="language-yaml">
+        <h2>Integration and Workflow with Pre-commit</h2>
+        <p>
+            To ensure these checks are run consistently without relying on developers to remember, we can automate them using
+            <strong>pre-commit hooks</strong>. These are scripts that run automatically before a commit is created.
+        </p>
+        <p>
+            The <a href="https://pre-commit.com/" target="_blank">pre-commit framework</a> makes this easy to manage. First,
+            install it as a development dependency:
+        </p>
+        <pre><code class="language-bash">poetry add pre-commit --group dev</code></pre>
+        <p>
+            Next, create a file named <code>.pre-commit-config.yaml</code> in the root of your project with the following
+            content:
+        </p>
+        <pre><code class="language-yaml">
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.3.0
@@ -184,17 +220,18 @@ repos:
     -   id: ruff
       args: [--fix, --exit-non-zero-on-fix]
     </code></pre>
-    <p>
-        Finally, install the git hooks:
-    </p>
-    <pre><code class="language-bash">pre-commit install</code></pre>
-    <p>
-        Now, every time you run <code>git commit</code>, Ruff will run first to lint and fix issues, followed by Black to format the code. If any changes are made, the commit will be aborted, allowing you to review and stage the fixes. This workflow guarantees that all code entering the repository meets the defined quality standards.
-    </p>
+        <p>Finally, install the git hooks:</p>
+        <pre><code class="language-bash">pre-commit install</code></pre>
+        <p>
+            Now, every time you run <code>git commit</code>, Ruff will run first to lint and fix issues, followed by Black to
+            format the code. If any changes are made, the commit will be aborted, allowing you to review and stage the fixes.
+            This workflow guarantees that all code entering the repository meets the defined quality standards.
+        </p>
 
-    <div class="text-center my-4">
-        <pre class="mermaid">
-graph TD
+        <div class="text-center my-4">
+            <pre class="mermaid">
+  <script type="text/plain">
+    graph LR
     subgraph "Developer Workflow"
         A["1. Developer writes code"] --> B{"2. Runs `git commit`"};
     end
@@ -220,8 +257,9 @@ graph TD
     class A,B,G dev;
     class C,D,E hook;
     class F,H,I outcome;
-        </pre>
-        <small class="text-muted">Diagram: The Pre-commit Git Hook Workflow</small>
-    </div>
-    </div>
+  </script>
+</pre>
+            <small class="text-muted">Diagram: The Pre-commit Git Hook Workflow</small>
+        </div>
+    </section>
 </div>

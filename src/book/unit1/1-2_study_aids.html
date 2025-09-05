@@ -1,106 +1,75 @@
 <div class="study-aids-content">
-    <header class="study-aids-header">
-        <h2>Study Aids: Overview & Foundational Concepts</h2>
-        <p class="study-aids-intro">Review key Python concepts for cloud-native development. Click each card to reveal the answer.</p>
+    <header class="study-aids-header" aria-label="Header">
+        <h1>Unit 1-2: Study Aids - Overview &amp; Foundational Concepts</h1>
+        <p class="study-aids-intro">
+            Review key concepts from Topic 1-2 with these interactive flashcards. Click each card to reveal the answer.
+        </p>
     </header>
-
     <div class="flashcards-container">
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What makes Python particularly well-suited for cloud-native backend development?</p>
-            </div>
+                    <p>What makes Python particularly well-suited for cloud-native backend development?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>Python offers extensive libraries for cloud services, simple syntax for rapid development, excellent async support for concurrent operations, and strong ecosystem integration with containerization and orchestration tools.</p>
+                    <p>Python offers extensive libraries for cloud services, simple syntax for rapid development, excellent async support for concurrent operations, and strong ecosystem integration with containerization and orchestration tools.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
-
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What is the difference between lists and tuples in Python?</p>
-            </div>
+                    <p>What is the difference between lists and tuples in Python?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p><strong>Lists:</strong> Mutable (can be changed), use square brackets <code>[]</code>. <strong>Tuples:</strong> Immutable (cannot be changed), use parentheses <code>()</code>. Tuples are often used for fixed data structures.</p>
+                    <p><strong>Lists:</strong> Mutable (can be changed), use square brackets <code>[]</code>. <strong>Tuples:</strong> Immutable (cannot be changed), use parentheses <code>()</code>. Tuples are often used for fixed data structures.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
-
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What is a Python decorator and how is it used?</p>
-            </div>
+                    <p>What is a Python decorator and how is it used?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>A decorator is a function that modifies or enhances another function without changing its code. Decorators use the <code>@</code> syntax and are commonly used for logging, authentication, caching, and other cross-cutting concerns in web applications.</p>
+                    <p>A decorator is a function that modifies or enhances another function without changing its code. Decorators use the <code>@</code> syntax and are commonly used for logging, authentication, caching, and other cross-cutting concerns in web applications.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
-
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What is the purpose of Python's <code>__init__.py</code> file?</p>
-            </div>
+                    <p>What is the purpose of Python's <code>__init__.py</code> file?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p>The <code>__init__.py</code> file makes a directory a Python package. It can be empty or contain initialization code for the package. It controls what gets imported when someone imports the package.</p>
+                    <p>The <code>__init__.py</code> file makes a directory a Python package. It can be empty or contain initialization code for the package. It controls what gets imported when someone imports the package.</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
-
         <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
+            <div class="flashcard-inner">
                 <div class="flashcard-front">
                     <h4>Question</h4>
-                <p>What is the difference between <code>is</code> and <code>==</code> in Python?</p>
-            </div>
+                    <p>What is the difference between <code>is</code> and <code>==</code> in Python?</p>
+                </div>
                 <div class="flashcard-back">
                     <h4>Answer</h4>
-                <p><code>==</code> compares values for equality, while <code>is</code> checks if two variables reference the same object in memory. Use <code>==</code> for value comparison and <code>is</code> for identity comparison (especially with <code>None</code>).</p>
+                    <p><code>==</code> compares values for equality, while <code>is</code> checks if two variables reference the same object in memory. Use <code>==</code> for value comparison and <code>is</code> for identity comparison (especially with <code>None</code>).</p>
                 </div>
             </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
+            <button type="button" class="flashcard-expand-btn" title="Expand flashcard" aria-label="Expand"><i class="bi bi-arrows-angle-expand"></i></button>
         </div>
     </div>
-
-    <!-- Flashcard Modal -->
-    <dialog id="flashcard-modal" class="flashcard-modal">
-        <div class="modal-content">
-            <header class="modal-header">
-                <h3 id="modal-question">Question</h3>
-                <button class="modal-close-btn" onclick="closeFlashcardModal()">
-                    <i class="bi bi-x-lg"></i>
-                </button>
-            </header>
-            <div class="modal-body">
-                <div class="modal-answer">
-                    <h4>Answer</h4>
-                    <div id="modal-answer-content">Answer content will appear here</div>
-                </div>
-            </div>
-        </div>
-    </dialog>
 </div>
