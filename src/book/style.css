@@ -205,6 +205,7 @@ body {
     position: sticky;
     top: 0;
     z-index: var(--z-mobile-header);
+
     /* Ensure it's completely on top */
     width: 100%;
     box-sizing: border-box;
@@ -231,6 +232,7 @@ body {
     padding: var(--space-xs);
     cursor: pointer;
     color: var(--gray-700); 
+
     /* Ensure the button is fully clickable */
     position: relative;
     z-index: calc(var(--z-mobile-header) + 1); /* Higher than the mobile header */
@@ -241,6 +243,7 @@ body {
     justify-content: center;
     border-radius: var(--radius-sm);
     transition: background-color 0.2s ease;
+
     /* Prevenir conflictos de touch */
     -webkit-tap-highlight-color: transparent;
     touch-action: manipulation;
