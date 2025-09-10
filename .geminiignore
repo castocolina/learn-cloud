@@ -1,1 +1,7 @@
+.venv/
+.vscode/
+.github/
+.claude/
+
+node_modules/
 tmp/
