@@ -8,16 +8,19 @@ This file contains new features and content improvements planned for the learn-c
 
 ```markdown
 ## Text-Based Navigation Problem
+
 **Scope:** Frontend navigation system bug fix
 **Affected files:** `src/book/overview.html`, `src/book/*/unit*_overview.html`, `src/book/app.js`, `src/book/navigation.js`, `src/book/style.css`
 
 **Identified problem:**
+
 - Current system evaluates clicks based on component text instead of clear references to target file
 - Causes problems on mobile where clicks lead to incorrect content (quiz → study aids, content from another topic)
 - Lack of consistent identification by URL/ID/name/class
 - Problem affects both main overview and individual unit overviews
 
 **Specific tasks:**
+
 1. Review **ALL** overview pages to identify problematic navigation patterns:
    - `src/book/overview.html` (main overview)
    - `src/book/unit1/unit1_overview.html`
@@ -39,6 +42,7 @@ This file contains new features and content improvements planned for the learn-c
 6. Create development rules to avoid future regressions
 
 **Main files to review:**
+
 - `src/book/overview.html` (main navigation structure)
 - `src/book/unit*/unit*_overview.html` (unit overviews)
 - `src/book/app.js` (routing logic)
@@ -46,6 +50,7 @@ This file contains new features and content improvements planned for the learn-c
 - `src/book/style.css` (CSS selectors)
 
 **Deliverables:**
+
 - Navigation rules document
 - Prompt for automatic correction
 - Navigation refactoring plan
@@ -57,12 +62,14 @@ This file contains new features and content improvements planned for the learn-c
 
 ```markdown
 ## Add Test Coverage to Python and Go Units
+
 **Scope:** Educational content extension - CONTENT.md ONLY
 **Affected files:** `CONTENT.md` (NO other files will be modified)
 
 **Content to develop:**
 
 ### For Python Unit:
+
 - **Test Coverage with unittest:** Basic configuration and usage
 - **Test Coverage with pytest:** Installation, configuration and advanced use cases
 - **Coverage tools:**
@@ -71,6 +78,7 @@ This file contains new features and content improvements planned for the learn-c
   - Integration with IDE and CI/CD
 
 ### For Go Unit:
+
 - **Test Coverage with go test:** Basic commands and coverage flags
 - **Complementary tools:**
   - `go tool cover`: Detailed coverage analysis
@@ -78,12 +86,14 @@ This file contains new features and content improvements planned for the learn-c
   - Integration with CI/CD tools
 
 ### Popular libraries and tools:
+
 - Comparison of coverage tools
 - Best practices for maintaining high coverage
 - Interpretation of coverage metrics
 - Use cases and practical examples
 
 **Deliverables:**
+
 - Detailed sections in CONTENT.md for both languages (ONLY this file)
 - Code and configuration examples (within CONTENT.md)
 - Step-by-step implementation guides (within CONTENT.md)
@@ -97,11 +107,13 @@ This file contains new features and content improvements planned for the learn-c
 
 ```markdown
 ## HTML Files Update for Test Coverage
+
 **Scope:** Update existing HTML files for new topics
 **Dependencies:** This task depends on the content being first updated in `CONTENT.md`
 **For units:** Python and Go - specific Unit numbers and src/book/unit folders will be determined when someone assigns the order in `CONTENT.md`
 
 **Specific tasks:**
+
 - Update existing HTML files to include new Test Coverage topics
 - Verify navigation links include new sections
 - Update quiz and study aids if necessary to cover Test Coverage
@@ -110,10 +122,12 @@ This file contains new features and content improvements planned for the learn-c
 - Verify navigation and continuation buttons between contents
 
 **Files to update:**
+
 - Unit folders and files will be determined based on CONTENT.md assignments
 - Corresponding navigation links
 
 **Final validation:**
+
 - Validate HTML of modified files
 - Verify all navigation links work correctly
 
@@ -126,12 +140,14 @@ This file contains new features and content improvements planned for the learn-c
 
 ```markdown
 ## Complete Rust Unit Development
+
 **Scope:** Complete new educational unit creation - CONTENT.md ONLY
 **Affected files:** `CONTENT.md` and `Bibliography` (NO other files will be modified)
 
 **Detailed content to develop:**
 
 ### Fundamental Concepts
+
 - **Introduction to Rust:** Philosophy, use cases, advantages
 - **Installation and toolchain:** rustc, cargo, rustup
 - **Basic syntax:** Variables, mutability, shadowing
@@ -139,18 +155,21 @@ This file contains new features and content improvements planned for the learn-c
 - **Control structures:** if/else, loops, pattern matching
 
 ### Advanced Rust-Unique Concepts
+
 - **Ownership system:** Central concept, rules, examples
 - **Borrowing:** References, borrowing rules, use cases
 - **Lifetimes:** Annotations, elision, complex cases
 - **Memory management:** Stack vs heap, RAII, no garbage collector
 
 ### Advanced Programming
+
 - **Traits:** Definition, implementation, trait objects
 - **Macros:** Declarative and procedural macros
 - **Concurrency:** Threads, async/await, channels
 - **Error handling:** Result, Option, custom errors
 
 ### Ecosystem and Tools
+
 - **Cargo:** Dependency management, workspaces, features
 - **Crates.io:** Library discovery and usage
 - **Testing:** Unit tests, integration tests, doctests
@@ -163,6 +182,7 @@ This file contains new features and content improvements planned for the learn-c
 - **Documentation:** rustdoc, documentation comments
 
 ### Practical Applications
+
 - **Web development:** Frameworks like Actix, Warp, Axum
 - **Databases:** Diesel, SQLx, async connections
 - **HTTP clients:** reqwest, networking
@@ -170,18 +190,21 @@ This file contains new features and content improvements planned for the learn-c
 - **Performance:** Profiling, optimization, benchmarking
 
 ### Practical Exercises
+
 - **REST API:** Complete implementation with database
 - **CLI tools:** Command-line tools
 - **Microservices:** Distributed architecture
 - **Real-time applications:** WebSockets, streaming
 
 ### Development Tools
+
 - **IDEs:** VS Code, IntelliJ Rust, configuration
 - **Debugging:** gdb, lldb, specific tools
 - **CI/CD:** GitHub Actions, automated testing
 - **Deployment:** Containerization, cloud deployment
 
 **Deliverables:**
+
 - Complete unit in CONTENT.md (ONLY this file)
 - Updated bibliography with Rust terms (ONLY this file)
 - Practical exercises with code examples (within CONTENT.md)
@@ -196,17 +219,19 @@ This file contains new features and content improvements planned for the learn-c
 
 ```markdown
 ## HTML Files Creation for New Rust Unit
+
 **Scope:** Complete HTML file structure creation
 **Dependencies:** This task depends on the content being first updated in `CONTENT.md`
 **For unit:** Rust - specific Unit number and src/book/unit folder will be determined when someone assigns the order in `CONTENT.md`
 
 **Specific tasks:**
+
 - Create directory structure for new Rust unit (path to be determined from CONTENT.md)
 - Create unit overview file with complete unit content
 - Create individual content files for each main topic:
   - Rust fundamentals
   - Ownership and borrowing
-  - Advanced concepts  
+  - Advanced concepts
   - Ecosystem and tools
   - Practical applications
   - Exercises and projects
@@ -220,10 +245,12 @@ This file contains new features and content improvements planned for the learn-c
 - Configure navigation links and continue buttons between all sections
 
 **Initial files (empty except overview):**
+
 - Only unit overview will have initial content
 - All other files will be empty, ready for content development
 
 **Final validation:**
+
 - Validate HTML of all created files
 - Verify links from index.html and main overview
 - Test complete unit navigation
@@ -237,11 +264,13 @@ This file contains new features and content improvements planned for the learn-c
 
 ```markdown
 ## Detailed HTML Content Development for Rust Unit
+
 **Scope:** Self-taught and technically precise content creation
 **Dependencies:** This task depends on the HTML structure being created first
 **For unit:** Rust - specific Unit number and src/book/unit folder determined from previous HTML structure creation task
 
 **Specific tasks:**
+
 - Develop complete and detailed content for each HTML file in the unit
 - Maintain self-taught approach without losing technical precision
 - Use creativity in explanations for Rust's new paradigm
@@ -254,6 +283,7 @@ This file contains new features and content improvements planned for the learn-c
 - Integrate real use cases and practical applications
 
 **Files to develop content:**
+
 - Rust fundamentals - Fundamental concepts
 - Ownership and borrowing - Rust's unique ownership system
 - Advanced concepts - Traits, macros, concurrency
@@ -266,6 +296,7 @@ This file contains new features and content improvements planned for the learn-c
 - All corresponding study aids files
 
 **Final validation:**
+
 - Validate HTML of all files with content
 - Verify functionality of all internal and external links
 - Test complete navigation and user experience
@@ -277,40 +308,47 @@ This file contains new features and content improvements planned for the learn-c
 
 ```markdown
 ## SPA Migration with Friendly URLs
+
 **Scope:** Complete frontend architecture refactoring
 **Affected files:** `src/book/app.js`, `src/book/navigation.js`, `index.html`, complete navigation structure
 
 **Required functionalities:**
 
 ### Routing System
+
 - Implement native JavaScript router or lightweight library
 - Friendly URLs for each section/unit/content
 - Support for browser back/forward button navigation
 - URL state synchronized with displayed content
 
 ### State Management
+
 - Navigation state handling without page reloads
 - State preservation during navigation
 - Intelligent caching of loaded content
 
 ### Shareable URLs
+
 - Each page/section must have unique URL
 - URLs must be bookmark-friendly
 - Ability to share direct links to specific content
 - Functional deep linking
 
 ### Specific functionalities:
+
 - Menu/button click → unique URL generated
 - Open direct URL → loads correct content
 - No page reloads during navigation
 - Maintain existing functionality of quizzes and study aids
 
 **Technical considerations:**
+
 - Maintain compatibility with current file structure
 - Preserve existing search and navigation functionality
 - Optimize initial loading performance
 
 **Deliverables:**
+
 - Implemented routing system
 - Friendly URLs for all content
 - New architecture documentation
@@ -322,12 +360,14 @@ This file contains new features and content improvements planned for the learn-c
 
 ```markdown
 ## Cloud Databases Unit Development
+
 **Scope:** New specialized cloud database unit - CONTENT.md ONLY
 **Affected files:** `CONTENT.md` and `Bibliography` (NO other files will be modified)
 
 **Content to develop:**
 
 ### Amazon DynamoDB
+
 - **Fundamental concepts:** NoSQL, key-value, document store
 - **Data model:** Partition key, sort key, LSI, GSI
 - **CRUD operations:** PutItem, GetItem, UpdateItem, DeleteItem
@@ -336,6 +376,7 @@ This file contains new features and content improvements planned for the learn-c
 - **Consistency:** Eventually consistent vs strongly consistent
 
 ### Amazon Neptune
+
 - **Graph databases:** Fundamental concepts, use cases
 - **Supported models:** Property Graph (Gremlin), RDF (SPARQL)
 - **Gremlin queries:** Traversals, predicates, projections
@@ -343,24 +384,28 @@ This file contains new features and content improvements planned for the learn-c
 - **Use cases:** Social networks, recommendations, fraud detection
 
 ### Local Development and Testing
+
 - **DynamoDB Local:** Installation, configuration, usage
 - **Neptune Local:** Alternatives like TinkerGraph, Gremlin Server
 - **Docker containers:** Development configuration
 - **Testing strategies:** Unit tests, integration tests
 
 ### Integration and Practical Cases
+
 - **AWS SDK:** Basic configuration and usage
 - **IAM policies:** Specific permissions for each service
 - **Monitoring:** CloudWatch, important metrics
 - **Backup and restore:** Strategies for each database
 
 ### Practical Examples
+
 - **E-commerce application:** DynamoDB catalog
 - **Social network:** Neptune relationships
 - **Recommendation engine:** Combination of both
 - **Analytics pipeline:** Integration with other AWS services
 
 **Deliverables:**
+
 - Complete section in CONTENT.md (ONLY this file)
 - Updated bibliography (ONLY this file)
 - Local installation guides (within CONTENT.md)
@@ -376,11 +421,13 @@ This file contains new features and content improvements planned for the learn-c
 
 ```markdown
 ## HTML Files Creation for New Cloud Databases Unit
+
 **Scope:** Complete HTML file structure creation
 **Dependencies:** This task depends on the content being first updated in `CONTENT.md`
 **For unit:** Cloud Databases - specific Unit number and src/book/unit folder will be determined when someone assigns the order in `CONTENT.md`
 
 **Specific tasks:**
+
 - Create directory structure for new Cloud Databases unit (path to be determined from CONTENT.md)
 - Create unit overview file with complete unit content
 - Create individual content files for each main topic:
@@ -400,10 +447,12 @@ This file contains new features and content improvements planned for the learn-c
 - Configure navigation links and continue buttons between all sections
 
 **Initial files (empty except overview):**
+
 - Only unit overview will have initial content
 - All other files will be empty, ready for content development
 
 **Final validation:**
+
 - Validate HTML of all created files
 - Verify links from index.html and main overview
 - Test complete unit navigation
@@ -417,11 +466,13 @@ This file contains new features and content improvements planned for the learn-c
 
 ```markdown
 ## Detailed HTML Content Development for Cloud Databases Unit
+
 **Scope:** Self-taught and technically precise content creation
 **Dependencies:** This task depends on the HTML structure being created first
 **For unit:** Cloud Databases - specific Unit number and src/book/unit folder determined from previous HTML structure creation task
 
 **Specific tasks:**
+
 - Develop complete and detailed content for each HTML file in the unit
 - Maintain self-taught approach without losing technical precision
 - Include practical examples of DynamoDB and Neptune
@@ -434,6 +485,7 @@ This file contains new features and content improvements planned for the learn-c
 - Cover security and performance best practices
 
 **Files to develop content:**
+
 - DynamoDB fundamentals - NoSQL concepts and data model
 - DynamoDB operations - CRUD, queries, scalability
 - Neptune graph databases - Gremlin, SPARQL, use cases
@@ -446,6 +498,7 @@ This file contains new features and content improvements planned for the learn-c
 - All corresponding study aids files
 
 **Final validation:**
+
 - Validate HTML of all files with content
 - Verify functionality of all internal and external links
 - Test complete navigation and user experience
@@ -459,30 +512,35 @@ This file contains new features and content improvements planned for the learn-c
 
 ```markdown
 ## Complete GraphQL Unit Development
+
 **Scope:** New specialized technical unit - CONTENT.md ONLY
 **Affected files:** `CONTENT.md` and `Bibliography` (NO other files will be modified)
 
 **Comprehensive content to develop:**
 
 ### GraphQL Fundamentals
+
 - **Core concepts:** Queries, mutations, subscriptions
 - **Schema definition:** Types, scalars, enums, interfaces
 - **Resolvers:** Implementation and best practices
 - **Introspection:** Schema exploration and tooling
 
 ### Data Types and Relationships
+
 - **Scalar types:** String, Int, Float, Boolean, ID
 - **Object types:** Custom types, nested objects
 - **Input types:** For mutations and arguments
 - **Relationships:** One-to-one, one-to-many, many-to-many
 
 ### Advanced Operations
+
 - **Fragments:** Query reusability
 - **Variables:** Dynamic parametrization
 - **Directives:** @include, @skip, custom directives
 - **Pagination:** Cursor-based, offset-based
 
 ### Amazon AppSync
+
 - **Configuration:** Initial setup, authentication
 - **Data sources:** DynamoDB, Lambda, HTTP, RDS
 - **Mapping templates:** VTL (Velocity Template Language)
@@ -490,24 +548,28 @@ This file contains new features and content improvements planned for the learn-c
 - **Offline capabilities:** Local storage, sync
 
 ### AWS Services Integration
+
 - **DynamoDB integration:** Direct resolver mapping
 - **Neptune integration:** Gremlin queries via Lambda
 - **Lambda resolvers:** Custom business logic
 - **Cognito authentication:** User management
 
 ### Tools and Ecosystem
+
 - **Apollo Server:** Setup and configuration
 - **GraphiQL:** Schema exploration
 - **Apollo Client:** Frontend integration
 - **Code generation:** Automatic types
 
 ### Local Development
+
 - **Local GraphQL server:** Apollo Server setup
 - **Neptune local:** TinkerGraph integration
 - **DynamoDB local:** Testing environment
 - **Mocking:** Schema-first development
 
 ### Practical Exercises
+
 - **Blog API:** CRUD operations with DynamoDB
 - **Social graph:** Neptune + GraphQL
 - **Real-time chat:** Subscriptions with AppSync
@@ -515,12 +577,14 @@ This file contains new features and content improvements planned for the learn-c
 - **Analytics dashboard:** Complex queries and aggregations
 
 ### Authentication and Authorization
+
 - **JWT tokens:** Implementation and validation
 - **Field-level security:** Resolver-level permissions
 - **Rate limiting:** Query complexity analysis
 - **Audit logging:** Request tracking
 
 **Deliverables:**
+
 - Complete unit in CONTENT.md (ONLY this file)
 - Updated bibliography with GraphQL terms (ONLY this file)
 - Local installation guides (within CONTENT.md)
@@ -537,11 +601,13 @@ This file contains new features and content improvements planned for the learn-c
 
 ```markdown
 ## HTML Files Creation for New GraphQL Unit
+
 **Scope:** Complete HTML file structure creation
 **Dependencies:** This task depends on the content being first updated in `CONTENT.md`
 **For unit:** GraphQL - specific Unit number and src/book/unit folder will be determined when someone assigns the order in `CONTENT.md`
 
 **Specific tasks:**
+
 - Create directory structure for new GraphQL unit (path to be determined from CONTENT.md)
 - Create unit overview file with complete unit content
 - Create individual content files for each main topic:
@@ -562,10 +628,12 @@ This file contains new features and content improvements planned for the learn-c
 - Configure navigation links and continue buttons between all sections
 
 **Initial files (empty except overview):**
+
 - Only unit overview will have initial content
 - All other files will be empty, ready for content development
 
 **Final validation:**
+
 - Validate HTML of all created files
 - Verify links from index.html and main overview
 - Test complete unit navigation
@@ -579,11 +647,13 @@ This file contains new features and content improvements planned for the learn-c
 
 ```markdown
 ## Detailed HTML Content Development for GraphQL Unit
+
 **Scope:** Self-taught and technically precise content creation
 **Dependencies:** This task depends on the HTML structure being created first
 **For unit:** GraphQL - specific Unit number and src/book/unit folder determined from previous HTML structure creation task
 
 **Specific tasks:**
+
 - Develop complete and detailed content for each HTML file in the unit
 - Maintain self-taught approach without losing technical precision
 - Include practical examples of queries, mutations and subscriptions
@@ -596,6 +666,7 @@ This file contains new features and content improvements planned for the learn-c
 - Cover authentication, authorization and security
 
 **Files to develop content:**
+
 - GraphQL fundamentals - Core concepts, REST comparison
 - Schemas, types and relations - Schema definition and relationships
 - Queries, mutations and subscriptions - Main operations
@@ -609,6 +680,7 @@ This file contains new features and content improvements planned for the learn-c
 - All corresponding study aids files
 
 **Final validation:**
+
 - Validate HTML of all files with content
 - Verify functionality of all internal and external links
 - Test complete navigation and user experience
@@ -621,6 +693,7 @@ This file contains new features and content improvements planned for the learn-c
 ## ✅ DEVELOPMENT STATUS
 
 ### Main Tasks:
+
 - [ ] 🔧 Navigation Fix in Overview Pages
 - [ ] 📚 Content Expansion: Test Coverage for Python and Go
 - [ ] 🌐 Single Page Application (SPA) Conversion
@@ -629,6 +702,7 @@ This file contains new features and content improvements planned for the learn-c
 - [ ] 🔗 New Unit: GraphQL with Amazon AppSync
 
 ### HTML File Tasks:
+
 - [ ] 📄 HTML Files Update: Test Coverage Python/Go
 - [ ] 📁 HTML Structure Creation: Rust Unit (Unit10)
 - [ ] ✍️ HTML Content Development: Rust Unit (Unit10)

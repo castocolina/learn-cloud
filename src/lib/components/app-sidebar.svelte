@@ -5,18 +5,28 @@
 	const data = {
 		navMain: [
 			{
+				title: "Demo",
+				url: "#",
+				items: [
+					{
+						title: "Content Components",
+						url: "/demo"
+					}
+				]
+			},
+			{
 				title: "Getting Started",
 				url: "#",
 				items: [
 					{
 						title: "Installation",
-						url: "#",
+						url: "#"
 					},
 					{
 						title: "Project Structure",
-						url: "#",
-					},
-				],
+						url: "#"
+					}
+				]
 			},
 			{
 				title: "Building Your Application",
@@ -24,54 +34,54 @@
 				items: [
 					{
 						title: "Routing",
-						url: "#",
+						url: "#"
 					},
 					{
 						title: "Data Fetching",
 						url: "#",
-						isActive: true,
+						isActive: true
 					},
 					{
 						title: "Rendering",
-						url: "#",
+						url: "#"
 					},
 					{
 						title: "Caching",
-						url: "#",
+						url: "#"
 					},
 					{
 						title: "Styling",
-						url: "#",
+						url: "#"
 					},
 					{
 						title: "Optimizing",
-						url: "#",
+						url: "#"
 					},
 					{
 						title: "Configuring",
-						url: "#",
+						url: "#"
 					},
 					{
 						title: "Testing",
-						url: "#",
+						url: "#"
 					},
 					{
 						title: "Authentication",
-						url: "#",
+						url: "#"
 					},
 					{
 						title: "Deploying",
-						url: "#",
+						url: "#"
 					},
 					{
 						title: "Upgrading",
-						url: "#",
+						url: "#"
 					},
 					{
 						title: "Examples",
-						url: "#",
-					},
-				],
+						url: "#"
+					}
+				]
 			},
 			{
 				title: "API Reference",
@@ -79,29 +89,29 @@
 				items: [
 					{
 						title: "Components",
-						url: "#",
+						url: "#"
 					},
 					{
 						title: "File Conventions",
-						url: "#",
+						url: "#"
 					},
 					{
 						title: "Functions",
-						url: "#",
+						url: "#"
 					},
 					{
 						title: "next.config.js Options",
-						url: "#",
+						url: "#"
 					},
 					{
 						title: "CLI",
-						url: "#",
+						url: "#"
 					},
 					{
 						title: "Edge Runtime",
-						url: "#",
-					},
-				],
+						url: "#"
+					}
+				]
 			},
 			{
 				title: "Architecture",
@@ -109,25 +119,25 @@
 				items: [
 					{
 						title: "Accessibility",
-						url: "#",
+						url: "#"
 					},
 					{
 						title: "Fast Refresh",
-						url: "#",
+						url: "#"
 					},
 					{
 						title: "Next.js Compiler",
-						url: "#",
+						url: "#"
 					},
 					{
 						title: "Supported Browsers",
-						url: "#",
+						url: "#"
 					},
 					{
 						title: "Turbopack",
-						url: "#",
-					},
-				],
+						url: "#"
+					}
+				]
 			},
 			{
 				title: "Community",
@@ -135,11 +145,11 @@
 				items: [
 					{
 						title: "Contribution Guide",
-						url: "#",
-					},
-				],
-			},
-		],
+						url: "#"
+					}
+				]
+			}
+		]
 	};
 </script>
 
@@ -182,18 +192,14 @@
 		<Sidebar.Group>
 			<Sidebar.Menu>
 				{#each data.navMain as item, index (item.title)}
-					<Collapsible.Root open={index === 1} class="group/collapsible">
+					<Collapsible.Root open={index === 0} class="group/collapsible">
 						<Sidebar.MenuItem>
 							<Collapsible.Trigger>
 								{#snippet child({ props })}
 									<Sidebar.MenuButton {...props}>
 										{item.title}
-										<PlusIcon
-											class="ml-auto group-data-[state=open]/collapsible:hidden"
-										/>
-										<MinusIcon
-											class="ml-auto group-data-[state=closed]/collapsible:hidden"
-										/>
+										<PlusIcon class="ml-auto group-data-[state=open]/collapsible:hidden" />
+										<MinusIcon class="ml-auto group-data-[state=closed]/collapsible:hidden" />
 									</Sidebar.MenuButton>
 								{/snippet}
 							</Collapsible.Trigger>
@@ -204,9 +210,7 @@
 											<Sidebar.MenuSubItem>
 												<Sidebar.MenuSubButton isActive={subItem.isActive}>
 													{#snippet child({ props })}
-														<a href={subItem.url} {...props}
-															>{subItem.title}</a
-														>
+														<a href={subItem.url} {...props}>{subItem.title}</a>
 													{/snippet}
 												</Sidebar.MenuSubButton>
 											</Sidebar.MenuSubItem>

@@ -48,6 +48,8 @@
 		]
 	},
 	"dependencies": {
-		"lucide-svelte": "^0.544.0"
+		"lucide-svelte": "^0.544.0",
+		"mermaid": "^11.11.0",
+		"shiki": "^3.12.2"
 	}
 }

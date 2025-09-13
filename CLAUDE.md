@@ -1,6 +1,7 @@
 # Agent Rules: Building the Cloud-Native Book
 
 > **📚 Documentation Structure:**
+>
 > - **[TECHNICAL-SPECS.md](TECHNICAL-SPECS.md)** - Technical architecture and user experience standards
 > - **[CONTENT-STANDARDS.md](CONTENT-STANDARDS.md)** - Content creation workflows and quality assurance standards
 
@@ -22,7 +23,7 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 
 - **Target Audience:** Assume the reader is an experienced programmer (e.g., in Java, PHP) but new to the cloud-native stack. Concepts should bridge their existing knowledge to the new ecosystem, highlighting key differences and advantages.
 - **Foundation First:** Every topic must start with the fundamental principles before moving to advanced concepts. We must build a strong base.
-- **Tooling and Recommendations:** For each technology, introduce not only the core concepts but also the most widely used and industry-recommended tools (e.g., linters, formatters, testing frameworks). Explain *why* these tools are recommended and how they provide leverage.
+- **Tooling and Recommendations:** For each technology, introduce not only the core concepts but also the most widely used and industry-recommended tools (e.g., linters, formatters, testing frameworks). Explain _why_ these tools are recommended and how they provide leverage.
 - **Additive Detail:** Our process is evolutionary. When refining outlines or content, always build upon the existing details. Do not replace detailed breakdowns with summaries. The goal is to continuously increase the level of detail.
 - **Docker Proficiency Assumed:** The reader is expected to have a working knowledge of Docker. To simplify setup and avoid complex local installations, we will prefer using `docker run` commands to provision required software like databases, message queues, or other tools.
 
@@ -38,6 +39,7 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 ## 2. TECHNICAL ARCHITECTURE
 
 > **📋 Detailed Technical Specifications:** See [TECHNICAL-SPECS.md](TECHNICAL-SPECS.md) for comprehensive technical architecture and user experience standards including:
+>
 > - Technology stack requirements and standardized libraries
 > - File structure and path consistency rules
 > - Modern CSS Grid system and mobile-first responsive design
@@ -48,6 +50,7 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 ## 3. CONTENT CREATION WORKFLOW & QUALITY ASSURANCE
 
 > **📋 Comprehensive Content Standards:** See [CONTENT-STANDARDS.md](CONTENT-STANDARDS.md) for detailed content creation workflows and quality assurance standards including:
+>
 > - Mandatory hierarchical workflow (Unit Overview → Topic → Study Aids → Quiz)
 > - Study aids structure with interactive flashcards and modals
 > - Mermaid diagram standards with HTML entity encoding rules
@@ -62,6 +65,7 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 ### Critical SvelteKit Architecture Rules
 
 **CRITICAL: SvelteKit Component Development**
+
 - ✅ **ALWAYS** use SvelteKit components for all UI elements
 - ✅ **ALWAYS** prefer `shadcn-svelte` components over custom implementations
 - ✅ **ALWAYS** use TypeScript interfaces for component props and data structures
@@ -70,6 +74,7 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 - ❌ **NEVER** use inline styles - use Tailwind CSS classes or component-scoped styles
 
 **Component Architecture Standards:**
+
 - **Single Responsibility:** Each component should have one clear purpose
 - **Props-Based Configuration:** Use well-defined TypeScript interfaces for props
 - **Reactive State:** Leverage Svelte's built-in reactivity for state management
@@ -77,6 +82,7 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 - **Composition over Inheritance:** Build complex UIs by composing simpler components
 
 **shadcn-svelte Integration:**
+
 - **Priority System:** Always check `shadcn-svelte` library first before building custom components
 - **Installation Command:** Use `pnpm dlx shadcn-svelte@latest add [component-name]`
 - **Customization:** Extend shadcn components using Tailwind CSS classes and component composition
@@ -85,6 +91,7 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 ### SvelteKit Development Practices
 
 **Agent Workflow Standards:**
+
 - **TypeScript First:** All components must use TypeScript with proper interfaces
 - **Mobile-First:** Always design and test mobile experience first
 - **shadcn-svelte Priority:** Check component library before building custom components
@@ -94,24 +101,28 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 ### Content Integration Workflow
 
 **JSON-First Approach:**
+
 - **Data Structure:** All content stored as structured JSON in `src/data/`
 - **Type Safety:** Use TypeScript interfaces to ensure data structure consistency
 - **Content Loading:** Implement dynamic imports with proper error handling
 - **Validation:** Validate JSON structure and required fields at runtime
 
 **Component-Based Content Display:**
+
 - **Lesson Component:** Display structured lesson content with sections and rich formatting
 - **Quiz Component:** Interactive quiz system with question navigation and scoring
 - **Flashcard Component:** Modal-based flashcard system for study guides
 - **Progress Components:** Unit and global progress tracking with visual indicators
 
 **Migration from Legacy HTML:**
+
 - **Reference Only:** Use existing `src/book/` HTML files as content reference
 - **Extract Content:** Convert HTML content to structured JSON format
 - **Component Implementation:** Build SvelteKit components to display JSON content
 - **Legacy Cleanup:** Remove HTML files after successful migration
 
 **Progress Tracking & Task Management:**
+
 - **TodoWrite Integration:** Always use the TodoWrite tool to track tasks when working on content generation
 - **Mobile-First Validation:** Always test mobile experience (≤390px) before desktop development
 - **Iterative Development:** Follow the hierarchical workflow: Unit Overview → Topic → Study Aids → Quiz
@@ -120,6 +131,7 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 ### Development Tooling & Scripts
 
 **Build/Utility Scripts (Not Application Code):**
+
 - **User-Requested:** `src/bash/` and `src/python/` for permanent utility scripts (e.g., content generation, validation)
 - **Temporary/Agent:** `./tmp/bash/` and `./tmp/python/` for one-off tooling solutions
 - **Validation:** Always run `shellcheck` on bash scripts before completion
@@ -128,16 +140,19 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 > **🎯 Note:** These are development tools, not application code. SvelteKit application uses TypeScript/JavaScript only.
 
 **SvelteKit Configuration:**
+
 - **Project Configuration:** SvelteKit configuration in `svelte.config.js`, Vite config in `vite.config.js`
 - **TypeScript Configuration:** `tsconfig.json` for TypeScript compiler options
 - **No Root Configs:** Avoid placing unnecessary configuration files in project root
 
 **File Modification Scope:**
+
 - **Strict Scope:** Modify only requested files/paths unless global functionality requires shared resources
 - **Shared Resources:** May modify `src/lib/`, `src/routes/`, or component files for global SvelteKit features
 - **Documentation:** Avoid creating docs unless explicitly requested
 
 **Project Execution Standards:**
+
 - **Root Execution:** ALL scripts and commands MUST execute from the project root directory
 - **No Directory Changes:** NEVER use `cd` commands in Makefile or script execution
 - **Environment Configuration:** Project uses `.env` file for tooling configuration (automatically loaded by Makefile)
@@ -151,18 +166,21 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 **Learning Integration Rule:** When users provide specific imperative guidelines or corrections during interactions that represent fundamental project rules or repeated issues, these guidelines should be evaluated for inclusion in this document to ensure persistence across future interactions.
 
 **Evaluation Criteria:**
+
 - **Fundamental Project Rules:** Guidelines that affect core architecture, file organization, or execution standards
 - **Repeated Corrections:** Issues that users have had to correct multiple times across different interactions
 - **System-Wide Impact:** Rules that affect how all agents should work with the project
 - **Quality Standards:** Requirements that ensure consistent quality and prevent regression
 
 **Integration Process:**
+
 1. **Identify:** Recognize when user feedback represents a systemic rule rather than a one-time request
 2. **Evaluate:** Determine if the guideline should apply to all future interactions
 3. **Document:** Add the rule to the appropriate section in CLAUDE.md with clear, actionable language
 4. **Validate:** Ensure the rule doesn't conflict with existing guidelines
 
 **Examples of Guidelines That Should Persist:**
+
 - File organization standards (scripts execute from root)
 - Code architecture requirements (no inline JavaScript, centralized modal management)
 - Validation procedures (always run HTML validation after changes)
@@ -176,7 +194,7 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 - Do what has been asked; nothing more, nothing less
 - NEVER create files unless they're absolutely necessary for achieving your goal
 - ALWAYS prefer editing an existing file to creating a new one
-- NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User
+- NEVER proactively create documentation files (\*.md) or README files. Only create documentation files if explicitly requested by the User
 - **MOBILE-FIRST MANDATE:** Always test mobile experience (≤390px) before desktop
 - **SVELTEKIT DEVELOPMENT:** Use components and TypeScript - avoid vanilla HTML/CSS/JS
 - **shadcn-svelte PRIORITY:** Always check component library first before building custom components

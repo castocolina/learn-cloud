@@ -52,6 +52,10 @@ pnpm dlx sv add tailwindcss
 pnpm dlx shadcn-svelte@latest init
 pnpm install lucide-svelte
 pnpm dlx shadcn-svelte@latest add sidebar-05
+pnpm dlx shadcn-svelte@latest add dialog
+
+echo_step "Installing content rendering dependencies..."
+pnpm install shiki mermaid
 
 echo -e "\033[1;32m[COMPLETE]\033[0m Environment setup complete!"
 

@@ -7,6 +7,9 @@ node_modules/
 /dist
 /out
 
+# Legacy directory (excluded from modern validation)
+src/book/
+
 # Temporary files
 tmp/
 *.backup*

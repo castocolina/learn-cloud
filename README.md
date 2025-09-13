@@ -1,4 +1,5 @@
 # 📚 Mastering Cloud-[![SvelteKit Validation](https://img.shields.io/github/actions/workflow/status/castocolina/learn-cloud/validation.yml?branch=master&label=SvelteKit%20Validation)](https://github.com/castocolina/learn-cloud/actions/workflows/validation.yml)
+
 [![Deployment](https://img.shields.io/github/actions/workflow/status/castocolina/learn-cloud/deploy.yml?branch=master&label=Deployment)](https://github.com/castocolina/learn-cloud/actions/workflows/deploy.yml)
 
 ## 📖 Content Structureve Technologies
@@ -30,7 +31,7 @@ This interactive learning platform provides in-depth coverage of cloud-native te
 The curriculum consists of 9 comprehensive units covering:
 
 1. **Python for Cloud-Native Backend Development**
-2. **Go for Cloud-Native Backend Development** 
+2. **Go for Cloud-Native Backend Development**
 3. **DevOps, IaC, and CI/CD**
 4. **Secrets and Configuration Management**
 5. **DevSecOps**
@@ -76,7 +77,7 @@ The application will be available at `http://localhost:5173`
 
 ```bash
 make setup          # Initial environment setup
-make run             # Start development server  
+make run             # Start development server
 make build           # Build for production
 make preview         # Preview production build
 make check           # Type checking and validation
@@ -130,6 +131,7 @@ All educational content is stored as structured JSON files in `src/data/`:
 ### Component Development
 
 1. **Priority**: Use shadcn-svelte components first
+
    ```bash
    pnpm dlx shadcn-svelte@latest add [component-name]
    ```
@@ -175,6 +177,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🙋‍♂️ Support
 
 For questions or support:
+
 - Open an issue on GitHub
 - Check the documentation in the `docs/` directory
 - Review the technical specifications

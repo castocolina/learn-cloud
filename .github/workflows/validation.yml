@@ -1,11 +1,11 @@
 name: SvelteKit Validation
 on:
   push:
-    branches: 
+    branches:
       - "master"
       - "feature/**"
   pull_request:
-    branches: 
+    branches:
       - "master"
       - "feature/**"
   workflow_dispatch:
@@ -21,8 +21,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'pnpm'
+          node-version: "22"
+          cache: "pnpm"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -45,10 +45,10 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false  # Continue with other validations even if one fails
+      fail-fast: false # Continue with other validations even if one fails
       matrix:
         validation: [svelte-check, svelte-lint, bash, python, content]
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -56,7 +56,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -75,7 +75,7 @@ jobs:
         if: matrix.validation == 'python'
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
       - name: Run SvelteKit Check
         if: matrix.validation == 'svelte-check'
@@ -101,7 +101,7 @@ jobs:
   test-python:
     needs: setup
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -109,8 +109,8 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-          cache: 'pip'
+          python-version: "3.12"
+          cache: "pip"
 
       - name: Install Python dependencies
         run: |
