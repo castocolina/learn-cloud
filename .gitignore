@@ -23,6 +23,7 @@ yarn-error.log*
 # Environment variables
 # Note: .env contains project configuration (not secrets) and should be committed
 # Only user-specific and sensitive .env files are ignored
+.env
 .env.local
 .env.development.local
 .env.test.local
