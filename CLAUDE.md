@@ -3,7 +3,6 @@
 > **📚 Documentation Structure:**
 > - **[TECHNICAL-SPECS.md](TECHNICAL-SPECS.md)** - Technical architecture and user experience standards
 > - **[CONTENT-STANDARDS.md](CONTENT-STANDARDS.md)** - Content creation workflows and quality assurance standards
-> - **[VALIDATION-GUIDE.md](VALIDATION-GUIDE.md)** - Comprehensive validation guide for all project assets (HTML, CSS, JS, Mermaid, Bash)
 
 ---
 
@@ -60,71 +59,90 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 
 ## 4. AGENT IMPLEMENTATION GUIDELINES
 
-### Critical Architecture Rules
+### Critical SvelteKit Architecture Rules
 
-**CRITICAL: JavaScript and Modal Management**
-- ❌ **NEVER** add inline JavaScript to individual content files
-- ❌ **NEVER** include `<dialog>` elements in study aids files  
-- ❌ **NEVER** use `onclick` attributes (app.js removes them automatically)
-- ✅ **ALWAYS** use the centralized modal in `index.html`
-- ✅ **ALWAYS** let `app.js` handle all interactivity via event listeners
-- ✅ **SINGLE SOURCE OF TRUTH:** Only one `<dialog id="flashcard-modal">` exists in `index.html`
+**CRITICAL: SvelteKit Component Development**
+- ✅ **ALWAYS** use SvelteKit components for all UI elements
+- ✅ **ALWAYS** prefer `shadcn-svelte` components over custom implementations
+- ✅ **ALWAYS** use TypeScript interfaces for component props and data structures
+- ✅ **ALWAYS** follow SvelteKit file-based routing conventions
+- ❌ **NEVER** create vanilla HTML/CSS/JS files for new features
+- ❌ **NEVER** use inline styles - use Tailwind CSS classes or component-scoped styles
 
-**Clean Code Standards:**
-- **No Inline JavaScript:** All interactivity handled via centralized JavaScript files
-- **No Inline CSS:** Use CSS classes instead of inline styles
-- **Centralized Architecture:** Functions in JS, classes in CSS, semantic HTML structure
+**Component Architecture Standards:**
+- **Single Responsibility:** Each component should have one clear purpose
+- **Props-Based Configuration:** Use well-defined TypeScript interfaces for props
+- **Reactive State:** Leverage Svelte's built-in reactivity for state management
+- **Event-Driven Communication:** Use component events and stores for data flow
+- **Composition over Inheritance:** Build complex UIs by composing simpler components
 
-### Modern Development Practices
-- **CSS Grid First:** Use CSS Grid for layout, flexbox for component alignment
-- **ES6 Modules:** Write modular, class-based JavaScript with proper separation of concerns
-- **Semantic HTML:** Use proper HTML5 semantic elements and structure
-- **Performance-Conscious:** Minimize dependencies, optimize for fast loading
-- **Accessibility:** Ensure proper ARIA labels, semantic structure, keyboard navigation
-- **Mobile-First Development:** Always design and test mobile experience first
-- **Progress Tracking:** Always use the TodoWrite tool to track tasks when working on content generation
+**shadcn-svelte Integration:**
+- **Priority System:** Always check `shadcn-svelte` library first before building custom components
+- **Installation Command:** Use `pnpm dlx shadcn-svelte@latest add [component-name]`
+- **Customization:** Extend shadcn components using Tailwind CSS classes and component composition
+- **Documentation Reference:** [shadcn-svelte.com/docs/components](https://www.shadcn-svelte.com/docs/components)
 
-### Content Generation Workflow
-- When creating diagrams, verify Mermaid syntax follows the double-quote rule
-- When editing existing files, preserve the established structure and styling
-- Use the Read tool to understand existing content before making changes
-- Follow the hierarchical workflow: Unit Overview → Topic → Study Aids → Quiz
-- Ensure all generated content is pedagogically sound and builds upon previous concepts
-- Use modern CSS classes and semantic HTML5 structure
+### SvelteKit Development Practices
 
-### Script & File Management
+**Agent Workflow Standards:**
+- **TypeScript First:** All components must use TypeScript with proper interfaces
+- **Mobile-First:** Always design and test mobile experience first
+- **shadcn-svelte Priority:** Check component library before building custom components
 
-**Script Placement:**
-- **User-Requested:** `src/bash/` and `src/python/` for permanent scripts
-- **Temporary/Agent:** `./tmp/bash/` and `./tmp/python/` for one-off solutions with cleanup headers
-- **Validation:** Always run `shellcheck` on Bash scripts before completion
-- **Python Cache:** NEVER compile .py files in their source directories - always use `make` commands which set `PYTHONPYCACHEPREFIX=tmp/pycache` to keep cache in `./tmp/` directory
-- **TUI Framework Issues:** If curses-based TUI applications fail with `nocbreak()` errors, prefer simple CLI implementations over complex TUI frameworks for better compatibility
+> **📋 Detailed Technical Specifications:** See [TECHNICAL-SPECS.md](TECHNICAL-SPECS.md) for comprehensive file structure, component development standards, and data loading patterns.
 
-**Configuration File Placement:**
-- **Permanent Configs:** `src/conf/` for YAML/JSON configuration files (agent definitions, build configs, app settings)
-- **Temporary Configs:** `./tmp/conf/` for temporary configuration files generated by scripts
-- **No Root Configs:** Avoid placing configuration files in project root unless required by specific tools
+### Content Integration Workflow
+
+**JSON-First Approach:**
+- **Data Structure:** All content stored as structured JSON in `src/data/`
+- **Type Safety:** Use TypeScript interfaces to ensure data structure consistency
+- **Content Loading:** Implement dynamic imports with proper error handling
+- **Validation:** Validate JSON structure and required fields at runtime
+
+**Component-Based Content Display:**
+- **Lesson Component:** Display structured lesson content with sections and rich formatting
+- **Quiz Component:** Interactive quiz system with question navigation and scoring
+- **Flashcard Component:** Modal-based flashcard system for study guides
+- **Progress Components:** Unit and global progress tracking with visual indicators
+
+**Migration from Legacy HTML:**
+- **Reference Only:** Use existing `src/book/` HTML files as content reference
+- **Extract Content:** Convert HTML content to structured JSON format
+- **Component Implementation:** Build SvelteKit components to display JSON content
+- **Legacy Cleanup:** Remove HTML files after successful migration
+
+**Progress Tracking & Task Management:**
+- **TodoWrite Integration:** Always use the TodoWrite tool to track tasks when working on content generation
+- **Mobile-First Validation:** Always test mobile experience (≤390px) before desktop development
+- **Iterative Development:** Follow the hierarchical workflow: Unit Overview → Topic → Study Aids → Quiz
+- **Quality Assurance:** Ensure all generated content is pedagogically sound and builds upon previous concepts
+
+### Development Tooling & Scripts
+
+**Build/Utility Scripts (Not Application Code):**
+- **User-Requested:** `src/bash/` and `src/python/` for permanent utility scripts (e.g., content generation, validation)
+- **Temporary/Agent:** `./tmp/bash/` and `./tmp/python/` for one-off tooling solutions
+- **Validation:** Always run `shellcheck` on bash scripts before completion
+- **Python Cache:** Use `make` commands with `PYTHONPYCACHEPREFIX=tmp/pycache` for utility scripts
+
+> **🎯 Note:** These are development tools, not application code. SvelteKit application uses TypeScript/JavaScript only.
+
+**SvelteKit Configuration:**
+- **Project Configuration:** SvelteKit configuration in `svelte.config.js`, Vite config in `vite.config.js`
+- **TypeScript Configuration:** `tsconfig.json` for TypeScript compiler options
+- **No Root Configs:** Avoid placing unnecessary configuration files in project root
 
 **File Modification Scope:**
 - **Strict Scope:** Modify only requested files/paths unless global functionality requires shared resources
-- **Shared Resources:** May modify `src/book/style.css` or `src/book/app.js` for global features
+- **Shared Resources:** May modify `src/lib/`, `src/routes/`, or component files for global SvelteKit features
 - **Documentation:** Avoid creating docs unless explicitly requested
 
 **Project Execution Standards:**
 - **Root Execution:** ALL scripts and commands MUST execute from the project root directory
 - **No Directory Changes:** NEVER use `cd` commands in Makefile or script execution
-- **Path Consistency:** Use relative paths from project root (e.g., `python3 src/python/script.py` not `cd src/python && python3 script.py`)
-- **Environment Configuration:** The project uses a `.env` file for execution configuration:
-  - `PYTHONPATH=src/python` - Enables imports from the main Python source directory
-  - `PYTHONPYCACHEPREFIX=tmp/pycache` - Keeps Python cache files in `./tmp/` directory
-  - `PYTEST_*` variables - Complete pytest configuration (replaces pytest.ini)
-  - These variables are automatically loaded by Makefile, eliminating cache pollution across the project
-- **Script Environment Loading:** When creating temporary scripts or executing commands outside Makefile:
-  - ALWAYS load `.env` variables before execution to ensure consistent environment
-  - For shell scripts: `set -a; source .env; set +a` at the start
-  - For Python scripts: Consider adding environment loading header (see examples in existing scripts)
-  - This ensures all scripts benefit from the standardized project configuration
+- **Environment Configuration:** Project uses `.env` file for tooling configuration (automatically loaded by Makefile)
+- **SvelteKit Development:** Use `pnpm run dev`, `pnpm run build`, `pnpm run check` for application development
+- **Tooling Scripts:** Use `make` commands for utility scripts (content generation, validation, etc.)
 
 ---
 
@@ -160,5 +178,9 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 - ALWAYS prefer editing an existing file to creating a new one
 - NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User
 - **MOBILE-FIRST MANDATE:** Always test mobile experience (≤390px) before desktop
-- **PROGRESS BAR CRITICAL:** Always verify text visibility at screen edges
-- **VALIDATION MANDATORY:** Run `make validate-html [file]` after any HTML changes
+- **SVELTEKIT DEVELOPMENT:** Use components and TypeScript - avoid vanilla HTML/CSS/JS
+- **shadcn-svelte PRIORITY:** Always check component library first before building custom components
+- **SVELTEKIT VALIDATION:** Run `pnpm run check` for TypeScript/component validation and `pnpm run lint` for code quality
+- **AUTOMATED VALIDATION:** ESLint and Prettier handle code formatting and quality automatically
+- **CONTENT VALIDATION:** Use `make content-validate` for JSON structure validation when needed
+- **CONTENT-FIRST:** All new features should consume JSON data from `src/data/` structure

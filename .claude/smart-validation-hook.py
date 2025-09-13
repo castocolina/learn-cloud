@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Claude Code Smart Hook: File-Specific Validation
-Runs validation only on the specific file that was edited/written.
+Claude Code Smart Hook: SvelteKit Project Validation
+Runs validation for SvelteKit project files including TypeScript, Svelte, and JSON content.
 """
 
 import os
@@ -11,30 +11,36 @@ import subprocess
 from pathlib import Path
 
 def should_validate_file(file_path):
-    """Check if file should be validated"""
+    """Check if file should be validated based on SvelteKit project structure"""
     return (
-        file_path.endswith('.html') or 
-        file_path.endswith('.css') or 
+        file_path.endswith('.svelte') or 
+        file_path.endswith('.ts') or 
         file_path.endswith('.js') or
-        file_path.endswith('.md')
+        file_path.endswith('.json') or
+        file_path.endswith('.md') or
+        file_path.endswith('.sh') or
+        file_path.endswith('.py')
     )
 
 def run_validation(file_path, project_dir):
-    """Run validation for specific file"""
+    """Run validation for specific file based on SvelteKit architecture"""
     try:
         # Change to project directory
         os.chdir(project_dir)
         
         # Determine appropriate validation command
-        if file_path.endswith('.html'):
-            cmd = ['make', 'fix-html', file_path]
-            action = "HTML formatting and validation"
-        elif file_path.endswith('.css'):
-            cmd = ['make', 'validate-css', file_path]
-            action = "CSS validation"
-        elif file_path.endswith('.js'):
-            cmd = ['make', 'validate-js', file_path]
-            action = "JavaScript validation"
+        if file_path.endswith(('.svelte', '.ts', '.js')):
+            cmd = ['make', 'check']  # SvelteKit check for TypeScript and Svelte files
+            action = "SvelteKit TypeScript/Svelte validation"
+        elif file_path.endswith('.json'):
+            cmd = ['make', 'content-validate']  # JSON content validation
+            action = "JSON content validation"
+        elif file_path.endswith('.sh'):
+            cmd = ['make', 'validate-bash']  # Bash script validation
+            action = "Bash script validation"
+        elif file_path.endswith('.py'):
+            cmd = ['make', 'validate-python']  # Python script validation
+            action = "Python script validation"
         else:
             return True, f"No validation needed for {file_path}"
         
@@ -94,13 +100,13 @@ def main():
         # Run validation for specific file
         success, message = run_validation(file_path, project_dir)
         
-        print(f"🔍 Smart validation: {message}")
+        print(f"🔍 SvelteKit smart validation: {message}")
         
         # Always exit successfully to not block operations
         sys.exit(0)
         
     except Exception as e:
-        print(f"⚠️ Smart validation hook error: {e} (non-blocking)")
+        print(f"⚠️ SvelteKit smart validation hook error: {e} (non-blocking)")
         sys.exit(0)  # Don't block the operation even on error
 
 if __name__ == '__main__':
