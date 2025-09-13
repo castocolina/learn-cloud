@@ -1,5 +1,7 @@
 # Book Index: Mastering Cloud-Native Technologies
 
+A comprehensive guide to modern cloud-native development covering Python and Go backend development, DevOps practices, infrastructure as code, security, and real-world project implementations.
+
 ---
 
 ## Unit 1: Python for Cloud-Native Backend Development [icon: PythonIcon]

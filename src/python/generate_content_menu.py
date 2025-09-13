@@ -11,7 +11,7 @@ The generated JSON includes:
 - Hierarchical structure parsed from the Markdown outline
 
 Usage:
-    python3 src/python/generate_content_from_md.py
+    python3 src/python/generate_content.py
     make generate-content-md
 """
 
@@ -60,6 +60,48 @@ class MarkdownContentGenerator:
 
         # Pattern for extracting icon metadata from markdown lines
         self.icon_pattern = re.compile(r'\[icon:\s*(\w+)\s*\]')
+
+    def extract_metadata_from_markdown(self, content: str) -> Dict[str, str]:
+        """Extract title and description from the markdown content."""
+        lines = content.split('\n')
+        
+        # Default values
+        title = "Mastering Cloud-Native Technologies"
+        description = "Comprehensive guide to cloud-native development"
+        
+        # Look for the main title (first # heading)
+        title_found = False
+        description_lines = []
+        
+        for line in lines:
+            line = line.strip()
+            
+            # Extract title from first # heading
+            if line.startswith('# ') and not title_found:
+                raw_title = line[2:].strip()
+                if ':' in raw_title:
+                    title = raw_title.split(':', 1)[1].strip()
+                else:
+                    title = raw_title
+                title_found = True
+                continue
+            
+            # Stop collecting description when we hit the first separator
+            if line.startswith('---'):
+                break
+                
+            # Collect description lines (after title, before separator)
+            if title_found and line:
+                description_lines.append(line)
+        
+        # Join description lines and clean up
+        if description_lines:
+            description = ' '.join(description_lines).strip()
+        
+        return {
+            'title': title,
+            'description': description
+        }
 
     def read_content_md(self) -> str:
         """Read and validate the CONTENT.md file."""
@@ -167,19 +209,19 @@ class MarkdownContentGenerator:
         unit_pattern = re.compile(r'^## Unit (\d+):\s*(.+?)(?:\s*\[icon:.*?\])?$')
 
         # Study guide and quiz patterns - more specific, checked first
-        study_guide_pattern = re.compile(r'^\*\s+\*\*(\d+\.\d+):\s*Study Guide\*\*(?:\s*\[icon:.*?\])?')
-        quiz_pattern = re.compile(r'^\*\s+\*\*(\d+\.\d+):\s*Quiz\*\*(?:\s*\[icon:.*?\])?')
-        exam_pattern = re.compile(r'^\*\s+\*\*(\d+\.\d+):\s*Unit \d+ Final Exam\*\*(?:\s*\[icon:.*?\])?')
-        project_pattern = re.compile(r'^\*\s+\*\*(\d+\.\d+):\s*Project\s+\d+:.*$')
+        study_guide_pattern = re.compile(r'^-\s+\*\*(\d+\.\d+):\s*Study Guide\*\*(?:\s*\[icon:.*?\])?')
+        quiz_pattern = re.compile(r'^-\s+\*\*(\d+\.\d+):\s*Quiz\*\*(?:\s*\[icon:.*?\])?')
+        exam_pattern = re.compile(r'^-\s+\*\*(\d+\.\d+):\s*Unit \d+ Final Exam\*\*(?:\s*\[icon:.*?\])?')
+        project_pattern = re.compile(r'^-\s+\*\*(\d+\.\d+):\s*Project\s+(\d+):\s*(.+?)\*\*(?:\s*\[icon:.*?\])?$')
 
         # Chapter pattern - excludes Study Guide, Quiz, and Exam entries
-        chapter_pattern = re.compile(r'^\*\s+\*\*(\d+\.\d+):\s*(?!(?:Study Guide|Quiz|Unit \d+ Final Exam))(.+?)\*\*(?:\s*\[icon:.*?\])?$')
+        chapter_pattern = re.compile(r'^-\s+\*\*(\d+\.\d+):\s*(?!(?:Study Guide|Quiz|Unit \d+ Final Exam))(.+?)\*\*(?:\s*\[icon:.*?\])?$')
 
         # Exclude patterns for non-chapter entries - updated to handle icon placeholders
         exclude_patterns = [
-            re.compile(r'^\*\s+\*\*\d+\.\d+:\s*Study Guide\*\*(?:\s*\[icon:.*?\])?'),
-            re.compile(r'^\*\s+\*\*\d+\.\d+:\s*Quiz\*\*(?:\s*\[icon:.*?\])?'),
-            re.compile(r'^\*\s+\*\*\d+\.\d+:\s*Unit \d+ Final Exam\*\*(?:\s*\[icon:.*?\])?'),
+            re.compile(r'^-\s+\*\*\d+\.\d+:\s*Study Guide\*\*(?:\s*\[icon:.*?\])?'),
+            re.compile(r'^-\s+\*\*\d+\.\d+:\s*Quiz\*\*(?:\s*\[icon:.*?\])?'),
+            re.compile(r'^-\s+\*\*\d+\.\d+:\s*Unit \d+ Final Exam\*\*(?:\s*\[icon:.*?\])?'),
         ]
         
         for line_num, line in enumerate(lines, 1):
@@ -340,19 +382,11 @@ class MarkdownContentGenerator:
                         cleaned_line, extracted_icon = self.extract_icon_from_line(line)
 
                         chapter_num = project_match.group(1)
-
-                        # Re-extract project title from cleaned line
-                        if extracted_icon:
-                            cleaned_match = project_pattern.match(cleaned_line)
-                            if cleaned_match:
-                                project_title = cleaned_line.split(':', 1)[1].strip().lstrip('*').strip().rstrip('*').strip()
-                            else:
-                                project_title = line.split(':', 1)[1].strip().lstrip('*').strip().rstrip('*').strip()
-                        else:
-                            project_title = line.split(':', 1)[1].strip().lstrip('*').strip().rstrip('*').strip()
+                        project_number = project_match.group(2)
+                        project_title = project_match.group(3).strip()
 
                         # Include chapter number in project title for user navigation
-                        full_project_title = f"{chapter_num}: {project_title}"
+                        full_project_title = f"{chapter_num}: Project {project_number} - {project_title}"
 
                         unit_num = chapter_num.split('.')[0]
                         project_slug = self._generate_slug(project_title)
@@ -520,15 +554,15 @@ class MarkdownContentGenerator:
         # Remove leading/trailing hyphens
         return slug.strip('_')
 
-    def generate_json(self, units: List[Dict[str, Any]]) -> str:
-        """Generate formatted JSON string from parsed units."""
+    def generate_json(self, units: List[Dict[str, Any]], metadata: Dict[str, str]) -> str:
+        """Generate formatted JSON string from parsed units and metadata."""
         content_structure = {
             'metadata': {
-                'generated_by': 'generate_content_from_md.py',
+                'generated_by': 'generate_content_menu.py',
                 'source': 'CONTENT.md',
                 'version': '1.0.0',
-                'title': 'Mastering Cloud-Native Technologies',
-                'description': 'Comprehensive guide to cloud-native development with Python, Go, and DevOps practices',
+                'title': metadata['title'],
+                'description': metadata['description'],
                 'total_units': len(units),
                 'total_chapters': sum(len(unit['chapters']) for unit in units)
             },
@@ -564,6 +598,10 @@ class MarkdownContentGenerator:
             # Read and parse Markdown content
             markdown_content = self.read_content_md()
             
+            # Extract metadata from markdown content
+            metadata = self.extract_metadata_from_markdown(markdown_content)
+            logger.info(f"Extracted metadata - Title: '{metadata['title']}'")
+            
             # Parse structure from markdown
             units = self.parse_markdown_structure(markdown_content)
             
@@ -573,8 +611,8 @@ class MarkdownContentGenerator:
                 # Still proceed to generate JSON for inspection
                 logger.info("Proceeding despite validation failure for debugging")
             
-            # Generate JSON
-            json_content = self.generate_json(units)
+            # Generate JSON with dynamic metadata
+            json_content = self.generate_json(units, metadata)
             
             # Ensure output directory and write file
             self.ensure_output_directory()

@@ -188,7 +188,7 @@
 
 	/* Lesson Components */
 	.lesson-content {
-		@apply mx-auto max-w-4xl px-4 py-6;
+		@apply mx-auto max-w-5xl px-4 py-6;
 	}
 
 	.lesson-header {
@@ -198,7 +198,7 @@
 	}
 
 	.lesson-title {
-		@apply mb-3 text-3xl font-bold leading-tight text-gray-900;
+		@apply mb-3 text-3xl leading-tight font-bold text-gray-900;
 		order: 1;
 	}
 
@@ -252,11 +252,216 @@
 
 	/* Study Guide Components */
 	.study-guide-container {
-		@apply mx-auto max-w-4xl px-4 py-6;
+		@apply mx-auto max-w-5xl px-4 py-6;
+	}
+
+	.study-guide-header {
+		@apply mb-8 text-center;
+	}
+
+	.study-guide-title {
+		@apply mb-4 text-3xl font-bold text-gray-900;
+	}
+
+	.study-guide-summary {
+		@apply mb-4 text-lg leading-relaxed text-gray-600;
+	}
+
+	.study-guide-description {
+		@apply mb-8 text-sm text-gray-500;
+	}
+
+	.study-guide-meta {
+		@apply flex flex-col items-center gap-4;
+	}
+
+	.progress-section {
+		@apply flex-1 text-center;
+	}
+
+	.progress-text {
+		@apply mb-2 text-sm text-gray-600;
+	}
+
+	.progress-bar {
+		@apply h-2 w-full max-w-sm overflow-hidden rounded-full bg-gray-200;
+	}
+
+	.progress-fill {
+		@apply h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-600 transition-all duration-300;
+	}
+
+	.control-buttons {
+		@apply flex gap-2;
+	}
+
+	.control-button {
+		@apply flex cursor-pointer items-center justify-center rounded-lg border border-gray-300 bg-white p-2 transition-all duration-200;
+	}
+
+	.control-button:hover {
+		@apply border-gray-400 bg-gray-50;
+	}
+
+	.control-button.active {
+		@apply border-blue-500 bg-blue-500 text-white;
+	}
+
+	.flashcard-container {
+		@apply my-8;
+		perspective: 1000px;
 	}
 
 	.flashcard {
-		@apply perspective-1000 relative h-80 w-full cursor-pointer;
+		@apply relative block h-80 w-full cursor-pointer border-0 bg-transparent p-0;
+		transform-style: preserve-3d;
+		transition: transform 0.6s;
+	}
+
+	.flashcard:focus {
+		@apply outline-2 outline-offset-2 outline-blue-500;
+	}
+
+	.flashcard.flipped {
+		transform: rotateY(180deg);
+	}
+
+	.flashcard-front,
+	.flashcard-back {
+		@apply absolute flex h-full w-full flex-col justify-between rounded-xl border border-gray-200 bg-white p-6 shadow-lg;
+		backface-visibility: hidden;
+	}
+
+	.flashcard-back {
+		@apply bg-slate-50;
+		transform: rotateY(180deg);
+	}
+
+	.card-content {
+		@apply flex flex-1 flex-col justify-center text-center;
+	}
+
+	.card-title {
+		@apply mb-4 text-base font-semibold tracking-wider text-purple-600 uppercase;
+	}
+
+	.card-text {
+		@apply text-lg leading-relaxed text-gray-700;
+	}
+
+	.flip-hint {
+		@apply mt-4 text-center;
+	}
+
+	.flip-hint span {
+		@apply rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-500;
+	}
+
+	.card-tags {
+		@apply mt-4 flex flex-wrap justify-center gap-2;
+	}
+
+	.tag {
+		@apply rounded-full bg-indigo-100 px-3 py-1 text-xs font-medium text-indigo-800;
+	}
+
+	.navigation-controls {
+		@apply mt-8 flex items-center justify-between gap-4;
+	}
+
+	.nav-button {
+		@apply flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-6 py-3 text-sm font-medium transition-all duration-200;
+	}
+
+	.nav-button:hover:not(:disabled) {
+		@apply border-gray-400 bg-gray-50;
+	}
+
+	.nav-button:disabled {
+		@apply cursor-not-allowed opacity-50;
+	}
+
+	.keyboard-hints {
+		@apply flex-1 text-center;
+	}
+
+	.hint {
+		@apply text-xs text-gray-500;
+	}
+
+	.expand-button {
+		@apply fixed right-4 bottom-4 cursor-pointer rounded-full border border-gray-300 bg-white p-3 shadow-lg transition-all duration-200;
+	}
+
+	.expand-button:hover {
+		@apply scale-110 bg-gray-50;
+	}
+
+	.modal-flashcard {
+		@apply relative my-8 block h-96 w-full cursor-pointer border-0 bg-transparent p-0;
+		transform-style: preserve-3d;
+		transition: transform 0.6s;
+	}
+
+	.modal-flashcard:focus {
+		@apply outline-2 outline-offset-2 outline-blue-500;
+	}
+
+	.modal-flashcard.flipped {
+		transform: rotateY(180deg);
+	}
+
+	.modal-navigation {
+		@apply flex items-center justify-between gap-4;
+	}
+
+	.modal-nav-button {
+		@apply cursor-pointer rounded-lg border border-gray-300 bg-white p-3 transition-all duration-200;
+	}
+
+	.modal-nav-button:hover:not(:disabled) {
+		@apply border-gray-400 bg-gray-50;
+	}
+
+	.modal-nav-button:disabled {
+		@apply cursor-not-allowed opacity-50;
+	}
+
+	.modal-controls {
+		@apply flex gap-2;
+	}
+
+	.modal-control {
+		@apply cursor-pointer rounded-lg border border-gray-300 bg-white p-2 transition-all duration-200;
+	}
+
+	.modal-control:hover {
+		@apply border-gray-400 bg-gray-50;
+	}
+
+	/* Study Guide Responsive Design */
+	@media (min-width: 640px) {
+		.study-guide-meta {
+			@apply flex-row justify-between;
+		}
+
+		.progress-bar {
+			@apply max-w-lg;
+		}
+
+		.flashcard {
+			@apply h-96;
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.flashcard {
+			@apply h-96;
+		}
+
+		.card-text {
+			@apply text-xl;
+		}
 	}
 
 	/* Content Section Components */
@@ -282,11 +487,11 @@
 	}
 
 	.expand-button-only {
-		@apply absolute right-2 top-2 z-10;
+		@apply absolute top-2 right-2 z-10;
 	}
 
 	.expand-button {
-		@apply rounded-md p-2 text-gray-500 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500;
+		@apply rounded-md p-2 text-gray-500 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none;
 	}
 
 	.diagram-content {
@@ -302,7 +507,7 @@
 	}
 
 	.diagram-caption {
-		@apply border-t border-gray-200 bg-gray-50 px-4 py-3 text-sm italic text-gray-600;
+		@apply border-t border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-600 italic;
 	}
 
 	.loading-state {
@@ -334,11 +539,11 @@
 	}
 
 	.modal-close {
-		@apply absolute right-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-xl font-bold text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-800;
+		@apply absolute top-4 right-4 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-xl font-bold text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-800;
 	}
 
 	.modal-title {
-		@apply m-0 px-6 pb-2 pt-6 text-lg font-semibold text-gray-900;
+		@apply m-0 px-6 pt-6 pb-2 text-lg font-semibold text-gray-900;
 	}
 
 	.modal-diagram {
@@ -346,7 +551,7 @@
 	}
 
 	.modal-caption {
-		@apply m-0 px-6 pb-6 text-sm italic text-gray-600;
+		@apply m-0 px-6 pb-6 text-sm text-gray-600 italic;
 	}
 
 	/* Mobile responsiveness for Mermaid */
@@ -471,7 +676,7 @@
 	}
 
 	.paragraph :global(blockquote) {
-		@apply my-4 border-l-4 border-gray-300 pl-4 italic text-gray-600;
+		@apply my-4 border-l-4 border-gray-300 pl-4 text-gray-600 italic;
 	}
 
 	.section-code-blocks {
@@ -623,11 +828,11 @@
 	}
 
 	.copy-button-only {
-		@apply absolute right-2 top-2 z-10;
+		@apply absolute top-2 right-2 z-10;
 	}
 
 	.copy-button {
-		@apply rounded-md p-2 text-gray-500 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500;
+		@apply rounded-md p-2 text-gray-500 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none;
 	}
 
 	.code-content {

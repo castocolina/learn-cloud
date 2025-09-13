@@ -7,19 +7,17 @@
 		class: className,
 		children,
 		...restProps
-	}: WithElementRef<HTMLAttributes<HTMLUListElement>> = $props();
+	}: WithElementRef<HTMLAttributes<HTMLDivElement>> = $props();
 </script>
 
-<ul
+<div
 	bind:this={ref}
-	data-slot="sidebar-menu-sub"
-	data-sidebar="menu-sub"
+	data-slot="card-header"
 	class={cn(
-		"mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l border-sidebar-border px-2.5 py-0.5",
-		"group-data-[collapsible=icon]:hidden",
+		"@container/card-header has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6 grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6",
 		className
 	)}
 	{...restProps}
 >
 	{@render children?.()}
-</ul>
+</div>

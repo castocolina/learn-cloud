@@ -11,7 +11,7 @@
 
 	let { diagram, class: className = "" }: Props = $props();
 
-	let diagramElement: HTMLElement;
+	let diagramElement = $state<HTMLElement>();
 	let isLoading = $state(true);
 	let hasError = $state(false);
 	let errorMessage = $state("");
@@ -149,11 +149,13 @@
 	<div
 		class="diagram-modal-overlay"
 		onclick={toggleExpanded}
+		onkeydown={(e) => e.key === "Escape" && toggleExpanded()}
 		role="dialog"
 		aria-modal="true"
 		aria-label="Expanded diagram view"
+		tabindex="-1"
 	>
-		<div class="diagram-modal" onclick={(e) => e.stopPropagation()}>
+		<div class="diagram-modal" onclick={(e) => e.stopPropagation()} role="document">
 			<button
 				class="modal-close"
 				onclick={toggleExpanded}

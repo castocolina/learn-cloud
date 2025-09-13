@@ -110,9 +110,9 @@ dev-tools: ## Install additional development tools
 	@echo "✅ Development tools installed"
 
 # Content management
-generate-content: ## Generate content.json from CONTENT.md
-	@echo "🔄 Generating content.json from CONTENT.md..."
-	@python3 src/python/generate_content.py
+generate-content-menu: ## Generate content-menu.json from CONTENT.md
+	@echo "🔄 Generating content-menu.json from CONTENT.md..."
+	@python3 src/python/generate_content_menu.py
 	@echo "✅ Content generation complete!"
 
 # CI/CD support

@@ -9,8 +9,20 @@
 				url: "#",
 				items: [
 					{
-						title: "Content Components",
+						title: "Overview",
 						url: "/demo"
+					},
+					{
+						title: "Container Orchestration Lesson",
+						url: "/demo/lesson"
+					},
+					{
+						title: "Cloud-Native Quiz",
+						url: "/demo/quiz"
+					},
+					{
+						title: "Architecture Study Guide",
+						url: "/demo/study-guide"
 					}
 				]
 			},
@@ -173,7 +185,7 @@
 					{#snippet child({ props })}
 						<a href="##" {...props}>
 							<div
-								class="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg"
+								class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
 							>
 								<GalleryVerticalEndIcon class="size-4" />
 							</div>

@@ -131,7 +131,15 @@
 
 	<!-- Flashcard -->
 	<main class="flashcard-container">
-		<div class="flashcard" class:flipped={isFlipped} onclick={flipCard}>
+		<button
+			class="flashcard"
+			class:flipped={isFlipped}
+			onclick={flipCard}
+			onkeydown={handleKeyDown}
+			aria-label={isFlipped ? "Show question side" : "Show answer side"}
+			tabindex="0"
+			type="button"
+		>
 			<div class="flashcard-front">
 				<div class="card-content">
 					<h3 class="card-title">Question</h3>
@@ -155,12 +163,12 @@
 					<span>Click to see question</span>
 				</div>
 			</div>
-		</div>
+		</button>
 
 		<!-- Card tags -->
 		{#if currentCard.tags?.length}
 			<div class="card-tags">
-				{#each currentCard.tags as tag}
+				{#each currentCard.tags as tag (tag)}
 					<span class="tag">{tag}</span>
 				{/each}
 			</div>
@@ -211,7 +219,15 @@
 		</Dialog.Header>
 
 		<!-- Dialog content mirrors main flashcard -->
-		<div class="modal-flashcard" class:flipped={isFlipped} onclick={flipCard}>
+		<button
+			class="modal-flashcard"
+			class:flipped={isFlipped}
+			onclick={flipCard}
+			onkeydown={handleKeyDown}
+			aria-label={isFlipped ? "Show question side" : "Show answer side"}
+			tabindex="0"
+			type="button"
+		>
 			<div class="flashcard-front">
 				<div class="card-content">
 					<h3 class="card-title">Question</h3>
@@ -229,7 +245,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</button>
 
 		<Dialog.Footer>
 			<div class="modal-navigation">
@@ -258,4 +274,3 @@
 		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>
-
