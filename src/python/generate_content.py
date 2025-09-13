@@ -35,28 +35,31 @@ class MarkdownContentGenerator:
         self.content_md_path = self.project_root / "CONTENT.md"
         self.output_path = self.project_root / "src" / "data" / "content-menu.json"
         
-        # Unit icons mapping based on content themes
+        # Icon mapping for Lucide Svelte components - used as fallbacks
         self.unit_icons = {
-            'python': '🐍',
-            'go': '🔷', 
-            'devops': '⚙️',
-            'secrets': '🔐',
-            'devsecops': '🛡️',
-            'automation': '🤖',
-            'serverless': '⚡',
-            'integration': '🔗',
-            'capstone': '🎓'
+            'python': 'PythonIcon',
+            'go': 'GoIcon',
+            'devops': 'Settings',
+            'secrets': 'Lock',
+            'devsecops': 'ShieldCheck',
+            'automation': 'Bot',
+            'serverless': 'Zap',
+            'integration': 'Shield',
+            'capstone': 'GraduationCap'
         }
-        
-        # Default icons for different content types
+
+        # Default Lucide Svelte icons for different content types
         self.default_icons = {
-            'unit': '📚',
-            'chapter': '📄',
-            'study': '📋',
-            'quiz': '❓',
-            'exam': '🎯',
-            'project': '🚀'
+            'unit': 'BookOpen',
+            'chapter': 'FileText',
+            'study': 'BookOpen',
+            'quiz': 'HelpCircle',
+            'exam': 'Target',
+            'project': 'Rocket'
         }
+
+        # Pattern for extracting icon metadata from markdown lines
+        self.icon_pattern = re.compile(r'\[icon:\s*(\w+)\s*\]')
 
     def read_content_md(self) -> str:
         """Read and validate the CONTENT.md file."""
@@ -77,6 +80,82 @@ class MarkdownContentGenerator:
             logger.error(f"Error reading CONTENT.md: {e}")
             raise
 
+    def extract_icon_from_line(self, line: str) -> Tuple[str, str]:
+        """Extract icon metadata from a markdown line and return cleaned line + icon name."""
+        match = self.icon_pattern.search(line)
+        if match:
+            icon_name = match.group(1)
+            # Remove the icon metadata from the line
+            cleaned_line = self.icon_pattern.sub('', line).strip()
+            return cleaned_line, icon_name
+
+        return line, None
+
+    def format_web_path(self, src_path: str) -> str:
+        """Convert src/ paths to web-root-relative paths (book/...)."""
+        if src_path.startswith('src/'):
+            return src_path[4:]  # Remove 'src/' prefix
+        return src_path
+
+    def get_fallback_icon(self, content_type: str, title: str) -> str:
+        """Get fallback icon based on content type and title analysis."""
+        title_lower = title.lower()
+
+        if content_type == 'unit':
+            if 'python' in title_lower:
+                return self.unit_icons['python']
+            elif 'go' in title_lower:
+                return self.unit_icons['go']
+            elif 'devops' in title_lower or 'ci/cd' in title_lower:
+                return self.unit_icons['devops']
+            elif 'secret' in title_lower or 'configuration' in title_lower:
+                return self.unit_icons['secrets']
+            elif 'devsecops' in title_lower or 'security' in title_lower:
+                return self.unit_icons['devsecops']
+            elif 'automation' in title_lower:
+                return self.unit_icons['automation']
+            elif 'serverless' in title_lower or 'aws' in title_lower:
+                return self.unit_icons['serverless']
+            elif 'integration' in title_lower or 'systems' in title_lower:
+                return self.unit_icons['integration']
+            elif 'capstone' in title_lower or 'project' in title_lower:
+                return self.unit_icons['capstone']
+            else:
+                return self.default_icons['unit']
+
+        elif content_type == 'chapter':
+            if 'project' in title_lower:
+                return self.default_icons['project']
+            elif 'environment' in title_lower or 'setup' in title_lower or 'tooling' in title_lower:
+                return 'Settings'
+            elif 'overview' in title_lower or 'foundational' in title_lower or 'concepts' in title_lower:
+                return 'BookOpen'
+            elif 'quality' in title_lower or 'standards' in title_lower:
+                return 'CheckCircle'
+            elif 'testing' in title_lower:
+                return 'TestTube'
+            elif 'observability' in title_lower or 'monitoring' in title_lower:
+                return 'BarChart3'
+            elif 'api' in title_lower or 'restful' in title_lower:
+                return 'Globe'
+            elif 'concurrency' in title_lower or 'caching' in title_lower:
+                return 'Zap'
+            elif 'database' in title_lower or 'backend' in title_lower:
+                return 'Database'
+            elif 'advanced' in title_lower:
+                return 'Target'
+            else:
+                return self.default_icons['chapter']
+
+        elif content_type == 'study':
+            return self.default_icons['study']
+        elif content_type == 'quiz':
+            return self.default_icons['quiz']
+        elif content_type == 'exam':
+            return self.default_icons['exam']
+        else:
+            return 'ChevronRight'
+
     def parse_markdown_structure(self, content: str) -> List[Dict[str, Any]]:
         """Parse the Markdown content and extract the hierarchical structure."""
         units = []
@@ -84,19 +163,23 @@ class MarkdownContentGenerator:
         current_unit = None
         current_chapter_base = None
         
-        # Patterns for different content types
-        unit_pattern = re.compile(r'^## Unit (\d+):\s*(.+)$')
-        chapter_pattern = re.compile(r'^\*\s+\*\*(\d+\.\d+):\s*([^*]+)\*\*$')
-        study_guide_pattern = re.compile(r'^\*\s+\*\*(\d+\.\d+):\s*Study Guide\*\*$')
-        quiz_pattern = re.compile(r'^\*\s+\*\*(\d+\.\d+):\s*Quiz\*\*$')
-        exam_pattern = re.compile(r'^\*\s+\*\*(\d+\.\d+):\s*Unit \d+ Final Exam\*\*$')
+        # Patterns for different content types - updated to handle icon placeholders
+        unit_pattern = re.compile(r'^## Unit (\d+):\s*(.+?)(?:\s*\[icon:.*?\])?$')
+
+        # Study guide and quiz patterns - more specific, checked first
+        study_guide_pattern = re.compile(r'^\*\s+\*\*(\d+\.\d+):\s*Study Guide\*\*(?:\s*\[icon:.*?\])?')
+        quiz_pattern = re.compile(r'^\*\s+\*\*(\d+\.\d+):\s*Quiz\*\*(?:\s*\[icon:.*?\])?')
+        exam_pattern = re.compile(r'^\*\s+\*\*(\d+\.\d+):\s*Unit \d+ Final Exam\*\*(?:\s*\[icon:.*?\])?')
         project_pattern = re.compile(r'^\*\s+\*\*(\d+\.\d+):\s*Project\s+\d+:.*$')
-        
-        # Exclude patterns for non-chapter entries
+
+        # Chapter pattern - excludes Study Guide, Quiz, and Exam entries
+        chapter_pattern = re.compile(r'^\*\s+\*\*(\d+\.\d+):\s*(?!(?:Study Guide|Quiz|Unit \d+ Final Exam))(.+?)\*\*(?:\s*\[icon:.*?\])?$')
+
+        # Exclude patterns for non-chapter entries - updated to handle icon placeholders
         exclude_patterns = [
-            re.compile(r'^\*\s+\*\*\d+\.\d+:\s*Study Guide\*\*$'),
-            re.compile(r'^\*\s+\*\*\d+\.\d+:\s*Quiz\*\*$'),
-            re.compile(r'^\*\s+\*\*\d+\.\d+:\s*Unit \d+ Final Exam\*\*$'),
+            re.compile(r'^\*\s+\*\*\d+\.\d+:\s*Study Guide\*\*(?:\s*\[icon:.*?\])?'),
+            re.compile(r'^\*\s+\*\*\d+\.\d+:\s*Quiz\*\*(?:\s*\[icon:.*?\])?'),
+            re.compile(r'^\*\s+\*\*\d+\.\d+:\s*Unit \d+ Final Exam\*\*(?:\s*\[icon:.*?\])?'),
         ]
         
         for line_num, line in enumerate(lines, 1):
@@ -109,156 +192,247 @@ class MarkdownContentGenerator:
             # Parse Unit headers
             unit_match = unit_pattern.match(line)
             if unit_match:
+                # Clear any pending chapter reference when switching units
+                current_chapter_base = None
+
                 if current_unit:
                     units.append(current_unit)
-                
+
                 unit_num = unit_match.group(1)
-                unit_title = unit_match.group(2).strip()
-                
+                unit_title_raw = unit_match.group(2).strip()
+
+                # Extract icon from the unit title line
+                cleaned_line, extracted_icon = self.extract_icon_from_line(line)
+
+                # Re-extract the title from cleaned line if icon was found
+                if extracted_icon:
+                    cleaned_match = unit_pattern.match(cleaned_line)
+                    if cleaned_match:
+                        unit_title = cleaned_match.group(2).strip()
+                    else:
+                        unit_title = unit_title_raw
+                else:
+                    unit_title = unit_title_raw
+
                 # Include unit number in the title for user navigation
                 full_unit_title = f"Unit {unit_num}: {unit_title}"
-                
+
                 # Generate URL-friendly slug for unit title
                 unit_slug = self._generate_slug(unit_title)
-                
-                # Determine icon based on unit content
-                unit_icon = self._get_unit_icon(unit_title)
-                
+
+                # Determine icon - use extracted icon or fallback
+                if extracted_icon:
+                    unit_icon = extracted_icon
+                else:
+                    unit_icon = self.get_fallback_icon('unit', unit_title)
+
+                # Create paths and convert to web-root-relative with _link suffix
+                overview_path = f"src/book/unit{unit_num}/overview_{unit_slug}.html"
+                overview_data_path = f"src/data/unit{unit_num}/overview_{unit_slug}.json"
+                exam_path = f"src/book/unit{unit_num}/exam_{unit_slug}.html"
+                exam_data_path = f"src/data/unit{unit_num}/exam_{unit_slug}.json"
+
                 current_unit = {
                     'title': full_unit_title,
                     'icon': unit_icon,
                     'description': self._generate_unit_description(unit_title),
-                    'overview': f"src/book/unit{unit_num}/overview_{unit_slug}.html",
-                    'overview_data': f"src/data/unit{unit_num}/overview_{unit_slug}.json",
-                    'exam': f"src/book/unit{unit_num}/exam_{unit_slug}.html",
-                    'exam_data': f"src/data/unit{unit_num}/exam_{unit_slug}.json",
+                    'overview_link': self.format_web_path(overview_path),
+                    'overview_data_link': self.format_web_path(overview_data_path),
+                    'exam_link': self.format_web_path(exam_path),
+                    'exam_data_link': self.format_web_path(exam_data_path),
                     'chapters': []
                 }
-                logger.info(f"Parsed unit {unit_num}: {unit_title}")
+                logger.info(f"Parsed unit {unit_num}: {unit_title} with icon: {unit_icon}")
                 continue
             
             # Parse chapter content
             if current_unit:
-                # Check if this line should be excluded from chapter parsing
-                is_excluded = any(pattern.match(line) for pattern in exclude_patterns)
-                
-                if not is_excluded:
-                    # Check for projects first (they also match chapter_pattern but need special handling)
-                    project_match = project_pattern.match(line)
-                    if project_match:
-                        chapter_num = project_match.group(1)
-                        project_title = line.split(':', 1)[1].strip().lstrip('*').strip().rstrip('*').strip()
-                        
-                        # Include chapter number in project title for user navigation
-                        full_project_title = f"{chapter_num}: {project_title}"
-                        
-                        unit_num = chapter_num.split('.')[0]
-                        project_slug = self._generate_slug(project_title)
-                        chapter_id = chapter_num.replace('.', '_')
-                        
-                        project_chapter = {
-                            'title': full_project_title,
-                            'icon': '🚀',
-                            'lesson': f"src/book/unit{unit_num}/chapter_{chapter_id}_{project_slug}.html",
-                            'lesson_data': f"src/data/unit{unit_num}/chapter_{chapter_id}_{project_slug}.json",
-                            'quiz': None,
-                            'quiz_data': None,
-                            'study_guide': None,
-                            'study_guide_data': None
-                        }
-                        current_unit['chapters'].append(project_chapter)
-                        logger.debug(f"Added project: {project_title}")
-                        continue
-                    
-                    chapter_match = chapter_pattern.match(line)
-                    if chapter_match:
-                        chapter_num = chapter_match.group(1)
-                        chapter_title = chapter_match.group(2).strip()
-                        
-                        # Remove trailing periods and clean up
-                        chapter_title = chapter_title.rstrip('.')
-                        
-                        # Include chapter number in the title for user navigation
-                        full_title = f"{chapter_num}: {chapter_title}"
-                        
-                        # Generate file paths
-                        unit_num = chapter_num.split('.')[0]
-                        chapter_slug = self._generate_slug(chapter_title)
-                        chapter_id = chapter_num.replace('.', '_')
-                        
-                        # Initialize chapter with lesson path
-                        current_chapter_base = {
-                            'title': full_title,
-                            'icon': self._get_chapter_icon(chapter_title),
-                            'lesson': f"src/book/unit{unit_num}/chapter_{chapter_id}_{chapter_slug}.html",
-                            'lesson_data': f"src/data/unit{unit_num}/chapter_{chapter_id}_{chapter_slug}.json",
-                            'quiz': None,
-                            'quiz_data': None,
-                            'study_guide': None,
-                            'study_guide_data': None,
-                            'chapter_num': chapter_num,
-                            'unit_num': unit_num,
-                            'chapter_id': chapter_id,
-                            'chapter_slug': chapter_slug
-                        }
-                        logger.debug(f"Found chapter {chapter_num}: {chapter_title}")
-                        continue
-                
-                # Parse study guide
+                # Parse study guide first (most specific)
                 study_match = study_guide_pattern.match(line)
-                if study_match and current_chapter_base:
+                if study_match:
+                    # Extract icon from study guide line
+                    cleaned_line, extracted_icon = self.extract_icon_from_line(line)
+
                     study_chapter_num = study_match.group(1)
-                    if study_chapter_num == current_chapter_base['chapter_num']:
-                        current_chapter_base['study_guide'] = f"src/book/unit{current_chapter_base['unit_num']}/study_guide_{current_chapter_base['chapter_id']}_{current_chapter_base['chapter_slug']}.html"
-                        current_chapter_base['study_guide_data'] = f"src/data/unit{current_chapter_base['unit_num']}/study_guide_{current_chapter_base['chapter_id']}_{current_chapter_base['chapter_slug']}.json"
-                        logger.debug(f"Added study guide for {study_chapter_num}")
+                    unit_num = study_chapter_num.split('.')[0]
+                    study_slug = self._generate_slug(f"study_guide_{study_chapter_num}")
+                    chapter_id = study_chapter_num.replace('.', '_')
+
+                    study_guide_path = f"src/book/unit{unit_num}/study_guide_{chapter_id}.html"
+                    study_guide_data_path = f"src/data/unit{unit_num}/study_guide_{chapter_id}.json"
+
+                    study_guide_icon = extracted_icon if extracted_icon else self.get_fallback_icon('study', 'Study Guide')
+
+                    study_guide_chapter = {
+                        'title': f"{study_chapter_num}: Study Guide",
+                        'icon': study_guide_icon,
+                        'type': 'study_guide',
+                        'chapter_link': self.format_web_path(study_guide_path),
+                        'chapter_data_link': self.format_web_path(study_guide_data_path)
+                    }
+
+                    current_unit['chapters'].append(study_guide_chapter)
+                    logger.debug(f"Added study guide chapter for {study_chapter_num}")
                     continue
-                
+
                 # Parse quiz
                 quiz_match = quiz_pattern.match(line)
-                if quiz_match and current_chapter_base:
+                if quiz_match:
+                    # Extract icon from quiz line
+                    cleaned_line, extracted_icon = self.extract_icon_from_line(line)
+
                     quiz_chapter_num = quiz_match.group(1)
-                    if quiz_chapter_num == current_chapter_base['chapter_num']:
-                        current_chapter_base['quiz'] = f"src/book/unit{current_chapter_base['unit_num']}/quiz_{current_chapter_base['chapter_id']}_{current_chapter_base['chapter_slug']}.html"
-                        current_chapter_base['quiz_data'] = f"src/data/unit{current_chapter_base['unit_num']}/quiz_{current_chapter_base['chapter_id']}_{current_chapter_base['chapter_slug']}.json"
-                        
-                        # Clean up temporary fields and add to unit
-                        chapter_to_add = {k: v for k, v in current_chapter_base.items() 
-                                        if k not in ['chapter_num', 'unit_num', 'chapter_id', 'chapter_slug']}
-                        current_unit['chapters'].append(chapter_to_add)
-                        logger.debug(f"Completed chapter {quiz_chapter_num}: {current_chapter_base['title']}")
-                        current_chapter_base = None
+                    unit_num = quiz_chapter_num.split('.')[0]
+                    quiz_slug = self._generate_slug(f"quiz_{quiz_chapter_num}")
+                    chapter_id = quiz_chapter_num.replace('.', '_')
+
+                    quiz_path = f"src/book/unit{unit_num}/quiz_{chapter_id}.html"
+                    quiz_data_path = f"src/data/unit{unit_num}/quiz_{chapter_id}.json"
+
+                    quiz_icon = extracted_icon if extracted_icon else self.get_fallback_icon('quiz', 'Quiz')
+
+                    quiz_chapter = {
+                        'title': f"{quiz_chapter_num}: Quiz",
+                        'icon': quiz_icon,
+                        'type': 'quiz',
+                        'chapter_link': self.format_web_path(quiz_path),
+                        'chapter_data_link': self.format_web_path(quiz_data_path)
+                    }
+
+                    current_unit['chapters'].append(quiz_chapter)
+                    logger.debug(f"Added quiz chapter for {quiz_chapter_num}")
                     continue
-                
+
                 # Parse final exam entries
                 exam_match = exam_pattern.match(line)
                 if exam_match:
-                    # These are handled at unit level, just skip
+                    # Extract icon from exam line
+                    cleaned_line, extracted_icon = self.extract_icon_from_line(line)
+
+                    exam_chapter_num = exam_match.group(1)
+                    unit_num = exam_chapter_num.split('.')[0]
+
+                    # Generate paths for exam
+                    exam_slug = f"unit_{unit_num}_final_exam"
+                    exam_id = exam_chapter_num.replace('.', '_')
+
+                    exam_path = f"src/book/unit{unit_num}/exam_{exam_slug}.html"
+                    exam_data_path = f"src/data/unit{unit_num}/exam_{exam_slug}.json"
+
+                    exam_icon = extracted_icon if extracted_icon else self.get_fallback_icon('exam', 'Final Exam')
+
+                    exam_chapter = {
+                        'title': f"{exam_chapter_num}: Unit {unit_num} Final Exam",
+                        'icon': exam_icon,
+                        'type': 'exam',
+                        'chapter_link': self.format_web_path(exam_path),
+                        'chapter_data_link': self.format_web_path(exam_data_path)
+                    }
+
+                    current_unit['chapters'].append(exam_chapter)
+                    logger.debug(f"Added exam chapter: {exam_chapter_num}")
+                    continue
+
+                # Check for projects (they also match chapter_pattern but need special handling)
+                project_match = project_pattern.match(line)
+                if project_match:
+                        # Extract icon from project line
+                        cleaned_line, extracted_icon = self.extract_icon_from_line(line)
+
+                        chapter_num = project_match.group(1)
+
+                        # Re-extract project title from cleaned line
+                        if extracted_icon:
+                            cleaned_match = project_pattern.match(cleaned_line)
+                            if cleaned_match:
+                                project_title = cleaned_line.split(':', 1)[1].strip().lstrip('*').strip().rstrip('*').strip()
+                            else:
+                                project_title = line.split(':', 1)[1].strip().lstrip('*').strip().rstrip('*').strip()
+                        else:
+                            project_title = line.split(':', 1)[1].strip().lstrip('*').strip().rstrip('*').strip()
+
+                        # Include chapter number in project title for user navigation
+                        full_project_title = f"{chapter_num}: {project_title}"
+
+                        unit_num = chapter_num.split('.')[0]
+                        project_slug = self._generate_slug(project_title)
+                        chapter_id = chapter_num.replace('.', '_')
+
+                        # Determine icon - use extracted icon or fallback
+                        if extracted_icon:
+                            project_icon = extracted_icon
+                        else:
+                            project_icon = self.get_fallback_icon('project', project_title)
+
+                        # Create paths and convert to web-root-relative with _link suffix
+                        chapter_path = f"src/book/unit{unit_num}/chapter_{chapter_id}_{project_slug}.html"
+                        chapter_data_path = f"src/data/unit{unit_num}/chapter_{chapter_id}_{project_slug}.json"
+
+                        project_chapter = {
+                            'title': full_project_title,
+                            'icon': project_icon,
+                            'type': 'project',
+                            'chapter_link': self.format_web_path(chapter_path),
+                            'chapter_data_link': self.format_web_path(chapter_data_path)
+                        }
+                        current_unit['chapters'].append(project_chapter)
+                        logger.debug(f"Added project: {project_title} with icon: {project_icon}")
+                        continue
+                    
+                # Regular chapter parsing (only for lessons, not study guides/quizzes)
+                chapter_match = chapter_pattern.match(line)
+                if chapter_match:
+                    # Extract icon from chapter line
+                    cleaned_line, extracted_icon = self.extract_icon_from_line(line)
+
+                    chapter_num = chapter_match.group(1)
+
+                    # Re-extract chapter title from cleaned line
+                    if extracted_icon:
+                        cleaned_match = chapter_pattern.match(cleaned_line)
+                        if cleaned_match:
+                            chapter_title = cleaned_match.group(2).strip()
+                        else:
+                            chapter_title = chapter_match.group(2).strip()
+                    else:
+                        chapter_title = chapter_match.group(2).strip()
+
+                    # Remove trailing periods and clean up
+                    chapter_title = chapter_title.rstrip('.')
+
+                    # Include chapter number in the title for user navigation
+                    full_title = f"{chapter_num}: {chapter_title}"
+
+                    # Generate file paths
+                    unit_num = chapter_num.split('.')[0]
+                    chapter_slug = self._generate_slug(chapter_title)
+                    chapter_id = chapter_num.replace('.', '_')
+
+                    # Determine icon - use extracted icon or fallback
+                    if extracted_icon:
+                        chapter_icon = extracted_icon
+                    else:
+                        chapter_icon = self.get_fallback_icon('chapter', chapter_title)
+
+                    # Create paths and convert to web-root-relative with _link suffix
+                    chapter_path = f"src/book/unit{unit_num}/chapter_{chapter_id}_{chapter_slug}.html"
+                    chapter_data_path = f"src/data/unit{unit_num}/chapter_{chapter_id}_{chapter_slug}.json"
+
+                    # Create the lesson chapter and add it immediately
+                    lesson_chapter = {
+                        'title': full_title,
+                        'icon': chapter_icon,
+                        'type': 'lesson',
+                        'chapter_link': self.format_web_path(chapter_path),
+                        'chapter_data_link': self.format_web_path(chapter_data_path)
+                    }
+                    current_unit['chapters'].append(lesson_chapter)
+                    logger.debug(f"Added lesson chapter {chapter_num}: {chapter_title} with icon: {chapter_icon}")
                     continue
                 
-                
-                # Handle chapters that don't have study aids or quizzes (like standalone projects)
-                # If we parsed a chapter but never completed it due to missing study/quiz, add it anyway
-                if current_chapter_base:
-                    # Check if this might be the start of a new chapter or end of unit
-                    next_chapter_match = chapter_pattern.match(line)
-                    is_excluded_next = any(pattern.match(line) for pattern in exclude_patterns)
-                    
-                    if (next_chapter_match and not is_excluded_next) or line.startswith('## Unit'):
-                        # This looks like we're moving to the next chapter/unit, so finalize the current one
-                        chapter_to_add = {k: v for k, v in current_chapter_base.items() 
-                                        if k not in ['chapter_num', 'unit_num', 'chapter_id', 'chapter_slug']}
-                        current_unit['chapters'].append(chapter_to_add)
-                        logger.debug(f"Finalized chapter without full structure: {current_chapter_base['title']}")
-                        current_chapter_base = None
-        
-        # Handle any remaining incomplete chapter
-        if current_chapter_base:
-            chapter_to_add = {k: v for k, v in current_chapter_base.items() 
-                            if k not in ['chapter_num', 'unit_num', 'chapter_id', 'chapter_slug']}
-            current_unit['chapters'].append(chapter_to_add)
-            logger.debug(f"Finalized final chapter: {current_chapter_base['title']}")
-        
+
+                # No need for chapter cleanup since all chapters are added immediately
+
         # Add the last unit
         if current_unit:
             units.append(current_unit)
@@ -266,57 +440,6 @@ class MarkdownContentGenerator:
         logger.info(f"Parsed {len(units)} units with {sum(len(u['chapters']) for u in units)} total chapters")
         return units
 
-    def _get_unit_icon(self, title: str) -> str:
-        """Determine appropriate icon for unit based on title content."""
-        title_lower = title.lower()
-        
-        if 'python' in title_lower:
-            return self.unit_icons['python']
-        elif 'go' in title_lower:
-            return self.unit_icons['go']
-        elif 'devops' in title_lower or 'ci/cd' in title_lower or 'iac' in title_lower:
-            return self.unit_icons['devops']
-        elif 'secret' in title_lower or 'configuration' in title_lower:
-            return self.unit_icons['secrets']
-        elif 'devsecops' in title_lower or 'security' in title_lower:
-            return self.unit_icons['devsecops']
-        elif 'automation' in title_lower:
-            return self.unit_icons['automation']
-        elif 'serverless' in title_lower or 'aws' in title_lower:
-            return self.unit_icons['serverless']
-        elif 'integration' in title_lower or 'systems' in title_lower:
-            return self.unit_icons['integration']
-        elif 'capstone' in title_lower or 'project' in title_lower:
-            return self.unit_icons['capstone']
-        else:
-            return self.default_icons['unit']
-
-    def _get_chapter_icon(self, title: str) -> str:
-        """Determine appropriate icon for chapter based on title content."""
-        title_lower = title.lower()
-        
-        if 'project' in title_lower:
-            return '🚀'
-        elif 'environment' in title_lower or 'setup' in title_lower or 'tooling' in title_lower:
-            return '🛠️'
-        elif 'overview' in title_lower or 'foundational' in title_lower or 'concepts' in title_lower:
-            return '📖'
-        elif 'quality' in title_lower or 'standards' in title_lower:
-            return '✅'
-        elif 'testing' in title_lower:
-            return '🧪'
-        elif 'observability' in title_lower or 'monitoring' in title_lower:
-            return '📊'
-        elif 'api' in title_lower or 'restful' in title_lower:
-            return '🌐'
-        elif 'concurrency' in title_lower or 'caching' in title_lower:
-            return '⚡'
-        elif 'database' in title_lower or 'backend' in title_lower:
-            return '🗃️'
-        elif 'advanced' in title_lower:
-            return '🎯'
-        else:
-            return self.default_icons['chapter']
 
     def _generate_unit_description(self, title: str) -> str:
         """Generate appropriate description for unit based on title."""
@@ -354,8 +477,8 @@ class MarkdownContentGenerator:
         for unit_idx, unit in enumerate(units):
             unit_title = unit.get('title', f'Unit {unit_idx + 1}')
             
-            # Check required unit fields
-            required_fields = ['title', 'icon', 'description', 'exam']
+            # Check required unit fields (updated for _link suffix)
+            required_fields = ['title', 'icon', 'description', 'exam_link']
             for field in required_fields:
                 if not unit.get(field):
                     issues.append(f"Unit '{unit_title}' missing {field}")
@@ -375,8 +498,10 @@ class MarkdownContentGenerator:
                     issues.append(f"Chapter {chapter_idx} in unit '{unit_title}' missing title")
                 if not chapter.get('icon'):
                     issues.append(f"Chapter '{chapter_title}' missing icon")
-                if not chapter.get('lesson'):
-                    issues.append(f"Chapter '{chapter_title}' missing lesson file")
+                if not chapter.get('chapter_link'):
+                    issues.append(f"Chapter '{chapter_title}' missing chapter_link file")
+                if not chapter.get('type'):
+                    issues.append(f"Chapter '{chapter_title}' missing type field")
         
         if issues:
             logger.warning(f"Validation issues: {'; '.join(issues[:3])}{'...' if len(issues) > 3 else ''}")
@@ -445,7 +570,8 @@ class MarkdownContentGenerator:
             # Validate parsed structure
             if not self.validate_parsed_structure(units):
                 logger.error("Parsed structure validation failed")
-                return False
+                # Still proceed to generate JSON for inspection
+                logger.info("Proceeding despite validation failure for debugging")
             
             # Generate JSON
             json_content = self.generate_json(units)

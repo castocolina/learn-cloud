@@ -6,475 +6,938 @@
     "title": "Mastering Cloud-Native Technologies",
     "description": "Comprehensive guide to cloud-native development with Python, Go, and DevOps practices",
     "total_units": 9,
-    "total_chapters": 37
+    "total_chapters": 119
   },
   "units": [
     {
       "title": "Unit 1: Python for Cloud-Native Backend Development",
-      "icon": "🐍",
+      "icon": "PythonIcon",
       "description": "Master Python for cloud-native backend development with modern frameworks and best practices.",
-      "overview": "src/book/unit1/overview_python_for_cloud_native_backend_development.html",
-      "overview_data": "src/data/unit1/overview_python_for_cloud_native_backend_development.json",
-      "exam": "src/book/unit1/exam_python_for_cloud_native_backend_development.html",
-      "exam_data": "src/data/unit1/exam_python_for_cloud_native_backend_development.json",
+      "overview_link": "book/unit1/overview_python_for_cloud_native_backend_development.html",
+      "overview_data_link": "data/unit1/overview_python_for_cloud_native_backend_development.json",
+      "exam_link": "book/unit1/exam_python_for_cloud_native_backend_development.html",
+      "exam_data_link": "data/unit1/exam_python_for_cloud_native_backend_development.json",
       "chapters": [
         {
           "title": "1.1: Development Environment & Tooling",
-          "icon": "🛠️",
-          "lesson": "src/book/unit1/chapter_1_1_development_environment_tooling.html",
-          "lesson_data": "src/data/unit1/chapter_1_1_development_environment_tooling.json",
-          "quiz": "src/book/unit1/quiz_1_1_development_environment_tooling.html",
-          "quiz_data": "src/data/unit1/quiz_1_1_development_environment_tooling.json",
-          "study_guide": "src/book/unit1/study_guide_1_1_development_environment_tooling.html",
-          "study_guide_data": "src/data/unit1/study_guide_1_1_development_environment_tooling.json"
+          "icon": "Settings",
+          "type": "lesson",
+          "chapter_link": "book/unit1/chapter_1_1_development_environment_tooling.html",
+          "chapter_data_link": "data/unit1/chapter_1_1_development_environment_tooling.json"
+        },
+        {
+          "title": "1.1: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit1/study_guide_1_1.html",
+          "chapter_data_link": "data/unit1/study_guide_1_1.json"
+        },
+        {
+          "title": "1.1: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit1/quiz_1_1.html",
+          "chapter_data_link": "data/unit1/quiz_1_1.json"
         },
         {
           "title": "1.2: Overview & Foundational Concepts",
-          "icon": "📖",
-          "lesson": "src/book/unit1/chapter_1_2_overview_foundational_concepts.html",
-          "lesson_data": "src/data/unit1/chapter_1_2_overview_foundational_concepts.json",
-          "quiz": "src/book/unit1/quiz_1_2_overview_foundational_concepts.html",
-          "quiz_data": "src/data/unit1/quiz_1_2_overview_foundational_concepts.json",
-          "study_guide": "src/book/unit1/study_guide_1_2_overview_foundational_concepts.html",
-          "study_guide_data": "src/data/unit1/study_guide_1_2_overview_foundational_concepts.json"
+          "icon": "BookOpen",
+          "type": "lesson",
+          "chapter_link": "book/unit1/chapter_1_2_overview_foundational_concepts.html",
+          "chapter_data_link": "data/unit1/chapter_1_2_overview_foundational_concepts.json"
+        },
+        {
+          "title": "1.2: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit1/study_guide_1_2.html",
+          "chapter_data_link": "data/unit1/study_guide_1_2.json"
+        },
+        {
+          "title": "1.2: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit1/quiz_1_2.html",
+          "chapter_data_link": "data/unit1/quiz_1_2.json"
         },
         {
           "title": "1.3: Code Quality and Standards",
-          "icon": "✅",
-          "lesson": "src/book/unit1/chapter_1_3_code_quality_and_standards.html",
-          "lesson_data": "src/data/unit1/chapter_1_3_code_quality_and_standards.json",
-          "quiz": "src/book/unit1/quiz_1_3_code_quality_and_standards.html",
-          "quiz_data": "src/data/unit1/quiz_1_3_code_quality_and_standards.json",
-          "study_guide": "src/book/unit1/study_guide_1_3_code_quality_and_standards.html",
-          "study_guide_data": "src/data/unit1/study_guide_1_3_code_quality_and_standards.json"
+          "icon": "CheckCircle",
+          "type": "lesson",
+          "chapter_link": "book/unit1/chapter_1_3_code_quality_and_standards.html",
+          "chapter_data_link": "data/unit1/chapter_1_3_code_quality_and_standards.json"
+        },
+        {
+          "title": "1.3: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit1/study_guide_1_3.html",
+          "chapter_data_link": "data/unit1/study_guide_1_3.json"
+        },
+        {
+          "title": "1.3: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit1/quiz_1_3.html",
+          "chapter_data_link": "data/unit1/quiz_1_3.json"
         },
         {
           "title": "1.4: Core Backend Concepts",
-          "icon": "📖",
-          "lesson": "src/book/unit1/chapter_1_4_core_backend_concepts.html",
-          "lesson_data": "src/data/unit1/chapter_1_4_core_backend_concepts.json",
-          "quiz": "src/book/unit1/quiz_1_4_core_backend_concepts.html",
-          "quiz_data": "src/data/unit1/quiz_1_4_core_backend_concepts.json",
-          "study_guide": "src/book/unit1/study_guide_1_4_core_backend_concepts.html",
-          "study_guide_data": "src/data/unit1/study_guide_1_4_core_backend_concepts.json"
+          "icon": "Database",
+          "type": "lesson",
+          "chapter_link": "book/unit1/chapter_1_4_core_backend_concepts.html",
+          "chapter_data_link": "data/unit1/chapter_1_4_core_backend_concepts.json"
+        },
+        {
+          "title": "1.4: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit1/study_guide_1_4.html",
+          "chapter_data_link": "data/unit1/study_guide_1_4.json"
+        },
+        {
+          "title": "1.4: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit1/quiz_1_4.html",
+          "chapter_data_link": "data/unit1/quiz_1_4.json"
         },
         {
           "title": "1.5: Concurrency and Caching",
-          "icon": "⚡",
-          "lesson": "src/book/unit1/chapter_1_5_concurrency_and_caching.html",
-          "lesson_data": "src/data/unit1/chapter_1_5_concurrency_and_caching.json",
-          "quiz": "src/book/unit1/quiz_1_5_concurrency_and_caching.html",
-          "quiz_data": "src/data/unit1/quiz_1_5_concurrency_and_caching.json",
-          "study_guide": "src/book/unit1/study_guide_1_5_concurrency_and_caching.html",
-          "study_guide_data": "src/data/unit1/study_guide_1_5_concurrency_and_caching.json"
+          "icon": "Zap",
+          "type": "lesson",
+          "chapter_link": "book/unit1/chapter_1_5_concurrency_and_caching.html",
+          "chapter_data_link": "data/unit1/chapter_1_5_concurrency_and_caching.json"
+        },
+        {
+          "title": "1.5: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit1/study_guide_1_5.html",
+          "chapter_data_link": "data/unit1/study_guide_1_5.json"
+        },
+        {
+          "title": "1.5: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit1/quiz_1_5.html",
+          "chapter_data_link": "data/unit1/quiz_1_5.json"
         },
         {
           "title": "1.6: Building a RESTful API with FastAPI",
-          "icon": "🌐",
-          "lesson": "src/book/unit1/chapter_1_6_building_a_restful_api_with_fastapi.html",
-          "lesson_data": "src/data/unit1/chapter_1_6_building_a_restful_api_with_fastapi.json",
-          "quiz": "src/book/unit1/quiz_1_6_building_a_restful_api_with_fastapi.html",
-          "quiz_data": "src/data/unit1/quiz_1_6_building_a_restful_api_with_fastapi.json",
-          "study_guide": "src/book/unit1/study_guide_1_6_building_a_restful_api_with_fastapi.html",
-          "study_guide_data": "src/data/unit1/study_guide_1_6_building_a_restful_api_with_fastapi.json"
+          "icon": "Globe",
+          "type": "lesson",
+          "chapter_link": "book/unit1/chapter_1_6_building_a_restful_api_with_fastapi.html",
+          "chapter_data_link": "data/unit1/chapter_1_6_building_a_restful_api_with_fastapi.json"
+        },
+        {
+          "title": "1.6: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit1/study_guide_1_6.html",
+          "chapter_data_link": "data/unit1/study_guide_1_6.json"
+        },
+        {
+          "title": "1.6: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit1/quiz_1_6.html",
+          "chapter_data_link": "data/unit1/quiz_1_6.json"
         },
         {
           "title": "1.7: Advanced Backend Topics",
-          "icon": "🗃️",
-          "lesson": "src/book/unit1/chapter_1_7_advanced_backend_topics.html",
-          "lesson_data": "src/data/unit1/chapter_1_7_advanced_backend_topics.json",
-          "quiz": "src/book/unit1/quiz_1_7_advanced_backend_topics.html",
-          "quiz_data": "src/data/unit1/quiz_1_7_advanced_backend_topics.json",
-          "study_guide": "src/book/unit1/study_guide_1_7_advanced_backend_topics.html",
-          "study_guide_data": "src/data/unit1/study_guide_1_7_advanced_backend_topics.json"
+          "icon": "Code",
+          "type": "lesson",
+          "chapter_link": "book/unit1/chapter_1_7_advanced_backend_topics.html",
+          "chapter_data_link": "data/unit1/chapter_1_7_advanced_backend_topics.json"
+        },
+        {
+          "title": "1.7: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit1/study_guide_1_7.html",
+          "chapter_data_link": "data/unit1/study_guide_1_7.json"
+        },
+        {
+          "title": "1.7: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit1/quiz_1_7.html",
+          "chapter_data_link": "data/unit1/quiz_1_7.json"
         },
         {
           "title": "1.8: Testing Strategies",
-          "icon": "🧪",
-          "lesson": "src/book/unit1/chapter_1_8_testing_strategies.html",
-          "lesson_data": "src/data/unit1/chapter_1_8_testing_strategies.json",
-          "quiz": "src/book/unit1/quiz_1_8_testing_strategies.html",
-          "quiz_data": "src/data/unit1/quiz_1_8_testing_strategies.json",
-          "study_guide": "src/book/unit1/study_guide_1_8_testing_strategies.html",
-          "study_guide_data": "src/data/unit1/study_guide_1_8_testing_strategies.json"
+          "icon": "TestTube",
+          "type": "lesson",
+          "chapter_link": "book/unit1/chapter_1_8_testing_strategies.html",
+          "chapter_data_link": "data/unit1/chapter_1_8_testing_strategies.json"
+        },
+        {
+          "title": "1.8: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit1/study_guide_1_8.html",
+          "chapter_data_link": "data/unit1/study_guide_1_8.json"
+        },
+        {
+          "title": "1.8: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit1/quiz_1_8.html",
+          "chapter_data_link": "data/unit1/quiz_1_8.json"
         },
         {
           "title": "1.9: Observability",
-          "icon": "📊",
-          "lesson": "src/book/unit1/chapter_1_9_observability.html",
-          "lesson_data": "src/data/unit1/chapter_1_9_observability.json",
-          "quiz": "src/book/unit1/quiz_1_9_observability.html",
-          "quiz_data": "src/data/unit1/quiz_1_9_observability.json",
-          "study_guide": "src/book/unit1/study_guide_1_9_observability.html",
-          "study_guide_data": "src/data/unit1/study_guide_1_9_observability.json"
+          "icon": "BarChart3",
+          "type": "lesson",
+          "chapter_link": "book/unit1/chapter_1_9_observability.html",
+          "chapter_data_link": "data/unit1/chapter_1_9_observability.json"
+        },
+        {
+          "title": "1.9: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit1/study_guide_1_9.html",
+          "chapter_data_link": "data/unit1/study_guide_1_9.json"
+        },
+        {
+          "title": "1.9: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit1/quiz_1_9.html",
+          "chapter_data_link": "data/unit1/quiz_1_9.json"
+        },
+        {
+          "title": "1.10: Project: Building a Microservice in Python",
+          "icon": "Rocket",
+          "type": "lesson",
+          "chapter_link": "book/unit1/chapter_1_10_project_building_a_microservice_in_python.html",
+          "chapter_data_link": "data/unit1/chapter_1_10_project_building_a_microservice_in_python.json"
+        },
+        {
+          "title": "1.11: Unit 1 Final Exam",
+          "icon": "Target",
+          "type": "exam",
+          "chapter_link": "book/unit1/exam_unit_1_final_exam.html",
+          "chapter_data_link": "data/unit1/exam_unit_1_final_exam.json"
         }
       ]
     },
     {
       "title": "Unit 2: Go for Cloud-Native Backend Development",
-      "icon": "🔷",
+      "icon": "GoIcon",
       "description": "Build high-performance cloud-native applications with Go's powerful concurrency and simplicity.",
-      "overview": "src/book/unit2/overview_go_for_cloud_native_backend_development.html",
-      "overview_data": "src/data/unit2/overview_go_for_cloud_native_backend_development.json",
-      "exam": "src/book/unit2/exam_go_for_cloud_native_backend_development.html",
-      "exam_data": "src/data/unit2/exam_go_for_cloud_native_backend_development.json",
+      "overview_link": "book/unit2/overview_go_for_cloud_native_backend_development.html",
+      "overview_data_link": "data/unit2/overview_go_for_cloud_native_backend_development.json",
+      "exam_link": "book/unit2/exam_go_for_cloud_native_backend_development.html",
+      "exam_data_link": "data/unit2/exam_go_for_cloud_native_backend_development.json",
       "chapters": [
         {
           "title": "2.1: Development Environment & Tooling",
-          "icon": "🛠️",
-          "lesson": "src/book/unit2/chapter_2_1_development_environment_tooling.html",
-          "lesson_data": "src/data/unit2/chapter_2_1_development_environment_tooling.json",
-          "quiz": "src/book/unit2/quiz_2_1_development_environment_tooling.html",
-          "quiz_data": "src/data/unit2/quiz_2_1_development_environment_tooling.json",
-          "study_guide": "src/book/unit2/study_guide_2_1_development_environment_tooling.html",
-          "study_guide_data": "src/data/unit2/study_guide_2_1_development_environment_tooling.json"
+          "icon": "Settings",
+          "type": "lesson",
+          "chapter_link": "book/unit2/chapter_2_1_development_environment_tooling.html",
+          "chapter_data_link": "data/unit2/chapter_2_1_development_environment_tooling.json"
+        },
+        {
+          "title": "2.1: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit2/study_guide_2_1.html",
+          "chapter_data_link": "data/unit2/study_guide_2_1.json"
+        },
+        {
+          "title": "2.1: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit2/quiz_2_1.html",
+          "chapter_data_link": "data/unit2/quiz_2_1.json"
         },
         {
           "title": "2.2: Overview & Foundational Concepts",
-          "icon": "📖",
-          "lesson": "src/book/unit2/chapter_2_2_overview_foundational_concepts.html",
-          "lesson_data": "src/data/unit2/chapter_2_2_overview_foundational_concepts.json",
-          "quiz": "src/book/unit2/quiz_2_2_overview_foundational_concepts.html",
-          "quiz_data": "src/data/unit2/quiz_2_2_overview_foundational_concepts.json",
-          "study_guide": "src/book/unit2/study_guide_2_2_overview_foundational_concepts.html",
-          "study_guide_data": "src/data/unit2/study_guide_2_2_overview_foundational_concepts.json"
+          "icon": "BookOpen",
+          "type": "lesson",
+          "chapter_link": "book/unit2/chapter_2_2_overview_foundational_concepts.html",
+          "chapter_data_link": "data/unit2/chapter_2_2_overview_foundational_concepts.json"
+        },
+        {
+          "title": "2.2: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit2/study_guide_2_2.html",
+          "chapter_data_link": "data/unit2/study_guide_2_2.json"
+        },
+        {
+          "title": "2.2: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit2/quiz_2_2.html",
+          "chapter_data_link": "data/unit2/quiz_2_2.json"
         },
         {
           "title": "2.3: Concurrency: The Go Philosophy",
-          "icon": "⚡",
-          "lesson": "src/book/unit2/chapter_2_3_concurrency_the_go_philosophy.html",
-          "lesson_data": "src/data/unit2/chapter_2_3_concurrency_the_go_philosophy.json",
-          "quiz": "src/book/unit2/quiz_2_3_concurrency_the_go_philosophy.html",
-          "quiz_data": "src/data/unit2/quiz_2_3_concurrency_the_go_philosophy.json",
-          "study_guide": "src/book/unit2/study_guide_2_3_concurrency_the_go_philosophy.html",
-          "study_guide_data": "src/data/unit2/study_guide_2_3_concurrency_the_go_philosophy.json"
+          "icon": "Zap",
+          "type": "lesson",
+          "chapter_link": "book/unit2/chapter_2_3_concurrency_the_go_philosophy.html",
+          "chapter_data_link": "data/unit2/chapter_2_3_concurrency_the_go_philosophy.json"
+        },
+        {
+          "title": "2.3: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit2/study_guide_2_3.html",
+          "chapter_data_link": "data/unit2/study_guide_2_3.json"
+        },
+        {
+          "title": "2.3: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit2/quiz_2_3.html",
+          "chapter_data_link": "data/unit2/quiz_2_3.json"
         },
         {
           "title": "2.4: Code Quality and Standards",
-          "icon": "✅",
-          "lesson": "src/book/unit2/chapter_2_4_code_quality_and_standards.html",
-          "lesson_data": "src/data/unit2/chapter_2_4_code_quality_and_standards.json",
-          "quiz": "src/book/unit2/quiz_2_4_code_quality_and_standards.html",
-          "quiz_data": "src/data/unit2/quiz_2_4_code_quality_and_standards.json",
-          "study_guide": "src/book/unit2/study_guide_2_4_code_quality_and_standards.html",
-          "study_guide_data": "src/data/unit2/study_guide_2_4_code_quality_and_standards.json"
+          "icon": "CheckCircle",
+          "type": "lesson",
+          "chapter_link": "book/unit2/chapter_2_4_code_quality_and_standards.html",
+          "chapter_data_link": "data/unit2/chapter_2_4_code_quality_and_standards.json"
+        },
+        {
+          "title": "2.4: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit2/study_guide_2_4.html",
+          "chapter_data_link": "data/unit2/study_guide_2_4.json"
+        },
+        {
+          "title": "2.4: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit2/quiz_2_4.html",
+          "chapter_data_link": "data/unit2/quiz_2_4.json"
         },
         {
           "title": "2.5: Core Backend Concepts",
-          "icon": "📖",
-          "lesson": "src/book/unit2/chapter_2_5_core_backend_concepts.html",
-          "lesson_data": "src/data/unit2/chapter_2_5_core_backend_concepts.json",
-          "quiz": "src/book/unit2/quiz_2_5_core_backend_concepts.html",
-          "quiz_data": "src/data/unit2/quiz_2_5_core_backend_concepts.json",
-          "study_guide": "src/book/unit2/study_guide_2_5_core_backend_concepts.html",
-          "study_guide_data": "src/data/unit2/study_guide_2_5_core_backend_concepts.json"
+          "icon": "Database",
+          "type": "lesson",
+          "chapter_link": "book/unit2/chapter_2_5_core_backend_concepts.html",
+          "chapter_data_link": "data/unit2/chapter_2_5_core_backend_concepts.json"
+        },
+        {
+          "title": "2.5: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit2/study_guide_2_5.html",
+          "chapter_data_link": "data/unit2/study_guide_2_5.json"
+        },
+        {
+          "title": "2.5: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit2/quiz_2_5.html",
+          "chapter_data_link": "data/unit2/quiz_2_5.json"
         },
         {
           "title": "2.6: Building a RESTful API",
-          "icon": "🌐",
-          "lesson": "src/book/unit2/chapter_2_6_building_a_restful_api.html",
-          "lesson_data": "src/data/unit2/chapter_2_6_building_a_restful_api.json",
-          "quiz": "src/book/unit2/quiz_2_6_building_a_restful_api.html",
-          "quiz_data": "src/data/unit2/quiz_2_6_building_a_restful_api.json",
-          "study_guide": "src/book/unit2/study_guide_2_6_building_a_restful_api.html",
-          "study_guide_data": "src/data/unit2/study_guide_2_6_building_a_restful_api.json"
+          "icon": "Globe",
+          "type": "lesson",
+          "chapter_link": "book/unit2/chapter_2_6_building_a_restful_api.html",
+          "chapter_data_link": "data/unit2/chapter_2_6_building_a_restful_api.json"
+        },
+        {
+          "title": "2.6: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit2/study_guide_2_6.html",
+          "chapter_data_link": "data/unit2/study_guide_2_6.json"
+        },
+        {
+          "title": "2.6: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit2/quiz_2_6.html",
+          "chapter_data_link": "data/unit2/quiz_2_6.json"
         },
         {
           "title": "2.7: Advanced Backend Topics",
-          "icon": "🗃️",
-          "lesson": "src/book/unit2/chapter_2_7_advanced_backend_topics.html",
-          "lesson_data": "src/data/unit2/chapter_2_7_advanced_backend_topics.json",
-          "quiz": "src/book/unit2/quiz_2_7_advanced_backend_topics.html",
-          "quiz_data": "src/data/unit2/quiz_2_7_advanced_backend_topics.json",
-          "study_guide": "src/book/unit2/study_guide_2_7_advanced_backend_topics.html",
-          "study_guide_data": "src/data/unit2/study_guide_2_7_advanced_backend_topics.json"
+          "icon": "Code",
+          "type": "lesson",
+          "chapter_link": "book/unit2/chapter_2_7_advanced_backend_topics.html",
+          "chapter_data_link": "data/unit2/chapter_2_7_advanced_backend_topics.json"
+        },
+        {
+          "title": "2.7: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit2/study_guide_2_7.html",
+          "chapter_data_link": "data/unit2/study_guide_2_7.json"
+        },
+        {
+          "title": "2.7: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit2/quiz_2_7.html",
+          "chapter_data_link": "data/unit2/quiz_2_7.json"
         },
         {
           "title": "2.8: Testing Strategies",
-          "icon": "🧪",
-          "lesson": "src/book/unit2/chapter_2_8_testing_strategies.html",
-          "lesson_data": "src/data/unit2/chapter_2_8_testing_strategies.json",
-          "quiz": "src/book/unit2/quiz_2_8_testing_strategies.html",
-          "quiz_data": "src/data/unit2/quiz_2_8_testing_strategies.json",
-          "study_guide": "src/book/unit2/study_guide_2_8_testing_strategies.html",
-          "study_guide_data": "src/data/unit2/study_guide_2_8_testing_strategies.json"
+          "icon": "TestTube",
+          "type": "lesson",
+          "chapter_link": "book/unit2/chapter_2_8_testing_strategies.html",
+          "chapter_data_link": "data/unit2/chapter_2_8_testing_strategies.json"
+        },
+        {
+          "title": "2.8: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit2/study_guide_2_8.html",
+          "chapter_data_link": "data/unit2/study_guide_2_8.json"
+        },
+        {
+          "title": "2.8: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit2/quiz_2_8.html",
+          "chapter_data_link": "data/unit2/quiz_2_8.json"
         },
         {
           "title": "2.9: Observability",
-          "icon": "📊",
-          "lesson": "src/book/unit2/chapter_2_9_observability.html",
-          "lesson_data": "src/data/unit2/chapter_2_9_observability.json",
-          "quiz": "src/book/unit2/quiz_2_9_observability.html",
-          "quiz_data": "src/data/unit2/quiz_2_9_observability.json",
-          "study_guide": "src/book/unit2/study_guide_2_9_observability.html",
-          "study_guide_data": "src/data/unit2/study_guide_2_9_observability.json"
+          "icon": "BarChart3",
+          "type": "lesson",
+          "chapter_link": "book/unit2/chapter_2_9_observability.html",
+          "chapter_data_link": "data/unit2/chapter_2_9_observability.json"
+        },
+        {
+          "title": "2.9: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit2/study_guide_2_9.html",
+          "chapter_data_link": "data/unit2/study_guide_2_9.json"
+        },
+        {
+          "title": "2.9: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit2/quiz_2_9.html",
+          "chapter_data_link": "data/unit2/quiz_2_9.json"
+        },
+        {
+          "title": "2.10: Project: Building a Microservice in Go",
+          "icon": "Rocket",
+          "type": "lesson",
+          "chapter_link": "book/unit2/chapter_2_10_project_building_a_microservice_in_go.html",
+          "chapter_data_link": "data/unit2/chapter_2_10_project_building_a_microservice_in_go.json"
+        },
+        {
+          "title": "2.11: Unit 2 Final Exam",
+          "icon": "Target",
+          "type": "exam",
+          "chapter_link": "book/unit2/exam_unit_2_final_exam.html",
+          "chapter_data_link": "data/unit2/exam_unit_2_final_exam.json"
         }
       ]
     },
     {
       "title": "Unit 3: DevOps, IaC, and CI/CD",
-      "icon": "⚙️",
+      "icon": "Settings",
       "description": "Implement infrastructure as code, CI/CD pipelines, and container orchestration strategies.",
-      "overview": "src/book/unit3/overview_devops_iac_and_cicd.html",
-      "overview_data": "src/data/unit3/overview_devops_iac_and_cicd.json",
-      "exam": "src/book/unit3/exam_devops_iac_and_cicd.html",
-      "exam_data": "src/data/unit3/exam_devops_iac_and_cicd.json",
+      "overview_link": "book/unit3/overview_devops_iac_and_cicd.html",
+      "overview_data_link": "data/unit3/overview_devops_iac_and_cicd.json",
+      "exam_link": "book/unit3/exam_devops_iac_and_cicd.html",
+      "exam_data_link": "data/unit3/exam_devops_iac_and_cicd.json",
       "chapters": [
         {
           "title": "3.1: Terraform for Infrastructure as Code",
-          "icon": "📄",
-          "lesson": "src/book/unit3/chapter_3_1_terraform_for_infrastructure_as_code.html",
-          "lesson_data": "src/data/unit3/chapter_3_1_terraform_for_infrastructure_as_code.json",
-          "quiz": "src/book/unit3/quiz_3_1_terraform_for_infrastructure_as_code.html",
-          "quiz_data": "src/data/unit3/quiz_3_1_terraform_for_infrastructure_as_code.json",
-          "study_guide": "src/book/unit3/study_guide_3_1_terraform_for_infrastructure_as_code.html",
-          "study_guide_data": "src/data/unit3/study_guide_3_1_terraform_for_infrastructure_as_code.json"
+          "icon": "Cloud",
+          "type": "lesson",
+          "chapter_link": "book/unit3/chapter_3_1_terraform_for_infrastructure_as_code.html",
+          "chapter_data_link": "data/unit3/chapter_3_1_terraform_for_infrastructure_as_code.json"
+        },
+        {
+          "title": "3.1: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit3/study_guide_3_1.html",
+          "chapter_data_link": "data/unit3/study_guide_3_1.json"
+        },
+        {
+          "title": "3.1: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit3/quiz_3_1.html",
+          "chapter_data_link": "data/unit3/quiz_3_1.json"
         },
         {
           "title": "3.2: Kubernetes for Container Orchestration",
-          "icon": "📄",
-          "lesson": "src/book/unit3/chapter_3_2_kubernetes_for_container_orchestration.html",
-          "lesson_data": "src/data/unit3/chapter_3_2_kubernetes_for_container_orchestration.json",
-          "quiz": "src/book/unit3/quiz_3_2_kubernetes_for_container_orchestration.html",
-          "quiz_data": "src/data/unit3/quiz_3_2_kubernetes_for_container_orchestration.json",
-          "study_guide": "src/book/unit3/study_guide_3_2_kubernetes_for_container_orchestration.html",
-          "study_guide_data": "src/data/unit3/study_guide_3_2_kubernetes_for_container_orchestration.json"
+          "icon": "Container",
+          "type": "lesson",
+          "chapter_link": "book/unit3/chapter_3_2_kubernetes_for_container_orchestration.html",
+          "chapter_data_link": "data/unit3/chapter_3_2_kubernetes_for_container_orchestration.json"
+        },
+        {
+          "title": "3.2: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit3/study_guide_3_2.html",
+          "chapter_data_link": "data/unit3/study_guide_3_2.json"
+        },
+        {
+          "title": "3.2: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit3/quiz_3_2.html",
+          "chapter_data_link": "data/unit3/quiz_3_2.json"
         },
         {
           "title": "3.3: GitHub Actions for CI/CD",
-          "icon": "📄",
-          "lesson": "src/book/unit3/chapter_3_3_github_actions_for_cicd.html",
-          "lesson_data": "src/data/unit3/chapter_3_3_github_actions_for_cicd.json",
-          "quiz": "src/book/unit3/quiz_3_3_github_actions_for_cicd.html",
-          "quiz_data": "src/data/unit3/quiz_3_3_github_actions_for_cicd.json",
-          "study_guide": "src/book/unit3/study_guide_3_3_github_actions_for_cicd.html",
-          "study_guide_data": "src/data/unit3/study_guide_3_3_github_actions_for_cicd.json"
+          "icon": "GitBranch",
+          "type": "lesson",
+          "chapter_link": "book/unit3/chapter_3_3_github_actions_for_cicd.html",
+          "chapter_data_link": "data/unit3/chapter_3_3_github_actions_for_cicd.json"
+        },
+        {
+          "title": "3.3: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit3/study_guide_3_3.html",
+          "chapter_data_link": "data/unit3/study_guide_3_3.json"
+        },
+        {
+          "title": "3.3: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit3/quiz_3_3.html",
+          "chapter_data_link": "data/unit3/quiz_3_3.json"
         },
         {
           "title": "3.4: Spinnaker for Continuous Delivery",
-          "icon": "📄",
-          "lesson": "src/book/unit3/chapter_3_4_spinnaker_for_continuous_delivery.html",
-          "lesson_data": "src/data/unit3/chapter_3_4_spinnaker_for_continuous_delivery.json",
-          "quiz": "src/book/unit3/quiz_3_4_spinnaker_for_continuous_delivery.html",
-          "quiz_data": "src/data/unit3/quiz_3_4_spinnaker_for_continuous_delivery.json",
-          "study_guide": "src/book/unit3/study_guide_3_4_spinnaker_for_continuous_delivery.html",
-          "study_guide_data": "src/data/unit3/study_guide_3_4_spinnaker_for_continuous_delivery.json"
+          "icon": "Workflow",
+          "type": "lesson",
+          "chapter_link": "book/unit3/chapter_3_4_spinnaker_for_continuous_delivery.html",
+          "chapter_data_link": "data/unit3/chapter_3_4_spinnaker_for_continuous_delivery.json"
+        },
+        {
+          "title": "3.4: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit3/study_guide_3_4.html",
+          "chapter_data_link": "data/unit3/study_guide_3_4.json"
+        },
+        {
+          "title": "3.4: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit3/quiz_3_4.html",
+          "chapter_data_link": "data/unit3/quiz_3_4.json"
+        },
+        {
+          "title": "3.5: Unit 3 Final Exam",
+          "icon": "Target",
+          "type": "exam",
+          "chapter_link": "book/unit3/exam_unit_3_final_exam.html",
+          "chapter_data_link": "data/unit3/exam_unit_3_final_exam.json"
         }
       ]
     },
     {
       "title": "Unit 4: Secrets and Configuration Management",
-      "icon": "🔐",
+      "icon": "Lock",
       "description": "Secure configuration and secrets management using HashiCorp Vault and Consul.",
-      "overview": "src/book/unit4/overview_secrets_and_configuration_management.html",
-      "overview_data": "src/data/unit4/overview_secrets_and_configuration_management.json",
-      "exam": "src/book/unit4/exam_secrets_and_configuration_management.html",
-      "exam_data": "src/data/unit4/exam_secrets_and_configuration_management.json",
+      "overview_link": "book/unit4/overview_secrets_and_configuration_management.html",
+      "overview_data_link": "data/unit4/overview_secrets_and_configuration_management.json",
+      "exam_link": "book/unit4/exam_secrets_and_configuration_management.html",
+      "exam_data_link": "data/unit4/exam_secrets_and_configuration_management.json",
       "chapters": [
         {
           "title": "4.1: HashiCorp Consul",
-          "icon": "📄",
-          "lesson": "src/book/unit4/chapter_4_1_hashicorp_consul.html",
-          "lesson_data": "src/data/unit4/chapter_4_1_hashicorp_consul.json",
-          "quiz": "src/book/unit4/quiz_4_1_hashicorp_consul.html",
-          "quiz_data": "src/data/unit4/quiz_4_1_hashicorp_consul.json",
-          "study_guide": "src/book/unit4/study_guide_4_1_hashicorp_consul.html",
-          "study_guide_data": "src/data/unit4/study_guide_4_1_hashicorp_consul.json"
+          "icon": "Server",
+          "type": "lesson",
+          "chapter_link": "book/unit4/chapter_4_1_hashicorp_consul.html",
+          "chapter_data_link": "data/unit4/chapter_4_1_hashicorp_consul.json"
+        },
+        {
+          "title": "4.1: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit4/study_guide_4_1.html",
+          "chapter_data_link": "data/unit4/study_guide_4_1.json"
+        },
+        {
+          "title": "4.1: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit4/quiz_4_1.html",
+          "chapter_data_link": "data/unit4/quiz_4_1.json"
         },
         {
           "title": "4.2: HashiCorp Vault",
-          "icon": "📄",
-          "lesson": "src/book/unit4/chapter_4_2_hashicorp_vault.html",
-          "lesson_data": "src/data/unit4/chapter_4_2_hashicorp_vault.json",
-          "quiz": "src/book/unit4/quiz_4_2_hashicorp_vault.html",
-          "quiz_data": "src/data/unit4/quiz_4_2_hashicorp_vault.json",
-          "study_guide": "src/book/unit4/study_guide_4_2_hashicorp_vault.html",
-          "study_guide_data": "src/data/unit4/study_guide_4_2_hashicorp_vault.json"
+          "icon": "Shield",
+          "type": "lesson",
+          "chapter_link": "book/unit4/chapter_4_2_hashicorp_vault.html",
+          "chapter_data_link": "data/unit4/chapter_4_2_hashicorp_vault.json"
+        },
+        {
+          "title": "4.2: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit4/study_guide_4_2.html",
+          "chapter_data_link": "data/unit4/study_guide_4_2.json"
+        },
+        {
+          "title": "4.2: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit4/quiz_4_2.html",
+          "chapter_data_link": "data/unit4/quiz_4_2.json"
+        },
+        {
+          "title": "4.3: Unit 4 Final Exam",
+          "icon": "Target",
+          "type": "exam",
+          "chapter_link": "book/unit4/exam_unit_4_final_exam.html",
+          "chapter_data_link": "data/unit4/exam_unit_4_final_exam.json"
         }
       ]
     },
     {
       "title": "Unit 5: DevSecOps",
-      "icon": "🛡️",
+      "icon": "ShieldCheck",
       "description": "Integrate security practices into development workflows and CI/CD pipelines.",
-      "overview": "src/book/unit5/overview_devsecops.html",
-      "overview_data": "src/data/unit5/overview_devsecops.json",
-      "exam": "src/book/unit5/exam_devsecops.html",
-      "exam_data": "src/data/unit5/exam_devsecops.json",
+      "overview_link": "book/unit5/overview_devsecops.html",
+      "overview_data_link": "data/unit5/overview_devsecops.json",
+      "exam_link": "book/unit5/exam_devsecops.html",
+      "exam_data_link": "data/unit5/exam_devsecops.json",
       "chapters": [
         {
+          "title": "5.1: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit5/study_guide_5_1.html",
+          "chapter_data_link": "data/unit5/study_guide_5_1.json"
+        },
+        {
+          "title": "5.1: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit5/quiz_5_1.html",
+          "chapter_data_link": "data/unit5/quiz_5_1.json"
+        },
+        {
           "title": "5.2: SCA (Software Composition Analysis)",
-          "icon": "📄",
-          "lesson": "src/book/unit5/chapter_5_2_sca_software_composition_analysis.html",
-          "lesson_data": "src/data/unit5/chapter_5_2_sca_software_composition_analysis.json",
-          "quiz": "src/book/unit5/quiz_5_2_sca_software_composition_analysis.html",
-          "quiz_data": "src/data/unit5/quiz_5_2_sca_software_composition_analysis.json",
-          "study_guide": "src/book/unit5/study_guide_5_2_sca_software_composition_analysis.html",
-          "study_guide_data": "src/data/unit5/study_guide_5_2_sca_software_composition_analysis.json"
+          "icon": "Search",
+          "type": "lesson",
+          "chapter_link": "book/unit5/chapter_5_2_sca_software_composition_analysis.html",
+          "chapter_data_link": "data/unit5/chapter_5_2_sca_software_composition_analysis.json"
+        },
+        {
+          "title": "5.2: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit5/study_guide_5_2.html",
+          "chapter_data_link": "data/unit5/study_guide_5_2.json"
+        },
+        {
+          "title": "5.2: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit5/quiz_5_2.html",
+          "chapter_data_link": "data/unit5/quiz_5_2.json"
         },
         {
           "title": "5.3: Container Image Scanning",
-          "icon": "📄",
-          "lesson": "src/book/unit5/chapter_5_3_container_image_scanning.html",
-          "lesson_data": "src/data/unit5/chapter_5_3_container_image_scanning.json",
-          "quiz": "src/book/unit5/quiz_5_3_container_image_scanning.html",
-          "quiz_data": "src/data/unit5/quiz_5_3_container_image_scanning.json",
-          "study_guide": "src/book/unit5/study_guide_5_3_container_image_scanning.html",
-          "study_guide_data": "src/data/unit5/study_guide_5_3_container_image_scanning.json"
+          "icon": "ScanLine",
+          "type": "lesson",
+          "chapter_link": "book/unit5/chapter_5_3_container_image_scanning.html",
+          "chapter_data_link": "data/unit5/chapter_5_3_container_image_scanning.json"
+        },
+        {
+          "title": "5.3: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit5/study_guide_5_3.html",
+          "chapter_data_link": "data/unit5/study_guide_5_3.json"
+        },
+        {
+          "title": "5.3: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit5/quiz_5_3.html",
+          "chapter_data_link": "data/unit5/quiz_5_3.json"
         },
         {
           "title": "5.4: Vulnerability Management",
-          "icon": "📄",
-          "lesson": "src/book/unit5/chapter_5_4_vulnerability_management.html",
-          "lesson_data": "src/data/unit5/chapter_5_4_vulnerability_management.json",
-          "quiz": "src/book/unit5/quiz_5_4_vulnerability_management.html",
-          "quiz_data": "src/data/unit5/quiz_5_4_vulnerability_management.json",
-          "study_guide": "src/book/unit5/study_guide_5_4_vulnerability_management.html",
-          "study_guide_data": "src/data/unit5/study_guide_5_4_vulnerability_management.json"
+          "icon": "AlertTriangle",
+          "type": "lesson",
+          "chapter_link": "book/unit5/chapter_5_4_vulnerability_management.html",
+          "chapter_data_link": "data/unit5/chapter_5_4_vulnerability_management.json"
+        },
+        {
+          "title": "5.4: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit5/study_guide_5_4.html",
+          "chapter_data_link": "data/unit5/study_guide_5_4.json"
+        },
+        {
+          "title": "5.4: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit5/quiz_5_4.html",
+          "chapter_data_link": "data/unit5/quiz_5_4.json"
+        },
+        {
+          "title": "5.5: Unit 5 Final Exam",
+          "icon": "Target",
+          "type": "exam",
+          "chapter_link": "book/unit5/exam_unit_5_final_exam.html",
+          "chapter_data_link": "data/unit5/exam_unit_5_final_exam.json"
         }
       ]
     },
     {
       "title": "Unit 6: Automation",
-      "icon": "🤖",
+      "icon": "Bot",
       "description": "Automate dependency management and development workflows for enhanced productivity.",
-      "overview": "src/book/unit6/overview_automation.html",
-      "overview_data": "src/data/unit6/overview_automation.json",
-      "exam": "src/book/unit6/exam_automation.html",
-      "exam_data": "src/data/unit6/exam_automation.json",
+      "overview_link": "book/unit6/overview_automation.html",
+      "overview_data_link": "data/unit6/overview_automation.json",
+      "exam_link": "book/unit6/exam_automation.html",
+      "exam_data_link": "data/unit6/exam_automation.json",
       "chapters": [
         {
           "title": "6.1: RenovateBot for Dependency Automation",
-          "icon": "📄",
-          "lesson": "src/book/unit6/chapter_6_1_renovatebot_for_dependency_automation.html",
-          "lesson_data": "src/data/unit6/chapter_6_1_renovatebot_for_dependency_automation.json",
-          "quiz": "src/book/unit6/quiz_6_1_renovatebot_for_dependency_automation.html",
-          "quiz_data": "src/data/unit6/quiz_6_1_renovatebot_for_dependency_automation.json",
-          "study_guide": "src/book/unit6/study_guide_6_1_renovatebot_for_dependency_automation.html",
-          "study_guide_data": "src/data/unit6/study_guide_6_1_renovatebot_for_dependency_automation.json"
+          "icon": "RefreshCw",
+          "type": "lesson",
+          "chapter_link": "book/unit6/chapter_6_1_renovatebot_for_dependency_automation.html",
+          "chapter_data_link": "data/unit6/chapter_6_1_renovatebot_for_dependency_automation.json"
+        },
+        {
+          "title": "6.1: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit6/study_guide_6_1.html",
+          "chapter_data_link": "data/unit6/study_guide_6_1.json"
+        },
+        {
+          "title": "6.1: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit6/quiz_6_1.html",
+          "chapter_data_link": "data/unit6/quiz_6_1.json"
+        },
+        {
+          "title": "6.2: Unit 6 Final Exam",
+          "icon": "Target",
+          "type": "exam",
+          "chapter_link": "book/unit6/exam_unit_6_final_exam.html",
+          "chapter_data_link": "data/unit6/exam_unit_6_final_exam.json"
         }
       ]
     },
     {
       "title": "Unit 7: The Serverless Ecosystem on AWS",
-      "icon": "⚡",
+      "icon": "Zap",
       "description": "Explore serverless computing patterns and AWS Lambda deployment strategies.",
-      "overview": "src/book/unit7/overview_the_serverless_ecosystem_on_aws.html",
-      "overview_data": "src/data/unit7/overview_the_serverless_ecosystem_on_aws.json",
-      "exam": "src/book/unit7/exam_the_serverless_ecosystem_on_aws.html",
-      "exam_data": "src/data/unit7/exam_the_serverless_ecosystem_on_aws.json",
+      "overview_link": "book/unit7/overview_the_serverless_ecosystem_on_aws.html",
+      "overview_data_link": "data/unit7/overview_the_serverless_ecosystem_on_aws.json",
+      "exam_link": "book/unit7/exam_the_serverless_ecosystem_on_aws.html",
+      "exam_data_link": "data/unit7/exam_the_serverless_ecosystem_on_aws.json",
       "chapters": [
         {
           "title": "7.1: The Serverless Spectrum",
-          "icon": "📄",
-          "lesson": "src/book/unit7/chapter_7_1_the_serverless_spectrum.html",
-          "lesson_data": "src/data/unit7/chapter_7_1_the_serverless_spectrum.json",
-          "quiz": "src/book/unit7/quiz_7_1_the_serverless_spectrum.html",
-          "quiz_data": "src/data/unit7/quiz_7_1_the_serverless_spectrum.json",
-          "study_guide": "src/book/unit7/study_guide_7_1_the_serverless_spectrum.html",
-          "study_guide_data": "src/data/unit7/study_guide_7_1_the_serverless_spectrum.json"
+          "icon": "Cloud",
+          "type": "lesson",
+          "chapter_link": "book/unit7/chapter_7_1_the_serverless_spectrum.html",
+          "chapter_data_link": "data/unit7/chapter_7_1_the_serverless_spectrum.json"
+        },
+        {
+          "title": "7.1: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit7/study_guide_7_1.html",
+          "chapter_data_link": "data/unit7/study_guide_7_1.json"
+        },
+        {
+          "title": "7.1: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit7/quiz_7_1.html",
+          "chapter_data_link": "data/unit7/quiz_7_1.json"
         },
         {
           "title": "7.2: AWS Lambda In-Depth",
-          "icon": "📄",
-          "lesson": "src/book/unit7/chapter_7_2_aws_lambda_in_depth.html",
-          "lesson_data": "src/data/unit7/chapter_7_2_aws_lambda_in_depth.json",
-          "quiz": "src/book/unit7/quiz_7_2_aws_lambda_in_depth.html",
-          "quiz_data": "src/data/unit7/quiz_7_2_aws_lambda_in_depth.json",
-          "study_guide": "src/book/unit7/study_guide_7_2_aws_lambda_in_depth.html",
-          "study_guide_data": "src/data/unit7/study_guide_7_2_aws_lambda_in_depth.json"
+          "icon": "CloudLightning",
+          "type": "lesson",
+          "chapter_link": "book/unit7/chapter_7_2_aws_lambda_in_depth.html",
+          "chapter_data_link": "data/unit7/chapter_7_2_aws_lambda_in_depth.json"
+        },
+        {
+          "title": "7.2: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit7/study_guide_7_2.html",
+          "chapter_data_link": "data/unit7/study_guide_7_2.json"
+        },
+        {
+          "title": "7.2: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit7/quiz_7_2.html",
+          "chapter_data_link": "data/unit7/quiz_7_2.json"
         },
         {
           "title": "7.3: Orchestration and Workflows",
-          "icon": "📄",
-          "lesson": "src/book/unit7/chapter_7_3_orchestration_and_workflows.html",
-          "lesson_data": "src/data/unit7/chapter_7_3_orchestration_and_workflows.json",
-          "quiz": "src/book/unit7/quiz_7_3_orchestration_and_workflows.html",
-          "quiz_data": "src/data/unit7/quiz_7_3_orchestration_and_workflows.json",
-          "study_guide": "src/book/unit7/study_guide_7_3_orchestration_and_workflows.html",
-          "study_guide_data": "src/data/unit7/study_guide_7_3_orchestration_and_workflows.json"
+          "icon": "Workflow",
+          "type": "lesson",
+          "chapter_link": "book/unit7/chapter_7_3_orchestration_and_workflows.html",
+          "chapter_data_link": "data/unit7/chapter_7_3_orchestration_and_workflows.json"
+        },
+        {
+          "title": "7.3: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit7/study_guide_7_3.html",
+          "chapter_data_link": "data/unit7/study_guide_7_3.json"
+        },
+        {
+          "title": "7.3: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit7/quiz_7_3.html",
+          "chapter_data_link": "data/unit7/quiz_7_3.json"
         },
         {
           "title": "7.4: Serverless Deployment & Tooling",
-          "icon": "🛠️",
-          "lesson": "src/book/unit7/chapter_7_4_serverless_deployment_tooling.html",
-          "lesson_data": "src/data/unit7/chapter_7_4_serverless_deployment_tooling.json",
-          "quiz": "src/book/unit7/quiz_7_4_serverless_deployment_tooling.html",
-          "quiz_data": "src/data/unit7/quiz_7_4_serverless_deployment_tooling.json",
-          "study_guide": "src/book/unit7/study_guide_7_4_serverless_deployment_tooling.html",
-          "study_guide_data": "src/data/unit7/study_guide_7_4_serverless_deployment_tooling.json"
+          "icon": "Settings",
+          "type": "lesson",
+          "chapter_link": "book/unit7/chapter_7_4_serverless_deployment_tooling.html",
+          "chapter_data_link": "data/unit7/chapter_7_4_serverless_deployment_tooling.json"
+        },
+        {
+          "title": "7.4: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit7/study_guide_7_4.html",
+          "chapter_data_link": "data/unit7/study_guide_7_4.json"
+        },
+        {
+          "title": "7.4: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit7/quiz_7_4.html",
+          "chapter_data_link": "data/unit7/quiz_7_4.json"
         },
         {
           "title": "7.5: AWS Developer Certification Guide",
-          "icon": "📄",
-          "lesson": "src/book/unit7/chapter_7_5_aws_developer_certification_guide.html",
-          "lesson_data": "src/data/unit7/chapter_7_5_aws_developer_certification_guide.json",
-          "quiz": "src/book/unit7/quiz_7_5_aws_developer_certification_guide.html",
-          "quiz_data": "src/data/unit7/quiz_7_5_aws_developer_certification_guide.json",
-          "study_guide": "src/book/unit7/study_guide_7_5_aws_developer_certification_guide.html",
-          "study_guide_data": "src/data/unit7/study_guide_7_5_aws_developer_certification_guide.json"
+          "icon": "Award",
+          "type": "lesson",
+          "chapter_link": "book/unit7/chapter_7_5_aws_developer_certification_guide.html",
+          "chapter_data_link": "data/unit7/chapter_7_5_aws_developer_certification_guide.json"
+        },
+        {
+          "title": "7.5: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit7/study_guide_7_5.html",
+          "chapter_data_link": "data/unit7/study_guide_7_5.json"
+        },
+        {
+          "title": "7.5: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit7/quiz_7_5.html",
+          "chapter_data_link": "data/unit7/quiz_7_5.json"
+        },
+        {
+          "title": "7.6: Unit 7 Final Exam",
+          "icon": "Target",
+          "type": "exam",
+          "chapter_link": "book/unit7/exam_unit_7_final_exam.html",
+          "chapter_data_link": "data/unit7/exam_unit_7_final_exam.json"
         }
       ]
     },
     {
       "title": "Unit 8: Systems Integration and Security",
-      "icon": "🛡️",
+      "icon": "Shield",
       "description": "Secure service integration patterns and credential management in distributed systems.",
-      "overview": "src/book/unit8/overview_systems_integration_and_security.html",
-      "overview_data": "src/data/unit8/overview_systems_integration_and_security.json",
-      "exam": "src/book/unit8/exam_systems_integration_and_security.html",
-      "exam_data": "src/data/unit8/exam_systems_integration_and_security.json",
+      "overview_link": "book/unit8/overview_systems_integration_and_security.html",
+      "overview_data_link": "data/unit8/overview_systems_integration_and_security.json",
+      "exam_link": "book/unit8/exam_systems_integration_and_security.html",
+      "exam_data_link": "data/unit8/exam_systems_integration_and_security.json",
       "chapters": [
         {
           "title": "8.1: Securely Connecting Services",
-          "icon": "📄",
-          "lesson": "src/book/unit8/chapter_8_1_securely_connecting_services.html",
-          "lesson_data": "src/data/unit8/chapter_8_1_securely_connecting_services.json",
-          "quiz": "src/book/unit8/quiz_8_1_securely_connecting_services.html",
-          "quiz_data": "src/data/unit8/quiz_8_1_securely_connecting_services.json",
-          "study_guide": "src/book/unit8/study_guide_8_1_securely_connecting_services.html",
-          "study_guide_data": "src/data/unit8/study_guide_8_1_securely_connecting_services.json"
+          "icon": "Link",
+          "type": "lesson",
+          "chapter_link": "book/unit8/chapter_8_1_securely_connecting_services.html",
+          "chapter_data_link": "data/unit8/chapter_8_1_securely_connecting_services.json"
+        },
+        {
+          "title": "8.1: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit8/study_guide_8_1.html",
+          "chapter_data_link": "data/unit8/study_guide_8_1.json"
+        },
+        {
+          "title": "8.1: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit8/quiz_8_1.html",
+          "chapter_data_link": "data/unit8/quiz_8_1.json"
         },
         {
           "title": "8.2: Secure Credential Management in CI/CD and IaC",
-          "icon": "📄",
-          "lesson": "src/book/unit8/chapter_8_2_secure_credential_management_in_cicd_and_iac.html",
-          "lesson_data": "src/data/unit8/chapter_8_2_secure_credential_management_in_cicd_and_iac.json",
-          "quiz": "src/book/unit8/quiz_8_2_secure_credential_management_in_cicd_and_iac.html",
-          "quiz_data": "src/data/unit8/quiz_8_2_secure_credential_management_in_cicd_and_iac.json",
-          "study_guide": "src/book/unit8/study_guide_8_2_secure_credential_management_in_cicd_and_iac.html",
-          "study_guide_data": "src/data/unit8/study_guide_8_2_secure_credential_management_in_cicd_and_iac.json"
+          "icon": "Key",
+          "type": "lesson",
+          "chapter_link": "book/unit8/chapter_8_2_secure_credential_management_in_cicd_and_iac.html",
+          "chapter_data_link": "data/unit8/chapter_8_2_secure_credential_management_in_cicd_and_iac.json"
+        },
+        {
+          "title": "8.2: Study Guide",
+          "icon": "BookOpen",
+          "type": "study_guide",
+          "chapter_link": "book/unit8/study_guide_8_2.html",
+          "chapter_data_link": "data/unit8/study_guide_8_2.json"
+        },
+        {
+          "title": "8.2: Quiz",
+          "icon": "HelpCircle",
+          "type": "quiz",
+          "chapter_link": "book/unit8/quiz_8_2.html",
+          "chapter_data_link": "data/unit8/quiz_8_2.json"
+        },
+        {
+          "title": "8.3: Unit 8 Final Exam",
+          "icon": "Target",
+          "type": "exam",
+          "chapter_link": "book/unit8/exam_unit_8_final_exam.html",
+          "chapter_data_link": "data/unit8/exam_unit_8_final_exam.json"
         }
       ]
     },
     {
       "title": "Unit 9: Capstone Projects",
-      "icon": "🎓",
+      "icon": "GraduationCap",
       "description": "Apply learned concepts in comprehensive real-world project implementations.",
-      "overview": "src/book/unit9/overview_capstone_projects.html",
-      "overview_data": "src/data/unit9/overview_capstone_projects.json",
-      "exam": "src/book/unit9/exam_capstone_projects.html",
-      "exam_data": "src/data/unit9/exam_capstone_projects.json",
+      "overview_link": "book/unit9/overview_capstone_projects.html",
+      "overview_data_link": "data/unit9/overview_capstone_projects.json",
+      "exam_link": "book/unit9/exam_capstone_projects.html",
+      "exam_data_link": "data/unit9/exam_capstone_projects.json",
       "chapters": [
         {
           "title": "9.1: Project 1: Python-based E-Commerce Microservices",
-          "icon": "🚀",
-          "lesson": "src/book/unit9/chapter_9_1_project_1_python_based_e_commerce_microservices.html",
-          "lesson_data": "src/data/unit9/chapter_9_1_project_1_python_based_e_commerce_microservices.json",
-          "quiz": null,
-          "quiz_data": null,
-          "study_guide": null,
-          "study_guide_data": null
+          "icon": "Rocket",
+          "type": "project",
+          "chapter_link": "book/unit9/chapter_9_1_project_1_python_based_e_commerce_microservices.html",
+          "chapter_data_link": "data/unit9/chapter_9_1_project_1_python_based_e_commerce_microservices.json"
         },
         {
           "title": "9.2: Project 2: Go-based Real-Time Analytics Pipeline",
-          "icon": "🚀",
-          "lesson": "src/book/unit9/chapter_9_2_project_2_go_based_real_time_analytics_pipeline.html",
-          "lesson_data": "src/data/unit9/chapter_9_2_project_2_go_based_real_time_analytics_pipeline.json",
-          "quiz": null,
-          "quiz_data": null,
-          "study_guide": null,
-          "study_guide_data": null
+          "icon": "Rocket",
+          "type": "project",
+          "chapter_link": "book/unit9/chapter_9_2_project_2_go_based_real_time_analytics_pipeline.html",
+          "chapter_data_link": "data/unit9/chapter_9_2_project_2_go_based_real_time_analytics_pipeline.json"
         }
       ]
     }
