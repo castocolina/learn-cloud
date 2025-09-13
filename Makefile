@@ -53,70 +53,27 @@ run:
 
 start: run
 
-stop:
-	@./src/bash/stop.sh $(PORT)
-
-# HTML Formatting Tasks
-format-html:
-	@./src/bash/format-html.sh $(filter-out $@,$(MAKECMDGOALS))
-	@echo "🎯 HTML formatting completed."
-
-fix-html:
-	@./src/bash/fix-html.sh $(filter-out $@,$(MAKECMDGOALS))
-
-claude-refactor:
-	@echo "🤖 Starting Claude refactoring process for all units..."
-	@bash ./src/bash/recursive-promt-by-unit-claude.sh
-
-prompt-manager:
-	@echo "🤖 Starting AI Prompt Manager (Generate, List, Validate & Format Prompts)..."
-	@python3 src/python/prompt_manager.py
-
-prompt-manager-generate:
-	@if [ -z "$(PROMPT)" ]; then \
-		echo "❌ Error: No prompt provided. Usage: make prompt-manager-generate PROMPT='Your question here'"; \
-		echo "💡 Tip: Use \\n for line breaks: PROMPT='Line 1\\nLine 2'"; \
-		exit 1; \
-	fi
-	@echo "🤖 Starting prompt generation with: $(PROMPT)"
-	@printf "%b\n" "$(PROMPT)" | python3 src/python/prompt_manager.py
-
-prompt-manager-quick:
-	@if [ -z "$(Q)" ]; then \
-		echo "❌ Error: No prompt provided. Usage: make prompt-manager-quick Q='Your question here'"; \
-		echo "💡 Tip: Use \\n for line breaks: Q='Line 1\\nLine 2'"; \
-		exit 1; \
-	fi
-	@echo "🚀 Quick prompt generation: $(Q)"
-	@printf "%b\n" "$(Q)" | python3 src/python/prompt_manager.py
-
-
-prompt-executor:
-	@echo "🚀 AI Prompt Executor - Unified Execution System"
-	@python3 src/python/prompt_executor.py
-
-show-logs:
-	@echo "🔍 Displaying current log locations..."
-	@python3 src/python/show_logs.py
-
-# Python Testing Tasks
-test-python:
-	@echo "🧪 Running all Python tests with pytest..."
-	@.venv/bin/python -m pytest src/test/python/ --ignore=tmp/
 
 clean-tmp:
 	@echo "🧹 Cleaning temporary files..."
-	@rm -rf ./tmp/html_validation_backups/*.backup*
-	@rm -r src/book/**/*.backup*
-	@rm -f ./tmp/*.log
-	@rm -rf tmp/pycache
-	@rm -rf tmp/python/__pycache__
-	@rm -rf src/test/__pycache__
-	@rm -rf src/python/__pycache__
-	@rm -rf src/python/prompt_utils/__pycache__
-	@find . -name "*.pyc" -delete
+	@rm -rf ./tmp/html_validation_backups/*.backup* 2>/dev/null || true
+	@rm -r src/book/**/*.backup* 2>/dev/null || true
+	@rm -f ./tmp/*.log 2>/dev/null || true
+	@rm -rf tmp/pycache 2>/dev/null || true
+	@rm -rf tmp/python/__pycache__ 2>/dev/null || true
+	@rm -rf src/test/__pycache__ 2>/dev/null || true
+	@rm -rf src/python/__pycache__ 2>/dev/null || true
+	@rm -rf src/python/prompt_utils/__pycache__ 2>/dev/null || true
+	@find . -name "*.pyc" -delete 2>/dev/null || true
 	@find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
 	@echo "✅ Temporary files cleaned"
+
+# Content Management
+generate-content: ## Generate content.json from CONTENT.toml
+	@echo "🔄 Generating content.json from CONTENT.toml..."
+	@python3 -c "import tomllib" 2>/dev/null || python3 -c "import tomli" 2>/dev/null || python3 -c "import toml" 2>/dev/null || (echo "⚠️  Installing TOML parser..." && pip3 install --user tomli)
+	python3 src/python/generate_content.py
+	@echo "✅ Content generation complete!"
 
 help:
 	@echo "Available commands:"
@@ -129,15 +86,7 @@ help:
 	@echo "  validate-links [path]    - Validate links"
 	@echo "  restore-mermaid-entities [path] - Restore HTML entities in Mermaid diagrams"
 	@echo "  run                      - Start development server"
-	@echo "  format-html [path]       - Format HTML files with Prettier"
-	@echo "  fix-html [path]          - Format HTML files (auto-fix)"
-	@echo "  claude-refactor          - Run Claude AI agent to refactor all units"
-	@echo "  prompt-manager           - Start AI Prompt Manager (Generate, List, Validate & Format)"
-	@echo "  prompt-manager-generate  - Generate prompt with preset: PROMPT='Your question'"
-	@echo "  prompt-manager-quick     - Quick prompt generation: Q='Your question'"
-	@echo "  prompt-executor          - Start AI Prompt Executor (Unified Execution System)"
-	@echo "  show-logs                - Display current log file locations and usage info"
-	@echo "  test-python              - Run all Python tests with pytest"
+	@echo "  generate-content         - Generate content.json from CONTENT.toml"
 	@echo "  clean-tmp                - Clean temporary files and backups"
 	@echo "  help                     - Show this help message"
 	@echo ""

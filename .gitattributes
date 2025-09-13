@@ -1,7 +1,7 @@
 
 # Set default behavior to automatically handle line endings. Git will handle
 # line endings based on the file type.
-* text=auto
+* text=lf
 
 # Explicitly declare text files to always be normalized to LF (Unix-style) line endings.
 # This is crucial for consistency across different operating systems.

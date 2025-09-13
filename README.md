@@ -28,7 +28,26 @@ For detailed content breakdown, see [CONTENT.md](CONTENT.md).
 
 ## 🚀 Getting Started
 
-### Local Development
+### Quick Setup with Automated Script
+
+For a complete development environment setup (system dependencies, NVM, Node.js, and Svelte):
+
+```bash
+chmod +x src/bash/setup.sh
+./src/bash/setup.sh
+```
+
+This automated script will:
+- Update system packages (with confirmation)
+- Install development dependencies (curl, wget, build-essential, zsh, git, shellcheck, chromium-browser)
+- Install/update Node Version Manager (NVM)
+- Set up Node.js LTS and pnpm
+- Initialize Svelte project with Tailwind CSS and Flowbite
+- Start the development server
+
+### Manual Setup
+
+If you prefer manual setup or already have some dependencies installed:
 
 1. **Clone the repository:**
    ```bash
@@ -39,13 +58,35 @@ For detailed content breakdown, see [CONTENT.md](CONTENT.md).
 2. **Install dependencies:**
    ```bash
    npm install
+   # or
+   pnpm install
    ```
 
 3. **Serve the content locally:**
    ```bash
    make serve
+   # or for Svelte development
+   npm run dev
+   # or with auto-open
+   npm run dev -- --open
    ```
-   This will start a local server and open `http://localhost:8080` in your browser.
+
+### Svelte Development
+
+This project also includes Svelte components powered by [`sv`](https://github.com/sveltejs/cli):
+
+```bash
+# Start Svelte development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
+
+> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
 
 ### Development Environment
 
@@ -98,11 +139,11 @@ learn-cloud/
 ├── src/
 │   ├── book/           # Main book content and web application
 │   ├── python/         # AI prompt management system
-│   └── bash/           # Legacy automation scripts
+│   └── bash/           # Automation scripts and setup utilities
 ├── tmp/                # Temporary files and development notes
 ├── .github/workflows/  # CI/CD automation
 ├── CONTENT.md          # Detailed book outline and structure
-├── CLAUDE.md           # Agent rules and project guidelines
+├── AGENTS.md           # Agent rules and project guidelines
 ├── TECHNICAL-SPECS.md  # Technical architecture specifications
 └── VALIDATION-GUIDE.md # Comprehensive validation guide
 ```
@@ -119,7 +160,7 @@ This project uses an advanced AI prompt management system for content generation
 ### Key Scripts
 - **Prompt Manager:** Interactive YAML editor for creating and managing AI prompts
 - **Prompt Executor:** Automated execution system with progress tracking and error handling
-- **Legacy Support:** Bash scripts in [src/bash/](src/bash/) for backward compatibility
+- **Setup Script:** Automated environment setup in [src/bash/setup.sh](src/bash/setup.sh)
 
 For detailed documentation, see [src/python/README.md](src/python/README.md).
 
@@ -155,7 +196,7 @@ See [VALIDATION-GUIDE.md](VALIDATION-GUIDE.md) for complete validation procedure
 - **Best Practices:** Industry-standard patterns and recommendations
 - **Comprehensive Coverage:** From basics to advanced implementation
 
-For detailed guidelines, see [CONTENT-STANDARDS.md](CONTENT-STANDARDS.md) and [CLAUDE.md](CLAUDE.md).
+For detailed guidelines, see [CONTENT-STANDARDS.md](CONTENT-STANDARDS.md) and [AGENTS.md](AGENTS.md).
 
 ## 🤝 Contributing
 
@@ -163,7 +204,7 @@ This project follows strict quality standards and AI-assisted development workfl
 
 1. **Content Creation:** Use the AI prompt system for generating new content
 2. **Validation:** All changes must pass comprehensive validation checks
-3. **Standards:** Follow the guidelines in [CLAUDE.md](CLAUDE.md) and [TECHNICAL-SPECS.md](TECHNICAL-SPECS.md)
+3. **Standards:** Follow the guidelines in [AGENTS.md](AGENTS.md) and [TECHNICAL-SPECS.md](TECHNICAL-SPECS.md)
 4. **Testing:** Validate across multiple devices and browsers
 
 ## 📄 License
