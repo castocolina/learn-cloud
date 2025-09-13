@@ -1,158 +1,280 @@
-# Content Creation Standards & Quality Assurance
+# Content Standards: SvelteKit Learning Platform
 
-This document contains the content creation workflows and quality assurance standards for the Cloud-Native Book project.
+This document contains the content creation workflows and quality assurance standards for the Cloud-Native Learning Platform.
 
 > **📚 Related Documentation:**
-> - [CLAUDE.md](CLAUDE.md) - Core project rules and agent implementation guidelines  
+> - [AGENTS.md](AGENTS.md) - Core project rules and agent implementation guidelines  
 > - [TECHNICAL-SPECS.md](TECHNICAL-SPECS.md) - Technical architecture and user experience standards
-> - [VALIDATION-GUIDE.md](VALIDATION-GUIDE.md) - Comprehensive validation guide for all project assets (HTML, CSS, JS, Mermaid, Bash)
 
 ---
 
-## CONTENT CREATION WORKFLOW
+## CONTENT ARCHITECTURE
 
-### Mandatory Workflow
+### Data Structure in src/data/
 
-The book is structured into `Units` and `Topics` with a hierarchical navigation system. Follow this process strictly:
+All educational content is stored as JSON files in the `src/data/` directory, organized by units:
 
-**Book Structure:**
-1. **Book Overview** (index -1): Main book introduction and unit overview
-2. **Unit Overview** (index X00): Each unit starts with dedicated overview page
-3. **Topic Content** (index X01, X02, etc.): Main didactic material
-4. **Study Aids** (index X01+1): Interactive flashcards
-5. **Quiz** (index X01+2): Assessment with multiple choice questions
+```
+src/data/
+├── unit1/
+│   ├── overview_python_for_cloud_native_backend_development.json
+│   ├── chapter_1_1_development_environment_tooling.json
+│   ├── study_guide_1_1.json
+│   ├── quiz_1_1.json
+│   ├── exam_python_for_cloud_native_backend_development.json
+│   └── ...
+├── unit2/
+├── content-menu.json (navigation structure - source of truth)
+└── ...
+```
 
-**After completing each Topic:**
-1. **Topic Content:** Generate the main didactic material
-2. **Study Aids:** Create at least 5 flashcards as `x-x_study_aids.html`
-3. **Quiz:** Create a quiz with at least 5 questions as `x-x_quiz.html`
+### Content Types and Formats
 
-**After completing all Topics in a Unit:**
-1. **Unit Test:** Create comprehensive test with at least 20 questions as `x-x_unit_test.html`
-
-### Content Generation Standards
-- Always use the TodoWrite tool to track tasks when working on content generation
-- When creating diagrams, verify Mermaid syntax follows the double-quote rule
-- When editing existing files, preserve the established structure and styling
-- Use the Read tool to understand existing content before making changes
-- Follow the hierarchical workflow: Unit Overview → Topic → Study Aids → Quiz
-- Ensure all generated content is pedagogically sound and builds upon previous concepts
-- Use modern CSS classes and semantic HTML5 structure
-
-### Study Aids Structure
-
-```html
-<div class="study-aids-content">
-    <header class="study-aids-header">
-        <h2>Study Aids: [Topic Name]</h2>
-        <p class="study-aids-intro">Review key concepts with these interactive flashcards. Click each card to reveal the answer.</p>
-    </header>
-    
-    <div class="flashcards-container">
-        <div class="flashcard">
-            <div class="flashcard-inner" onclick="this.parentElement.classList.toggle('flipped')">
-                <div class="flashcard-front">
-                    <h4>Question</h4>
-                    <p>Question text goes here</p>
-                </div>
-                <div class="flashcard-back">
-                    <h4>Answer</h4>
-                    <p>Answer content goes here</p>
-                </div>
-            </div>
-            <button class="flashcard-expand-btn" onclick="event.stopPropagation(); openFlashcardModal(this)" title="Expand flashcard">
-                <i class="bi bi-arrows-angle-expand"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- Flashcard Modal -->
-    <dialog id="flashcard-modal" class="flashcard-modal">
-        <div class="modal-content">
-            <header class="modal-header">
-                <h3 id="modal-question">Question</h3>
-                <button class="modal-close-btn" onclick="closeFlashcardModal()">
-                    <i class="bi bi-x-lg"></i>
-                </button>
-            </header>
-            <div class="modal-body">
-                <div class="modal-answer">
-                    <h4>Answer</h4>
-                    <div id="modal-answer-content">Answer content will appear here</div>
-                </div>
-            </div>
-        </div>
-    </dialog>
-</div>
-
-<script>
-function openFlashcardModal(button) {
-    const flashcard = button.parentElement;
-    const question = flashcard.querySelector('.flashcard-front p').textContent;
-    const answer = flashcard.querySelector('.flashcard-back p').innerHTML;
-    
-    document.getElementById('modal-question').textContent = question;
-    document.getElementById('modal-answer-content').innerHTML = answer;
-    document.getElementById('flashcard-modal').showModal();
-}
-
-function closeFlashcardModal() {
-    document.getElementById('flashcard-modal').close();
-}
-
-// Close modal when clicking outside
-document.getElementById('flashcard-modal').addEventListener('click', function(event) {
-    if (event.target === this) {
-        closeFlashcardModal();
+#### 1. Lessons
+**Format**: `chapter_[unit]_[chapter]_[title].json`
+```json
+{
+  "title": "Development Environment & Tooling",
+  "summary": "Brief description of the lesson content",
+  "sections": [
+    {
+      "heading": "Section Title",
+      "content": "Rich HTML content with proper formatting"
     }
-});
-</script>
+  ]
+}
 ```
 
-**Flashcard Requirements:**
-- **Standardization:** Each topic must have exactly 5 flashcards
-- **Modern Structure:** Use `study-aids-content` wrapper with descriptive header
-- **No Bootstrap:** Remove all Bootstrap dependencies (btn-, modal, card classes)
-- **Interactive Features:** Flashcards flip on click and have expand buttons for modal view
-- **3D Flip Animation:** Use CSS transforms for smooth card flipping experience
-- **Modal Integration:** Each flashcard has expand button using HTML5 `<dialog>` element
-- **Touch-Friendly:** Proper sizing and hover states for all device types
-- **No External Libraries:** Use native HTML5 dialog and CSS animations (no external modal library needed)
-- Place Mermaid diagrams directly in main content (`.html` files), not in study aids
+#### 2. Study Guides
+**Format**: `study_guide_[unit]_[chapter].json`
+```json
+{
+  "title": "Study Guide: Development Environment & Tooling",
+  "flashcards": [
+    {
+      "front": "Question or concept",
+      "back": "Answer or explanation"
+    }
+  ]
+}
+```
+**Requirements**: Minimum 6 flashcards per lesson with expandable modal view for long definitions
 
-### Mermaid Diagram Standards
+### Interactive Components Specifications
 
-**Interactive Diagram Requirements:**
+#### Mermaid Diagrams
+- **GitHub-style Implementation**: Expandable diagrams with expand icon
+- **Direction Preference**: LR (Left-Right) for vertical display optimization
+- **Fullscreen Modal**: Touch/click to expand to maximize screen real estate
+  - **Mobile**: 100vh x 100vw (full viewport coverage)
+  - **Desktop**: Large modal with minimal padding (e.g., 95% width/height)
+  - **Responsive**: Adapts to available screen space
+- **Mobile Optimization**: Responsive scaling for all screen sizes
+- **Integration**: Use standard Mermaid.js with custom expand functionality
 
-All Mermaid diagrams are automatically interactive and expandable:
+#### Code Highlighting  
+- **Library**: Prism.js for syntax highlighting
+- **Language Support**: All major programming languages (Python, Go, JavaScript, etc.)
+- **Theme**: Consistent with overall design system
+- **Mobile Responsive**: Horizontal scroll for long code lines
+- **Modal Support**: Code blocks can expand to fullscreen for better readability
 
-- **Click to Expand:** Every diagram can be clicked/touched to open in full-screen modal
-- **Mobile Optimized:** Diagrams automatically scale down on mobile devices (≤768px)
-- **Hover Effects:** Subtle hover animations indicate interactivity
-- **Universal Experience:** Same behavior across all devices (desktop/tablet/mobile)
-- **Simple Implementation:** Just use standard `<pre class="mermaid">` - no additional wrappers needed
-- **Responsive Design:** Prefer vertical (TD) layouts over horizontal (LR) for mobile compatibility
+#### Flashcard System
+- **Standard View**: Card flip animation on click/touch
+- **Expandable Modal**: Fullscreen view for lengthy definitions
+  - **Mobile**: Full viewport usage (100vh x 100vw)
+  - **Desktop**: Large modal covering most of the screen
+  - **Content Scrolling**: Vertical scroll for long content within modal
+- **Navigation**: Previous/Next within flashcard set
+- **Progress Tracking**: Current card indicator (e.g., "Card 3 of 6")
 
-**Standard Format with Nested Script Tags:**
-```html
-<div class="text-center my-4">
-    <pre class="mermaid">
-     <script type="text/plain">
-        graph TD
-            A["Node Text"] --> B["Another Node"];
-     </script>
-    </pre>
-    <small class="text-muted">Diagram: Description of the diagram</small>
-</div>
+#### Quiz/Exam Navigation
+- **Single Question Display**: Show one question at a time
+- **Dedicated Controls**: Separate Previous/Next buttons from page navigation
+- **Progress Indicator**: "Question X of Y" display
+- **Final Results**: 
+  - Score percentage calculation
+  - Pass/Fail status (80% threshold)
+  - Action buttons: Restart (go to question 1) or Continue (next topic)
+
+#### 3. Quizzes
+**Format**: `quiz_[unit]_[chapter].json`
+```json
+{
+  "title": "Quiz: Development Environment & Tooling",
+  "questions": [
+    {
+      "question": "Question text",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "correct": 0,
+      "explanation": "Explanation of the correct answer"
+    }
+  ]
+}
+```
+**Configuration**: 
+- **Display Mode**: Show only one question at a time
+- **Navigation**: Dedicated Previous/Next buttons (separate from page navigation)
+- **Question Pool**: Display 5 questions, store minimum 8 (1.5x ratio)
+- **Scoring**: 80% threshold for Pass/Fail determination
+- **Results**: Score percentage, Pass/Fail status, Restart/Continue options
+
+#### 4. Exams
+**Format**: `exam_[unit_name].json`
+```json
+{
+  "title": "Unit 1 Final Exam: Python for Cloud-Native Backend Development",
+  "questions": [
+    {
+      "question": "Comprehensive question text",
+      "options": ["Option A", "Option B", "Option C", "Option D"],
+      "correct": 0,
+      "explanation": "Detailed explanation",
+      "difficulty": "medium",
+      "topic": "Development Environment"
+    }
+  ]
+}
+```
+**Configuration**:
+- **Display Mode**: Show only one question at a time
+- **Navigation**: Dedicated Previous/Next buttons (separate from page navigation)  
+- **Question Pool**: Display 20 questions, store minimum 30 (1.5x ratio)
+- **Progress Display**: "Question X of Y" indicator
+- **Scoring**: 80% threshold for Pass/Fail determination
+- **Results**: Score percentage, Pass/Fail status, Restart/Continue options
+
+#### 5. Unit Overviews
+**Format**: `overview_[unit_name].json`
+```json
+{
+  "title": "Python for Cloud-Native Backend Development",
+  "description": "Comprehensive unit description",
+  "learning_objectives": [
+    "Objective 1",
+    "Objective 2"
+  ],
+  "prerequisites": ["Prerequisite 1", "Prerequisite 2"],
+  "estimated_hours": 40
+}
 ```
 
-**CRITICAL: HTML Entity Encoding for Mermaid Scripts**
-- **Nested Script Structure:** All Mermaid diagrams MUST use nested `<script type="text/plain">` tags within `<pre class="mermaid">` blocks
-- **Character Encoding Rules:**
-  - **WITH script tags:** Characters like `>`, `&`, `"` are valid inside `<script type="text/plain">` → entities cause Mermaid parsing errors
-  - **WITHOUT script tags:** Characters like `>`, `&`, `"` are invalid HTML → HTML validator requires entities (`&quot;`, `&gt;`, `&lt;`, `&#x27;`, `&amp;`)
-- **Preferred Approach:** Use `<script type="text/plain">` tags with raw characters (no entities) for:
-  - **Better readability:** Raw syntax is easier to read and maintain
+### Content Quality Standards
+
+#### Content Guidelines
+- **Consistency**: All titles must match exactly with `content-menu.json`
+- **Clarity**: Use clear, concise language appropriate for experienced programmers new to cloud-native
+- **Structure**: Follow hierarchical information architecture
+- **Interactivity**: Include practical examples and hands-on exercises
+
+#### Technical Writing Standards
+- **Code Examples**: Use production-ready, secure-by-default code
+- **Documentation**: Reference official documentation and authoritative sources
+- **Updates**: Use recent but stable versions of all technologies
+- **Security**: Emphasize security considerations throughout
+
+### Content Navigation Structure
+
+The `src/data/content-menu.json` file serves as the single source of truth for:
+- Unit organization and metadata
+- Chapter sequencing and types
+- Navigation links (both legacy HTML and new JSON data links)
+- Icons and descriptions
+
+**Structure**:
+```json
+{
+  "metadata": {
+    "title": "Mastering Cloud-Native Technologies",
+    "total_units": 9,
+    "total_chapters": 119
+  },
+  "units": [
+    {
+      "title": "Unit Title",
+      "icon": "IconName",
+      "description": "Unit description",
+      "overview_data_link": "data/unit1/overview_*.json",
+      "exam_data_link": "data/unit1/exam_*.json",
+      "chapters": [
+        {
+          "title": "Chapter Title",
+          "icon": "IconName",
+          "type": "lesson|study_guide|quiz|exam|project",
+          "chapter_data_link": "data/unit1/chapter_*.json"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Development Workflow
+
+#### Content Creation Process
+1. **Plan**: Use `CONTENT.md` as authoritative outline
+2. **Structure**: Create JSON files following format specifications
+3. **Validate**: Ensure JSON syntax and content structure validity
+4. **Test**: Verify content displays correctly in SvelteKit components
+5. **Review**: Check for consistency with content standards
+
+#### Content Validation
+- **JSON Syntax**: All files must be valid JSON
+- **Required Fields**: All mandatory fields must be present
+- **Link Integrity**: All referenced links must be functional
+- **Content Quality**: Follow technical writing standards
+
+#### Question Pool Management
+- **Diversity**: Create varied question types and difficulty levels
+- **Randomization**: Ensure sufficient questions for effective randomization
+- **Quality**: Questions should test understanding, not memorization
+- **Updates**: Regularly review and update question pools
+
+### Legacy Content Migration
+
+#### Current State
+- **Legacy Directory**: `src/book/` contains 183+ HTML files
+- **Status**: Marked for future removal, available for content reference
+- **Migration Strategy**: Extract content to JSON format progressively
+
+#### Migration Guidelines
+- **Content Preservation**: Maintain educational value during conversion
+- **Format Modernization**: Convert to structured JSON format
+- **Enhancement**: Improve interactivity and user experience
+- **Validation**: Ensure no content loss during migration
+
+### Technical Implementation
+
+#### Content Loading
+- Dynamic imports for JSON content files
+- Type-safe interfaces for all content types
+- Error handling for missing or malformed content
+- Caching strategies for performance
+
+#### Component Integration
+- Reusable components for each content type
+- Consistent styling using Tailwind CSS
+- Responsive design for all screen sizes
+- Accessibility compliance
+
+### Quality Assurance
+
+#### Validation Checklist
+- [ ] JSON syntax validation
+- [ ] Required fields present
+- [ ] Content matches `content-menu.json` structure
+- [ ] Minimum question/flashcard requirements met
+- [ ] Links and references functional
+- [ ] Content follows technical writing standards
+- [ ] Mobile responsiveness verified
+- [ ] Accessibility guidelines followed
+
+#### Testing Requirements
+- Unit tests for content loading functions
+- Integration tests for content display components
+- End-to-end tests for user workflows
+- Performance tests for content loading
+- Accessibility testing with screen readers
   - **Mermaid compatibility:** Avoids parsing errors caused by HTML entities
   - **HTML validation:** Script content is treated as plain text, so special characters are valid
 - **Migration Workflow:**

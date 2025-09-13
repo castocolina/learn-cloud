@@ -1,14 +1,14 @@
 
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+# SvelteKit deployment to GitHub Pages
+name: Deploy SvelteKit to Pages
 
 on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-  # Only runs after Content Validation workflow completes successfully
+  # Only runs after SvelteKit Validation workflow completes successfully
   workflow_run:
-    workflows: ["Content Validation"]
+    workflows: ["SvelteKit Validation"]
     types: [completed]
     branches: [master]
 
@@ -25,7 +25,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
+  # SvelteKit build and deploy job
   deploy:
     # Only deploy if the validation workflow succeeded
     if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
@@ -37,11 +37,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       
-      - name: Prepare Public Directory
-        run: |
-          mkdir -p public/src
-          cp index.html public/
-          cp -rv src/book public/src
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build SvelteKit
+        run: pnpm run build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -49,8 +60,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload only the prepared public directory
-          path: './public'
+          # Upload the SvelteKit build output
+          path: './build'
       
       - name: Deploy to GitHub Pages
         id: deployment

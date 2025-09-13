@@ -1,157 +1,307 @@
-# Technical Specifications & User Experience Standards
+# Technical Specifications: Cloud-Native Learning Platform
 
 This document contains the technical architecture and user experience standards for the Cloud-Native Book project.
 
 > **📚 Related Documentation:**
-> - [CLAUDE.md](CLAUDE.md) - Core project rules and agent implementation guidelines
+> - [AGENTS.md](AGENTS.md) - Core project rules and agent implementation guidelines
 > - [CONTENT-STANDARDS.md](CONTENT-STANDARDS.md) - Content creation workflows and quality assurance standards
-> - [VALIDATION-GUIDE.md](VALIDATION-GUIDE.md) - Comprehensive validation guide for all project assets (HTML, CSS, JS, Mermaid, Bash)
 
 ---
 
 ## TECHNICAL ARCHITECTURE
 
-### Technology Stack Requirements
+### Core Technology Stack
 
-The SPA is built with **modern CSS Grid** architecture and **ES6 modules** for a clean, performant application. **No Bootstrap or framework dependencies**. Use these standardized libraries:
+**Framework**: SvelteKit
+- Modern, performant web framework with SSR/SSG capabilities
+- Component-based architecture with reactive state management
+- TypeScript support for type safety and better developer experience
+- Optimized for production deployment on GitHub Pages
 
-- **Icons:** Use **[Bootstrap Icons](https://icons.getbootstrap.com/)** for all icons. The CDN is included in `index.html`.
-- **Diagrams as Code:** Use **Mermaid.js** for all diagrams. **Critical Rule:** All text descriptions for both **nodes** (e.g., `A["Node Text"]`, `B("Node description")`, `C{"Node description"}`) and **connectors/links** (e.g., `A --|"Link Text"|--> B`) **must always** be enclosed in double quotes. This prevents rendering errors. Use vertical (TB) direction over horizontal (LR) when possible. **All Mermaid diagrams are automatically interactive** - clicking any diagram opens it in a full-screen modal view for better visibility on all devices.
-- **Code Highlighting:** Use **[Prism.js](https://prismjs.com/)** for syntax highlighting in all code blocks.
-- **Data Visualization:** Use **[Chart.js](https://www.chartjs.org/)** to create interactive charts and graphs.
-- **Client-Side Search:** Use **[Lunr.js](https://lunrjs.com/)** for fast, responsive full-text search.
+**Styling**: Tailwind CSS
+- Utility-first CSS framework for rapid development
+- `tailwindcss-typography` plugin for rich content formatting
+- Mobile-first responsive design approach
+- Custom design system with consistent spacing and colors
+
+**UI Components**: `shadcn-svelte`
+- High-quality, accessible component library built for SvelteKit
+- **Installation**: `pnpm dlx shadcn-svelte@latest add [component-name]`
+- **Priority**: Always prefer shadcn-svelte components over custom implementations
+- **Documentation**: [shadcn-svelte.com](https://www.shadcn-svelte.com/)
+- **Component Library**: [shadcn-svelte.com/docs/components](https://www.shadcn-svelte.com/docs/components)
+- **Agent Guidelines**: If adding a component is complex, provide the user with the command to run manually
+
+**Icons**: `lucide-svelte`
+- Consistent, high-quality icon library optimized for Svelte
+- **Documentation**: [lucide.dev](https://lucide.dev/)
+- **Usage**: Import specific icons as Svelte components
+
+### Content Management System
+
+**Data Structure**: JSON-based content in `src/data/`
+- Organized by units (`src/data/unit1/`, `src/data/unit2/`, etc.)
+- Structured content format for lessons, quizzes, exams, and study guides
+- Source of truth: `src/data/content-menu.json` (derived from `CONTENT.md`)
+
+**Content Types**:
+- **Lessons**: `{ title, summary, sections: [{ heading, content }] }`
+- **Study Guides**: `{ title, flashcards: [{ front, back }] }` (minimum 6 per lesson)
+- **Quizzes**: `{ title, questions: [...] }` (configurable display, 1.5x minimum stored)
+- **Exams**: `{ title, questions: [...] }` (configurable display, 1.5x minimum stored)
+
+**Quiz/Exam Configuration**:
+- **Quizzes**: Display 5 questions (configurable), store minimum 8 questions (1.5x ratio)
+- **Exams**: Display 20 questions (configurable), store minimum 30 questions (1.5x ratio)
+- Questions selected randomly from available pool for each attempt
+
+### Legacy Content
+
+**`src/book/` Directory**: Legacy HTML content
+- Contains 183+ HTML files with vanilla CSS/JS architecture
+- Marked for future removal after content migration
+- Available for content reference during migration process
+- `index.html` moved from root to `src/book/index.html` as legacy
+
+**Migration Status**:
+- **Current**: SvelteKit framework with TypeScript configured
+- **Legacy**: HTML-based content system in `src/book/`
+- **Target**: Full JSON-based content system in `src/data/`
+
+### Development Environment
+
+**Development Environment**: Node.js 22+ (LTS via `nvm install --lts`)
+
+**Package Manager**: pnpm
+- Fast, efficient package management with workspace support
+- Lockfile-based dependency management
+- Reduced disk space usage compared to npm
+
+**Build System**: Vite (via SvelteKit)
+- Fast development server with Hot Module Replacement (HMR)
+- Optimized production builds with tree shaking
+- Static site generation for GitHub Pages deployment
+- TypeScript integration with fast type checking
+
+**Code Quality Tools**:
+- **ESLint**: JavaScript/TypeScript linting with SvelteKit rules
+- **Prettier**: Code formatting with Svelte support
+- **TypeScript**: Type safety and enhanced developer experience
+- **Svelte Check**: Component validation and accessibility checks
+- **Prism.js**: Syntax highlighting for code blocks in content
 
 ### File Structure
-- **Content Location:** All book content is located in `src/book/` directory (migrated from `content/`)
-- **Unit Directories:** Each unit has subdirectory (e.g., `src/book/unit1/`)
-- **Topic Files:** HTML fragments (not complete pages) for dynamic loading
-- **Common Files:** Shared `style.css` and `app.js` in `src/book/`
-- **Path References:** All JavaScript and HTML references must use `src/book/` paths
-- **GitHub Actions:** Deploy workflow configured to use `src/book/` structure in public directory
-- **Path Consistency:** All internal references must use `src/book/` structure
-- **Testing Location:** All test files must be placed in `src/test/` directory with organized structure and clear naming conventions
 
-### Modern CSS Grid System
-- **Grid-First Design:** Use CSS Grid for main layout structure, never float or flexbox for layout
-- **Custom CSS Properties:** Use CSS variables for consistent theming and responsive design
-- **No Framework Dependencies:** Pure CSS with semantic class names, no Bootstrap or utility frameworks
-- **Mobile-First Responsive:** Design for mobile first, then progressively enhance for larger screens
-- **Responsive Typography:** Use `clamp()` for fluid text scaling that works across all devices
-- **Progress Bar Responsiveness:** Text in progress bars must scale appropriately and never overflow on mobile devices
-- **Touch Target Standards:** All interactive elements must meet minimum 44px touch target size
-- **Mobile Grid Standards:** 
-  - Use `@media (max-width: 390px)` breakpoints for extra small devices
-  - Convert grid layouts to single column (`grid-template-columns: 1fr`) on mobile
-  - Avoid `minmax()` values larger than 200px that can cause horizontal overflow
-  - Set `min-width: 100%` for buttons and components on mobile to prevent overflow
-  - Apply `box-sizing: border-box` and `max-width: 100%` globally for small screens
-  - Test text visibility at edges of progress bars and floating elements
-- **Z-Index Hierarchy Standards:**
-  - Always use CSS variables from the standardized hierarchy defined in `:root`
-  - `--z-content: 10` - Base content layer
-  - `--z-page-navigation: 20` - Previous/Next navigation buttons  
-  - `--z-floating-nav: 30` - Floating navigation elements
-  - `--z-sidebar: 40` - Desktop sidebar
-  - `--z-mobile-header: 50` - Mobile header bar
-  - `--z-mobile-sidebar: 60` - Mobile sidebar (when open) - **CRITICAL for menu visibility**
-  - `--z-dropdowns: 70` - Search results, dropdowns
-  - `--z-modals: 90` - Modal dialogs (flashcards, diagrams), quiz navigation for prominence
-  - `--z-tooltips: 100` - Tooltips and overlays
+```
+src/
+├── data/                     # Content data (JSON format)
+│   ├── unit1/               # Unit-specific content files
+│   ├── unit2/               # ...
+│   └── content-menu.json    # Navigation structure (source of truth)
+├── lib/                     # Shared utilities and components
+│   ├── components/          # Reusable Svelte components
+│   ├── utils.ts            # Utility functions
+│   └── index.ts            # Library exports
+├── routes/                  # SvelteKit routes (file-based routing)
+│   ├── +layout.svelte      # Global layout
+│   ├── +page.svelte        # Home page
+│   └── [...other routes]   # Dynamic and static routes
+├── app.html                 # HTML template
+├── app.d.ts                 # TypeScript declarations
+└── book/ (legacy)           # Legacy HTML content for reference
+```
 
-### ES6 Module Architecture
-- **Modern JavaScript:** Use ES6 modules, classes, and modern JavaScript patterns
-- **Modular Design:** Separate concerns into distinct modules (navigation.js, search.js, etc.)
-- **Clean State Management:** Use class-based state management, avoid global variables
-- **Event Delegation:** Use proper event delegation patterns for performance
-- **No Inline Scripts:** All interactivity handled via centralized JavaScript files
-- **Component Isolation:** Each feature (search, navigation, progress) in separate modules
+### Deployment Architecture
 
-### Hierarchical Navigation System
-- **Book Structure:** Book Overview (-1) → Unit Overview (100, 200, etc.) → Topics (101, 102, etc.)
-- **Sequential Navigation:** Smart navigation that respects unit boundaries and content flow
-- **Unit Overview Pages:** Each unit must have a dedicated overview page with unit structure
-- **Progress Tracking:** Accurate progress calculation based on hierarchical position with mobile-optimized display
-- **Interactive Elements:** All topic cards, type badges, and components must be clickable for navigation
-- **Hierarchical Indexing:** Use the proper index system (Book: -1, Units: X00, Topics: X01+)
-- **Smart Navigation:** Implement context-aware Previous/Next that respects unit boundaries
-- **Unit Integration:** Ensure unit overview pages integrate with the navigation system
+**Target Platform**: GitHub Pages
+- Static site generation (SSG) with SvelteKit adapter-static
+- Automated deployment via GitHub Actions workflow
+- Custom domain support with HTTPS
+- CDN-optimized content delivery
 
-### Search Implementation
-- **Full-Text Search:** Use Lunr.js for content indexing and full-text search capabilities
-- **Fallback Search:** Implement simple title/content search when Lunr.js unavailable
-- **Content Indexing:** Preload important content (overviews, main content) for search indexing
-- **High Visibility:** Search results must appear with `z-index: 9999` to ensure they're always visible above all other content
-- **Immediate Access:** Results should appear directly below the search bar without requiring scrolling
-- **Content Previews:** Each result shows contextual snippets (50 characters before/after match) with search terms highlighted in yellow
-- **Result Categorization:** Clear type indicators (Overview, Content, Study Aids, Quiz) with appropriate icons
-- **Responsive Positioning:** Results adapt to available screen space and menu states
-- **Performance:** Fast, client-side search using Lunr.js with pre-indexed content
-- **Visual Feedback:** Hover states, smooth animations, and clear result boundaries
-- **Keyboard Navigation:** Support for arrow keys and Enter to navigate results
-- **Content Highlighting:** Matching terms emphasized with `background: yellow; padding: 2px 4px; border-radius: 2px`
+**CI/CD Pipeline**:
+1. **Validation**: SvelteKit check, lint, bash/python script validation
+2. **Build**: Static site generation with optimized assets
+3. **Deploy**: Automated GitHub Pages deployment
+4. **Dependencies**: Validation workflow dependency for deployment
 
 ---
 
 ## USER EXPERIENCE STANDARDS
 
-### Modern Mobile-First Design
+### Mobile-First Design
 
-- **CSS Grid Layout:** Main application uses CSS Grid for layout structure
-- **Mobile-First Approach:** Design for mobile first, then progressively enhance for larger screens
-- **Responsive Typography:** Use CSS `clamp()` and viewport units for fluid text scaling across devices
-- **Touch-Optimized:** All interactive elements are touch-friendly (44px minimum touch target)
-- **Performance-First:** Fast loading, minimal dependencies, optimized assets
-- **Progress Bar Responsiveness:** Text in progress bars must scale appropriately and never overflow on mobile devices
-- **Edge Visibility Testing:** Always test text visibility at screen edges, especially for floating elements
-- **Device Testing:** Validate functionality across mobile (≤390px), tablet (768px), and desktop (1024px+) breakpoints
+**Responsive Design Principles**:
+- **Breakpoints**: 390px (mobile), 768px (tablet), 1024px+ (desktop)
+- **Touch Targets**: Minimum 44px for all interactive elements
+- **Typography**: Fluid scaling using CSS `clamp()` and viewport units
+- **Layout**: CSS Grid with mobile-first responsive patterns
 
-### Navigation & Progress Tracking
+**Performance Standards**:
+- Fast loading times with optimized bundle sizes
+- Progressive enhancement for better user experience
+- Efficient content loading and caching strategies
+- Minimal layout shift during page loads
 
-- **Initial View:** Book overview page with unit navigation cards
-- **Hierarchical Navigation:** 
-  - **Mobile:** Collapsible hamburger menu with smooth transitions
-  - **Desktop:** Persistent sidebar with unit toggles and topic lists
-  - **Unit Overviews:** Dedicated overview pages for each unit
-- **Sequential Navigation:** Smart Previous/Next buttons that respect content hierarchy
-- **Progress Tracking:** Dual progress bars (unit progress + overall progress) with mobile-optimized display
-- **Navigation Flow:**
-  1. **Book Overview** → Unit selection or sequential start
-  2. **Unit Overview** → Topic selection or start unit
-  3. **Topic Content** → Study Aids → Quiz → Next Topic
-  4. **Unit Completion** → Unit Test → Next Unit Overview
+**Modal Design Standards**:
+- **Mobile First**: Full viewport coverage (100vh x 100vw) on mobile devices
+- **Desktop**: Large modals (90-95% viewport) with minimal padding for maximum content visibility
+- **Touch Targets**: Close buttons and controls easily accessible
+- **Content Scrolling**: Vertical scroll for content that exceeds modal height
+- **Responsive Behavior**: Adapts seamlessly across all screen sizes
+- **Z-Index Management**: Proper layering to ensure modal visibility above all content
 
-### Enhanced Search Experience
+### Navigation System
 
-The search functionality must provide an optimal user experience across all devices:
+**Hierarchical Structure**:
+- **Book Overview** → **Unit Overview** → **Lessons** → **Study Aids** → **Quizzes**
+- Breadcrumb navigation showing current position
+- Sequential Previous/Next navigation with smart unit boundaries
 
-- **High Visibility:** Search results must appear with `z-index: 9999` to ensure they're always visible above all other content
-- **Immediate Access:** Results should appear directly below the search bar without requiring scrolling
-- **Content Previews:** Each result shows contextual snippets (50 characters before/after match) with search terms highlighted in yellow
-- **Result Categorization:** Clear type indicators (Overview, Content, Study Aids, Quiz) with appropriate icons
-- **Responsive Positioning:** Results adapt to available screen space and menu states
-- **Performance:** Fast, client-side search using Lunr.js with pre-indexed content
-- **Visual Feedback:** Hover states, smooth animations, and clear result boundaries
-- **Keyboard Navigation:** Support for arrow keys and Enter to navigate results
-- **Content Highlighting:** Matching terms emphasized with `background: yellow; padding: 2px 4px; border-radius: 2px`
+### User Experience Requirements
 
-**Search Implementation Pattern:**
-```javascript
-generateSearchPreview(topic, query) {
-    if (!topic.content) return '';
-    const queryLower = query.toLowerCase();
-    const contentLower = topic.content.toLowerCase();
-    const queryIndex = contentLower.indexOf(queryLower);
-    
-    if (queryIndex === -1) return '';
-    
-    const start = Math.max(0, queryIndex - 50);
-    const end = Math.min(topic.content.length, queryIndex + query.length + 50);
-    let preview = topic.content.substring(start, end);
-    
-    if (start > 0) preview = '...' + preview;
-    if (end < topic.content.length) preview = preview + '...';
-    
-    return preview.replace(new RegExp(`(${query})`, 'gi'), 
-        '<mark style="background: yellow; padding: 2px 4px; border-radius: 2px;">$1</mark>');
+**Essential Interactive Elements**:
+- **Progress Tracking**: Dual progress bars (unit progress + overall progress) with mobile-optimized display
+- **Search Functionality**: Full-text search with instant results and content previews
+- **Navigation Controls**: Previous/Next buttons with smart unit boundary detection
+- **Quiz/Exam Navigation**: Separate navigation system from page navigation:
+  - Question-specific Previous/Next buttons (distinct from page navigation)
+  - Progress indicator showing current question number
+  - Final results display with Pass/Fail (80% threshold)
+  - Restart button (return to question 1) or Continue button
+
+**Interactive Elements**:
+- **Mobile**: Collapsible hamburger menu with smooth animations
+- **Desktop**: Persistent sidebar with unit toggles and topic lists
+- **Search Integration**: Content discovery across all units and lessons
+
+### Content Presentation
+
+**Learning Flow**:
+1. **Unit Overview**: Introduction, learning objectives, prerequisites
+2. **Lesson Content**: Structured sections with rich HTML content
+3. **Study Guides**: Interactive flashcard system (minimum 6 per lesson)
+4. **Quizzes**: Randomized questions with explanations
+5. **Exams**: Comprehensive unit assessments
+
+**Interactive Features**:
+- **Flashcards**: Modal-based review system with expandable fullscreen view for long definitions
+- **Quiz Engine**: Single-question display with dedicated navigation controls
+- **Exam System**: Comprehensive assessments with progress tracking and scoring
+- **Mermaid Diagrams**: GitHub-style expandable diagrams with fullscreen modal
+  - Expand icon for fullscreen view that maximizes screen real estate
+  - Preferably LR (Left-Right) direction for vertical display
+  - Touch/click to expand functionality with full viewport coverage
+- **Modal System**: All modals should maximize screen usage
+  - Fullscreen on mobile devices (100vh x 100vw)
+  - Large modals on desktop with minimal padding
+  - Responsive design that adapts to available screen space
+  - Close button accessible but non-intrusive
+- **Code Highlighting**: Prism.js integration for syntax highlighting
+- **Progress Indicators**: Visual feedback on completion status
+- **Search Integration**: Content discovery across all units and lessons
+
+---
+
+## DEVELOPMENT GUIDELINES
+
+### Component Development
+
+**shadcn-svelte Priority**:
+```bash
+# Always check component library first
+pnpm dlx shadcn-svelte@latest add [component-name]
+```
+
+**Component Architecture**:
+- Single-responsibility components with clear interfaces
+- Props-based configuration for flexibility
+- TypeScript interfaces for all component props
+- Consistent naming conventions following SvelteKit patterns
+
+### Content Integration
+
+**JSON Content Loading**:
+```typescript
+// Example content loading pattern
+import type { LessonContent } from '$lib/types';
+
+export async function loadLesson(unitId: string, lessonId: string): Promise<LessonContent> {
+  const content = await import(`../data/${unitId}/${lessonId}.json`);
+  return content.default;
 }
+```
+
+**Type Safety**:
+- Defined interfaces for all content types
+- Runtime validation for content structure
+- Error boundaries for missing or malformed content
+
+### Performance Optimization
+
+**Bundle Optimization**:
+- Code splitting at route level
+- Dynamic imports for content files
+- Tree shaking for unused dependencies
+- Optimized asset delivery with proper caching headers
+
+**Content Loading**:
+- Lazy loading for non-critical components
+- Preloading for improved perceived performance
+- Progressive enhancement for better user experience
+
+---
+
+## SECURITY CONSIDERATIONS
+
+### Content Security
+
+**Input Sanitization**:
+- HTML content sanitization for user-generated content
+- XSS prevention measures in dynamic content rendering
+- Secure handling of JSON content parsing
+
+**Build Security**:
+- Dependency vulnerability scanning in CI/CD pipeline
+- Secure build environment with locked dependencies
+- Environment variable protection and validation
+
+---
+
+## MIGRATION STRATEGY
+
+### Current Status ✅
+- **Framework**: SvelteKit with TypeScript configured
+- **Components**: shadcn-svelte setup complete
+- **Build System**: Vite with proper configuration
+- **CI/CD**: GitHub Actions workflows updated for SvelteKit
+
+### Next Steps
+1. **Content Migration**: Convert HTML content to structured JSON format
+2. **Component Implementation**: Build content display components
+3. **Legacy Cleanup**: Remove `src/book/` after migration completion
+4. **Feature Enhancement**: Advanced interactive features and optimizations
+
+---
+
+## VALIDATION AND TESTING
+
+### Automated Validation
+- **SvelteKit Check**: Type safety and component validation
+- **ESLint**: Code quality and consistency checks
+- **Script Validation**: Bash and Python script testing
+- **Content Validation**: JSON structure and integrity checks
+
+### Testing Standards
+- Unit tests for utility functions and components
+- Integration tests for content loading and display
+- End-to-end tests for user workflows
+- Performance testing for loading times and responsiveness
+
+**Testing Commands**:
+```bash
+pnpm run check    # SvelteKit validation
+pnpm run lint     # Code linting
+pnpm run test     # Run test suite
+make validate     # Full validation pipeline
 ```
