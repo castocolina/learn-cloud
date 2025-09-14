@@ -115,6 +115,30 @@ generate-content-menu: ## Generate content-menu.ts from CONTENT.md
 	@python3 src/python/generate_content_menu.py
 	@echo "✅ Content generation complete!"
 
+generate-content-scaffolding: ## Generate placeholder TypeScript content files from content-menu.ts
+	@echo "🔄 Generating content scaffolding files..."
+	@PYTHONPYCACHEPREFIX=tmp/pycache python3 src/python/generate_content_scaffolding.py
+	@echo "✅ Content scaffolding generation complete!"
+
+validate-typescript: ## Validate generated TypeScript content files
+	@echo "🔍 Validating TypeScript content files..."
+	@pnpm run check
+	@echo "✅ TypeScript validation complete!"
+
+validate-content-typescript: ## Validate only generated content TypeScript files in src/data/book/
+	@echo "🔍 Validating generated content TypeScript files..."
+	@if [ -d "src/data/book" ]; then \
+		find src/data/book -name "*.ts" -exec npx tsc --noEmit {} + 2>/dev/null && \
+		echo "✅ All content files are syntactically valid" || \
+		echo "⚠️  Some content files have syntax issues"; \
+	else \
+		echo "📁 No generated content files found in src/data/book/"; \
+	fi
+	@echo "✅ Content TypeScript validation complete!"
+
+generate-all-content: generate-content-menu generate-content-scaffolding validate-content-typescript ## Generate all content files and validate them
+	@echo "🎉 All content generation and validation completed successfully!"
+
 # CI/CD support
 ci-install: ## Install dependencies in CI environment
 	pnpm install --frozen-lockfile

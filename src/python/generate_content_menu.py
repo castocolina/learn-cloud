@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Content JSON Generator from CONTENT.md
+Content Menu Generator from CONTENT.md
 
-This script parses CONTENT.md (Markdown format) and generates a structured content.json file
+This script parses CONTENT.md (Markdown format) and generates a structured content-menu.ts file
 that serves as a single source of truth for the book's navigation structure.
 
 BOOK STRUCTURE:
@@ -46,20 +46,47 @@ import os
 import re
 import sys
 from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Any, Dict, List, Tuple
 import logging
+import traceback
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+output_file_name = "content-menu.ts"
+
+def log_exception_details(
+    exc: Exception, 
+    message: str = "An error occurred", 
+    limit: int = 5
+):
+    """
+    Logs a custom error message along with the last N lines 
+    of an exception's stack trace.
+
+    Args:
+        exc (Exception): The exception object captured in an `except` block.
+        message (str, optional): Custom message to prepend to the log. Defaults to "An error occurred".
+        limit (int, optional): The number of stack trace lines to show. Defaults to 5.
+    """
+    # `traceback.format_exception` creates a list of formatted strings
+    # from the exception object. The 'limit' parameter controls the depth.
+    # This function is ideal because it operates directly on the exception object.
+    stack_trace_list = traceback.format_exception(type(exc), exc, exc.__traceback__, limit=limit)
+    
+    # We join the list into a single string for a cleaner log.
+    stack_trace_str = "".join(stack_trace_list)
+    
+    logger.error(f"{message}\n--- Stack Trace (last {limit} calls) ---\n{stack_trace_str}")
+
 class MarkdownContentGenerator:
-    """Generates content.json from CONTENT.md with comprehensive parsing and validation."""
+    """Generates content-menu.ts from CONTENT.md with comprehensive parsing and validation."""
     
     def __init__(self):
         self.project_root = Path(__file__).parent.parent.parent
         self.content_md_path = self.project_root / "CONTENT.md"
-        self.output_path = self.project_root / "src" / "data" / "content-menu.ts"
+        self.output_path = self.project_root / "src" / "data" / output_file_name
         
         # Simplified icon mapping - using standard Lucide icons
         self.content_icons = {
@@ -164,6 +191,7 @@ class MarkdownContentGenerator:
             
         except Exception as e:
             logger.error(f"Error reading CONTENT.md: {e}")
+            log_exception_details(e, "Failed to read CONTENT.md")
             raise
 
     def extract_icon_from_line(self, line: str) -> Tuple[str, str]:
@@ -184,11 +212,11 @@ class MarkdownContentGenerator:
         # Path configuration by content type
         path_config = {
             'unit': {
-                'name_template': 'unit_{slug}',
-                'data_extension': '.json'
+                'name_template': '0_unit_{slug}',
+                'data_extension': '.ts'
             },
             'default': {
-                'name_template': '{content_type}_{number}_{slug}' if slug else '{content_type}_{number}',
+                'name_template': '{number}_{content_type}_{slug}' if slug else '{number}_{content_type}',
                 'data_extension': '.ts'
             }
         }
@@ -204,16 +232,10 @@ class MarkdownContentGenerator:
             file_name = template.format(content_type=content_type, number=number, slug=slug)
 
         # Generate full paths
-        html_path = f"src/book/unit{unit_num}/{file_name}.html"
-        data_path = f"src/data/unit{unit_num}/{file_name}{config['data_extension']}"
+        html_path = f"book/unit/{unit_num}/{file_name}.html"
+        data_path = f"book/unit{unit_num}/{file_name}{config['data_extension']}"
 
         return html_path, data_path
-
-    def format_web_path(self, src_path: str) -> str:
-        """Convert src/ paths to web-root-relative paths (book/...)."""
-        if src_path.startswith('src/'):
-            return src_path[4:]  # Remove 'src/' prefix
-        return src_path
 
     def get_icon_for_content(self, content_type: str, title: str = "") -> str:
         """Get appropriate icon for content based on type and title keywords."""
@@ -317,7 +339,7 @@ class MarkdownContentGenerator:
         slug_title = self._extract_title_for_slug(content_type, title, unit_num)
 
         # Generate paths
-        chapter_path, chapter_data_path = self.generate_content_paths(content_type, unit_num, chapter_id, slug_title)
+        chapter_link_path, chapter_data_path = self.generate_content_paths(content_type, unit_num, chapter_id, slug_title)
 
         # Determine icon
         chapter_icon = extracted_icon or self.get_icon_for_content(content_type, title)
@@ -326,8 +348,8 @@ class MarkdownContentGenerator:
             'title': title,
             'icon': chapter_icon,
             'type': content_type,
-            'chapter_link': self.format_web_path(chapter_path),
-            'chapter_data': self.format_web_path(chapter_data_path)
+            'chapter_link': chapter_link_path,
+            'chapter_data': chapter_data_path
         }
 
     def _extract_title_for_slug(self, content_type: str, title: str, unit_num: str) -> str:
@@ -381,13 +403,13 @@ class MarkdownContentGenerator:
                 # Create unit object
                 full_unit_title = f"Unit {unit_num}: {unit_title}"
                 unit_icon = extracted_icon if extracted_icon else self.get_icon_for_content('unit', unit_title)
-                unit_path, unit_data_path = self.generate_content_paths('unit', unit_num, unit_num, unit_title)
+                unit_link_path, unit_data_path = self.generate_content_paths('unit', unit_num, unit_num, unit_title)
 
                 current_unit = {
                     'title': full_unit_title,
                     'icon': unit_icon,
-                    'unit_link': self.format_web_path(unit_path),
-                    'unit_data': self.format_web_path(unit_data_path),
+                    'unit_link': unit_link_path,
+                    'unit_data': unit_data_path,
                     'chapters': []
                 }
                 logger.info(f"Parsed unit {unit_num}: {unit_title} with icon: {unit_icon}")
@@ -400,7 +422,7 @@ class MarkdownContentGenerator:
                 if content_type:  # Valid content found
                     chapter_obj = self.create_chapter_object(content_type, chapter_num, unit_num, title, extracted_icon)
                     current_unit['chapters'].append(chapter_obj)
-                    logger.info(f"Added {content_type}: {title}")
+                    logger.debug(f"Added {content_type}: {title}")
 
         # Add the last unit
         if current_unit:
@@ -459,7 +481,7 @@ class MarkdownContentGenerator:
     def _generate_slug(self, title: str) -> str:
         """Generate a URL-friendly slug from title by replacing non-alphanumeric characters with underscores."""
         # Convert to lowercase and replace all non-alphanumeric characters with underscores
-        slug = re.sub(r'[^\w]', '_', title.lower())
+        slug = re.sub(r'[^\w]+', '_', title.lower())
         # Remove leading/trailing underscores
         return slug.strip('_')
 
@@ -501,17 +523,18 @@ export const contentMenu: ContentMenu = {json_content};
                 file.write(typescript_content)
             
             file_size = os.path.getsize(self.output_path)
-            logger.info(f"Successfully wrote content-menu.ts to {self.output_path}")
+            logger.info(f"Successfully wrote {output_file_name} to {self.output_path}")
             logger.info(f"File size: {file_size} bytes")
             
         except Exception as e:
-            logger.error(f"Error writing TypeScript file: {e}")
+            log_exception_details(e, "Error writing TypeScript file")
+            log_exception_details(e, "Failed to write content-menu.ts")
             raise
 
     def generate(self) -> bool:
         """Main generation process."""
         try:
-            logger.info("Starting content-menu.ts generation from CONTENT.md")
+            logger.info(f"Starting {output_file_name} generation from CONTENT.md")
             
             # Read and parse Markdown content
             markdown_content = self.read_content_md()
@@ -540,7 +563,7 @@ export const contentMenu: ContentMenu = {json_content};
             
             # Summary
             total_chapters = sum(len(unit['chapters']) for unit in units)
-            print(f"✅ Generated content-menu.ts from CONTENT.md successfully!")
+            print(f"✅ Generated {output_file_name} from CONTENT.md successfully!")
             print(f"📊 Structure: {len(units)} units, {total_chapters} chapters")
             print(f"🔗 Generated consistent URL patterns and data paths")
             print(f"🎯 TypeScript module with type safety")
@@ -549,6 +572,7 @@ export const contentMenu: ContentMenu = {json_content};
             
         except Exception as e:
             logger.error(f"Generation failed: {e}")
+            log_exception_details(e, "Generation process encountered an error")
             return False
 
 def main():
@@ -559,7 +583,7 @@ def main():
     if success:
         print(f"📍 Output: {generator.output_path}")
     else:
-        print("❌ Failed to generate content-menu.ts from CONTENT.md")
+        print(f"❌ Failed to generate {output_file_name} from CONTENT.md")
         sys.exit(1)
 
 if __name__ == "__main__":
