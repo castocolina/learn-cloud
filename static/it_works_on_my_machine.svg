@@ -1,0 +1,9 @@
+<svg width="256" height="192" xmlns="http://www.w3.org/2000/svg">
+  <rect width="256" height="192" fill="#6B7280" />
+  <text x="128" y="96" font-family="Arial, sans-serif" font-size="14" fill="white" text-anchor="middle" dominant-baseline="middle">
+    🛠️ It Works On My Machine
+  </text>
+  <text x="128" y="120" font-family="Arial, sans-serif" font-size="12" fill="#D1D5DB" text-anchor="middle" dominant-baseline="middle">
+    Content is being prepared...
+  </text>
+</svg>

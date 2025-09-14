@@ -21,11 +21,11 @@
 		shuffledCards = [...content.studyGuide.flashcards];
 	});
 
-	const currentCard = $derived(shuffledCards[currentCardIndex]);
+	const currentCard = $derived(shuffledCards[currentCardIndex] || null);
 	const totalCards = $derived(shuffledCards.length);
 	const canGoNext = $derived(currentCardIndex < totalCards - 1);
 	const canGoPrevious = $derived(currentCardIndex > 0);
-	const progress = $derived(((currentCardIndex + 1) / totalCards) * 100);
+	const progress = $derived(totalCards > 0 ? ((currentCardIndex + 1) / totalCards) * 100 : 0);
 
 	function nextCard() {
 		if (canGoNext) {
@@ -130,6 +130,7 @@
 	</header>
 
 	<!-- Flashcard -->
+	{#if currentCard}
 	<main class="flashcard-container">
 		<button
 			class="flashcard"
@@ -166,7 +167,7 @@
 		</button>
 
 		<!-- Card tags -->
-		{#if currentCard.tags?.length}
+		{#if currentCard?.tags?.length}
 			<div class="card-tags">
 				{#each currentCard.tags as tag (tag)}
 					<span class="tag">{tag}</span>
@@ -174,6 +175,11 @@
 			</div>
 		{/if}
 	</main>
+	{:else}
+	<div class="p-8 text-center">
+		<p class="text-lg text-muted-foreground">No flashcards available</p>
+	</div>
+	{/if}
 
 	<!-- Navigation -->
 	<footer class="navigation-controls">

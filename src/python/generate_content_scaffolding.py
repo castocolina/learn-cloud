@@ -113,7 +113,10 @@ CONTENT_LENGTHS = {
     "flashcard_answer": 400,
     "objective": 50,
     "requirement": 100,
-    "deliverable": 80
+    "deliverable": 80,
+    "code_comment": 120,
+    "diagram_title": 60,
+    "diagram_caption": 150
 }
 
 # Minimum content requirements for different content types
@@ -124,7 +127,101 @@ MINIMUM_REQUIREMENTS = {
     "exam_questions": 10,
     "project_sections": 4,
     "project_requirements": 5,
-    "project_deliverables": 3
+    "project_deliverables": 3,
+    "code_blocks_per_lesson": 2,
+    "diagrams_per_lesson": 2,
+    "code_lines_min": 10,
+    "code_lines_max": 30
+}
+
+# Code language templates and contexts for cloud-native development
+CODE_LANGUAGES = {
+    "javascript": {
+        "contexts": ["Node.js APIs", "Express middleware", "Event handling", "Async operations"],
+        "templates": [
+            "microservice_api", "event_handler", "middleware", "async_processing"
+        ]
+    },
+    "typescript": {
+        "contexts": ["SvelteKit components", "API clients", "Type definitions", "React hooks"],
+        "templates": [
+            "svelte_component", "api_client", "type_definitions", "react_component"
+        ]
+    },
+    "rust": {
+        "contexts": ["Async web servers", "CLI tools", "Performance-critical services", "System programming"],
+        "templates": [
+            "axum_handler", "cli_application", "async_service", "performance_optimization"
+        ]
+    },
+    "java": {
+        "contexts": ["Spring Boot microservices", "Reactive programming", "JPA entities", "REST controllers"],
+        "templates": [
+            "spring_controller", "reactive_service", "jpa_entity", "configuration_class"
+        ]
+    },
+    "python": {
+        "contexts": ["FastAPI services", "Data processing", "AWS Lambda functions", "Django APIs"],
+        "templates": [
+            "fastapi_endpoint", "data_processor", "lambda_function", "django_view"
+        ]
+    },
+    "go": {
+        "contexts": ["Concurrent services", "gRPC servers", "Container tools", "CLI applications"],
+        "templates": [
+            "grpc_server", "concurrent_worker", "cli_tool", "http_handler"
+        ]
+    },
+    "graphql": {
+        "contexts": ["Schema definitions", "Resolvers", "Subscriptions", "Federation"],
+        "templates": [
+            "schema_definition", "resolver_function", "subscription_handler", "federated_schema"
+        ]
+    },
+    "sql": {
+        "contexts": ["DynamoDB queries", "Neptune Gremlin", "PostgreSQL optimization", "Complex joins"],
+        "templates": [
+            "dynamodb_query", "gremlin_traversal", "postgres_optimization", "complex_join"
+        ]
+    },
+    "yaml": {
+        "contexts": ["Kubernetes manifests", "Docker Compose", "CI/CD pipelines", "Helm charts"],
+        "templates": [
+            "k8s_deployment", "docker_compose", "github_actions", "helm_template"
+        ]
+    },
+    "dockerfile": {
+        "contexts": ["Multi-stage builds", "Security hardening", "Optimization", "Production setup"],
+        "templates": [
+            "multistage_build", "security_hardened", "optimized_image", "production_ready"
+        ]
+    },
+    "bash": {
+        "contexts": ["DevOps automation", "Deployment scripts", "Monitoring tools", "CI/CD helpers"],
+        "templates": [
+            "deployment_script", "monitoring_setup", "automation_tool", "ci_helper"
+        ]
+    }
+}
+
+# Diagram types and their contexts for cloud-native architectures
+DIAGRAM_TYPES = {
+    "architecture": {
+        "contexts": ["Microservices architecture", "Cloud infrastructure", "System components", "Service mesh"],
+        "templates": ["microservices_arch", "cloud_infrastructure", "system_overview", "service_mesh"]
+    },
+    "sequence": {
+        "contexts": ["API interactions", "Service communication", "Authentication flow", "Data processing"],
+        "templates": ["api_sequence", "service_communication", "auth_flow", "data_pipeline"]
+    },
+    "flowchart": {
+        "contexts": ["Business processes", "CI/CD pipelines", "Decision trees", "Data flow"],
+        "templates": ["business_process", "cicd_pipeline", "decision_flow", "data_transformation"]
+    },
+    "network": {
+        "contexts": ["Network topology", "Security zones", "Load balancing", "Traffic routing"],
+        "templates": ["network_topology", "security_architecture", "load_balancer", "traffic_flow"]
+    }
 }
 
 # =============================================================================
