@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { browser } from "$app/environment";
-	import type { Diagram } from "$data/types";
+	import type { DiagramBlock } from "$data/types";
 	import { Maximize, CircleAlert } from "lucide-svelte";
 
 	interface Props {
-		diagram: Diagram;
+		diagram: DiagramBlock;
 		class?: string;
 	}
 
@@ -155,7 +155,17 @@
 		aria-label="Expanded diagram view"
 		tabindex="-1"
 	>
-		<div class="diagram-modal" onclick={(e) => e.stopPropagation()} role="document">
+		<div
+			class="diagram-modal"
+			onclick={(e) => e.stopPropagation()}
+			onkeydown={(e) => {
+				if (e.key === 'Escape') {
+					toggleExpanded();
+				}
+			}}
+			role="document"
+			tabindex="-1"
+		>
 			<button
 				class="modal-close"
 				onclick={toggleExpanded}

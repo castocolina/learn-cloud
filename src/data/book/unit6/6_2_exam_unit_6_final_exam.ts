@@ -1,10 +1,13 @@
 import type { ExamContent, Quiz, QuizQuestion } from "../../types";
+import { ContentStatus } from "../../types";
 
 // Generated exam content for: 6.2: Unit 6 Final Exam
+// STATUS: This is scaffolded content - replace with real educational material
 export const examContent: ExamContent = {
 	type: "exam",
 	title: "6.2: Unit 6 Final Exam",
 	summary: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization,",
+	status: ContentStatus.SCAFFOLD,
 	exam: {
 		passingScore: 75,
 		questions: [

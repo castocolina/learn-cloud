@@ -17,19 +17,33 @@ The platform uses a modern component-based architecture with TypeScript interfac
 
 #### TypeScript Interface Hierarchy
 
-All content types inherit from a base interface, following object-oriented principles:
+All content types inherit from a base interface with content lifecycle tracking:
 
 ```typescript
-// Base interface with common properties
+// Content lifecycle status tracking
+export enum ContentStatus {
+  SCAFFOLD = 'scaffold',
+  DRAFT = 'draft',
+  FINAL = 'final'
+}
+
+// Base interface with common properties and status tracking
 export interface BaseContent {
 	title: string;
 	summary: string;
+	status?: ContentStatus; // Track content maturity from scaffold to final
+}
+
+// Consolidated section interface for all content types
+export interface ContentSection {
+	title?: string;
+	content: ContentBlock[];
 }
 
 // Specific content types extending the base
 export interface LessonContent extends BaseContent {
 	type: "lesson";
-	sections: ContentSection[];
+	sections: ContentSection[]; // Uses consolidated content section system
 	prerequisites?: string[];
 	estimatedTime?: number;
 	learningObjectives?: string[];
@@ -90,15 +104,18 @@ src/data/
 
 ### Content Types and Formats
 
-#### 1. Lessons
+#### 1. Lessons - Flexible Content Block System
 
-**Format**: TypeScript objects implementing `LessonContent` interface
+**Format**: TypeScript objects implementing `LessonContent` interface with flexible section composition
+
+The new lesson format supports **narrative-driven content composition** where text, code, diagrams, and callouts can be interleaved freely within sections for natural storytelling flow.
 
 ```typescript
 export const lessonExample: LessonContent = {
 	type: "lesson",
 	title: "Development Environment & Tooling",
 	summary: "Brief description of the lesson content",
+	status: "draft", // Content lifecycle tracking: scaffold | draft | final
 	estimatedTime: 45,
 	prerequisites: ["Docker basics", "Command line familiarity"],
 	learningObjectives: [
@@ -108,33 +125,176 @@ export const lessonExample: LessonContent = {
 	],
 	sections: [
 		{
-			heading: "Section Title",
-			paragraphs: ["Rich HTML content with proper formatting"],
-			codeBlocks: [
+			title: "Getting Started with Cloud-Native Development",
+			content: [
 				{
+					type: "paragraph",
+					content: "Cloud-native development requires a comprehensive understanding of containerization and orchestration. Let's start with the fundamentals."
+				},
+				{
+					type: "code",
 					language: "typescript",
-					code: 'const example = "syntax highlighted code";',
-					title: "Optional title",
-					filename: "example.ts"
-				}
-			],
-			diagrams: [
+					code: 'const config = {\n  environment: "development",\n  containerRuntime: "docker"\n};',
+					title: "Basic Configuration",
+					filename: "config.ts"
+				},
 				{
-					type: "mermaid",
-					definition: "graph TD\n    A --> B",
-					title: "Architecture Diagram",
-					caption: "System overview"
-				}
-			],
-			callouts: [
+					type: "paragraph",
+					content: "The configuration above demonstrates how to set up basic environment parameters. Notice how we define the container runtime explicitly."
+				},
 				{
-					type: "info",
-					title: "Important Note",
-					content: "Additional information or warnings"
+					type: "callout",
+					calloutType: "info",
+					title: "Pro Tip",
+					content: "Always validate your configuration in development before deploying to production environments."
+				},
+				{
+					type: "diagram",
+					diagramType: "mermaid",
+					definition: "graph TD\n    A[Developer] --> B[Docker]\n    B --> C[Container]\n    C --> D[Kubernetes]",
+					title: "Development Workflow",
+					caption: "From code to orchestrated deployment"
+				},
+				{
+					type: "paragraph",
+					content: "This workflow diagram shows the progression from development through containerization to orchestration. Each step builds upon the previous one."
 				}
 			]
 		}
 	]
+};
+```
+
+**Key Benefits of the Flexible System:**
+
+- **🔄 Narrative Flow**: Content blocks can be arranged in any logical order
+- **📚 Natural Storytelling**: Introduce concepts, show code, explain, then visualize
+- **🎯 Contextual Learning**: Code examples followed immediately by explanations
+- **⚡ Dynamic Composition**: Same block types reused in different arrangements
+- **🔧 Content Lifecycle**: Status tracking from scaffold through final publication
+
+### Content Status Management System
+
+All content items now include a `status` field to track their maturity and quality level throughout the development lifecycle:
+
+```typescript
+export type ContentStatus = 'scaffold' | 'draft' | 'final';
+```
+
+#### Status Lifecycle
+
+1. **📝 Scaffold** (`scaffold`)
+   - **Purpose**: Auto-generated placeholder content from tooling
+   - **Quality**: Basic structure with lorem ipsum or template content
+   - **Usage**: Starting point for content development
+   - **Validation**: Minimal - ensures proper TypeScript interface compliance
+
+2. **✏️ Draft** (`draft`)
+   - **Purpose**: Content under active development with real educational material
+   - **Quality**: Educational value present but may need refinement
+   - **Usage**: Content being written, reviewed, or tested
+   - **Validation**: Moderate - checks for educational completeness
+
+3. **✅ Final** (`final`)
+   - **Purpose**: Production-ready content approved for learners
+   - **Quality**: High educational value, thoroughly reviewed and tested
+   - **Usage**: Published content ready for student consumption
+   - **Validation**: Comprehensive - full quality assurance passed
+
+#### Status Transition Guidelines
+
+- **Scaffold → Draft**: Replace template content with real educational material
+- **Draft → Final**: Complete editorial review, technical accuracy check, and user testing
+- **Quality Gates**: Each transition should meet specific quality criteria
+- **Rollback**: Content can be moved back to previous status if issues are discovered
+
+### TypeScript Enum Utilization for Type Safety
+
+To enhance type safety and maintainability, the platform now uses TypeScript `enum`s for all predefined value sets. This approach eliminates ambiguities, reduces errors, and provides better IntelliSense support.
+
+#### ContentStatus Enum
+
+```typescript
+/**
+ * Content lifecycle status tracking for content maturity management
+ */
+export enum ContentStatus {
+  SCAFFOLD = 'scaffold',
+  DRAFT = 'draft',
+  FINAL = 'final'
+}
+```
+
+**Usage in Interfaces:**
+```typescript
+export interface BaseContent {
+  title: string;
+  summary: string;
+  status?: ContentStatus; // Type-safe status tracking
+}
+```
+
+#### ContentDifficulty Enum
+
+```typescript
+/**
+ * Content difficulty levels for educational content classification
+ */
+export enum ContentDifficulty {
+  BEGINNER = 'beginner',
+  INTERMEDIATE = 'intermediate',
+  ADVANCED = 'advanced'
+}
+```
+
+**Usage in Interfaces:**
+```typescript
+export interface ProjectContent extends BaseContent {
+  difficulty?: ContentDifficulty; // Type-safe difficulty classification
+}
+```
+
+#### MermaidDirection Enum
+
+```typescript
+/**
+ * Mermaid diagram direction options for visual flow representation
+ */
+export enum MermaidDirection {
+  TB = 'TB', // Top-Bottom
+  LR = 'LR', // Left-Right
+  BT = 'BT', // Bottom-Top
+  RL = 'RL'  // Right-Left
+}
+```
+
+**Usage in Interfaces:**
+```typescript
+export interface DiagramBlock {
+  type: 'diagram';
+  diagramType: "mermaid" | "flowchart" | "sequence" | "gantt" | "gitgraph";
+  definition: string;
+  direction?: MermaidDirection; // Type-safe diagram orientation
+}
+```
+
+#### Benefits of Enum-Based Type Safety
+
+- **Compile-time Validation**: Catch invalid values at compile time
+- **IntelliSense Support**: Auto-completion for valid enum values
+- **Refactoring Safety**: Confident code changes with type checking
+- **Documentation**: Self-documenting code with clear value meanings
+- **Consistency**: Standardized values across the entire codebase
+
+#### Implementation Example
+
+```typescript
+export const exampleLesson: LessonContent = {
+	type: "lesson",
+	title: "Container Orchestration Fundamentals",
+	summary: "Learn the core concepts of container orchestration with Kubernetes",
+	status: "draft", // Clearly indicates development stage
+	// ... rest of lesson content
 };
 ```
 
@@ -180,6 +340,8 @@ export const studyGuideExample: StudyGuideContent = {
   - **Responsive**: Adapts to available screen space
 - **Mobile Optimization**: Responsive scaling for all screen sizes
 - **Integration**: Use standard Mermaid.js with custom expand functionality
+
+**Mobile-First Guideline**: To optimize readability on mobile devices, prioritize the `LR` (Left-to-Right) direction for diagrams with more than 5 nodes. This orientation facilitates vertical rendering, ideal for narrow screens. `TB` (Top-to-Bottom) may suffice for basic diagrams.
 
 #### Code Highlighting
 

@@ -332,7 +332,7 @@ class MarkdownContentGenerator:
         return f"{match.group(1)}: {chapter_title}"
 
     def create_chapter_object(self, content_type: str, chapter_num: str, unit_num: str, title: str, extracted_icon: str) -> Dict[str, Any]:
-        """Create a chapter object with consistent structure."""
+        """Create a chapter object with consistent structure and enum type reference."""
         chapter_id = chapter_num.replace('.', '_')
 
         # Extract title for slug generation based on content type
@@ -344,13 +344,29 @@ class MarkdownContentGenerator:
         # Determine icon
         chapter_icon = extracted_icon or self.get_icon_for_content(content_type, title)
 
+        # Map content_type to ChapterType enum reference
+        chapter_type_enum = self._chapter_type_enum(content_type)
+
         return {
             'title': title,
             'icon': chapter_icon,
-            'type': content_type,
+            'type': chapter_type_enum,  # Directly set as enum reference string
             'chapter_link': chapter_link_path,
             'chapter_data': chapter_data_path
         }
+
+    def _chapter_type_enum(self, content_type: str) -> str:
+        """Map content_type string to ChapterType enum reference for TypeScript output."""
+        # Map Python type to TS enum member
+        mapping = {
+            'lesson': 'LESSON',
+            'study_guide': 'STUDY_GUIDE',
+            'quiz': 'QUIZ',
+            'exam': 'EXAM',
+            'project': 'PROJECT',
+            'unit': 'UNIT',
+        }
+        return f"ChapterType.{mapping.get(content_type, content_type.upper())}"
 
     def _extract_title_for_slug(self, content_type: str, title: str, unit_num: str) -> str:
         """Extract appropriate title for slug generation based on content type."""
@@ -486,7 +502,7 @@ class MarkdownContentGenerator:
         return slug.strip('_')
 
     def generate_typescript_module(self, units: List[Dict[str, Any]], metadata: Dict[str, str]) -> str:
-        """Generate TypeScript module content from parsed units and metadata."""
+        """Generate TypeScript module content from parsed units and metadata, with enum references."""
         content_structure = {
             'metadata': {
                 'generated_by': 'generate_content_menu.py',
@@ -499,16 +515,19 @@ class MarkdownContentGenerator:
             },
             'units': units
         }
-        
-        # Convert to TypeScript module format
+
+        # Dump JSON, then replace quoted enum references with raw enum (e.g., "ChapterType.LESSON" -> ChapterType.LESSON)
         json_content = json.dumps(content_structure, indent=2, ensure_ascii=False)
-        
+        import re as _re
+        json_content = _re.sub(r'"(ChapterType\.[A-Z_]+)"', r'\1', json_content)
+
         # Create TypeScript module with proper import and export
         typescript_content = f"""import type {{ ContentMenu }} from './types.js';
+import {{ ChapterType }} from './types.js';
 
 export const contentMenu: ContentMenu = {json_content};
 """
-        
+
         return typescript_content
 
     def ensure_output_directory(self):

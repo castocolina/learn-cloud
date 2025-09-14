@@ -134,93 +134,98 @@ MINIMUM_REQUIREMENTS = {
     "code_lines_max": 30
 }
 
-# Code language templates and contexts for cloud-native development
+# Code language templates with configurations for cloud-native development
 CODE_LANGUAGES = {
     "javascript": {
-        "contexts": ["Node.js APIs", "Express middleware", "Event handling", "Async operations"],
-        "templates": [
-            "microservice_api", "event_handler", "middleware", "async_processing"
-        ]
+        "name": "JavaScript",
+        "extension": "js",
+        "comments": "//",
+        "contexts": ["Node.js APIs", "Express middleware", "Event handling", "Async operations"]
     },
     "typescript": {
-        "contexts": ["SvelteKit components", "API clients", "Type definitions", "React hooks"],
-        "templates": [
-            "svelte_component", "api_client", "type_definitions", "react_component"
-        ]
+        "name": "TypeScript",
+        "extension": "ts",
+        "comments": "//",
+        "contexts": ["SvelteKit components", "API clients", "Type definitions", "React hooks"]
     },
     "rust": {
-        "contexts": ["Async web servers", "CLI tools", "Performance-critical services", "System programming"],
-        "templates": [
-            "axum_handler", "cli_application", "async_service", "performance_optimization"
-        ]
+        "name": "Rust",
+        "extension": "rs",
+        "comments": "//",
+        "contexts": ["Async web servers", "CLI tools", "Performance-critical services", "System programming"]
     },
     "java": {
-        "contexts": ["Spring Boot microservices", "Reactive programming", "JPA entities", "REST controllers"],
-        "templates": [
-            "spring_controller", "reactive_service", "jpa_entity", "configuration_class"
-        ]
+        "name": "Java",
+        "extension": "java",
+        "comments": "//",
+        "contexts": ["Spring Boot microservices", "Reactive programming", "JPA entities", "REST controllers"]
     },
     "python": {
-        "contexts": ["FastAPI services", "Data processing", "AWS Lambda functions", "Django APIs"],
-        "templates": [
-            "fastapi_endpoint", "data_processor", "lambda_function", "django_view"
-        ]
+        "name": "Python",
+        "extension": "py",
+        "comments": "#",
+        "contexts": ["FastAPI services", "Data processing", "AWS Lambda functions", "Django APIs"]
     },
     "go": {
-        "contexts": ["Concurrent services", "gRPC servers", "Container tools", "CLI applications"],
-        "templates": [
-            "grpc_server", "concurrent_worker", "cli_tool", "http_handler"
-        ]
+        "name": "Go",
+        "extension": "go",
+        "comments": "//",
+        "contexts": ["Concurrent services", "gRPC servers", "Container tools", "CLI applications"]
     },
     "graphql": {
-        "contexts": ["Schema definitions", "Resolvers", "Subscriptions", "Federation"],
-        "templates": [
-            "schema_definition", "resolver_function", "subscription_handler", "federated_schema"
-        ]
+        "name": "GraphQL",
+        "extension": "graphql",
+        "comments": "#",
+        "contexts": ["Schema definitions", "Resolvers", "Subscriptions", "Federation"]
     },
     "sql": {
-        "contexts": ["DynamoDB queries", "Neptune Gremlin", "PostgreSQL optimization", "Complex joins"],
-        "templates": [
-            "dynamodb_query", "gremlin_traversal", "postgres_optimization", "complex_join"
-        ]
+        "name": "SQL",
+        "extension": "sql",
+        "comments": "--",
+        "contexts": ["DynamoDB queries", "Neptune Gremlin", "PostgreSQL optimization", "Complex joins"]
     },
     "yaml": {
-        "contexts": ["Kubernetes manifests", "Docker Compose", "CI/CD pipelines", "Helm charts"],
-        "templates": [
-            "k8s_deployment", "docker_compose", "github_actions", "helm_template"
-        ]
+        "name": "YAML",
+        "extension": "yaml",
+        "comments": "#",
+        "contexts": ["Kubernetes manifests", "Docker Compose", "CI/CD pipelines", "Helm charts"]
     },
     "dockerfile": {
-        "contexts": ["Multi-stage builds", "Security hardening", "Optimization", "Production setup"],
-        "templates": [
-            "multistage_build", "security_hardened", "optimized_image", "production_ready"
-        ]
+        "name": "Docker",
+        "extension": "",
+        "comments": "#",
+        "filename": "Dockerfile",
+        "contexts": ["Multi-stage builds", "Security hardening", "Optimization", "Production setup"]
     },
     "bash": {
-        "contexts": ["DevOps automation", "Deployment scripts", "Monitoring tools", "CI/CD helpers"],
-        "templates": [
-            "deployment_script", "monitoring_setup", "automation_tool", "ci_helper"
-        ]
+        "name": "Bash",
+        "extension": "sh",
+        "comments": "#",
+        "contexts": ["DevOps automation", "Deployment scripts", "Monitoring tools", "CI/CD helpers"]
     }
 }
 
 # Diagram types and their contexts for cloud-native architectures
 DIAGRAM_TYPES = {
     "architecture": {
-        "contexts": ["Microservices architecture", "Cloud infrastructure", "System components", "Service mesh"],
-        "templates": ["microservices_arch", "cloud_infrastructure", "system_overview", "service_mesh"]
+        "title": "System Architecture Diagram",
+        "description": "Microservices architecture overview",
+        "contexts": ["Microservices architecture", "Cloud infrastructure", "System components", "Service mesh"]
     },
     "sequence": {
-        "contexts": ["API interactions", "Service communication", "Authentication flow", "Data processing"],
-        "templates": ["api_sequence", "service_communication", "auth_flow", "data_pipeline"]
+        "title": "Sequence Diagram",
+        "description": "Service interaction flow",
+        "contexts": ["API interactions", "Service communication", "Authentication flow", "Data processing"]
     },
     "flowchart": {
-        "contexts": ["Business processes", "CI/CD pipelines", "Decision trees", "Data flow"],
-        "templates": ["business_process", "cicd_pipeline", "decision_flow", "data_transformation"]
+        "title": "Process Flowchart",
+        "description": "Business process flow",
+        "contexts": ["Business processes", "CI/CD pipelines", "Decision trees", "Data flow"]
     },
     "network": {
-        "contexts": ["Network topology", "Security zones", "Load balancing", "Traffic routing"],
-        "templates": ["network_topology", "security_architecture", "load_balancer", "traffic_flow"]
+        "title": "Network Topology",
+        "description": "Network architecture overview",
+        "contexts": ["Network topology", "Security zones", "Load balancing", "Traffic routing"]
     }
 }
 
@@ -257,9 +262,261 @@ def extract_lorem_text(length: int) -> str:
     return text
 
 
+def generate_code_block_new_format() -> Dict[str, Any]:
+    """Generate a code block in the new polymorphic format."""
+    import random
+
+    language = random.choice(list(CODE_LANGUAGES.keys()))
+    config = CODE_LANGUAGES[language]
+
+    # Simple code templates - you can enhance these
+    if language == "javascript":
+        code = '''// Microservice API endpoint
+const express = require('express');
+const app = express();
+
+app.use(express.json());
+
+app.post('/api/users', async (req, res) => {
+    try {
+        const userData = req.body;
+        // This is an intentionally long line that exceeds 150 columns to demonstrate code formatting and line wrapping in development environments
+        const user = await userService.createUser(userData);
+        res.status(201).json({ success: true, user });
+    } catch (error) {
+        console.error('User creation failed:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});'''
+
+    elif language == "rust":
+        code = '''use axum::{Json, response::Json as ResponseJson};
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct CreateUserRequest {
+    pub email: String,
+    pub name: String,
+    pub role: String,
+}
+
+// POST /api/users endpoint handler with comprehensive error handling and validation for cloud-native microservices architecture
+pub async fn create_user(Json(payload): Json<CreateUserRequest>) -> Result<ResponseJson<User>, AppError> {
+    let user = User::new(payload.email, payload.name, payload.role)?;
+    let created_user = user_service.create(&user).await?;
+    Ok(ResponseJson(created_user))
+}'''
+
+    elif language == "java":
+        code = '''@RestController
+@RequestMapping("/api/users")
+public class UserController {
+
+    @Autowired
+    private UserService userService;
+
+    // Create user endpoint with comprehensive validation and error handling for enterprise microservices architecture
+    @PostMapping
+    public ResponseEntity<UserResponse> createUser(@RequestBody @Valid CreateUserRequest request) {
+        try {
+            User user = userService.createUser(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(new UserResponse(user));
+        } catch (ValidationException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+    }
+}'''
+
+    else:
+        # Generic template
+        code = f'''# {config["name"]} example
+# This demonstrates basic {language} concepts
+# for cloud-native development
+
+def main():
+    config = load_configuration()
+    service = CloudService(config)
+
+    try:
+        # This is an intentionally long line that exceeds 150 columns to demonstrate code formatting and line wrapping practices
+        result = service.deploy_application()
+        print(f'Deployment successful: {{result}}')
+    except Exception as e:
+        print(f'Error: {{e}}')
+
+if __name__ == '__main__':
+    main()'''
+
+    return {
+        'type': 'code',
+        'language': language,
+        'code': code,
+        'title': f"{config['name']} Example",
+        'filename': config.get('filename', f'example.{config["extension"]}')
+    }
+
+# Keep legacy function for backward compatibility
+def generate_code_block() -> Dict[str, str]:
+    """Generate a simple code block with basic content (legacy format)."""
+    block = generate_code_block_new_format()
+    return {
+        'language': block['language'],
+        'code': block['code'],
+        'title': block['title'],
+        'filename': block['filename']
+    }
+
+
+def generate_diagram_block_new_format() -> Dict[str, Any]:
+    """Generate a diagram block in the new polymorphic format."""
+    import random
+
+    diagram_type = random.choice(list(DIAGRAM_TYPES.keys()))
+    config = DIAGRAM_TYPES[diagram_type]
+
+    if diagram_type == 'architecture':
+        definition = '''graph TB
+    subgraph "Client Layer"
+        Web[Web App]
+        Mobile[Mobile App]
+    end
+
+    subgraph "Load Balancer"
+        ALB[Application Load Balancer]
+    end
+
+    subgraph "Kubernetes Cluster"
+        API[API Service]
+        DB[Database Service]
+    end
+
+    Web --> ALB
+    Mobile --> ALB
+    ALB --> API
+    API --> DB'''
+
+    elif diagram_type == 'sequence':
+        definition = '''sequenceDiagram
+    participant User
+    participant App
+    participant API
+    participant DB
+
+    User->>App: Request
+    App->>API: HTTP Call
+    API->>DB: Query
+    DB-->>API: Results
+    API-->>App: Response
+    App-->>User: Display'''
+
+    else:
+        definition = '''flowchart TD
+    Start([Start Process])
+    Check{Check Status}
+    Deploy[Deploy Container]
+    Success([Success])
+
+    Start --> Check
+    Check -->|Ready| Deploy
+    Check -->|Not Ready| Start
+    Deploy --> Success'''
+
+    return {
+        'type': 'diagram',
+        'diagramType': 'DiagramType.MERMAID',  # Using enum value
+        'definition': definition,
+        'title': config['title'],
+        'caption': config['description']
+    }
+
+# Keep legacy function for backward compatibility
+def generate_diagram() -> Dict[str, str]:
+    """Generate a simple Mermaid diagram (legacy format)."""
+    block = generate_diagram_block_new_format()
+    return {
+        'type': 'mermaid',
+        'definition': block['definition'],
+        'title': block['title'],
+        'caption': block['caption']
+    }
+
+
+def generate_paragraph_block(length: int = None) -> Dict[str, Any]:
+    """Generate a paragraph block in the new polymorphic format."""
+    import random
+    if length is None:
+        length = CONTENT_LENGTHS.get('paragraph', 500)
+
+    return {
+        'type': 'paragraph',
+        'content': extract_lorem_text(length)
+    }
+
+
+def generate_callout_block() -> Dict[str, Any]:
+    """Generate a callout block in the new polymorphic format."""
+    import random
+
+    # Only use strict enum references for calloutType
+    callout_types = [
+        "CalloutType.INFO",
+        "CalloutType.WARNING",
+        "CalloutType.DANGER",
+        "CalloutType.SUCCESS"
+    ]
+    callout_enum = random.choice(callout_types)
+    titles = {
+        "CalloutType.INFO": ["Important Note", "Key Concept", "Remember"],
+        "CalloutType.WARNING": ["Caution", "Be Careful", "Warning"],
+        "CalloutType.DANGER": ["Critical", "Danger", "Stop"],
+        "CalloutType.SUCCESS": ["Pro Tip", "Best Practice", "Success"]
+    }
+    return {
+        'type': 'callout',
+        'calloutType': callout_enum,
+        'title': random.choice(titles[callout_enum]),
+        'content': extract_lorem_text(CONTENT_LENGTHS.get('explanation', 200))
+    }
+
+
+def generate_flexible_section_content() -> List[Dict[str, Any]]:
+    """Generate flexible content blocks for a section with interleaved narrative flow."""
+    import random
+
+    content_blocks = []
+
+    # Start with introductory paragraph
+    content_blocks.append(generate_paragraph_block(CONTENT_LENGTHS.get('paragraph', 500)))
+
+    # Add code block (30% chance)
+    if random.random() < 0.3:
+        content_blocks.append(generate_code_block_new_format())
+
+    # Follow with explanatory paragraph
+    content_blocks.append(generate_paragraph_block(CONTENT_LENGTHS.get('paragraph', 400)))
+
+    # Add callout (40% chance)
+    if random.random() < 0.4:
+        content_blocks.append(generate_callout_block())
+
+    # Add diagram (20% chance)
+    if random.random() < 0.2:
+        content_blocks.append(generate_diagram_block_new_format())
+        # Add explanation after diagram
+        content_blocks.append(generate_paragraph_block(300))
+
+    # End with concluding paragraph
+    content_blocks.append(generate_paragraph_block(CONTENT_LENGTHS.get('paragraph', 350)))
+
+    return content_blocks
+
+
 def parse_content_menu() -> Dict[str, Any]:
     """
     Parse the content-menu.ts file and extract the contentMenu object.
+
+    This function handles the TypeScript enum references and converts them to strings
+    that can be processed by the Python script.
 
     Returns:
         Parsed content menu structure as dictionary
@@ -277,71 +534,19 @@ def parse_content_menu() -> Dict[str, Any]:
         with open(content_menu_path, 'r', encoding='utf-8') as f:
             content = f.read()
 
-        # Extract the contentMenu object - simpler approach using eval
-        # Find the start and end of the object
-        start_pattern = r'export\s+const\s+contentMenu:\s*ContentMenu\s*=\s*'
-        match = re.search(start_pattern, content)
-
-        if not match:
-            raise ValueError("Could not find contentMenu export in content-menu.ts")
-
-        start_pos = match.end()
-
-        # Find the matching closing brace
-        brace_count = 0
-        end_pos = start_pos
-        for i, char in enumerate(content[start_pos:], start_pos):
-            if char == '{':
-                brace_count += 1
-            elif char == '}':
-                brace_count -= 1
-                if brace_count == 0:
-                    end_pos = i + 1
-                    break
-
-        if brace_count != 0:
-            raise ValueError("Could not find matching closing brace for contentMenu object")
-
-        object_str = content[start_pos:end_pos]
-
-        # Simple approach: convert TS-like object to Python dict format
-        # Replace double quotes and property names
-        json_str = object_str
-        json_str = re.sub(r'(\w+):\s*', r'"\1": ', json_str)  # Quote property names
-        json_str = re.sub(r',(\s*[}\]])', r'\1', json_str)  # Remove trailing commas
-
-        # Handle string values that might not be quoted
-        lines = json_str.split('\n')
-        processed_lines = []
-
-        for line in lines:
-            # If line contains a string value that's not quoted, quote it
-            if ':' in line and not re.search(r':\s*["\[\{]', line.strip()):
-                # This is a string value that needs quotes
-                line = re.sub(r':\s*([^,\n\]\}]+)', r': "\1"', line)
-            processed_lines.append(line)
-
-        json_str = '\n'.join(processed_lines)
-
-        return eval(json_str)  # Use eval for TypeScript-like syntax
+        # Use the manual extraction approach since it's more reliable for TypeScript parsing
+        return extract_content_structure_manually(content)
 
     except Exception as e:
-        # If parsing fails, let's try a simpler extraction approach
-        try:
-            # Extract just the units array and essential metadata
-            units_match = re.search(r'"units":\s*\[(.*?)\]', content, re.DOTALL)
-            if units_match:
-                # Create a simplified structure by manually extracting key information
-                return extract_content_structure_manually(content)
-            else:
-                raise ValueError(f"Could not extract units from content menu: {e}")
-        except Exception as e2:
-            raise ValueError(f"Failed to parse content menu structure: {e}. Fallback also failed: {e2}")
+        raise ValueError(f"Failed to parse content menu structure: {e}")
 
 
 def extract_content_structure_manually(content: str) -> Dict[str, Any]:
     """
     Manually extract the content structure using regex patterns.
+
+    This function properly handles TypeScript enum references and extracts
+    the nested units and chapters structure.
 
     Args:
         content: Full content of the TypeScript file
@@ -358,12 +563,50 @@ def extract_content_structure_manually(content: str) -> Dict[str, Any]:
         "units": []
     }
 
-    # Extract all unit blocks
-    unit_pattern = r'\{\s*"title":\s*"([^"]+)"[^}]*?"unit_data":\s*"([^"]+)"[^}]*?"chapters":\s*\[(.*?)\]\s*\}'
-    unit_matches = re.findall(unit_pattern, content, re.DOTALL)
+    # Extract units array content
+    units_pattern = r'"units":\s*\[(.*?)\]\s*}\s*;'
+    units_match = re.search(units_pattern, content, re.DOTALL)
 
-    for unit_match in unit_matches:
-        unit_title, unit_data, chapters_content = unit_match
+    if not units_match:
+        logger.warning("Could not find units array in content menu")
+        return result
+
+    units_content = units_match.group(1)
+
+    # Split units by looking for unit objects
+    # Each unit starts with { and contains "title", "unit_data", and "chapters"
+    unit_objects = []
+    brace_count = 0
+    current_unit = ""
+    in_unit = False
+
+    for char in units_content:
+        if char == '{' and not in_unit:
+            in_unit = True
+            brace_count = 1
+            current_unit = char
+        elif in_unit:
+            current_unit += char
+            if char == '{':
+                brace_count += 1
+            elif char == '}':
+                brace_count -= 1
+                if brace_count == 0:
+                    unit_objects.append(current_unit)
+                    current_unit = ""
+                    in_unit = False
+
+    # Process each unit object
+    for unit_content in unit_objects:
+        # Extract unit title
+        title_match = re.search(r'"title":\s*"([^"]+)"', unit_content)
+        if not title_match:
+            continue
+        unit_title = title_match.group(1)
+
+        # Extract unit data path
+        unit_data_match = re.search(r'"unit_data":\s*"([^"]+)"', unit_content)
+        unit_data = unit_data_match.group(1) if unit_data_match else ""
 
         unit = {
             "title": unit_title,
@@ -371,25 +614,76 @@ def extract_content_structure_manually(content: str) -> Dict[str, Any]:
             "chapters": []
         }
 
-        # Extract chapters from the chapters content
-        chapter_pattern = r'\{\s*"title":\s*"([^"]+)"[^}]*?"type":\s*"([^"]+)"[^}]*?"chapter_data":\s*"([^"]+)"[^}]*?\}'
-        chapter_matches = re.findall(chapter_pattern, chapters_content)
+        # Extract chapters array
+        chapters_pattern = r'"chapters":\s*\[(.*?)\]'
+        chapters_match = re.search(chapters_pattern, unit_content, re.DOTALL)
 
-        for chapter_match in chapter_matches:
-            chapter_title, chapter_type, chapter_data = chapter_match
+        if chapters_match:
+            chapters_content = chapters_match.group(1)
 
-            chapter = {
-                "title": chapter_title,
-                "type": chapter_type,
-                "chapter_data": chapter_data
-            }
+            # Split chapters by looking for chapter objects
+            chapter_objects = []
+            brace_count = 0
+            current_chapter = ""
+            in_chapter = False
 
-            unit["chapters"].append(chapter)
+            for char in chapters_content:
+                if char == '{' and not in_chapter:
+                    in_chapter = True
+                    brace_count = 1
+                    current_chapter = char
+                elif in_chapter:
+                    current_chapter += char
+                    if char == '{':
+                        brace_count += 1
+                    elif char == '}':
+                        brace_count -= 1
+                        if brace_count == 0:
+                            chapter_objects.append(current_chapter)
+                            current_chapter = ""
+                            in_chapter = False
+
+            # Process each chapter object
+            for chapter_content in chapter_objects:
+                # Extract chapter title
+                chapter_title_match = re.search(r'"title":\s*"([^"]+)"', chapter_content)
+                if not chapter_title_match:
+                    continue
+                chapter_title = chapter_title_match.group(1)
+
+                # Extract chapter type (handle enum references)
+                chapter_type_match = re.search(r'"type":\s*(ChapterType\.[A-Z_]+|"[^"]+")', chapter_content)
+                if chapter_type_match:
+                    chapter_type_raw = chapter_type_match.group(1)
+                    # Convert enum reference to string
+                    if chapter_type_raw.startswith('ChapterType.'):
+                        chapter_type = chapter_type_raw.split('.')[1].lower()
+                    else:
+                        # Remove quotes if present
+                        chapter_type = chapter_type_raw.strip('"')
+                else:
+                    chapter_type = "lesson"  # default fallback
+
+                # Extract chapter data path
+                chapter_data_match = re.search(r'"chapter_data":\s*"([^"]+)"', chapter_content)
+                if not chapter_data_match:
+                    continue
+                chapter_data = chapter_data_match.group(1)
+
+                chapter = {
+                    "title": chapter_title,
+                    "type": chapter_type,
+                    "chapter_data": chapter_data
+                }
+
+                unit["chapters"].append(chapter)
 
         result["units"].append(unit)
 
     result["metadata"]["total_units"] = len(result["units"])
     result["metadata"]["total_chapters"] = sum(len(unit["chapters"]) for unit in result["units"])
+
+    logger.info(f"Extracted {result['metadata']['total_units']} units with {result['metadata']['total_chapters']} total chapters")
 
     return result
 
@@ -469,11 +763,11 @@ def generate_typescript_import(content_type: str, file_path: str) -> str:
         TypeScript import statement
     """
     type_mapping = {
-        "lesson": "LessonContent, ContentSection, CodeBlock, Diagram",
-        "quiz": "QuizContent, Quiz, QuizQuestion",
-        "study_guide": "StudyGuideContent, StudyGuide, Flashcard",
-        "exam": "ExamContent, Quiz, QuizQuestion",
-        "project": "ProjectContent, ContentSection, CodeBlock, Diagram"
+        "lesson": "LessonContent, ContentSection, ContentBlock, ParagraphBlock, CodeBlock, DiagramBlock, CalloutBlock, ContentStatus, DiagramType, CalloutType",
+        "quiz": "QuizContent, Quiz, QuizQuestion, ContentStatus",
+        "study_guide": "StudyGuideContent, StudyGuide, Flashcard, ContentStatus",
+        "exam": "ExamContent, Quiz, QuizQuestion, ContentStatus",
+        "project": "ProjectContent, ContentSection, ContentBlock, ParagraphBlock, CodeBlock, DiagramBlock, CalloutBlock, ContentStatus, ContentDifficulty, DiagramType, CalloutType"
     }
 
     types = type_mapping.get(content_type, "ContentData")
@@ -490,7 +784,23 @@ def generate_typescript_import(content_type: str, file_path: str) -> str:
         # Default case for files directly in src/data/
         import_path = "./types"
 
-    return f'import type {{ {types} }} from "{import_path}";'
+    # Separate type imports from value imports
+    type_imports = []
+    value_imports = []
+
+    for type_name in types.split(', '):
+        if type_name in ['ContentStatus', 'ContentDifficulty', 'DiagramType', 'CalloutType', 'ChapterType']:
+            value_imports.append(type_name)
+        else:
+            type_imports.append(type_name)
+
+    import_statements = []
+    if type_imports:
+        import_statements.append(f'import type {{ {", ".join(type_imports)} }} from "{import_path}";')
+    if value_imports:
+        import_statements.append(f'import {{ {", ".join(value_imports)} }} from "{import_path}";')
+
+    return '\n'.join(import_statements)
 
 
 # =============================================================================
@@ -499,60 +809,54 @@ def generate_typescript_import(content_type: str, file_path: str) -> str:
 
 def generate_lesson_template(title: str, path: str) -> str:
     """
-    Generate a TypeScript lesson content template.
+    Generate a TypeScript lesson content template using the new flexible content block system.
+
+    This generates content with the new polymorphic structure where sections contain
+    interleaved content blocks (paragraphs, code, diagrams, callouts) for natural narrative flow.
 
     Args:
         title: Lesson title from content menu
         path: File path for context in generated content
 
     Returns:
-        Complete TypeScript file content for a lesson
+        Complete TypeScript file content for a lesson with 'scaffold' status
     """
+    import random
+
     summary = extract_lorem_text(CONTENT_LENGTHS["summary"])
 
-    # Generate multiple sections
+    # Generate multiple sections with flexible content
     sections = []
     section_count = MINIMUM_REQUIREMENTS["lesson_sections"]
 
     for i in range(section_count):
-        section = {
-            "heading": f"Section {i+1}: Core Concepts",
-            "paragraphs": [
-                extract_lorem_text(CONTENT_LENGTHS["paragraph"]),
-                extract_lorem_text(CONTENT_LENGTHS["long_paragraph"])
-            ]
-        }
-        sections.append(section)
+        section_title = f"Section {i+1}: Core Concepts"
+        content_blocks = generate_flexible_section_content()
 
-    # Format sections as TypeScript
-    sections_ts = "[\n"
-    for i, section in enumerate(sections):
-        sections_ts += f"\t\t{{\n"
-        sections_ts += f'\t\t\theading: "{section["heading"]}",\n'
-        sections_ts += f'\t\t\tparagraphs: [\n'
-        for paragraph in section["paragraphs"]:
-            sections_ts += f'\t\t\t\t"{paragraph}",\n'
-        sections_ts += f'\t\t\t]\n'
-        sections_ts += f"\t\t}}"
-        if i < len(sections) - 1:
-            sections_ts += ","
-        sections_ts += "\n"
-    sections_ts += "\t]"
+        sections.append({
+            "title": section_title,
+            "content": content_blocks
+        })
+
+    # Format sections as TypeScript with polymorphic content blocks
+    sections_ts = format_flexible_sections_for_typescript(sections)
 
     # Generate learning objectives
     objectives = []
     for i in range(4):
-        objectives.append(extract_lorem_text(CONTENT_LENGTHS["objective"]))
+        objectives.append(extract_lorem_text(CONTENT_LENGTHS.get("objective", 50)))
 
     objectives_ts = '[\n\t\t' + ',\n\t\t'.join([f'"{obj}"' for obj in objectives]) + '\n\t]'
 
     return f'''{generate_typescript_import("lesson", path)}
 
 // Generated lesson content for: {title}
+// STATUS: This is scaffolded content - replace with real educational material
 export const lessonContent: LessonContent = {{
 	type: "lesson",
 	title: "{title}",
 	summary: "{summary}",
+	status: ContentStatus.SCAFFOLD,
 	estimatedTime: 45,
 	prerequisites: [
 		"Basic understanding of cloud computing concepts",
@@ -563,6 +867,74 @@ export const lessonContent: LessonContent = {{
 	sections: {sections_ts}
 }};
 '''
+
+
+def format_flexible_sections_for_typescript(sections: List[Dict[str, Any]]) -> str:
+    """Format flexible sections with polymorphic content blocks for TypeScript output."""
+    sections_ts = "[\n"
+
+    for i, section in enumerate(sections):
+        sections_ts += f"\t\t{{\n"
+        sections_ts += f'\t\t\ttitle: "{section["title"]}",\n'
+        sections_ts += f'\t\t\tcontent: [\n'
+
+        # Format each content block
+        for j, block in enumerate(section["content"]):
+            sections_ts += format_content_block_for_typescript(block, indent_level=3)
+            if j < len(section["content"]) - 1:
+                sections_ts += ","
+            sections_ts += "\n"
+
+        sections_ts += "\t\t\t]\n"
+        sections_ts += "\t\t}"
+        if i < len(sections) - 1:
+            sections_ts += ","
+        sections_ts += "\n"
+
+    sections_ts += "\t]"
+    return sections_ts
+
+
+def format_content_block_for_typescript(block: Dict[str, Any], indent_level: int = 3) -> str:
+    """Format a single content block for TypeScript output."""
+    indent = "\t" * indent_level
+
+    if block["type"] == "paragraph":
+        escaped_content = block["content"].replace('\\', '\\\\').replace('"', '\\"')
+        return f'{indent}{{\n{indent}\ttype: "paragraph",\n{indent}\tcontent: "{escaped_content}"\n{indent}}}'
+
+    elif block["type"] == "code":
+        escaped_code = block["code"].replace('\\', '\\\\').replace('`', '\\`').replace('${', '\\${')
+        return f'''{indent}{{
+{indent}\ttype: "code",
+{indent}\tlanguage: "{block["language"]}",
+{indent}\tcode: `{escaped_code}`,
+{indent}\ttitle: "{block["title"]}",
+{indent}\tfilename: "{block["filename"]}"
+{indent}}}'''
+
+    elif block["type"] == "diagram":
+        escaped_def = block["definition"].replace('\\', '\\\\').replace('`', '\\`').replace('${', '\\${')
+        return f'''{indent}{{
+{indent}\ttype: "diagram",
+{indent}\tdiagramType: {block["diagramType"]},
+{indent}\tdefinition: `{escaped_def}`,
+{indent}\ttitle: "{block["title"]}",
+{indent}\tcaption: "{block["caption"]}"
+{indent}}}'''
+
+    elif block["type"] == "callout":
+        escaped_content = block["content"].replace('\\', '\\\\').replace('"', '\\"')
+        return f'''{indent}{{
+{indent}\ttype: "callout",
+{indent}\tcalloutType: {block["calloutType"]},
+{indent}\ttitle: "{block["title"]}",
+{indent}\tcontent: "{escaped_content}"
+{indent}}}'''
+
+    else:
+        # Fallback for unknown block types
+        return f'{indent}// Unknown block type: {block.get("type", "undefined")}'
 
 
 def generate_quiz_template(title: str, path: str) -> str:
@@ -616,10 +988,12 @@ def generate_quiz_template(title: str, path: str) -> str:
     return f'''{generate_typescript_import("quiz", path)}
 
 // Generated quiz content for: {title}
+// STATUS: This is scaffolded content - replace with real educational material
 export const quizContent: QuizContent = {{
 	type: "quiz",
 	title: "{title}",
 	summary: "{summary}",
+	status: ContentStatus.SCAFFOLD,
 	quiz: {{
 		passingScore: 70,
 		questions: {questions_ts}
@@ -667,10 +1041,12 @@ def generate_study_guide_template(title: str, path: str) -> str:
     return f'''{generate_typescript_import("study_guide", path)}
 
 // Generated study guide content for: {title}
+// STATUS: This is scaffolded content - replace with real educational material
 export const studyGuideContent: StudyGuideContent = {{
 	type: "study_guide",
 	title: "{title}",
 	summary: "{summary}",
+	status: ContentStatus.SCAFFOLD,
 	studyGuide: {{
 		description: "{summary}",
 		minimumCards: {card_count},
@@ -731,10 +1107,12 @@ def generate_exam_template(title: str, path: str) -> str:
     return f'''{generate_typescript_import("exam", path)}
 
 // Generated exam content for: {title}
+// STATUS: This is scaffolded content - replace with real educational material
 export const examContent: ExamContent = {{
 	type: "exam",
 	title: "{title}",
 	summary: "{summary}",
+	status: ContentStatus.SCAFFOLD,
 	exam: {{
 		passingScore: 75,
 		questions: {questions_ts}
@@ -752,54 +1130,41 @@ export const examContent: ExamContent = {{
 
 def generate_project_template(title: str, path: str) -> str:
     """
-    Generate a TypeScript project content template.
+    Generate a TypeScript project content template using the new flexible content block system.
 
     Args:
         title: Project title from content menu
         path: File path for context in generated content
 
     Returns:
-        Complete TypeScript file content for a project
+        Complete TypeScript file content for a project with 'scaffold' status
     """
     summary = extract_lorem_text(CONTENT_LENGTHS["summary"])
 
-    # Generate project sections
+    # Generate project sections with flexible content
     sections = []
     section_count = MINIMUM_REQUIREMENTS["project_sections"]
 
     for i in range(section_count):
-        section = {
-            "heading": f"Phase {i+1}: Implementation Details",
-            "paragraphs": [
-                extract_lorem_text(CONTENT_LENGTHS["paragraph"]),
-                extract_lorem_text(CONTENT_LENGTHS["long_paragraph"])
-            ]
-        }
-        sections.append(section)
+        section_title = f"Phase {i+1}: Implementation Details"
+        content_blocks = generate_flexible_section_content()
 
-    # Format sections as TypeScript
-    sections_ts = "[\n"
-    for i, section in enumerate(sections):
-        sections_ts += f"\t\t{{\n"
-        sections_ts += f'\t\t\theading: "{section["heading"]}",\n'
-        sections_ts += f'\t\t\tparagraphs: [\n'
-        for paragraph in section["paragraphs"]:
-            sections_ts += f'\t\t\t\t"{paragraph}",\n'
-        sections_ts += f'\t\t\t]\n'
-        sections_ts += f"\t\t}}"
-        if i < len(sections) - 1:
-            sections_ts += ","
-        sections_ts += "\n"
-    sections_ts += "\t]"
+        sections.append({
+            "title": section_title,
+            "content": content_blocks
+        })
+
+    # Format sections as TypeScript with polymorphic content blocks
+    sections_ts = format_flexible_sections_for_typescript(sections)
 
     # Generate requirements and deliverables
     requirements = []
     for i in range(MINIMUM_REQUIREMENTS["project_requirements"]):
-        requirements.append(extract_lorem_text(CONTENT_LENGTHS["requirement"]))
+        requirements.append(extract_lorem_text(CONTENT_LENGTHS.get("requirement", 100)))
 
     deliverables = []
     for i in range(MINIMUM_REQUIREMENTS["project_deliverables"]):
-        deliverables.append(extract_lorem_text(CONTENT_LENGTHS["deliverable"]))
+        deliverables.append(extract_lorem_text(CONTENT_LENGTHS.get("deliverable", 80)))
 
     requirements_ts = '[\n\t\t' + ',\n\t\t'.join([f'"{req}"' for req in requirements]) + '\n\t]'
     deliverables_ts = '[\n\t\t' + ',\n\t\t'.join([f'"{del_}"' for del_ in deliverables]) + '\n\t]'
@@ -807,12 +1172,14 @@ def generate_project_template(title: str, path: str) -> str:
     return f'''{generate_typescript_import("project", path)}
 
 // Generated project content for: {title}
+// STATUS: This is scaffolded content - replace with real educational material
 export const projectContent: ProjectContent = {{
 	type: "project",
 	title: "{title}",
 	summary: "{summary}",
+	status: ContentStatus.SCAFFOLD,
 	estimatedHours: 20,
-	difficulty: "intermediate",
+	difficulty: ContentDifficulty.INTERMEDIATE,
 	technologies: [
 		"Docker",
 		"Kubernetes",
@@ -905,10 +1272,24 @@ def process_unit_content(unit_data: Dict[str, Any]) -> int:
 
                         # Get the appropriate generator for this content type
                         content_type = chapter.get("type", "lesson")
+                        # Enforce strict enum reference for ChapterType
+                        chapter_type_enum_map = {
+                            "lesson": "ChapterType.LESSON",
+                            "study_guide": "ChapterType.STUDY_GUIDE",
+                            "quiz": "ChapterType.QUIZ",
+                            "exam": "ChapterType.EXAM",
+                            "project": "ChapterType.PROJECT"
+                        }
+                        # Patch chapter type for output
+                        chapter_type_enum = chapter_type_enum_map.get(content_type, "ChapterType.LESSON")
+                        # Patch chapter dict for generator
+                        patched_chapter = chapter.copy()
+                        patched_chapter["type"] = chapter_type_enum
+
                         generator = get_content_generator(content_type)
 
                         # Generate content
-                        content = generator(chapter["title"], chapter_file_path)
+                        content = generator(patched_chapter["title"], chapter_file_path)
 
                         with open(chapter_file_path, 'w', encoding='utf-8') as f:
                             f.write(content)
