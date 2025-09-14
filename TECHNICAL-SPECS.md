@@ -279,9 +279,10 @@ pnpm run build    # Production build
 
 ### Overview
 
-The content generation system automatically parses `CONTENT.md` and produces `src/data/content-menu.json`, which serves as the single source of truth for the book's navigation structure.
+The content generation system automatically parses `CONTENT.md` and produces `src/data/content-menu.ts`, which serves as the single source of truth for the book's navigation structure.
 
 **Generation Command**:
+
 ```bash
 make generate-content-menu
 # or directly:
@@ -291,11 +292,13 @@ python3 src/python/generate_content_menu.py
 ### Recent Fixes (September 2025)
 
 **Problem 1: Chapter Parsing Validation Failure**
+
 - **Issue**: Script was finding units but zero chapters, causing "Parsed structure validation failed" error
 - **Root Cause**: Regex patterns expected `*` bullet points but CONTENT.md uses `-` bullet points
 - **Fix**: Updated all regex patterns from `^\*\s+` to `^-\s+` to match actual markdown format
 
 **Problem 2: Hardcoded Metadata**
+
 - **Issue**: Site title and description were hardcoded in the Python script
 - **Root Cause**: Metadata generation was not dynamic, making it difficult to maintain consistency
 - **Fix**: Added `extract_metadata_from_markdown()` function that:
@@ -309,14 +312,15 @@ python3 src/python/generate_content_menu.py
 
 **Input**: `CONTENT.md` (Book content structure in Markdown)
 
-**Output**: `src/data/content-menu.json` (Structured JSON for navigation)
+**Output**: `src/data/content-menu.ts` (Structured TypeScript module for navigation)
 
 **Generated Structure**:
+
 ```json
 {
   "metadata": {
     "generated_by": "generate_content_menu.py",
-    "source": "CONTENT.md", 
+    "source": "CONTENT.md",
     "version": "1.0.0",
     "title": "[Dynamically extracted from CONTENT.md]",
     "description": "[Generated based on content analysis]",
@@ -328,20 +332,65 @@ python3 src/python/generate_content_menu.py
 ```
 
 **Parsing Logic**:
+
 - **Units**: Matched by `## Unit X: Title [icon: IconName]` pattern
-- **Chapters**: Matched by `- **X.Y: Title** [icon: IconName]` pattern 
+- **Chapters**: Matched by `- **X.Y: Title** [icon: IconName]` pattern
 - **Special Content**: Study guides, quizzes, exams, and projects are handled separately
 - **Icons**: Extracted from `[icon: IconName]` metadata or use intelligent fallbacks
 
 ### Validation Requirements
 
 The script includes comprehensive validation that ensures:
+
 - All units have required fields (title, icon, description, exam_link)
 - All chapters have required fields (title, icon, chapter_link, type)
 - No units are empty (must contain at least one chapter)
 - Generated file paths follow consistent URL patterns
 
 **Success Metrics**: Script must generate 9 units with 119+ chapters and pass validation
+
+### Data Generation Patterns
+
+**TypeScript-First Approach**: As of September 2025, generated data should be created as typed TypeScript modules rather than JSON files to ensure end-to-end type safety.
+
+**Migration from JSON to TypeScript Modules**:
+
+- **Old Approach**: Generated `src/data/content-menu.json` and required manual type casting in application code
+- **New Approach**: Generate `src/data/content-menu.ts` with proper TypeScript imports and exports
+- **Benefits**: Full type safety, better IDE support, compile-time error detection
+
+**Implementation Pattern**:
+
+```typescript
+// Generated TypeScript module structure:
+import type { ContentMenu } from './types.js';
+
+export const contentMenu: ContentMenu = {
+  metadata: { ... },
+  units: [ ... ]
+};
+```
+
+**Python Generator Updates**:
+
+- Output path changed from `.json` to `.ts`
+- File content includes TypeScript import statement
+- Data exported as typed constant instead of raw JSON
+- Core parsing logic remains unchanged
+
+**Application Integration**:
+
+```typescript
+// Before: JSON import with type casting
+import contentMenuData from "$lib/../data/content-menu.json";
+const contentMenu: ContentMenu = contentMenuData as ContentMenu;
+
+// After: Direct typed import
+import { contentMenu } from "$lib/../data/content-menu.js";
+// contentMenu is already properly typed
+```
+
+This pattern should be applied to all future data generation systems to maintain consistent type safety throughout the application.
 
 ---
 

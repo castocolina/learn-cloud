@@ -4,7 +4,7 @@ A comprehensive guide to modern cloud-native development covering Python and Go 
 
 ---
 
-## Unit 1: Python for Cloud-Native Backend Development [icon: PythonIcon]
+## Unit 1: Python for Cloud-Native Backend Development [icon: Box]
 
 - **1.1: Development Environment & Tooling** [icon: Settings]
   - Setup: Installing Python with `pyenv`.
@@ -61,7 +61,7 @@ A comprehensive guide to modern cloud-native development covering Python and Go 
 - **1.10: Project: Building a Microservice in Python** [icon: Rocket]
 - **1.11: Unit 1 Final Exam** [icon: Target]
 
-## Unit 2: Go for Cloud-Native Backend Development [icon: GoIcon]
+## Unit 2: Go for Cloud-Native Backend Development [icon: Cpu]
 
 - **2.1: Development Environment & Tooling** [icon: Settings]
   - Setup: Installing the Go toolchain & project structure.

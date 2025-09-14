@@ -168,3 +168,35 @@ export function createContentWithMetadata(
 ): ContentWithMetadata {
 	return { metadata, content };
 }
+
+// Content menu structure interfaces
+export interface ContentMenuChapter {
+	title: string;
+	icon: string;
+	type: "lesson" | "study_guide" | "quiz" | "exam" | "project";
+	chapter_link: string;
+	chapter_data: string;
+}
+
+export interface ContentMenuUnit {
+	title: string;
+	icon: string;
+	unit_link: string;
+	unit_data: string;
+	chapters: ContentMenuChapter[];
+}
+
+export interface ContentMenuMetadata {
+	generated_by: string;
+	source: string;
+	version: string;
+	title: string;
+	description: string;
+	total_units: number;
+	total_chapters: number;
+}
+
+export interface ContentMenu {
+	metadata: ContentMenuMetadata;
+	units: ContentMenuUnit[];
+}

@@ -110,8 +110,8 @@ dev-tools: ## Install additional development tools
 	@echo "✅ Development tools installed"
 
 # Content management
-generate-content-menu: ## Generate content-menu.json from CONTENT.md
-	@echo "🔄 Generating content-menu.json from CONTENT.md..."
+generate-content-menu: ## Generate content-menu.ts from CONTENT.md
+	@echo "🔄 Generating content-menu.ts from CONTENT.md..."
 	@python3 src/python/generate_content_menu.py
 	@echo "✅ Content generation complete!"
 

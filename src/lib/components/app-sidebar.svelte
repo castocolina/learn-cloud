@@ -1,180 +1,27 @@
-<script lang="ts" module>
-	// sample data
-
-	// This is sample data.
-	const data = {
-		navMain: [
-			{
-				title: "Demo",
-				url: "#",
-				items: [
-					{
-						title: "Overview",
-						url: "/demo"
-					},
-					{
-						title: "Container Orchestration Lesson",
-						url: "/demo/lesson"
-					},
-					{
-						title: "Cloud-Native Quiz",
-						url: "/demo/quiz"
-					},
-					{
-						title: "Architecture Study Guide",
-						url: "/demo/study-guide"
-					}
-				]
-			},
-			{
-				title: "Getting Started",
-				url: "#",
-				items: [
-					{
-						title: "Installation",
-						url: "#"
-					},
-					{
-						title: "Project Structure",
-						url: "#"
-					}
-				]
-			},
-			{
-				title: "Building Your Application",
-				url: "#",
-				items: [
-					{
-						title: "Routing",
-						url: "#"
-					},
-					{
-						title: "Data Fetching",
-						url: "#",
-						isActive: true
-					},
-					{
-						title: "Rendering",
-						url: "#"
-					},
-					{
-						title: "Caching",
-						url: "#"
-					},
-					{
-						title: "Styling",
-						url: "#"
-					},
-					{
-						title: "Optimizing",
-						url: "#"
-					},
-					{
-						title: "Configuring",
-						url: "#"
-					},
-					{
-						title: "Testing",
-						url: "#"
-					},
-					{
-						title: "Authentication",
-						url: "#"
-					},
-					{
-						title: "Deploying",
-						url: "#"
-					},
-					{
-						title: "Upgrading",
-						url: "#"
-					},
-					{
-						title: "Examples",
-						url: "#"
-					}
-				]
-			},
-			{
-				title: "API Reference",
-				url: "#",
-				items: [
-					{
-						title: "Components",
-						url: "#"
-					},
-					{
-						title: "File Conventions",
-						url: "#"
-					},
-					{
-						title: "Functions",
-						url: "#"
-					},
-					{
-						title: "next.config.js Options",
-						url: "#"
-					},
-					{
-						title: "CLI",
-						url: "#"
-					},
-					{
-						title: "Edge Runtime",
-						url: "#"
-					}
-				]
-			},
-			{
-				title: "Architecture",
-				url: "#",
-				items: [
-					{
-						title: "Accessibility",
-						url: "#"
-					},
-					{
-						title: "Fast Refresh",
-						url: "#"
-					},
-					{
-						title: "Next.js Compiler",
-						url: "#"
-					},
-					{
-						title: "Supported Browsers",
-						url: "#"
-					},
-					{
-						title: "Turbopack",
-						url: "#"
-					}
-				]
-			},
-			{
-				title: "Community",
-				url: "#",
-				items: [
-					{
-						title: "Contribution Guide",
-						url: "#"
-					}
-				]
-			}
-		]
-	};
-</script>
-
 <script lang="ts">
 	import SearchForm from "./search-form.svelte";
 	import * as Collapsible from "$lib/components/ui/collapsible/index.js";
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
-	import GalleryVerticalEndIcon from "@lucide/svelte/icons/gallery-vertical-end";
+	import BookOpenIcon from "@lucide/svelte/icons/book-open";
 	import MinusIcon from "@lucide/svelte/icons/minus";
 	import PlusIcon from "@lucide/svelte/icons/plus";
 	import type { ComponentProps } from "svelte";
+	import { getIconComponent } from "$lib/utils/icon-mapping.js";
+	import { contentMenu } from "$lib/../data/content-menu.js";
 
 	let { ref = $bindable(null), ...restProps }: ComponentProps<typeof Sidebar.Root> = $props();
+
+	// Track which units are open - start with first unit open
+	let openUnits = $state<Set<number>>(new Set([0]));
+
+	function toggleUnit(unitIndex: number) {
+		if (openUnits.has(unitIndex)) {
+			openUnits.delete(unitIndex);
+		} else {
+			openUnits.add(unitIndex);
+		}
+		openUnits = new Set(openUnits);
+	}
 </script>
 
 <Sidebar.Root bind:ref {...restProps}>
@@ -183,15 +30,14 @@
 			<Sidebar.MenuItem>
 				<Sidebar.MenuButton size="lg">
 					{#snippet child({ props })}
-						<a href="##" {...props}>
+						<a href="/" {...props}>
 							<div
 								class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
 							>
-								<GalleryVerticalEndIcon class="size-4" />
+								<BookOpenIcon class="size-4" />
 							</div>
 							<div class="flex flex-col gap-0.5 leading-none">
-								<span class="font-medium">Documentation</span>
-								<span class="">v1.0.0</span>
+								<span class="font-medium">{contentMenu.metadata.title}</span>
 							</div>
 						</a>
 					{/snippet}
@@ -203,26 +49,64 @@
 	<Sidebar.Content>
 		<Sidebar.Group>
 			<Sidebar.Menu>
-				{#each data.navMain as item, index (item.title)}
-					<Collapsible.Root open={index === 0} class="group/collapsible">
+				{#each contentMenu.units as unit, unitIndex (unit.title)}
+					<Collapsible.Root open={openUnits.has(unitIndex)} class="group/collapsible">
 						<Sidebar.MenuItem>
-							<Collapsible.Trigger>
-								{#snippet child({ props })}
-									<Sidebar.MenuButton {...props}>
-										{item.title}
-										<PlusIcon class="ml-auto group-data-[state=open]/collapsible:hidden" />
-										<MinusIcon class="ml-auto group-data-[state=closed]/collapsible:hidden" />
-									</Sidebar.MenuButton>
-								{/snippet}
-							</Collapsible.Trigger>
-							{#if item.items?.length}
+							<div class="flex items-center gap-1">
+								<!-- Unit title as clickeable link -->
+								<a
+									href="/{unit.unit_link}"
+									class="flex flex-1 items-center gap-3 rounded-md px-3 py-3 text-sm font-medium hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+								>
+									{#if getIconComponent(unit.icon)}
+										{@const IconComponent = getIconComponent(unit.icon)}
+										<IconComponent class="size-5" />
+									{/if}
+									<span class="text-sm leading-tight font-medium">{unit.title}</span>
+								</a>
+
+								<!-- Separate collapse/expand button -->
+								<Collapsible.Trigger>
+									{#snippet child({ props })}
+										<button
+											{...props}
+											onclick={() => toggleUnit(unitIndex)}
+											class="flex h-10 w-10 items-center justify-center rounded-md hover:bg-sidebar-accent"
+											aria-label={openUnits.has(unitIndex) ? "Collapse unit" : "Expand unit"}
+										>
+											<PlusIcon class="size-5 group-data-[state=open]/collapsible:hidden" />
+											<MinusIcon class="size-5 group-data-[state=closed]/collapsible:hidden" />
+										</button>
+									{/snippet}
+								</Collapsible.Trigger>
+							</div>
+							{#if unit.chapters?.length}
 								<Collapsible.Content>
 									<Sidebar.MenuSub>
-										{#each item.items as subItem (subItem.title)}
+										{#each unit.chapters as chapter (chapter.title)}
 											<Sidebar.MenuSubItem>
-												<Sidebar.MenuSubButton isActive={subItem.isActive}>
+												<Sidebar.MenuSubButton>
 													{#snippet child({ props })}
-														<a href={subItem.url} {...props}>{subItem.title}</a>
+														<a
+															href="/{chapter.chapter_link}"
+															{...props}
+															class="flex w-full items-center gap-3 px-3 py-2"
+														>
+															{#if getIconComponent(chapter.icon)}
+																{@const ChapterIconComponent = getIconComponent(chapter.icon)}
+																<ChapterIconComponent class="size-4" />
+															{/if}
+															<span class="flex-1 text-sm leading-relaxed">{chapter.title}</span>
+															{#if chapter.type === "quiz"}
+																<span class="ml-auto text-sm text-muted-foreground">Quiz</span>
+															{:else if chapter.type === "study_guide"}
+																<span class="ml-auto text-sm text-muted-foreground">Study</span>
+															{:else if chapter.type === "exam"}
+																<span class="ml-auto text-sm text-muted-foreground">Exam</span>
+															{:else if chapter.type === "project"}
+																<span class="ml-auto text-sm text-muted-foreground">Project</span>
+															{/if}
+														</a>
 													{/snippet}
 												</Sidebar.MenuSubButton>
 											</Sidebar.MenuSubItem>

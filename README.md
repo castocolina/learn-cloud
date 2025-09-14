@@ -95,7 +95,7 @@ make clean           # Clean build artifacts
 │   ├── data/              # Content data (JSON format)
 │   │   ├── unit1/         # Unit-specific content
 │   │   ├── unit2/         # ...
-│   │   └── content-menu.json
+│   │   └── content-menu.ts
 │   ├── lib/               # Shared utilities and components
 │   ├── routes/            # SvelteKit routes
 │   └── app.html           # HTML template
@@ -119,7 +119,7 @@ All educational content is stored as structured JSON files in `src/data/`:
 
 ### Content Standards
 
-- Titles must match `content-menu.json` exactly
+- Titles must match `content-menu.ts` exactly
 - Minimum 6 flashcards per study guide
 - Quiz pools: 1.5x display questions (show 5, store 8+)
 - Exam pools: 1.5x display questions (show 20, store 30+)

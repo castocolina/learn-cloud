@@ -84,7 +84,7 @@ src/data/
 │   ├── exam_python_for_cloud_native_backend_development.json
 │   └── ...
 ├── unit2/
-├── content-menu.json (navigation structure - source of truth)
+├── content-menu.ts (navigation structure - source of truth)
 └── ...
 ```
 
@@ -300,7 +300,7 @@ export const quizExample: QuizContent = {
 
 #### Content Guidelines
 
-- **Consistency**: All titles must match exactly with `content-menu.json`
+- **Consistency**: All titles must match exactly with `content-menu.ts`
 - **Clarity**: Use clear, concise language appropriate for experienced programmers new to cloud-native
 - **Structure**: Follow hierarchical information architecture
 - **Interactivity**: Include practical examples and hands-on exercises
@@ -314,7 +314,7 @@ export const quizExample: QuizContent = {
 
 ### Content Navigation Structure
 
-The `src/data/content-menu.json` file serves as the single source of truth for:
+The `src/data/content-menu.ts` file serves as the single source of truth for:
 
 - Unit organization and metadata
 - Chapter sequencing and types
@@ -431,7 +431,7 @@ import LessonRenderer from '$lib/components/content/LessonRenderer.svelte';
 
 - [ ] JSON syntax validation
 - [ ] Required fields present
-- [ ] Content matches `content-menu.json` structure
+- [ ] Content matches `content-menu.ts` structure
 - [ ] Minimum question/flashcard requirements met
 - [ ] Links and references functional
 - [ ] Content follows technical writing standards
