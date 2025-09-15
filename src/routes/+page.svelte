@@ -1,11 +1,10 @@
 <script lang="ts">
 	import AppSidebar from "$lib/components/app-sidebar.svelte";
-	import * as Breadcrumb from "$lib/components/ui/breadcrumb/index.js";
-	import { Separator } from "$lib/components/ui/separator/index.js";
 	import * as Sidebar from "$lib/components/ui/sidebar/index.js";
 
 	// Import content store and components
 	import { contentStore } from "$lib/stores/content.js";
+	import Header from "$lib/components/ui/header/Header.svelte";
 	import {
 		isLessonContent,
 		isQuizContent,
@@ -148,40 +147,7 @@
 <Sidebar.Provider>
 	<AppSidebar />
 	<Sidebar.Inset>
-		<header class="sticky flex h-16 shrink-0 items-center gap-2 border-b px-4">
-			<Sidebar.Trigger class="-ml-1" />
-			<Separator orientation="vertical" class="mr-2 data-[orientation=vertical]:h-4" />
-			<Breadcrumb.Root>
-				<Breadcrumb.List>
-					<!-- First breadcrumb segment -->
-					<Breadcrumb.Item>
-						{#if breadcrumbData.isHomepage}
-							<!-- Homepage: Site title only, disabled link -->
-							<Breadcrumb.Page id="bread-1-unit">{breadcrumbData.unitName}</Breadcrumb.Page>
-						{:else if breadcrumbData.canNavigateToUnit}
-							<!-- Content page: Unit name is clickable, goes to unit overview -->
-							<Breadcrumb.Link id="bread-1-unit" href={breadcrumbData.unitHref || "#"} onclick={navigateToUnit}>
-								{breadcrumbData.unitName}
-							</Breadcrumb.Link>
-						{:else if breadcrumbData.showUnit}
-							<!-- Unit overview: Unit name is current page -->
-							<Breadcrumb.Page id="bread-1-unit">{breadcrumbData.unitName}</Breadcrumb.Page>
-						{:else}
-							<!-- Fallback: Show site title -->
-							<Breadcrumb.Page id="bread-1-unit">{breadcrumbData.unitName}</Breadcrumb.Page>
-						{/if}
-					</Breadcrumb.Item>
-
-					<!-- Second breadcrumb segment (only on content pages) -->
-					{#if breadcrumbData.showChapter}
-						<Breadcrumb.Separator />
-						<Breadcrumb.Item>
-							<Breadcrumb.Page id="bread-2-chapter">{breadcrumbData.chapterName}</Breadcrumb.Page>
-						</Breadcrumb.Item>
-					{/if}
-				</Breadcrumb.List>
-			</Breadcrumb.Root>
-		</header>
+		<Header className="border-b" {breadcrumbData} {navigateToUnit} />
 		<div id="content" class="flex flex-1 flex-col gap-4 p-4">
 			{#if $contentStore.showWelcome}
 				<!-- Welcome Screen -->
