@@ -39,32 +39,32 @@ export const lessonContent: LessonContent = {
 						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
 				},
 				{
-					type: "code",
-					language: "graphql",
-					code: `# GraphQL example
-# This demonstrates basic graphql concepts
-# for cloud-native development
+					type: "paragraph",
+					content:
+						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
+				},
+				{
+					type: "diagram",
+					diagramType: DiagramType.MERMAID,
+					definition: `sequenceDiagram
+    participant "Client" as Client
+    participant "API Gateway" as API
+    participant "Auth Service" as Auth
+    participant "Database" as DB
 
-def main():
-    config = load_configuration()
-    service = CloudService(config)
-
-    try:
-        # This is an intentionally long line that exceeds 150 columns to demonstrate code formatting and line wrapping practices
-        result = service.deploy_application()
-        print(f'Deployment successful: {result}')
-    except Exception as e:
-        print(f'Error: {e}')
-
-if __name__ == '__main__':
-    main()`,
-					title: "GraphQL Example",
-					filename: "example.graphql"
+    Client->>API: "API Request"
+    API->>Auth: "Validate Token"
+    Auth-->>API: "Token Valid"
+    API->>DB: "Database Query"
+    DB-->>API: "Query Results"
+    API-->>Client: "JSON Response"`,
+					title: "Sequence Diagram",
+					caption: "Service interaction flow"
 				},
 				{
 					type: "paragraph",
 					content:
-						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
+						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
 				},
 				{
 					type: "paragraph",
@@ -82,32 +82,40 @@ if __name__ == '__main__':
 						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
 				},
 				{
-					type: "code",
-					language: "javascript",
-					code: `// Microservice API endpoint
-const express = require('express');
-const app = express();
+					type: "paragraph",
+					content:
+						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
+				},
+				{
+					type: "diagram",
+					diagramType: DiagramType.MERMAID,
+					definition: `flowchart TD
+    Start(["Start Process"])
+    Validate{"Validate Input"}
+    Process["Process Request"]
+    Store["Store Results"]
+    Success(["Success Response"])
+    Error(["Error Response"])
 
-app.use(express.json());
-
-app.post('/api/users', async (req, res) => {
-    try {
-        const userData = req.body;
-        // This is an intentionally long line that exceeds 150 columns to demonstrate code formatting and line wrapping in development environments
-        const user = await userService.createUser(userData);
-        res.status(201).json({ success: true, user });
-    } catch (error) {
-        console.error('User creation failed:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});`,
-					title: "JavaScript Example",
-					filename: "example.js"
+    Start --> Validate
+    Validate -->|"Valid"| Process
+    Validate -->|"Invalid"| Error
+    Process --> Store
+    Store --> Success`,
+					title: "Network Topology",
+					caption: "Network architecture overview"
 				},
 				{
 					type: "paragraph",
 					content:
-						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
+						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
+				},
+				{
+					type: "callout",
+					calloutType: CalloutType.SUCCESS,
+					title: "Pro Tip",
+					content:
+						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
 				},
 				{
 					type: "paragraph",
@@ -125,32 +133,40 @@ app.post('/api/users', async (req, res) => {
 						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
 				},
 				{
-					type: "code",
-					language: "yaml",
-					code: `# YAML example
-# This demonstrates basic yaml concepts
-# for cloud-native development
+					type: "paragraph",
+					content:
+						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
+				},
+				{
+					type: "diagram",
+					diagramType: DiagramType.MERMAID,
+					definition: `flowchart TD
+    Start(["Start Process"])
+    Validate{"Validate Input"}
+    Process["Process Request"]
+    Store["Store Results"]
+    Success(["Success Response"])
+    Error(["Error Response"])
 
-def main():
-    config = load_configuration()
-    service = CloudService(config)
-
-    try:
-        # This is an intentionally long line that exceeds 150 columns to demonstrate code formatting and line wrapping practices
-        result = service.deploy_application()
-        print(f'Deployment successful: {result}')
-    except Exception as e:
-        print(f'Error: {e}')
-
-if __name__ == '__main__':
-    main()`,
-					title: "YAML Example",
-					filename: "example.yaml"
+    Start --> Validate
+    Validate -->|"Valid"| Process
+    Validate -->|"Invalid"| Error
+    Process --> Store
+    Store --> Success`,
+					title: "Process Flowchart",
+					caption: "Business process flow"
 				},
 				{
 					type: "paragraph",
 					content:
-						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
+						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
+				},
+				{
+					type: "callout",
+					calloutType: CalloutType.SUCCESS,
+					title: "Best Practice",
+					content:
+						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
 				},
 				{
 					type: "paragraph",

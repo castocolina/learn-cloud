@@ -5,6 +5,12 @@ Content Menu Generator from CONTENT.md
 This script parses CONTENT.md (Markdown format) and generates a structured content-menu.ts file
 that serves as a single source of truth for the book's navigation structure.
 
+ENHANCED FEATURES (v2.0):
+- Automatic code formatting integration (ESLint/Prettier)
+- Enhanced error handling with shared utility functions
+- Modular architecture with reusable components
+- Security-first approach with input validation
+
 BOOK STRUCTURE:
 ===============
 # Libro: Mastering Cloud-Native Technologies
@@ -45,10 +51,29 @@ import json
 import os
 import re
 import sys
+import subprocess
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 import logging
 import traceback
+
+# Import shared utilities
+try:
+    from .utils import (
+        run_formatter, log_exception_details, safe_write_file, 
+        create_progress_logger, sanitize_string_for_logging,
+        validate_file_path
+    )
+except ImportError:
+    # Handle case when running as script directly
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).parent))
+    from utils import (
+        run_formatter, log_exception_details, safe_write_file, 
+        create_progress_logger, sanitize_string_for_logging,
+        validate_file_path
+    )
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -56,29 +81,105 @@ logger = logging.getLogger(__name__)
 
 output_file_name = "content-menu.ts"
 
-def log_exception_details(
-    exc: Exception, 
-    message: str = "An error occurred", 
-    limit: int = 5
-):
-    """
-    Logs a custom error message along with the last N lines 
-    of an exception's stack trace.
+# =============================================================================
+# TYPESCRIPT GENERATION CONFIGURATION
+# =============================================================================
 
-    Args:
-        exc (Exception): The exception object captured in an `except` block.
-        message (str, optional): Custom message to prepend to the log. Defaults to "An error occurred".
-        limit (int, optional): The number of stack trace lines to show. Defaults to 5.
+# Control whether object property keys should be quoted or unquoted
+# True: "metadata": {...}  (JSON-style)
+# False: metadata: {...}   (TypeScript-style, recommended)
+USE_PROPERTY_QUOTES: bool = False
+
+# Control the quote style for string values
+# 'single': 'value'  
+# 'double': "value"  (recommended to match project Prettier config)
+STRING_QUOTE_STYLE: str = 'double'
+
+# Control whether to automatically format and validate the generated TypeScript file
+# using project-standard tools (ESLint and Prettier)
+# True: Run formatting after generation (recommended)
+# False: Skip formatting step
+RUN_FORMATTER: bool = True
+
+# =============================================================================
+
+def format_typescript_value(value: Any, indent_level: int = 0) -> str:
     """
-    # `traceback.format_exception` creates a list of formatted strings
-    # from the exception object. The 'limit' parameter controls the depth.
-    # This function is ideal because it operates directly on the exception object.
-    stack_trace_list = traceback.format_exception(type(exc), exc, exc.__traceback__, limit=limit)
+    Recursively format a Python value as idiomatic TypeScript syntax.
     
-    # We join the list into a single string for a cleaner log.
-    stack_trace_str = "".join(stack_trace_list)
+    Args:
+        value: The Python value to format (dict, list, str, int, float, bool, None)
+        indent_level: Current indentation level for nested structures
     
-    logger.error(f"{message}\n--- Stack Trace (last {limit} calls) ---\n{stack_trace_str}")
+    Returns:
+        Formatted TypeScript string representation
+    """
+    indent = '\t' * indent_level
+    next_indent = '\t' * (indent_level + 1)
+    
+    if value is None:
+        return 'null'
+    elif isinstance(value, bool):
+        return 'true' if value else 'false'
+    elif isinstance(value, (int, float)):
+        return str(value)
+    elif isinstance(value, str):
+        # Handle enum references (don't quote them)
+        if value.startswith('ChapterType.'):
+            return value
+        # Apply configured quote style for regular strings
+        quote_char = '"' if STRING_QUOTE_STYLE == 'double' else "'"
+        # Escape quotes within the string
+        escaped_value = value.replace('\\', '\\\\').replace(quote_char, f'\\{quote_char}')
+        return f'{quote_char}{escaped_value}{quote_char}'
+    elif isinstance(value, list):
+        if not value:
+            return '[]'
+        
+        formatted_items = []
+        for item in value:
+            formatted_item = format_typescript_value(item, indent_level + 1)
+            formatted_items.append(f'{next_indent}{formatted_item}')
+        
+        return '[\n' + ',\n'.join(formatted_items) + f'\n{indent}]'
+    elif isinstance(value, dict):
+        if not value:
+            return '{}'
+        
+        formatted_pairs = []
+        for key, val in value.items():
+            # Format the key according to USE_PROPERTY_QUOTES setting
+            if USE_PROPERTY_QUOTES or not _is_valid_identifier(key):
+                quote_char = '"' if STRING_QUOTE_STYLE == 'double' else "'"
+                formatted_key = f'{quote_char}{key}{quote_char}'
+            else:
+                formatted_key = key
+            
+            formatted_value = format_typescript_value(val, indent_level + 1)
+            formatted_pairs.append(f'{next_indent}{formatted_key}: {formatted_value}')
+        
+        return '{\n' + ',\n'.join(formatted_pairs) + f'\n{indent}}}'
+    else:
+        # Fallback for unknown types
+        return str(value)
+
+def _is_valid_identifier(key: str) -> bool:
+    """
+    Check if a key is a valid TypeScript identifier that doesn't need quoting.
+    
+    Args:
+        key: The object key to check
+        
+    Returns:
+        True if the key is a valid unquoted identifier, False otherwise
+    """
+    # TypeScript identifiers must start with letter, $, or _, 
+    # and contain only letters, digits, $, or _
+    import re
+    return bool(re.match(r'^[a-zA-Z_$][a-zA-Z0-9_$]*$', key))
+
+
+
 
 class MarkdownContentGenerator:
     """Generates content-menu.ts from CONTENT.md with comprehensive parsing and validation."""
@@ -502,7 +603,7 @@ class MarkdownContentGenerator:
         return slug.strip('_')
 
     def generate_typescript_module(self, units: List[Dict[str, Any]], metadata: Dict[str, str]) -> str:
-        """Generate TypeScript module content from parsed units and metadata, with enum references."""
+        """Generate TypeScript module content from parsed units and metadata, with configurable formatting."""
         content_structure = {
             'metadata': {
                 'generated_by': 'generate_content_menu.py',
@@ -516,16 +617,17 @@ class MarkdownContentGenerator:
             'units': units
         }
 
-        # Dump JSON, then replace quoted enum references with raw enum (e.g., "ChapterType.LESSON" -> ChapterType.LESSON)
-        json_content = json.dumps(content_structure, indent=2, ensure_ascii=False)
-        import re as _re
-        json_content = _re.sub(r'"(ChapterType\.[A-Z_]+)"', r'\1', json_content)
+        # Use custom TypeScript formatter instead of json.dumps()
+        typescript_object = format_typescript_value(content_structure)
 
-        # Create TypeScript module with proper import and export
-        typescript_content = f"""import type {{ ContentMenu }} from './types.js';
-import {{ ChapterType }} from './types.js';
+        # Apply configured quote style to import statements
+        quote_char = '"' if STRING_QUOTE_STYLE == 'double' else "'"
+        
+        # Create TypeScript module with proper import and export using configured quotes
+        typescript_content = f"""import type {{ ContentMenu }} from {quote_char}./types.js{quote_char};
+import {{ ChapterType }} from {quote_char}./types.js{quote_char};
 
-export const contentMenu: ContentMenu = {json_content};
+export const contentMenu: ContentMenu = {typescript_object};
 """
 
         return typescript_content
@@ -536,18 +638,34 @@ export const contentMenu: ContentMenu = {json_content};
         logger.info(f"Ensured output directory exists: {self.output_path.parent}")
 
     def write_typescript_file(self, typescript_content: str):
-        """Write the TypeScript module content to the output file."""
+        """Write the TypeScript module content to the output file and optionally format it."""
         try:
-            with open(self.output_path, 'w', encoding='utf-8') as file:
-                file.write(typescript_content)
+            # Use safe_write_file from utils with atomic operations
+            write_success = safe_write_file(self.output_path, typescript_content, backup=True)
             
-            file_size = os.path.getsize(self.output_path)
+            if not write_success:
+                logger.error(f"Failed to write {output_file_name}")
+                raise Exception("File write operation failed")
+            
+            file_size = self.output_path.stat().st_size
             logger.info(f"Successfully wrote {output_file_name} to {self.output_path}")
             logger.info(f"File size: {file_size} bytes")
             
+            # Run code formatter if enabled
+            if RUN_FORMATTER:
+                logger.info("Running code formatter on generated TypeScript file...")
+                formatting_success = run_formatter(self.output_path)
+                if formatting_success:
+                    # Log updated file size after formatting
+                    formatted_size = self.output_path.stat().st_size
+                    logger.info(f"File formatted successfully. New size: {formatted_size} bytes")
+                else:
+                    logger.warning("Code formatting encountered issues, but file generation succeeded")
+            else:
+                logger.info("Code formatting skipped (RUN_FORMATTER=False)")
+            
         except Exception as e:
             log_exception_details(e, "Error writing TypeScript file")
-            log_exception_details(e, "Failed to write content-menu.ts")
             raise
 
     def generate(self) -> bool:

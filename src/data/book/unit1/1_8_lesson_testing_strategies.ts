@@ -39,9 +39,63 @@ export const lessonContent: LessonContent = {
 						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
 				},
 				{
+					type: "code",
+					language: "graphql",
+					code: `# GraphQL example
+# This demonstrates basic graphql concepts
+# for cloud-native development
+
+def main():
+    config = load_configuration()
+    service = CloudService(config)
+
+    try:
+        # This is an intentionally long line that exceeds 150 columns to demonstrate code formatting and line wrapping practices
+        result = service.deploy_application()
+        print(f'Deployment successful: {result}')
+    except Exception as e:
+        print(f'Error: {e}')
+
+if __name__ == '__main__':
+    main()`,
+					title: "GraphQL Example",
+					filename: "example.graphql"
+				},
+				{
 					type: "paragraph",
 					content:
 						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
+				},
+				{
+					type: "diagram",
+					diagramType: DiagramType.MERMAID,
+					definition: `flowchart TD
+    Start(["Start Process"])
+    Validate{"Validate Input"}
+    Process["Process Request"]
+    Store["Store Results"]
+    Success(["Success Response"])
+    Error(["Error Response"])
+
+    Start --> Validate
+    Validate -->|"Valid"| Process
+    Validate -->|"Invalid"| Error
+    Process --> Store
+    Store --> Success`,
+					title: "Process Flowchart",
+					caption: "Business process flow"
+				},
+				{
+					type: "paragraph",
+					content:
+						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
+				},
+				{
+					type: "callout",
+					calloutType: CalloutType.WARNING,
+					title: "Caution",
+					content:
+						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
 				},
 				{
 					type: "paragraph",
@@ -59,32 +113,33 @@ export const lessonContent: LessonContent = {
 						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
 				},
 				{
-					type: "code",
-					language: "dockerfile",
-					code: `# Docker example
-# This demonstrates basic dockerfile concepts
-# for cloud-native development
+					type: "paragraph",
+					content:
+						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
+				},
+				{
+					type: "diagram",
+					diagramType: DiagramType.MERMAID,
+					definition: `flowchart TD
+    Start(["Start Process"])
+    Validate{"Validate Input"}
+    Process["Process Request"]
+    Store["Store Results"]
+    Success(["Success Response"])
+    Error(["Error Response"])
 
-def main():
-    config = load_configuration()
-    service = CloudService(config)
-
-    try:
-        # This is an intentionally long line that exceeds 150 columns to demonstrate code formatting and line wrapping practices
-        result = service.deploy_application()
-        print(f'Deployment successful: {result}')
-    except Exception as e:
-        print(f'Error: {e}')
-
-if __name__ == '__main__':
-    main()`,
-					title: "Docker Example",
-					filename: "Dockerfile"
+    Start --> Validate
+    Validate -->|"Valid"| Process
+    Validate -->|"Invalid"| Error
+    Process --> Store
+    Store --> Success`,
+					title: "Process Flowchart",
+					caption: "Business process flow"
 				},
 				{
 					type: "paragraph",
 					content:
-						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
+						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
 				},
 				{
 					type: "paragraph",
@@ -105,6 +160,37 @@ if __name__ == '__main__':
 					type: "paragraph",
 					content:
 						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
+				},
+				{
+					type: "diagram",
+					diagramType: DiagramType.MERMAID,
+					definition: `flowchart TD
+    Start(["Start Process"])
+    Validate{"Validate Input"}
+    Process["Process Request"]
+    Store["Store Results"]
+    Success(["Success Response"])
+    Error(["Error Response"])
+
+    Start --> Validate
+    Validate -->|"Valid"| Process
+    Validate -->|"Invalid"| Error
+    Process --> Store
+    Store --> Success`,
+					title: "Process Flowchart",
+					caption: "Business process flow"
+				},
+				{
+					type: "paragraph",
+					content:
+						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
+				},
+				{
+					type: "callout",
+					calloutType: CalloutType.INFO,
+					title: "Key Concept",
+					content:
+						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
 				},
 				{
 					type: "paragraph",

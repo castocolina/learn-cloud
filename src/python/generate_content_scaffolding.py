@@ -6,12 +6,21 @@ This script automates the creation of TypeScript content data files based on the
 structure defined in src/data/content-menu.ts. It generates boilerplate objects
 that conform to the interfaces defined in src/data/types.ts.
 
+ENHANCED FEATURES (v2.0):
+- Robust TypeScript parsing supporting various quote styles and syntax variations
+- Mandatory Mermaid diagram inclusion in all lesson content
+- Mermaid diagram compliance with double-quote standard  
+- Automatic code formatting integration (ESLint/Prettier)
+- Modular architecture with shared utility functions
+- Enhanced error handling and security considerations
+
 USAGE:
     python src/python/generate_content_scaffolding.py
 
 CONFIGURATION:
     Modify the constants below to customize the script behavior:
     - VERBOSE_OUTPUT: Show detailed output including file paths
+    - RUN_FORMATTER: Automatically format generated files (default: True)
     - LOREM_IPSUM_TEXT: Base text for generating placeholder content
     - CONTENT_LENGTHS: Character limits for different content types
 
@@ -23,6 +32,7 @@ REQUIREMENTS:
     - Python 3.6+
     - Valid content-menu.ts file structure
     - Write permissions to src/data/ directory and subdirectories
+    - pnpm and project dependencies for code formatting
 """
 
 import os
@@ -31,8 +41,27 @@ import json
 import sys
 import logging
 import traceback
+import random
 from typing import Dict, List, Any, Optional, Union
 from pathlib import Path
+
+# Import shared utilities  
+try:
+    from .utils import (
+        run_formatter, run_formatter_batch, log_exception_details, ensure_directory_exists, 
+        safe_write_file, parse_typescript_object, validate_typescript_syntax,
+        create_progress_logger, sanitize_string_for_logging
+    )
+except ImportError:
+    # Handle case when running as script directly
+    import sys
+    from pathlib import Path
+    sys.path.insert(0, str(Path(__file__).parent))
+    from utils import (
+        run_formatter, run_formatter_batch, log_exception_details, ensure_directory_exists, 
+        safe_write_file, parse_typescript_object, validate_typescript_syntax,
+        create_progress_logger, sanitize_string_for_logging
+    )
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -68,6 +97,9 @@ def log_exception_details(
 
 # Verbose output control - set to True to see all generated file paths
 VERBOSE_OUTPUT = True
+
+# Automatic code formatting control - set to False to disable formatting (default: enabled)
+RUN_FORMATTER = True
 
 # Comprehensive lorem ipsum base text for generating placeholder content
 LOREM_IPSUM_TEXT = """
@@ -368,7 +400,7 @@ def generate_code_block() -> Dict[str, str]:
 
 
 def generate_diagram_block_new_format() -> Dict[str, Any]:
-    """Generate a diagram block in the new polymorphic format."""
+    """Generate a diagram block in the new polymorphic format with double-quote compliance."""
     import random
 
     diagram_type = random.choice(list(DIAGRAM_TYPES.keys()))
@@ -377,49 +409,54 @@ def generate_diagram_block_new_format() -> Dict[str, Any]:
     if diagram_type == 'architecture':
         definition = '''graph TB
     subgraph "Client Layer"
-        Web[Web App]
-        Mobile[Mobile App]
+        Web["Web Application"]
+        Mobile["Mobile Application"]
     end
 
     subgraph "Load Balancer"
-        ALB[Application Load Balancer]
+        ALB["Application Load Balancer"]
     end
 
     subgraph "Kubernetes Cluster"
-        API[API Service]
-        DB[Database Service]
+        API["API Gateway Service"]
+        Auth["Authentication Service"]  
+        DB["Database Service"]
     end
 
     Web --> ALB
     Mobile --> ALB
     ALB --> API
+    API --> Auth
     API --> DB'''
 
     elif diagram_type == 'sequence':
         definition = '''sequenceDiagram
-    participant User
-    participant App
-    participant API
-    participant DB
+    participant "Client" as Client
+    participant "API Gateway" as API
+    participant "Auth Service" as Auth
+    participant "Database" as DB
 
-    User->>App: Request
-    App->>API: HTTP Call
-    API->>DB: Query
-    DB-->>API: Results
-    API-->>App: Response
-    App-->>User: Display'''
+    Client->>API: "API Request"
+    API->>Auth: "Validate Token"
+    Auth-->>API: "Token Valid"
+    API->>DB: "Database Query"
+    DB-->>API: "Query Results"
+    API-->>Client: "JSON Response"'''
 
     else:
         definition = '''flowchart TD
-    Start([Start Process])
-    Check{Check Status}
-    Deploy[Deploy Container]
-    Success([Success])
+    Start(["Start Process"])
+    Validate{"Validate Input"}
+    Process["Process Request"]
+    Store["Store Results"]
+    Success(["Success Response"])
+    Error(["Error Response"])
 
-    Start --> Check
-    Check -->|Ready| Deploy
-    Check -->|Not Ready| Start
-    Deploy --> Success'''
+    Start --> Validate
+    Validate -->|"Valid"| Process
+    Validate -->|"Invalid"| Error
+    Process --> Store
+    Store --> Success'''
 
     return {
         'type': 'diagram',
@@ -480,7 +517,7 @@ def generate_callout_block() -> Dict[str, Any]:
 
 
 def generate_flexible_section_content() -> List[Dict[str, Any]]:
-    """Generate flexible content blocks for a section with interleaved narrative flow."""
+    """Generate flexible content blocks for a section with interleaved narrative flow and mandatory diagram."""
     import random
 
     content_blocks = []
@@ -495,15 +532,16 @@ def generate_flexible_section_content() -> List[Dict[str, Any]]:
     # Follow with explanatory paragraph
     content_blocks.append(generate_paragraph_block(CONTENT_LENGTHS.get('paragraph', 400)))
 
+    # MANDATORY: Add at least one Mermaid diagram in every section
+    # This ensures compliance with requirement for placeholder diagrams in all lessons
+    content_blocks.append(generate_diagram_block_new_format())
+    
+    # Add explanation after diagram (mandatory)
+    content_blocks.append(generate_paragraph_block(300))
+
     # Add callout (40% chance)
     if random.random() < 0.4:
         content_blocks.append(generate_callout_block())
-
-    # Add diagram (20% chance)
-    if random.random() < 0.2:
-        content_blocks.append(generate_diagram_block_new_format())
-        # Add explanation after diagram
-        content_blocks.append(generate_paragraph_block(300))
 
     # End with concluding paragraph
     content_blocks.append(generate_paragraph_block(CONTENT_LENGTHS.get('paragraph', 350)))
@@ -513,10 +551,10 @@ def generate_flexible_section_content() -> List[Dict[str, Any]]:
 
 def parse_content_menu() -> Dict[str, Any]:
     """
-    Parse the content-menu.ts file and extract the contentMenu object.
+    Parse the content-menu.ts file using enhanced TypeScript parsing.
 
-    This function handles the TypeScript enum references and converts them to strings
-    that can be processed by the Python script.
+    Uses the new flexible parser from utils.py that handles various quote styles
+    and syntax variations including quoted/unquoted keys and single/double quotes.
 
     Returns:
         Parsed content menu structure as dictionary
@@ -534,158 +572,29 @@ def parse_content_menu() -> Dict[str, Any]:
         with open(content_menu_path, 'r', encoding='utf-8') as f:
             content = f.read()
 
-        # Use the manual extraction approach since it's more reliable for TypeScript parsing
-        return extract_content_structure_manually(content)
+        # Use the enhanced TypeScript parser from utils.py
+        parsed_data = parse_typescript_object(content, 'contentMenu')
+        
+        if not parsed_data:
+            raise ValueError("Failed to parse contentMenu object from TypeScript file")
 
-    except Exception as e:
-        raise ValueError(f"Failed to parse content menu structure: {e}")
-
-
-def extract_content_structure_manually(content: str) -> Dict[str, Any]:
-    """
-    Manually extract the content structure using regex patterns.
-
-    This function properly handles TypeScript enum references and extracts
-    the nested units and chapters structure.
-
-    Args:
-        content: Full content of the TypeScript file
-
-    Returns:
-        Simplified content menu structure
-    """
-    result = {
-        "metadata": {
-            "title": "Mastering Cloud-Native Technologies",
-            "total_units": 0,
-            "total_chapters": 0
-        },
-        "units": []
-    }
-
-    # Extract units array content
-    units_pattern = r'"units":\s*\[(.*?)\]\s*}\s*;'
-    units_match = re.search(units_pattern, content, re.DOTALL)
-
-    if not units_match:
-        logger.warning("Could not find units array in content menu")
-        return result
-
-    units_content = units_match.group(1)
-
-    # Split units by looking for unit objects
-    # Each unit starts with { and contains "title", "unit_data", and "chapters"
-    unit_objects = []
-    brace_count = 0
-    current_unit = ""
-    in_unit = False
-
-    for char in units_content:
-        if char == '{' and not in_unit:
-            in_unit = True
-            brace_count = 1
-            current_unit = char
-        elif in_unit:
-            current_unit += char
-            if char == '{':
-                brace_count += 1
-            elif char == '}':
-                brace_count -= 1
-                if brace_count == 0:
-                    unit_objects.append(current_unit)
-                    current_unit = ""
-                    in_unit = False
-
-    # Process each unit object
-    for unit_content in unit_objects:
-        # Extract unit title
-        title_match = re.search(r'"title":\s*"([^"]+)"', unit_content)
-        if not title_match:
-            continue
-        unit_title = title_match.group(1)
-
-        # Extract unit data path
-        unit_data_match = re.search(r'"unit_data":\s*"([^"]+)"', unit_content)
-        unit_data = unit_data_match.group(1) if unit_data_match else ""
-
-        unit = {
-            "title": unit_title,
-            "unit_data": unit_data,
-            "chapters": []
+        # Convert to the expected format
+        result = {
+            "metadata": parsed_data.get("metadata", {}),
+            "units": parsed_data.get("units", [])
         }
 
-        # Extract chapters array
-        chapters_pattern = r'"chapters":\s*\[(.*?)\]'
-        chapters_match = re.search(chapters_pattern, unit_content, re.DOTALL)
+        logger.info(f"Successfully parsed content menu using enhanced parser")
+        total_units = len(result.get("units", []))
+        total_chapters = sum(len(unit.get("chapters", [])) for unit in result.get("units", []))
+        logger.info(f"Extracted {total_units} units with {total_chapters} total chapters")
 
-        if chapters_match:
-            chapters_content = chapters_match.group(1)
+        return result
 
-            # Split chapters by looking for chapter objects
-            chapter_objects = []
-            brace_count = 0
-            current_chapter = ""
-            in_chapter = False
+    except Exception as e:
+        log_exception_details(e, f"Failed to parse content menu: {content_menu_path}")
+        raise ValueError(f"Failed to parse content menu structure: {e}")
 
-            for char in chapters_content:
-                if char == '{' and not in_chapter:
-                    in_chapter = True
-                    brace_count = 1
-                    current_chapter = char
-                elif in_chapter:
-                    current_chapter += char
-                    if char == '{':
-                        brace_count += 1
-                    elif char == '}':
-                        brace_count -= 1
-                        if brace_count == 0:
-                            chapter_objects.append(current_chapter)
-                            current_chapter = ""
-                            in_chapter = False
-
-            # Process each chapter object
-            for chapter_content in chapter_objects:
-                # Extract chapter title
-                chapter_title_match = re.search(r'"title":\s*"([^"]+)"', chapter_content)
-                if not chapter_title_match:
-                    continue
-                chapter_title = chapter_title_match.group(1)
-
-                # Extract chapter type (handle enum references)
-                chapter_type_match = re.search(r'"type":\s*(ChapterType\.[A-Z_]+|"[^"]+")', chapter_content)
-                if chapter_type_match:
-                    chapter_type_raw = chapter_type_match.group(1)
-                    # Convert enum reference to string
-                    if chapter_type_raw.startswith('ChapterType.'):
-                        chapter_type = chapter_type_raw.split('.')[1].lower()
-                    else:
-                        # Remove quotes if present
-                        chapter_type = chapter_type_raw.strip('"')
-                else:
-                    chapter_type = "lesson"  # default fallback
-
-                # Extract chapter data path
-                chapter_data_match = re.search(r'"chapter_data":\s*"([^"]+)"', chapter_content)
-                if not chapter_data_match:
-                    continue
-                chapter_data = chapter_data_match.group(1)
-
-                chapter = {
-                    "title": chapter_title,
-                    "type": chapter_type,
-                    "chapter_data": chapter_data
-                }
-
-                unit["chapters"].append(chapter)
-
-        result["units"].append(unit)
-
-    result["metadata"]["total_units"] = len(result["units"])
-    result["metadata"]["total_chapters"] = sum(len(unit["chapters"]) for unit in result["units"])
-
-    logger.info(f"Extracted {result['metadata']['total_units']} units with {result['metadata']['total_chapters']} total chapters")
-
-    return result
 
 
 def ensure_directory_exists(file_path: str) -> None:
@@ -1247,8 +1156,12 @@ def process_unit_content(unit_data: Dict[str, Any]) -> int:
                     # Generate unit overview content (treated as lesson)
                     content = generate_lesson_template(unit_data["title"], unit_file_path)
 
-                    with open(unit_file_path, 'w', encoding='utf-8') as f:
-                        f.write(content)
+                    # Use safe_write_file from utils with atomic operations
+                    write_success = safe_write_file(unit_file_path, content, backup=False)
+                    
+                    if not write_success:
+                        logger.error(f"Failed to write unit file: {unit_file_path}")
+                        raise Exception(f"Unit file write operation failed")
 
                     files_created += 1
                     logger.info(f"Created unit file: {unit_file_path}")
@@ -1256,6 +1169,8 @@ def process_unit_content(unit_data: Dict[str, Any]) -> int:
                     if VERBOSE_OUTPUT:
                         print(f"Created unit file: {unit_file_path}")
 
+                    # Note: Formatting will be done in batch at the end
+                    
                 except Exception as e:
                     logger.error(f"Failed to create unit file {unit_file_path}: {e}")
                     log_exception_details(e, f"Error creating unit file: {unit_file_path}")
@@ -1291,14 +1206,21 @@ def process_unit_content(unit_data: Dict[str, Any]) -> int:
                         # Generate content
                         content = generator(patched_chapter["title"], chapter_file_path)
 
-                        with open(chapter_file_path, 'w', encoding='utf-8') as f:
-                            f.write(content)
+                        # Use safe_write_file from utils with atomic operations
+                        write_success = safe_write_file(chapter_file_path, content, backup=False)
+                        
+                        if not write_success:
+                            logger.error(f"Failed to write content file: {chapter_file_path}")
+                            print(f"  ⚠️ Failed to create {chapter['title']}: Write operation failed")
+                            continue
 
                         files_created += 1
                         logger.info(f"Created {content_type} file: {chapter_file_path}")
 
                         if VERBOSE_OUTPUT:
                             print(f"Created {content_type} file: {chapter_file_path}")
+
+                        # Note: Formatting will be done in batch at the end
 
                     except Exception as e:
                         logger.error(f"Failed to create chapter file {chapter_file_path}: {e}")
@@ -1368,6 +1290,25 @@ def main() -> int:
                 failed_validations += 1
 
             print()
+
+        # Run batch formatting on generated content files if enabled and files were created
+        if total_files_created > 0 and RUN_FORMATTER:
+            logger.info("Running batch formatting on all generated content files...")
+            print("🎨 Running batch formatting on generated content files...")
+            
+            content_book_dir = "src/data/book"
+            if os.path.exists(content_book_dir):
+                format_success = run_formatter_batch(content_book_dir)
+                if format_success:
+                    logger.info("✅ Batch formatting completed successfully")
+                    print("✅ Batch formatting completed successfully")
+                else:
+                    logger.warning("⚠️ Batch formatting encountered some issues")
+                    print("⚠️ Batch formatting encountered some issues, but files were created")
+            else:
+                logger.warning(f"Content directory {content_book_dir} not found, skipping batch formatting")
+        elif RUN_FORMATTER:
+            logger.info("No new files created, skipping batch formatting")
 
         # Run TypeScript validation if files were created
         if total_files_created > 0:

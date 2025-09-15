@@ -44,39 +44,32 @@ export const lessonContent: LessonContent = {
 						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
 				},
 				{
-					type: "callout",
-					calloutType: CalloutType.INFO,
-					title: "Important Note",
+					type: "diagram",
+					diagramType: DiagramType.MERMAID,
+					definition: `sequenceDiagram
+    participant "Client" as Client
+    participant "API Gateway" as API
+    participant "Auth Service" as Auth
+    participant "Database" as DB
+
+    Client->>API: "API Request"
+    API->>Auth: "Validate Token"
+    Auth-->>API: "Token Valid"
+    API->>DB: "Database Query"
+    DB-->>API: "Query Results"
+    API-->>Client: "JSON Response"`,
+					title: "Sequence Diagram",
+					caption: "Service interaction flow"
+				},
+				{
+					type: "paragraph",
 					content:
 						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
 				},
 				{
-					type: "diagram",
-					diagramType: DiagramType.MERMAID,
-					definition: `graph TB
-    subgraph "Client Layer"
-        Web[Web App]
-        Mobile[Mobile App]
-    end
-
-    subgraph "Load Balancer"
-        ALB[Application Load Balancer]
-    end
-
-    subgraph "Kubernetes Cluster"
-        API[API Service]
-        DB[Database Service]
-    end
-
-    Web --> ALB
-    Mobile --> ALB
-    ALB --> API
-    API --> DB`,
-					title: "System Architecture Diagram",
-					caption: "Microservices architecture overview"
-				},
-				{
-					type: "paragraph",
+					type: "callout",
+					calloutType: CalloutType.DANGER,
+					title: "Critical",
 					content:
 						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
 				},
@@ -101,9 +94,41 @@ export const lessonContent: LessonContent = {
 						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
 				},
 				{
+					type: "diagram",
+					diagramType: DiagramType.MERMAID,
+					definition: `graph TB
+    subgraph "Client Layer"
+        Web["Web Application"]
+        Mobile["Mobile Application"]
+    end
+
+    subgraph "Load Balancer"
+        ALB["Application Load Balancer"]
+    end
+
+    subgraph "Kubernetes Cluster"
+        API["API Gateway Service"]
+        Auth["Authentication Service"]  
+        DB["Database Service"]
+    end
+
+    Web --> ALB
+    Mobile --> ALB
+    ALB --> API
+    API --> Auth
+    API --> DB`,
+					title: "System Architecture Diagram",
+					caption: "Microservices architecture overview"
+				},
+				{
+					type: "paragraph",
+					content:
+						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
+				},
+				{
 					type: "callout",
-					calloutType: CalloutType.WARNING,
-					title: "Warning",
+					calloutType: CalloutType.SUCCESS,
+					title: "Success",
 					content:
 						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
 				},
@@ -128,9 +153,34 @@ export const lessonContent: LessonContent = {
 						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
 				},
 				{
-					type: "callout",
-					calloutType: CalloutType.WARNING,
-					title: "Warning",
+					type: "diagram",
+					diagramType: DiagramType.MERMAID,
+					definition: `graph TB
+    subgraph "Client Layer"
+        Web["Web Application"]
+        Mobile["Mobile Application"]
+    end
+
+    subgraph "Load Balancer"
+        ALB["Application Load Balancer"]
+    end
+
+    subgraph "Kubernetes Cluster"
+        API["API Gateway Service"]
+        Auth["Authentication Service"]  
+        DB["Database Service"]
+    end
+
+    Web --> ALB
+    Mobile --> ALB
+    ALB --> API
+    API --> Auth
+    API --> DB`,
+					title: "System Architecture Diagram",
+					caption: "Microservices architecture overview"
+				},
+				{
+					type: "paragraph",
 					content:
 						"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
 				},
