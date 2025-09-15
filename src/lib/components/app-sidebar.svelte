@@ -45,7 +45,7 @@
 					{#snippet child({ props })}
 						<button {...props} onclick={handleHomeClick} class="cursor-pointer">
 							<div
-								class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
+								class="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg"
 							>
 								<BookOpenIcon class="size-4" />
 							</div>
@@ -69,7 +69,7 @@
 								<!-- Unit title as clickeable button -->
 								<button
 									onclick={() => handleUnitClick(unit, unitIndex)}
-									class="flex flex-1 cursor-pointer items-center gap-3 rounded-md px-3 py-3 text-sm font-medium hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+									class="hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex flex-1 cursor-pointer items-center gap-3 rounded-md px-3 py-3 text-sm font-medium"
 								>
 									{#if getIconComponent(unit.icon)}
 										{@const IconComponent = getIconComponent(unit.icon)}
@@ -84,7 +84,7 @@
 										<button
 											{...props}
 											onclick={() => toggleUnit(unitIndex)}
-											class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-md hover:bg-sidebar-accent"
+											class="hover:bg-sidebar-accent flex h-10 w-10 cursor-pointer items-center justify-center rounded-md"
 											aria-label={openUnit === unitIndex ? "Collapse unit" : "Expand unit"}
 										>
 											<PlusIcon class="size-5 group-data-[state=open]/collapsible:hidden" />
@@ -112,13 +112,13 @@
 															{/if}
 															<span class="flex-1 text-sm leading-relaxed">{chapter.title}</span>
 															{#if chapter.type === "quiz"}
-																<span class="ml-auto text-sm text-muted-foreground">Quiz</span>
+																<span class="text-muted-foreground ml-auto text-sm">Quiz</span>
 															{:else if chapter.type === "study_guide"}
-																<span class="ml-auto text-sm text-muted-foreground">Study</span>
+																<span class="text-muted-foreground ml-auto text-sm">Study</span>
 															{:else if chapter.type === "exam"}
-																<span class="ml-auto text-sm text-muted-foreground">Exam</span>
+																<span class="text-muted-foreground ml-auto text-sm">Exam</span>
 															{:else if chapter.type === "project"}
-																<span class="ml-auto text-sm text-muted-foreground">Project</span>
+																<span class="text-muted-foreground ml-auto text-sm">Project</span>
 															{/if}
 														</button>
 													{/snippet}

@@ -8,7 +8,7 @@
 </script>
 
 <header
-	class={`sticky top-0 z-30 flex h-16 w-full items-center border-b bg-background px-4 shadow-sm ${className}`}
+	class={`bg-background sticky top-0 z-30 flex h-16 w-full items-center border-b px-4 shadow-sm ${className}`}
 	aria-label="Site Header"
 >
 	<div class="flex flex-1 items-center gap-2">
@@ -53,11 +53,11 @@
 		z-index: 30;
 		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 	}
-		@media (max-width: 390px) {
-			header {
-				height: 56px;
-				padding-left: 0.5rem;
-				padding-right: 0.5rem;
-			}
+	@media (max-width: 390px) {
+		header {
+			height: 56px;
+			padding-left: 0.5rem;
+			padding-right: 0.5rem;
 		}
+	}
 </style>

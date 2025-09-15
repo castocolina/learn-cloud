@@ -1,467 +1,300 @@
 @import "tailwindcss";
-@import "tailwindcss/theme" reference;
-@import "tailwindcss/utilities" reference;
 
-@import "tw-animate-css";
-
-@theme {
-	--perspective-1000: 1000px;
+/* CSS Variables for theming */
+:root {
+	--background: 0 0% 100%;
+	--foreground: 222.2 84% 4.9%;
+	--card: 0 0% 100%;
+	--card-foreground: 222.2 84% 4.9%;
+	--popover: 0 0% 100%;
+	--popover-foreground: 222.2 84% 4.9%;
+	--primary: 221.2 83.2% 53.3%;
+	--primary-foreground: 210 40% 98%;
+	--secondary: 210 40% 96%;
+	--secondary-foreground: 222.2 84% 4.9%;
+	--muted: 210 40% 96%;
+	--muted-foreground: 215.4 16.3% 46.9%;
+	--accent: 210 40% 96%;
+	--accent-foreground: 222.2 84% 4.9%;
+	--destructive: 0 84.2% 60.2%;
+	--destructive-foreground: 210 40% 98%;
+	--border: 214.3 31.8% 91.4%;
+	--input: 214.3 31.8% 91.4%;
+	--ring: 221.2 83.2% 53.3%;
+	--radius: 0.5rem;
+	--chart-1: 12 76% 61%;
+	--chart-2: 173 58% 39%;
+	--chart-3: 197 37% 24%;
+	--chart-4: 43 74% 66%;
+	--chart-5: 27 87% 67%;
 }
 
-@custom-variant dark (&:is(.dark *));
-
-/* Shadcn-svelte CSS variables for semantic theming */
-@layer base {
-	:root {
-		--background: 0 0% 100%;
-		--foreground: 222.2 84% 4.9%;
-		--card: 0 0% 100%;
-		--card-foreground: 222.2 84% 4.9%;
-		--popover: 0 0% 100%;
-		--popover-foreground: 222.2 84% 4.9%;
-		--primary: 221.2 83.2% 53.3%;
-		--primary-foreground: 210 40% 98%;
-		--secondary: 210 40% 96%;
-		--secondary-foreground: 222.2 84% 4.9%;
-		--muted: 210 40% 96%;
-		--muted-foreground: 215.4 16.3% 46.9%;
-		--accent: 210 40% 96%;
-		--accent-foreground: 222.2 84% 4.9%;
-		--destructive: 0 84.2% 60.2%;
-		--destructive-foreground: 210 40% 98%;
-		--border: 214.3 31.8% 91.4%;
-		--input: 214.3 31.8% 91.4%;
-		--ring: 221.2 83.2% 53.3%;
-		--radius: 0.5rem;
-		--chart-1: 12 76% 61%;
-		--chart-2: 173 58% 39%;
-		--chart-3: 197 37% 24%;
-		--chart-4: 43 74% 66%;
-		--chart-5: 27 87% 67%;
-	}
-
-	.dark {
-		--background: 222.2 84% 4.9%;
-		--foreground: 210 40% 98%;
-		--card: 222.2 84% 4.9%;
-		--card-foreground: 210 40% 98%;
-		--popover: 222.2 84% 4.9%;
-		--popover-foreground: 210 40% 98%;
-		--primary: 217.2 91.2% 59.8%;
-		--primary-foreground: 222.2 84% 4.9%;
-		--secondary: 217.2 32.6% 17.5%;
-		--secondary-foreground: 210 40% 98%;
-		--muted: 217.2 32.6% 17.5%;
-		--muted-foreground: 215 20.2% 65.1%;
-		--accent: 217.2 32.6% 17.5%;
-		--accent-foreground: 210 40% 98%;
-		--destructive: 0 62.8% 30.6%;
-		--destructive-foreground: 210 40% 98%;
-		--border: 217.2 32.6% 17.5%;
-		--input: 217.2 32.6% 17.5%;
-		--ring: 224.3 76.3% 94.1%;
-		--chart-1: 220 70% 50%;
-		--chart-2: 160 60% 45%;
-		--chart-3: 30 80% 55%;
-		--chart-4: 280 65% 60%;
-		--chart-5: 340 75% 55%;
-	}
+.dark {
+	--background: 222.2 84% 4.9%;
+	--foreground: 210 40% 98%;
+	--card: 222.2 84% 4.9%;
+	--card-foreground: 210 40% 98%;
+	--popover: 222.2 84% 4.9%;
+	--popover-foreground: 210 40% 98%;
+	--primary: 217.2 91.2% 59.8%;
+	--primary-foreground: 222.2 84% 4.9%;
+	--secondary: 217.2 32.6% 17.5%;
+	--secondary-foreground: 210 40% 98%;
+	--muted: 217.2 32.6% 17.5%;
+	--muted-foreground: 215 20.2% 65.1%;
+	--accent: 217.2 32.6% 17.5%;
+	--accent-foreground: 210 40% 98%;
+	--destructive: 0 62.8% 30.6%;
+	--destructive-foreground: 210 40% 98%;
+	--border: 217.2 32.6% 17.5%;
+	--input: 217.2 32.6% 17.5%;
+	--ring: 224.3 76.3% 94.1%;
+	--chart-1: 220 70% 50%;
+	--chart-2: 160 60% 45%;
+	--chart-3: 30 80% 55%;
+	--chart-4: 280 65% 60%;
+	--chart-5: 340 75% 55%;
 }
 
-/* Base styles for semantic elements */
+/* Base layer for global styles */
 @layer base {
 	* {
-		@apply border-border;
+		border-color: hsl(var(--border));
+		outline-color: hsl(var(--ring) / 0.5);
 	}
+
 	body {
-		@apply bg-background text-foreground;
+		background-color: hsl(var(--background));
+		color: hsl(var(--foreground));
 	}
 }
 
-/* Component styles using @apply - centralized to avoid per-component issues */
+/* Components layer for all component styles */
 @layer components {
-	/* Quiz Components */
-	.quiz-container {
-		@apply mx-auto max-w-3xl px-4 py-6;
-	}
-
-	.quiz-header {
-		@apply mb-8 border-b border-border pb-6;
-	}
-
-	.quiz-title {
-		@apply mb-3 text-3xl font-bold text-foreground;
-	}
-
-	.quiz-description {
-		@apply mb-6 text-lg text-muted-foreground;
-	}
-
-	.quiz-progress-bar {
-		@apply flex items-center justify-between gap-4;
-	}
-
-	.progress-info {
-		@apply flex-1;
-	}
-
-	.progress-label {
-		@apply mb-2 block text-sm font-medium text-foreground;
-	}
-
-	.progress-track {
-		@apply h-2 w-full rounded-full bg-muted;
-	}
-
-	.progress-fill {
-		@apply h-full rounded-full bg-primary transition-all duration-300;
-	}
-
-	.progress-stats {
-		@apply flex items-center gap-2 text-sm text-muted-foreground;
-	}
-
-	.question-section {
-		@apply mb-8;
-	}
-
-	.question-card {
-		@apply rounded-lg border border-border bg-card p-6;
-	}
-
-	.question-text {
-		@apply mb-6 text-xl font-semibold text-card-foreground;
-	}
-
-	.answers-list {
-		@apply mb-6 space-y-3;
-	}
-
-	.answer-button {
-		@apply flex w-full items-center gap-3 rounded-lg border border-border p-4 text-left transition-colors duration-200 hover:border-primary hover:bg-accent;
-	}
-
-	.answer-button.selected {
-		@apply border-primary bg-accent;
-	}
-
-	.answer-indicator {
-		@apply flex-shrink-0;
-	}
-
-	.checkbox-style {
-		@apply flex h-5 w-5 items-center justify-center rounded border-2 border-border;
-	}
-
-	.checkbox-style.selected {
-		@apply border-primary bg-primary text-primary-foreground;
-	}
-
-	.radio-style {
-		@apply h-5 w-5 rounded-full border-2 border-border;
-	}
-
-	.radio-style.selected {
-		@apply border-primary bg-primary;
-	}
-
-	.answer-text {
-		@apply flex-1 text-foreground;
-	}
-
-	.explanation-section {
-		@apply border-t border-border pt-4;
-	}
-
-	.show-explanation {
-		@apply mb-3 text-sm text-blue-600 underline hover:text-blue-800;
-	}
-
-	.explanation-content {
-		@apply rounded-lg bg-accent p-4;
-	}
-
-	.explanation-content p {
-		@apply m-0 text-sm text-blue-900;
-	}
-
-	.quiz-navigation {
-		@apply flex justify-between gap-4;
-	}
-
-	.nav-button {
-		@apply rounded-lg px-6 py-3 font-medium transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-50;
-	}
-
-	.nav-button.secondary {
-		@apply bg-muted text-foreground hover:bg-gray-200;
-	}
-
-	.nav-button.primary {
-		@apply bg-accent text-white hover:bg-blue-600;
-	}
-
-	.results-section {
-		@apply text-center;
-	}
-
-	.results-header {
-		@apply mb-8;
-	}
-
-	.score-icon {
-		@apply flex flex-col items-center gap-4;
-	}
-
-	.score-text {
-		@apply text-2xl font-bold;
-	}
-
-	.score-text.passed {
-		@apply text-green-600;
-	}
-
-	.score-text.failed {
-		@apply text-red-600;
-	}
-
-	.score-details {
-		@apply space-y-1;
-	}
-
-	.score-percentage {
-		@apply text-4xl font-bold text-foreground;
-	}
-
-	.score-info,
-	.time-info {
-		@apply text-muted-foreground;
-	}
-
-	.results-actions {
-		@apply flex justify-center gap-4;
-	}
-
-	.action-button {
-		@apply flex items-center gap-2 rounded-lg px-6 py-3 font-medium transition-colors duration-200;
-	}
-
-	.action-button.secondary {
-		@apply bg-muted text-foreground hover:bg-gray-200;
-	}
-
-	.action-button.primary {
-		@apply bg-green-500 text-white hover:bg-green-600;
-	}
-
-	/* Lesson Components */
-	.lesson-content {
-		@apply mx-auto max-w-5xl px-4 py-6;
-	}
-
-	.lesson-header {
-		@apply mb-8 border-b border-border pb-6;
-		display: flex;
-		flex-direction: column;
-	}
-
-	.lesson-title {
-		@apply mb-3 text-3xl leading-tight font-bold text-foreground;
-		order: 1;
-	}
-
-	.lesson-summary {
-		@apply mb-6 text-lg leading-relaxed text-muted-foreground;
-		order: 2;
-	}
-
-	.lesson-metadata {
-		@apply space-y-4;
-		order: 3;
-	}
-
-	.metadata-item {
-		@apply flex items-start gap-3 rounded-lg bg-muted p-3;
-	}
-
-	.metadata-item :global(svg) {
-		@apply mt-0.5 flex-shrink-0 text-muted-foreground;
-	}
-
-	.metadata-content {
-		@apply flex-1;
-	}
-
-	.metadata-label {
-		@apply mb-1 block font-medium text-foreground;
-	}
-
-	.prerequisites-list,
-	.objectives-list {
-		@apply list-inside list-disc space-y-1 text-sm text-muted-foreground;
-	}
-
-	.lesson-footer {
-		@apply border-t border-border pt-6;
-	}
-
-	.lesson-navigation-hint {
-		@apply text-center;
-	}
-
-	/* Code Block Components */
-	.code-block-wrapper {
-		@apply relative mb-6 overflow-hidden rounded-lg border border-border bg-muted;
-	}
-
-	.code-container {
-		@apply relative mb-6 overflow-hidden rounded-lg border border-border bg-muted;
-	}
-
-	.code-header {
-		@apply flex items-center justify-between border-b border-border bg-muted px-4 py-3;
-	}
-
 	/* Study Guide Components */
 	.study-guide-container {
-		@apply mx-auto max-w-5xl px-4 py-6;
+		margin: 0 auto;
+		max-width: 80rem;
+		padding: 1rem 1rem;
 	}
 
 	.study-guide-header {
-		@apply mb-8 text-center;
+		margin-bottom: 2rem;
+		text-align: center;
 	}
 
 	.study-guide-title {
-		@apply mb-4 text-3xl font-bold text-foreground;
+		margin-bottom: 1rem;
+		font-size: 1.875rem;
+		line-height: 2.25rem;
+		font-weight: 700;
+		color: hsl(var(--foreground));
 	}
 
 	.study-guide-summary {
-		@apply mb-4 text-lg leading-relaxed text-muted-foreground;
+		margin-bottom: 1rem;
+		font-size: 1.125rem;
+		line-height: 1.75rem;
+		color: hsl(var(--muted-foreground));
 	}
 
 	.study-guide-description {
-		@apply mb-8 text-sm text-muted-foreground;
+		margin-bottom: 2rem;
+		font-size: 0.875rem;
+		line-height: 1.25rem;
+		color: hsl(var(--muted-foreground));
 	}
 
 	.study-guide-meta {
-		@apply flex flex-col items-center gap-4;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
 	}
 
 	.progress-section {
-		@apply flex-1 text-center;
+		flex: 1;
+		text-align: center;
 	}
 
 	.progress-text {
-		@apply mb-2 text-sm text-muted-foreground;
+		margin-bottom: 0.5rem;
+		font-size: 0.875rem;
+		line-height: 1.25rem;
+		color: hsl(var(--muted-foreground));
 	}
 
 	.progress-bar {
-		@apply h-2 w-full max-w-sm overflow-hidden rounded-full bg-gray-200;
+		height: 0.5rem;
+		width: 100%;
+		max-width: 12rem;
+		overflow: hidden;
+		border-radius: 9999px;
+		background-color: rgb(229 231 235);
 	}
 
 	.progress-fill {
-		@apply h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-600 transition-all duration-300;
+		height: 100%;
+		border-radius: 9999px;
+		background: linear-gradient(to right, rgb(59 130 246), rgb(147 51 234));
+		transition: all 0.3s;
 	}
 
 	/* shadcn Progress component styling */
 	.quiz-progress-component {
-		@apply w-full;
+		width: 100%;
 	}
 
 	.study-guide-progress {
-		@apply mx-auto w-full max-w-sm;
+		margin: 0 auto;
+		width: 100%;
+		max-width: 12rem;
 	}
 
 	/* Mermaid Dialog styling */
 	.mermaid-dialog-content {
-		@apply max-h-[90vh] max-w-4xl overflow-auto;
+		max-height: 90vh;
+		max-width: 64rem;
+		overflow: auto;
 	}
 
 	/* Quiz Review styling */
 	.quiz-review {
-		@apply my-8 space-y-6;
+		margin: 2rem 0;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
 	}
 
 	.review-title {
-		@apply mb-4 text-xl font-semibold text-foreground;
+		margin-bottom: 1rem;
+		font-size: 1.25rem;
+		line-height: 1.75rem;
+		font-weight: 600;
+		color: hsl(var(--foreground));
 	}
 
 	.review-question {
-		@apply rounded-lg border border-border p-4;
+		border-radius: 0.5rem;
+		border: 1px solid hsl(var(--border));
+		padding: 1rem;
 	}
 
 	.review-header {
-		@apply mb-3 flex items-center justify-between;
+		margin-bottom: 0.75rem;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
 	}
 
 	.question-number {
-		@apply text-lg font-medium text-foreground;
+		font-size: 1.125rem;
+		line-height: 1.75rem;
+		font-weight: 500;
+		color: hsl(var(--foreground));
 	}
 
 	.question-result {
-		@apply inline-flex h-6 w-6 items-center justify-center rounded-full text-sm font-bold text-white;
+		display: inline-flex;
+		height: 1.5rem;
+		width: 1.5rem;
+		align-items: center;
+		justify-content: center;
+		border-radius: 9999px;
+		font-size: 0.875rem;
+		line-height: 1.25rem;
+		font-weight: 700;
+		color: rgb(255 255 255);
 	}
 
 	.question-result.correct {
-		@apply bg-green-500;
+		background-color: rgb(34 197 94);
 	}
 
 	.question-result.incorrect {
-		@apply bg-red-500;
+		background-color: rgb(239 68 68);
 	}
 
 	.review-question-text {
-		@apply mb-4 text-foreground;
+		margin-bottom: 1rem;
+		color: hsl(var(--foreground));
 	}
 
 	.review-answers {
-		@apply mb-4 space-y-2;
+		margin-bottom: 1rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
 	}
 
 	.user-answer,
 	.correct-answer {
-		@apply text-sm;
+		font-size: 0.875rem;
+		line-height: 1.25rem;
 	}
 
 	.explanation-content {
-		@apply border-l-4 border-primary bg-accent p-3 text-sm;
+		border-left: 4px solid hsl(var(--primary));
+		background-color: hsl(var(--accent));
+		padding: 0.75rem;
+		font-size: 0.875rem;
+		line-height: 1.25rem;
 	}
 
 	.control-buttons {
-		@apply flex gap-2;
+		display: flex;
+		gap: 0.5rem;
 	}
 
 	.control-button {
-		@apply flex cursor-pointer items-center justify-center rounded-lg border border-border bg-card p-2 transition-all duration-200;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 0.5rem;
+		border: 1px solid hsl(var(--border));
+		background-color: hsl(var(--card));
+		padding: 0.5rem;
+		transition: all 0.2s;
+		cursor: pointer;
 	}
 
 	.control-button:hover {
-		@apply border-gray-400 bg-muted;
+		border-color: rgb(156 163 175);
+		background-color: hsl(var(--muted));
 	}
 
 	.control-button.active {
-		@apply border-primary bg-accent text-accent-foreground;
+		border-color: hsl(var(--primary));
+		background-color: hsl(var(--accent));
+		color: hsl(var(--accent-foreground));
 	}
 
 	.flashcard-container {
-		@apply my-8;
+		margin: 2rem 0;
 		perspective: 1000px;
 	}
 
 	.flashcard-wrapper {
-		@apply relative;
-		/* Ensure proper stacking context for positioned expand button */
+		position: relative;
 		z-index: 1;
 	}
 
 	.flashcard {
-		@apply relative block h-80 w-full cursor-pointer border-0 bg-transparent p-0;
+		position: relative;
+		display: block;
+		height: 20rem;
+		width: 100%;
+		border: 0;
+		background-color: transparent;
+		padding: 0;
 		transform-style: preserve-3d;
 		transition: transform 0.6s;
+		cursor: pointer;
 	}
 
 	.flashcard:focus {
-		@apply outline-2 outline-offset-2 outline-ring;
+		outline: 2px solid hsl(var(--ring));
+		outline-offset: 2px;
 	}
 
 	.flashcard.flipped {
@@ -470,85 +303,164 @@
 
 	.flashcard-front,
 	.flashcard-back {
-		@apply absolute flex h-full w-full flex-col justify-between rounded-xl border border-border bg-card p-6 shadow-lg;
+		position: absolute;
+		display: flex;
+		height: 100%;
+		width: 100%;
+		flex-direction: column;
+		justify-content: space-between;
+		border-radius: 0.75rem;
+		border: 1px solid hsl(var(--border));
+		background-color: hsl(var(--card));
+		padding: 1.5rem;
+		box-shadow:
+			0 10px 15px -3px rgb(0 0 0 / 0.1),
+			0 4px 6px -4px rgb(0 0 0 / 0.1);
 		backface-visibility: hidden;
 	}
 
 	.flashcard-back {
-		@apply bg-muted;
+		background-color: hsl(var(--muted));
 		transform: rotateY(180deg);
 	}
 
 	.card-content {
-		@apply flex flex-1 flex-col justify-center text-center;
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		justify-content: center;
+		text-align: center;
 	}
 
 	.card-title {
-		@apply mb-4 text-base font-semibold tracking-wider text-primary uppercase;
+		margin-bottom: 1rem;
+		font-size: 1rem;
+		line-height: 1.5rem;
+		font-weight: 600;
+		letter-spacing: 0.05em;
+		color: hsl(var(--primary));
+		text-transform: uppercase;
 	}
 
 	.card-text {
-		@apply text-lg leading-relaxed text-foreground;
+		font-size: 1.125rem;
+		line-height: 1.75rem;
+		color: hsl(var(--foreground));
 	}
 
 	.flip-hint {
-		@apply mt-4 text-center;
+		margin-top: 1rem;
+		text-align: center;
 	}
 
 	.flip-hint span {
-		@apply rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground;
+		border-radius: 9999px;
+		background-color: hsl(var(--muted));
+		padding: 0.375rem 0.75rem;
+		font-size: 0.75rem;
+		line-height: 1rem;
+		color: hsl(var(--muted-foreground));
 	}
 
 	.card-tags {
-		@apply mt-4 flex flex-wrap justify-center gap-2;
+		margin-top: 1rem;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.5rem;
 	}
 
 	.tag {
-		@apply rounded-full bg-indigo-100 px-3 py-1 text-xs font-medium text-indigo-800;
+		border-radius: 9999px;
+		background-color: rgb(238 242 255);
+		padding: 0.375rem 0.75rem;
+		font-size: 0.75rem;
+		line-height: 1rem;
+		font-weight: 500;
+		color: rgb(79 70 229);
 	}
 
 	.navigation-controls {
-		@apply mt-8 flex items-center justify-between gap-4;
+		margin-top: 2rem;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
 	}
 
 	.nav-button {
-		@apply flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-card px-6 py-3 text-sm font-medium transition-all duration-200;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		border-radius: 0.5rem;
+		border: 1px solid hsl(var(--border));
+		background-color: hsl(var(--card));
+		padding: 0.75rem 1.5rem;
+		font-size: 0.875rem;
+		line-height: 1.25rem;
+		font-weight: 500;
+		transition: all 0.2s;
+		cursor: pointer;
 	}
 
 	.nav-button:hover:not(:disabled) {
-		@apply border-gray-400 bg-muted;
+		border-color: rgb(156 163 175);
+		background-color: hsl(var(--muted));
 	}
 
 	.nav-button:disabled {
-		@apply cursor-not-allowed opacity-50;
+		cursor: not-allowed;
+		opacity: 0.5;
 	}
 
 	.keyboard-hints {
-		@apply flex-1 text-center;
+		flex: 1;
+		text-align: center;
 	}
 
 	.hint {
-		@apply text-xs text-muted-foreground;
+		font-size: 0.75rem;
+		line-height: 1rem;
+		color: hsl(var(--muted-foreground));
 	}
 
 	.expand-button {
-		@apply absolute top-4 right-4 cursor-pointer rounded-full border border-border bg-card p-3 shadow-lg transition-all duration-200;
-		/* Ensure button stays above flashcard content */
+		position: absolute;
+		top: 1rem;
+		right: 1rem;
+		cursor: pointer;
+		border-radius: 9999px;
+		border: 1px solid hsl(var(--border));
+		background-color: hsl(var(--card));
+		padding: 0.75rem;
+		box-shadow:
+			0 10px 15px -3px rgb(0 0 0 / 0.1),
+			0 4px 6px -4px rgb(0 0 0 / 0.1);
+		transition: all 0.2s;
 		z-index: 10;
 	}
 
 	.expand-button:hover {
-		@apply scale-110 bg-muted;
+		transform: scale(1.1);
+		background-color: hsl(var(--muted));
 	}
 
 	.modal-flashcard {
-		@apply relative my-8 block h-96 w-full cursor-pointer border-0 bg-transparent p-0;
+		position: relative;
+		display: block;
+		height: 24rem;
+		width: 100%;
+		border: 0;
+		background-color: transparent;
+		padding: 0;
 		transform-style: preserve-3d;
 		transition: transform 0.6s;
+		cursor: pointer;
 	}
 
 	.modal-flashcard:focus {
-		@apply outline-2 outline-offset-2 outline-ring;
+		outline: 2px solid hsl(var(--ring));
+		outline-offset: 2px;
 	}
 
 	.modal-flashcard.flipped {
@@ -556,509 +468,891 @@
 	}
 
 	.modal-navigation {
-		@apply flex items-center justify-between gap-4;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
 	}
 
 	.modal-nav-button {
-		@apply cursor-pointer rounded-lg border border-border bg-card p-3 transition-all duration-200;
+		cursor: pointer;
+		border-radius: 0.5rem;
+		border: 1px solid hsl(var(--border));
+		background-color: hsl(var(--card));
+		padding: 0.75rem;
+		transition: all 0.2s;
 	}
 
 	.modal-nav-button:hover:not(:disabled) {
-		@apply border-gray-400 bg-muted;
+		border-color: rgb(156 163 175);
+		background-color: hsl(var(--muted));
 	}
 
 	.modal-nav-button:disabled {
-		@apply cursor-not-allowed opacity-50;
+		cursor: not-allowed;
+		opacity: 0.5;
 	}
 
 	.modal-controls {
-		@apply flex gap-2;
+		display: flex;
+		gap: 0.5rem;
 	}
 
 	.modal-control {
-		@apply cursor-pointer rounded-lg border border-border bg-card p-2 transition-all duration-200;
+		cursor: pointer;
+		border-radius: 0.5rem;
+		border: 1px solid hsl(var(--border));
+		background-color: hsl(var(--card));
+		padding: 0.5rem;
+		transition: all 0.2s;
 	}
 
 	.modal-control:hover {
-		@apply border-gray-400 bg-muted;
+		border-color: rgb(156 163 175);
+		background-color: hsl(var(--muted));
 	}
 
 	.modal-flashcard-container {
-		@apply flex justify-center;
+		display: flex;
+		justify-content: center;
 		perspective: 1000px;
 	}
 
 	.study-guide-dialog-content {
-		@apply max-h-[90vh] max-w-5xl overflow-auto;
+		/* Removed conflicting max-width to allow Tailwind classes to work */
+		overflow: auto;
 	}
 
 	/* Grid View Layout */
 	.flashcards-grid {
-		@apply grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+		display: grid;
+		grid-template-columns: repeat(1, minmax(0, 1fr));
+		gap: 1rem;
+	}
+
+	@media (min-width: 640px) {
+		.flashcards-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	@media (min-width: 768px) {
+		.flashcards-grid {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.flashcards-grid {
+			grid-template-columns: repeat(4, minmax(0, 1fr));
+		}
 	}
 
 	.grid-card {
-		@apply relative cursor-pointer rounded-xl border border-border bg-card p-4 transition-all duration-200 hover:scale-105 hover:shadow-lg focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none;
+		position: relative;
+		cursor: pointer;
+		border-radius: 0.75rem;
+		border: 1px solid hsl(var(--border));
+		background-color: hsl(var(--card));
+		padding: 1rem;
+		transition: all 0.2s;
+	}
+
+	.grid-card:hover {
+		transform: scale(1.05);
+		box-shadow:
+			0 20px 25px -5px rgb(0 0 0 / 0.1),
+			0 8px 10px -6px rgb(0 0 0 / 0.1);
+	}
+
+	.grid-card:focus {
+		outline: 2px solid hsl(var(--ring));
+		outline-offset: 2px;
 	}
 
 	.grid-card-content {
-		@apply text-left;
+		text-align: left;
 	}
 
 	.grid-card-number {
-		@apply absolute -top-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground;
+		position: absolute;
+		top: -0.5rem;
+		right: -0.5rem;
+		display: flex;
+		height: 2rem;
+		width: 2rem;
+		align-items: center;
+		justify-content: center;
+		border-radius: 9999px;
+		background-color: hsl(var(--primary));
+		font-size: 0.75rem;
+		line-height: 1rem;
+		font-weight: 700;
+		color: hsl(var(--primary-foreground));
 	}
 
 	.grid-card-title {
-		@apply mb-2 text-xs font-semibold tracking-wider text-primary uppercase;
+		margin-bottom: 0.5rem;
+		font-size: 0.75rem;
+		line-height: 1rem;
+		font-weight: 600;
+		letter-spacing: 0.05em;
+		color: hsl(var(--primary));
+		text-transform: uppercase;
 	}
 
 	.grid-card-text {
-		@apply mb-3 text-sm leading-relaxed text-foreground;
+		margin-bottom: 0.75rem;
+		font-size: 0.875rem;
+		line-height: 1.25rem;
+		color: hsl(var(--foreground));
 		display: -webkit-box;
 		-webkit-line-clamp: 3;
+		line-clamp: 3;
 		-webkit-box-orient: vertical;
 		overflow: hidden;
 	}
 
 	.grid-card-tags {
-		@apply flex flex-wrap gap-1;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem;
 	}
 
 	.grid-tag {
-		@apply rounded-full bg-accent px-2 py-1 text-xs font-medium text-accent-foreground;
+		border-radius: 9999px;
+		background-color: hsl(var(--accent));
+		padding: 0.25rem 0.5rem;
+		font-size: 0.75rem;
+		line-height: 1rem;
+		font-weight: 500;
+		color: hsl(var(--accent-foreground));
 	}
 
 	.grid-tag-more {
-		@apply rounded-full bg-muted px-2 py-1 text-xs font-medium text-muted-foreground;
+		border-radius: 9999px;
+		background-color: hsl(var(--muted));
+		padding: 0.25rem 0.5rem;
+		font-size: 0.75rem;
+		line-height: 1rem;
+		font-weight: 500;
+		color: hsl(var(--muted-foreground));
 	}
 
 	.grid-view-hint {
-		@apply mt-8 text-center;
+		margin-top: 2rem;
+		text-align: center;
 	}
 
 	/* Mobile-first responsive grid */
 	@media (max-width: 390px) {
 		.flashcards-grid {
-			@apply grid-cols-1 gap-3;
+			gap: 0.75rem;
 		}
 
 		.grid-card {
-			@apply p-3;
+			padding: 0.75rem;
+			min-height: 7.5rem;
 		}
 	}
 
 	/* Study Guide Responsive Design */
 	@media (min-width: 640px) {
 		.study-guide-meta {
-			@apply flex-row justify-between;
+			flex-direction: row;
+			justify-content: space-between;
 		}
 
 		.progress-bar {
-			@apply max-w-lg;
+			max-width: 24rem;
 		}
 
 		.flashcard {
-			@apply h-96;
+			height: 24rem;
 		}
 	}
 
 	@media (min-width: 1024px) {
 		.flashcard {
-			@apply h-96;
+			height: 24rem;
 		}
 
 		.card-text {
-			@apply text-xl;
+			font-size: 1.25rem;
 		}
 	}
 
 	/* Content Section Components */
 	.content-section {
-		@apply mb-8;
+		margin-bottom: 2rem;
 	}
 
 	.section-title {
-		@apply mb-6 scroll-mt-20 text-2xl font-bold text-foreground;
+		margin-bottom: 1.5rem;
+		scroll-margin-top: 1rem;
+		font-size: 1.5rem;
+		line-height: 2rem;
+		font-weight: 700;
+		color: hsl(var(--foreground));
 	}
 
 	/* Mermaid Diagram Components */
 	.mermaid-wrapper {
-		@apply relative mb-6 overflow-hidden rounded-lg border border-border bg-card;
+		position: relative;
+		margin-bottom: 1.5rem;
+		overflow: hidden;
+		border-radius: 0.5rem;
+		border: 1px solid hsl(var(--border));
+		background-color: hsl(var(--card));
 	}
 
 	.diagram-header {
-		@apply flex items-center justify-between border-b border-border bg-muted px-4 py-3;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		border-bottom: 1px solid hsl(var(--border));
+		background-color: hsl(var(--muted));
+		padding: 1rem;
 	}
 
 	.diagram-title {
-		@apply m-0 text-sm font-medium text-foreground;
+		margin: 0;
+		font-size: 0.875rem;
+		line-height: 1.25rem;
+		font-weight: 500;
+		color: hsl(var(--foreground));
 	}
 
 	.expand-button-only {
-		@apply absolute top-2 right-2 z-10;
+		position: absolute;
+		top: 0.5rem;
+		right: 0.5rem;
+		z-index: 10;
 	}
 
 	.expand-button {
-		@apply rounded-md p-2 text-muted-foreground transition-colors duration-200 hover:bg-gray-200 hover:text-foreground focus:ring-2 focus:ring-blue-500 focus:outline-none;
+		border-radius: 0.375rem;
+		padding: 0.5rem;
+		font-size: 0.875rem;
+		line-height: 1.25rem;
+		color: hsl(var(--muted-foreground));
+		transition: all 0.2s;
+		cursor: pointer;
+	}
+
+	.expand-button:hover {
+		background-color: rgb(229 231 235);
+		color: hsl(var(--foreground));
 	}
 
 	.diagram-content {
-		@apply flex min-h-[200px] items-center justify-center p-4;
+		display: flex;
+		min-height: 12.5rem;
+		align-items: center;
+		justify-content: center;
+		padding: 1rem;
 	}
 
 	.diagram-svg {
-		@apply w-full text-center;
+		width: 100%;
+		text-align: center;
 	}
 
 	.diagram-svg-modal {
-		@apply flex h-full w-full items-center justify-center;
+		display: flex;
+		height: 100%;
+		width: 100%;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.diagram-caption {
-		@apply border-t border-border bg-muted px-4 py-3 text-sm text-muted-foreground italic;
+		border-top: 1px solid hsl(var(--border));
+		background-color: hsl(var(--muted));
+		padding: 1rem;
+		font-size: 0.875rem;
+		line-height: 1.25rem;
+		color: hsl(var(--muted-foreground));
+		font-style: italic;
 	}
 
 	.loading-state {
-		@apply flex flex-col items-center gap-3 text-muted-foreground;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.75rem;
+		color: hsl(var(--muted-foreground));
 	}
 
 	.loading-spinner {
-		@apply h-6 w-6 animate-spin rounded-full border-2 border-border border-t-blue-500;
+		height: 1.5rem;
+		width: 1.5rem;
+		border-radius: 9999px;
+		border: 2px solid hsl(var(--border));
+		border-top-color: rgb(59 130 246);
+		animation: spin 1s linear infinite;
 	}
 
 	.error-state {
-		@apply flex flex-col items-center gap-3 text-red-600;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.75rem;
+		color: rgb(239 68 68);
 	}
 
 	.error-state details {
-		@apply max-w-full text-left text-xs;
+		max-width: 100%;
+		text-align: left;
+		font-size: 0.75rem;
+		line-height: 1rem;
 	}
 
 	.error-state pre {
-		@apply max-h-32 overflow-auto rounded bg-red-50 p-2 text-xs;
+		max-width: 100%;
+		height: 6rem;
+		overflow: auto;
+		border-radius: 0.25rem;
+		background-color: rgb(254 242 242);
+		padding: 0.5rem;
+		font-size: 0.75rem;
+		line-height: 1rem;
 	}
 
 	.diagram-modal-overlay {
-		@apply fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4;
+		position: fixed;
+		inset: 0;
+		z-index: 50;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background-color: rgb(0 0 0 / 0.5);
+		padding: 1rem;
 	}
 
 	.diagram-modal {
-		@apply relative flex h-full max-h-[95vh] w-full max-w-[95vw] flex-col rounded-lg bg-card;
+		position: relative;
+		display: flex;
+		height: 100%;
+		max-height: 95vh;
+		width: 100%;
+		max-width: 95vw;
+		flex-direction: column;
+		border-radius: 0.5rem;
+		background-color: hsl(var(--card));
 	}
 
 	.modal-close {
-		@apply absolute top-4 right-4 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-muted text-xl font-bold text-muted-foreground transition-colors hover:bg-gray-200 hover:text-foreground;
+		position: absolute;
+		top: 1rem;
+		right: 1rem;
+		z-index: 10;
+		display: flex;
+		height: 2rem;
+		width: 2rem;
+		align-items: center;
+		justify-content: center;
+		border-radius: 9999px;
+		background-color: hsl(var(--muted));
+		font-size: 1.25rem;
+		line-height: 1.75rem;
+		font-weight: 700;
+		color: hsl(var(--muted-foreground));
+		transition: all 0.2s;
+		cursor: pointer;
+	}
+
+	.modal-close:hover {
+		background-color: rgb(229 231 235);
+		color: hsl(var(--foreground));
 	}
 
 	.modal-title {
-		@apply m-0 px-6 pt-6 pb-2 text-lg font-semibold text-foreground;
+		margin: 0;
+		padding: 1.5rem 1.5rem 0.5rem;
+		font-size: 1.125rem;
+		line-height: 1.75rem;
+		font-weight: 600;
+		color: hsl(var(--foreground));
 	}
 
 	.modal-diagram {
-		@apply flex-1 overflow-auto px-6 pb-2;
+		flex: 1;
+		overflow: auto;
+		padding: 0 1.5rem 0.5rem;
 	}
 
 	.modal-caption {
-		@apply m-0 px-6 pb-6 text-sm text-muted-foreground italic;
+		margin: 0;
+		padding: 0 1.5rem 1.5rem;
+		font-size: 0.875rem;
+		line-height: 1.25rem;
+		color: hsl(var(--muted-foreground));
+		font-style: italic;
 	}
 
 	/* Mobile responsiveness for Mermaid */
 	@media (max-width: 640px) {
 		.mermaid-wrapper {
-			@apply mx-0 rounded-none border-x-0;
+			margin-left: 0;
+			margin-right: 0;
+			border-radius: 0;
+			border-left-width: 0;
+			border-right-width: 0;
 		}
 
 		.diagram-content {
-			@apply p-2;
+			padding: 0.5rem;
 		}
 
 		.diagram-modal {
-			@apply max-h-full max-w-full rounded-none;
+			max-height: 100%;
+			max-width: 100%;
+			border-radius: 0;
 		}
 
 		.modal-title {
-			@apply px-4 pt-4;
+			padding-left: 1rem;
+			padding-top: 1rem;
 		}
 
 		.modal-diagram {
-			@apply px-4;
+			padding-left: 1rem;
+			padding-right: 1rem;
 		}
 
 		.modal-caption {
-			@apply px-4 pb-4;
+			padding-left: 1rem;
+			padding-right: 1rem;
+			padding-bottom: 1rem;
 		}
 	}
 
 	/* Dark mode support for Mermaid */
 	@media (prefers-color-scheme: dark) {
 		.mermaid-wrapper {
-			@apply border-gray-700 bg-gray-800;
+			border-color: rgb(75 85 99);
+			background-color: rgb(55 65 81);
 		}
 
 		.diagram-header {
-			@apply border-gray-600 bg-gray-700;
+			border-color: rgb(55 65 81);
+			background-color: rgb(31 41 55);
 		}
 
 		.diagram-title {
-			@apply text-gray-100;
+			color: rgb(243 244 246);
 		}
 
 		.expand-button {
-			@apply text-gray-400 hover:bg-gray-600 hover:text-gray-200;
+			color: rgb(156 163 175);
+		}
+
+		.expand-button:hover {
+			background-color: rgb(55 65 81);
+			color: rgb(243 244 246);
 		}
 
 		.diagram-caption {
-			@apply border-gray-600 bg-gray-700 text-gray-300;
+			border-color: rgb(55 85 99);
+			background-color: rgb(31 41 55);
+			color: rgb(156 163 175);
 		}
 
 		.diagram-modal {
-			@apply bg-gray-800;
+			background-color: rgb(55 65 81);
 		}
 
 		.modal-title {
-			@apply text-gray-100;
+			color: rgb(243 244 246);
 		}
 
 		.modal-caption {
-			@apply text-gray-300;
+			color: rgb(156 163 175);
 		}
 
 		.modal-close {
-			@apply bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-gray-100;
+			background-color: rgb(31 41 55);
+			color: rgb(156 163 175);
+		}
+
+		.modal-close:hover {
+			background-color: rgb(55 65 81);
+			color: rgb(243 244 246);
 		}
 	}
 
 	/* Global SVG styles for Mermaid components */
-	.diagram-svg :global(svg) {
-		@apply mx-auto;
+	.diagram-svg svg {
+		margin: 0 auto;
 	}
 
-	.diagram-svg-modal :global(svg) {
-		@apply max-h-full max-w-full;
+	.diagram-svg-modal svg {
+		max-height: 100%;
+		max-width: 100%;
 	}
 
 	/* Additional Content Section Components */
 	.section-heading {
-		@apply mb-6 scroll-mt-20 text-2xl font-bold text-foreground;
+		margin-bottom: 1.5rem;
+		scroll-margin-top: 1rem;
+		font-size: 1.5rem;
+		line-height: 2rem;
+		font-weight: 700;
+		color: hsl(var(--foreground));
 	}
 
 	.section-paragraphs {
-		@apply mb-6 space-y-4;
+		margin-bottom: 1.5rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
 	}
 
 	.paragraph {
-		@apply leading-relaxed text-foreground;
+		line-height: 1.625;
+		color: hsl(var(--foreground));
 	}
 
 	/* Style HTML content within paragraphs */
-	.paragraph :global(p) {
-		@apply mb-4 last:mb-0;
+	.paragraph p {
+		margin-bottom: 1rem;
 	}
 
-	.paragraph :global(strong) {
-		@apply font-semibold text-foreground;
+	.paragraph p:last-child {
+		margin-bottom: 0;
 	}
 
-	.paragraph :global(em) {
-		@apply italic;
+	.paragraph strong {
+		font-weight: 600;
+		color: hsl(var(--foreground));
 	}
 
-	.paragraph :global(code) {
-		@apply rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground;
+	.paragraph em {
+		font-style: italic;
 	}
 
-	.paragraph :global(a) {
-		@apply text-blue-600 underline hover:text-blue-800;
+	.paragraph code {
+		border-radius: 0.25rem;
+		background-color: hsl(var(--muted));
+		padding: 0.125rem 0.375rem;
+		font-size: 0.875rem;
+		line-height: 1.25rem;
+		font-family:
+			ui-monospace, SFMono-Regular, "SF Mono", Monaco, Inconsolata, "Roboto Mono", monospace;
+		color: hsl(var(--foreground));
 	}
 
-	.paragraph :global(ul) {
-		@apply mb-4 list-inside list-disc space-y-1;
+	.paragraph a {
+		color: rgb(59 130 246);
+		text-decoration: underline;
 	}
 
-	.paragraph :global(ol) {
-		@apply mb-4 list-inside list-decimal space-y-1;
+	.paragraph a:hover {
+		color: rgb(37 99 235);
 	}
 
-	.paragraph :global(li) {
-		@apply text-foreground;
+	.paragraph ul {
+		margin-bottom: 1rem;
+		list-style-type: disc;
+		list-style-position: inside;
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
 	}
 
-	.paragraph :global(blockquote) {
-		@apply my-4 border-l-4 border-border pl-4 text-muted-foreground italic;
+	.paragraph ol {
+		margin-bottom: 1rem;
+		list-style-type: decimal;
+		list-style-position: inside;
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
+
+	.paragraph li {
+		color: hsl(var(--foreground));
+	}
+
+	.paragraph blockquote {
+		margin: 1rem 0;
+		border-left: 4px solid hsl(var(--border));
+		padding-left: 1rem;
+		color: hsl(var(--muted-foreground));
+		font-style: italic;
 	}
 
 	.section-code-blocks {
-		@apply mb-6 space-y-4;
+		margin-bottom: 1.5rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
 	}
 
 	.section-diagrams {
-		@apply mb-6 space-y-6;
+		margin-bottom: 1.5rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
 	}
 
 	.section-callouts {
-		@apply mb-6 space-y-4;
+		margin-bottom: 1.5rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
 	}
 
 	/* Callout styles */
 	.callout {
-		@apply rounded-lg border-l-4 p-4;
+		border-radius: 0.5rem;
+		border-left: 4px solid;
+		padding: 1rem;
 	}
 
 	.callout-info {
-		@apply border-blue-500 bg-accent text-blue-900;
+		border-left-color: rgb(59 130 246);
+		background-color: hsl(var(--accent));
+		color: rgb(59 130 246 / 0.9);
 	}
 
 	.callout-warning {
-		@apply border-yellow-500 bg-yellow-50 text-yellow-900;
+		border-left-color: rgb(245 158 11);
+		background-color: rgb(254 243 199);
+		color: rgb(120 53 15);
 	}
 
 	.callout-danger {
-		@apply border-red-500 bg-red-50 text-red-900;
+		border-left-color: rgb(239 68 68);
+		background-color: rgb(254 226 226);
+		color: rgb(153 27 27);
 	}
 
 	.callout-success {
-		@apply border-green-500 bg-green-50 text-green-900;
+		border-left-color: rgb(34 197 94);
+		background-color: rgb(220 252 231);
+		color: rgb(21 128 61);
 	}
 
 	.callout-header {
-		@apply mb-2 flex items-center gap-2 font-medium;
+		margin-bottom: 0.5rem;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-weight: 500;
 	}
 
 	.callout-title {
-		@apply text-sm font-semibold;
+		font-size: 0.875rem;
+		line-height: 1.25rem;
+		font-weight: 600;
 	}
 
 	.callout-content {
-		@apply text-sm leading-relaxed;
+		font-size: 0.875rem;
+		line-height: 1.25rem;
 	}
 
-	.callout-content :global(p) {
-		@apply mb-2 last:mb-0;
+	.callout-content p {
+		margin-bottom: 0.5rem;
 	}
 
-	.callout-content :global(code) {
-		@apply rounded bg-black/10 px-1 py-0.5 font-mono text-xs;
+	.callout-content p:last-child {
+		margin-bottom: 0;
+	}
+
+	.callout-content code {
+		border-radius: 0.25rem;
+		background-color: rgb(0 0 0 / 0.1);
+		padding: 0.125rem 0.25rem;
+		font-size: 0.75rem;
+		line-height: 1rem;
+		font-family:
+			ui-monospace, SFMono-Regular, "SF Mono", Monaco, Inconsolata, "Roboto Mono", monospace;
 	}
 
 	/* Mobile responsiveness for Content Section */
 	@media (max-width: 640px) {
 		.section-heading {
-			@apply mb-4 text-xl;
+			margin-bottom: 1rem;
+			font-size: 1.25rem;
+			line-height: 1.75rem;
 		}
 
 		.section-paragraphs {
-			@apply mb-4 space-y-3;
+			margin-bottom: 1rem;
+			gap: 0.75rem;
 		}
 
 		.paragraph {
-			@apply text-sm;
+			font-size: 0.875rem;
+			line-height: 1.25rem;
 		}
 
 		.callout {
-			@apply p-3;
+			padding: 0.75rem;
 		}
 
 		.callout-content {
-			@apply text-xs;
+			font-size: 0.75rem;
+			line-height: 1rem;
 		}
 	}
 
 	/* Dark mode support for Content Section */
 	@media (prefers-color-scheme: dark) {
 		.section-heading {
-			@apply text-gray-100;
+			color: rgb(243 244 246);
 		}
 
 		.paragraph {
-			@apply text-gray-300;
+			color: rgb(209 213 219);
 		}
 
-		.paragraph :global(strong) {
-			@apply text-gray-100;
+		.paragraph strong {
+			color: rgb(243 244 246);
 		}
 
-		.paragraph :global(code) {
-			@apply bg-gray-700 text-gray-200;
+		.paragraph code {
+			background-color: rgb(55 65 81);
+			color: rgb(243 244 246);
 		}
 
-		.paragraph :global(a) {
-			@apply text-blue-400 hover:text-blue-300;
+		.paragraph a {
+			color: rgb(96 165 250);
 		}
 
-		.paragraph :global(li) {
-			@apply text-gray-300;
+		.paragraph a:hover {
+			color: rgb(147 197 253);
 		}
 
-		.paragraph :global(blockquote) {
-			@apply border-gray-600 text-gray-400;
+		.paragraph li {
+			color: rgb(209 213 219);
+		}
+
+		.paragraph blockquote {
+			border-left-color: rgb(75 85 99);
+			color: rgb(156 163 175);
 		}
 
 		.callout-info {
-			@apply border-primary bg-blue-900/20 text-blue-100;
+			border-left-color: hsl(var(--primary));
+			background-color: rgb(30 58 138 / 0.2);
+			color: rgb(147 197 253);
 		}
 
 		.callout-warning {
-			@apply border-yellow-400 bg-yellow-900/20 text-yellow-100;
+			border-left-color: rgb(245 158 11);
+			background-color: rgb(120 53 15 / 0.2);
+			color: rgb(251 191 36);
 		}
 
 		.callout-danger {
-			@apply border-red-400 bg-red-900/20 text-red-100;
+			border-left-color: rgb(239 68 68);
+			background-color: rgb(153 27 27 / 0.2);
+			color: rgb(252 165 165);
 		}
 
 		.callout-success {
-			@apply border-green-400 bg-green-900/20 text-green-100;
+			border-left-color: rgb(34 197 94);
+			background-color: rgb(21 128 61 / 0.2);
+			color: rgb(134 239 172);
 		}
 
-		.callout-content :global(code) {
-			@apply bg-card/10;
+		.callout-content code {
+			background-color: hsl(var(--card) / 0.1);
 		}
 	}
 
 	/* Code Block Components */
 	.code-container {
-		@apply relative mb-6 overflow-hidden rounded-lg border border-border bg-muted;
+		position: relative;
+		margin-bottom: 1.5rem;
+		overflow: hidden;
+		border-radius: 0.5rem;
+		border: 1px solid hsl(var(--border));
+		background-color: hsl(var(--muted));
 	}
 
 	.code-header {
-		@apply flex items-center justify-between border-b border-border bg-muted px-4 py-3;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		border-bottom: 1px solid hsl(var(--border));
+		background-color: hsl(var(--muted));
+		padding: 1rem;
 	}
 
 	.code-info {
-		@apply flex flex-col gap-1;
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
 	}
 
 	.code-title {
-		@apply m-0 text-sm font-medium text-foreground;
+		margin: 0;
+		font-size: 0.875rem;
+		line-height: 1.25rem;
+		font-weight: 500;
+		color: hsl(var(--foreground));
 	}
 
 	.code-filename {
-		@apply font-mono text-xs text-muted-foreground;
+		font-family:
+			ui-monospace, SFMono-Regular, "SF Mono", Monaco, Inconsolata, "Roboto Mono", monospace;
+		font-size: 0.75rem;
+		line-height: 1rem;
+		color: hsl(var(--muted-foreground));
 	}
 
 	.copy-button-only {
-		@apply absolute top-2 right-2 z-10;
+		position: absolute;
+		top: 0.5rem;
+		right: 0.5rem;
+		z-index: 10;
 	}
 
 	.copy-button {
-		@apply rounded-md p-2 text-muted-foreground transition-colors duration-200 hover:bg-gray-200 hover:text-foreground focus:ring-2 focus:ring-blue-500 focus:outline-none;
+		border-radius: 0.375rem;
+		padding: 0.5rem;
+		font-size: 0.875rem;
+		line-height: 1.25rem;
+		color: hsl(var(--muted-foreground));
+		transition: all 0.2s;
+		cursor: pointer;
+	}
+
+	.copy-button:hover {
+		background-color: rgb(229 231 235);
+		color: hsl(var(--foreground));
 	}
 
 	.code-content {
-		@apply overflow-x-auto;
+		overflow-x: auto;
 	}
 
-	.code-content :global(pre) {
-		@apply m-0 p-4 text-sm leading-relaxed;
-		background: transparent !important;
+	.code-content pre {
+		margin: 0;
+		padding: 1rem;
+		font-size: 0.875rem;
+		line-height: 1.25rem;
+		background-color: transparent !important;
 	}
 
-	.code-content :global(code) {
-		@apply font-mono;
+	.code-content code {
+		font-family:
+			ui-monospace, SFMono-Regular, "SF Mono", Monaco, Inconsolata, "Roboto Mono", monospace;
 	}
 
 	.fallback-pre {
-		@apply m-0 bg-transparent p-4 font-mono text-sm leading-relaxed text-foreground;
+		margin: 0;
+		background-color: transparent;
+		padding: 1rem;
+		font-family:
+			ui-monospace, SFMono-Regular, "SF Mono", Monaco, Inconsolata, "Roboto Mono", monospace;
+		font-size: 0.875rem;
+		line-height: 1.25rem;
+		color: hsl(var(--foreground));
 		white-space: pre-wrap;
 		word-break: break-word;
 	}
@@ -1066,162 +1360,149 @@
 	/* Mobile responsiveness for CodeBlock */
 	@media (max-width: 640px) {
 		.code-container {
-			@apply mx-0 rounded-none border-x-0;
+			margin-left: 0;
+			margin-right: 0;
+			border-radius: 0;
+			border-left-width: 0;
+			border-right-width: 0;
 		}
 
 		.code-content {
-			@apply text-xs;
+			font-size: 0.75rem;
+			line-height: 1rem;
 		}
 
-		.code-content :global(pre) {
-			@apply px-3 py-3;
+		.code-content pre {
+			padding: 0.75rem;
 		}
 
 		.fallback-pre {
-			@apply px-3 py-3;
+			padding: 0.75rem;
 		}
 	}
 
 	/* Dark mode support for CodeBlock */
 	@media (prefers-color-scheme: dark) {
 		.code-container {
-			@apply border-gray-700 bg-gray-800;
+			border-color: rgb(75 85 99);
+			background-color: rgb(55 65 81);
 		}
 
 		.code-header {
-			@apply border-gray-600 bg-gray-700;
+			border-color: rgb(55 65 81);
+			background-color: rgb(31 41 55);
 		}
 
 		.code-title {
-			@apply text-gray-100;
+			color: rgb(243 244 246);
 		}
 
 		.code-filename {
-			@apply text-gray-300;
+			color: rgb(156 163 175);
 		}
 
 		.copy-button {
-			@apply text-gray-400 hover:bg-gray-600 hover:text-gray-200;
+			color: rgb(156 163 175);
+		}
+
+		.copy-button:hover {
+			background-color: rgb(55 65 81);
+			color: rgb(243 244 246);
 		}
 
 		.fallback-pre {
-			@apply text-gray-200;
+			color: rgb(243 244 246);
 		}
 	}
-}
 
-:root {
-	--radius: 0.625rem;
-	--background: oklch(1 0 0);
-	--foreground: oklch(0.129 0.042 264.695);
-	--card: oklch(1 0 0);
-	--card-foreground: oklch(0.129 0.042 264.695);
-	--popover: oklch(1 0 0);
-	--popover-foreground: oklch(0.129 0.042 264.695);
-	--primary: oklch(0.208 0.042 265.755);
-	--primary-foreground: oklch(0.984 0.003 247.858);
-	--secondary: oklch(0.968 0.007 247.896);
-	--secondary-foreground: oklch(0.208 0.042 265.755);
-	--muted: oklch(0.968 0.007 247.896);
-	--muted-foreground: oklch(0.554 0.046 257.417);
-	--accent: oklch(0.968 0.007 247.896);
-	--accent-foreground: oklch(0.208 0.042 265.755);
-	--destructive: oklch(0.577 0.245 27.325);
-	--border: oklch(0.929 0.013 255.508);
-	--input: oklch(0.929 0.013 255.508);
-	--ring: oklch(0.704 0.04 256.788);
-	--chart-1: oklch(0.646 0.222 41.116);
-	--chart-2: oklch(0.6 0.118 184.704);
-	--chart-3: oklch(0.398 0.07 227.392);
-	--chart-4: oklch(0.828 0.189 84.429);
-	--chart-5: oklch(0.769 0.188 70.08);
-	--sidebar: oklch(0.984 0.003 247.858);
-	--sidebar-foreground: oklch(0.129 0.042 264.695);
-	--sidebar-primary: oklch(0.208 0.042 265.755);
-	--sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-	--sidebar-accent: oklch(0.968 0.007 247.896);
-	--sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-	--sidebar-border: oklch(0.929 0.013 255.508);
-	--sidebar-ring: oklch(0.704 0.04 256.788);
-}
-
-.dark {
-	--background: oklch(0.129 0.042 264.695);
-	--foreground: oklch(0.984 0.003 247.858);
-	--card: oklch(0.208 0.042 265.755);
-	--card-foreground: oklch(0.984 0.003 247.858);
-	--popover: oklch(0.208 0.042 265.755);
-	--popover-foreground: oklch(0.984 0.003 247.858);
-	--primary: oklch(0.929 0.013 255.508);
-	--primary-foreground: oklch(0.208 0.042 265.755);
-	--secondary: oklch(0.279 0.041 260.031);
-	--secondary-foreground: oklch(0.984 0.003 247.858);
-	--muted: oklch(0.279 0.041 260.031);
-	--muted-foreground: oklch(0.704 0.04 256.788);
-	--accent: oklch(0.279 0.041 260.031);
-	--accent-foreground: oklch(0.984 0.003 247.858);
-	--destructive: oklch(0.704 0.191 22.216);
-	--border: oklch(1 0 0 / 10%);
-	--input: oklch(1 0 0 / 15%);
-	--ring: oklch(0.551 0.027 264.364);
-	--chart-1: oklch(0.488 0.243 264.376);
-	--chart-2: oklch(0.696 0.17 162.48);
-	--chart-3: oklch(0.769 0.188 70.08);
-	--chart-4: oklch(0.627 0.265 303.9);
-	--chart-5: oklch(0.645 0.246 16.439);
-	--sidebar: oklch(0.208 0.042 265.755);
-	--sidebar-foreground: oklch(0.984 0.003 247.858);
-	--sidebar-primary: oklch(0.488 0.243 264.376);
-	--sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-	--sidebar-accent: oklch(0.279 0.041 260.031);
-	--sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-	--sidebar-border: oklch(1 0 0 / 10%);
-	--sidebar-ring: oklch(0.551 0.027 264.364);
-}
-
-@theme inline {
-	--radius-sm: calc(var(--radius) - 4px);
-	--radius-md: calc(var(--radius) - 2px);
-	--radius-lg: var(--radius);
-	--radius-xl: calc(var(--radius) + 4px);
-	--color-background: var(--background);
-	--color-foreground: var(--foreground);
-	--color-card: var(--card);
-	--color-card-foreground: var(--card-foreground);
-	--color-popover: var(--popover);
-	--color-popover-foreground: var(--popover-foreground);
-	--color-primary: var(--primary);
-	--color-primary-foreground: var(--primary-foreground);
-	--color-secondary: var(--secondary);
-	--color-secondary-foreground: var(--secondary-foreground);
-	--color-muted: var(--muted);
-	--color-muted-foreground: var(--muted-foreground);
-	--color-accent: var(--accent);
-	--color-accent-foreground: var(--accent-foreground);
-	--color-destructive: var(--destructive);
-	--color-border: var(--border);
-	--color-input: var(--input);
-	--color-ring: var(--ring);
-	--color-chart-1: var(--chart-1);
-	--color-chart-2: var(--chart-2);
-	--color-chart-3: var(--chart-3);
-	--color-chart-4: var(--chart-4);
-	--color-chart-5: var(--chart-5);
-	--color-sidebar: var(--sidebar);
-	--color-sidebar-foreground: var(--sidebar-foreground);
-	--color-sidebar-primary: var(--sidebar-primary);
-	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-	--color-sidebar-accent: var(--sidebar-accent);
-	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-	--color-sidebar-border: var(--sidebar-border);
-	--color-sidebar-ring: var(--sidebar-ring);
-}
-
-@layer base {
-	* {
-		@apply border-border outline-ring/50;
+	/* Study Guide Renderer Components */
+	.grid-card-wrapper {
+		position: relative;
 	}
-	body {
-		@apply bg-background text-foreground;
+
+	.grid-expand-button {
+		position: absolute;
+		top: 0.5rem;
+		right: 0.5rem;
+		z-index: 10;
+		border-radius: 9999px;
+		border: 1px solid hsl(var(--border));
+		background-color: hsl(var(--card));
+		padding: 0.5rem;
+		box-shadow:
+			0 10px 15px -3px rgb(0 0 0 / 0.1),
+			0 4px 6px -4px rgb(0 0 0 / 0.1);
+		transition: all 0.2s;
+		cursor: pointer;
+	}
+
+	.grid-expand-button:hover {
+		background-color: hsl(var(--muted));
+	}
+
+	.modal-card-tags {
+		margin-top: 1rem;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.5rem;
+	}
+
+	/* Enhanced mobile responsiveness for Study Guide */
+	@media (max-width: 390px) {
+		.flashcards-grid {
+			gap: 0.75rem;
+		}
+
+		.grid-card {
+			min-height: 7.5rem;
+			padding: 0.75rem;
+		}
+
+		.grid-card-text {
+			-webkit-line-clamp: 2;
+			line-clamp: 2;
+		}
+
+		.expand-button,
+		.grid-expand-button {
+			padding: 0.375rem;
+		}
+
+		.expand-button svg,
+		.grid-expand-button svg {
+			height: 1rem;
+			width: 1rem;
+		}
+	}
+
+	/* Improved overflow handling for Study Guide */
+	.card-text {
+		scrollbar-width: thin;
+		scrollbar-color: hsl(var(--muted)) transparent;
+		max-height: 12.5rem;
+		overflow-y: auto;
+	}
+
+	.modal-flashcard .card-text {
+		max-height: 25rem;
+	}
+
+	/* Smooth transitions for Study Guide */
+	.flashcard,
+	.modal-flashcard {
+		transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.grid-card {
+		transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	/* Focus states for accessibility in Study Guide */
+	.flashcard:focus-visible,
+	.modal-flashcard:focus-visible,
+	.grid-card:focus-visible {
+		outline: 2px solid hsl(var(--ring));
+		outline-offset: 2px;
 	}
 }

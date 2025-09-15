@@ -557,11 +557,13 @@ This pattern should be applied to all future data generation systems to maintain
 **Problem**: Breadcrumb navigation component was not functioning correctly across different route scenarios, with mobile visibility issues and inconsistent behavior.
 
 **Root Cause**:
+
 - Breadcrumbs were hidden on mobile (`hidden md:block`)
 - Logic didn't properly distinguish between homepage, unit overview, and content page scenarios
 - URL parsing logic was incorrect for the actual routing structure (`book/unit/1/filename.html`)
 
 **Solution**:
+
 - **Mobile-First Visibility**: Removed `hidden md:block` classes to ensure breadcrumbs are visible on all devices
 - **Three-Scenario Implementation**:
   1. **Homepage (`/`)**: First segment shows site title as disabled page indicator, second segment hidden
@@ -569,6 +571,7 @@ This pattern should be applied to all future data generation systems to maintain
   3. **Content Page (`book/unit/1/content_file.html`)**: First segment shows unit title as clickable link to unit overview, second segment shows content title
 
 **Technical Implementation**:
+
 - Enhanced `getBreadcrumbData()` function with proper URL parsing for `book/unit/{number}/filename.html` pattern
 - Added filename detection logic to distinguish unit overview pages (`0_unit_*.html`) from content pages
 - Added `isHomepage` flag for clear state distinction
@@ -578,10 +581,12 @@ This pattern should be applied to all future data generation systems to maintain
 **Key Fix**: Unit overview pages are now correctly detected by checking if filename starts with `"0_unit_"`, ensuring the breadcrumb behaves like the homepage (unit title disabled, no chapter breadcrumb)
 
 **Files Modified**:
+
 - `src/routes/+page.svelte:49-107`: Enhanced breadcrumb data logic with three distinct scenarios
 - `src/routes/+page.svelte:139-168`: Updated breadcrumb rendering for mobile-first visibility and proper conditional display
 
 **Testing Results**:
+
 - ✅ TypeScript validation passed with 0 errors
 - ✅ Mobile-first responsive behavior verified
 - ✅ All three navigation scenarios implemented correctly

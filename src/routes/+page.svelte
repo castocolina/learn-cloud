@@ -158,7 +158,7 @@
 						>
 							Welcome to Cloud-Native Technologies
 						</h1>
-						<p class="mb-8 text-lg text-muted-foreground">
+						<p class="text-muted-foreground mb-8 text-lg">
 							A comprehensive guide to modern cloud-native development covering Python and Go
 							backend development, DevOps practices, infrastructure as code, security, and
 							real-world project implementations.
@@ -166,14 +166,14 @@
 						<div class="mx-auto grid max-w-md gap-4 md:grid-cols-2">
 							<div class="rounded-lg border p-4">
 								<h3 class="mb-2 font-semibold">📚 Interactive Learning</h3>
-								<p class="text-sm text-muted-foreground">Lessons, quizzes, and study guides</p>
+								<p class="text-muted-foreground text-sm">Lessons, quizzes, and study guides</p>
 							</div>
 							<div class="rounded-lg border p-4">
 								<h3 class="mb-2 font-semibold">🚀 Hands-on Projects</h3>
-								<p class="text-sm text-muted-foreground">Real-world implementations</p>
+								<p class="text-muted-foreground text-sm">Real-world implementations</p>
 							</div>
 						</div>
-						<p class="mt-8 text-sm text-muted-foreground">
+						<p class="text-muted-foreground mt-8 text-sm">
 							👈 Select a topic from the sidebar to begin learning
 						</p>
 					</div>
@@ -185,7 +185,7 @@
 						<div
 							class="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent"
 						></div>
-						<p class="text-lg text-muted-foreground">Loading content...</p>
+						<p class="text-muted-foreground text-lg">Loading content...</p>
 					</div>
 				</div>
 			{:else if $contentStore.error}
@@ -194,10 +194,10 @@
 					<div class="max-w-md text-center">
 						<div class="mb-4 text-6xl text-red-500">⚠️</div>
 						<h2 class="mb-4 text-2xl font-bold">Content Loading Error</h2>
-						<p class="mb-4 text-muted-foreground">{$contentStore.error}</p>
+						<p class="text-muted-foreground mb-4">{$contentStore.error}</p>
 						<button
 							onclick={() => contentStore.set({ ...$contentStore, error: null, showWelcome: true })}
-							class="rounded-md bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90"
+							class="bg-primary text-primary-foreground hover:bg-primary/90 rounded-md px-4 py-2"
 						>
 							← Back to Welcome
 						</button>
@@ -216,16 +216,16 @@
 						<!-- Placeholder for ExamRenderer -->
 						<div class="rounded-lg border-2 border-dashed border-gray-300 p-8">
 							<h2 class="mb-4 text-2xl font-bold">📝 Exam Content</h2>
-							<p class="mb-4 text-muted-foreground">
+							<p class="text-muted-foreground mb-4">
 								Exam renderer is being developed. Content loaded successfully:
 							</p>
-							<div class="rounded-lg bg-muted p-4">
+							<div class="bg-muted rounded-lg p-4">
 								<h3 class="font-semibold">{$contentStore.currentContent.title}</h3>
-								<p class="mt-2 text-sm text-muted-foreground">
+								<p class="text-muted-foreground mt-2 text-sm">
 									{$contentStore.currentContent.summary}
 								</p>
 							</div>
-							<p class="mt-4 text-sm text-muted-foreground">
+							<p class="text-muted-foreground mt-4 text-sm">
 								Type: {$contentStore.currentContent.type}
 							</p>
 						</div>
@@ -233,16 +233,16 @@
 						<!-- Placeholder for ProjectRenderer -->
 						<div class="rounded-lg border-2 border-dashed border-gray-300 p-8">
 							<h2 class="mb-4 text-2xl font-bold">🚀 Project Content</h2>
-							<p class="mb-4 text-muted-foreground">
+							<p class="text-muted-foreground mb-4">
 								Project renderer is being developed. Content loaded successfully:
 							</p>
-							<div class="rounded-lg bg-muted p-4">
+							<div class="bg-muted rounded-lg p-4">
 								<h3 class="font-semibold">{$contentStore.currentContent.title}</h3>
-								<p class="mt-2 text-sm text-muted-foreground">
+								<p class="text-muted-foreground mt-2 text-sm">
 									{$contentStore.currentContent.summary}
 								</p>
 							</div>
-							<p class="mt-4 text-sm text-muted-foreground">
+							<p class="text-muted-foreground mt-4 text-sm">
 								Type: {$contentStore.currentContent.type}
 							</p>
 						</div>
@@ -251,7 +251,7 @@
 						<div class="rounded-lg border-2 border-dashed border-red-300 p-8">
 							<h2 class="mb-4 text-2xl font-bold">❓ Unknown Content Type</h2>
 							<p class="text-muted-foreground">This content type is not yet supported.</p>
-							<details class="mt-4 rounded bg-muted p-4">
+							<details class="bg-muted mt-4 rounded p-4">
 								<summary class="cursor-pointer">Debug Information</summary>
 								<pre class="mt-2 max-h-96 overflow-auto text-xs">{JSON.stringify(
 										$contentStore.currentContent,
