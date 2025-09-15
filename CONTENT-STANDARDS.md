@@ -22,9 +22,9 @@ All content types inherit from a base interface with content lifecycle tracking:
 ```typescript
 // Content lifecycle status tracking
 export enum ContentStatus {
-  SCAFFOLD = 'scaffold',
-  DRAFT = 'draft',
-  FINAL = 'final'
+	SCAFFOLD = "scaffold",
+	DRAFT = "draft",
+	FINAL = "final"
 }
 
 // Base interface with common properties and status tracking
@@ -129,7 +129,8 @@ export const lessonExample: LessonContent = {
 			content: [
 				{
 					type: "paragraph",
-					content: "Cloud-native development requires a comprehensive understanding of containerization and orchestration. Let's start with the fundamentals."
+					content:
+						"Cloud-native development requires a comprehensive understanding of containerization and orchestration. Let's start with the fundamentals."
 				},
 				{
 					type: "code",
@@ -140,24 +141,28 @@ export const lessonExample: LessonContent = {
 				},
 				{
 					type: "paragraph",
-					content: "The configuration above demonstrates how to set up basic environment parameters. Notice how we define the container runtime explicitly."
+					content:
+						"The configuration above demonstrates how to set up basic environment parameters. Notice how we define the container runtime explicitly."
 				},
 				{
 					type: "callout",
 					calloutType: "info",
 					title: "Pro Tip",
-					content: "Always validate your configuration in development before deploying to production environments."
+					content:
+						"Always validate your configuration in development before deploying to production environments."
 				},
 				{
 					type: "diagram",
 					diagramType: "mermaid",
-					definition: "graph TD\n    A[Developer] --> B[Docker]\n    B --> C[Container]\n    C --> D[Kubernetes]",
+					definition:
+						"graph TD\n    A[Developer] --> B[Docker]\n    B --> C[Container]\n    C --> D[Kubernetes]",
 					title: "Development Workflow",
 					caption: "From code to orchestrated deployment"
 				},
 				{
 					type: "paragraph",
-					content: "This workflow diagram shows the progression from development through containerization to orchestration. Each step builds upon the previous one."
+					content:
+						"This workflow diagram shows the progression from development through containerization to orchestration. Each step builds upon the previous one."
 				}
 			]
 		}
@@ -178,7 +183,7 @@ export const lessonExample: LessonContent = {
 All content items now include a `status` field to track their maturity and quality level throughout the development lifecycle:
 
 ```typescript
-export type ContentStatus = 'scaffold' | 'draft' | 'final';
+export type ContentStatus = "scaffold" | "draft" | "final";
 ```
 
 #### Status Lifecycle
@@ -219,18 +224,19 @@ To enhance type safety and maintainability, the platform now uses TypeScript `en
  * Content lifecycle status tracking for content maturity management
  */
 export enum ContentStatus {
-  SCAFFOLD = 'scaffold',
-  DRAFT = 'draft',
-  FINAL = 'final'
+	SCAFFOLD = "scaffold",
+	DRAFT = "draft",
+	FINAL = "final"
 }
 ```
 
 **Usage in Interfaces:**
+
 ```typescript
 export interface BaseContent {
-  title: string;
-  summary: string;
-  status?: ContentStatus; // Type-safe status tracking
+	title: string;
+	summary: string;
+	status?: ContentStatus; // Type-safe status tracking
 }
 ```
 
@@ -241,16 +247,17 @@ export interface BaseContent {
  * Content difficulty levels for educational content classification
  */
 export enum ContentDifficulty {
-  BEGINNER = 'beginner',
-  INTERMEDIATE = 'intermediate',
-  ADVANCED = 'advanced'
+	BEGINNER = "beginner",
+	INTERMEDIATE = "intermediate",
+	ADVANCED = "advanced"
 }
 ```
 
 **Usage in Interfaces:**
+
 ```typescript
 export interface ProjectContent extends BaseContent {
-  difficulty?: ContentDifficulty; // Type-safe difficulty classification
+	difficulty?: ContentDifficulty; // Type-safe difficulty classification
 }
 ```
 
@@ -261,20 +268,21 @@ export interface ProjectContent extends BaseContent {
  * Mermaid diagram direction options for visual flow representation
  */
 export enum MermaidDirection {
-  TB = 'TB', // Top-Bottom
-  LR = 'LR', // Left-Right
-  BT = 'BT', // Bottom-Top
-  RL = 'RL'  // Right-Left
+	TB = "TB", // Top-Bottom
+	LR = "LR", // Left-Right
+	BT = "BT", // Bottom-Top
+	RL = "RL" // Right-Left
 }
 ```
 
 **Usage in Interfaces:**
+
 ```typescript
 export interface DiagramBlock {
-  type: 'diagram';
-  diagramType: "mermaid" | "flowchart" | "sequence" | "gantt" | "gitgraph";
-  definition: string;
-  direction?: MermaidDirection; // Type-safe diagram orientation
+	type: "diagram";
+	diagramType: "mermaid" | "flowchart" | "sequence" | "gantt" | "gitgraph";
+	definition: string;
+	direction?: MermaidDirection; // Type-safe diagram orientation
 }
 ```
 
@@ -293,7 +301,7 @@ export const exampleLesson: LessonContent = {
 	type: "lesson",
 	title: "Container Orchestration Fundamentals",
 	summary: "Learn the core concepts of container orchestration with Kubernetes",
-	status: "draft", // Clearly indicates development stage
+	status: "draft" // Clearly indicates development stage
 	// ... rest of lesson content
 };
 ```

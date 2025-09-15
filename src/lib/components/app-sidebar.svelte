@@ -12,16 +12,12 @@
 
 	let { ref = $bindable(null), ...restProps }: ComponentProps<typeof Sidebar.Root> = $props();
 
-	// Track which units are open - start with first unit open
-	let openUnits = $state<Set<number>>(new Set([0]));
+	// Track which unit is open - accordion behavior (only one open at a time)
+	let openUnit = $state<number | null>(0);
 
 	function toggleUnit(unitIndex: number) {
-		if (openUnits.has(unitIndex)) {
-			openUnits.delete(unitIndex);
-		} else {
-			openUnits.add(unitIndex);
-		}
-		openUnits = new Set(openUnits);
+		// If clicking the same unit, close it. Otherwise, open the new unit.
+		openUnit = openUnit === unitIndex ? null : unitIndex;
 	}
 
 	// Content loading functions
@@ -47,7 +43,7 @@
 			<Sidebar.MenuItem>
 				<Sidebar.MenuButton size="lg">
 					{#snippet child({ props })}
-						<button {...props} onclick={handleHomeClick}>
+						<button {...props} onclick={handleHomeClick} class="cursor-pointer">
 							<div
 								class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
 							>
@@ -67,13 +63,13 @@
 		<Sidebar.Group>
 			<Sidebar.Menu>
 				{#each contentMenu.units as unit, unitIndex (unit.title)}
-					<Collapsible.Root open={openUnits.has(unitIndex)} class="group/collapsible">
+					<Collapsible.Root open={openUnit === unitIndex} class="group/collapsible">
 						<Sidebar.MenuItem>
 							<div class="flex items-center gap-1">
 								<!-- Unit title as clickeable button -->
 								<button
 									onclick={() => handleUnitClick(unit, unitIndex)}
-									class="flex flex-1 items-center gap-3 rounded-md px-3 py-3 text-sm font-medium hover:bg-sidebar-accent hover:text-sidebar-accent-foreground cursor-pointer"
+									class="flex flex-1 cursor-pointer items-center gap-3 rounded-md px-3 py-3 text-sm font-medium hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
 								>
 									{#if getIconComponent(unit.icon)}
 										{@const IconComponent = getIconComponent(unit.icon)}
@@ -88,8 +84,8 @@
 										<button
 											{...props}
 											onclick={() => toggleUnit(unitIndex)}
-											class="flex h-10 w-10 items-center justify-center rounded-md hover:bg-sidebar-accent cursor-pointer"
-											aria-label={openUnits.has(unitIndex) ? "Collapse unit" : "Expand unit"}
+											class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-md hover:bg-sidebar-accent"
+											aria-label={openUnit === unitIndex ? "Collapse unit" : "Expand unit"}
 										>
 											<PlusIcon class="size-5 group-data-[state=open]/collapsible:hidden" />
 											<MinusIcon class="size-5 group-data-[state=closed]/collapsible:hidden" />
@@ -108,7 +104,7 @@
 															onclick={() =>
 																handleChapterClick(chapter.chapter_data, chapter.chapter_link)}
 															{...props}
-															class="flex w-full items-center gap-3 px-3 py-2 cursor-pointer"
+															class="flex w-full cursor-pointer items-center gap-3 px-3 py-2"
 														>
 															{#if getIconComponent(chapter.icon)}
 																{@const ChapterIconComponent = getIconComponent(chapter.icon)}

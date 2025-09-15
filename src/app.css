@@ -10,6 +10,74 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Shadcn-svelte CSS variables for semantic theming */
+@layer base {
+	:root {
+		--background: 0 0% 100%;
+		--foreground: 222.2 84% 4.9%;
+		--card: 0 0% 100%;
+		--card-foreground: 222.2 84% 4.9%;
+		--popover: 0 0% 100%;
+		--popover-foreground: 222.2 84% 4.9%;
+		--primary: 221.2 83.2% 53.3%;
+		--primary-foreground: 210 40% 98%;
+		--secondary: 210 40% 96%;
+		--secondary-foreground: 222.2 84% 4.9%;
+		--muted: 210 40% 96%;
+		--muted-foreground: 215.4 16.3% 46.9%;
+		--accent: 210 40% 96%;
+		--accent-foreground: 222.2 84% 4.9%;
+		--destructive: 0 84.2% 60.2%;
+		--destructive-foreground: 210 40% 98%;
+		--border: 214.3 31.8% 91.4%;
+		--input: 214.3 31.8% 91.4%;
+		--ring: 221.2 83.2% 53.3%;
+		--radius: 0.5rem;
+		--chart-1: 12 76% 61%;
+		--chart-2: 173 58% 39%;
+		--chart-3: 197 37% 24%;
+		--chart-4: 43 74% 66%;
+		--chart-5: 27 87% 67%;
+	}
+
+	.dark {
+		--background: 222.2 84% 4.9%;
+		--foreground: 210 40% 98%;
+		--card: 222.2 84% 4.9%;
+		--card-foreground: 210 40% 98%;
+		--popover: 222.2 84% 4.9%;
+		--popover-foreground: 210 40% 98%;
+		--primary: 217.2 91.2% 59.8%;
+		--primary-foreground: 222.2 84% 4.9%;
+		--secondary: 217.2 32.6% 17.5%;
+		--secondary-foreground: 210 40% 98%;
+		--muted: 217.2 32.6% 17.5%;
+		--muted-foreground: 215 20.2% 65.1%;
+		--accent: 217.2 32.6% 17.5%;
+		--accent-foreground: 210 40% 98%;
+		--destructive: 0 62.8% 30.6%;
+		--destructive-foreground: 210 40% 98%;
+		--border: 217.2 32.6% 17.5%;
+		--input: 217.2 32.6% 17.5%;
+		--ring: 224.3 76.3% 94.1%;
+		--chart-1: 220 70% 50%;
+		--chart-2: 160 60% 45%;
+		--chart-3: 30 80% 55%;
+		--chart-4: 280 65% 60%;
+		--chart-5: 340 75% 55%;
+	}
+}
+
+/* Base styles for semantic elements */
+@layer base {
+	* {
+		@apply border-border;
+	}
+	body {
+		@apply bg-background text-foreground;
+	}
+}
+
 /* Component styles using @apply - centralized to avoid per-component issues */
 @layer components {
 	/* Quiz Components */
@@ -18,15 +86,15 @@
 	}
 
 	.quiz-header {
-		@apply mb-8 border-b border-gray-200 pb-6;
+		@apply mb-8 border-b border-border pb-6;
 	}
 
 	.quiz-title {
-		@apply mb-3 text-3xl font-bold text-gray-900;
+		@apply mb-3 text-3xl font-bold text-foreground;
 	}
 
 	.quiz-description {
-		@apply mb-6 text-lg text-gray-600;
+		@apply mb-6 text-lg text-muted-foreground;
 	}
 
 	.quiz-progress-bar {
@@ -38,19 +106,19 @@
 	}
 
 	.progress-label {
-		@apply mb-2 block text-sm font-medium text-gray-700;
+		@apply mb-2 block text-sm font-medium text-foreground;
 	}
 
 	.progress-track {
-		@apply h-2 w-full rounded-full bg-gray-200;
+		@apply h-2 w-full rounded-full bg-muted;
 	}
 
 	.progress-fill {
-		@apply h-full rounded-full bg-blue-500 transition-all duration-300;
+		@apply h-full rounded-full bg-primary transition-all duration-300;
 	}
 
 	.progress-stats {
-		@apply flex items-center gap-2 text-sm text-gray-600;
+		@apply flex items-center gap-2 text-sm text-muted-foreground;
 	}
 
 	.question-section {
@@ -58,11 +126,11 @@
 	}
 
 	.question-card {
-		@apply rounded-lg border border-gray-200 bg-white p-6;
+		@apply rounded-lg border border-border bg-card p-6;
 	}
 
 	.question-text {
-		@apply mb-6 text-xl font-semibold text-gray-900;
+		@apply mb-6 text-xl font-semibold text-card-foreground;
 	}
 
 	.answers-list {
@@ -70,11 +138,11 @@
 	}
 
 	.answer-button {
-		@apply flex w-full items-center gap-3 rounded-lg border border-gray-200 p-4 text-left transition-colors duration-200 hover:border-blue-300 hover:bg-blue-50;
+		@apply flex w-full items-center gap-3 rounded-lg border border-border p-4 text-left transition-colors duration-200 hover:border-primary hover:bg-accent;
 	}
 
 	.answer-button.selected {
-		@apply border-blue-500 bg-blue-50;
+		@apply border-primary bg-accent;
 	}
 
 	.answer-indicator {
@@ -82,27 +150,27 @@
 	}
 
 	.checkbox-style {
-		@apply flex h-5 w-5 items-center justify-center rounded border-2 border-gray-300;
+		@apply flex h-5 w-5 items-center justify-center rounded border-2 border-border;
 	}
 
 	.checkbox-style.selected {
-		@apply border-blue-500 bg-blue-500 text-white;
+		@apply border-primary bg-primary text-primary-foreground;
 	}
 
 	.radio-style {
-		@apply h-5 w-5 rounded-full border-2 border-gray-300;
+		@apply h-5 w-5 rounded-full border-2 border-border;
 	}
 
 	.radio-style.selected {
-		@apply border-blue-500 bg-blue-500;
+		@apply border-primary bg-primary;
 	}
 
 	.answer-text {
-		@apply flex-1 text-gray-800;
+		@apply flex-1 text-foreground;
 	}
 
 	.explanation-section {
-		@apply border-t border-gray-200 pt-4;
+		@apply border-t border-border pt-4;
 	}
 
 	.show-explanation {
@@ -110,7 +178,7 @@
 	}
 
 	.explanation-content {
-		@apply rounded-lg bg-blue-50 p-4;
+		@apply rounded-lg bg-accent p-4;
 	}
 
 	.explanation-content p {
@@ -126,11 +194,11 @@
 	}
 
 	.nav-button.secondary {
-		@apply bg-gray-100 text-gray-700 hover:bg-gray-200;
+		@apply bg-muted text-foreground hover:bg-gray-200;
 	}
 
 	.nav-button.primary {
-		@apply bg-blue-500 text-white hover:bg-blue-600;
+		@apply bg-accent text-white hover:bg-blue-600;
 	}
 
 	.results-section {
@@ -162,12 +230,12 @@
 	}
 
 	.score-percentage {
-		@apply text-4xl font-bold text-gray-900;
+		@apply text-4xl font-bold text-foreground;
 	}
 
 	.score-info,
 	.time-info {
-		@apply text-gray-600;
+		@apply text-muted-foreground;
 	}
 
 	.results-actions {
@@ -179,7 +247,7 @@
 	}
 
 	.action-button.secondary {
-		@apply bg-gray-100 text-gray-700 hover:bg-gray-200;
+		@apply bg-muted text-foreground hover:bg-gray-200;
 	}
 
 	.action-button.primary {
@@ -192,18 +260,18 @@
 	}
 
 	.lesson-header {
-		@apply mb-8 border-b border-gray-200 pb-6;
+		@apply mb-8 border-b border-border pb-6;
 		display: flex;
 		flex-direction: column;
 	}
 
 	.lesson-title {
-		@apply mb-3 text-3xl leading-tight font-bold text-gray-900;
+		@apply mb-3 text-3xl leading-tight font-bold text-foreground;
 		order: 1;
 	}
 
 	.lesson-summary {
-		@apply mb-6 text-lg leading-relaxed text-gray-600;
+		@apply mb-6 text-lg leading-relaxed text-muted-foreground;
 		order: 2;
 	}
 
@@ -213,11 +281,11 @@
 	}
 
 	.metadata-item {
-		@apply flex items-start gap-3 rounded-lg bg-gray-50 p-3;
+		@apply flex items-start gap-3 rounded-lg bg-muted p-3;
 	}
 
 	.metadata-item :global(svg) {
-		@apply mt-0.5 flex-shrink-0 text-gray-500;
+		@apply mt-0.5 flex-shrink-0 text-muted-foreground;
 	}
 
 	.metadata-content {
@@ -225,16 +293,16 @@
 	}
 
 	.metadata-label {
-		@apply mb-1 block font-medium text-gray-700;
+		@apply mb-1 block font-medium text-foreground;
 	}
 
 	.prerequisites-list,
 	.objectives-list {
-		@apply list-inside list-disc space-y-1 text-sm text-gray-600;
+		@apply list-inside list-disc space-y-1 text-sm text-muted-foreground;
 	}
 
 	.lesson-footer {
-		@apply border-t border-gray-200 pt-6;
+		@apply border-t border-border pt-6;
 	}
 
 	.lesson-navigation-hint {
@@ -242,12 +310,16 @@
 	}
 
 	/* Code Block Components */
+	.code-block-wrapper {
+		@apply relative mb-6 overflow-hidden rounded-lg border border-border bg-muted;
+	}
+
 	.code-container {
-		@apply relative mb-6 overflow-hidden rounded-lg border border-gray-200 bg-gray-50;
+		@apply relative mb-6 overflow-hidden rounded-lg border border-border bg-muted;
 	}
 
 	.code-header {
-		@apply flex items-center justify-between border-b border-gray-200 bg-gray-100 px-4 py-3;
+		@apply flex items-center justify-between border-b border-border bg-muted px-4 py-3;
 	}
 
 	/* Study Guide Components */
@@ -260,15 +332,15 @@
 	}
 
 	.study-guide-title {
-		@apply mb-4 text-3xl font-bold text-gray-900;
+		@apply mb-4 text-3xl font-bold text-foreground;
 	}
 
 	.study-guide-summary {
-		@apply mb-4 text-lg leading-relaxed text-gray-600;
+		@apply mb-4 text-lg leading-relaxed text-muted-foreground;
 	}
 
 	.study-guide-description {
-		@apply mb-8 text-sm text-gray-500;
+		@apply mb-8 text-sm text-muted-foreground;
 	}
 
 	.study-guide-meta {
@@ -280,7 +352,7 @@
 	}
 
 	.progress-text {
-		@apply mb-2 text-sm text-gray-600;
+		@apply mb-2 text-sm text-muted-foreground;
 	}
 
 	.progress-bar {
@@ -291,25 +363,95 @@
 		@apply h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-600 transition-all duration-300;
 	}
 
+	/* shadcn Progress component styling */
+	.quiz-progress-component {
+		@apply w-full;
+	}
+
+	.study-guide-progress {
+		@apply mx-auto w-full max-w-sm;
+	}
+
+	/* Mermaid Dialog styling */
+	.mermaid-dialog-content {
+		@apply max-h-[90vh] max-w-4xl overflow-auto;
+	}
+
+	/* Quiz Review styling */
+	.quiz-review {
+		@apply my-8 space-y-6;
+	}
+
+	.review-title {
+		@apply mb-4 text-xl font-semibold text-foreground;
+	}
+
+	.review-question {
+		@apply rounded-lg border border-border p-4;
+	}
+
+	.review-header {
+		@apply mb-3 flex items-center justify-between;
+	}
+
+	.question-number {
+		@apply text-lg font-medium text-foreground;
+	}
+
+	.question-result {
+		@apply inline-flex h-6 w-6 items-center justify-center rounded-full text-sm font-bold text-white;
+	}
+
+	.question-result.correct {
+		@apply bg-green-500;
+	}
+
+	.question-result.incorrect {
+		@apply bg-red-500;
+	}
+
+	.review-question-text {
+		@apply mb-4 text-foreground;
+	}
+
+	.review-answers {
+		@apply mb-4 space-y-2;
+	}
+
+	.user-answer,
+	.correct-answer {
+		@apply text-sm;
+	}
+
+	.explanation-content {
+		@apply border-l-4 border-primary bg-accent p-3 text-sm;
+	}
+
 	.control-buttons {
 		@apply flex gap-2;
 	}
 
 	.control-button {
-		@apply flex cursor-pointer items-center justify-center rounded-lg border border-gray-300 bg-white p-2 transition-all duration-200;
+		@apply flex cursor-pointer items-center justify-center rounded-lg border border-border bg-card p-2 transition-all duration-200;
 	}
 
 	.control-button:hover {
-		@apply border-gray-400 bg-gray-50;
+		@apply border-gray-400 bg-muted;
 	}
 
 	.control-button.active {
-		@apply border-blue-500 bg-blue-500 text-white;
+		@apply border-primary bg-accent text-accent-foreground;
 	}
 
 	.flashcard-container {
 		@apply my-8;
 		perspective: 1000px;
+	}
+
+	.flashcard-wrapper {
+		@apply relative;
+		/* Ensure proper stacking context for positioned expand button */
+		z-index: 1;
 	}
 
 	.flashcard {
@@ -319,7 +461,7 @@
 	}
 
 	.flashcard:focus {
-		@apply outline-2 outline-offset-2 outline-blue-500;
+		@apply outline-2 outline-offset-2 outline-ring;
 	}
 
 	.flashcard.flipped {
@@ -328,12 +470,12 @@
 
 	.flashcard-front,
 	.flashcard-back {
-		@apply absolute flex h-full w-full flex-col justify-between rounded-xl border border-gray-200 bg-white p-6 shadow-lg;
+		@apply absolute flex h-full w-full flex-col justify-between rounded-xl border border-border bg-card p-6 shadow-lg;
 		backface-visibility: hidden;
 	}
 
 	.flashcard-back {
-		@apply bg-slate-50;
+		@apply bg-muted;
 		transform: rotateY(180deg);
 	}
 
@@ -342,11 +484,11 @@
 	}
 
 	.card-title {
-		@apply mb-4 text-base font-semibold tracking-wider text-purple-600 uppercase;
+		@apply mb-4 text-base font-semibold tracking-wider text-primary uppercase;
 	}
 
 	.card-text {
-		@apply text-lg leading-relaxed text-gray-700;
+		@apply text-lg leading-relaxed text-foreground;
 	}
 
 	.flip-hint {
@@ -354,7 +496,7 @@
 	}
 
 	.flip-hint span {
-		@apply rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-500;
+		@apply rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground;
 	}
 
 	.card-tags {
@@ -370,11 +512,11 @@
 	}
 
 	.nav-button {
-		@apply flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 bg-white px-6 py-3 text-sm font-medium transition-all duration-200;
+		@apply flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-card px-6 py-3 text-sm font-medium transition-all duration-200;
 	}
 
 	.nav-button:hover:not(:disabled) {
-		@apply border-gray-400 bg-gray-50;
+		@apply border-gray-400 bg-muted;
 	}
 
 	.nav-button:disabled {
@@ -386,15 +528,17 @@
 	}
 
 	.hint {
-		@apply text-xs text-gray-500;
+		@apply text-xs text-muted-foreground;
 	}
 
 	.expand-button {
-		@apply fixed right-4 bottom-4 cursor-pointer rounded-full border border-gray-300 bg-white p-3 shadow-lg transition-all duration-200;
+		@apply absolute top-4 right-4 cursor-pointer rounded-full border border-border bg-card p-3 shadow-lg transition-all duration-200;
+		/* Ensure button stays above flashcard content */
+		z-index: 10;
 	}
 
 	.expand-button:hover {
-		@apply scale-110 bg-gray-50;
+		@apply scale-110 bg-muted;
 	}
 
 	.modal-flashcard {
@@ -404,7 +548,7 @@
 	}
 
 	.modal-flashcard:focus {
-		@apply outline-2 outline-offset-2 outline-blue-500;
+		@apply outline-2 outline-offset-2 outline-ring;
 	}
 
 	.modal-flashcard.flipped {
@@ -416,11 +560,11 @@
 	}
 
 	.modal-nav-button {
-		@apply cursor-pointer rounded-lg border border-gray-300 bg-white p-3 transition-all duration-200;
+		@apply cursor-pointer rounded-lg border border-border bg-card p-3 transition-all duration-200;
 	}
 
 	.modal-nav-button:hover:not(:disabled) {
-		@apply border-gray-400 bg-gray-50;
+		@apply border-gray-400 bg-muted;
 	}
 
 	.modal-nav-button:disabled {
@@ -432,11 +576,76 @@
 	}
 
 	.modal-control {
-		@apply cursor-pointer rounded-lg border border-gray-300 bg-white p-2 transition-all duration-200;
+		@apply cursor-pointer rounded-lg border border-border bg-card p-2 transition-all duration-200;
 	}
 
 	.modal-control:hover {
-		@apply border-gray-400 bg-gray-50;
+		@apply border-gray-400 bg-muted;
+	}
+
+	.modal-flashcard-container {
+		@apply flex justify-center;
+		perspective: 1000px;
+	}
+
+	.study-guide-dialog-content {
+		@apply max-h-[90vh] max-w-5xl overflow-auto;
+	}
+
+	/* Grid View Layout */
+	.flashcards-grid {
+		@apply grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+	}
+
+	.grid-card {
+		@apply relative cursor-pointer rounded-xl border border-border bg-card p-4 transition-all duration-200 hover:scale-105 hover:shadow-lg focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none;
+	}
+
+	.grid-card-content {
+		@apply text-left;
+	}
+
+	.grid-card-number {
+		@apply absolute -top-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground;
+	}
+
+	.grid-card-title {
+		@apply mb-2 text-xs font-semibold tracking-wider text-primary uppercase;
+	}
+
+	.grid-card-text {
+		@apply mb-3 text-sm leading-relaxed text-foreground;
+		display: -webkit-box;
+		-webkit-line-clamp: 3;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.grid-card-tags {
+		@apply flex flex-wrap gap-1;
+	}
+
+	.grid-tag {
+		@apply rounded-full bg-accent px-2 py-1 text-xs font-medium text-accent-foreground;
+	}
+
+	.grid-tag-more {
+		@apply rounded-full bg-muted px-2 py-1 text-xs font-medium text-muted-foreground;
+	}
+
+	.grid-view-hint {
+		@apply mt-8 text-center;
+	}
+
+	/* Mobile-first responsive grid */
+	@media (max-width: 390px) {
+		.flashcards-grid {
+			@apply grid-cols-1 gap-3;
+		}
+
+		.grid-card {
+			@apply p-3;
+		}
 	}
 
 	/* Study Guide Responsive Design */
@@ -470,20 +679,20 @@
 	}
 
 	.section-title {
-		@apply mb-6 scroll-mt-20 text-2xl font-bold text-gray-900;
+		@apply mb-6 scroll-mt-20 text-2xl font-bold text-foreground;
 	}
 
 	/* Mermaid Diagram Components */
 	.mermaid-wrapper {
-		@apply relative mb-6 overflow-hidden rounded-lg border border-gray-200 bg-white;
+		@apply relative mb-6 overflow-hidden rounded-lg border border-border bg-card;
 	}
 
 	.diagram-header {
-		@apply flex items-center justify-between border-b border-gray-200 bg-gray-50 px-4 py-3;
+		@apply flex items-center justify-between border-b border-border bg-muted px-4 py-3;
 	}
 
 	.diagram-title {
-		@apply m-0 text-sm font-medium text-gray-900;
+		@apply m-0 text-sm font-medium text-foreground;
 	}
 
 	.expand-button-only {
@@ -491,7 +700,7 @@
 	}
 
 	.expand-button {
-		@apply rounded-md p-2 text-gray-500 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none;
+		@apply rounded-md p-2 text-muted-foreground transition-colors duration-200 hover:bg-gray-200 hover:text-foreground focus:ring-2 focus:ring-blue-500 focus:outline-none;
 	}
 
 	.diagram-content {
@@ -507,15 +716,15 @@
 	}
 
 	.diagram-caption {
-		@apply border-t border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-600 italic;
+		@apply border-t border-border bg-muted px-4 py-3 text-sm text-muted-foreground italic;
 	}
 
 	.loading-state {
-		@apply flex flex-col items-center gap-3 text-gray-500;
+		@apply flex flex-col items-center gap-3 text-muted-foreground;
 	}
 
 	.loading-spinner {
-		@apply h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-blue-500;
+		@apply h-6 w-6 animate-spin rounded-full border-2 border-border border-t-blue-500;
 	}
 
 	.error-state {
@@ -535,15 +744,15 @@
 	}
 
 	.diagram-modal {
-		@apply relative flex h-full max-h-[95vh] w-full max-w-[95vw] flex-col rounded-lg bg-white;
+		@apply relative flex h-full max-h-[95vh] w-full max-w-[95vw] flex-col rounded-lg bg-card;
 	}
 
 	.modal-close {
-		@apply absolute top-4 right-4 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-xl font-bold text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-800;
+		@apply absolute top-4 right-4 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-muted text-xl font-bold text-muted-foreground transition-colors hover:bg-gray-200 hover:text-foreground;
 	}
 
 	.modal-title {
-		@apply m-0 px-6 pt-6 pb-2 text-lg font-semibold text-gray-900;
+		@apply m-0 px-6 pt-6 pb-2 text-lg font-semibold text-foreground;
 	}
 
 	.modal-diagram {
@@ -551,7 +760,7 @@
 	}
 
 	.modal-caption {
-		@apply m-0 px-6 pb-6 text-sm text-gray-600 italic;
+		@apply m-0 px-6 pb-6 text-sm text-muted-foreground italic;
 	}
 
 	/* Mobile responsiveness for Mermaid */
@@ -631,7 +840,7 @@
 
 	/* Additional Content Section Components */
 	.section-heading {
-		@apply mb-6 scroll-mt-20 text-2xl font-bold text-gray-900;
+		@apply mb-6 scroll-mt-20 text-2xl font-bold text-foreground;
 	}
 
 	.section-paragraphs {
@@ -639,7 +848,7 @@
 	}
 
 	.paragraph {
-		@apply leading-relaxed text-gray-700;
+		@apply leading-relaxed text-foreground;
 	}
 
 	/* Style HTML content within paragraphs */
@@ -648,7 +857,7 @@
 	}
 
 	.paragraph :global(strong) {
-		@apply font-semibold text-gray-900;
+		@apply font-semibold text-foreground;
 	}
 
 	.paragraph :global(em) {
@@ -656,7 +865,7 @@
 	}
 
 	.paragraph :global(code) {
-		@apply rounded bg-gray-100 px-1.5 py-0.5 font-mono text-sm text-gray-800;
+		@apply rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground;
 	}
 
 	.paragraph :global(a) {
@@ -672,11 +881,11 @@
 	}
 
 	.paragraph :global(li) {
-		@apply text-gray-700;
+		@apply text-foreground;
 	}
 
 	.paragraph :global(blockquote) {
-		@apply my-4 border-l-4 border-gray-300 pl-4 text-gray-600 italic;
+		@apply my-4 border-l-4 border-border pl-4 text-muted-foreground italic;
 	}
 
 	.section-code-blocks {
@@ -697,7 +906,7 @@
 	}
 
 	.callout-info {
-		@apply border-blue-500 bg-blue-50 text-blue-900;
+		@apply border-blue-500 bg-accent text-blue-900;
 	}
 
 	.callout-warning {
@@ -786,7 +995,7 @@
 		}
 
 		.callout-info {
-			@apply border-blue-400 bg-blue-900/20 text-blue-100;
+			@apply border-primary bg-blue-900/20 text-blue-100;
 		}
 
 		.callout-warning {
@@ -802,17 +1011,17 @@
 		}
 
 		.callout-content :global(code) {
-			@apply bg-white/10;
+			@apply bg-card/10;
 		}
 	}
 
 	/* Code Block Components */
 	.code-container {
-		@apply relative mb-6 overflow-hidden rounded-lg border border-gray-200 bg-gray-50;
+		@apply relative mb-6 overflow-hidden rounded-lg border border-border bg-muted;
 	}
 
 	.code-header {
-		@apply flex items-center justify-between border-b border-gray-200 bg-gray-100 px-4 py-3;
+		@apply flex items-center justify-between border-b border-border bg-muted px-4 py-3;
 	}
 
 	.code-info {
@@ -820,11 +1029,11 @@
 	}
 
 	.code-title {
-		@apply m-0 text-sm font-medium text-gray-900;
+		@apply m-0 text-sm font-medium text-foreground;
 	}
 
 	.code-filename {
-		@apply font-mono text-xs text-gray-600;
+		@apply font-mono text-xs text-muted-foreground;
 	}
 
 	.copy-button-only {
@@ -832,7 +1041,7 @@
 	}
 
 	.copy-button {
-		@apply rounded-md p-2 text-gray-500 transition-colors duration-200 hover:bg-gray-200 hover:text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none;
+		@apply rounded-md p-2 text-muted-foreground transition-colors duration-200 hover:bg-gray-200 hover:text-foreground focus:ring-2 focus:ring-blue-500 focus:outline-none;
 	}
 
 	.code-content {
@@ -849,7 +1058,7 @@
 	}
 
 	.fallback-pre {
-		@apply m-0 bg-transparent p-4 font-mono text-sm leading-relaxed text-gray-800;
+		@apply m-0 bg-transparent p-4 font-mono text-sm leading-relaxed text-foreground;
 		white-space: pre-wrap;
 		word-break: break-word;
 	}

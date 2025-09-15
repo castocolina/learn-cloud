@@ -20,9 +20,108 @@
 	import StudyGuideRenderer from "$lib/components/content/StudyGuideRenderer.svelte";
 
 	// Import content loading functions for deep linking
-	import { initializeFromHash, loadContentFromHash } from "$lib/utils/contentLoader.js";
+	import {
+		initializeFromHash,
+		loadContentFromHash,
+		loadUnitContent
+	} from "$lib/utils/contentLoader.js";
 	import { onMount } from "svelte";
 	import { browser } from "$app/environment";
+	import { contentMenu } from "$lib/../data/content-menu.js";
+
+	// Navigate to unit overview
+	function navigateToUnit() {
+		const state = $contentStore;
+		if (!state.currentHash) return;
+
+		const hashParts = state.currentHash.split("/");
+		if (hashParts.length >= 3 && hashParts[0] === "book" && hashParts[1] === "unit") {
+			const unitNumber = parseInt(hashParts[2]);
+			const unit = contentMenu.units[unitNumber - 1]; // Units are 1-indexed in hash
+
+			if (unit) {
+				// Navigate to unit overview using unit_data and unit_link
+				loadUnitContent(unit.unit_data, unit.unit_link);
+			}
+		}
+	}
+
+	// Get breadcrumb data based on current state
+	function getBreadcrumbData() {
+		const state = $contentStore;
+
+		if (state.showWelcome || !state.currentHash) {
+			// Homepage: Show site title only, no links
+			return {
+				showUnit: false,
+				showChapter: false,
+				unitName: contentMenu.metadata.title,
+				chapterName: "",
+				canNavigateToUnit: false,
+				isHomepage: true
+			};
+		}
+
+		// Parse hash to get unit and chapter info
+		const hashParts = state.currentHash.split("/");
+
+		if (hashParts.length >= 3 && hashParts[0] === "book" && hashParts[1] === "unit") {
+			const unitNumber = parseInt(hashParts[2]);
+			const unit = contentMenu.units[unitNumber - 1]; // Units are 1-indexed in hash
+
+			if (hashParts.length >= 4) {
+				const filename = hashParts[3];
+
+				// Check if this is a unit overview page (filename starts with "0_unit_")
+				if (filename.startsWith("0_unit_")) {
+					// Unit overview page: Show unit title only, not clickable (like homepage)
+					return {
+						showUnit: true,
+						showChapter: false,
+						unitName: unit?.title || `Unit ${unitNumber}`,
+						chapterName: "",
+						canNavigateToUnit: false,
+						isHomepage: false
+					};
+				} else {
+					// Content page (chapter/lesson/quiz/etc): Show unit link + chapter title
+					const chapter = unit?.chapters?.find((ch) => ch.chapter_link.endsWith(filename));
+
+					return {
+						showUnit: true,
+						showChapter: true,
+						unitName: unit?.title || `Unit ${unitNumber}`,
+						chapterName: chapter?.title || "Chapter",
+						canNavigateToUnit: true,
+						unitHref: unit?.unit_link ? `#${unit.unit_link}` : "#",
+						isHomepage: false
+					};
+				}
+			} else {
+				// Unit path without filename: Show unit title only, not clickable
+				return {
+					showUnit: true,
+					showChapter: false,
+					unitName: unit?.title || `Unit ${unitNumber}`,
+					chapterName: "",
+					canNavigateToUnit: false,
+					isHomepage: false
+				};
+			}
+		}
+
+		// Fallback
+		return {
+			showUnit: false,
+			showChapter: false,
+			unitName: contentMenu.metadata.title,
+			chapterName: "",
+			canNavigateToUnit: false,
+			isHomepage: true
+		};
+	}
+
+	const breadcrumbData = $derived(getBreadcrumbData());
 
 	// Initialize content from hash on page load
 	onMount(() => {
@@ -49,18 +148,37 @@
 <Sidebar.Provider>
 	<AppSidebar />
 	<Sidebar.Inset>
-		<header class="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+		<header class="sticky flex h-16 shrink-0 items-center gap-2 border-b px-4">
 			<Sidebar.Trigger class="-ml-1" />
 			<Separator orientation="vertical" class="mr-2 data-[orientation=vertical]:h-4" />
 			<Breadcrumb.Root>
 				<Breadcrumb.List>
-					<Breadcrumb.Item class="hidden md:block">
-						<Breadcrumb.Link href="#">Building Your Application</Breadcrumb.Link>
-					</Breadcrumb.Item>
-					<Breadcrumb.Separator class="hidden md:block" />
+					<!-- First breadcrumb segment -->
 					<Breadcrumb.Item>
-						<Breadcrumb.Page>Data Fetching</Breadcrumb.Page>
+						{#if breadcrumbData.isHomepage}
+							<!-- Homepage: Site title only, disabled link -->
+							<Breadcrumb.Page id="bread-1-unit">{breadcrumbData.unitName}</Breadcrumb.Page>
+						{:else if breadcrumbData.canNavigateToUnit}
+							<!-- Content page: Unit name is clickable, goes to unit overview -->
+							<Breadcrumb.Link id="bread-1-unit" href={breadcrumbData.unitHref || "#"} onclick={navigateToUnit}>
+								{breadcrumbData.unitName}
+							</Breadcrumb.Link>
+						{:else if breadcrumbData.showUnit}
+							<!-- Unit overview: Unit name is current page -->
+							<Breadcrumb.Page id="bread-1-unit">{breadcrumbData.unitName}</Breadcrumb.Page>
+						{:else}
+							<!-- Fallback: Show site title -->
+							<Breadcrumb.Page id="bread-1-unit">{breadcrumbData.unitName}</Breadcrumb.Page>
+						{/if}
 					</Breadcrumb.Item>
+
+					<!-- Second breadcrumb segment (only on content pages) -->
+					{#if breadcrumbData.showChapter}
+						<Breadcrumb.Separator />
+						<Breadcrumb.Item>
+							<Breadcrumb.Page id="bread-2-chapter">{breadcrumbData.chapterName}</Breadcrumb.Page>
+						</Breadcrumb.Item>
+					{/if}
 				</Breadcrumb.List>
 			</Breadcrumb.Root>
 		</header>

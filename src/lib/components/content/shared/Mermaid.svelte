@@ -3,6 +3,7 @@
 	import { browser } from "$app/environment";
 	import type { DiagramBlock } from "$data/types";
 	import { Maximize, CircleAlert } from "lucide-svelte";
+	import * as Dialog from "$lib/components/ui/dialog";
 
 	interface Props {
 		diagram: DiagramBlock;
@@ -15,7 +16,6 @@
 	let isLoading = $state(true);
 	let hasError = $state(false);
 	let errorMessage = $state("");
-	let isExpanded = $state(false);
 
 	onMount(async () => {
 		if (browser && diagramElement) {
@@ -45,8 +45,8 @@
 				const diagramId = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
 
 				// Validate and render the diagram
-				const isValid = await mermaid.default.parse(diagram.definition);
-				if (isValid) {
+				try {
+					await mermaid.default.parse(diagram.definition);
 					const { svg } = await mermaid.default.render(diagramId, diagram.definition);
 					diagramElement.innerHTML = svg;
 
@@ -58,6 +58,10 @@
 						svgElement.style.maxWidth = "100%";
 						svgElement.style.height = "auto";
 					}
+				} catch (parseError) {
+					const errorMessage =
+						parseError instanceof Error ? parseError.message : String(parseError);
+					throw new Error(`Invalid Mermaid syntax: ${errorMessage}`);
 				}
 
 				isLoading = false;
@@ -69,50 +73,93 @@
 			}
 		}
 	});
-
-	function toggleExpanded() {
-		isExpanded = !isExpanded;
-		// Add body scroll lock when expanded
-		if (typeof document !== "undefined") {
-			document.body.style.overflow = isExpanded ? "hidden" : "";
-		}
-	}
-
-	function handleKeyDown(event: KeyboardEvent) {
-		if (event.key === "Escape" && isExpanded) {
-			isExpanded = false;
-			if (typeof document !== "undefined") {
-				document.body.style.overflow = "";
-			}
-		}
-	}
 </script>
-
-<svelte:window on:keydown={handleKeyDown} />
 
 <div class="mermaid-wrapper {className}">
 	{#if diagram.title}
 		<div class="diagram-header">
 			<h4 class="diagram-title">{diagram.title}</h4>
-			<button
-				class="expand-button"
-				onclick={toggleExpanded}
-				aria-label="Expand diagram to fullscreen"
-				type="button"
-			>
-				<Maximize size={16} />
-			</button>
+			<Dialog.Root>
+				<Dialog.Trigger
+					class="expand-button"
+					aria-label="Expand diagram to fullscreen"
+					type="button"
+				>
+					<Maximize size={16} />
+				</Dialog.Trigger>
+				<Dialog.Content class="mermaid-dialog-content">
+					<Dialog.Header>
+						<Dialog.Title>{diagram.title}</Dialog.Title>
+						{#if diagram.caption}
+							<Dialog.Description>{diagram.caption}</Dialog.Description>
+						{/if}
+					</Dialog.Header>
+
+					<div class="modal-diagram">
+						{#if !isLoading && !hasError}
+							<div class="diagram-svg-modal">
+								{@html diagramElement?.innerHTML || ""}
+							</div>
+						{:else if isLoading}
+							<div class="loading-state">
+								<div class="loading-spinner"></div>
+								<p>Loading diagram...</p>
+							</div>
+						{:else if hasError}
+							<div class="error-state">
+								<CircleAlert size={24} />
+								<p>Failed to render diagram</p>
+								<details>
+									<summary>Error details</summary>
+									<pre>{errorMessage}</pre>
+								</details>
+							</div>
+						{/if}
+					</div>
+				</Dialog.Content>
+			</Dialog.Root>
 		</div>
 	{:else}
 		<div class="expand-button-only">
-			<button
-				class="expand-button"
-				onclick={toggleExpanded}
-				aria-label="Expand diagram to fullscreen"
-				type="button"
-			>
-				<Maximize size={16} />
-			</button>
+			<Dialog.Root>
+				<Dialog.Trigger
+					class="expand-button"
+					aria-label="Expand diagram to fullscreen"
+					type="button"
+				>
+					<Maximize size={16} />
+				</Dialog.Trigger>
+				<Dialog.Content class="mermaid-dialog-content">
+					<Dialog.Header>
+						<Dialog.Title>Diagram</Dialog.Title>
+						{#if diagram.caption}
+							<Dialog.Description>{diagram.caption}</Dialog.Description>
+						{/if}
+					</Dialog.Header>
+
+					<div class="modal-diagram">
+						{#if !isLoading && !hasError}
+							<div class="diagram-svg-modal">
+								{@html diagramElement?.innerHTML || ""}
+							</div>
+						{:else if isLoading}
+							<div class="loading-state">
+								<div class="loading-spinner"></div>
+								<p>Loading diagram...</p>
+							</div>
+						{:else if hasError}
+							<div class="error-state">
+								<CircleAlert size={24} />
+								<p>Failed to render diagram</p>
+								<details>
+									<summary>Error details</summary>
+									<pre>{errorMessage}</pre>
+								</details>
+							</div>
+						{/if}
+					</div>
+				</Dialog.Content>
+			</Dialog.Root>
 		</div>
 	{/if}
 
@@ -143,54 +190,3 @@
 		</div>
 	{/if}
 </div>
-
-<!-- Fullscreen modal overlay -->
-{#if isExpanded}
-	<div
-		class="diagram-modal-overlay"
-		onclick={toggleExpanded}
-		onkeydown={(e) => e.key === "Escape" && toggleExpanded()}
-		role="dialog"
-		aria-modal="true"
-		aria-label="Expanded diagram view"
-		tabindex="-1"
-	>
-		<div
-			class="diagram-modal"
-			onclick={(e) => e.stopPropagation()}
-			onkeydown={(e) => {
-				if (e.key === 'Escape') {
-					toggleExpanded();
-				}
-			}}
-			role="document"
-			tabindex="-1"
-		>
-			<button
-				class="modal-close"
-				onclick={toggleExpanded}
-				aria-label="Close expanded view"
-				type="button"
-			>
-				×
-			</button>
-
-			{#if diagram.title}
-				<h3 class="modal-title">{diagram.title}</h3>
-			{/if}
-
-			<div class="modal-diagram">
-				{#if !isLoading && !hasError}
-					<!-- Clone the diagram for modal view -->
-					<div class="diagram-svg-modal">
-						{diagramElement?.innerHTML || ""}
-					</div>
-				{/if}
-			</div>
-
-			{#if diagram.caption}
-				<p class="modal-caption">{diagram.caption}</p>
-			{/if}
-		</div>
-	</div>
-{/if}

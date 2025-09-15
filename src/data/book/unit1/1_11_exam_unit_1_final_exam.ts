@@ -6,7 +6,8 @@ import { ContentStatus } from "../../types";
 export const examContent: ExamContent = {
 	type: "exam",
 	title: "1.11: Unit 1 Final Exam",
-	summary: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization,",
+	summary:
+		"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization,",
 	status: ContentStatus.SCAFFOLD,
 	exam: {
 		passingScore: 75,
@@ -17,10 +18,11 @@ export const examContent: ExamContent = {
 					"Cloud-native technologies represent a",
 					"Cloud-native technologies represent a",
 					"Cloud-native technologies represent a",
-					"Cloud-native technologies represent a",
+					"Cloud-native technologies represent a"
 				],
 				correct: 0,
-				explanation: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
+				explanation:
+					"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
 			},
 			{
 				question: "Cloud-native technologies represent a paradigm shift in how we build, deploy,?",
@@ -28,10 +30,11 @@ export const examContent: ExamContent = {
 					"Cloud-native technologies represent a",
 					"Cloud-native technologies represent a",
 					"Cloud-native technologies represent a",
-					"Cloud-native technologies represent a",
+					"Cloud-native technologies represent a"
 				],
 				correct: 1,
-				explanation: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
+				explanation:
+					"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
 			},
 			{
 				question: "Cloud-native technologies represent a paradigm shift in how we build, deploy,?",
@@ -39,10 +42,11 @@ export const examContent: ExamContent = {
 					"Cloud-native technologies represent a",
 					"Cloud-native technologies represent a",
 					"Cloud-native technologies represent a",
-					"Cloud-native technologies represent a",
+					"Cloud-native technologies represent a"
 				],
 				correct: 2,
-				explanation: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
+				explanation:
+					"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
 			},
 			{
 				question: "Cloud-native technologies represent a paradigm shift in how we build, deploy,?",
@@ -50,10 +54,11 @@ export const examContent: ExamContent = {
 					"Cloud-native technologies represent a",
 					"Cloud-native technologies represent a",
 					"Cloud-native technologies represent a",
-					"Cloud-native technologies represent a",
+					"Cloud-native technologies represent a"
 				],
 				correct: 3,
-				explanation: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
+				explanation:
+					"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
 			},
 			{
 				question: "Cloud-native technologies represent a paradigm shift in how we build, deploy,?",
@@ -61,10 +66,11 @@ export const examContent: ExamContent = {
 					"Cloud-native technologies represent a",
 					"Cloud-native technologies represent a",
 					"Cloud-native technologies represent a",
-					"Cloud-native technologies represent a",
+					"Cloud-native technologies represent a"
 				],
 				correct: 0,
-				explanation: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
+				explanation:
+					"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
 			},
 			{
 				question: "Cloud-native technologies represent a paradigm shift in how we build, deploy,?",
@@ -72,10 +78,11 @@ export const examContent: ExamContent = {
 					"Cloud-native technologies represent a",
 					"Cloud-native technologies represent a",
 					"Cloud-native technologies represent a",
-					"Cloud-native technologies represent a",
+					"Cloud-native technologies represent a"
 				],
 				correct: 1,
-				explanation: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
+				explanation:
+					"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
 			},
 			{
 				question: "Cloud-native technologies represent a paradigm shift in how we build, deploy,?",
@@ -83,10 +90,11 @@ export const examContent: ExamContent = {
 					"Cloud-native technologies represent a",
 					"Cloud-native technologies represent a",
 					"Cloud-native technologies represent a",
-					"Cloud-native technologies represent a",
+					"Cloud-native technologies represent a"
 				],
 				correct: 2,
-				explanation: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
+				explanation:
+					"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
 			},
 			{
 				question: "Cloud-native technologies represent a paradigm shift in how we build, deploy,?",
@@ -94,10 +102,11 @@ export const examContent: ExamContent = {
 					"Cloud-native technologies represent a",
 					"Cloud-native technologies represent a",
 					"Cloud-native technologies represent a",
-					"Cloud-native technologies represent a",
+					"Cloud-native technologies represent a"
 				],
 				correct: 3,
-				explanation: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
+				explanation:
+					"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
 			},
 			{
 				question: "Cloud-native technologies represent a paradigm shift in how we build, deploy,?",
@@ -105,10 +114,11 @@ export const examContent: ExamContent = {
 					"Cloud-native technologies represent a",
 					"Cloud-native technologies represent a",
 					"Cloud-native technologies represent a",
-					"Cloud-native technologies represent a",
+					"Cloud-native technologies represent a"
 				],
 				correct: 0,
-				explanation: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
+				explanation:
+					"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
 			},
 			{
 				question: "Cloud-native technologies represent a paradigm shift in how we build, deploy,?",
@@ -116,10 +126,11 @@ export const examContent: ExamContent = {
 					"Cloud-native technologies represent a",
 					"Cloud-native technologies represent a",
 					"Cloud-native technologies represent a",
-					"Cloud-native technologies represent a",
+					"Cloud-native technologies represent a"
 				],
 				correct: 1,
-				explanation: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
+				explanation:
+					"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
 			}
 		]
 	},
@@ -129,5 +140,6 @@ export const examContent: ExamContent = {
 		"Best practices and industry standards",
 		"Advanced topics and optimization"
 	],
-	instructions: "This comprehensive exam tests your understanding of the topics covered in this unit. You have 90 minutes to complete all questions. Read each question carefully and select the best answer."
+	instructions:
+		"This comprehensive exam tests your understanding of the topics covered in this unit. You have 90 minutes to complete all questions. Read each question carefully and select the best answer."
 };

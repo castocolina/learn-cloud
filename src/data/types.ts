@@ -7,60 +7,60 @@
  * Content lifecycle status tracking for content maturity management
  */
 export enum ContentStatus {
-  SCAFFOLD = 'scaffold',
-  DRAFT = 'draft',
-  FINAL = 'final'
+	SCAFFOLD = "scaffold",
+	DRAFT = "draft",
+	FINAL = "final"
 }
 
 /**
  * Content difficulty levels for educational content classification
  */
 export enum ContentDifficulty {
-  BEGINNER = 'beginner',
-  INTERMEDIATE = 'intermediate',
-  ADVANCED = 'advanced'
+	BEGINNER = "beginner",
+	INTERMEDIATE = "intermediate",
+	ADVANCED = "advanced"
 }
 
 /**
  * Mermaid diagram direction options for visual flow representation
  */
 export enum MermaidDirection {
-  TB = 'TB', // Top-Bottom
-  LR = 'LR', // Left-Right
-  BT = 'BT', // Bottom-Top
-  RL = 'RL'  // Right-Left
+	TB = "TB", // Top-Bottom
+	LR = "LR", // Left-Right
+	BT = "BT", // Bottom-Top
+	RL = "RL" // Right-Left
 }
 
 /**
  * Content types for menu chapters - ensures type safety for chapter types
  */
 export enum ChapterType {
-  LESSON = 'lesson',
-  STUDY_GUIDE = 'study_guide',
-  QUIZ = 'quiz',
-  EXAM = 'exam',
-  PROJECT = 'project'
+	LESSON = "lesson",
+	STUDY_GUIDE = "study_guide",
+	QUIZ = "quiz",
+	EXAM = "exam",
+	PROJECT = "project"
 }
 
 /**
  * Callout types for important notes and warnings
  */
 export enum CalloutType {
-  INFO = 'info',
-  WARNING = 'warning',
-  DANGER = 'danger',
-  SUCCESS = 'success'
+	INFO = "info",
+	WARNING = "warning",
+	DANGER = "danger",
+	SUCCESS = "success"
 }
 
 /**
  * Diagram types for visual representations
  */
 export enum DiagramType {
-  MERMAID = 'mermaid',
-  FLOWCHART = 'flowchart',
-  SEQUENCE = 'sequence',
-  GANTT = 'gantt',
-  GITGRAPH = 'gitgraph'
+	MERMAID = "mermaid",
+	FLOWCHART = "flowchart",
+	SEQUENCE = "sequence",
+	GANTT = "gantt",
+	GITGRAPH = "gitgraph"
 }
 
 // Type aliases for string literal unions that match enum values
@@ -91,7 +91,7 @@ export interface BaseContent {
  * Text content block for paragraphs and rich HTML content
  */
 export interface ParagraphBlock {
-	type: 'paragraph';
+	type: "paragraph";
 	content: string; // HTML content with proper formatting
 }
 
@@ -102,7 +102,7 @@ export interface ParagraphBlock {
  * New content should always include type: 'code'.
  */
 export interface CodeBlock {
-	type?: 'code'; // Optional during migration for backward compatibility
+	type?: "code"; // Optional during migration for backward compatibility
 	language: string;
 	code: string;
 	title?: string;
@@ -114,7 +114,7 @@ export interface CodeBlock {
  * Diagram block for visual representations (Mermaid, flowcharts, etc.)
  */
 export interface DiagramBlock {
-	type: 'diagram';
+	type: "diagram";
 	diagramType: DiagramType | DiagramTypeValue;
 	definition: string;
 	title?: string;
@@ -131,7 +131,7 @@ export interface CalloutBlock {
 	 *
 	 * Uses CalloutType enum for strict type safety (no string literals allowed)
 	 */
-	type: 'callout';
+	type: "callout";
 	calloutType: CalloutType;
 	title?: string;
 	content: string;
@@ -149,19 +149,19 @@ export type ContentBlock = ParagraphBlock | CodeBlock | DiagramBlock | CalloutBl
  * Type guard functions for content block discrimination
  */
 export function isParagraphBlock(block: ContentBlock): block is ParagraphBlock {
-	return block.type === 'paragraph';
+	return block.type === "paragraph";
 }
 
 export function isCodeBlock(block: ContentBlock): block is CodeBlock {
-	return block.type === 'code';
+	return block.type === "code";
 }
 
 export function isDiagramBlock(block: ContentBlock): block is DiagramBlock {
-	return block.type === 'diagram';
+	return block.type === "diagram";
 }
 
 export function isCalloutBlock(block: ContentBlock): block is CalloutBlock {
-	return block.type === 'callout';
+	return block.type === "callout";
 }
 
 /**

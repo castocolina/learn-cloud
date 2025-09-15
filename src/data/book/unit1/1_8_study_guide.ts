@@ -6,10 +6,12 @@ import { ContentStatus } from "../../types";
 export const studyGuideContent: StudyGuideContent = {
 	type: "study_guide",
 	title: "1.8: Study Guide",
-	summary: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization,",
+	summary:
+		"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization,",
 	status: ContentStatus.SCAFFOLD,
 	studyGuide: {
-		description: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization,",
+		description:
+			"Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization,",
 		minimumCards: 8,
 		flashcards: [
 			{

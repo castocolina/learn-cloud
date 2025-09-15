@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { ArrowRight, Check, CircleCheck, CircleX, Clock, RotateCcw } from "lucide-svelte";
 	import type { QuizContent } from "$data/types.js";
+	import { Progress } from "$lib/components/ui/progress/index.js";
 
 	interface Props {
 		content: QuizContent;
@@ -13,8 +14,6 @@
 	let answers = $state<Array<number | number[]>>([]);
 	let showResults = $state(false);
 	let startTime = $state(Date.now());
-	let showExplanation = $state(false);
-	let showExplanationText = $state(false);
 
 	// Derived state
 	const totalQuestions = $derived(content.quiz.questions.length);
@@ -75,9 +74,6 @@
 		} else {
 			answers[currentQuestion] = optionIndex;
 		}
-
-		showExplanation = true;
-		showExplanationText = false;
 	}
 
 	function isSelected(optionIndex: number): boolean {
@@ -91,16 +87,12 @@
 	function nextQuestion() {
 		if (currentQuestion < totalQuestions - 1) {
 			currentQuestion++;
-			showExplanation = false;
-			showExplanationText = false;
 		}
 	}
 
 	function previousQuestion() {
 		if (currentQuestion > 0) {
 			currentQuestion--;
-			showExplanation = answers[currentQuestion] !== undefined;
-			showExplanationText = false;
 		}
 	}
 
@@ -113,12 +105,6 @@
 		answers = [];
 		showResults = false;
 		startTime = Date.now();
-		showExplanation = false;
-		showExplanationText = false;
-	}
-
-	function toggleExplanation() {
-		showExplanationText = !showExplanationText;
 	}
 
 	function formatTime(seconds: number): string {
@@ -140,19 +126,12 @@
 		<div class="quiz-progress-bar">
 			<div class="progress-info">
 				<label class="progress-label" for="quiz-progress">Progress</label>
-				<div
-					class="progress-track"
-					role="progressbar"
-					aria-valuenow={currentQuestion + 1}
-					aria-valuemin={1}
-					aria-valuemax={totalQuestions}
-					id="quiz-progress"
-				>
-					<div
-						class="progress-fill"
-						style="width: {((currentQuestion + 1) / totalQuestions) * 100}%"
-					></div>
-				</div>
+				<Progress
+					value={((currentQuestion + 1) / totalQuestions) * 100}
+					max={100}
+					class="quiz-progress-component"
+					aria-label="Quiz Progress"
+				/>
 			</div>
 			<div class="progress-stats">
 				<span>{currentQuestion + 1} of {totalQuestions}</span>
@@ -193,19 +172,7 @@
 					{/each}
 				</div>
 
-				<!-- Show explanation if question is answered -->
-				{#if showExplanation && currentQuestionData.explanation}
-					<div class="explanation-section">
-						<button class="show-explanation" onclick={toggleExplanation} type="button">
-							{showExplanationText ? "Hide" : "Show"} Explanation
-						</button>
-						{#if showExplanationText}
-							<div class="explanation-content">
-								<p>{currentQuestionData.explanation}</p>
-							</div>
-						{/if}
-					</div>
-				{/if}
+				<!-- Explanation will be shown after quiz completion -->
 			</div>
 		</section>
 
@@ -266,6 +233,65 @@
 					</div>
 				</div>
 			</header>
+
+			<!-- Quiz Review with Explanations -->
+			<div class="quiz-review">
+				<h3 class="review-title">Review Your Answers</h3>
+				{#each content.quiz.questions as question, i}
+					<div class="review-question">
+						<div class="review-header">
+							<h4 class="question-number">Question {i + 1}</h4>
+							<span
+								class="question-result {answers[i] === question.correct ||
+								(Array.isArray(question.correct) &&
+									Array.isArray(answers[i]) &&
+									JSON.stringify([...answers[i]].sort()) ===
+										JSON.stringify([...question.correct].sort()))
+									? 'correct'
+									: 'incorrect'}"
+							>
+								{answers[i] === question.correct ||
+								(Array.isArray(question.correct) &&
+									Array.isArray(answers[i]) &&
+									JSON.stringify([...answers[i]].sort()) ===
+										JSON.stringify([...question.correct].sort()))
+									? "✓"
+									: "✗"}
+							</span>
+						</div>
+						<p class="review-question-text">{question.question}</p>
+
+						<div class="review-answers">
+							<div class="user-answer">
+								<strong>Your Answer:</strong>
+								{#if Array.isArray(answers[i])}
+									{answers[i].map((idx) => question.options[idx]).join(", ")}
+								{:else if answers[i] !== undefined}
+									{question.options[answers[i]]}
+								{:else}
+									Not answered
+								{/if}
+							</div>
+
+							<div class="correct-answer">
+								<strong>Correct Answer:</strong>
+								{#if Array.isArray(question.correct)}
+									{question.correct.map((idx) => question.options[idx]).join(", ")}
+								{:else}
+									{question.options[question.correct]}
+								{/if}
+							</div>
+						</div>
+
+						{#if question.explanation}
+							<div class="explanation-content">
+								<strong>Explanation:</strong>
+								<p>{question.explanation}</p>
+							</div>
+						{/if}
+					</div>
+				{/each}
+			</div>
 
 			<div class="results-actions">
 				<button type="button" class="action-button secondary" onclick={restartQuiz}>

@@ -20,20 +20,20 @@
 	};
 
 	// Type guard functions for content blocks
-	function isParagraphBlock(block: ContentBlock): block is ContentBlock & { type: 'paragraph' } {
-		return block.type === 'paragraph';
+	function isParagraphBlock(block: ContentBlock): block is ContentBlock & { type: "paragraph" } {
+		return block.type === "paragraph";
 	}
 
-	function isCodeBlock(block: ContentBlock): block is ContentBlock & { type: 'code' } {
-		return block.type === 'code';
+	function isCodeBlock(block: ContentBlock): block is ContentBlock & { type: "code" } {
+		return block.type === "code";
 	}
 
-	function isDiagramBlock(block: ContentBlock): block is ContentBlock & { type: 'diagram' } {
-		return block.type === 'diagram';
+	function isDiagramBlock(block: ContentBlock): block is ContentBlock & { type: "diagram" } {
+		return block.type === "diagram";
 	}
 
-	function isCalloutBlock(block: ContentBlock): block is ContentBlock & { type: 'callout' } {
-		return block.type === 'callout';
+	function isCalloutBlock(block: ContentBlock): block is ContentBlock & { type: "callout" } {
+		return block.type === "callout";
 	}
 </script>
 

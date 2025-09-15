@@ -1,184 +1,368 @@
-import type { LessonContent, ContentSection, ContentBlock, ParagraphBlock, CodeBlock, DiagramBlock, CalloutBlock } from "../../types";
+import type {
+	LessonContent,
+	ContentSection,
+	ContentBlock,
+	ParagraphBlock,
+	CodeBlock,
+	DiagramBlock,
+	CalloutBlock
+} from "../../types";
 import { ContentStatus, DiagramType, CalloutType } from "../../types";
 
 // Generated lesson content for: 1.9: Observability
-// STATUS: This is scaffolded content - replace with real educational material
 export const lessonContent: LessonContent = {
 	type: "lesson",
-	title: "1.9: Observability",
-	summary: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization,",
-	status: ContentStatus.SCAFFOLD,
+	title: "Unit 1.9: Observability",
+	summary:
+		"Master the art of understanding your cloud-native systems through observability. This topic covers the three pillars of observability—logs, metrics, and traces—and shows you how to implement comprehensive monitoring and debugging strategies for production systems using modern Python tools and practices.",
+	status: ContentStatus.FINAL,
 	estimatedTime: 45,
 	prerequisites: [
-		"Basic understanding of cloud computing concepts",
-		"Familiarity with software development principles",
-		"Command line interface experience"
+		"Basic understanding of Python programming",
+		"Familiarity with web APIs and HTTP",
+		"Understanding of distributed systems concepts"
 	],
 	learningObjectives: [
-		"Cloud-native technologies represent a paradigm",
-		"Cloud-native technologies represent a paradigm",
-		"Cloud-native technologies represent a paradigm",
-		"Cloud-native technologies represent a paradigm"
+		"Understand the three pillars of observability: logs, metrics, and traces",
+		"Implement structured logging in Python applications using JSON format",
+		"Set up Prometheus metrics collection and monitoring",
+		"Configure distributed tracing with OpenTelemetry and Jaeger"
 	],
 	sections: [
 		{
-			title: "Section 1: Core Concepts",
+			title: "The Three Pillars of Observability",
 			content: [
-			{
-				type: "paragraph",
-				content: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
-			},
-			{
-				type: "code",
-				language: "dockerfile",
-				code: `# Docker example
-# This demonstrates basic dockerfile concepts
-# for cloud-native development
-
-def main():
-    config = load_configuration()
-    service = CloudService(config)
-
-    try:
-        # This is an intentionally long line that exceeds 150 columns to demonstrate code formatting and line wrapping practices
-        result = service.deploy_application()
-        print(f'Deployment successful: {result}')
-    except Exception as e:
-        print(f'Error: {e}')
-
-if __name__ == '__main__':
-    main()`,
-				title: "Docker Example",
-				filename: "Dockerfile"
-			},
-			{
-				type: "paragraph",
-				content: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
-			},
-			{
-				type: "callout",
-				calloutType: CalloutType.WARNING,
-				title: "Be Careful",
-				content: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
-			},
-			{
-				type: "paragraph",
-				content: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
-			}
+				{
+					type: "paragraph",
+					content:
+						"<strong>Observability</strong> helps you understand <em>why</em> something is broken by allowing you to ask arbitrary questions about your system's internal state. Unlike traditional monitoring (which tells you <em>if</em> something is broken), observability relies on three pillars: <strong>Logs</strong>, <strong>Metrics</strong>, and <strong>Traces</strong>."
+				},
+				{
+					type: "diagram",
+					diagramType: DiagramType.MERMAID,
+					definition: `graph TD
+    A["Observability"] --> B("Logs");
+    A --> C("Metrics");
+    A --> D("Traces");`,
+					title: "The Three Pillars of Observability",
+					caption: "The foundational components of system observability"
+				}
 			]
 		},
 		{
-			title: "Section 2: Core Concepts",
+			title: "Structured Logging",
 			content: [
-			{
-				type: "paragraph",
-				content: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
-			},
-			{
-				type: "code",
-				language: "yaml",
-				code: `# YAML example
-# This demonstrates basic yaml concepts
-# for cloud-native development
+				{
+					type: "paragraph",
+					content:
+						"Logs are records of discrete events that happen over time. In a distributed system, unstructured text logs quickly become unmanageable. <strong>Structured logging</strong>, typically in JSON format, makes logs machine-readable, easier to parse, query, and analyze."
+				},
+				{
+					type: "paragraph",
+					content:
+						"Python's built-in <code>logging</code> module is highly configurable. We can use <code>python-json-logger</code> to output logs in JSON format."
+				},
+				{
+					type: "code",
+					language: "bash",
+					code: `pip install python-json-logger`,
+					title: "Install JSON Logger"
+				},
+				{
+					type: "paragraph",
+					content: "Example <code>app/main.py</code> with structured logging:"
+				},
+				{
+					type: "code",
+					language: "python",
+					code: `import logging
+from pythonjsonlogger import jsonlogger
+from fastapi import FastAPI, Request
 
-def main():
-    config = load_configuration()
-    service = CloudService(config)
+# Configure logger
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+handler = logging.StreamHandler()
+formatter = jsonlogger.JsonFormatter(
+    '%(asctime)s %(levelname)s %(name)s %(message)s %(filename)s %(lineno)d %(process)d %(thread)d'
+)
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
+app = FastAPI()
+
+@app.middleware("http")
+async def add_request_id(request: Request, call_next):
+    request_id = request.headers.get("X-Request-ID") or "no-request-id"
+    with logging.Logger.manager.emitted_events.context({"request_id": request_id}):
+        logger.info("Incoming request", extra={
+            "method": request.method,
+            "url": str(request.url),
+            "client_host": request.client.host
+        })
+        response = await call_next(request)
+        logger.info("Outgoing response", extra={
+            "status_code": response.status_code
+        })
+        return response
+
+@app.get("/items/{item_id}")
+async def read_item(item_id: int):
+    logger.info("Processing item", extra={"item_id": item_id, "operation": "read"})
+    if item_id == 100:
+        logger.warning("Special item ID 100 accessed.", extra={"item_id": item_id})
+    return {"item_id": item_id, "name": f"Item {item_id}"}
+
+@app.get("/error")
+async def simulate_error():
     try:
-        # This is an intentionally long line that exceeds 150 columns to demonstrate code formatting and line wrapping practices
-        result = service.deploy_application()
-        print(f'Deployment successful: {result}')
-    except Exception as e:
-        print(f'Error: {e}')
-
-if __name__ == '__main__':
-    main()`,
-				title: "YAML Example",
-				filename: "example.yaml"
-			},
-			{
-				type: "paragraph",
-				content: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
-			},
-			{
-				type: "callout",
-				calloutType: CalloutType.WARNING,
-				title: "Warning",
-				content: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
-			},
-			{
-				type: "paragraph",
-				content: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
-			}
+        1 / 0
+    except ZeroDivisionError as e:
+        logger.error("A division by zero error occurred!", exc_info=True)
+        raise e`,
+					title: "Structured Logging Example",
+					filename: "app/main.py"
+				},
+				{
+					type: "paragraph",
+					content:
+						"When you run this FastAPI app with Uvicorn and make requests, you'll see JSON formatted logs in your console, including contextual information like <code>request_id</code>, <code>method</code>, and <code>url</code>."
+				}
 			]
 		},
 		{
-			title: "Section 3: Core Concepts",
+			title: "Metrics with Prometheus",
 			content: [
-			{
-				type: "paragraph",
-				content: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
-			},
-			{
-				type: "code",
-				language: "rust",
-				code: `use axum::{Json, response::Json as ResponseJson};
-use serde::{Deserialize, Serialize};
+				{
+					type: "paragraph",
+					content:
+						'<strong>Metrics</strong> are numerical measurements collected over time, representing the health and performance of your system (e.g., CPU usage, request rates, error counts). <a href="https://prometheus.io/" target="_blank">Prometheus</a> is a popular open-source monitoring system that collects and stores metrics as time series data.'
+				},
+				{
+					type: "paragraph",
+					content:
+						"The <code>prometheus_client</code> library allows you to expose Prometheus metrics from your Python application."
+				},
+				{
+					type: "code",
+					language: "bash",
+					code: `pip install prometheus_client`,
+					title: "Install Prometheus Client"
+				},
+				{
+					type: "paragraph",
+					content: "Example <code>app/main.py</code> with Prometheus metrics:"
+				},
+				{
+					type: "code",
+					language: "python",
+					code: `# ... (previous imports and logger setup)
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct CreateUserRequest {
-    pub email: String,
-    pub name: String,
-    pub role: String,
-}
+from prometheus_client import Counter, Gauge, Histogram, generate_latest
+from starlette.responses import PlainTextResponse
 
-// POST /api/users endpoint handler with comprehensive error handling and validation for cloud-native microservices architecture
-pub async fn create_user(Json(payload): Json<CreateUserRequest>) -> Result<ResponseJson<User>, AppError> {
-    let user = User::new(payload.email, payload.name, payload.role)?;
-    let created_user = user_service.create(&user).await?;
-    Ok(ResponseJson(created_user))
-}`,
-				title: "Rust Example",
-				filename: "example.rs"
-			},
-			{
-				type: "paragraph",
-				content: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
-			},
-			{
-				type: "diagram",
-				diagramType: DiagramType.MERMAID,
-				definition: `graph TB
-    subgraph "Client Layer"
-        Web[Web App]
-        Mobile[Mobile App]
-    end
+# Define metrics
+REQUEST_COUNT = Counter('http_requests_total', 'Total HTTP Requests', ['method', 'endpoint'])
+REQUEST_IN_PROGRESS = Gauge('http_requests_in_progress', 'HTTP Requests in Progress', ['method', 'endpoint'])
+REQUEST_LATENCY = Histogram('http_request_duration_seconds', 'HTTP Request Latency', ['method', 'endpoint'])
 
-    subgraph "Load Balancer"
-        ALB[Application Load Balancer]
-    end
+@app.middleware("http")
+async def metrics_middleware(request: Request, call_next):
+    method = request.method
+    endpoint = request.url.path
 
-    subgraph "Kubernetes Cluster"
-        API[API Service]
-        DB[Database Service]
-    end
+    REQUEST_IN_PROGRESS.labels(method=method, endpoint=endpoint).inc()
+    start_time = time.time()
 
-    Web --> ALB
-    Mobile --> ALB
-    ALB --> API
-    API --> DB`,
-				title: "System Architecture Diagram",
-				caption: "Microservices architecture overview"
-			},
-			{
-				type: "paragraph",
-				content: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration"
-			},
-			{
-				type: "paragraph",
-				content: "Cloud-native technologies represent a paradigm shift in how we build, deploy, and manage applications in modern distributed systems. This comprehensive approach leverages containerization, microservices architecture, continuous integration and deployment, infrastructure as code, and orchestration platforms to create scalable, resilient, and maintainable software solutions. At the core of cloud-native development lies the concept of containers, which provide consistent runtime environments"
-			}
+    response = await call_next(request)
+
+    REQUEST_LATENCY.labels(method=method, endpoint=endpoint).observe(time.time() - start_time)
+    REQUEST_IN_PROGRESS.labels(method=method, endpoint=endpoint).dec()
+    REQUEST_COUNT.labels(method=method, endpoint=endpoint).inc()
+
+    return response
+
+@app.get("/metrics")
+async def metrics():
+    return PlainTextResponse(generate_latest().decode('utf-8'))
+
+# ... (previous /items/{item_id} and /error endpoints)`,
+					title: "Prometheus Metrics Example",
+					filename: "app/main.py"
+				},
+				{
+					type: "paragraph",
+					content:
+						'When you run this app, you can access the metrics at <a href="http://localhost:8000/metrics" target="_blank">http://localhost:8000/metrics</a>. Prometheus will scrape this endpoint to collect data.'
+				},
+				{
+					type: "paragraph",
+					content: "Create a <code>prometheus.yml</code> configuration file:"
+				},
+				{
+					type: "code",
+					language: "yaml",
+					code: `# prometheus.yml
+global:
+  scrape_interval: 15s # How frequently to scrape targets
+
+scrape_configs:
+  - job_name: 'fastapi_app'
+    static_configs:
+      - targets: ['host.docker.internal:8000'] # Use host.docker.internal to reach host from Docker`,
+					title: "Prometheus Configuration",
+					filename: "prometheus.yml"
+				},
+				{
+					type: "paragraph",
+					content: "Run Prometheus:"
+				},
+				{
+					type: "code",
+					language: "bash",
+					code: `docker run \\
+    --name prometheus \\
+    -p 9090:9090 \\
+    -v $(pwd)/prometheus.yml:/etc/prometheus/prometheus.yml \\
+    prom/prometheus`,
+					title: "Run Prometheus with Docker"
+				},
+				{
+					type: "paragraph",
+					content:
+						'Access Prometheus UI at <a href="http://localhost:9090" target="_blank">http://localhost:9090</a>. You can query your metrics there. For advanced visualization, <a href="https://grafana.com/" target="_blank">Grafana</a> is commonly used with Prometheus.'
+				},
+				{
+					type: "diagram",
+					diagramType: DiagramType.MERMAID,
+					definition: `graph LR
+    App1["Application 1"] --> Prometheus["Prometheus Server"];
+    App2["Application 2"] --> Prometheus;
+    Prometheus --> TimeSeriesDB["Time-Series Database"];
+    Prometheus --> Alertmanager["Alertmanager"];
+    Prometheus --> Grafana["Grafana (Visualization)"];`,
+					title: "Prometheus Metrics Collection Architecture",
+					caption: "How Prometheus collects and processes metrics from multiple applications"
+				}
+			]
+		},
+		{
+			title: "Tracing with OpenTelemetry",
+			content: [
+				{
+					type: "paragraph",
+					content:
+						'<strong>Distributed Tracing</strong> tracks the journey of a single request as it propagates through multiple services in a distributed system. This helps in understanding service dependencies, identifying performance bottlenecks, and debugging complex interactions. <a href="https://opentelemetry.io/" target="_blank">OpenTelemetry</a> is a vendor-neutral set of APIs, SDKs, and tools for instrumenting, generating, collecting, and exporting telemetry data (traces, metrics, and logs).'
+				},
+				{
+					type: "paragraph",
+					content: "Install OpenTelemetry SDK and relevant exporters/instrumentations:"
+				},
+				{
+					type: "code",
+					language: "bash",
+					code: `pip install opentelemetry-api opentelemetry-sdk opentelemetry-exporter-otlp opentelemetry-instrumentation-fastapi`,
+					title: "Install OpenTelemetry"
+				},
+				{
+					type: "paragraph",
+					content: "Example <code>app/main.py</code> with OpenTelemetry tracing:"
+				},
+				{
+					type: "code",
+					language: "python",
+					code: `# ... (previous imports)
+
+from opentelemetry import trace
+from opentelemetry.sdk.resources import Resource
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+
+# Configure OpenTelemetry Tracer
+resource = Resource.create({"service.name": "fastapi-app"})
+tracer_provider = TracerProvider(resource=resource)
+otlp_exporter = OTLPSpanExporter(endpoint="localhost:4317", insecure=True)
+tracer_provider.add_span_processor(BatchSpanProcessor(otlp_exporter))
+trace.set_tracer_provider(tracer_provider)
+
+# Instrument FastAPI app
+FastAPIInstrumentor.instrument_app(app)
+
+# Get a tracer for manual instrumentation
+tracer = trace.get_tracer(__name__)
+
+@app.get("/users/{user_id}")
+async def get_user(user_id: int):
+    with tracer.start_as_current_span("get_user_from_db") as span:
+        span.set_attribute("user.id", user_id)
+        # Simulate database call
+        time.sleep(0.1)
+        if user_id == 1:
+            return {"id": user_id, "name": "Alice"}
+        else:
+            span.set_attribute("user.found", False)
+            return {"id": user_id, "name": "Unknown"}
+
+# ... (other endpoints)`,
+					title: "OpenTelemetry Tracing Example",
+					filename: "app/main.py"
+				},
+				{
+					type: "paragraph",
+					content:
+						"When you run this app and make requests, traces will be sent to an OpenTelemetry collector, which can then forward them to a tracing backend like Jaeger."
+				},
+				{
+					type: "paragraph",
+					content: "Setup: Running Jaeger with Docker"
+				},
+				{
+					type: "code",
+					language: "bash",
+					code: `docker run -d \\
+  --name jaeger \\
+  -p 16686:16686 \\
+  -p 4317:4317 \\
+  -p 4318:4318 \\
+  jaegertracing/all-in-one:latest`,
+					title: "Run Jaeger with Docker"
+				},
+				{
+					type: "paragraph",
+					content:
+						'Access Jaeger UI at <a href="http://localhost:16686" target="_blank">http://localhost:16686</a>. You can search for traces and visualize the flow of requests through your services.'
+				},
+				{
+					type: "diagram",
+					diagramType: DiagramType.MERMAID,
+					definition: `graph LR
+    Client["Client Request"] --> ServiceA["Service A (Instrumented)"];
+    ServiceA --> ServiceB["Service B (Instrumented)"];
+    ServiceB --> ServiceC["Service C (Instrumented)"];
+    ServiceC --> ServiceA;
+
+    ServiceA -- "Exports Spans" --> OTelCollector["OpenTelemetry Collector"];
+    ServiceB -- "Exports Spans" --> OTelCollector;
+    ServiceC -- "Exports Spans" --> OTelCollector;
+
+    OTelCollector -- "Forwards Traces" --> Jaeger["Jaeger Backend"];
+    Jaeger --> JaegerUI["Jaeger UI (Visualization)"];`,
+					title: "Distributed Tracing with OpenTelemetry and Jaeger",
+					caption:
+						"How traces flow from instrumented services through the OpenTelemetry collector to Jaeger"
+				}
+			]
+		},
+		{
+			title: "Conclusion",
+			content: [
+				{
+					type: "paragraph",
+					content:
+						"Observability is a cornerstone of operating reliable cloud-native applications. By implementing structured logging, collecting metrics with Prometheus, and tracing requests with OpenTelemetry, you gain deep insights into your system's behavior, enabling faster debugging, proactive issue detection, and continuous performance optimization."
+				}
 			]
 		}
 	]

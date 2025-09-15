@@ -2,7 +2,7 @@
  * Clean icon mapping utility for content menu icons
  * Static imports for better tree-shaking and simpler code
  * Perfect for SPA builds where bundle size is optimized anyway
- * 
+ *
  * IMPORTANT: This file must be manually updated when new icons are added
  * to CONTENT.md or when running generate_content_menu.py introduces new icons.
  * The Python script will warn about missing icons in the console output.
