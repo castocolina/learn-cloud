@@ -160,28 +160,28 @@ cat src/app.css  # Should contain @import "tailwindcss";
 
 /* Theme Configuration */
 @theme {
-  --color-primary: #0f172a;
-  --color-secondary: #1e293b;
-  --color-accent: #3b82f6;
-  --color-background: #ffffff;
-  --color-foreground: #0f172a;
-  --color-muted: #f8fafc;
-  --color-muted-foreground: #64748b;
-  --color-border: #e2e8f0;
-  --color-input: #ffffff;
-  --color-ring: #3b82f6;
+	--color-primary: #0f172a;
+	--color-secondary: #1e293b;
+	--color-accent: #3b82f6;
+	--color-background: #ffffff;
+	--color-foreground: #0f172a;
+	--color-muted: #f8fafc;
+	--color-muted-foreground: #64748b;
+	--color-border: #e2e8f0;
+	--color-input: #ffffff;
+	--color-ring: #3b82f6;
 }
 
 /* Component Layer for Custom Styles */
 @layer components {
-  .btn-primary {
-    @apply px-4 py-2 bg-primary text-primary-foreground rounded-md font-medium;
-    @apply hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2;
-  }
+	.btn-primary {
+		@apply rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground;
+		@apply hover:bg-primary/90 focus-visible:ring-2 focus-visible:outline-none;
+	}
 
-  .card {
-    @apply rounded-lg border bg-card text-card-foreground shadow-sm;
-  }
+	.card {
+		@apply rounded-lg border bg-card text-card-foreground shadow-sm;
+	}
 }
 ```
 
@@ -221,6 +221,7 @@ pnpm run build  # Verify production build
 ```
 
 **Important Notes:**
+
 - Never use `@apply` in Svelte component `<style>` blocks with Tailwind v4
 - All custom styles must be in `src/app.css` using `@layer components`
 - Theme variables must be defined in the `@theme` directive for Tailwind v4 compatibility
@@ -230,16 +231,19 @@ pnpm run build  # Verify production build
 #### Core Technology Stack
 
 **Framework**: SvelteKit with Svelte 5
+
 - Component-based architecture with Svelte 5 runes for state management
 - TypeScript support for type safety and developer experience
 - Static site generation for GitHub Pages deployment
 
 **Styling**: Tailwind CSS v4 with Centralized Architecture
+
 - Single CSS import: `@import "tailwindcss";`
 - CSS-based configuration using `@theme` directive
 - Centralized component styles in `src/app.css`
 
 **UI Components**: shadcn-svelte
+
 - Copy-paste component system with full customization
 - Built on Bits UI primitives for accessibility
 - Tailwind CSS integration for theming
@@ -276,30 +280,35 @@ src/
 #### Key Files Explained
 
 **`app.html`** - HTML Document Template
+
 - Root HTML structure for the entire application
 - Contains `%sveltekit.head%` and `%sveltekit.body%` placeholders
 - Defines meta tags, favicons, and global HTML attributes
 
 **`app.css`** - Centralized CSS Architecture
+
 ```css
 @import "tailwindcss";
 
 @layer components {
-  .component-class {
-    @apply flex items-center gap-2;
-  }
+	.component-class {
+		@apply flex items-center gap-2;
+	}
 }
 ```
+
 - Single Tailwind CSS v4 import
 - All component styles using `@layer components`
 - Theme configuration via `@theme` directive
 
 **`+page.svelte`** - Page Components
+
 - Represents individual routes in file-based routing
 - Contains page-specific logic and UI
 - Can export `load` functions for data fetching
 
 **`+layout.svelte`** - Layout Components
+
 - Wraps pages with common UI elements
 - Defines shared state and navigation
 - Inherited by child routes
@@ -309,11 +318,13 @@ src/
 The `lib` directory serves as the component library and utility hub:
 
 **`src/lib/components/`** - Component Organization
+
 - **`content/`**: Educational content renderers (LessonRenderer, QuizRenderer, StudyGuideRenderer)
 - **`ui/`**: shadcn-svelte UI components (buttons, cards, modals, forms)
 - **`shared/`**: Reusable utility components (icons, loading states, error boundaries)
 
 **Best Practices for `src/lib`**:
+
 - Use TypeScript interfaces for all component props
 - Follow single responsibility principle
 - Create composable, reusable components
@@ -383,18 +394,18 @@ export interface QuizContent extends LessonContent {
 ```svelte
 <!-- Good: Focused component -->
 <script lang="ts">
-  interface Props {
-    isOpen: boolean;
-    onClose: () => void;
-    title: string;
-  }
+	interface Props {
+		isOpen: boolean;
+		onClose: () => void;
+		title: string;
+	}
 
-  let { isOpen, onClose, title }: Props = $props();
+	let { isOpen, onClose, title }: Props = $props();
 </script>
 
 <Dialog {isOpen} {onClose}>
-  <DialogTitle>{title}</DialogTitle>
-  {@render children()}
+	<DialogTitle>{title}</DialogTitle>
+	{@render children()}
 </Dialog>
 ```
 
@@ -405,17 +416,17 @@ export interface QuizContent extends LessonContent {
 let quizCompleted = $state(false);
 
 function handleQuizComplete(score: number) {
-  quizCompleted = true;
-  console.log('Quiz completed with score:', score);
+	quizCompleted = true;
+	console.log("Quiz completed with score:", score);
 }
 
 // Child component emits events
 const dispatch = createEventDispatcher<{
-  complete: { score: number };
+	complete: { score: number };
 }>();
 
 function completeQuiz() {
-  dispatch('complete', { score: 85 });
+	dispatch("complete", { score: 85 });
 }
 ```
 
@@ -424,6 +435,7 @@ function completeQuiz() {
 **Decision Matrix**:
 
 1. **Always Check shadcn-svelte First**:
+
    ```bash
    # Check available components
    pnpm dlx shadcn-svelte@latest add --help
@@ -438,23 +450,21 @@ function completeQuiz() {
    - Unique interaction patterns not covered by UI libraries
 
 3. **Integration Strategy**:
+
    ```svelte
    <!-- Extend shadcn components -->
    <script lang="ts">
-     import { Button } from '$lib/components/ui/button';
+   	import { Button } from "$lib/components/ui/button";
 
-     interface Props {
-       variant?: 'primary' | 'secondary' | 'quiz';
-     }
+   	interface Props {
+   		variant?: "primary" | "secondary" | "quiz";
+   	}
 
-     let { variant = 'primary' }: Props = $props();
+   	let { variant = "primary" }: Props = $props();
    </script>
 
-   <Button
-     class={`quiz-button ${variant === 'quiz' ? 'quiz-specific-styles' : ''}`}
-     {...restProps}
-   >
-     {@render children()}
+   <Button class={`quiz-button ${variant === "quiz" ? "quiz-specific-styles" : ""}`} {...restProps}>
+   	{@render children()}
    </Button>
    ```
 
@@ -471,27 +481,27 @@ function completeQuiz() {
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #0f172a;
-  --color-secondary: #475569;
-  --color-accent: #3b82f6;
+	--color-primary: #0f172a;
+	--color-secondary: #475569;
+	--color-accent: #3b82f6;
 }
 
 @layer components {
-  .lesson-container {
-    @apply max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-sm;
-  }
+	.lesson-container {
+		@apply mx-auto max-w-4xl rounded-lg bg-white p-6 shadow-sm;
+	}
 
-  .quiz-question {
-    @apply p-4 border border-slate-200 rounded-md mb-4;
-  }
+	.quiz-question {
+		@apply mb-4 rounded-md border border-slate-200 p-4;
+	}
 
-  .flashcard-grid {
-    @apply grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
-  }
+	.flashcard-grid {
+		@apply grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+	}
 
-  .modal-overlay {
-    @apply fixed inset-0 bg-black/50 flex items-center justify-center z-50;
-  }
+	.modal-overlay {
+		@apply fixed inset-0 z-50 flex items-center justify-center bg-black/50;
+	}
 }
 ```
 
@@ -500,14 +510,14 @@ function completeQuiz() {
 ```svelte
 <!-- ✅ CORRECT: Use global classes -->
 <div class="lesson-container">
-  <h1 class="text-2xl font-bold text-slate-800">Lesson Title</h1>
+	<h1 class="text-2xl font-bold text-slate-800">Lesson Title</h1>
 </div>
 
 <!-- ❌ CAUSES BUILD FAILURES -->
 <style lang="postcss">
-  .local-class {
-    @apply flex; /* Incompatible with Tailwind v4 + Svelte */
-  }
+	.local-class {
+		@apply flex; /* Incompatible with Tailwind v4 + Svelte */
+	}
 </style>
 ```
 
@@ -517,24 +527,24 @@ function completeQuiz() {
 
 ```css
 @theme {
-  /* Color palette */
-  --color-primary-50: #f8fafc;
-  --color-primary-500: #64748b;
-  --color-primary-900: #0f172a;
+	/* Color palette */
+	--color-primary-50: #f8fafc;
+	--color-primary-500: #64748b;
+	--color-primary-900: #0f172a;
 
-  /* Typography */
-  --font-family-sans: 'Inter', system-ui, sans-serif;
-  --font-size-xs: 0.75rem;
-  --font-size-sm: 0.875rem;
+	/* Typography */
+	--font-family-sans: "Inter", system-ui, sans-serif;
+	--font-size-xs: 0.75rem;
+	--font-size-sm: 0.875rem;
 
-  /* Spacing */
-  --spacing-xs: 0.5rem;
-  --spacing-sm: 0.75rem;
+	/* Spacing */
+	--spacing-xs: 0.5rem;
+	--spacing-sm: 0.75rem;
 
-  /* Breakpoints */
-  --breakpoint-sm: 390px;
-  --breakpoint-md: 768px;
-  --breakpoint-lg: 1024px;
+	/* Breakpoints */
+	--breakpoint-sm: 390px;
+	--breakpoint-md: 768px;
+	--breakpoint-lg: 1024px;
 }
 ```
 
@@ -542,21 +552,21 @@ function completeQuiz() {
 
 ```css
 @layer components {
-  .responsive-grid {
-    @apply grid grid-cols-1 gap-3;
-  }
+	.responsive-grid {
+		@apply grid grid-cols-1 gap-3;
+	}
 
-  @media (min-width: theme(breakpoint.md)) {
-    .responsive-grid {
-      @apply grid-cols-2 gap-4;
-    }
-  }
+	@media (min-width: theme(breakpoint.md)) {
+		.responsive-grid {
+			@apply grid-cols-2 gap-4;
+		}
+	}
 
-  @media (min-width: theme(breakpoint.lg)) {
-    .responsive-grid {
-      @apply grid-cols-3 gap-6;
-    }
-  }
+	@media (min-width: theme(breakpoint.lg)) {
+		.responsive-grid {
+			@apply grid-cols-3 gap-6;
+		}
+	}
 }
 ```
 
@@ -565,25 +575,27 @@ function completeQuiz() {
 **shadcn-svelte Theme Integration**:
 
 1. **Use CSS Variables**:
+
    ```css
    @theme {
-     --color-background: white;
-     --color-foreground: #0f172a;
-     --color-muted: #f1f5f9;
-     --color-border: #e2e8f0;
+   	--color-background: white;
+   	--color-foreground: #0f172a;
+   	--color-muted: #f1f5f9;
+   	--color-border: #e2e8f0;
    }
    ```
 
 2. **Override Component Styles**:
+
    ```css
    @layer components {
-     .shadcn-button {
-       @apply bg-primary-500 text-white hover:bg-primary-600;
-     }
+   	.shadcn-button {
+   		@apply bg-primary-500 hover:bg-primary-600 text-white;
+   	}
 
-     .shadcn-card {
-       @apply bg-background border-border;
-     }
+   	.shadcn-card {
+   		@apply border-border bg-background;
+   	}
    }
    ```
 
@@ -591,14 +603,14 @@ function completeQuiz() {
    ```typescript
    // Create theme configuration object
    export const theme = {
-     colors: {
-       primary: 'hsl(var(--color-primary))',
-       secondary: 'hsl(var(--color-secondary))',
-       background: 'hsl(var(--color-background))',
-     },
-     fonts: {
-       sans: 'var(--font-family-sans)',
-     }
+   	colors: {
+   		primary: "hsl(var(--color-primary))",
+   		secondary: "hsl(var(--color-secondary))",
+   		background: "hsl(var(--color-background))"
+   	},
+   	fonts: {
+   		sans: "var(--font-family-sans)"
+   	}
    };
    ```
 
@@ -607,6 +619,7 @@ function completeQuiz() {
 **🚨 CRITICAL**: Follow these rules exactly to prevent Mermaid rendering failures:
 
 **Rule 1: Double Quote All Text**
+
 ```mermaid
 <!-- ✅ CORRECT: All text in double quotes -->
 graph TD
@@ -622,6 +635,7 @@ graph TD
 ```
 
 **Rule 2: HTML Entity Encoding in Text**
+
 ```mermaid
 <!-- ✅ CORRECT: HTML entities for special characters -->
 graph LR
@@ -634,6 +648,7 @@ graph LR
 ```
 
 **Rule 3: Escape Special Characters**
+
 ```mermaid
 <!-- ✅ CORRECT: Escaped quotes and symbols -->
 graph TD
@@ -645,6 +660,7 @@ graph TD
 ```
 
 **Rule 4: Consistent Node Shape Syntax**
+
 ```mermaid
 <!-- ✅ CORRECT: Consistent bracket usage -->
 graph TB
@@ -662,6 +678,7 @@ graph TB
 ```
 
 **Rule 5: Link Text Format**
+
 ```mermaid
 <!-- ✅ CORRECT: Proper link text syntax -->
 graph LR
@@ -674,6 +691,7 @@ graph LR
 ```
 
 **Validation Checklist**:
+
 - ✅ All node text enclosed in double quotes
 - ✅ All link text enclosed in double quotes
 - ✅ HTML entities used for `<`, `>`, `&` characters
@@ -682,6 +700,7 @@ graph LR
 - ✅ No raw HTML tags in text content
 
 **Testing Command**:
+
 ```bash
 # Validate Mermaid syntax before implementation
 pnpm run dev  # Check rendering in browser console for errors
@@ -694,26 +713,31 @@ pnpm run dev  # Check rendering in browser console for errors
 Based on industry research and flexibility requirements:
 
 **1. shadcn-svelte** (Primary Choice)
+
 - **Pros**: Copy-paste system, full customization, Tailwind integration
 - **Use Case**: Core UI components (buttons, cards, modals, forms)
 - **Installation**: `pnpm dlx shadcn-svelte@latest add [component]`
 - **Theming**: Built-in theme system with CSS variable support
 
 **2. Melt UI** (Headless & Maximum Flexibility)
+
 - **Pros**: Headless components, complete customization, accessibility-first
 - **Use Case**: Complex interactive components requiring custom styling
 - **Best For**: Advanced developers who need complete control
 
 **3. Bits UI** (Built on Melt UI)
+
 - **Pros**: Headless primitives, Melt UI foundation, zero styling
 - **Use Case**: When you need accessible primitives without opinions
 
 **4. Skeleton** (Comprehensive Design System)
+
 - **Pros**: Complete design system, Tailwind integration, Svelte-native
 - **Use Case**: Rapid prototyping, consistent design language
 - **Best For**: Teams wanting opinionated but flexible components
 
 **5. Flowbite-Svelte**
+
 - **Pros**: 60+ components, Tailwind styling, well-documented
 - **Use Case**: Traditional component library approach
 - **Best For**: Developers familiar with Bootstrap-style libraries
@@ -721,6 +745,7 @@ Based on industry research and flexibility requirements:
 #### Selection Strategy
 
 **Priority Order**:
+
 1. Check **shadcn-svelte** component availability
 2. If not available, evaluate **Melt UI** for headless approach
 3. Consider **Skeleton** for design system consistency
@@ -728,26 +753,26 @@ Based on industry research and flexibility requirements:
 
 **Compatibility Matrix**:
 
-| Library | Svelte 5 | TypeScript | Tailwind v4 | Theming | Accessibility |
-|---------|----------|------------|-------------|---------|--------------|
-| shadcn-svelte | ✅ | ✅ | ✅ | Excellent | Excellent |
-| Melt UI | ✅ | ✅ | ✅ | Maximum | Excellent |
-| Bits UI | ✅ | ✅ | ✅ | Complete | Excellent |
-| Skeleton | ✅ | ✅ | ⚠️ | Good | Good |
-| Flowbite | ✅ | ✅ | ⚠️ | Limited | Good |
+| Library       | Svelte 5 | TypeScript | Tailwind v4 | Theming   | Accessibility |
+| ------------- | -------- | ---------- | ----------- | --------- | ------------- |
+| shadcn-svelte | ✅       | ✅         | ✅          | Excellent | Excellent     |
+| Melt UI       | ✅       | ✅         | ✅          | Maximum   | Excellent     |
+| Bits UI       | ✅       | ✅         | ✅          | Complete  | Excellent     |
+| Skeleton      | ✅       | ✅         | ⚠️          | Good      | Good          |
+| Flowbite      | ✅       | ✅         | ⚠️          | Limited   | Good          |
 
 **Integration Example**:
 
 ```typescript
 // Multi-library integration strategy
-import { Button } from '$lib/components/ui/button'; // shadcn-svelte
-import { createDialog } from '@melt-ui/svelte'; // Melt UI for complex modal
-import { Progress } from '$lib/components/ui/progress'; // shadcn-svelte
+import { Button } from "$lib/components/ui/button"; // shadcn-svelte
+import { createDialog } from "@melt-ui/svelte"; // Melt UI for complex modal
+import { Progress } from "$lib/components/ui/progress"; // shadcn-svelte
 
 // Custom wrapper for educational components
 interface LearningButtonProps {
-  variant: 'lesson' | 'quiz' | 'study-guide';
-  progress?: number;
+	variant: "lesson" | "quiz" | "study-guide";
+	progress?: number;
 }
 
 let { variant, progress }: LearningButtonProps = $props();
@@ -801,45 +826,45 @@ src/data/demo/
 ```typescript
 // src/data/demo/types.ts
 export interface DemoUnit {
-  id: string;
-  title: string;
-  description: string;
-  icon: string;
-  url: string;          // SPA-friendly URL (no redirects)
-  order: number;
-  status: 'draft' | 'ready' | 'complete';
-  lessons: DemoLesson[];
+	id: string;
+	title: string;
+	description: string;
+	icon: string;
+	url: string; // SPA-friendly URL (no redirects)
+	order: number;
+	status: "draft" | "ready" | "complete";
+	lessons: DemoLesson[];
 }
 
 export interface DemoLesson {
-  id: string;
-  title: string;
-  description: string;
-  icon: string;
-  url: string;          // SPA-friendly URL fragment
-  order: number;
-  duration?: string;    // Estimated interaction time
-  components: string[]; // List of components showcased
-  content: DemoContent;
+	id: string;
+	title: string;
+	description: string;
+	icon: string;
+	url: string; // SPA-friendly URL fragment
+	order: number;
+	duration?: string; // Estimated interaction time
+	components: string[]; // List of components showcased
+	content: DemoContent;
 }
 
 export interface DemoContent {
-  type: 'overview' | 'showcase' | 'interactive' | 'tutorial';
-  sections: DemoSection[];
-  metadata: {
-    created: string;
-    lastModified: string;
-    author: string;
-    tags: string[];
-  };
+	type: "overview" | "showcase" | "interactive" | "tutorial";
+	sections: DemoSection[];
+	metadata: {
+		created: string;
+		lastModified: string;
+		author: string;
+		tags: string[];
+	};
 }
 
 export interface DemoSection {
-  id: string;
-  title: string;
-  type: 'text' | 'component' | 'code' | 'diagram' | 'interactive';
-  content: any;         // Content varies by type
-  order: number;
+	id: string;
+	title: string;
+	type: "text" | "component" | "code" | "diagram" | "interactive";
+	content: any; // Content varies by type
+	order: number;
 }
 ```
 
@@ -848,20 +873,20 @@ export interface DemoSection {
 ```typescript
 // Component-specific interfaces for demo data
 export interface ComponentDemo {
-  name: string;
-  category: 'layout' | 'interactive' | 'content' | 'educational';
-  description: string;
-  props?: Record<string, any>;
-  examples: ComponentExample[];
-  documentation: string;
+	name: string;
+	category: "layout" | "interactive" | "content" | "educational";
+	description: string;
+	props?: Record<string, any>;
+	examples: ComponentExample[];
+	documentation: string;
 }
 
 export interface ComponentExample {
-  title: string;
-  description: string;
-  code: string;
-  preview?: boolean;
-  interactive?: boolean;
+	title: string;
+	description: string;
+	code: string;
+	preview?: boolean;
+	interactive?: boolean;
 }
 ```
 
@@ -871,69 +896,81 @@ export interface ComponentExample {
 
 ```typescript
 // src/data/demo/navigation/sidebar-menu.ts
-import type { DemoUnit } from '../types.js';
+import type { DemoUnit } from "../types.js";
 import {
-  Home, Layout, MousePointer, FileText,
-  Square, GraduationCap, Puzzle, CheckCircle
-} from 'lucide-svelte';
+	Home,
+	Layout,
+	MousePointer,
+	FileText,
+	Square,
+	GraduationCap,
+	Puzzle,
+	CheckCircle
+} from "lucide-svelte";
 
 export const demoUnits: DemoUnit[] = [
-  {
-    id: 'demo-overview',
-    title: 'Demo Overview',
-    description: 'Introduction to the component showcase',
-    icon: 'Home',
-    url: '/demo',
-    order: 1,
-    status: 'ready',
-    lessons: [
-      {
-        id: 'introduction',
-        title: 'Platform Introduction',
-        description: 'Overview of SvelteKit architecture and demo purpose',
-        icon: 'Info',
-        url: '/demo#introduction',
-        order: 1,
-        duration: '5 min',
-        components: ['Header', 'Breadcrumbs', 'Navigation'],
-        content: { /* content definition */ }
-      }
-    ]
-  },
-  {
-    id: 'layout-components',
-    title: 'Layout Components',
-    description: 'Headers, sidebars, and navigation patterns',
-    icon: 'Layout',
-    url: '/demo/layout',
-    order: 2,
-    status: 'ready',
-    lessons: [
-      {
-        id: 'sticky-header',
-        title: 'Sticky Header',
-        description: 'Responsive header with breadcrumbs',
-        icon: 'Navigation',
-        url: '/demo/layout#sticky-header',
-        order: 1,
-        duration: '3 min',
-        components: ['Header', 'Breadcrumbs'],
-        content: { /* content definition */ }
-      },
-      {
-        id: 'collapsible-sidebar',
-        title: 'Collapsible Sidebar',
-        description: 'Mobile-responsive sidebar navigation',
-        icon: 'Sidebar',
-        url: '/demo/layout#sidebar',
-        order: 2,
-        duration: '4 min',
-        components: ['Sidebar', 'Navigation'],
-        content: { /* content definition */ }
-      }
-    ]
-  }
-  // ... additional units
+	{
+		id: "demo-overview",
+		title: "Demo Overview",
+		description: "Introduction to the component showcase",
+		icon: "Home",
+		url: "/demo",
+		order: 1,
+		status: "ready",
+		lessons: [
+			{
+				id: "introduction",
+				title: "Platform Introduction",
+				description: "Overview of SvelteKit architecture and demo purpose",
+				icon: "Info",
+				url: "/demo#introduction",
+				order: 1,
+				duration: "5 min",
+				components: ["Header", "Breadcrumbs", "Navigation"],
+				content: {
+					/* content definition */
+				}
+			}
+		]
+	},
+	{
+		id: "layout-components",
+		title: "Layout Components",
+		description: "Headers, sidebars, and navigation patterns",
+		icon: "Layout",
+		url: "/demo/layout",
+		order: 2,
+		status: "ready",
+		lessons: [
+			{
+				id: "sticky-header",
+				title: "Sticky Header",
+				description: "Responsive header with breadcrumbs",
+				icon: "Navigation",
+				url: "/demo/layout#sticky-header",
+				order: 1,
+				duration: "3 min",
+				components: ["Header", "Breadcrumbs"],
+				content: {
+					/* content definition */
+				}
+			},
+			{
+				id: "collapsible-sidebar",
+				title: "Collapsible Sidebar",
+				description: "Mobile-responsive sidebar navigation",
+				icon: "Sidebar",
+				url: "/demo/layout#sidebar",
+				order: 2,
+				duration: "4 min",
+				components: ["Sidebar", "Navigation"],
+				content: {
+					/* content definition */
+				}
+			}
+		]
+	}
+	// ... additional units
 ];
 ```
 
@@ -942,13 +979,13 @@ export const demoUnits: DemoUnit[] = [
 ```typescript
 // src/data/demo/content/components/code-examples.ts
 export const codeExamples = [
-  {
-    id: 'sveltekit-component',
-    title: 'SvelteKit Component with Runes',
-    language: 'typescript',
-    category: 'component',
-    description: 'Modern Svelte 5 component using runes syntax',
-    code: `<script lang="ts">
+	{
+		id: "sveltekit-component",
+		title: "SvelteKit Component with Runes",
+		language: "typescript",
+		category: "component",
+		description: "Modern Svelte 5 component using runes syntax",
+		code: `<script lang="ts">
   interface Props {
     title: string;
     items?: string[];
@@ -972,9 +1009,9 @@ export const codeExamples = [
     <div class="item">{item}</div>
   {/each}
 </div>`,
-    tags: ['svelte', 'typescript', 'runes', 'component']
-  }
-  // ... additional examples
+		tags: ["svelte", "typescript", "runes", "component"]
+	}
+	// ... additional examples
 ];
 ```
 
@@ -1017,32 +1054,32 @@ grep -l "demo-" src/app.css | xargs sed -i '/\.demo-/d'
 ```typescript
 // src/data/demo/config/routes.ts
 export const demoRoutes = {
-  base: '/demo',
-  sections: {
-    overview: '#overview',
-    layout: '#layout',
-    interactive: '#interactive',
-    content: '#content',
-    modals: '#modals',
-    educational: '#educational',
-    integration: '#integration'
-  },
-  subsections: {
-    'layout.header': '#layout-header',
-    'layout.sidebar': '#layout-sidebar',
-    'interactive.darkmode': '#interactive-darkmode',
-    'interactive.search': '#interactive-search'
-    // ... additional subsections
-  }
+	base: "/demo",
+	sections: {
+		overview: "#overview",
+		layout: "#layout",
+		interactive: "#interactive",
+		content: "#content",
+		modals: "#modals",
+		educational: "#educational",
+		integration: "#integration"
+	},
+	subsections: {
+		"layout.header": "#layout-header",
+		"layout.sidebar": "#layout-sidebar",
+		"interactive.darkmode": "#interactive-darkmode",
+		"interactive.search": "#interactive-search"
+		// ... additional subsections
+	}
 };
 
 // Navigation function for SPA behavior
 export function navigateToSection(sectionId: string) {
-  const element = document.getElementById(sectionId);
-  if (element) {
-    element.scrollIntoView({ behavior: 'smooth' });
-    history.replaceState(null, '', `${demoRoutes.base}#${sectionId}`);
-  }
+	const element = document.getElementById(sectionId);
+	if (element) {
+		element.scrollIntoView({ behavior: "smooth" });
+		history.replaceState(null, "", `${demoRoutes.base}#${sectionId}`);
+	}
 }
 ```
 
@@ -1055,22 +1092,26 @@ The demo route (`/demo`) will showcase all integrated components through a syste
 #### Target Component Set
 
 **Navigation & Layout**:
+
 - Sticky header with breadcrumbs
 - Collapsible sidebar (sidecard)
 - Mobile-responsive navigation
 
 **Interactive Elements**:
+
 - Dark mode toggle with system preference detection
 - Search box with live filtering
 - Progress indicators and navigation buttons
 
 **Content Display**:
+
 - Mermaid diagrams with various chart types
 - Syntax-highlighted code blocks
 - Interactive flip cards for concepts
 - Modal dialogs for detailed information
 
 **Educational Components**:
+
 - Quiz interface with timer and scoring
 - Study guide flashcards
 - Progress tracking visualizations
@@ -1088,12 +1129,14 @@ The following prompts are designed for an **AF02 (Architect Frontend)** agent to
 **CRITICAL:** This is a DATA GENERATION prompt. Generate extensive navigation data in TypeScript files BEFORE implementing any components.
 
 **Requirements:**
+
 1. Create `src/data/demo/navigation/demo-sidebar-menu.ts` with 10+ units
 2. Generate 3-15 lessons per unit (total 80-120 lessons)
 3. Include varied content types: code-heavy, diagram-heavy, interactive, text-heavy, mixed-content
 4. Add realistic durations, icons, descriptions, and educational metadata
 
 **Expected Output:**
+
 - 10+ navigation units with educational structure (unit/lesson hierarchy)
 - 80-120 total lessons with realistic variety
 - All data using `demo-` prefixes for easy identification
@@ -1101,6 +1144,7 @@ The following prompts are designed for an **AF02 (Architect Frontend)** agent to
 - SPA-friendly URLs with hash navigation
 
 **Content Type Variety:**
+
 - Code-heavy lessons (30%): Multiple code examples, tutorials
 - Interactive lessons (25%): Quizzes, forms, flip cards
 - Diagram-heavy lessons (20%): Multiple Mermaid diagrams
@@ -1108,6 +1152,7 @@ The following prompts are designed for an **AF02 (Architect Frontend)** agent to
 - Mixed-content lessons (10%): Combination of all types
 
 **Success Criteria:**
+
 - Navigation data supports realistic testing of sidebar accordion behavior
 - Sufficient variety to test all component rendering scenarios
 - Educational structure mirrors real learning platform
@@ -1121,18 +1166,21 @@ The following prompts are designed for an **AF02 (Architect Frontend)** agent to
 **Prerequisites:** Navigation data must exist from Prompt 1A
 
 **Requirements:**
+
 1. Create `src/routes/demo/+page.svelte` consuming navigation data from TypeScript files
 2. Implement SPA hash-based navigation (no page redirects)
 3. Create responsive layout foundation with demo-specific CSS classes
 4. Add data loading and error handling for navigation structure
 
 **Technical Specifications:**
+
 - Use Svelte 5 runes syntax with proper TypeScript interfaces
 - Follow centralized CSS architecture with `demo-` prefixed classes
 - Implement mobile-first responsive design (≤390px primary target)
 - Load ALL navigation data from TypeScript files (no hardcoded content)
 
 **Expected Deliverables:**
+
 - Demo route foundation consuming generated navigation data
 - SPA hash navigation system working with generated URLs
 - Responsive layout ready for component integration
@@ -1149,12 +1197,14 @@ The following prompts are designed for an **AF02 (Architect Frontend)** agent to
 Enhance the `/demo` route with a sticky header containing breadcrumbs navigation that loads configuration from TypeScript data files.
 
 **Requirements:**
+
 1. Create data-driven sticky header component for demo page
 2. Implement breadcrumb navigation using data from `src/data/demo/navigation/breadcrumbs.ts`
 3. Ensure mobile-first responsive behavior with demo-specific styling
 4. Integrate with existing project header patterns
 
 **Technical Specifications:**
+
 - Analyze existing header implementation in `src/lib/components/ui/header/`
 - **CRITICAL**: Load breadcrumb configuration from TypeScript data files
 - Implement proper z-index hierarchy for sticky positioning
@@ -1163,24 +1213,25 @@ Enhance the `/demo` route with a sticky header containing breadcrumbs navigation
 **Data-Driven Implementation:**
 
 1. **Create Breadcrumb Configuration File:**
+
    ```typescript
    // src/data/demo/navigation/breadcrumbs.ts
    export interface BreadcrumbConfig {
-     id: string;
-     label: string;
-     url: string;
-     icon?: string;
-     isActive?: boolean;
+   	id: string;
+   	label: string;
+   	url: string;
+   	icon?: string;
+   	isActive?: boolean;
    }
 
    export const demoBreadcrumbs = {
-     home: { id: 'home', label: 'Home', url: '/', icon: 'Home' },
-     demo: { id: 'demo', label: 'Demo', url: '/demo', icon: 'Layers' },
-     sections: {
-       overview: { id: 'overview', label: 'Overview', url: '/demo#overview' },
-       layout: { id: 'layout', label: 'Layout', url: '/demo#layout' },
-       interactive: { id: 'interactive', label: 'Interactive', url: '/demo#interactive' }
-     }
+   	home: { id: "home", label: "Home", url: "/", icon: "Home" },
+   	demo: { id: "demo", label: "Demo", url: "/demo", icon: "Layers" },
+   	sections: {
+   		overview: { id: "overview", label: "Overview", url: "/demo#overview" },
+   		layout: { id: "layout", label: "Layout", url: "/demo#layout" },
+   		interactive: { id: "interactive", label: "Interactive", url: "/demo#interactive" }
+   	}
    };
    ```
 
@@ -1190,6 +1241,7 @@ Enhance the `/demo` route with a sticky header containing breadcrumbs navigation
    - Support SPA navigation with hash-based URLs
 
 **Component Features:**
+
 - Sticky positioning that works across all viewport sizes
 - Dynamic breadcrumb path: Home > Demo > [Current Section]
 - Data-driven breadcrumb labels and URLs
@@ -1197,24 +1249,28 @@ Enhance the `/demo` route with a sticky header containing breadcrumbs navigation
 - Smooth scroll behavior when navigating sections
 
 Styling Requirements:
+
 - Use existing project color palette (slate-based theme)
 - Demo-specific CSS classes with `demo-header-`, `demo-breadcrumb-` prefixes
 - Mobile-optimized touch targets (44px minimum)
 - Proper contrast ratios for accessibility
 
 **Expected Deliverables:**
+
 - Sticky header component integrated into demo route
 - Breadcrumb configuration file: `src/data/demo/navigation/breadcrumbs.ts`
 - Data-driven breadcrumb navigation with clickable links
 - Mobile-responsive header behavior with demo-specific styling
 
 **Integration Requirements:**
+
 - Import and use breadcrumb data from TypeScript configuration file
 - Reuse existing shadcn-svelte components where possible
 - Maintain consistency with main application header patterns
 - Support keyboard navigation and proper ARIA labels
 
 **Success Criteria:**
+
 - Header remains sticky during scroll with proper z-index
 - Breadcrumbs load from data file and show correct navigation hierarchy
 - Hash-based navigation updates breadcrumbs dynamically
@@ -1223,10 +1279,12 @@ Styling Requirements:
 - All CSS classes use `demo-` prefix for easy identification
 
 Data-Driven Validation:
+
 - Breadcrumb configuration loads from TypeScript file successfully
 - Dynamic breadcrumb generation works with SPA navigation
 - Current section detection updates breadcrumbs properly
 - No hardcoded breadcrumb labels in component code
+
 ```
 
 ---
@@ -1234,23 +1292,27 @@ Data-Driven Validation:
 #### Prompt 3: Implement Collapsible Sidebar
 
 ```
+
 AF02 Agent Task: Implement Data-Driven Collapsible Sidebar
 
 **Prerequisites:** Navigation data from Prompt 1A must exist
 
 **Requirements:**
+
 1. Implement collapsible sidebar consuming navigation data from `demo-sidebar-menu.ts`
 2. Add accordion behavior (only one unit expanded at a time)
 3. Implement responsive mobile/desktop behavior (overlay vs inline)
 4. Add search and filtering capabilities for lessons
 
 **Technical Specifications:**
+
 - Analyze existing sidebar implementation in `src/lib/components/ui/sidebar/`
 - Use Svelte 5 runes for accordion state management
 - Follow centralized CSS architecture with `demo-sidebar-` prefixed classes
 - Support touch gestures and keyboard navigation
 
 Sidebar Features:
+
 - Load unit/lesson structure from TypeScript data files
 - Accordion behavior with smooth animations
 - Mobile: Full-screen overlay with backdrop
@@ -1259,12 +1321,14 @@ Sidebar Features:
 - Active state highlighting based on current section
 
 **Expected Deliverables:**
+
 - Collapsible sidebar component integrated into demo layout
 - Search functionality working with generated navigation data
 - Mobile and desktop responsive behavior
 - Accordion state management consuming data structure
 
 **Success Criteria:**
+
 - Sidebar loads 100% of navigation from data files (no hardcoded content)
 - Accordion behavior works with realistic lesson counts
 - Search filters through actual generated lesson data
@@ -1272,6 +1336,7 @@ Sidebar Features:
 - All CSS uses `demo-` prefixes for easy identification
 
 **Critical:** Only implement after navigation data is fully generated and available.
+
 ```
 
 ---
@@ -1279,17 +1344,20 @@ Sidebar Features:
 #### Prompt 4A: Generate Theme Configuration Data
 
 ```
+
 AF02 Agent Task: Generate Comprehensive Theme Configuration Data
 
 **CRITICAL:** This is a DATA GENERATION prompt. Generate extensive theme configuration data in TypeScript files BEFORE implementing dark mode toggle component.
 
 **Requirements:**
+
 1. Create `src/data/demo/themes/theme-config.ts` with comprehensive theme definitions
 2. Generate 15+ component theme variants (cards, buttons, inputs, sidebars, headers, etc.)
 3. Include system preference configurations and transition settings
 4. Add accessibility contrast ratios and theme validation data
 
 **Expected Output:**
+
 - Theme configuration with light, dark, and system preference settings
 - 15+ component-specific theme variants with CSS custom properties
 - Transition timing and animation configuration data
@@ -1297,6 +1365,7 @@ AF02 Agent Task: Generate Comprehensive Theme Configuration Data
 - Icon mapping for theme toggle states
 
 **Theme Variety:**
+
 - Light theme variants (5+ color schemes)
 - Dark theme variants (5+ color schemes)
 - High contrast themes (2+ variants)
@@ -1304,9 +1373,11 @@ AF02 Agent Task: Generate Comprehensive Theme Configuration Data
 - Custom theme definitions for demo components
 
 **Success Criteria:**
+
 - Theme data supports comprehensive dark mode testing scenarios
 - Sufficient variety to test all component rendering in different themes
 - Accessibility-compliant color combinations with proper contrast ratios
+
 ```
 
 ---
@@ -1314,56 +1385,66 @@ AF02 Agent Task: Generate Comprehensive Theme Configuration Data
 #### Prompt 4B: Implement Dark Mode Toggle Component
 
 ```
+
 AF02 Agent Task: Implement Dark Mode Toggle Consuming Theme Configuration
 
 **Prerequisites:** Theme configuration data must exist from Prompt 4A
 
 **Requirements:**
+
 1. Create dark mode toggle component consuming theme data from TypeScript files
 2. Implement theme switching logic using Svelte stores and generated configuration
 3. Add theme persistence using localStorage with generated theme options
 4. Integrate with existing project theming approach
 
 **Technical Specifications:**
+
 - Load ALL theme configurations from TypeScript data files
 - Use Svelte 5 runes for reactive theme state management
 - Implement system preference detection using generated preference rules
 - Follow centralized CSS architecture with `demo-theme-` prefixed classes
 
 **Expected Deliverables:**
+
 - Dark mode toggle component consuming generated theme data
 - Theme store management using generated configuration options
 - System preference detection with generated rules
 - Smooth transitions using generated animation configurations
 
 **Critical:** Only implement after theme configuration data is fully generated and available.
+
 - Implement theme-aware color variables
 
 Styling Requirements:
+
 - Add dark theme colors to `@theme` configuration
 - Create dark mode component styles in centralized CSS
 - Ensure all demo components support both themes
 - Maintain project's color palette consistency (slate-based)
 
 **Expected Deliverables:**
+
 - Dark mode toggle component with state management
 - Theme store for application-wide theme state
 - Dark theme CSS variables and component styles
 - System preference detection and response logic
 
 **Integration Requirements:**
+
 - Use existing project styling patterns
 - Maintain accessibility standards in both themes
 - Support keyboard interaction for toggle
 - Include proper ARIA attributes for screen readers
 
 **Success Criteria:**
+
 - Theme toggles smoothly between light/dark/system modes
 - Theme preference persists across page reloads
 - System preference changes are detected and applied
 - All demo components render correctly in both themes
 - TypeScript validation passes
 - Accessibility standards maintained in both themes
+
 ```
 
 ---
@@ -1371,23 +1452,27 @@ Styling Requirements:
 #### Prompt 5A: Generate Search Configuration Data
 
 ```
+
 AF02 Agent Task: Generate Comprehensive Search Configuration Data
 
 **CRITICAL:** This is a DATA GENERATION prompt. Generate extensive search configuration and indexable content data in TypeScript files BEFORE implementing search functionality.
 
 **Requirements:**
+
 1. Create `src/data/demo/search/search-index.ts` with 100+ searchable items
 2. Generate search configurations for different content types (components, lessons, diagrams, code)
 3. Include search keywords, tags, and categories for realistic filtering
 4. Add search result templates and ranking algorithms
 
 **Expected Output:**
+
 - Comprehensive search index with 100+ items across all demo content
 - Search configuration for debouncing, filtering, and result ranking
 - Content type mappings with appropriate search weights
 - Search result display templates and highlighting rules
 
 **Search Content Variety:**
+
 - Component names and descriptions (30+ items)
 - Lesson titles and content summaries (40+ items)
 - Code example titles and descriptions (20+ items)
@@ -1395,9 +1480,11 @@ AF02 Agent Task: Generate Comprehensive Search Configuration Data
 - Interactive element descriptions (10+ items)
 
 **Success Criteria:**
+
 - Search index supports realistic search testing scenarios
 - Sufficient variety to test search performance and filtering
 - Content metadata includes realistic keywords and categories
+
 ```
 
 ---
@@ -1405,29 +1492,34 @@ AF02 Agent Task: Generate Comprehensive Search Configuration Data
 #### Prompt 5B: Implement Search Box with Live Filtering
 
 ```
+
 AF02 Agent Task: Implement Search Box Consuming Search Index Data
 
 **Prerequisites:** Search configuration data must exist from Prompt 5A
 
 **Requirements:**
+
 1. Create search input component consuming search index from TypeScript files
 2. Implement live filtering logic using generated search configuration
 3. Add search result highlighting using generated templates
 4. Integrate with existing demo route structure
 
 **Technical Specifications:**
+
 - Load ALL search configurations from TypeScript data files
 - Use Svelte 5 derived state for reactive search filtering
 - Implement debounced search using generated timing configurations
 - Follow existing project input component patterns
 
 **Expected Deliverables:**
+
 - Search input component consuming generated search index
 - Live filtering functionality using generated search data
 - Search result highlighting with generated templates
 - Integration with demo navigation consuming search results
 
 **Critical:** Only implement after search configuration data is fully generated and available.
+
 ```
 
 ---
@@ -1435,23 +1527,27 @@ AF02 Agent Task: Implement Search Box Consuming Search Index Data
 #### Prompt 6A: Generate Comprehensive Mermaid Diagram Data
 
 ```
+
 AF02 Agent Task: Generate Extensive Mermaid Diagram Library
 
 **CRITICAL:** This is a DATA GENERATION prompt. Generate 20+ comprehensive Mermaid diagrams across ALL diagram types with educational content BEFORE implementing showcase component.
 
 **Requirements:**
+
 1. Create `src/data/demo/content/diagrams/mermaid-examples.ts` with 20+ diagram examples
 2. Generate diagrams across ALL Mermaid types (flowcharts, sequence, class, ER, gitgraph, etc.)
 3. Include educational metadata, complexity levels, and usage scenarios
 4. Add diagram categories, tags, and learning objectives
 
 **Expected Output:**
+
 - 20+ Mermaid diagrams across all supported types
 - Complete diagram definitions with proper Mermaid syntax
 - Educational metadata for each diagram
 - Categories and complexity levels for filtering and organization
 
 **Diagram Type Distribution:**
+
 - Flowcharts (5 examples: simple to complex)
 - Sequence diagrams (4 examples: API flows, user interactions)
 - Class diagrams (3 examples: OOP structures)
@@ -1461,9 +1557,11 @@ AF02 Agent Task: Generate Extensive Mermaid Diagram Library
 - Journey maps (1 example: user experience)
 
 **Success Criteria:**
+
 - Diagram collection supports comprehensive Mermaid rendering testing
 - Educational content suitable for cloud-native learning context
 - Sufficient variety to test all Mermaid diagram types and complexity levels
+
 ```
 
 ---
@@ -1471,23 +1569,22 @@ AF02 Agent Task: Generate Extensive Mermaid Diagram Library
 #### Prompt 6B: Implement Mermaid Diagram Showcase
 
 ```
+
 AF02 Agent Task: Implement Mermaid Diagram Showcase Consuming Generated Diagram Data
 
 **Prerequisites:** Mermaid diagram data must exist from Prompt 6A
 
 **Requirements:**
+
 1. Create Mermaid diagram showcase component consuming diagram data from TypeScript files
 2. Implement diagram rendering using Mermaid.js library with generated definitions
 3. Add diagram filtering and categorization using generated metadata
 4. Integrate with existing demo route and navigation structure
 
-🚨 CRITICAL MERMAID REQUIREMENTS:
-5. **Debug Mode Implementation**: Component MUST accept `debug` prop or check URL parameter `?debug=true`
-6. **Error Handling**: Log all rendering errors to console with full diagram source code
-7. **Fallback Content**: Display error message with diagram source when rendering fails
-8. **Syntax Validation**: Ensure all generated diagrams follow double-quote rules for text
+🚨 CRITICAL MERMAID REQUIREMENTS: 5. **Debug Mode Implementation**: Component MUST accept `debug` prop or check URL parameter `?debug=true` 6. **Error Handling**: Log all rendering errors to console with full diagram source code 7. **Fallback Content**: Display error message with diagram source when rendering fails 8. **Syntax Validation**: Ensure all generated diagrams follow double-quote rules for text
 
 **Technical Specifications:**
+
 - Load ALL diagram definitions from TypeScript data files
 - Use Svelte 5 runes for reactive diagram filtering and display
 - Implement proper Mermaid.js integration with comprehensive error handling
@@ -1496,6 +1593,7 @@ AF02 Agent Task: Implement Mermaid Diagram Showcase Consuming Generated Diagram 
 - **Error Logging**: `console.error('Mermaid render failed:', diagramSource, error)`
 
 **Expected Deliverables:**
+
 - Mermaid diagram showcase component consuming generated diagram library
 - Diagram filtering by type, complexity, and category using generated metadata
 - Comprehensive error handling with debug mode and fallback content
@@ -1503,6 +1601,7 @@ AF02 Agent Task: Implement Mermaid Diagram Showcase Consuming Generated Diagram 
 - **Component tests validating both successful renders and error scenarios**
 
 **Testing Requirements:**
+
 - Test successful diagram rendering with valid syntax
 - Test error handling with malformed diagram syntax
 - Test debug mode displays error details correctly
@@ -1510,6 +1609,7 @@ AF02 Agent Task: Implement Mermaid Diagram Showcase Consuming Generated Diagram 
 - Validate all diagrams follow critical syntax rules (double quotes, HTML entities)
 
 **Critical:** Only implement after comprehensive diagram data is fully generated and available.
+
 ```
 
 ---
@@ -1517,23 +1617,27 @@ AF02 Agent Task: Implement Mermaid Diagram Showcase Consuming Generated Diagram 
 #### Prompt 7A: Generate Comprehensive Code Examples Data
 
 ```
+
 AF02 Agent Task: Generate Extensive Code Examples Library
 
 **CRITICAL:** This is a DATA GENERATION prompt. Generate 30+ comprehensive code examples across 8+ programming languages with educational content BEFORE implementing showcase component.
 
 **Requirements:**
+
 1. Create `src/data/demo/content/code/code-examples.ts` with 30+ code examples
 2. Generate examples across 8+ languages (TypeScript, JavaScript, Python, Go, Rust, Java, PHP, SQL)
 3. Include educational metadata, complexity levels, and use case scenarios
 4. Add syntax highlighting configurations and copy-to-clipboard functionality data
 
 **Expected Output:**
+
 - 30+ code examples across multiple programming languages
 - Complete code snippets with proper syntax and best practices
 - Educational metadata for each example
 - Categories and complexity levels for filtering and organization
 
 **Language Distribution:**
+
 - TypeScript/SvelteKit (8 examples: components, stores, actions, utilities)
 - JavaScript (5 examples: async/await, promises, DOM manipulation)
 - Python (4 examples: web scraping, data processing, APIs)
@@ -1544,9 +1648,11 @@ AF02 Agent Task: Generate Extensive Code Examples Library
 - SQL (2 examples: complex queries, optimization)
 
 **Success Criteria:**
+
 - Code collection supports comprehensive syntax highlighting testing
 - Educational content suitable for cloud-native learning context
 - Sufficient variety to test all supported languages and use cases
+
 ```
 
 ---
@@ -1554,29 +1660,34 @@ AF02 Agent Task: Generate Extensive Code Examples Library
 #### Prompt 7B: Implement Code Examples Showcase
 
 ```
+
 AF02 Agent Task: Implement Code Examples Showcase Consuming Generated Code Data
 
 **Prerequisites:** Code examples data must exist from Prompt 7A
 
 **Requirements:**
+
 1. Create code showcase component consuming code examples from TypeScript files
 2. Implement syntax highlighting using Shiki with generated configurations
 3. Add code filtering and search using generated metadata
 4. Integrate copy-to-clipboard functionality and code execution examples
 
 **Technical Specifications:**
+
 - Load ALL code examples from TypeScript data files
 - Use Svelte 5 runes for reactive code filtering and display
 - Implement Shiki integration with proper theme support
 - Follow centralized CSS architecture with `demo-code-` prefixed classes
 
 **Expected Deliverables:**
+
 - Code showcase component consuming generated code library
 - Syntax highlighting with theme support using generated configurations
 - Code filtering by language, complexity, and category using generated metadata
 - Copy-to-clipboard functionality and responsive code display
 
 **Critical:** Only implement after comprehensive code examples data is fully generated and available.
+
 ```
 
 ---
@@ -1584,23 +1695,27 @@ AF02 Agent Task: Implement Code Examples Showcase Consuming Generated Code Data
 #### Prompt 8A: Generate Flip Cards Content Data
 
 ```
+
 AF02 Agent Task: Generate Comprehensive Flip Cards Content Library
 
 **CRITICAL:** This is a DATA GENERATION prompt. Generate extensive flip card content data in TypeScript files BEFORE implementing flip card component.
 
 **Requirements:**
+
 1. Create `src/data/demo/content/flipcards/concept-cards.ts` with 25+ educational flip cards
 2. Generate cards across different complexity levels (beginner, intermediate, advanced)
 3. Include educational metadata, categories, and learning objectives
 4. Add card animations and interaction configurations
 
 **Expected Output:**
+
 - 25+ educational flip cards with front/back content pairs
 - Categories covering cloud-native concepts, programming patterns, and best practices
 - Interactive configuration for animations, timings, and gestures
 - Progress tracking data for card completion and mastery
 
 **Content Categories:**
+
 - Cloud fundamentals (8 cards)
 - Container technologies (6 cards)
 - Microservices patterns (5 cards)
@@ -1608,9 +1723,11 @@ AF02 Agent Task: Generate Comprehensive Flip Cards Content Library
 - Security concepts (2 cards)
 
 **Success Criteria:**
+
 - Card content supports comprehensive interactive learning testing
 - Educational progression from basic to advanced concepts
 - Sufficient variety to test all flip card interaction scenarios
+
 ```
 
 ---
@@ -1618,29 +1735,34 @@ AF02 Agent Task: Generate Comprehensive Flip Cards Content Library
 #### Prompt 8B: Implement Interactive Flip Cards
 
 ```
+
 AF02 Agent Task: Implement Interactive Flip Cards Consuming Generated Content
 
 **Prerequisites:** Flip card content data must exist from Prompt 8A
 
 **Requirements:**
+
 1. Create flip card component consuming card content from TypeScript files
 2. Implement 3D flip animations and touch/click interactions using generated configurations
 3. Add educational progress tracking using generated metadata
 4. Integrate with existing demo route and navigation structure
 
 **Technical Specifications:**
+
 - Load ALL flip card content from TypeScript data files
 - Use Svelte 5 runes for flip state and animation management
 - Implement CSS 3D transforms using generated animation configurations
 - Follow centralized CSS architecture with `demo-flipcard-` prefixed classes
 
 **Expected Deliverables:**
+
 - Interactive flip card component consuming generated content library
 - 3D flip animations with touch/click/keyboard support using generated settings
 - Progress tracking and completion states using generated metadata
 - Integration with demo navigation and responsive display
 
 **Critical:** Only implement after comprehensive flip card data is fully generated and available.
+
 ```
 
 ---
@@ -1648,23 +1770,27 @@ AF02 Agent Task: Implement Interactive Flip Cards Consuming Generated Content
 #### Prompt 9A: Generate Modal Content Data
 
 ```
+
 AF02 Agent Task: Generate Comprehensive Modal Content Library
 
 **CRITICAL:** This is a DATA GENERATION prompt. Generate extensive modal content data in TypeScript files BEFORE implementing modal components.
 
 **Requirements:**
+
 1. Create `src/data/demo/content/modals/modal-examples.ts` with 15+ modal configurations
 2. Generate modals for different use cases (confirmation, forms, information, galleries)
 3. Include modal sizing, animation, and accessibility configurations
 4. Add modal content templates and validation rules
 
 **Expected Output:**
+
 - 15+ modal examples with varied content and purposes
 - Configuration for animations, sizing, and behavior
 - Accessibility attributes and keyboard navigation data
 - Modal content templates for different use cases
 
 **Modal Types:**
+
 - Confirmation modals (3 examples)
 - Form modals (4 examples)
 - Information modals (3 examples)
@@ -1673,9 +1799,11 @@ AF02 Agent Task: Generate Comprehensive Modal Content Library
 - Custom interactive modals (1 example)
 
 **Success Criteria:**
+
 - Modal collection supports comprehensive overlay testing
 - Accessibility configurations ensure WCAG compliance
 - Sufficient variety to test all modal interaction patterns
+
 ```
 
 ---
@@ -1683,23 +1811,27 @@ AF02 Agent Task: Generate Comprehensive Modal Content Library
 #### Prompt 9B: Implement Modal Dialogs and Overlays
 
 ```
+
 AF02 Agent Task: Implement Modal System Consuming Generated Content
 
 **Prerequisites:** Modal content data must exist from Prompt 9A
 
 **Requirements:**
+
 1. Create modal system consuming modal data from TypeScript files
 2. Implement overlay management and accessibility features using generated configurations
 3. Add modal animations and responsive behavior using generated settings
 4. Integrate with existing demo route and navigation structure
 
 **Technical Specifications:**
+
 - Load ALL modal configurations from TypeScript data files
 - Use Svelte 5 runes for modal state and overlay management
 - Implement proper accessibility with focus trap and ARIA attributes
 - Follow centralized CSS architecture with `demo-modal-` prefixed classes
 
 **Expected Deliverables:**
+
 - Modal system consuming generated content library
 - Overlay management with backdrop and focus handling
 - Responsive modal behavior using generated configurations
@@ -1716,18 +1848,21 @@ AF02 Agent Task: Implement Modal System Consuming Generated Content
 **CRITICAL:** This is a DATA GENERATION prompt. Generate extensive quiz content data in TypeScript files BEFORE implementing quiz components.
 
 **Requirements:**
+
 1. Create `src/data/demo/content/quizzes/quiz-examples.ts` with 15+ educational quizzes
 2. Generate quizzes for different educational levels (beginner, intermediate, advanced)
 3. Include question types: multiple choice, true/false, drag-and-drop, code completion
 4. Add scoring, timing, and progress tracking configurations
 
 **Expected Output:**
+
 - 15+ educational quizzes with varied question types and complexity
 - Cloud-native technology questions covering fundamental to advanced concepts
 - Interactive configuration for animations, timing, and user feedback
 - Progress tracking data for quiz completion and performance analytics
 
 **Quiz Categories:**
+
 - Cloud fundamentals (5 quizzes)
 - Container technologies (4 quizzes)
 - Microservices architecture (3 quizzes)
@@ -1735,6 +1870,7 @@ AF02 Agent Task: Implement Modal System Consuming Generated Content
 - Security and monitoring (1 quiz)
 
 **Success Criteria:**
+
 - Quiz content supports comprehensive interactive learning testing
 - Educational progression from basic to advanced technical concepts
 - Sufficient variety to test all quiz interaction and scoring scenarios
@@ -1748,18 +1884,21 @@ AF02 Agent Task: Implement Modal System Consuming Generated Content
 **Prerequisites:** Quiz content data must exist from Prompt 10A
 
 **Requirements:**
+
 1. Create quiz system consuming quiz data from TypeScript files
 2. Implement timer, scoring, and progress tracking using generated configurations
 3. Add question navigation and result analytics using generated metadata
 4. Integrate with existing demo route and educational flow structure
 
 **Technical Specifications:**
+
 - Load ALL quiz configurations from TypeScript data files
 - Use Svelte 5 runes for quiz state and progress management
 - Implement proper accessibility with keyboard navigation and ARIA labels
 - Follow centralized CSS architecture with `demo-quiz-` prefixed classes
 
 **Expected Deliverables:**
+
 - Interactive quiz system consuming generated content library
 - Timer and scoring functionality using generated configurations
 - Progress tracking and analytics using generated metadata
@@ -1781,6 +1920,7 @@ This comprehensive SvelteKit developer guide provides:
 The demo route implementation follows a systematic approach where data generation precedes component development, ensuring comprehensive testing scenarios and realistic content for all educational components.
 
 **Key Benefits:**
+
 - **Comprehensive Coverage**: All major SvelteKit components and patterns
 - **Data-Driven Architecture**: Easy cleanup and maintenance through prefixed naming
 - **Educational Focus**: Content designed for cloud-native learning context

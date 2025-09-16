@@ -17,6 +17,7 @@ For complete agent implementation guidelines, project rules, and technical speci
 ## Structure Overview
 
 The main documentation in CLAUDE.md includes:
+
 - Project foundation and core mission
 - Technical architecture and SvelteKit rules
 - Content creation workflows and quality assurance

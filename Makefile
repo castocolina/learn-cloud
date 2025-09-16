@@ -11,15 +11,16 @@ help: ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 setup: ## Setup the development environment
-	@echo "Setting up SvelteKit development environment..."
-	pnpm install
-	@echo "✅ Setup complete!"
+	@echo "🔧 Running setup script..."
+	@bash ./src/bash/setup.sh
 
 install: ## Install dependencies
 	pnpm install
 
 run: ## Start development server
-	pnpm run dev
+	@./src/bash/run.sh
+
+start: run
 
 build: ## Build the application for production
 	pnpm run build

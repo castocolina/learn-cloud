@@ -1,14 +1,18 @@
-
 # Dependencies
 # These are installed by package managers and should not be in version control.
 /node_modules
 /bower_components
 
-# Build artifacts
+# Build artifacts and Output
 # These are the output of the build process and are generated from the source code.
 /build
 /dist
 /out
+.output
+.vercel
+.netlify
+.wrangler
+/.svelte-kit
 
 # Log files
 # These can be verbose and specific to a user's machine.
@@ -17,12 +21,16 @@ yarn-debug.log*
 yarn-error.log*
 
 # Environment variables
-# These files contain sensitive information and should never be committed.
+# Note: .env contains project configuration (not secrets) and should be committed
+# Only user-specific and sensitive .env files are ignored
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+.env.*
+!.env.example
+!.env.test
 
 # IDE and editor directories
 # These are user-specific settings and should not be shared.
@@ -49,3 +57,11 @@ tmp/
 __pycache__/
 *.py[cod]
 *$py.class
+tmp/pycache/
+
+# Python virtual environment
+.venv/
+
+# Vite specific files
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*

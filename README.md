@@ -105,79 +105,14 @@ make clean           # Clean build artifacts
 └── docs/                  # Project documentation
 ```
 
-## 📚 Content Management
+## Building
 
-### Content Format
+To create a production version of your app:
 
-All educational content is stored as structured JSON files in `src/data/`:
+```sh
+npm run build
+```
 
-- **Lessons**: Sectioned content with headings and rich text
-- **Study Guides**: Flashcard collections for review
-- **Quizzes**: Question pools with explanations
-- **Exams**: Comprehensive assessment questions
-- **Overviews**: Unit introductions and learning objectives
+You can preview the production build with `npm run preview`.
 
-### Content Standards
-
-- Titles must match `content-menu.ts` exactly
-- Minimum 6 flashcards per study guide
-- Quiz pools: 1.5x display questions (show 5, store 8+)
-- Exam pools: 1.5x display questions (show 20, store 30+)
-- Production-ready code examples
-- Security-first approach
-
-## 🧪 Development Guidelines
-
-### Component Development
-
-1. **Priority**: Use shadcn-svelte components first
-
-   ```bash
-   pnpm dlx shadcn-svelte@latest add [component-name]
-   ```
-
-2. **Custom Components**: Only when shadcn-svelte doesn't provide functionality
-
-3. **Styling**: Tailwind CSS with mobile-first approach
-
-### Content Integration
-
-- Dynamic JSON imports for content loading
-- Type-safe content interfaces
-- Error handling for missing content
-- Consistent metadata structure
-
-## 🚀 Deployment
-
-The project automatically deploys to GitHub Pages via GitHub Actions:
-
-1. Push to main branch triggers CI/CD
-2. Validation checks (lint, type-check, tests)
-3. SvelteKit static build generation
-4. Deployment to GitHub Pages
-
-## 📖 Documentation
-
-- **[TECHNICAL-SPECS.md](TECHNICAL-SPECS.md)**: Technical architecture details
-- **[CONTENT-STANDARDS.md](CONTENT-STANDARDS.md)**: Content creation guidelines
-- **[AGENTS.md](AGENTS.md)**: AI agent development guidelines
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Follow coding standards and content guidelines
-4. Run validation checks: `make validate`
-5. Submit a pull request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙋‍♂️ Support
-
-For questions or support:
-
-- Open an issue on GitHub
-- Check the documentation in the `docs/` directory
-- Review the technical specifications
+> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.

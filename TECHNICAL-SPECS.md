@@ -80,6 +80,7 @@ $: doubled = count * 2;
 **Core Principle**: All custom component styles MUST be organized in modular CSS files and imported into `src/app.css`
 
 **Required File Structure**:
+
 ```
 src/styles/
 ├── components.css      # Custom Svelte component styles
@@ -90,6 +91,7 @@ src/styles/
 ```
 
 **CSS Import Order in `src/app.css`**:
+
 ```css
 @import "tailwindcss";
 @import "./styles/variables.css";    # Theme variables first
@@ -123,31 +125,31 @@ src/styles/
 ```css
 /* src/styles/components.css */
 @layer components {
-  .lesson-container {
-    @apply max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-sm;
-    @apply border border-gray-200 dark:border-gray-700;
-  }
+	.lesson-container {
+		@apply mx-auto max-w-4xl rounded-lg bg-white p-6 shadow-sm;
+		@apply border border-gray-200 dark:border-gray-700;
+	}
 
-  .quiz-question {
-    @apply p-4 bg-purple-50 rounded-md mb-4;
-    color: var(--quiz-primary-color);
-  }
+	.quiz-question {
+		@apply mb-4 rounded-md bg-purple-50 p-4;
+		color: var(--quiz-primary-color);
+	}
 }
 ```
 
 ```svelte
 <!-- SvelteKit Component Usage -->
 <script lang="ts">
-  interface Props {
-    title: string;
-  }
+	interface Props {
+		title: string;
+	}
 
-  let { title }: Props = $props();
+	let { title }: Props = $props();
 </script>
 
 <!-- Use modular CSS classes directly -->
 <div class="lesson-container">
-  <h1 class="lesson-title">{title}</h1>
+	<h1 class="lesson-title">{title}</h1>
 </div>
 ```
 
@@ -167,29 +169,29 @@ src/styles/
 ```css
 /* ✅ CORRECT: Harmonic theme system */
 :root {
-  --color-primary: theme(colors.slate.900);
-  --color-secondary: theme(colors.slate.600);
-  --color-accent: theme(colors.blue.600);
+	--color-primary: theme(colors.slate.900);
+	--color-secondary: theme(colors.slate.600);
+	--color-accent: theme(colors.blue.600);
 }
 
 .dark {
-  --color-primary: theme(colors.slate.100);
-  --color-secondary: theme(colors.slate.400);
-  --color-accent: theme(colors.blue.400);
+	--color-primary: theme(colors.slate.100);
+	--color-secondary: theme(colors.slate.400);
+	--color-accent: theme(colors.blue.400);
 }
 
 /* Component usage */
 .my-component {
-  color: var(--color-primary);
-  background-color: var(--color-accent);
+	color: var(--color-primary);
+	background-color: var(--color-accent);
 }
 ```
 
 ```css
 /* ❌ INCORRECT: Fixed colors breaking theme harmony */
 .my-component {
-  color: #1a1a1a;          /* Fixed dark color */
-  background-color: #ff6b6b; /* Random red not in theme palette */
+	color: #1a1a1a; /* Fixed dark color */
+	background-color: #ff6b6b; /* Random red not in theme palette */
 }
 ```
 
@@ -570,5 +572,3 @@ This pattern should be applied to all future data generation systems to maintain
 **⚠️ Note:** For bugs and issues that appear multiple times across development sessions, refer to [RECURRING-ISSUES.md](RECURRING-ISSUES.md).
 
 One-time bugs and resolved issues are not documented here to maintain focus on current architectural requirements.
-
-

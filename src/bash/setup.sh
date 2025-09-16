@@ -51,7 +51,7 @@ pnpm dlx sv add tailwindcss
 
 echo_step "Installing and configuring shadcn-svelte..."
 # This will automatically configure path aliases and component structure
-pnpm dlx shadcn-svelte@latest init --yes
+pnpm dlx shadcn-svelte@latest init --base-color slate --overwrite
 
 echo_step "Creating modular CSS architecture..."
 # Create the modular CSS structure
@@ -92,6 +92,10 @@ else
 EOF
 fi
 
+echo_step "Configuring ignore patterns for src/book..."
+# Add to .prettierignore if not already present
+grep -qxF "src/book/" .prettierignore 2>/dev/null || echo "src/book/" >> .prettierignore
+
 echo_step "Verification Phase"
 echo_step "Verifying TypeScript configuration..."
 pnpm run check
@@ -109,7 +113,7 @@ pnpm run dev &
 DEV_PID=$!
 
 # Wait a moment for server to start
-sleep 3
+sleep 5
 
 # Kill the development server
 echo_step "Stopping development server..."

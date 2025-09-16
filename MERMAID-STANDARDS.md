@@ -110,6 +110,7 @@ graph LR
 ### Implementation Examples
 
 **Svelte Component Debug Implementation:**
+
 ```typescript
 // MermaidDiagram.svelte
 <script lang="ts">
@@ -140,9 +141,10 @@ graph LR
 ```
 
 **Debug Flag Usage:**
+
 ```svelte
 <!-- URL parameter approach -->
-<MermaidDiagram {diagram} debug={$page.url.searchParams.has('debug')} />
+<MermaidDiagram {diagram} debug={$page.url.searchParams.has("debug")} />
 
 <!-- Direct prop approach -->
 <MermaidDiagram {diagram} debug={true} />
@@ -181,36 +183,39 @@ For all Mermaid components, ensure:
 ### Required Tests
 
 **1. Successful Rendering Tests**
+
 ```javascript
 // Test valid diagram syntax renders correctly
-test('renders valid mermaid diagram', async () => {
-  const validDiagram = `graph TD
+test("renders valid mermaid diagram", async () => {
+	const validDiagram = `graph TD
     A["Start"] --> B["Process"]
     B --> C["End"]`;
 
-  // Test successful render
+	// Test successful render
 });
 ```
 
 **2. Error Handling Tests**
+
 ```javascript
 // Test malformed diagram shows fallback
-test('handles malformed diagram with fallback', async () => {
-  const invalidDiagram = `graph TD
+test("handles malformed diagram with fallback", async () => {
+	const invalidDiagram = `graph TD
     A[Invalid syntax without quotes]`;
 
-  // Test error fallback displays
+	// Test error fallback displays
 });
 ```
 
 **3. Debug Mode Tests**
+
 ```javascript
 // Test debug mode logs errors correctly
-test('debug mode logs rendering errors', async () => {
-  const consoleSpy = vi.spyOn(console, 'error');
+test("debug mode logs rendering errors", async () => {
+	const consoleSpy = vi.spyOn(console, "error");
 
-  // Test debug logging
-  expect(consoleSpy).toHaveBeenCalledWith('Mermaid render failed:', expect.any(Object));
+	// Test debug logging
+	expect(consoleSpy).toHaveBeenCalledWith("Mermaid render failed:", expect.any(Object));
 });
 ```
 

@@ -15,6 +15,7 @@ This document contains **only recurring bugs and issues** that have appeared mul
 ### What Belongs Here
 
 ✅ **Include these types of issues:**
+
 - Bugs that have occurred 2+ times across different sessions
 - Systematic problems with root causes that tend to reappear
 - Configuration issues that repeatedly surface
@@ -24,6 +25,7 @@ This document contains **only recurring bugs and issues** that have appeared mul
 ### What Does NOT Belong Here
 
 ❌ **Do NOT include:**
+
 - One-time bugs that were fixed and never reoccurred
 - User-specific environment issues
 - Temporary external service outages
@@ -41,23 +43,24 @@ This document contains **only recurring bugs and issues** that have appeared mul
 **Root Cause:** Tailwind CSS v4 incompatibility with Svelte's CSS processing when `@apply` is used in component-scoped styles.
 
 **Solution Pattern:**
+
 ```css
 /* ❌ INCORRECT: In Svelte component <style> block */
-<style lang="postcss">
-  .local-class {
-    @apply flex items-center; /* Causes build failure */
-  }
+<style lang="postcss" > .local-class {
+	@apply flex items-center; /* Causes build failure */
+}
 </style>
 
 /* ✅ CORRECT: In src/app.css using @layer components */
 @layer components {
-  .global-class {
-    @apply flex items-center; /* Works correctly */
-  }
+	.global-class {
+		@apply flex items-center; /* Works correctly */
+	}
 }
 ```
 
 **Prevention:**
+
 - All custom styles MUST be in `src/app.css` using `@layer components`
 - Never use `@apply` in Svelte component `<style>` blocks
 - Use Tailwind classes directly in component templates
@@ -74,18 +77,20 @@ This document contains **only recurring bugs and issues** that have appeared mul
 **Root Cause:** Svelte 5 runes syntax requires explicit TypeScript interfaces for proper type safety.
 
 **Solution Pattern:**
+
 ```typescript
 // ✅ CORRECT: Proper TypeScript interface
 interface Props {
-  title: string;
-  items?: string[];
-  onItemClick?: (item: string) => void;
+	title: string;
+	items?: string[];
+	onItemClick?: (item: string) => void;
 }
 
 let { title, items = [], onItemClick }: Props = $props();
 ```
 
 **Prevention:**
+
 - Always define TypeScript interfaces for component props
 - Use proper Svelte 5 runes syntax: `let { } = $props()`
 - Validate props with TypeScript before runtime
@@ -104,6 +109,7 @@ let { title, items = [], onItemClick }: Props = $props();
 **Root Cause:** Missing double quotes around node text and link labels breaks Mermaid parsing.
 
 **Solution Pattern:**
+
 ```mermaid
 <!-- ❌ INCORRECT: Missing quotes -->
 graph TD
@@ -117,6 +123,7 @@ graph TD
 ```
 
 **Prevention:**
+
 - ALL text in Mermaid diagrams must be in double quotes
 - Refer to [MERMAID-STANDARDS.md](MERMAID-STANDARDS.md) for complete rules
 - Implement debug mode in all Mermaid components
@@ -135,6 +142,7 @@ graph TD
 **Root Cause:** File watcher conflicts with temporary files or rapid file changes.
 
 **Solution Pattern:**
+
 ```bash
 # Clear any temporary files
 rm -rf .svelte-kit/
@@ -146,6 +154,7 @@ pnpm run dev
 ```
 
 **Prevention:**
+
 - Avoid editing multiple files simultaneously during hot reload
 - Clear cache when development server becomes unstable
 - Use proper file modification scope to prevent conflicts
@@ -164,24 +173,26 @@ pnpm run dev
 **Root Cause:** Desktop-first development approach ignoring mobile constraints.
 
 **Solution Pattern:**
+
 ```css
 /* ✅ CORRECT: Mobile-first approach */
 .responsive-component {
-  /* Mobile styles first */
-  padding: 1rem;
-  font-size: 0.875rem;
+	/* Mobile styles first */
+	padding: 1rem;
+	font-size: 0.875rem;
 }
 
 @media (min-width: 768px) {
-  .responsive-component {
-    /* Desktop enhancements */
-    padding: 2rem;
-    font-size: 1rem;
-  }
+	.responsive-component {
+		/* Desktop enhancements */
+		padding: 2rem;
+		font-size: 1rem;
+	}
 }
 ```
 
 **Prevention:**
+
 - ALWAYS test mobile experience (≤390px) BEFORE desktop
 - Use mobile-first CSS approach
 - Implement responsive design from the start, not as an afterthought
@@ -222,6 +233,7 @@ pnpm run dev
 4. Likely to affect other developers
 
 **Documentation Template:**
+
 ```markdown
 ### Issue: [Descriptive Title]
 
