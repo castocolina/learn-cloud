@@ -216,19 +216,158 @@ src/styles/
 - **QuizRenderer.svelte**: Interactive quiz system with timer and progress tracking
 - **StudyGuideRenderer.svelte**: Flashcard system with animations and modal support
 
+### SvelteKit Architecture Guidelines
+
+**CRITICAL: Layout vs Page Separation**
+
+SvelteKit follows a clear architectural pattern that MUST be enforced to maintain code quality and scalability.
+
+#### **Layout Responsibilities** (`+layout.svelte`)
+
+**What layouts should contain:**
+
+- ✅ Site-wide navigation structure (headers, sidebars, footers)
+- ✅ Global state management and context providers
+- ✅ Authentication and authorization wrappers
+- ✅ Theme management and branding elements
+- ✅ Z-index hierarchy management for overlays
+- ✅ Responsive container structure
+- ✅ Global error boundaries and loading states
+
+**Layout anti-patterns:**
+
+- ❌ Route-specific content or business logic
+- ❌ Page-specific data fetching
+- ❌ Content that changes based on individual pages
+
+#### **Page Responsibilities** (`+page.svelte`)
+
+**What pages should contain:**
+
+- ✅ Route-specific content ONLY
+- ✅ Page-specific data loading and state
+- ✅ Page-specific interactions and forms
+- ✅ Content presentation and user actions
+- ✅ SEO metadata specific to the page
+
+**Page anti-patterns:**
+
+- ❌ Navigation components (should be in layout)
+- ❌ Headers, sidebars, or footers
+- ❌ Global styling or theme definitions
+- ❌ Site-wide state management
+- ❌ Files exceeding 300-400 lines (extract components)
+
+#### **Component Size Guidelines**
+
+**Size Limits for Maintainability:**
+
+- **Pages**: Maximum 300-400 lines (extract to components if larger)
+- **Layouts**: Maximum 200-300 lines (extract specialized components)
+- **Components**: Maximum 150-200 lines (split into smaller components)
+- **Complex Components**: Use composition pattern with multiple smaller components
+
+#### **Z-index Hierarchy Standards**
+
+**Global Z-index Scale** (must be consistent across all components):
+
+```css
+/* Z-index hierarchy - MUST be followed */
+:root {
+	--z-base: 1; /* Normal content flow */
+	--z-dropdown: 10; /* Dropdown menus */
+	--z-sticky: 50; /* Sticky elements */
+	--z-header: 100; /* Main navigation header */
+	--z-sidebar: 90; /* Sidebar navigation (below header) */
+	--z-overlay: 200; /* Modal overlays and backdrops */
+	--z-modal: 210; /* Modal content */
+	--z-popover: 300; /* Popovers and tooltips */
+	--z-toast: 400; /* Toast notifications */
+	--z-debug: 9999; /* Development/debug tools */
+}
+```
+
+**Z-index Usage Rules:**
+
+- ✅ **ALWAYS** use CSS custom properties for z-index values
+- ✅ **ALWAYS** follow the hierarchy scale above
+- ✅ **NEVER** use arbitrary z-index values (z-index: 999999)
+- ✅ **DOCUMENT** any new z-index requirements in this file
+
+#### **State Management Patterns**
+
+**Layout State** (managed in layouts):
+
+- Navigation state (sidebar open/closed)
+- Theme preferences (dark/light mode)
+- User authentication status
+- Global UI state (loading, errors)
+
+**Page State** (managed in pages):
+
+- Form data and validation
+- Page-specific API data
+- Local UI interactions
+- Page-specific filters or search
+
+**Communication Pattern**:
+
+```typescript
+// Layout provides context
+// Page consumes context and manages local state
+// Components receive props and emit events
+```
+
+#### **Responsive Design Standards**
+
+**Mobile-First Breakpoints** (consistent across layouts and pages):
+
+```css
+/* Standard breakpoints - use these consistently */
+@media (min-width: 390px) {
+	/* Small mobile */
+}
+@media (min-width: 768px) {
+	/* Tablet */
+}
+@media (min-width: 1024px) {
+	/* Desktop */
+}
+@media (min-width: 1280px) {
+	/* Large desktop */
+}
+```
+
+**Layout Behavior Guidelines:**
+
+- **Mobile (≤768px)**: Collapsible navigation, stack layouts vertically
+- **Tablet (768px-1024px)**: Hybrid navigation, partial sidebar
+- **Desktop (≥1024px)**: Full navigation, sidebar visible, multi-column layouts
+
 ### File Structure
 
 ```
 src/
 ├── data/                     # Content data (TypeScript format)
-│   ├── demo.ts              # Demo content showcasing components
+│   ├── demo/                # Demo-specific data structures
+│   │   ├── navigation/      # Navigation and routing data
+│   │   └── content/         # Demo content data
 │   └── types.ts             # TypeScript interfaces with inheritance
 ├── lib/
 │   └── components/
 │       ├── content/         # Content renderer components
+│       ├── demo/           # Demo-specific components
 │       └── ui/              # shadcn-svelte UI components
 ├── routes/                  # SvelteKit routes (file-based routing)
-├── app.css                  # Centralized CSS architecture
+│   ├── +layout.svelte      # Global application layout
+│   └── demo/               # Demo section with isolated layout
+│       ├── +layout.svelte  # Demo-specific layout structure
+│       └── +page.svelte    # Demo content page (central content only)
+├── styles/                  # Modular CSS architecture
+│   ├── components.css      # Component-specific styles
+│   ├── layout.css         # Layout-specific styles
+│   └── utilities.css      # Custom utility classes
+├── app.css                  # CSS imports and theme variables
 └── app.html                 # HTML template
 ```
 
