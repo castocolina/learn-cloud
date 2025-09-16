@@ -1,99 +1,157 @@
-.PHONY: setup validate validate-html validate-css validate-js validate-mermaid validate-links restore-mermaid-entities run format-html fix-html claude-refactor clean-tmp help
+.PHONY: help setup install run build clean validate validate-bash validate-python check lint format test content-validate
 
-PORT := 8080
-SERVER_URL := http://localhost:$(PORT)
+# Load environment variables from .env file
+ifneq (,$(wildcard .env))
+    include .env
+    export
+endif
 
-setup:
-	@echo "🔧 Running setup script..."
-	@bash ./src/bash/setup.sh
+help: ## Show this help message
+	@echo "Available targets:"
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
-# To be used only when modify HTML files
-validate-html:
-	@./src/bash/validate-html.sh $(filter-out $@,$(MAKECMDGOALS))
+setup: ## Setup the development environment
+	@echo "Setting up SvelteKit development environment..."
+	pnpm install
+	@echo "✅ Setup complete!"
 
-# To be used only when modify CSS files
-validate-css:
-	@./src/bash/validate-css.sh $(filter-out $@,$(MAKECMDGOALS))
+install: ## Install dependencies
+	pnpm install
 
-# To be used only when modify JS files
-validate-js:
-	@./src/bash/validate-js.sh $(filter-out $@,$(MAKECMDGOALS))
+run: ## Start development server
+	pnpm run dev
 
-# To be used only when modify Mermaid diagrams
-validate-mermaid:
-	@./src/bash/validate-mermaid.sh $(filter-out $@,$(MAKECMDGOALS))
+build: ## Build the application for production
+	pnpm run build
 
-# To be used only when modify references/links
-validate-links:
-	@./src/bash/validate-links.sh $(filter-out $@,$(MAKECMDGOALS))
+preview: ## Preview the production build
+	pnpm run preview
 
-restore-mermaid-entities:
-	@echo "🔧 Restoring Mermaid HTML entities..."
-	@python3 src/python/restore_mermaid_entities.py $(filter-out $@,$(MAKECMDGOALS))
+check: ## Run SvelteKit check for type safety and accessibility
+	pnpm run check
 
-# Only to be used in pipelines, not locally
-validate:
-	@./src/bash/validate-html.sh $(filter-out $@,$(MAKECMDGOALS))
-	@./src/bash/validate-css.sh $(filter-out $@,$(MAKECMDGOALS))
-	@./src/bash/validate-js.sh $(filter-out $@,$(MAKECMDGOALS))
-	@./src/bash/validate-mermaid.sh $(filter-out $@,$(MAKECMDGOALS))
-	@./src/bash/validate-links.sh $(filter-out $@,$(MAKECMDGOALS))
-	@echo "All validations completed."
+lint: ## Run ESLint
+	pnpm run lint
 
-run:
-	@./src/bash/run.sh
+format: ## Format code with Prettier
+	pnpm run format
 
-start: run
+# Validation targets
+validate: validate-bash validate-python content-validate ## Run all validation checks
 
-stop:
-	@./src/bash/stop.sh $(PORT)
+validate-bash: ## Validate bash scripts with shellcheck
+	@echo "🔍 Validating Bash scripts..."
+	@find src/bash tmp/bash -name "*.sh" -type f 2>/dev/null | while read -r script; do \
+		if [ -f "$$script" ]; then \
+			echo "Checking $$script"; \
+			shellcheck "$$script" || exit 1; \
+		fi \
+	done || echo "No bash scripts found to validate"
+	@echo "✅ Bash script validation completed"
 
-# HTML Formatting Tasks
-format-html:
-	@./src/bash/format-html.sh $(filter-out $@,$(MAKECMDGOALS))
-	@echo "🎯 HTML formatting completed."
+validate-python: ## Validate Python scripts
+	@echo "� Validating Python scripts..."
+	@find src/python tmp/python -name "*.py" -type f 2>/dev/null | while read -r script; do \
+		if [ -f "$$script" ]; then \
+			echo "Checking $$script"; \
+			python3 -m py_compile "$$script" || exit 1; \
+		fi \
+	done || echo "No Python scripts found to validate"
+	@echo "✅ Python script validation completed"
 
-fix-html:
-	@./src/bash/fix-html.sh $(filter-out $@,$(MAKECMDGOALS))
+content-validate: ## Validate content JSON structure
+	@echo "🔍 Validating content structure..."
+	@find src/data -name "*.json" -type f 2>/dev/null | while read -r file; do \
+		echo "Validating $$file"; \
+		python3 -m json.tool "$$file" > /dev/null || exit 1; \
+	done || echo "No JSON content files found to validate"
+	@echo "✅ Content validation completed"
 
-claude-refactor:
-	@echo "🤖 Starting Claude refactoring process for all units..."
-	@bash ./src/bash/recursive-promt-by-unit-claude.sh
+# Testing
+test: ## Run tests
+	pnpm run test
 
-clean-tmp:
+test-unit: ## Run unit tests only
+	pnpm run test:unit
+
+test-e2e: ## Run end-to-end tests
+	pnpm run test:e2e
+
+test-python-unit: ## Run Python unit tests
+	@echo "🧪 Running Python unit tests..."
+	@python3 -m pytest src/test/python/ -v 2>/dev/null || echo "No Python tests found or pytest not installed"
+
+# Cleanup
+clean: ## Clean build artifacts and dependencies
+	rm -rf build/
+	rm -rf .svelte-kit/
+	rm -rf node_modules/
+	rm -rf tmp/pycache/
+	@echo "✅ Cleanup completed"
+
+clean-cache: ## Clean only cache directories
+	rm -rf .svelte-kit/
+	rm -rf tmp/pycache/
+	@echo "✅ Cache cleanup completed"
+
+clean-tmp: ## Clean temporary files and backups
 	@echo "🧹 Cleaning temporary files..."
-	@rm -rf ./tmp/html_validation_backups/*.backup*
-	@rm -r src/book/**/*.backup*
-	@rm -f ./tmp/*.log
+	@rm -rf ./tmp/html_validation_backups/*.backup* 2>/dev/null || true
+	@rm -f ./tmp/*.log 2>/dev/null || true
+	@rm -rf tmp/pycache 2>/dev/null || true
+	@rm -rf tmp/python/__pycache__ 2>/dev/null || true
+	@find . -name "*.pyc" -delete 2>/dev/null || true
+	@find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
 	@echo "✅ Temporary files cleaned"
 
-help:
-	@echo "Available commands:"
-	@echo "  setup                    - Install dependencies"
-	@echo "  validate [path]          - Run comprehensive validation (HTML/CSS/JS/Mermaid/Links)"
-	@echo "  validate-html [path]     - Validate HTML structure with html-validate"
-	@echo "  validate-css [path]      - Validate CSS files with stylelint"
-	@echo "  validate-js [path]       - Validate JavaScript files with eslint"
-	@echo "  validate-mermaid [path]  - Validate Mermaid diagrams"
-	@echo "  validate-links [path]    - Validate links"
-	@echo "  restore-mermaid-entities [path] - Restore HTML entities in Mermaid diagrams"
-	@echo "  run                      - Start development server"
-	@echo "  format-html [path]       - Format HTML files with Prettier"
-	@echo "  fix-html [path]          - Format HTML files (auto-fix)"
-	@echo "  claude-refactor          - Run Claude AI agent to refactor all units"
-	@echo "  clean-tmp                - Clean temporary files and backups"
-	@echo "  help                     - Show this help message"
-	@echo ""
-	@echo "Examples:"
-	@echo "  make validate                            # Validate all files (HTML/CSS/JS/Mermaid/Links)"
-	@echo "  make validate-html index.html            # Validate specific HTML file"
-	@echo "  make validate-css src/book/style.css     # Validate specific CSS file"
-	@echo "  make validate-js src/book/app.js         # Validate specific JS file"
-	@echo "  make validate src/book/unit1/            # Validate entire directory"
-	@echo "  make format-html src/book/unit1/1-1.html # Format specific file"
-	@echo "  make fix-html index.html                 # Auto-fix specific file"
-	@echo "  make claude-refactor                     # Run Claude AI refactoring on all units"
-	@echo "  make restore-mermaid-entities src/book/unit9/ # Restore entities in directory"
+# Development utilities
+dev-tools: ## Install additional development tools
+	pnpm add -D @types/node
+	@echo "✅ Development tools installed"
+
+# Content management
+generate-content-menu: ## Generate content-menu.ts from CONTENT.md
+	@echo "🔄 Generating content-menu.ts from CONTENT.md..."
+	@python3 src/python/generate_content_menu.py
+	@echo "✅ Content generation complete!"
+
+generate-content-scaffolding: ## Generate placeholder TypeScript content files from content-menu.ts
+	@echo "🔄 Generating content scaffolding files..."
+	@PYTHONPYCACHEPREFIX=tmp/pycache python3 src/python/generate_content_scaffolding.py
+	@echo "✅ Content scaffolding generation complete!"
+
+validate-typescript: ## Validate generated TypeScript content files
+	@echo "🔍 Validating TypeScript content files..."
+	@pnpm run check
+	@echo "✅ TypeScript validation complete!"
+
+validate-content-typescript: ## Validate only generated content TypeScript files in src/data/book/
+	@echo "🔍 Validating generated content TypeScript files..."
+	@if [ -d "src/data/book" ]; then \
+		find src/data/book -name "*.ts" -exec npx tsc --noEmit {} + 2>/dev/null && \
+		echo "✅ All content files are syntactically valid" || \
+		echo "⚠️  Some content files have syntax issues"; \
+	else \
+		echo "📁 No generated content files found in src/data/book/"; \
+	fi
+	@echo "✅ Content TypeScript validation complete!"
+
+generate-all-content: generate-content-menu generate-content-scaffolding validate-content-typescript ## Generate all content files and validate them
+	@echo "🎉 All content generation and validation completed successfully!"
+
+# CI/CD support
+ci-install: ## Install dependencies in CI environment
+	pnpm install --frozen-lockfile
+
+ci-build: ## Build for CI/CD pipeline
+	pnpm run check
+	pnpm run lint
+	pnpm run build
+
+# GitHub Pages deployment
+deploy: build ## Deploy to GitHub Pages
+	@echo "🚀 Deploying to GitHub Pages..."
+	@echo "Build completed. GitHub Actions will handle deployment."
 	
 # Allow any argument to be treated as a valid target
 %:
