@@ -481,6 +481,15 @@ This pattern should be applied to all future data generation systems to maintain
 **Date**: September 15, 2025
 **Scope**: Critical UI/UX bug fixes across Mermaid diagrams, Study Guide layout, and breadcrumb navigation
 
+---
+
+## BUG FIXES AND SOLUTIONS (September 2025)
+
+### UI/UX Bug Resolution Summary
+
+**Date**: September 15, 2025
+**Scope**: Critical UI/UX bug fixes across Mermaid diagrams, Study Guide layout, and breadcrumb navigation
+
 #### 1. Mermaid Diagram Rendering Failure
 
 **Problem**: Mermaid diagrams failed to render silently on the observability lesson page due to content migration issues from HTML to TypeScript data format.
@@ -497,6 +506,56 @@ This pattern should be applied to all future data generation systems to maintain
 
 - `src/data/book/unit1/1_9_lesson_observability.ts`: Complete content migration with proper diagram structure
 - `src/lib/components/content/shared/Mermaid.svelte`: Fixed error handling for TypeScript compliance
+
+#### 6. Mermaid Debug Flag Implementation (September 2025)
+
+**Problem**: Need for comprehensive debugging capabilities when Mermaid diagrams fail to render, with verbose logging to diagnose root causes of rendering failures.
+
+**Root Cause**: The existing Mermaid component lacked verbose debugging capabilities, making it difficult to diagnose rendering issues when they occurred.
+
+**Solution**: Implemented URL query-based debug flag system that enables verbose logging when needed.
+
+**Technical Implementation**:
+
+- **Debug Flag Detection**: Added logic to detect `?debug-mermaid=true` query parameter in browser URL using SvelteKit's `$app/stores`
+- **Conditional Logging**: Modified Mermaid.js initialization to set `logLevel: 1` (debug/verbose) when debug flag is active, otherwise uses `logLevel: 5` (error/production-safe)
+- **Comprehensive Debug Output**: Added detailed console logging for all phases: module loading, configuration, parsing, rendering, and error handling
+- **Visual Debug Indicator**: Added yellow debug banner that appears when debug mode is active
+- **Error Enhancement**: Enhanced error reporting with stack traces and detailed error context when debug mode is enabled
+
+**Usage Instructions for `?debug-mermaid=true` Flag**:
+
+To enable verbose Mermaid debugging:
+1. Navigate to any page containing Mermaid diagrams
+2. Add `?debug-mermaid=true` to the URL (e.g., `http://localhost:5176/test-mermaid?debug-mermaid=true`)
+3. Open browser Developer Console (F12)
+4. Reload the page to see verbose debug output
+
+**Debug Output Format**:
+```
+[DEBUG-MERMAID] Debug mode enabled via URL flag
+[DEBUG-MERMAID] Diagram definition: flowchart TD...
+[DEBUG-MERMAID] Diagram type: mermaid
+[DEBUG-MERMAID] Mermaid module loaded successfully
+[DEBUG-MERMAID] Mermaid config: {startOnLoad: false, logLevel: 1...}
+[DEBUG-MERMAID] Generated diagram ID: mermaid-abc123def
+[DEBUG-MERMAID] Starting diagram parsing...
+[DEBUG-MERMAID] Diagram parsed successfully
+[DEBUG-MERMAID] Starting diagram rendering...
+[DEBUG-MERMAID] Diagram rendered successfully
+[DEBUG-MERMAID] SVG length: 2847
+[DEBUG-MERMAID] SVG made responsive
+[DEBUG-MERMAID] Diagram rendering completed successfully
+```
+
+**Files Modified**:
+
+- `src/lib/components/content/shared/Mermaid.svelte`: Added debug flag detection, conditional logging, visual debug indicator
+- `src/routes/test-mermaid/+page.svelte`: Created test page with multiple diagram examples for debugging
+
+**Security Considerations**: Debug mode only affects console logging verbosity and adds a visual indicator. No sensitive data is exposed, and production performance is unaffected when debug flag is not used.
+
+**Future Debugging**: This debug flag should be used whenever Mermaid rendering issues are reported. The verbose output will show exactly where in the rendering pipeline failures occur, making diagnosis and resolution significantly faster.
 
 #### 2. Study Guide Layout and Grid View Implementation
 
