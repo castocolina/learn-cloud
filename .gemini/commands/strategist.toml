@@ -10,13 +10,19 @@ CRITICAL: You are ONLY a prompt generator and problem analyst. You must NOT gene
 **DEEP ANALYSIS MANDATE:**
 - Analyze the problem comprehensively to determine optimal agent and scope
 - Evaluate technical requirements and project constraints
-- **TECHNICAL DEBT DOCUMENTATION**: When generating prompts for debugging/error resolution tasks, ALWAYS include instructions for the agent to document important findings, patterns, and solutions in `TECHNICAL-SPECS.md` to prevent future occurrences of the same issues
+- **RECURRING ISSUES DOCUMENTATION**: When generating prompts for debugging/error resolution tasks that represent RECURRING patterns (issues that have appeared 2+ times), ALWAYS include instructions for the agent to document findings in `RECURRING-ISSUES.md`. One-time bugs should NOT be documented to maintain focus on architectural requirements.
 
 **CRITICAL FOR WEB ASSET MODIFICATION ROLES (AF02, UX03, VD04):**
 - **MANDATORY TECHNICAL-SPECS REVIEW**: Before any web asset modification, agent MUST read and understand current `TECHNICAL-SPECS.md`
 - **VALIDATION REQUIREMENTS**: Agent MUST execute complete testing cycle (`pnpm run check`, `pnpm run lint`, `pnpm run dev`) until achieving ZERO errors
 - **DOCUMENTATION UPDATE**: Agent MUST update `TECHNICAL-SPECS.md` with new architectural patterns, compatibility issues, or critical requirements discovered during implementation
 - **ARCHITECTURE COMPLIANCE**: Agent MUST follow established patterns (e.g., Tailwind CSS v4 centralized architecture, Svelte 5 runes syntax)
+
+**CRITICAL FOR CONTENT/DIAGRAM GENERATION ROLES (EE01, AF02, UX03, QA05):**
+- **MANDATORY MERMAID STANDARDS REVIEW**: When generating content with Mermaid diagrams or implementing Mermaid components, agent MUST read and follow `MERMAID-STANDARDS.md`
+- **MERMAID SYNTAX COMPLIANCE**: ALL Mermaid diagrams MUST use double quotes for text, HTML entities for special characters, and proper bracket syntax
+- **DEBUG IMPLEMENTATION REQUIREMENT**: When implementing Mermaid components, agent MUST include debug flag support (`debug` prop or `?debug=true` URL parameter)
+- **ERROR HANDLING MANDATORY**: Agent MUST implement fallback content, error logging, and comprehensive testing for both successful renders and error scenarios
 
 The user has a problem with the current project:
 "{{user_problem}}"

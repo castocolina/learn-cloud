@@ -53,12 +53,13 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 >
 > - Mandatory hierarchical workflow (Unit Overview → Topic → Study Aids → Quiz)
 > - Study aids structure with interactive flashcards and modals
-> - Mermaid diagram standards with HTML entity encoding rules
 > - Interactive quiz & assessment system with navigation controls
 > - Unit overview page requirements and interactive elements
 > - HTML quality standards and validation workflows
 > - Testing standards & framework with comprehensive coverage requirements
 > - Mobile-first testing standards and file-type specific validation
+>
+> **📋 Mermaid Diagram Standards:** See [MERMAID-STANDARDS.md](MERMAID-STANDARDS.md) for critical rendering rules, debug requirements, and component implementation standards.
 
 ## 4. AGENT IMPLEMENTATION GUIDELINES
 
@@ -70,8 +71,10 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 - ✅ **ALWAYS** prefer `shadcn-svelte` components over custom implementations
 - ✅ **ALWAYS** use TypeScript interfaces for component props and data structures
 - ✅ **ALWAYS** follow SvelteKit file-based routing conventions
+- ✅ **ALWAYS** use Svelte 5 runes syntax (`$state`, `$derived`, `$props`)
 - ❌ **NEVER** create vanilla HTML/CSS/JS files for new features
-- ❌ **NEVER** use inline styles - use Tailwind CSS classes or component-scoped styles
+- ❌ **NEVER** use inline styles - use modular CSS architecture
+- ❌ **NEVER** use deprecated Svelte 4 syntax (`export let`, `$:` reactivity)
 
 **Component Architecture Standards:**
 
@@ -182,8 +185,8 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 **Examples of Guidelines That Should Persist:**
 
 - File organization standards (scripts execute from root)
-- Code architecture requirements (no inline JavaScript, centralized modal management)
-- Validation procedures (always run HTML validation after changes)
+- Code architecture requirements (modular CSS, shadcn-svelte components, centralized state management)
+- Validation procedures (always run `pnpm run check` and `pnpm run lint` after SvelteKit changes)
 - Mobile-first development mandates
 - Security requirements (secure by default, no exposed secrets)
 

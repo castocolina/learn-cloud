@@ -1,0 +1,44 @@
+/* Custom CSS Variables for Cloud-Native Learning Platform
+ *
+ * This file contains custom CSS variables that extend the shadcn-svelte theme system.
+ * These variables should be used consistently across all custom components.
+ *
+ * TODO: Define custom spacing, brand colors, typography, shadows, transitions, and breakpoints
+ * TODO: Ensure dark mode variants for all custom properties
+ * TODO: Use semantic naming and harmonic color palettes
+ */
+
+:root {
+  /* === CUSTOM SPACING === */
+  /* TODO: Define custom spacing variables (--spacing-xs, --spacing-sm, etc.) */
+
+  /* === BRAND COLORS === */
+  /* TODO: Define brand color palette using CSS custom properties */
+  /* Example: --brand-primary, --brand-secondary, --brand-accent */
+
+  /* === EDUCATIONAL THEME COLORS === */
+  /* TODO: Define educational component colors */
+  /* Example: --lesson-primary, --quiz-primary, --flashcard-primary */
+
+  /* === TYPOGRAPHY === */
+  /* TODO: Define typography scale and font families */
+  /* Example: --font-display, --font-body, --font-mono */
+
+  /* === SHADOWS === */
+  /* TODO: Define shadow scale for consistent depth */
+  /* Example: --shadow-sm, --shadow-md, --shadow-lg */
+
+  /* === TRANSITIONS === */
+  /* TODO: Define transition timing for consistent animations */
+  /* Example: --transition-fast, --transition-normal, --transition-slow */
+
+  /* === BREAKPOINTS (for JS usage) === */
+  /* TODO: Define breakpoint values for responsive design */
+  /* Example: --breakpoint-sm, --breakpoint-md, --breakpoint-lg */
+}
+
+/* === DARK MODE VARIABLES === */
+.dark {
+  /* TODO: Define dark mode variants for all custom properties */
+  /* Ensure proper contrast ratios and accessibility compliance */
+}

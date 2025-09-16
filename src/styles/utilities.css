@@ -1,0 +1,57 @@
+/* Custom Utility Classes for Cloud-Native Learning Platform
+ *
+ * Custom utility classes that extend Tailwind CSS functionality.
+ * Use the @layer utilities directive and prefix classes to avoid conflicts.
+ *
+ * TODO: Define custom utility classes that extend Tailwind CSS
+ * TODO: Use CSS custom properties for consistent theming
+ * TODO: Focus on educational platform specific utilities
+ * TODO: Ensure accessibility and mobile-first design
+ */
+
+@layer utilities {
+  /* === VISUAL EFFECTS === */
+  /* TODO: Define text gradients, glass effects, glow effects */
+  /* Example: .app-text-gradient, .app-glass-effect, .app-glow */
+
+  /* === ANIMATIONS === */
+  /* TODO: Define animation utility classes */
+  /* Example: .app-fade-in, .app-slide-up, .app-slide-down */
+  /* Use transition variables from variables.css */
+
+  /* === INTERACTION STATES === */
+  /* TODO: Define interactive states and focus rings */
+  /* Example: .app-interactive, .app-focus-ring */
+
+  /* === LAYOUT UTILITIES === */
+  /* TODO: Define layout helper classes */
+  /* Example: .app-center, .app-center-col, .app-sticky-header */
+
+  /* === PERSPECTIVE AND 3D === */
+  /* TODO: Define 3D transform utilities for flashcards */
+  /* Example: .app-perspective, .app-preserve-3d, .app-backface-hidden */
+
+  /* === TEXT UTILITIES === */
+  /* TODO: Define text manipulation utilities */
+  /* Example: .app-text-balance, .app-truncate-2, .app-truncate-3 */
+
+  /* === SCROLL UTILITIES === */
+  /* TODO: Define scroll behavior and scrollbar styling */
+  /* Example: .app-scroll-smooth, .app-scrollbar-hidden, .app-scrollbar-thin */
+
+  /* === MOBILE-SPECIFIC UTILITIES === */
+  /* TODO: Define mobile-specific utilities */
+  /* Example: .app-touch-manipulation, .app-safe-area-top */
+
+  /* === ACCESSIBILITY UTILITIES === */
+  /* TODO: Define accessibility helper classes */
+  /* Example: .app-sr-only, .app-high-contrast */
+
+  /* === PRINT UTILITIES === */
+  /* TODO: Define print-specific utilities */
+  /* Example: .app-print-hidden, .app-print-only */
+}
+
+/* === KEYFRAME ANIMATIONS === */
+/* TODO: Define keyframe animations used by utility classes */
+/* Example: fadeIn, slideUp, slideDown, bounceSubtle, pulseSubtle */
