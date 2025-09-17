@@ -9,3 +9,9 @@ export { default as ErrorState } from "./ui/ErrorState.svelte";
 
 // Main Components
 export { default as StickyHeader } from "./StickyHeader.svelte";
+
+// Demo View Components
+export { default as DemoSidebar } from "./DemoSidebar.svelte";
+export { default as WelcomeView } from "./WelcomeView.svelte";
+export { default as UnitView } from "./UnitView.svelte";
+export { default as LessonView } from "./LessonView.svelte";
