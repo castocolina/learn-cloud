@@ -1,5 +1,11 @@
 # Content Standards: SvelteKit Learning Platform
 
+## Diagramming Standards
+
+All diagrams in this project must use Mermaid.js for consistency, clarity, and maintainability. For comprehensive rules, embedding practices, and validation workflows, refer to the authoritative [Mermaid Diagram Standards](MERMAID-STANDARDS.md) document.
+
+Mermaid diagrams must follow the syntax, accessibility, and validation requirements defined in that file. Only a brief summary is maintained here; all details and updates are managed in `MERMAID-STANDARDS.md`.
+
 This document contains the content creation workflows and quality assurance standards for the Cloud-Native Learning Platform.
 
 > **📚 Related Documentation:**
@@ -615,12 +621,6 @@ import LessonRenderer from '$lib/components/content/LessonRenderer.svelte';
 - End-to-end tests for user workflows
 - Performance tests for content loading
 - Accessibility testing with screen readers
-  - **Mermaid compatibility:** Avoids parsing errors caused by HTML entities
-  - **HTML validation:** Script content is treated as plain text, so special characters are valid
-- **Migration Workflow:**
-  - **Legacy diagrams:** Some existing diagrams may have HTML entities within script tags
-  - **Restoration tool:** Use `make restore-mermaid-entities [path]` to convert entities back to raw characters
-  - **Validation:** Always run `make validate-mermaid [file.html]` to verify diagrams render correctly after changes
 
 ### Interactive Quiz & Assessment System
 

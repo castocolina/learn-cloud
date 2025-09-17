@@ -18,6 +18,7 @@
 		"@eslint/js": "^9.22.0",
 		"@internationalized/date": "^3.9.0",
 		"@lucide/svelte": "^0.515.0",
+		"@mermaid-js/mermaid-cli": "^11.10.1",
 		"@sveltejs/adapter-auto": "^6.0.0",
 		"@sveltejs/kit": "^2.22.0",
 		"@sveltejs/vite-plugin-svelte": "^6.0.0",
