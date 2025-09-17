@@ -11,6 +11,7 @@
 	import { getBreadcrumbPath } from "../../data/demo/navigation/breadcrumbs.js";
 	import { visitUnit, completeLesson } from "../../lib/stores/progress.js";
 	import DemoSidebar from "../../lib/components/demo/DemoSidebar.svelte";
+	import ThemeSwitch from "../../lib/components/ThemeSwitch.svelte";
 
 	// Layout children prop
 	let { children } = $props();
@@ -359,6 +360,11 @@
 						</div>
 					</nav>
 				{/if}
+
+				<!-- Theme Switch -->
+				<div class="demo-header-theme">
+					<ThemeSwitch />
+				</div>
 			</div>
 		</div>
 	</header>
@@ -468,7 +474,7 @@
 
 	.demo-header-content {
 		display: grid;
-		grid-template-columns: auto 1fr;
+		grid-template-columns: auto 1fr auto;
 		align-items: center;
 		gap: 1rem;
 	}
@@ -583,7 +589,14 @@
 
 	/* Breadcrumb Navigation */
 	.demo-breadcrumbs {
+		justify-self: center;
+	}
+
+	/* Theme Toggle */
+	.demo-header-theme {
 		justify-self: end;
+		display: flex;
+		align-items: center;
 	}
 
 	.demo-breadcrumb-container {
@@ -667,7 +680,7 @@
 		}
 
 		.demo-header-content {
-			grid-template-columns: auto 1fr;
+			grid-template-columns: auto 1fr auto;
 			gap: 0.5rem;
 		}
 

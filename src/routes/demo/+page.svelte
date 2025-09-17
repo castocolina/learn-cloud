@@ -237,19 +237,17 @@
 	@media (max-width: 768px) {
 		.demo-interactive-layout {
 			grid-template-columns: 1fr;
-			grid-template-rows: auto 1fr;
+			grid-template-rows: 1fr;
 			height: calc(100vh - 4rem);
 		}
 
+		/* Hide desktop sidebar completely on mobile - use mobile overlay instead */
 		.demo-content-sidebar {
-			border-right: none;
-			border-bottom: 1px solid hsl(var(--sidebar-border, 220 13% 91%));
-			max-height: 40vh;
-			overflow-y: auto;
+			display: none;
 		}
 
 		.demo-content-main {
-			min-height: 60vh;
+			min-height: 100vh;
 		}
 	}
 

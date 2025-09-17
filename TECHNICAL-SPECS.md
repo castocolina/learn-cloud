@@ -73,6 +73,54 @@ $: doubled = count * 2;
 - **Usage**: Import specific icons as Svelte components
 - **Note**: Some icons were renamed (e.g., `AlertTriangle` → `TriangleAlert`)
 
+**Theme Management**: Robust dark mode system with localStorage persistence
+
+- **Components**: `ThemeToggle.svelte` component using shadcn-svelte DropdownMenu and Button
+- **Store**: `src/lib/stores/theme.ts` with Svelte writable stores for reactive theme state
+- **Themes**: Support for 'light', 'dark', and 'system' preference modes
+- **Persistence**: localStorage integration with automatic system preference detection
+- **Integration**: Positioned in demo layout header to the right of breadcrumbs
+
+### Theme System Architecture
+
+**Implementation Details:**
+
+**Theme Store (`src/lib/stores/theme.ts`)**:
+
+- **Type Definition**: `Theme = 'light' | 'dark' | 'system'`
+- **Reactive State**: Uses Svelte `writable` stores for real-time theme updates
+- **System Detection**: Automatically detects OS dark/light preference via `prefers-color-scheme`
+- **DOM Integration**: Applies theme by adding/removing `light`/`dark` classes on `<html>` element
+- **Persistence**: Saves user preference to localStorage and restores on page load
+
+**ThemeToggle Component (`src/lib/components/ThemeToggle.svelte`)**:
+
+- **UI Framework**: Built with shadcn-svelte DropdownMenu and Button components
+- **Icons**: Uses lucide-svelte Sun, Moon, and Monitor icons
+- **Visual Feedback**: Shows active theme with small primary-colored indicator dot
+- **Accessibility**: Proper ARIA labels and keyboard navigation support
+
+**CSS Variables Integration**:
+
+- **Root Variables**: Comprehensive light/dark theme variables defined in `src/app.css`
+- **Automatic Application**: Theme class on `<html>` element triggers CSS variable switching
+- **shadcn-svelte Compatibility**: Full integration with shadcn design system colors
+
+**Usage Pattern**:
+
+```typescript
+import { themeStore, setTheme, resolvedTheme } from "$lib/stores/theme";
+
+// In Svelte components, use auto-subscription
+$: currentTheme = $themeStore; // 'light' | 'dark' | 'system'
+
+// Set theme using utility function
+setTheme("dark");
+
+// Get resolved theme (system resolves to actual preference)
+$: actualTheme = $resolvedTheme; // 'light' | 'dark'
+```
+
 ### CSS Architecture Standards
 
 **MANDATORY: Modular CSS Architecture for SvelteKit Components**
