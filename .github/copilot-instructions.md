@@ -15,7 +15,7 @@ For all project rules, technical specifications, and coding standards, refer to 
 - **shadcn-svelte Priority**: Use component library before building custom components
 - **Tailwind CSS v4**: Centralized CSS architecture in `src/app.css` with `@layer components`
 - **Data-Driven**: Consume JSON data from `src/data/` structure
-- **Validation**: Run `pnpm run check` and `pnpm run lint` for code quality
+- **Validation**: Run `pnpm run format`, `pnpm run check`, and `pnpm run lint` for code quality
 
 ## Critical Rules
 

@@ -47,7 +47,7 @@ jobs:
     strategy:
       fail-fast: false # Continue with other validations even if one fails
       matrix:
-        validation: [svelte-check, svelte-lint, bash, python, content]
+        validation: [svelte-format, svelte-check, svelte-lint, bash, python, content]
 
     steps:
       - name: Checkout
@@ -76,6 +76,10 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      - name: Run Code Formatting Check
+        if: matrix.validation == 'svelte-format'
+        run: pnpm run lint # Uses prettier --check in lint command
 
       - name: Run SvelteKit Check
         if: matrix.validation == 'svelte-check'

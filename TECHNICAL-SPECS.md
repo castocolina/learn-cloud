@@ -16,6 +16,7 @@ This document contains the technical architecture and user experience standards 
 1. **Execute complete validation cycle** after any changes:
 
    ```bash
+   pnpm run format   # Code formatting (mandatory first step)
    pnpm run check    # SvelteKit validation
    pnpm run lint     # Code quality
    pnpm run dev      # Development server test
@@ -598,7 +599,7 @@ pnpm run build    # Production build
 2. **Centralized CSS**: No `<style>` blocks with `@apply` directives
 3. **Accessibility**: Ensure proper ARIA labels and keyboard navigation
 4. **Mobile-First**: Design for mobile devices first, then enhance for desktop
-5. **Testing**: Validate all changes with `pnpm run check` and `pnpm run lint`
+5. **Testing**: Validate all changes with `pnpm run format`, `pnpm run check`, and `pnpm run lint`
 
 ### Code Quality Standards
 

@@ -186,7 +186,7 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 
 - File organization standards (scripts execute from root)
 - Code architecture requirements (modular CSS, shadcn-svelte components, centralized state management)
-- Validation procedures (always run `pnpm run check` and `pnpm run lint` after SvelteKit changes)
+- Validation procedures (always run `pnpm run format`, `pnpm run check`, and `pnpm run lint` after SvelteKit changes)
 - Mobile-first development mandates
 - Security requirements (secure by default, no exposed secrets)
 
@@ -201,7 +201,7 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 - **MOBILE-FIRST MANDATE:** Always test mobile experience (≤390px) before desktop
 - **SVELTEKIT DEVELOPMENT:** Use components and TypeScript - avoid vanilla HTML/CSS/JS
 - **shadcn-svelte PRIORITY:** Always check component library first before building custom components
-- **SVELTEKIT VALIDATION:** Run `pnpm run check` for TypeScript/component validation and `pnpm run lint` for code quality
+- **SVELTEKIT VALIDATION:** Run `pnpm run format`, `pnpm run check` for TypeScript/component validation, and `pnpm run lint` for code quality
 - **AUTOMATED VALIDATION:** ESLint and Prettier handle code formatting and quality automatically
 - **CONTENT VALIDATION:** Use `make content-validate` for JSON structure validation when needed
 - **CONTENT-FIRST:** All new features should consume JSON data from `src/data/` structure

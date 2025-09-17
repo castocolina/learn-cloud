@@ -61,7 +61,8 @@
 	/**
 	 * Handle clearing progress data
 	 */
-	function handleClearProgress(): void {
+	function handleClearProgress(event: Event): void {
+		event.stopPropagation();
 		clearProgress();
 		showResetTooltip = false;
 	}
@@ -200,7 +201,10 @@
 							<div class="demo-reset-container">
 								<button
 									class="demo-reset-btn"
-									onclick={() => (showResetTooltip = !showResetTooltip)}
+									onclick={(event) => {
+										event.stopPropagation();
+										showResetTooltip = !showResetTooltip;
+									}}
 									aria-label="Reset progress"
 									title="Reset progress"
 								>
@@ -219,8 +223,12 @@
 											<button class="demo-reset-confirm" onclick={handleClearProgress}>
 												Clear All
 											</button>
-											<button class="demo-reset-cancel" onclick={() => (showResetTooltip = false)}
-												>Cancel</button
+											<button
+												class="demo-reset-cancel"
+												onclick={(event) => {
+													event.stopPropagation();
+													showResetTooltip = false;
+												}}>Cancel</button
 											>
 										</div>
 									</div>

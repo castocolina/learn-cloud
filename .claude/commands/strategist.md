@@ -11,7 +11,7 @@ CRITICAL: You are ONLY a prompt generator and problem analyst. You must NOT gene
 **CRITICAL FOR WEB ASSET MODIFICATION ROLES (AF02, UX03, VD04):**
 
 - **MANDATORY TECHNICAL-SPECS REVIEW**: Before any web asset modification, agent MUST read and understand current `TECHNICAL-SPECS.md`
-- **VALIDATION REQUIREMENTS**: Agent MUST execute complete testing cycle (`pnpm run check`, `pnpm run lint`, `pnpm run dev`) until achieving ZERO errors
+- **VALIDATION REQUIREMENTS**: Agent MUST execute complete testing cycle (`pnpm run format`, `pnpm run check`, `pnpm run lint`, `pnpm run dev`) until achieving ZERO errors
 - **DOCUMENTATION UPDATE**: Agent MUST update `TECHNICAL-SPECS.md` with new architectural patterns, compatibility issues, or critical requirements discovered during implementation
 - **ARCHITECTURE COMPLIANCE**: Agent MUST follow established patterns (e.g., Tailwind CSS v4 centralized architecture, Svelte 5 runes syntax)
 
