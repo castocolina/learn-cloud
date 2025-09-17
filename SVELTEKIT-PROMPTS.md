@@ -315,13 +315,9 @@ Styling Requirements:
 - TypeScript validation passes
 - Accessibility standards maintained in both themes
 
-```
-
 ---
 
 #### Prompt 5A: Generate Search Configuration Data
-
-```
 
 AF02 Agent Task: Generate Comprehensive Search Configuration Data
 
@@ -355,13 +351,9 @@ AF02 Agent Task: Generate Comprehensive Search Configuration Data
 - Sufficient variety to test search performance and filtering
 - Content metadata includes realistic keywords and categories
 
-```
-
 ---
 
 #### Prompt 5B: Implement Search Box with Live Filtering
-
-```
 
 AF02 Agent Task: Implement Search Box Consuming Search Index Data
 
@@ -390,13 +382,9 @@ AF02 Agent Task: Implement Search Box Consuming Search Index Data
 
 **Critical:** Only implement after search configuration data is fully generated and available.
 
-```
-
 ---
 
 #### Prompt 6A: Generate Comprehensive Mermaid Diagram Data
-
-```
 
 AF02 Agent Task: Generate Extensive Mermaid Diagram Library
 
@@ -432,13 +420,9 @@ AF02 Agent Task: Generate Extensive Mermaid Diagram Library
 - Educational content suitable for cloud-native learning context
 - Sufficient variety to test all Mermaid diagram types and complexity levels
 
-```
-
 ---
 
 #### Prompt 6B: Implement Mermaid Diagram Showcase
-
-```
 
 AF02 Agent Task: Implement Mermaid Diagram Showcase Consuming Generated Diagram Data
 
@@ -480,13 +464,9 @@ AF02 Agent Task: Implement Mermaid Diagram Showcase Consuming Generated Diagram 
 
 **Critical:** Only implement after comprehensive diagram data is fully generated and available.
 
-```
-
 ---
 
 #### Prompt 7A: Generate Comprehensive Code Examples Data
-
-```
 
 AF02 Agent Task: Generate Extensive Code Examples Library
 
@@ -523,13 +503,9 @@ AF02 Agent Task: Generate Extensive Code Examples Library
 - Educational content suitable for cloud-native learning context
 - Sufficient variety to test all supported languages and use cases
 
-```
-
 ---
 
 #### Prompt 7B: Implement Code Examples Showcase
-
-```
 
 AF02 Agent Task: Implement Code Examples Showcase Consuming Generated Code Data
 
@@ -558,13 +534,9 @@ AF02 Agent Task: Implement Code Examples Showcase Consuming Generated Code Data
 
 **Critical:** Only implement after comprehensive code examples data is fully generated and available.
 
-```
-
 ---
 
 #### Prompt 8A: Generate Flip Cards Content Data
-
-```
 
 AF02 Agent Task: Generate Comprehensive Flip Cards Content Library
 
@@ -598,13 +570,9 @@ AF02 Agent Task: Generate Comprehensive Flip Cards Content Library
 - Educational progression from basic to advanced concepts
 - Sufficient variety to test all flip card interaction scenarios
 
-```
-
 ---
 
 #### Prompt 8B: Implement Interactive Flip Cards
-
-```
 
 AF02 Agent Task: Implement Interactive Flip Cards Consuming Generated Content
 
@@ -633,13 +601,9 @@ AF02 Agent Task: Implement Interactive Flip Cards Consuming Generated Content
 
 **Critical:** Only implement after comprehensive flip card data is fully generated and available.
 
-```
-
 ---
 
 #### Prompt 9A: Generate Modal Content Data
-
-```
 
 AF02 Agent Task: Generate Comprehensive Modal Content Library
 
@@ -674,13 +638,9 @@ AF02 Agent Task: Generate Comprehensive Modal Content Library
 - Accessibility configurations ensure WCAG compliance
 - Sufficient variety to test all modal interaction patterns
 
-```
-
 ---
 
 #### Prompt 9B: Implement Modal Dialogs and Overlays
-
-```
 
 AF02 Agent Task: Implement Modal System Consuming Generated Content
 

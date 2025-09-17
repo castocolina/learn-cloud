@@ -80,7 +80,7 @@ export const demoBreadcrumbs = {
 		},
 		demo: {
 			id: "demo",
-			label: "Demo Platform",
+			label: "Demo",
 			url: "/demo",
 			icon: "Layers" as BreadcrumbIcon,
 			isClickable: true,

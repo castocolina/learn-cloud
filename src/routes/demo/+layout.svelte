@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, setContext } from "svelte";
 	import { browser } from "$app/environment";
-	import { ChevronRight, Menu, X } from "lucide-svelte";
+	import { ChevronRight, Menu, X, Search } from "lucide-svelte";
 	import {
 		demoSidebarMenu,
 		type DemoNavigationStructure,
@@ -12,6 +12,8 @@
 	import { visitUnit, completeLesson } from "../../lib/stores/progress.js";
 	import DemoSidebar from "../../lib/components/demo/DemoSidebar.svelte";
 	import ThemeSwitch from "../../lib/components/ThemeSwitch.svelte";
+	import SearchModal from "../../lib/components/search/SearchModal.svelte";
+	import type { SearchResult } from "../../lib/types/search.js";
 
 	// Layout children prop
 	let { children } = $props();
@@ -26,6 +28,9 @@
 	// Sticky header state
 	let isHeaderSticky = $state<boolean>(false);
 	let headerElement = $state<HTMLElement | null>(null);
+
+	// Search modal state
+	let isSearchModalOpen = $state<boolean>(false);
 
 	// Error handling
 	interface NavigationError {
@@ -174,6 +179,19 @@
 				} else {
 					console.warn(`Unit not found: ${unitId}`);
 				}
+			} else if (
+				pathParts[0] === "demo" &&
+				(pathParts[1] === "components" ||
+					pathParts[1] === "lessons" ||
+					pathParts[1] === "diagrams" ||
+					pathParts[1] === "code")
+			) {
+				// Handle search result URLs that don't follow the unit/lesson pattern
+				console.log("🔍 Navigating to search result:", pathParts.join("/"));
+				// For now, just close any open lesson/unit views and show a placeholder
+				selectedUnit = null;
+				selectedLesson = null;
+				// These pages will be handled by SvelteKit routing or component rendering in the future
 			} else {
 				// Fallback to old format for backward compatibility
 				const [, unitId, lessonId] = pathParts;
@@ -273,6 +291,61 @@
 		}
 	}
 
+	/**
+	 * Open search modal
+	 */
+	function openSearchModal(): void {
+		isSearchModalOpen = true;
+	}
+
+	/**
+	 * Close search modal
+	 */
+	function closeSearchModal(): void {
+		isSearchModalOpen = false;
+	}
+
+	/**
+	 * Handle search result selection
+	 */
+	function handleSearchSelect(event: CustomEvent<{ result: SearchResult }>): void {
+		const result = event.detail.result;
+
+		if (import.meta.env.DEV) {
+			console.log("🔍 Search result clicked:", result.title, "→", result.nav.path);
+		}
+
+		// Navigate using the new nav object
+		if (result.nav.path.startsWith("#")) {
+			// Hash-based navigation - use the path directly
+			window.location.hash = result.nav.path.slice(1); // Remove the # prefix
+
+			// Force navigation update for SvelteKit
+			window.dispatchEvent(new HashChangeEvent("hashchange"));
+		} else {
+			// External URL - open in new tab
+			window.open(result.nav.path, "_blank", "noopener,noreferrer");
+		}
+
+		closeSearchModal();
+	}
+
+	/**
+	 * Handle keyboard shortcuts
+	 */
+	function handleGlobalKeydown(event: KeyboardEvent): void {
+		// Open search with Ctrl+K or Cmd+K
+		if ((event.ctrlKey || event.metaKey) && event.key === "k") {
+			event.preventDefault();
+			openSearchModal();
+		}
+
+		// Close search with Escape
+		if (event.key === "Escape" && isSearchModalOpen) {
+			closeSearchModal();
+		}
+	}
+
 	// Lifecycle hooks
 	onMount(() => {
 		loadNavigationData();
@@ -288,9 +361,13 @@
 			// Handle scroll for sticky header
 			window.addEventListener("scroll", handleScroll, { passive: true });
 
+			// Handle global keyboard shortcuts
+			window.addEventListener("keydown", handleGlobalKeydown);
+
 			return () => {
 				window.removeEventListener("hashchange", handleHashChange);
 				window.removeEventListener("scroll", handleScroll);
+				window.removeEventListener("keydown", handleGlobalKeydown);
 			};
 		}
 	});
@@ -361,8 +438,21 @@
 					</nav>
 				{/if}
 
-				<!-- Theme Switch -->
-				<div class="demo-header-theme">
+				<!-- Search and Theme Controls -->
+				<div class="demo-header-controls">
+					<!-- Search Button -->
+					<button
+						type="button"
+						class="demo-search-button"
+						onclick={openSearchModal}
+						aria-label="Open search (Ctrl+K)"
+						title="Search (Ctrl+K)"
+					>
+						<Search size={18} />
+						<span class="demo-search-shortcut">⌘K</span>
+					</button>
+
+					<!-- Theme Switch -->
 					<ThemeSwitch />
 				</div>
 			</div>
@@ -439,6 +529,13 @@
 		</main>
 	</div>
 </div>
+
+<!-- Search Modal -->
+<SearchModal
+	isOpen={isSearchModalOpen}
+	on:close={closeSearchModal}
+	on:select={handleSearchSelect}
+/>
 
 <style>
 	/* Demo Layout Styles */
@@ -592,11 +689,44 @@
 		justify-self: center;
 	}
 
-	/* Theme Toggle */
-	.demo-header-theme {
+	/* Header Controls */
+	.demo-header-controls {
 		justify-self: end;
 		display: flex;
 		align-items: center;
+		gap: 0.75rem;
+	}
+
+	/* Search Button */
+	.demo-search-button {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.5rem 0.75rem;
+		background: transparent;
+		border: 1px solid hsl(var(--border));
+		border-radius: 6px;
+		color: hsl(var(--muted-foreground));
+		cursor: pointer;
+		transition: all 0.2s ease;
+		font-size: 0.875rem;
+	}
+
+	.demo-search-button:hover {
+		background: hsl(var(--accent));
+		color: hsl(var(--accent-foreground));
+		border-color: hsl(var(--accent-foreground) / 0.2);
+	}
+
+	.demo-search-shortcut {
+		font-family:
+			ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+		font-size: 0.75rem;
+		background: hsl(var(--muted));
+		color: hsl(var(--muted-foreground));
+		padding: 0.125rem 0.375rem;
+		border-radius: 4px;
+		font-weight: 500;
 	}
 
 	.demo-breadcrumb-container {
@@ -682,6 +812,14 @@
 		.demo-header-content {
 			grid-template-columns: auto 1fr auto;
 			gap: 0.5rem;
+		}
+
+		.demo-search-button {
+			padding: 0.5rem;
+		}
+
+		.demo-search-shortcut {
+			display: none;
 		}
 
 		.demo-breadcrumb-list {
