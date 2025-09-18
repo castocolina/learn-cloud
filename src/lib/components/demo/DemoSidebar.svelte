@@ -55,17 +55,49 @@
 		calculateProgressStats(navigationData.metadata.totalUnits, totalLessons, progress)
 	);
 
-	// Show/hide reset tooltip
-	let showResetTooltip = $state(false);
+	// Show/hide reset dialog
+	let showResetDialog = $state(false);
+	let resetPopoverElement = $state<HTMLElement | undefined>(undefined);
 
 	/**
 	 * Handle clearing progress data
 	 */
-	function handleClearProgress(event: Event): void {
-		event.stopPropagation();
+	function handleClearProgress(): void {
 		clearProgress();
-		showResetTooltip = false;
+		showResetDialog = false;
 	}
+
+	/**
+	 * Handle click outside popover to close it
+	 */
+	function handleClickOutside(event: MouseEvent): void {
+		if (showResetDialog && resetPopoverElement && event.target) {
+			const target = event.target as Node;
+			const resetButton = document.querySelector(".demo-reset-btn");
+
+			// Don't close if clicking on the reset button or inside the popover
+			if (!resetPopoverElement.contains(target) && !resetButton?.contains(target)) {
+				showResetDialog = false;
+			}
+		}
+	}
+
+	// Add click outside listener with delay to avoid immediate closing
+	$effect(() => {
+		if (typeof window !== "undefined") {
+			if (showResetDialog) {
+				// Add small delay to prevent immediate closing on button click
+				setTimeout(() => {
+					document.addEventListener("click", handleClickOutside);
+				}, 100);
+			} else {
+				document.removeEventListener("click", handleClickOutside);
+			}
+			return () => {
+				document.removeEventListener("click", handleClickOutside);
+			};
+		}
+	});
 
 	/**
 	 * Get lesson status icon and state for visual indicators
@@ -202,34 +234,54 @@
 								<button
 									class="demo-reset-btn"
 									onclick={(event) => {
+										// CRITICAL: Prevent event bubbling to avoid closing the sidebar
+										// when the reset button is clicked. Without this, clicking the reset
+										// button would trigger the sidebar's close handler.
 										event.stopPropagation();
-										showResetTooltip = !showResetTooltip;
+										showResetDialog = !showResetDialog;
 									}}
 									aria-label="Reset progress"
 									title="Reset progress"
 								>
 									<RotateCcw size={12} />
 								</button>
-								{#if showResetTooltip}
-									<div class="demo-reset-tooltip">
-										<div class="demo-reset-header">
-											<strong>Reset Progress</strong>
-										</div>
-										<div class="demo-reset-message">
-											This will clear all visited units and completed lessons. This action cannot be
-											undone.
-										</div>
-										<div class="demo-reset-buttons">
-											<button class="demo-reset-confirm" onclick={handleClearProgress}>
-												Clear All
-											</button>
-											<button
-												class="demo-reset-cancel"
-												onclick={(event) => {
-													event.stopPropagation();
-													showResetTooltip = false;
-												}}>Cancel</button
-											>
+								{#if showResetDialog}
+									<!-- Debug: This should be visible -->
+									<div
+										bind:this={resetPopoverElement}
+										class="demo-reset-popover"
+										role="dialog"
+										aria-modal="true"
+										aria-labelledby="reset-title"
+										tabindex="-1"
+										onclick={(event) => {
+											// CRITICAL: Prevent clicks inside the popover from closing it
+											// or triggering sidebar close. This keeps the dialog open when
+											// users interact with its content.
+											event.stopPropagation();
+										}}
+										onkeydown={(e) => {
+											if (e.key === "Escape") {
+												showResetDialog = false;
+											}
+										}}
+									>
+										<div class="demo-reset-content">
+											<div class="demo-reset-header">
+												<h3 id="reset-title" class="demo-reset-title">Reset Progress</h3>
+											</div>
+											<div class="demo-reset-message">
+												This will clear all visited units and completed lessons. This action cannot
+												be undone.
+											</div>
+											<div class="demo-reset-actions">
+												<button class="demo-reset-cancel" onclick={() => (showResetDialog = false)}>
+													Cancel
+												</button>
+												<button class="demo-reset-confirm" onclick={handleClearProgress}>
+													Clear All
+												</button>
+											</div>
 										</div>
 									</div>
 								{/if}
@@ -440,6 +492,7 @@
 		position: relative;
 	}
 
+	/* Reset button styling */
 	.demo-reset-btn {
 		background: transparent;
 		border: 1px solid hsl(var(--sidebar-border, 220 13% 91%));
@@ -448,6 +501,9 @@
 		cursor: pointer;
 		color: hsl(var(--muted-foreground, 215.4 16.3% 46.9%));
 		transition: all 0.2s ease;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	.demo-reset-btn:hover {
@@ -455,44 +511,102 @@
 		color: hsl(var(--sidebar-primary, 222.2 84% 4.9%));
 	}
 
-	.demo-reset-tooltip {
+	/* Reset Popover - positioned near button */
+	.demo-reset-popover {
 		position: absolute;
 		top: 2.5rem;
 		right: 0;
-		background: hsl(var(--popover, 0 0% 100%));
-		border: 1px solid hsl(var(--border, 214.3 31.8% 91.4%));
-		border-radius: 8px;
-		padding: 0.75rem;
-		box-shadow: 0 8px 24px hsl(var(--foreground, 222.2 84% 4.9%) / 0.15);
-		font-size: 0.75rem;
-		white-space: normal;
-		width: 240px;
-		z-index: 9999;
+		z-index: 99999; /* Increased to ensure it's above all lesson icons */
+		animation: slideIn 0.2s ease-out;
+		/* Create new stacking context to override opacity elements */
+		transform: translateZ(0);
+		isolation: isolate;
+	}
+
+	.demo-reset-content {
+		background: white !important;
+		border: 2px solid #333 !important;
+		border-radius: 8px !important;
+		padding: 1rem !important;
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+		width: 280px !important;
+		max-width: 90vw !important;
+		opacity: 1 !important;
+		backdrop-filter: none !important;
 	}
 
 	.demo-reset-header {
+		margin-bottom: 0.75rem;
+	}
+
+	.demo-reset-title {
+		font-size: 0.875rem;
 		font-weight: 600;
 		color: hsl(var(--foreground, 222.2 84% 4.9%));
-		margin-bottom: 0.5rem;
+		margin: 0;
 	}
 
 	.demo-reset-message {
 		color: hsl(var(--muted-foreground, 215.4 16.3% 46.9%));
+		font-size: 0.75rem;
 		line-height: 1.4;
-		margin-bottom: 0.75rem;
+		margin-bottom: 1rem;
 	}
 
-	.demo-reset-buttons {
+	.demo-reset-actions {
 		display: flex;
 		gap: 0.5rem;
-		margin-top: 0.75rem;
+		justify-content: flex-end;
 	}
 
-	.demo-reset-confirm,
-	.demo-reset-cancel {
-		flex: 1;
+	/* Dark mode support */
+	:global(.dark) .demo-reset-content {
+		background: hsl(222.2 84% 4.9%) !important;
+		border-color: hsl(214.3 31.8% 25%) !important;
+		opacity: 1 !important;
+	}
+
+	:global(.dark) .demo-reset-title {
+		color: hsl(210 40% 98%);
+	}
+
+	:global(.dark) .demo-reset-message {
+		color: hsl(215.4 16.3% 65%);
+	}
+
+	/* Animation */
+	@keyframes slideIn {
+		from {
+			opacity: 0;
+			transform: translateY(-10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	/* Mobile responsiveness */
+	@media (max-width: 768px) {
+		.demo-reset-popover {
+			right: 1rem;
+			top: 2.5rem;
+			position: absolute;
+			left: auto;
+		}
+
+		.demo-reset-content {
+			width: 240px !important;
+			max-width: calc(100vw - 3rem) !important;
+			margin: 0 !important;
+		}
+	}
+
+	.demo-reset-confirm {
+		background: hsl(var(--destructive, 0 84.2% 60.2%));
+		color: hsl(var(--destructive-foreground, 210 40% 98%));
 		padding: 0.5rem 0.75rem;
-		border-radius: 4px;
+		border-radius: 0.375rem;
 		border: none;
 		cursor: pointer;
 		font-size: 0.75rem;
@@ -500,24 +614,24 @@
 		transition: all 0.2s ease;
 	}
 
-	.demo-reset-confirm {
-		background: hsl(var(--destructive, 0 84.2% 60.2%));
-		color: hsl(var(--destructive-foreground, 210 40% 98%));
-	}
-
 	.demo-reset-confirm:hover {
 		background: hsl(var(--destructive, 0 84.2% 55%));
-		transform: translateY(-1px);
 	}
 
 	.demo-reset-cancel {
 		background: hsl(var(--secondary, 210 40% 96%));
 		color: hsl(var(--secondary-foreground, 222.2 84% 4.9%));
+		padding: 0.5rem 0.75rem;
+		border-radius: 0.375rem;
+		border: 1px solid hsl(var(--border, 214.3 31.8% 91.4%));
+		cursor: pointer;
+		font-size: 0.75rem;
+		font-weight: 500;
+		transition: all 0.2s ease;
 	}
 
 	.demo-reset-cancel:hover {
 		background: hsl(var(--secondary, 210 40% 92%));
-		transform: translateY(-1px);
 	}
 
 	.demo-progress-bar {
@@ -601,14 +715,14 @@
 
 	.demo-nav-unit-header:hover {
 		background: hsl(var(--sidebar-accent, 60 4.8% 95.9%) / 0.5);
-		transform: translateX(2px);
+		margin-left: 2px;
 	}
 
 	.demo-nav-unit-header--active {
 		background: hsl(var(--sidebar-primary, 222.2 84% 4.9%) / 0.1);
 		border-left: 4px solid hsl(var(--sidebar-primary, 222.2 84% 4.9%));
 		color: hsl(var(--sidebar-primary, 222.2 84% 4.9%));
-		transform: translateX(4px);
+		margin-left: 4px;
 	}
 
 	.demo-nav-unit-header--expanded {
@@ -692,13 +806,13 @@
 
 	.demo-nav-lesson:hover {
 		background: hsl(var(--sidebar-accent, 60 4.8% 95.9%) / 0.5);
-		transform: translateX(2px);
+		margin-left: 2px;
 	}
 
 	.demo-nav-lesson--active {
 		background: hsl(var(--sidebar-primary, 222.2 84% 4.9%) / 0.1);
 		border-left: 3px solid hsl(var(--sidebar-primary, 222.2 84% 4.9%));
-		transform: translateX(4px);
+		margin-left: 4px;
 		color: hsl(var(--sidebar-primary, 222.2 84% 4.9%));
 	}
 
@@ -718,7 +832,7 @@
 			hsl(142.1 76.2% 36.3% / 0.12),
 			hsl(142.1 76.2% 36.3% / 0.08)
 		);
-		transform: translateX(2px);
+		margin-left: 2px;
 	}
 
 	.demo-nav-lesson.demo-lesson-status--completed .demo-nav-lesson-title {
@@ -730,7 +844,8 @@
 		flex-shrink: 0;
 		display: flex;
 		align-items: center;
-		opacity: 0.7;
+		/* Using rgba instead of opacity to avoid stacking context issues */
+		color: rgba(0, 0, 0, 0.7);
 	}
 
 	.demo-lesson-status--current {
@@ -749,7 +864,8 @@
 	.demo-nav-lesson-icon {
 		font-size: 1rem;
 		flex-shrink: 0;
-		opacity: 0.8;
+		/* Using rgba instead of opacity to avoid stacking context issues */
+		color: rgba(0, 0, 0, 0.8);
 	}
 
 	.demo-nav-lesson-info {

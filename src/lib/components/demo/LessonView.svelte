@@ -1,5 +1,8 @@
 <script lang="ts">
 	import { DifficultyBadge, ContentTypeBadge } from "$lib/components/demo";
+	import MermaidShowcase from "./MermaidShowcase.svelte";
+	import DiagramViewer from "./DiagramViewer.svelte";
+	import { getRandomDiagram } from "../../../data/demo/content/diagrams/mermaid-examples.js";
 	import {
 		Clock,
 		Target,
@@ -17,6 +20,18 @@
 	}
 
 	let { lesson }: Props = $props();
+
+	/**
+	 * Check if this is the Mermaid Diagram Showcase lesson
+	 */
+	let isMermaidShowcase = $derived(
+		lesson.id === "demo-lesson-showcase-1" || lesson.title.includes("Mermaid Diagram Showcase")
+	);
+
+	/**
+	 * Get a random diagram for regular lessons (not the showcase)
+	 */
+	let randomDiagram = $derived(!isMermaidShowcase ? getRandomDiagram() : null);
 
 	/**
 	 * Get estimated reading time for description
@@ -161,29 +176,106 @@
 				</div>
 
 				<div class="main-content">
-					<!-- Introduction -->
-					<div class="content-block">
-						<h3 class="content-heading">Introduction</h3>
-						<p class="content-paragraph">
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-							incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-							exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
-							dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-						</p>
-						<p class="content-paragraph">
-							Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-							mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit
-							voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab
-							illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-						</p>
-						<p class="content-paragraph">
-							Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
-							consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro
-							quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed
-							quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat
-							voluptatem.
-						</p>
-					</div>
+					{#if isMermaidShowcase}
+						<!-- Mermaid Showcase Content -->
+						<div class="content-block">
+							<h3 class="content-heading">Interactive Mermaid Diagram Collection</h3>
+							<p class="content-paragraph">
+								Welcome to our comprehensive collection of educational Mermaid diagrams designed
+								specifically for cloud-native learning. This interactive showcase contains 20+
+								carefully crafted diagrams covering flowcharts, sequence diagrams, class diagrams,
+								entity relationship diagrams, and more.
+							</p>
+							<p class="content-paragraph">
+								Each diagram follows strict <strong>MERMAID-STANDARDS.md</strong> guidelines, ensuring
+								mobile-first design with left-to-right layouts optimized for narrow screens (≤390px).
+								All diagrams include educational metadata, complexity levels, and real-world use cases
+								to enhance your learning experience.
+							</p>
+						</div>
+
+						<!-- Embedded Mermaid Showcase -->
+						<div class="component-container">
+							<MermaidShowcase showStats={true} />
+						</div>
+
+						<!-- Usage Instructions -->
+						<div class="content-block">
+							<h3 class="content-heading">How to Use This Showcase</h3>
+							<p class="content-paragraph">
+								Use the search and filter controls to explore diagrams by type, complexity, or
+								category. Each diagram card includes:
+							</p>
+							<ul class="content-list">
+								<li>
+									<strong>Type and Complexity Badges:</strong> Quick identification of diagram characteristics
+								</li>
+								<li><strong>Tags:</strong> Relevant keywords for easy discovery</li>
+								<li><strong>Learning Objectives:</strong> Clear goals for each diagram</li>
+								<li><strong>Use Cases:</strong> Real-world applications and scenarios</li>
+								<li>
+									<strong>Detailed Explanations:</strong> Educational context and implementation guidance
+								</li>
+							</ul>
+							<p class="content-paragraph">
+								For debugging purposes, append <code>?debug=true</code> to the URL to enable detailed
+								error logging and diagnostic information for any diagram rendering issues.
+							</p>
+						</div>
+					{:else}
+						<!-- Default Lesson Content -->
+						<!-- Introduction -->
+						<div class="content-block">
+							<h3 class="content-heading">Introduction</h3>
+							<p class="content-paragraph">
+								Welcome to this comprehensive lesson on {lesson.title.toLowerCase()}. This lesson is
+								designed to provide you with both theoretical understanding and practical examples
+								to help you master the key concepts and apply them in real-world scenarios.
+							</p>
+							<p class="content-paragraph">
+								Throughout this lesson, you'll explore fundamental principles, best practices, and
+								common implementation patterns. Each section builds upon the previous one, ensuring
+								a structured learning experience that prepares you for advanced cloud-native
+								development.
+							</p>
+							<p class="content-paragraph">
+								The content includes interactive diagrams, code examples, and detailed explanations
+								to reinforce your understanding and provide practical insights you can immediately
+								apply in your projects.
+							</p>
+						</div>
+
+						<!-- Interactive Diagram Section -->
+						{#if randomDiagram}
+							<div class="content-block">
+								<h3 class="content-heading">Visual Learning: Interactive Diagram</h3>
+								<p class="content-paragraph">
+									This lesson includes an interactive Mermaid diagram to help visualize key
+									concepts. The diagram below demonstrates practical applications and relationships
+									that are essential for understanding {lesson.title.toLowerCase()}.
+								</p>
+								<p class="content-paragraph">
+									<strong>Study Tip:</strong> Click the expand button to view the diagram in full-screen
+									mode for better detail. You can also copy the diagram source code using the copy button
+									in the expanded view.
+								</p>
+							</div>
+
+							<!-- Embedded Random Diagram -->
+							<div class="component-container">
+								<DiagramViewer diagram={randomDiagram} showMetadata={true} />
+							</div>
+
+							<div class="content-block">
+								<p class="content-paragraph">
+									<strong>Learning Integration:</strong> Study the diagram above and consider how
+									its concepts relate to the {lesson.title.toLowerCase()} principles we'll explore in
+									the following sections. This visual foundation will help you better understand the
+									theoretical concepts and their practical applications.
+								</p>
+							</div>
+						{/if}
+					{/if}
 
 					<!-- Core Concepts -->
 					<div class="content-block">
@@ -805,6 +897,45 @@
 
 	.content-paragraph:last-child {
 		margin-bottom: 0;
+	}
+
+	.content-list {
+		font-size: 1rem;
+		line-height: 1.8;
+		color: hsl(var(--muted-foreground));
+		margin: 1rem 0 1.5rem 1.5rem;
+		padding: 0;
+	}
+
+	.content-list li {
+		margin-bottom: 0.75rem;
+	}
+
+	.content-list li:last-child {
+		margin-bottom: 0;
+	}
+
+	.content-list strong {
+		color: hsl(var(--foreground));
+		font-weight: 600;
+	}
+
+	.content-paragraph code {
+		background: hsl(var(--muted));
+		padding: 0.25rem 0.5rem;
+		border-radius: 4px;
+		font-family: monospace;
+		font-size: 0.9em;
+		color: hsl(var(--foreground));
+	}
+
+	/* Generic Component Container */
+	.component-container {
+		margin: 2rem 0;
+		padding: 0;
+		border-radius: 12px;
+		overflow: hidden;
+		background: hsl(var(--background));
 	}
 
 	/* Resources */

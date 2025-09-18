@@ -238,7 +238,7 @@
 		top: 0;
 		left: 0;
 		right: 0;
-		z-index: 50;
+		z-index: var(--z-header);
 		background: hsl(var(--background));
 		border-bottom: 1px solid hsl(var(--border));
 		transition: all 0.2s ease;

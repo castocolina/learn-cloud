@@ -125,16 +125,23 @@
 		role="dialog"
 		aria-modal="true"
 		aria-labelledby="search-modal-title"
+		tabindex="-1"
 	>
 		<!-- Backdrop -->
 		<div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
 
 		<!-- Modal Content -->
+		<!-- TODO: Consider migrating to Melt UI Dialog in the future for better
+		     accessibility and focus trapping. Melt UI provides more robust dialog
+		     primitives and eliminates the need for manual event handling -->
 		<div
 			bind:this={modalElement}
 			class="relative flex max-h-[80vh] w-full max-w-4xl flex-col rounded-xl bg-white shadow-2xl dark:bg-gray-900 {className}"
 			transition:fly={{ y: -20, duration: 300 }}
 			onkeydown={trapFocus}
+			role="document"
+			tabindex="-1"
+			aria-labelledby="search-modal-title"
 		>
 			<!-- Modal Header -->
 			<div

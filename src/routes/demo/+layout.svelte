@@ -778,11 +778,6 @@
 		font-size: 0.875rem;
 	}
 
-	.demo-breadcrumb-separator {
-		color: hsl(var(--muted-foreground));
-		opacity: 0.5;
-	}
-
 	/* Content Container */
 	.demo-content-container {
 		flex: 1;

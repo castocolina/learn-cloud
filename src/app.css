@@ -135,3 +135,524 @@
 		@apply bg-background text-foreground;
 	}
 }
+
+/* Mermaid Diagram Components */
+@layer components {
+	/* Base container - minimal styling for reusability */
+	.mermaid-diagram-container {
+		@apply w-full;
+	}
+
+	/* Optional title styling - can be overridden */
+	.mermaid-diagram-title {
+		@apply mb-2 text-base font-medium text-gray-900 dark:text-gray-100;
+	}
+
+	/* Loading state */
+	.mermaid-diagram-loading {
+		@apply flex items-center justify-center gap-2 p-4 text-sm text-gray-600 dark:text-gray-400;
+	}
+
+	.mermaid-diagram-spinner {
+		@apply h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600;
+	}
+
+	/* Error state */
+	.mermaid-diagram-error {
+		@apply flex gap-3 rounded border border-red-200 bg-red-50 p-3 text-sm dark:border-red-800 dark:bg-red-900/20;
+	}
+
+	.mermaid-diagram-error-icon {
+		@apply text-lg;
+	}
+
+	.mermaid-diagram-error-content {
+		@apply flex-1;
+	}
+
+	.mermaid-diagram-error-content h4 {
+		@apply mb-1 font-medium text-red-800 dark:text-red-200;
+	}
+
+	.mermaid-diagram-error-content p {
+		@apply text-red-700 dark:text-red-300;
+	}
+
+	/* Debug details */
+	.mermaid-diagram-debug-details {
+		@apply mt-2;
+	}
+
+	.mermaid-diagram-debug-details summary {
+		@apply cursor-pointer font-medium text-red-800 hover:text-red-900 dark:text-red-200 dark:hover:text-red-100;
+	}
+
+	.mermaid-diagram-debug-content {
+		@apply mt-2 rounded border bg-red-100 p-2 dark:bg-red-900/30;
+	}
+
+	.mermaid-diagram-debug-content h5 {
+		@apply mb-1 font-medium text-red-800 dark:text-red-200;
+	}
+
+	.mermaid-diagram-debug-content pre {
+		@apply overflow-x-auto rounded border bg-red-50 p-2 text-xs dark:bg-red-950/50;
+	}
+
+	.mermaid-diagram-debug-content code {
+		@apply font-mono text-red-800 dark:text-red-200;
+	}
+
+	/* Diagram content - essential styles only */
+	.mermaid-diagram-content {
+		@apply w-full overflow-x-auto;
+	}
+
+	.mermaid-diagram-content svg {
+		@apply h-auto max-w-full;
+	}
+
+	/* Mobile responsive - core functionality */
+	@media (max-width: 390px) {
+		.mermaid-diagram-content svg {
+			@apply origin-top-left scale-90 transform;
+		}
+	}
+
+	/* Utility class */
+	.mermaid-hidden {
+		@apply invisible h-0 overflow-hidden;
+	}
+
+	/* Header with expand button */
+	.mermaid-diagram-header {
+		@apply relative flex items-center justify-between;
+	}
+
+	.mermaid-expand-button {
+		@apply absolute top-0 right-0 flex h-8 w-8 items-center justify-center rounded-md border border-gray-200 bg-white text-gray-600 shadow-sm transition-colors hover:bg-gray-50 hover:text-gray-900 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200;
+	}
+
+	/* Modal styles - optimized for shadcn dialog */
+	.mermaid-modal-content {
+		@apply flex flex-col overflow-hidden;
+		/* Ensure solid background for visibility */
+		background: hsl(var(--background)) !important;
+		border: 1px solid hsl(var(--border)) !important;
+	}
+
+	.mermaid-modal-diagram-container {
+		@apply min-h-[60vh] flex-1 overflow-auto p-4;
+	}
+
+	.mermaid-modal-diagram-content {
+		@apply flex h-full w-full items-center justify-center;
+	}
+
+	.mermaid-modal-diagram-content svg {
+		@apply h-auto max-h-full max-w-full;
+	}
+
+	/* Mermaid Retry Button */
+	.mermaid-retry-button {
+		@apply mt-3 rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white;
+		@apply transition-colors hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none;
+		@apply dark:bg-blue-500 dark:hover:bg-blue-600;
+	}
+
+	/* Mermaid Showcase Components */
+	.demo-mermaid-showcase {
+		@apply mx-auto w-full max-w-7xl space-y-8 p-6;
+	}
+
+	/* Header and Stats */
+	.demo-showcase-header {
+		@apply flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between;
+	}
+
+	.demo-showcase-title {
+		@apply text-3xl font-bold text-gray-900 dark:text-gray-100;
+	}
+
+	.demo-showcase-description {
+		@apply mt-2 text-gray-600 dark:text-gray-400;
+	}
+
+	.demo-showcase-stats {
+		@apply flex gap-6;
+	}
+
+	.demo-stat-item {
+		@apply text-center;
+	}
+
+	.demo-stat-number {
+		@apply block text-2xl font-bold text-blue-600 dark:text-blue-400;
+	}
+
+	.demo-stat-label {
+		@apply text-sm text-gray-500 dark:text-gray-400;
+	}
+
+	/* Controls */
+	.demo-showcase-controls {
+		@apply space-y-4 rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800;
+	}
+
+	.demo-search-container {
+		@apply w-full;
+	}
+
+	.demo-search-input {
+		@apply w-full rounded-lg border border-gray-300 px-4 py-2 dark:border-gray-600;
+		@apply bg-white text-gray-900 dark:bg-gray-700 dark:text-gray-100;
+		@apply focus:border-transparent focus:ring-2 focus:ring-blue-500;
+		@apply placeholder-gray-500 dark:placeholder-gray-400;
+	}
+
+	.demo-filter-controls {
+		@apply flex flex-wrap items-center gap-4;
+	}
+
+	.demo-filter-select {
+		@apply rounded-lg border border-gray-300 px-3 py-2 dark:border-gray-600;
+		@apply bg-white text-gray-900 dark:bg-gray-700 dark:text-gray-100;
+		@apply focus:border-transparent focus:ring-2 focus:ring-blue-500;
+		@apply min-w-40;
+	}
+
+	.demo-reset-button {
+		@apply rounded-lg bg-gray-500 px-4 py-2 text-white hover:bg-gray-600;
+		@apply transition-colors duration-200;
+	}
+
+	/* Loading and Empty States */
+	.demo-showcase-loading {
+		@apply flex items-center justify-center gap-3 py-12 text-gray-600 dark:text-gray-400;
+	}
+
+	.demo-loading-spinner {
+		@apply h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600;
+	}
+
+	.demo-showcase-empty {
+		@apply py-12 text-center;
+	}
+
+	.demo-empty-icon {
+		@apply mb-4 text-6xl;
+	}
+
+	.demo-showcase-empty h3 {
+		@apply mb-2 text-xl font-semibold text-gray-700 dark:text-gray-300;
+	}
+
+	.demo-showcase-empty p {
+		@apply mb-4 text-gray-500 dark:text-gray-400;
+	}
+
+	.demo-empty-reset {
+		@apply rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600;
+		@apply transition-colors duration-200;
+	}
+
+	/* Diagram Grid */
+	.demo-diagram-grid {
+		@apply grid grid-cols-1 gap-8 lg:grid-cols-2;
+	}
+
+	/* Single column layout for vertical scrolling */
+	.demo-diagram-list {
+		@apply flex flex-col gap-8;
+	}
+
+	.demo-diagram-card {
+		@apply rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800;
+		@apply space-y-4 p-6 transition-shadow duration-200 hover:shadow-lg;
+	}
+
+	/* Card Header */
+	.demo-card-header {
+		@apply flex items-start justify-between gap-4;
+	}
+
+	.demo-card-title {
+		@apply flex-1 text-lg font-semibold text-gray-900 dark:text-gray-100;
+	}
+
+	.demo-card-badges {
+		@apply flex flex-shrink-0 gap-2;
+	}
+
+	.demo-badge {
+		@apply rounded-full px-2 py-1 text-xs font-medium;
+	}
+
+	.demo-badge-type {
+		@apply bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200;
+	}
+
+	.demo-badge-complexity {
+		@apply text-white;
+	}
+
+	.demo-badge-basic {
+		@apply bg-green-500;
+	}
+
+	.demo-badge-intermediate {
+		@apply bg-yellow-500;
+	}
+
+	.demo-badge-advanced {
+		@apply bg-red-500;
+	}
+
+	/* Card Content */
+	.demo-card-description {
+		@apply text-sm text-gray-600 dark:text-gray-400;
+	}
+
+	.demo-card-tags {
+		@apply flex flex-wrap gap-2;
+	}
+
+	.demo-tag {
+		@apply bg-gray-100 px-2 py-1 text-gray-700 dark:bg-gray-700 dark:text-gray-300;
+		@apply rounded-md text-xs;
+	}
+
+	.demo-tag-more {
+		@apply bg-gray-200 dark:bg-gray-600;
+	}
+
+	.demo-card-diagram {
+		@apply rounded-lg border border-gray-200 p-4 dark:border-gray-700;
+		@apply bg-gray-50 dark:bg-gray-900;
+	}
+
+	/* Override MermaidDiagram styles within showcase */
+	.demo-card-diagram .mermaid-diagram-title {
+		@apply mb-3 text-lg font-semibold;
+	}
+
+	.demo-card-diagram .mermaid-diagram-loading {
+		@apply p-6;
+	}
+
+	.demo-card-diagram .mermaid-diagram-error {
+		@apply rounded-lg p-4;
+	}
+
+	/* Card Details */
+	.demo-card-objectives,
+	.demo-card-usecases,
+	.demo-card-explanation {
+		@apply border-t border-gray-200 pt-3 dark:border-gray-700;
+	}
+
+	.demo-card-objectives summary,
+	.demo-card-usecases summary,
+	.demo-card-explanation summary {
+		@apply cursor-pointer text-sm font-medium text-gray-700 dark:text-gray-300;
+		@apply hover:text-gray-900 dark:hover:text-gray-100;
+	}
+
+	.demo-card-objectives ul,
+	.demo-card-usecases ul {
+		@apply mt-2 space-y-1 pl-4;
+	}
+
+	.demo-card-objectives li,
+	.demo-card-usecases li {
+		@apply list-disc text-sm text-gray-600 dark:text-gray-400;
+	}
+
+	.demo-card-explanation p {
+		@apply mt-2 text-sm text-gray-600 dark:text-gray-400;
+	}
+
+	/* Pagination */
+	.demo-pagination {
+		@apply flex items-center justify-center gap-2 pt-8;
+	}
+
+	.demo-pagination-button {
+		@apply border border-gray-300 bg-white px-4 py-2 dark:border-gray-600 dark:bg-gray-800;
+		@apply rounded-lg text-gray-700 dark:text-gray-300;
+		@apply hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-gray-700;
+		@apply transition-colors duration-200;
+	}
+
+	.demo-pagination-pages {
+		@apply flex gap-1;
+	}
+
+	.demo-pagination-page {
+		@apply flex h-10 w-10 items-center justify-center;
+		@apply border border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-800;
+		@apply rounded-lg text-gray-700 dark:text-gray-300;
+		@apply hover:bg-gray-50 dark:hover:bg-gray-700;
+		@apply transition-colors duration-200;
+	}
+
+	.demo-pagination-page.active {
+		@apply border-blue-500 bg-blue-500 text-white;
+		@apply hover:bg-blue-600;
+	}
+
+	/* Mobile Responsive */
+	@media (max-width: 640px) {
+		.demo-mermaid-showcase {
+			@apply space-y-6 p-4;
+		}
+
+		.demo-showcase-header {
+			@apply gap-4;
+		}
+
+		.demo-showcase-title {
+			@apply text-2xl;
+		}
+
+		.demo-showcase-stats {
+			@apply flex-wrap gap-4;
+		}
+
+		.demo-filter-controls {
+			@apply grid grid-cols-2 gap-3;
+		}
+
+		.demo-filter-select {
+			@apply min-w-0;
+		}
+
+		.demo-reset-button {
+			@apply col-span-2;
+		}
+
+		.demo-diagram-grid {
+			@apply grid-cols-1;
+		}
+
+		.demo-card-header {
+			@apply flex-col items-start gap-3;
+		}
+
+		.demo-card-badges {
+			@apply self-start;
+		}
+
+		.demo-pagination-pages {
+			@apply hidden;
+		}
+	}
+
+	@media (max-width: 390px) {
+		.demo-showcase-controls {
+			@apply p-4;
+		}
+
+		.demo-filter-controls {
+			@apply grid-cols-1;
+		}
+
+		.demo-reset-button {
+			@apply col-span-1;
+		}
+
+		.demo-diagram-card {
+			@apply space-y-3 p-4;
+		}
+	}
+
+	/* Demo Mermaid Page Styles */
+	.demo-mermaid-page {
+		@apply min-h-screen bg-gray-50 dark:bg-gray-900;
+	}
+
+	/* Page Header */
+	.demo-page-header {
+		@apply border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800;
+		@apply space-y-3 px-6 py-4;
+	}
+
+	.demo-breadcrumb {
+		@apply flex items-center text-sm text-gray-600 dark:text-gray-400;
+	}
+
+	.demo-breadcrumb-link {
+		@apply transition-colors duration-200 hover:text-blue-600 dark:hover:text-blue-400;
+	}
+
+	.demo-breadcrumb-separator {
+		@apply mx-2;
+	}
+
+	.demo-breadcrumb-current {
+		@apply font-medium text-gray-900 dark:text-gray-100;
+	}
+
+	.demo-debug-notice {
+		@apply flex items-center gap-2 px-3 py-2;
+		@apply border border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-900/20;
+		@apply rounded-lg text-sm text-yellow-800 dark:text-yellow-200;
+	}
+
+	.demo-debug-icon {
+		@apply text-base;
+	}
+
+	/* Main Content */
+	.demo-page-content {
+		@apply py-8;
+	}
+
+	/* Footer */
+	.demo-page-footer {
+		@apply border-t border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800;
+		@apply mt-12 px-6 py-8;
+	}
+
+	.demo-footer-section {
+		@apply mx-auto grid max-w-7xl grid-cols-1 gap-8 lg:grid-cols-3;
+	}
+
+	.demo-footer-section h3 {
+		@apply mb-3 text-lg font-semibold text-gray-900 dark:text-gray-100;
+	}
+
+	.demo-footer-section p {
+		@apply text-sm leading-relaxed text-gray-600 dark:text-gray-400;
+	}
+
+	.demo-footer-section code {
+		@apply rounded bg-gray-100 px-2 py-1 text-xs dark:bg-gray-700;
+		@apply font-mono text-gray-800 dark:text-gray-200;
+	}
+
+	.demo-footer-section strong {
+		@apply font-semibold text-gray-900 dark:text-gray-100;
+	}
+
+	/* Mobile Responsive */
+	@media (max-width: 640px) {
+		.demo-page-header {
+			@apply px-4 py-3;
+		}
+
+		.demo-footer-section {
+			@apply grid-cols-1 gap-6;
+		}
+	}
+
+	@media (max-width: 390px) {
+		.demo-breadcrumb {
+			@apply text-xs;
+		}
+
+		.demo-debug-notice {
+			@apply px-2 py-1.5 text-xs;
+		}
+	}
+}

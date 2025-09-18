@@ -2382,7 +2382,7 @@ export function searchContent(
 	}
 
 	const searchTerm = query.toLowerCase();
-	let results = searchIndex.filter((item) => {
+	const results = searchIndex.filter((item) => {
 		// Filter by content type if specified
 		if (contentType && item.type !== contentType) {
 			return false;

@@ -263,6 +263,71 @@ function completeQuiz() {
    </Button>
    ```
 
+### Global Configuration Strategy
+
+#### Centralized Settings Architecture
+
+The project uses a centralized configuration pattern to manage global application parameters through `src/config/settings.ts`. This approach provides type-safe, organized settings that can be imported throughout the application.
+
+**Configuration File Structure:**
+
+```typescript
+// src/config/settings.ts
+
+// Defines the structure for the application settings for type safety.
+interface AppSettings {
+	mermaid: {
+		debug: boolean;
+		// Add more Mermaid-specific settings here as needed
+	};
+	// Future settings can be grouped here (e.g., api, ui, performance)
+}
+
+// Export a single, constant object with all settings.
+export const SETTINGS: AppSettings = {
+	mermaid: {
+		debug: true // Enabled for development - provides detailed error logging
+	}
+};
+
+// Export types for use in other parts of the application
+export type { AppSettings };
+```
+
+**Usage in Components:**
+
+```typescript
+// In any Svelte component
+import { SETTINGS } from "$config/settings";
+
+// Access configuration values
+const debugMode = SETTINGS.mermaid.debug;
+
+// Use in reactive statements
+let debugEnabled = $derived(
+	debug || // Component prop
+		$page.url.searchParams.has("debug") || // URL parameter
+		SETTINGS.mermaid.debug // Global setting
+);
+```
+
+**Benefits:**
+
+- **Type Safety**: TypeScript interfaces ensure configuration integrity
+- **Centralized Control**: Single source of truth for all settings
+- **Developer Experience**: Auto-completion and error detection
+- **Maintainability**: Easy to extend with new configuration groups
+- **Import Consistency**: Standard `$config/settings` import path
+
+**Configuration Groups:**
+
+Organize settings by functional area:
+
+- `mermaid`: Diagram rendering and debug settings
+- `api`: API endpoints, timeouts, retry logic (future)
+- `ui`: Theme preferences, animation settings (future)
+- `performance`: Lazy loading, caching configuration (future)
+
 ### Theming & Styling
 
 #### Tailwind CSS v4 Integration

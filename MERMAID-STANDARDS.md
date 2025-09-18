@@ -99,6 +99,86 @@ graph LR
 
 ---
 
+## COMPREHENSIVE DIAGRAM TYPES REFERENCE
+
+### Supported Mermaid.js Diagram Types (v11.11.0)
+
+This section provides a complete reference for all diagram types supported by the project's Mermaid.js version 11.11.0. Each entry includes the diagram name, purpose, and link to official syntax documentation.
+
+**Core Diagram Types:**
+
+1. **[Flowchart](https://mermaid.js.org/syntax/flowchart.html)** - Process flows, decision trees, and system workflows using nodes (geometric shapes) and edges (arrows or lines)
+
+2. **[Sequence Diagram](https://mermaid.js.org/syntax/sequenceDiagram.html)** - Time-ordered interactions between participants showing how processes operate with one another
+
+3. **[Class Diagram](https://mermaid.js.org/syntax/classDiagram.html)** - Static structure diagrams describing system classes, attributes, operations, and relationships among objects
+
+4. **[State Diagram](https://mermaid.js.org/syntax/stateDiagram.html)** - State transitions and system behavior over time, modeling application states and lifecycles
+
+5. **[Entity Relationship Diagram](https://mermaid.js.org/syntax/entityRelationshipDiagram.html)** - Database schema and entity relationships for data modeling and database design
+
+6. **[User Journey](https://mermaid.js.org/syntax/userJourney.html)** - User experience flows with satisfaction scoring and touchpoint analysis
+
+7. **[Gantt Chart](https://mermaid.js.org/syntax/gantt.html)** - Project scheduling and timeline visualization with tasks, dependencies, and milestones
+
+8. **[Pie Chart](https://mermaid.js.org/syntax/pie.html)** - Data visualization for showing proportional relationships and percentages
+
+9. **[Quadrant Chart](https://mermaid.js.org/syntax/quadrantChart.html)** - Strategic analysis tool for plotting items across two dimensions
+
+10. **[Requirement Diagram](https://mermaid.js.org/syntax/requirementDiagram.html)** - Requirements engineering and traceability for system specifications
+
+11. **[GitGraph Diagram](https://mermaid.js.org/syntax/gitgraph.html)** - Version control branching and merging strategies visualization
+
+12. **[C4 Diagram](https://mermaid.js.org/syntax/c4.html)** ⚠️ - Software architecture visualization using the C4 model (use with caution)
+
+13. **[Mindmap](https://mermaid.js.org/syntax/mindmap.html)** - Hierarchical information representation and brainstorming visualization
+
+14. **[Timeline](https://mermaid.js.org/syntax/timeline.html)** - Chronological event sequencing and historical data representation
+
+15. **[ZenUML](https://mermaid.js.org/syntax/zenuml.html)** - Enhanced sequence diagrams with additional UML notation support
+
+**New Diagram Types (Latest Features):**
+
+16. **[Sankey Diagram](https://mermaid.js.org/syntax/sankey.html)** 🔥 - Flow visualization showing quantity relationships between nodes
+
+17. **[XY Chart](https://mermaid.js.org/syntax/xyChart.html)** 🔥 - Scatter plots and coordinate-based data visualization
+
+18. **[Block Diagram](https://mermaid.js.org/syntax/block.html)** 🔥 - System architecture using interconnected blocks and components
+
+19. **[Packet Diagram](https://mermaid.js.org/syntax/packet.html)** 🔥 - Network packet structure and protocol visualization
+
+20. **[Kanban Board](https://mermaid.js.org/syntax/kanban.html)** 🔥 - Agile workflow visualization with columns and task tracking
+
+21. **[Architecture Diagram](https://mermaid.js.org/syntax/architecture.html)** 🔥 - System architecture with services, groups, and connections
+
+22. **[Radar Chart](https://mermaid.js.org/syntax/radar.html)** 🔥 - Multi-dimensional data comparison and skill assessment visualization
+
+23. **[Treemap](https://mermaid.js.org/syntax/treemap.html)** 🔥 - Hierarchical data visualization using nested rectangles
+
+### Usage Guidelines
+
+**Selecting the Right Diagram Type:**
+
+- **Process & Logic**: Use Flowcharts for decision trees and workflows
+- **Interactions**: Use Sequence Diagrams for API calls and time-based processes
+- **Structure**: Use Class Diagrams for object-oriented design and data modeling
+- **States**: Use State Diagrams for application lifecycle and status transitions
+- **Data Relationships**: Use ER Diagrams for database design
+- **User Experience**: Use User Journey for customer experience mapping
+- **Project Management**: Use Gantt Charts for project timelines
+- **Proportional Data**: Use Pie Charts for percentage breakdowns
+- **Version Control**: Use GitGraph for development workflows
+
+**For Cloud-Native Applications:**
+
+- **System Architecture**: Block Diagrams, Architecture Diagrams, or C4 Diagrams
+- **Microservice Communication**: Sequence Diagrams or Architecture Diagrams
+- **Data Flow**: Sankey Diagrams for complex data pipelines
+- **Network Protocols**: Packet Diagrams for communication protocols
+- **Development Workflow**: Kanban Boards and GitGraph Diagrams
+
+---
+
 ## DIAGRAM TYPES AND LAYOUT STANDARDS
 
 ### Common Mermaid Diagram Types
@@ -106,36 +186,43 @@ graph LR
 Mermaid supports multiple diagram types, each optimized for different use cases:
 
 **Flowcharts (`graph`)**
+
 - **Purpose**: Process flows, decision trees, system workflows
 - **Best for**: Business logic, algorithms, user journeys
 - **Syntax**: `graph TD` or `graph LR`
 
 **Sequence Diagrams (`sequenceDiagram`)**
+
 - **Purpose**: Time-ordered interactions between participants
 - **Best for**: API calls, user authentication flows, microservice communication
 - **Syntax**: `sequenceDiagram`
 
 **Class Diagrams (`classDiagram`)**
+
 - **Purpose**: Object-oriented system structure and relationships
 - **Best for**: Software architecture, domain modeling, inheritance patterns
 - **Syntax**: `classDiagram`
 
 **Entity Relationship Diagrams (`erDiagram`)**
+
 - **Purpose**: Database schema and entity relationships
 - **Best for**: Database design, data modeling, foreign key relationships
 - **Syntax**: `erDiagram`
 
 **State Diagrams (`stateDiagram-v2`)**
+
 - **Purpose**: State transitions and system behavior over time
 - **Best for**: Application states, user session management, order lifecycles
 - **Syntax**: `stateDiagram-v2`
 
 **Git Graphs (`gitgraph`)**
+
 - **Purpose**: Version control branching and merging strategies
 - **Best for**: Development workflows, release planning, branch visualization
 - **Syntax**: `gitgraph`
 
 **User Journey Maps (`journey`)**
+
 - **Purpose**: User experience flows with satisfaction scoring
 - **Best for**: Customer experience design, touchpoint analysis, service design
 - **Syntax**: `journey`
@@ -161,6 +248,73 @@ graph TD
 **Rationale**: Left-to-right orientation encourages a linear, horizontal flow that reflows into a more manageable, vertically-scrollable format on narrow mobile screens (≤390px). This prevents the need for horizontal scrolling, which degrades the mobile user experience significantly.
 
 **Exception**: Use `graph TD` (Top Down) only when vertical hierarchy is essential to the diagram's meaning, such as organizational charts or layered architecture diagrams where the vertical relationship is semantically important.
+
+---
+
+## EXPAND FUNCTIONALITY REQUIREMENTS
+
+**MANDATORY: All Mermaid components MUST include expand-to-modal functionality**
+
+### Overview
+
+Every Mermaid diagram component should provide an expand button in the top-right corner that opens the diagram in a full-screen modal dialog. This feature enhances accessibility by allowing users to view complex diagrams at larger sizes and improves the overall user experience.
+
+### Implementation Requirements
+
+1. **Expand Button**: Display an expand icon (using `lucide-svelte` Expand icon) in the top-right corner of the diagram container
+2. **Modal Integration**: Use `shadcn-svelte` Dialog component for consistent styling and accessibility
+3. **Configurable Size**: Modal should accept a `modalSize` prop (default: 95% of viewport)
+4. **Conditional Display**: Expand button only shows when diagram renders successfully (hidden on errors)
+5. **Responsive Design**: Modal and expand functionality must work across all screen sizes
+
+### Component Props Interface
+
+```typescript
+interface Props {
+	diagram: string;
+	debug?: boolean;
+	title?: string;
+	className?: string;
+	modalSize?: number; // NEW: Viewport percentage (default: 95)
+	showExpandButton?: boolean; // NEW: Toggle expand functionality (default: true)
+}
+```
+
+### Usage Examples
+
+**Basic Usage with Expand (Default):**
+
+```svelte
+<MermaidDiagram diagram={diagramCode} title="System Architecture" />
+```
+
+**Custom Modal Size:**
+
+```svelte
+<MermaidDiagram diagram={diagramCode} title="Database Schema" modalSize={90} />
+```
+
+**Disable Expand Button:**
+
+```svelte
+<MermaidDiagram diagram={diagramCode} title="Simple Flow" showExpandButton={false} />
+```
+
+### Technical Implementation Details
+
+- **Icon Library**: Use `lucide-svelte` Expand icon for consistency
+- **Dialog Component**: Import and use `shadcn-svelte` Dialog components
+- **Dual Rendering**: Component must render diagram both in container and modal (separate instances)
+- **State Management**: Use Svelte 5 runes (`$state`) for modal open/close state
+- **Error Handling**: Expand button hidden when diagram fails to render
+- **Accessibility**: Proper ARIA labels and keyboard navigation support
+
+### Styling Guidelines
+
+- **Button Position**: Absolute positioned in top-right corner of diagram header
+- **Button Styling**: Use consistent button styling from app.css modular architecture
+- **Modal Content**: Full viewport coverage with configurable size constraints
+- **Z-Index**: Follow global z-index hierarchy for proper layering
 
 ---
 
@@ -278,21 +432,21 @@ To enable automated detection, all Mermaid diagram variables MUST follow this na
 ```typescript
 // ✅ VALID: Will be detected by validation script
 export const flowchartExample = {
-  diagram: `graph LR...`
+	diagram: `graph LR...`
 };
 
 export const sequenceDiagramAuth = {
-  diagram: `sequenceDiagram...`
+	diagram: `sequenceDiagram...`
 };
 
 // ✅ VALID: Alternative property names
 export const paymentFlow = {
-  definition: `graph TD...`
+	definition: `graph TD...`
 };
 
 // ❌ INVALID: Will be missed by validation
 export const myChart = {
-  mermaidCode: `graph LR...`
+	mermaidCode: `graph LR...`
 };
 ```
 
@@ -315,6 +469,7 @@ The recommended validation script should perform these operations:
    - **Parser error message**: Raw error from Mermaid parser
 
 **Example Output:**
+
 ```
 ❌ src/data/diagrams/auth-flow.ts:15 - Variable 'loginSequence.diagram'
    Error: Parse error on line 3: Expecting 'SOLID', 'SEMI', 'NEWLINE', 'EOF', got 'INVALID'
@@ -395,6 +550,7 @@ pnpm run check  # TypeScript validation
 Before implementing any Mermaid diagram, verify:
 
 **Automated by validation script:**
+
 - ✅ All node text enclosed in double quotes
 - ✅ All link text enclosed in double quotes
 - ✅ Proper bracket syntax for node shapes
@@ -402,6 +558,7 @@ Before implementing any Mermaid diagram, verify:
 - ✅ Valid Mermaid syntax per parser
 
 **Manual validation required:**
+
 - ✅ **Layout direction optimized for mobile** (`direction LR` preferred unless vertical hierarchy is semantically important)
 - ✅ **Diagram type matches intended use case** (flowchart vs sequence vs class vs ER, etc.)
 - ✅ **Content clarity**: Node labels are concise and descriptive
@@ -419,6 +576,7 @@ For all Mermaid components, ensure:
 - ✅ Tests for both success and failure scenarios
 - ✅ Accessibility attributes (ARIA labels)
 - ✅ Responsive design considerations
+- ✅ **Expand functionality**: Modal dialog with configurable viewport size (default 95%)
 
 ### Content Standards Compliance
 

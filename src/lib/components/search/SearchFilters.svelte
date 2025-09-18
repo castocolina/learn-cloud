@@ -183,11 +183,20 @@
 
 	<!-- Content Type Filter -->
 	<div class="relative space-y-2">
-		<label class="block text-xs font-medium text-gray-700 dark:text-gray-300"> Content Type </label>
+		<label
+			for="content-type-dropdown"
+			class="block text-xs font-medium text-gray-700 dark:text-gray-300"
+		>
+			Content Type
+		</label>
 		<div class="relative">
 			<button
+				id="content-type-dropdown"
 				type="button"
 				onclick={toggleContentTypeDropdown}
+				aria-label="Select content type filter"
+				aria-expanded={showContentTypeDropdown}
+				aria-haspopup="listbox"
 				class="flex w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
 			>
 				<span class="flex items-center gap-2">
@@ -244,11 +253,20 @@
 
 	<!-- Category Filter -->
 	<div class="relative space-y-2">
-		<label class="block text-xs font-medium text-gray-700 dark:text-gray-300"> Category </label>
+		<label
+			for="category-dropdown"
+			class="block text-xs font-medium text-gray-700 dark:text-gray-300"
+		>
+			Category
+		</label>
 		<div class="relative">
 			<button
+				id="category-dropdown"
 				type="button"
 				onclick={toggleCategoryDropdown}
+				aria-label="Select category filter"
+				aria-expanded={showCategoryDropdown}
+				aria-haspopup="listbox"
 				class="flex w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
 			>
 				<span>
@@ -302,10 +320,13 @@
 	<!-- Selected Tags -->
 	{#if selectedTags.length > 0}
 		<div class="space-y-2">
-			<label class="block text-xs font-medium text-gray-700 dark:text-gray-300">
+			<label
+				for="selected-tags-area"
+				class="block text-xs font-medium text-gray-700 dark:text-gray-300"
+			>
 				Selected Tags
 			</label>
-			<div class="flex flex-wrap gap-1">
+			<div id="selected-tags-area" class="flex flex-wrap gap-1">
 				{#each selectedTags as tag}
 					<span
 						class="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-1 text-xs text-blue-800 dark:bg-blue-900 dark:text-blue-200"
@@ -327,10 +348,10 @@
 
 	<!-- Available Tags -->
 	<div class="space-y-2">
-		<label class="block text-xs font-medium text-gray-700 dark:text-gray-300">
+		<label for="tag-filter-area" class="block text-xs font-medium text-gray-700 dark:text-gray-300">
 			Filter by Tags
 		</label>
-		<div class="flex max-h-32 flex-wrap gap-1 overflow-y-auto">
+		<div id="tag-filter-area" class="flex max-h-32 flex-wrap gap-1 overflow-y-auto">
 			{#each availableTags as tag}
 				{@const isSelected = selectedTags.includes(tag)}
 				<button

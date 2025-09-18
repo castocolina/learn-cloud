@@ -265,15 +265,7 @@
 		}
 	}
 
-	/* Dark Mode Support */
-	.dark .demo-content-sidebar {
-		background: hsl(var(--sidebar, 12 6.5% 15.1%));
-		border-right: 1px solid hsl(var(--sidebar-border, 215 27.9% 16.9%));
-	}
-
-	.dark .demo-content-main {
-		background: hsl(var(--background, 222.2 84% 4.9%));
-	}
+	/* Dark Mode Support - these styles are used in the component */
 
 	/* Ensure proper scrolling behavior */
 	.demo-content-sidebar::-webkit-scrollbar,

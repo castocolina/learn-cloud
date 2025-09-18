@@ -83,11 +83,44 @@ export interface DemoNavigationStructure {
 export const demoSidebarMenu: DemoNavigationStructure = {
 	metadata: {
 		title: "Cloud-Native Technologies Mastery Course",
-		totalUnits: 12,
-		totalLessons: 95,
+		totalUnits: 13,
+		totalLessons: 96,
 		description: "Comprehensive learning platform for cloud-native development and deployment"
 	},
 	units: [
+		{
+			id: "demo-unit-showcase",
+			title: "Interactive Showcase & Examples",
+			description:
+				"Comprehensive demonstrations of technologies and interactive learning components",
+			icon: "🎯",
+			estimatedHours: 2,
+			difficulty: DemoDifficulty.BEGINNER,
+			prerequisites: [],
+			learningObjectives: [
+				"Explore interactive diagram examples and visualizations",
+				"Understand component architecture through live demonstrations",
+				"Practice with real-world cloud-native scenarios"
+			],
+			lessons: [
+				{
+					id: "demo-lesson-showcase-1",
+					title: "Mermaid Diagram Showcase",
+					description:
+						"Interactive collection of educational Mermaid diagrams for cloud-native learning",
+					url: "/demo/mermaid",
+					contentType: DemoContentType.INTERACTIVE,
+					duration: "45 min",
+					difficulty: DemoDifficulty.BEGINNER,
+					icon: "📊",
+					learningObjectives: [
+						"Explore comprehensive diagram examples",
+						"Understand different diagram types and use cases",
+						"Practice diagram interpretation and analysis"
+					]
+				}
+			]
+		},
 		{
 			id: "demo-unit-1",
 			title: "Foundations of Cloud-Native Development",

@@ -532,9 +532,9 @@ export const mermaidExamples: MermaidExample[] = [
     PaymentProcessor <|-- CreditCardProcessor
     PaymentProcessor <|-- PayPalProcessor
     PaymentMethod <|.. CreditCard
-    CreditCardProcessor --> PaymentResult
-    PayPalProcessor --> PaymentResult
-    CreditCardProcessor --> CreditCard`,
+    CreditCardProcessor ..> PaymentResult : "creates"
+    PayPalProcessor ..> PaymentResult : "creates"
+    CreditCardProcessor ..> CreditCard : "processes"`,
 		explanation:
 			"This class diagram demonstrates inheritance, interfaces, and composition in a payment processing system.",
 		useCases: ["Payment system design", "OOP architecture", "Design pattern implementation"]
@@ -558,7 +558,7 @@ export const mermaidExamples: MermaidExample[] = [
         -email: string
         -passwordHash: string
         -profile: UserProfile
-        -roles: List~Role~
+        -roles: List<Role>
         -createdAt: DateTime
         -lastLoginAt: DateTime
         +authenticate(password: string): boolean
@@ -582,7 +582,7 @@ export const mermaidExamples: MermaidExample[] = [
         -id: UUID
         -name: string
         -description: string
-        -permissions: List~Permission~
+        -permissions: List<Permission>
         -isActive: boolean
         +hasPermission(permission: Permission): boolean
         +addPermission(permission: Permission): void
@@ -619,12 +619,12 @@ export const mermaidExamples: MermaidExample[] = [
         +resetPassword(email: string): boolean
     }
 
-    User ||--|| UserProfile
-    User }o--o{ Role
-    Role }o--o{ Permission
-    User ||--o{ UserSession
-    AuthenticationService --> User
-    AuthenticationService --> UserSession`,
+    User "1" *-- "1" UserProfile : "has"
+    User "*" -- "*" Role : "has"
+    Role "*" -- "*" Permission : "contains"
+    User "1" -- "*" UserSession : "has"
+    AuthenticationService ..> User : "manages"
+    AuthenticationService ..> UserSession : "manages"`,
 		explanation:
 			"This advanced class diagram shows a complete user management system with roles, permissions, sessions, and authentication services.",
 		useCases: ["User management systems", "RBAC implementation", "Authentication service design"]
@@ -660,7 +660,7 @@ export const mermaidExamples: MermaidExample[] = [
         -id: UUID
         -name: string
         -parentCategory: Category
-        -subcategories: List~Category~
+        -subcategories: List<Category>
         +getFullPath(): string
         +addSubcategory(category: Category): void
     }
@@ -669,9 +669,9 @@ export const mermaidExamples: MermaidExample[] = [
         -id: UUID
         -name: string
         -contactInfo: ContactInfo
-        -products: List~Product~
+        -products: List<Product>
         +addProduct(product: Product): void
-        +getActiveProducts(): List~Product~
+        +getActiveProducts(): List<Product>
     }
 
     class InventoryItem {
@@ -693,7 +693,7 @@ export const mermaidExamples: MermaidExample[] = [
         -name: string
         -location: Address
         -capacity: integer
-        -inventoryItems: List~InventoryItem~
+        -inventoryItems: List<InventoryItem>
         +getTotalItems(): integer
         +getUtilization(): decimal
         +findItem(productId: UUID): InventoryItem
@@ -709,12 +709,11 @@ export const mermaidExamples: MermaidExample[] = [
         -performedBy: string
     }
 
-    Product }o--|| Category
-    Product }o--|| Supplier
-    InventoryItem }o--|| Product
-    InventoryItem }o--|| Warehouse
-    StockMovement }o--|| InventoryItem
-    Warehouse ||--o{ InventoryItem`,
+    Product "*" -- "1" Category : "belongs to"
+    Product "*" -- "1" Supplier : "supplied by"
+    InventoryItem "*" -- "1" Product : "tracks"
+    Warehouse "1" *-- "*" InventoryItem : "contains"
+    StockMovement "*" -- "1" InventoryItem : "records for"`,
 		explanation:
 			"This class diagram models a complete inventory management system with products, categories, suppliers, warehouses, and stock movements.",
 		useCases: ["Inventory system design", "Product management", "Warehouse management systems"]
@@ -1308,7 +1307,7 @@ export const mermaidExamples: MermaidExample[] = [
 			"Learn feature branch workflow",
 			"Practice version control visualization"
 		],
-		diagram: `gitgraph
+		diagram: `gitGraph
     commit id: "Initial Commit"
     commit id: "Setup Project"
 
@@ -1365,7 +1364,7 @@ export const mermaidExamples: MermaidExample[] = [
 			"Learn complex branching strategies",
 			"Practice release branch management"
 		],
-		diagram: `gitgraph
+		diagram: `gitGraph
     commit id: "Initial"
 
     branch develop
@@ -1509,4 +1508,27 @@ export const getDiagramStats = () => {
 	});
 
 	return stats;
+};
+
+export const getRandomDiagram = (): MermaidExample => {
+	const randomIndex = Math.floor(Math.random() * mermaidExamples.length);
+	return mermaidExamples[randomIndex];
+};
+
+export const getRandomDiagramByType = (type: MermaidDiagramType): MermaidExample | null => {
+	const filteredDiagrams = getDiagramsByType(type);
+	if (filteredDiagrams.length === 0) return null;
+
+	const randomIndex = Math.floor(Math.random() * filteredDiagrams.length);
+	return filteredDiagrams[randomIndex];
+};
+
+export const getRandomDiagramByComplexity = (
+	complexity: ComplexityLevel
+): MermaidExample | null => {
+	const filteredDiagrams = getDiagramsByComplexity(complexity);
+	if (filteredDiagrams.length === 0) return null;
+
+	const randomIndex = Math.floor(Math.random() * filteredDiagrams.length);
+	return filteredDiagrams[randomIndex];
 };

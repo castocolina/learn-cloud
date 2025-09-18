@@ -130,18 +130,11 @@
 			{#each results as result, index}
 				{@const { displayTitle, displayDescription, displayContent, template } =
 					formatSearchResult(result)}
-				<article
-					class="group cursor-pointer rounded-lg border border-gray-200 p-4 transition-all duration-200 hover:border-gray-300 hover:shadow-md dark:border-gray-700 dark:hover:border-gray-600"
+				<button
+					type="button"
+					class="group w-full cursor-pointer rounded-lg border border-gray-200 p-4 text-left transition-all duration-200 hover:border-gray-300 hover:shadow-md dark:border-gray-700 dark:hover:border-gray-600"
 					onclick={() => handleResultClick(result)}
-					role="button"
-					tabindex="0"
 					aria-label={getResultAriaLabel(result)}
-					onkeydown={(e) => {
-						if (e.key === "Enter" || e.key === " ") {
-							e.preventDefault();
-							handleResultClick(result);
-						}
-					}}
 				>
 					<div class="flex items-start gap-3">
 						<!-- Type Icon -->
@@ -233,7 +226,7 @@
 							</div>
 						</div>
 					</div>
-				</article>
+				</button>
 			{/each}
 		</div>
 
@@ -266,21 +259,22 @@
 	.line-clamp-2 {
 		display: -webkit-box;
 		-webkit-line-clamp: 2;
+		line-clamp: 2;
 		-webkit-box-orient: vertical;
 		overflow: hidden;
 	}
 
-	/* Smooth hover transitions */
-	article {
+	/* Smooth hover transitions - updated for button elements */
+	button {
 		transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 	}
 
-	article:hover {
+	button:hover {
 		transform: translateY(-1px);
 	}
 
 	/* Focus styles for accessibility */
-	article:focus {
+	button:focus {
 		outline: 2px solid #3b82f6;
 		outline-offset: 2px;
 	}

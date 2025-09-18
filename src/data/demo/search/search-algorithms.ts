@@ -72,7 +72,7 @@ export class SearchEngine {
 		const searchTerms = searchTerm.split(/\s+/);
 
 		// Filter items based on filters
-		let filteredItems = this.applyFilters(items, filters);
+		const filteredItems = this.applyFilters(items, filters);
 
 		// Score and rank results
 		const scoredResults = filteredItems
