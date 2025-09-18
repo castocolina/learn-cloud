@@ -755,6 +755,230 @@ This pattern should be applied to all future data generation systems to maintain
 
 ---
 
+## CODE BLOCK ESCAPING STRATEGY FOR DATA GENERATION
+
+### Problem Context
+
+When generating TypeScript data files containing code snippets as string literals, special characters within the code must be properly handled to ensure syntactic validity of the generated TypeScript file. This is a critical requirement for maintaining code quality and preventing compilation errors.
+
+### Chosen Strategy: ts-morph AST Manipulation
+
+**Rationale**: Using `ts-morph` (available as `"ts-morph": "^27.0.0"` in project dependencies) provides the most robust solution for programmatically generating TypeScript code with embedded string literals.
+
+**Key Benefits**:
+
+1. **AST-Based Approach**: Manipulates TypeScript Abstract Syntax Tree directly, eliminating manual escaping errors
+2. **Built-in Validation**: Ensures generated TypeScript is syntactically correct at the AST level
+3. **Type Safety**: Leverages TypeScript compiler's validation during code generation
+4. **Maintainability**: More robust and maintainable than manual string manipulation
+5. **Future-Proof**: Reusable infrastructure for ongoing content generation tasks
+
+**Implementation Pattern**:
+
+```typescript
+import { Project, VariableDeclarationKind } from "ts-morph";
+
+// Create ts-morph project instance
+const project = new Project();
+const sourceFile = project.createSourceFile("code-examples.ts");
+
+// Add interfaces and types
+sourceFile.addInterface({
+	name: "CodeExample",
+	properties: [
+		{ name: "title", type: "string" },
+		{ name: "language", type: "Language" }
+		// ... other properties
+	]
+});
+
+// Add code examples using AST manipulation
+sourceFile.addVariableStatement({
+	declarationKind: VariableDeclarationKind.Const,
+	declarations: [
+		{
+			name: "codeExamples",
+			type: "CodeExample[]",
+			initializer: (writer) => {
+				writer.write("[");
+				// Add array elements programmatically
+				writer.write("]");
+			}
+		}
+	]
+});
+```
+
+**String Literal Handling**:
+
+- **Template Literals**: Use `writer.write()` with template literals for multi-line code
+- **Automatic Escaping**: ts-morph handles all necessary character escaping automatically
+- **Validation**: Built-in TypeScript compilation validation ensures correctness
+
+**Alternative Approaches Considered**:
+
+1. **Manual Template Literals**: Requires manual escaping of backticks, `${}`, and backslashes - error-prone
+2. **JSON.stringify()**: Handles escaping automatically but reduces readability significantly
+3. **External File References**: Would complicate deployment and maintenance
+
+**Usage Context**: Applied in `src/data/demo/content/code/code-examples.ts` and should be the standard approach for all future code snippet data generation in the project.
+
+**Validation Workflow**:
+
+1. Generate TypeScript file using ts-morph
+2. Run `pnpm run check` to validate TypeScript compilation
+3. Run `pnpm run format` for consistent formatting
+4. Run `pnpm run lint` for code quality validation
+
+---
+
+## CODE EXAMPLES SHOWCASE ARCHITECTURE
+
+### Component Overview
+
+The Interactive Code Examples Showcase is implemented as a comprehensive system providing syntax-highlighted code examples with advanced filtering, search, and copy functionality.
+
+**Core Components**:
+
+1. **CodeBlock.svelte** (`src/lib/components/demo/ui/CodeBlock.svelte`)
+2. **CodeExamplesShowcase.svelte** (`src/lib/components/demo/CodeExamplesShowcase.svelte`)
+3. **Code Examples Utilities** (`src/data/demo/content/code/code-examples-utils.ts`)
+
+### CodeBlock Component
+
+**Purpose**: Renders individual code examples with Shiki syntax highlighting, copy functionality, and metadata display.
+
+**Key Features**:
+
+- **Shiki Integration**: Uses `createHighlighter()` with light/dark theme support
+- **Language Mapping**: Supports 18+ programming languages and technologies
+- **Line Numbers**: Optional line number display with mobile optimization
+- **Copy-to-Clipboard**: One-click copying with visual feedback
+- **Collapsible Content**: Show/hide toggle for better UX
+- **Loading States**: Skeleton loading while Shiki initializes
+
+**CSS Architecture**: Follows centralized architecture with `demo-code-` prefixed classes:
+
+```css
+.demo-code-block              /* Main container */
+.demo-code-header             /* Metadata and actions */
+.demo-code-content            /* Code display area */
+.demo-code-complexity-*       /* Complexity level styling */
+.demo-code-lang-*            /* Language-specific styling */
+```
+
+**Props Interface**:
+
+```typescript
+interface Props {
+	example: CodeExample;
+	showLineNumbers?: boolean;
+	showCopyButton?: boolean;
+	showMetadata?: boolean;
+	className?: string;
+}
+```
+
+### CodeExamplesShowcase Component
+
+**Purpose**: Provides a complete interactive showcase for browsing and filtering code examples.
+
+**Key Features**:
+
+- **Advanced Filtering**: By language, complexity, and search terms
+- **Real-time Search**: Instant filtering as user types
+- **Statistics Display**: Example counts by category
+- **Responsive Design**: Mobile-first with collapsible filters
+- **State Management**: Svelte 5 runes (`$state`, `$derived`, `$effect`)
+
+**Filter Architecture**:
+
+- **Language Filters**: Multi-select with counts per language
+- **Complexity Filters**: Beginner, Intermediate, Advanced levels
+- **Search Integration**: Title, description, and language matching
+- **Clear Filters**: One-click reset functionality
+
+**CSS Classes**: Uses `demo-code-showcase-*` prefix for all styling.
+
+### Integration Patterns
+
+**LessonView Integration**:
+
+- **Showcase Detection**: Automatically detects Code Examples Showcase lesson by ID
+- **Random Code Examples**: Displays random example for regular lessons
+- **Conditional Rendering**: Shows appropriate content based on lesson type
+
+**Navigation Integration**:
+
+- **Sidebar Entry**: Added to "Interactive Showcase & Examples" unit
+- **Route Mapping**: `/demo/code-examples` route configuration
+
+### Data Architecture
+
+**Code Examples Structure** (`src/data/demo/content/code/code-examples.ts`):
+
+```typescript
+interface CodeExample {
+	title: string;
+	language: Language;
+	complexity: Complexity;
+	description: string;
+	code: string; // Properly escaped template literals
+}
+```
+
+**Utility Functions** (`code-examples-utils.ts`):
+
+- `getRandomCodeExample()`: Random selection
+- `getRandomCodeExampleByLanguage()`: Language-specific selection
+- `getMultipleRandomCodeExamples()`: Multiple random examples
+- `getCodeExamplesStats()`: Statistics calculation
+
+### Performance Considerations
+
+**Shiki Optimization**:
+
+- **Lazy Loading**: Highlighter initialized on component mount
+- **Theme Caching**: Light/dark themes loaded once
+- **Language Bundle**: Only required languages loaded
+- **Fallback Handling**: Plain text fallback for loading errors
+
+**Filtering Performance**:
+
+- **Reactive Updates**: `$effect` for efficient re-filtering
+- **Derived State**: Computed statistics using `$derived`
+- **Debounced Search**: Immediate filtering without debounce for responsiveness
+
+### Mobile-First Design
+
+**Responsive Breakpoints**:
+
+- **≤480px**: Single column, compact badges, smaller fonts
+- **≤768px**: Stacked controls, vertical stats, simplified filters
+- **>768px**: Multi-column grid, horizontal layouts
+
+**Touch Optimization**:
+
+- **44px minimum** touch targets for buttons
+- **Scroll optimization** for code blocks
+- **Collapsed filters** by default on mobile
+
+### Security Implementation
+
+**XSS Prevention**:
+
+- **Shiki HTML**: Trusted HTML output from Shiki highlighter
+- **User Input Sanitization**: Search terms filtered and escaped
+- **No eval()**: No dynamic code execution
+
+**Copy Functionality**:
+
+- **Clipboard API**: Modern async clipboard with fallback
+- **User Permission**: Handles clipboard permission gracefully
+- **Error Handling**: Fallback to document.execCommand for older browsers
+
+---
+
 ## RECURRING ISSUES REFERENCE
 
 **⚠️ Note:** For bugs and issues that appear multiple times across development sessions, refer to [RECURRING-ISSUES.md](RECURRING-ISSUES.md).

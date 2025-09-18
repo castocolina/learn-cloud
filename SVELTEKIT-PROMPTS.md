@@ -488,8 +488,8 @@ AF02 Agent Task: Generate Extensive Code Examples Library
 
 **Language Distribution:**
 
-- TypeScript/SvelteKit (8 examples: components, stores, actions, utilities)
-- JavaScript (5 examples: async/await, promises, DOM manipulation)
+- TypeScript/SvelteKit (4 examples: components, stores, actions, utilities)
+- JavaScript (4 examples: async/await, promises, DOM manipulation)
 - Python (4 examples: web scraping, data processing, APIs)
 - Go (3 examples: concurrency, REST APIs, CLI tools)
 - Rust (3 examples: memory safety, performance, WebAssembly)

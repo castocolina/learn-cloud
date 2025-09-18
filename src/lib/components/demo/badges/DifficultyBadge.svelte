@@ -43,9 +43,12 @@
 		padding: 0.125rem 0.375rem;
 		border-radius: 4px;
 		font-size: 0.65rem;
-		font-weight: 500;
+		font-weight: 600;
 		text-transform: uppercase;
 		letter-spacing: 0.025em;
+		border: 1px solid transparent;
+		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+		transition: all 0.2s ease;
 	}
 
 	.demo-difficulty-badge--md {
@@ -54,17 +57,36 @@
 	}
 
 	.demo-difficulty-badge--beginner {
-		background: hsl(var(--chart-2) / 0.1);
-		color: hsl(var(--chart-2));
+		background: hsl(142 76% 36% / 0.15);
+		color: hsl(142 76% 36%);
+		border: 1px solid hsl(142 76% 36% / 0.3);
 	}
 
 	.demo-difficulty-badge--intermediate {
-		background: hsl(var(--chart-4) / 0.1);
-		color: hsl(var(--chart-4));
+		background: hsl(38 92% 50% / 0.15);
+		color: hsl(38 92% 50%);
+		border: 1px solid hsl(38 92% 50% / 0.3);
 	}
 
 	.demo-difficulty-badge--advanced {
-		background: hsl(var(--destructive) / 0.1);
-		color: hsl(var(--destructive));
+		background: hsl(0 84% 60% / 0.15);
+		color: hsl(0 84% 60%);
+		border: 1px solid hsl(0 84% 60% / 0.3);
+	}
+
+	/* Dark mode adjustments */
+	:global(.dark) .demo-difficulty-badge--beginner {
+		background: hsl(142 76% 36% / 0.2);
+		color: hsl(142 85% 50%);
+	}
+
+	:global(.dark) .demo-difficulty-badge--intermediate {
+		background: hsl(38 92% 50% / 0.2);
+		color: hsl(38 100% 65%);
+	}
+
+	:global(.dark) .demo-difficulty-badge--advanced {
+		background: hsl(0 84% 60% / 0.2);
+		color: hsl(0 84% 70%);
 	}
 </style>

@@ -89,6 +89,7 @@ src/lib/components/content/
 - **Styling:** Tailwind CSS with component isolation
 - **State Management:** Svelte's built-in reactivity system
 - **Type Safety:** Full TypeScript coverage with interface inheritance
+- **Code Generation:** ts-morph for TypeScript AST manipulation (see [Code Block Escaping Strategy](TECHNICAL-SPECS.md#code-block-escaping-strategy-for-data-generation))
 
 ### Data Structure in src/data/
 

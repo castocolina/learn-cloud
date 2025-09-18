@@ -118,6 +118,22 @@ export const demoSidebarMenu: DemoNavigationStructure = {
 						"Understand different diagram types and use cases",
 						"Practice diagram interpretation and analysis"
 					]
+				},
+				{
+					id: "demo-lesson-showcase-2",
+					title: "Code Examples Showcase",
+					description:
+						"Interactive library of 56+ code examples across multiple programming languages and technologies",
+					url: "/demo/code-examples",
+					contentType: DemoContentType.CODE,
+					duration: "60 min",
+					difficulty: DemoDifficulty.BEGINNER,
+					icon: "💻",
+					learningObjectives: [
+						"Browse comprehensive code examples across technologies",
+						"Filter and search code snippets by language and complexity",
+						"Copy and study production-ready code patterns"
+					]
 				}
 			]
 		},

@@ -151,43 +151,60 @@
 		flex-shrink: 0;
 	}
 
-	/* Badges */
-	.demo-badge {
+	/* Global Badges - Available across all components */
+	:global(.demo-badge) {
 		display: inline-flex;
 		align-items: center;
 		padding: 0.25rem 0.75rem;
 		border-radius: 6px;
 		font-size: 0.75rem;
-		font-weight: 500;
+		font-weight: 600;
 		text-transform: capitalize;
 		white-space: nowrap;
+		border: 1px solid transparent;
+		transition: all 0.2s ease;
 	}
 
-	.demo-badge-type {
+	:global(.demo-badge-type) {
 		background: hsl(var(--primary) / 0.1);
 		color: hsl(var(--primary));
 		border: 1px solid hsl(var(--primary) / 0.2);
 	}
 
-	.demo-badge-basic {
-		border: 1px solid;
-		background: hsl(142, 76%, 36% / 0.1);
+	:global(.demo-badge-beginner),
+	:global(.demo-badge-basic) {
+		background: hsl(142, 76%, 36% / 0.15);
 		color: hsl(142, 76%, 36%);
-		border-color: hsl(142, 76%, 36% / 0.2);
+		border: 1px solid hsl(142, 76%, 36% / 0.3);
 	}
 
-	.demo-badge-intermediate {
-		border: 1px solid;
-		background: hsl(45, 93%, 47% / 0.1);
-		color: hsl(45, 93%, 47%);
-		border-color: hsl(45, 93%, 47% / 0.2);
+	:global(.demo-badge-intermediate) {
+		background: hsl(38, 92%, 50% / 0.15);
+		color: hsl(38, 92%, 50%);
+		border: 1px solid hsl(38, 92%, 50% / 0.3);
 	}
 
-	.demo-badge-advanced {
-		border: 1px solid;
-		background: hsl(0, 84%, 60% / 0.1);
+	:global(.demo-badge-advanced) {
+		background: hsl(0, 84%, 60% / 0.15);
 		color: hsl(0, 84%, 60%);
-		border-color: hsl(0, 84%, 60% / 0.2);
+		border: 1px solid hsl(0, 84%, 60% / 0.3);
+	}
+
+	/* Dark mode adjustments for global badges */
+	:global(.dark .demo-badge-beginner),
+	:global(.dark .demo-badge-basic) {
+		background: hsl(142, 76%, 36% / 0.2);
+		color: hsl(142, 85%, 50%);
+	}
+
+	:global(.dark .demo-badge-intermediate) {
+		background: hsl(38, 92%, 50% / 0.2);
+		color: hsl(38, 100%, 65%);
+	}
+
+	:global(.dark .demo-badge-advanced) {
+		background: hsl(0, 84%, 60% / 0.2);
+		color: hsl(0, 84%, 70%);
 	}
 
 	/* Tags */

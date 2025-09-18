@@ -1,8 +1,11 @@
 <script lang="ts">
 	import { DifficultyBadge, ContentTypeBadge } from "$lib/components/demo";
 	import MermaidShowcase from "./MermaidShowcase.svelte";
+	import CodeExamplesShowcase from "./CodeExamplesShowcase.svelte";
 	import DiagramViewer from "./DiagramViewer.svelte";
+	import CodeBlock from "./ui/CodeBlock.svelte";
 	import { getRandomDiagram } from "../../../data/demo/content/diagrams/mermaid-examples.js";
+	import { getRandomCodeExample } from "../../../data/demo/content/code/code-examples-utils.js";
 	import {
 		Clock,
 		Target,
@@ -29,9 +32,25 @@
 	);
 
 	/**
+	 * Check if this is the Code Examples Showcase lesson
+	 */
+	let isCodeExamplesShowcase = $derived(
+		lesson.id === "demo-lesson-showcase-2" || lesson.title.includes("Code Examples Showcase")
+	);
+
+	/**
 	 * Get a random diagram for regular lessons (not the showcase)
 	 */
-	let randomDiagram = $derived(!isMermaidShowcase ? getRandomDiagram() : null);
+	let randomDiagram = $derived(
+		!isMermaidShowcase && !isCodeExamplesShowcase ? getRandomDiagram() : null
+	);
+
+	/**
+	 * Get a random code example for regular lessons (not the code showcase)
+	 */
+	let randomCodeExample = $derived(
+		!isMermaidShowcase && !isCodeExamplesShowcase ? getRandomCodeExample() : null
+	);
 
 	/**
 	 * Get estimated reading time for description
@@ -222,6 +241,59 @@
 								error logging and diagnostic information for any diagram rendering issues.
 							</p>
 						</div>
+					{:else if isCodeExamplesShowcase}
+						<!-- Code Examples Showcase Content -->
+						<div class="content-block">
+							<h3 class="content-heading">Interactive Code Examples Library</h3>
+							<p class="content-paragraph">
+								Welcome to our comprehensive collection of 56+ production-ready code examples
+								spanning multiple programming languages and technologies. This interactive showcase
+								covers everything from frontend frameworks like Svelte 5 and TypeScript to backend
+								languages like Go, Python, Java, and Rust, plus infrastructure technologies like
+								Terraform, Kubernetes, and Docker.
+							</p>
+							<p class="content-paragraph">
+								Each code example follows <strong>industry best practices</strong> and includes proper
+								syntax highlighting, copy-to-clipboard functionality, and educational metadata. Examples
+								are organized by language, complexity level, and include detailed descriptions to help
+								you understand real-world implementation patterns.
+							</p>
+						</div>
+
+						<!-- Embedded Code Examples Showcase -->
+						<div class="component-container">
+							<CodeExamplesShowcase showStats={true} />
+						</div>
+
+						<!-- Usage Instructions -->
+						<div class="content-block">
+							<h3 class="content-heading">How to Use This Showcase</h3>
+							<p class="content-paragraph">
+								Use the search bar to find specific technologies or concepts, or apply filters by
+								programming language and complexity level. Each code example card includes:
+							</p>
+							<ul class="content-list">
+								<li>
+									<strong>Language and Complexity Badges:</strong> Quick identification of technology
+									and skill level
+								</li>
+								<li><strong>Syntax Highlighting:</strong> Powered by Shiki with theme support</li>
+								<li>
+									<strong>Line Numbers:</strong> Easy reference for discussing specific code sections
+								</li>
+								<li>
+									<strong>Copy to Clipboard:</strong> One-click copying for easy experimentation
+								</li>
+								<li>
+									<strong>Show/Hide Toggle:</strong> Collapsible code blocks for better overview
+								</li>
+							</ul>
+							<p class="content-paragraph">
+								All examples are designed to be <strong>production-ready</strong> and follow security
+								best practices. They're perfect for learning new technologies, understanding implementation
+								patterns, or as starting points for your own projects.
+							</p>
+						</div>
 					{:else}
 						<!-- Default Lesson Content -->
 						<!-- Introduction -->
@@ -272,6 +344,42 @@
 									its concepts relate to the {lesson.title.toLowerCase()} principles we'll explore in
 									the following sections. This visual foundation will help you better understand the
 									theoretical concepts and their practical applications.
+								</p>
+							</div>
+						{/if}
+
+						<!-- Interactive Code Example Section -->
+						{#if randomCodeExample}
+							<div class="content-block">
+								<h3 class="content-heading">Practical Learning: Code Example</h3>
+								<p class="content-paragraph">
+									This lesson includes a practical code example to demonstrate real-world
+									implementation patterns. The example below shows how the concepts from
+									{lesson.title.toLowerCase()} are applied in production environments.
+								</p>
+								<p class="content-paragraph">
+									<strong>Study Tip:</strong> Use the copy button to experiment with this code in your
+									own development environment. Try modifying the example to better understand how the
+									different components work together.
+								</p>
+							</div>
+
+							<!-- Embedded Random Code Example -->
+							<div class="component-container">
+								<CodeBlock
+									example={randomCodeExample}
+									showLineNumbers={true}
+									showCopyButton={true}
+									showMetadata={true}
+								/>
+							</div>
+
+							<div class="content-block">
+								<p class="content-paragraph">
+									<strong>Implementation Notes:</strong> This {randomCodeExample.language} example demonstrates
+									{randomCodeExample.complexity}-level concepts that complement the theoretical
+									knowledge from this lesson. Consider how you might adapt this pattern for your
+									specific use cases and requirements.
 								</p>
 							</div>
 						{/if}
