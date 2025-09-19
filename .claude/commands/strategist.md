@@ -18,6 +18,7 @@ For LLMs with limited context, intelligently select relevant project files using
 
 - **@CLAUDE.md**: Always include (core project rules)
 - **@TECHNICAL-SPECS.md**: Frontend/UI/build issues
+- **@SVELTEKIT-GUIDE.md**: Frontend/UI tasks only
 - **@CONTENT-STANDARDS.md**: Content creation/educational material
 - **@MERMAID-STANDARDS.md**: Diagram-related tasks only
 - **@RECURRING-ISSUES.md**: Debugging/troubleshooting only

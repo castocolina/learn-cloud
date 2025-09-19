@@ -152,35 +152,156 @@ The `lib` directory serves as the component library and utility hub:
 </script>
 ```
 
-**Component Props Pattern**:
+#### Enum-First TypeScript Patterns
+
+**Critical Architecture Pattern**: Use TypeScript enums as the single source of truth for all string values. Never use hardcoded strings in components, types, or logic.
+
+**Content Type System**:
 
 ```typescript
-// Define interfaces in separate files for reusability
+// src/data/types.ts - Core type system with enums
+
+export enum ContentStatus {
+	SCAFFOLD = "scaffold",
+	DRAFT = "draft",
+	FINAL = "final"
+}
+
+export enum ChapterType {
+	LESSON = "lesson",
+	STUDY_GUIDE = "study_guide",
+	QUIZ = "quiz",
+	EXAM = "exam",
+	PROJECT = "project"
+}
+
+export enum ContentSection {
+	INTRODUCTION = "introduction",
+	THEORY = "theory",
+	PRACTICE = "practice",
+	ASSESSMENT = "assessment",
+	SUMMARY = "summary"
+}
+
+export enum ProgressStatus {
+	NOT_STARTED = "not_started",
+	IN_PROGRESS = "in_progress",
+	COMPLETED = "completed",
+	REVIEW = "review"
+}
+
+// Base interfaces using enums
+export interface ContentMetadata {
+	id: string;
+	title: string;
+	status: ContentStatus;
+	type: ChapterType;
+	created: string;
+	lastModified: string;
+	author: string;
+	tags: string[];
+}
+
+export interface Section {
+	id: string;
+	title: string;
+	type: ContentSection;
+	content: string;
+	order: number;
+}
+
 export interface LessonContent {
-  id: string;
-  title: string;
-  sections: Section[];
-  metadata: ContentMetadata;
+	metadata: ContentMetadata;
+	sections: Section[];
+	prerequisites?: string[];
+	learningObjectives: string[];
 }
 
-// Use interface inheritance
 export interface QuizContent extends LessonContent {
-  questions: Question[];
-  timeLimit?: number;
+	questions: Question[];
+	timeLimit?: number;
+	passingScore: number;
 }
 
-// Component implementation
+export interface ProgressTracking {
+	contentId: string;
+	status: ProgressStatus;
+	completedSections: string[];
+	score?: number;
+	timeSpent: number;
+	lastAccessed: string;
+}
+```
+
+**Enum-Based Component Props**:
+
+```typescript
+// Component implementation using enum constraints
 <script lang="ts">
-  import type { LessonContent } from '$lib/types';
+  import { ContentStatus, ChapterType } from '$data/types.js';
+  import type { LessonContent } from '$data/types.js';
 
   interface Props {
     content: LessonContent;
-    onComplete?: () => void;
+    onComplete?: (status: ContentStatus) => void;
+    displayMode?: ChapterType;
   }
 
-  let { content, onComplete }: Props = $props();
+  let { content, onComplete, displayMode = ChapterType.LESSON }: Props = $props();
+
+  // Type-safe status updates using enums
+  function updateStatus(newStatus: ContentStatus) {
+    onComplete?.(newStatus);
+  }
+
+  // Conditional rendering based on enum values
+  let isQuizMode = $derived(displayMode === ChapterType.QUIZ);
+  let isStudyMode = $derived(displayMode === ChapterType.STUDY_GUIDE);
 </script>
 ```
+
+**Enum-Based Routing and Navigation**:
+
+```typescript
+// src/lib/utils/routing.ts
+export enum AppRoute {
+  HOME = "/",
+  UNITS = "/units",
+  LESSONS = "/lessons",
+  QUIZZES = "/quizzes",
+  PROGRESS = "/progress",
+  SETTINGS = "/settings"
+}
+
+export enum LessonRoute {
+  OVERVIEW = "overview",
+  CONTENT = "content",
+  PRACTICE = "practice",
+  ASSESSMENT = "assessment"
+}
+
+// Type-safe URL generation
+export function generateLessonUrl(unitId: string, lessonId: string, section: LessonRoute): string {
+  return `${AppRoute.LESSONS}/${unitId}/${lessonId}#${section}`;
+}
+
+// Component usage
+<script lang="ts">
+  import { AppRoute, LessonRoute } from '$lib/utils/routing.js';
+
+  let currentRoute = $derived(AppRoute.LESSONS);
+  let currentSection = $derived(LessonRoute.CONTENT);
+</script>
+```
+
+**Benefits of Enum-First Approach**:
+
+- **Type Safety**: Compile-time validation of all string values
+- **Refactoring**: Easy to rename values across entire codebase
+- **Autocomplete**: IDE suggestions for all valid options
+- **Consistency**: Single source of truth prevents typos
+- **Documentation**: Enums serve as living documentation
+- **Validation**: Runtime validation using enum values
 
 #### Component Architecture Patterns
 
@@ -473,170 +594,6 @@ Organize settings by functional area:
    	}
    };
    ```
-
-#### Mermaid Diagram Critical Rendering Rules
-
-**🚨 CRITICAL**: Follow these rules exactly to prevent Mermaid rendering failures:
-
-**Rule 1: Double Quote All Text**
-
-```mermaid
-<!-- ✅ CORRECT: All text in double quotes -->
-graph TD
-    A["User Login"] --> B{"Authentication Valid?"}
-    B -->|"Yes"| C["Dashboard Access"]
-    B -->|"No"| D["Error Message"]
-
-<!-- ❌ INCORRECT: Missing quotes causes rendering failure -->
-graph TD
-    A[User Login] --> B{Authentication Valid?}
-    B -->|Yes| C[Dashboard Access]
-    B -->|No| D[Error Message]
-```
-
-**Rule 2: HTML Entity Encoding in Text**
-
-```mermaid
-<!-- ✅ CORRECT: HTML entities for special characters -->
-graph LR
-    A["API Call &lt;request&gt;"] --> B["Process &amp; Validate"]
-    B --> C["Response &lt;data&gt;"]
-
-<!-- ❌ INCORRECT: Raw HTML breaks rendering -->
-graph LR
-    A["API Call <request>"] --> B["Process & Validate"]
-```
-
-**Rule 3: Escape Special Characters**
-
-```mermaid
-<!-- ✅ CORRECT: Escaped quotes and symbols -->
-graph TD
-    A["Function: \"getName()\""] --> B["Return: \"User Name\""]
-
-<!-- ❌ INCORRECT: Unescaped quotes break parsing -->
-graph TD
-    A["Function: "getName()""] --> B["Return: "User Name""]
-```
-
-**Rule 4: Consistent Node Shape Syntax**
-
-```mermaid
-<!-- ✅ CORRECT: Consistent bracket usage -->
-graph TB
-    A["Rectangle Node"]     <!-- Rectangle: [] -->
-    B("Round Edge Node")    <!-- Round edges: () -->
-    C{"Diamond Node"}       <!-- Diamond: {} -->
-    D[["Stadium Node"]]     <!-- Stadium: [[]] -->
-    E[("Circle Node")]      <!-- Circle: [()] -->
-
-<!-- ❌ INCORRECT: Mixed or incorrect bracket usage -->
-graph TB
-    A["Rectangle Node"]
-    B("Round Edge Node"
-    C{Diamond Node}         <!-- Missing closing quote -->
-```
-
-**Rule 5: Link Text Format**
-
-```mermaid
-<!-- ✅ CORRECT: Proper link text syntax -->
-graph LR
-    A["Start"] -->|"Process Data"| B["Middle"]
-    B -.->|"Optional Flow"| C["End"]
-
-<!-- ❌ INCORRECT: Missing quotes on link text -->
-graph LR
-    A["Start"] -->|Process Data| B["Middle"]
-```
-
-**Validation Checklist**:
-
-- ✅ All node text enclosed in double quotes
-- ✅ All link text enclosed in double quotes
-- ✅ HTML entities used for `<`, `>`, `&` characters
-- ✅ Escaped quotes within text using `\"`
-- ✅ Consistent bracket syntax for node shapes
-- ✅ No raw HTML tags in text content
-
-**Testing Command**:
-
-```bash
-# Validate Mermaid syntax before implementation
-pnpm run dev  # Check rendering in browser console for errors
-```
-
-### Component Libraries
-
-#### Recommended Svelte Component Libraries (2025)
-
-Based on industry research and flexibility requirements:
-
-**1. shadcn-svelte** (Primary Choice)
-
-- **Pros**: Copy-paste system, full customization, Tailwind integration
-- **Use Case**: Core UI components (buttons, cards, modals, forms)
-- **Installation**: `pnpm dlx shadcn-svelte@latest add [component]`
-- **Theming**: Built-in theme system with CSS variable support
-
-**2. Melt UI** (Headless & Maximum Flexibility)
-
-- **Pros**: Headless components, complete customization, accessibility-first
-- **Use Case**: Complex interactive components requiring custom styling
-- **Best For**: Advanced developers who need complete control
-
-**3. Bits UI** (Built on Melt UI)
-
-- **Pros**: Headless primitives, Melt UI foundation, zero styling
-- **Use Case**: When you need accessible primitives without opinions
-
-**4. Skeleton** (Comprehensive Design System)
-
-- **Pros**: Complete design system, Tailwind integration, Svelte-native
-- **Use Case**: Rapid prototyping, consistent design language
-- **Best For**: Teams wanting opinionated but flexible components
-
-**5. Flowbite-Svelte**
-
-- **Pros**: 60+ components, Tailwind styling, well-documented
-- **Use Case**: Traditional component library approach
-- **Best For**: Developers familiar with Bootstrap-style libraries
-
-#### Selection Strategy
-
-**Priority Order**:
-
-1. Check **shadcn-svelte** component availability
-2. If not available, evaluate **Melt UI** for headless approach
-3. Consider **Skeleton** for design system consistency
-4. Build custom component as last resort
-
-**Compatibility Matrix**:
-
-| Library       | Svelte 5 | TypeScript | Tailwind v4 | Theming   | Accessibility |
-| ------------- | -------- | ---------- | ----------- | --------- | ------------- |
-| shadcn-svelte | ✅       | ✅         | ✅          | Excellent | Excellent     |
-| Melt UI       | ✅       | ✅         | ✅          | Maximum   | Excellent     |
-| Bits UI       | ✅       | ✅         | ✅          | Complete  | Excellent     |
-| Skeleton      | ✅       | ✅         | ⚠️          | Good      | Good          |
-| Flowbite      | ✅       | ✅         | ⚠️          | Limited   | Good          |
-
-**Integration Example**:
-
-```typescript
-// Multi-library integration strategy
-import { Button } from "$lib/components/ui/button"; // shadcn-svelte
-import { createDialog } from "@melt-ui/svelte"; // Melt UI for complex modal
-import { Progress } from "$lib/components/ui/progress"; // shadcn-svelte
-
-// Custom wrapper for educational components
-interface LearningButtonProps {
-	variant: "lesson" | "quiz" | "study-guide";
-	progress?: number;
-}
-
-let { variant, progress }: LearningButtonProps = $props();
-```
 
 ---
 
