@@ -84,7 +84,7 @@ export const demoSidebarMenu: DemoNavigationStructure = {
 	metadata: {
 		title: "Cloud-Native Technologies Mastery Course",
 		totalUnits: 13,
-		totalLessons: 96,
+		totalLessons: 97,
 		description: "Comprehensive learning platform for cloud-native development and deployment"
 	},
 	units: [
@@ -133,6 +133,22 @@ export const demoSidebarMenu: DemoNavigationStructure = {
 						"Browse comprehensive code examples across technologies",
 						"Filter and search code snippets by language and complexity",
 						"Copy and study production-ready code patterns"
+					]
+				},
+				{
+					id: "demo-lesson-showcase-3",
+					title: "Interactive Flip Cards Showcase",
+					description:
+						"Educational flip cards for cloud-native concepts with 3D animations, progress tracking, and interactive learning",
+					url: "/demo/flip-cards",
+					contentType: DemoContentType.INTERACTIVE,
+					duration: "30 min",
+					difficulty: DemoDifficulty.BEGINNER,
+					icon: "🎴",
+					learningObjectives: [
+						"Master cloud-native concepts through interactive flip cards",
+						"Track learning progress with built-in educational metrics",
+						"Experience 3D flip animations and mobile-first responsive design"
 					]
 				}
 			]

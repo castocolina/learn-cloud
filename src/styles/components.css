@@ -1,0 +1,723 @@
+/**
+ * Demo Flip Card Component Styles
+ * Following centralized CSS architecture with demo-flipcard- prefixed classes
+ * Mobile-first responsive design with 3D animations
+ */
+
+@layer components {
+	/* =====================================================
+     DEMO FLIP CARD CONTAINER & 3D PERSPECTIVE
+     ===================================================== */
+
+	.demo-flipcard-container {
+		@apply grid gap-6;
+		/* Mobile: Single column, larger screens: responsive grid */
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	}
+
+	.demo-flipcard {
+		@apply relative w-full cursor-pointer;
+		height: 240px;
+		perspective: 1000px;
+		transition: transform 0.2s ease;
+	}
+
+	.demo-flipcard:hover {
+		@apply -translate-y-1;
+	}
+
+	.demo-flipcard:focus-visible {
+		@apply outline-2 outline-offset-2 outline-blue-500;
+	}
+
+	/* =====================================================
+     3D FLIP ANIMATION INNER CONTAINER
+     ===================================================== */
+
+	.demo-flipcard-inner {
+		@apply relative h-full w-full transition-transform duration-600 ease-in-out;
+		transform-style: preserve-3d;
+	}
+
+	.demo-flipcard.flipped .demo-flipcard-inner {
+		transform: rotateY(180deg);
+	}
+
+	/* =====================================================
+     FRONT AND BACK FACE STYLING
+     ===================================================== */
+
+	.demo-flipcard-front,
+	.demo-flipcard-back {
+		@apply absolute inset-0 flex h-full w-full flex-col rounded-lg border p-6 shadow-md;
+		backface-visibility: hidden;
+		-webkit-backface-visibility: hidden;
+	}
+
+	.demo-flipcard-front {
+		@apply border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-100 text-blue-900;
+		background: linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(var(--primary) / 0.05));
+		border-color: hsl(var(--border));
+		color: hsl(var(--foreground));
+	}
+
+	.dark .demo-flipcard-front {
+		@apply border-blue-800 from-blue-900/20 to-indigo-900/20 text-blue-100;
+	}
+
+	.demo-flipcard-back {
+		@apply border-green-200 bg-gradient-to-br from-green-50 to-emerald-100 text-green-900;
+		transform: rotateY(180deg);
+		background: linear-gradient(135deg, hsl(var(--secondary) / 0.1), hsl(var(--secondary) / 0.05));
+		border-color: hsl(var(--border));
+		color: hsl(var(--foreground));
+	}
+
+	.dark .demo-flipcard-back {
+		@apply border-green-800 from-green-900/20 to-emerald-900/20 text-green-100;
+	}
+
+	/* =====================================================
+     CONTENT LAYOUT AND TYPOGRAPHY
+     ===================================================== */
+
+	.demo-flipcard-header {
+		@apply mb-4 flex items-start justify-between;
+	}
+
+	.demo-flipcard-question,
+	.demo-flipcard-answer {
+		@apply text-lg leading-tight font-semibold;
+	}
+
+	.demo-flipcard-content {
+		@apply flex-1 overflow-y-auto text-sm leading-relaxed;
+	}
+
+	.demo-flipcard-content p {
+		@apply mb-3 last:mb-0;
+	}
+
+	.demo-flipcard-content strong {
+		@apply font-semibold;
+		color: hsl(var(--primary));
+	}
+
+	.demo-flipcard-content code {
+		@apply rounded px-1.5 py-0.5 font-mono text-xs;
+		background: hsl(var(--muted));
+		color: hsl(var(--foreground));
+	}
+
+	/* =====================================================
+     METADATA AND BADGES
+     ===================================================== */
+
+	.demo-flipcard-metadata {
+		@apply mt-4 flex flex-wrap gap-2 border-t pt-4;
+		border-color: hsl(var(--border) / 0.5);
+	}
+
+	.demo-flipcard-badge {
+		@apply rounded-full px-2 py-1 text-xs font-medium;
+	}
+
+	.demo-flipcard-badge--category {
+		@apply border border-blue-200 bg-blue-100 text-blue-800;
+	}
+
+	.dark .demo-flipcard-badge--category {
+		@apply border-blue-800 bg-blue-900/50 text-blue-200;
+	}
+
+	.demo-flipcard-badge--complexity {
+		@apply border;
+	}
+
+	.demo-flipcard-badge--beginner {
+		@apply border-green-200 bg-green-100 text-green-800;
+	}
+
+	.dark .demo-flipcard-badge--beginner {
+		@apply border-green-800 bg-green-900/50 text-green-200;
+	}
+
+	.demo-flipcard-badge--intermediate {
+		@apply border-yellow-200 bg-yellow-100 text-yellow-800;
+	}
+
+	.dark .demo-flipcard-badge--intermediate {
+		@apply border-yellow-800 bg-yellow-900/50 text-yellow-200;
+	}
+
+	.demo-flipcard-badge--advanced {
+		@apply border-red-200 bg-red-100 text-red-800;
+	}
+
+	.dark .demo-flipcard-badge--advanced {
+		@apply border-red-800 bg-red-900/50 text-red-200;
+	}
+
+	/* =====================================================
+     PROGRESS INDICATORS
+     ===================================================== */
+
+	.demo-flipcard-progress {
+		@apply mt-3 flex items-center gap-2 text-xs;
+		color: hsl(var(--muted-foreground));
+	}
+
+	.demo-flipcard-progress-dot {
+		@apply h-2 w-2 rounded-full transition-colors;
+	}
+
+	.demo-flipcard-progress-dot--viewed {
+		@apply bg-blue-500;
+	}
+
+	.demo-flipcard-progress-dot--flipped {
+		@apply bg-green-500;
+	}
+
+	.demo-flipcard-progress-dot--mastered {
+		@apply bg-purple-500;
+	}
+
+	.demo-flipcard-progress-dot--default {
+		background: hsl(var(--muted-foreground) / 0.3);
+	}
+
+	/* =====================================================
+     ACTION BUTTONS AND CONTROLS
+     ===================================================== */
+
+	.demo-flipcard-controls {
+		@apply absolute top-2 right-2 flex gap-1;
+		z-index: 10;
+	}
+
+	.demo-flipcard-button {
+		@apply flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border transition-all duration-200;
+		background: hsl(var(--background) / 0.9);
+		border-color: hsl(var(--border));
+		color: hsl(var(--muted-foreground));
+	}
+
+	.demo-flipcard-button:hover {
+		@apply scale-110;
+		background: hsl(var(--background));
+		color: hsl(var(--foreground));
+		box-shadow: 0 4px 12px hsl(var(--primary) / 0.15);
+	}
+
+	.demo-flipcard-button:focus-visible {
+		@apply outline-2 outline-offset-2 outline-blue-500;
+	}
+
+	.demo-flipcard-button--primary {
+		background: hsl(var(--primary));
+		color: hsl(var(--primary-foreground));
+		border-color: hsl(var(--primary));
+	}
+
+	.demo-flipcard-button--primary:hover {
+		background: hsl(var(--primary) / 0.9);
+	}
+
+	/* =====================================================
+     EDUCATIONAL FEATURES
+     ===================================================== */
+
+	.demo-flipcard-learning-time {
+		@apply flex items-center gap-1 text-xs;
+		color: hsl(var(--muted-foreground));
+	}
+
+	.demo-flipcard-tags {
+		@apply mt-2 flex flex-wrap gap-1;
+	}
+
+	.demo-flipcard-tag {
+		@apply rounded px-1.5 py-0.5 text-xs;
+		background: hsl(var(--muted) / 0.5);
+		color: hsl(var(--muted-foreground));
+	}
+
+	/* =====================================================
+     MOBILE RESPONSIVENESS (≤390px)
+     ===================================================== */
+
+	@media (max-width: 390px) {
+		.demo-flipcard-container {
+			@apply grid-cols-1 gap-4;
+		}
+
+		.demo-flipcard {
+			height: 220px;
+		}
+
+		.demo-flipcard-front,
+		.demo-flipcard-back {
+			@apply p-4;
+		}
+
+		.demo-flipcard-question,
+		.demo-flipcard-answer {
+			@apply text-base;
+		}
+
+		.demo-flipcard-content {
+			@apply text-sm;
+		}
+
+		.demo-flipcard-metadata {
+			@apply mt-3 pt-3;
+		}
+
+		.demo-flipcard-controls {
+			@apply top-1 right-1;
+		}
+
+		.demo-flipcard-button {
+			@apply h-7 w-7;
+		}
+	}
+
+	/* =====================================================
+     KEYBOARD NAVIGATION AND ACCESSIBILITY
+     ===================================================== */
+
+	.demo-flipcard[tabindex]:focus {
+		@apply outline-none;
+	}
+
+	.demo-flipcard[tabindex]:focus-visible {
+		@apply ring-2 ring-blue-500 ring-offset-2;
+	}
+
+	/* =====================================================
+     INTERACTION STATES AND ANIMATIONS
+     ===================================================== */
+
+	.demo-flipcard--flipping .demo-flipcard-inner {
+		@apply pointer-events-none;
+	}
+
+	.demo-flipcard:active {
+		@apply scale-98;
+	}
+
+	/* Smooth transitions for all interactive elements */
+	.demo-flipcard,
+	.demo-flipcard-inner,
+	.demo-flipcard-front,
+	.demo-flipcard-back,
+	.demo-flipcard-button {
+		transition-property: transform, background-color, border-color, color, box-shadow;
+		transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	/* =====================================================
+     RTLR (Right-to-Left) SUPPORT
+     ===================================================== */
+
+	[dir="rtl"] .demo-flipcard-inner {
+		transform-origin: right center;
+	}
+
+	[dir="rtl"] .demo-flipcard.flipped .demo-flipcard-inner {
+		transform: rotateY(-180deg);
+	}
+
+	[dir="rtl"] .demo-flipcard-back {
+		transform: rotateY(-180deg);
+	}
+
+	/* =====================================================
+	     FLIP CARD SHOWCASE STYLES
+	     ===================================================== */
+
+	.demo-flipcard-showcase {
+		@apply mx-auto max-w-4xl space-y-8 p-6;
+	}
+
+	/* Header Section */
+	.demo-flipcard-showcase-header {
+		@apply space-y-6;
+	}
+
+	.demo-flipcard-showcase-title-section {
+		@apply text-center;
+	}
+
+	.demo-flipcard-showcase-title {
+		@apply mb-4 text-3xl font-bold;
+		color: hsl(var(--foreground));
+	}
+
+	.demo-flipcard-showcase-description {
+		@apply mx-auto max-w-3xl text-lg leading-relaxed;
+		color: hsl(var(--muted-foreground));
+	}
+
+	.demo-flipcard-showcase-stats {
+		@apply flex justify-center gap-8;
+	}
+
+	.demo-flipcard-stat-card {
+		@apply rounded-lg border p-4 text-center;
+		background: hsl(var(--card));
+		border-color: hsl(var(--border));
+	}
+
+	.demo-flipcard-stat-number {
+		@apply text-2xl font-bold;
+		color: hsl(var(--primary));
+	}
+
+	.demo-flipcard-stat-label {
+		@apply mt-1 text-sm;
+		color: hsl(var(--muted-foreground));
+	}
+
+	/* Controls Section */
+	.demo-flipcard-showcase-controls {
+		@apply flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between;
+	}
+
+	.demo-flipcard-search-section {
+		@apply max-w-md flex-1;
+	}
+
+	.demo-flipcard-search-input-wrapper {
+		@apply relative;
+	}
+
+	.demo-flipcard-search-icon {
+		@apply absolute top-1/2 left-3 -translate-y-1/2 transform;
+		color: hsl(var(--muted-foreground));
+	}
+
+	.demo-flipcard-search-input {
+		@apply w-full rounded-lg border py-2 pr-4 pl-10;
+		background: hsl(var(--background));
+		border-color: hsl(var(--border));
+		color: hsl(var(--foreground));
+	}
+
+	.demo-flipcard-search-input:focus {
+		@apply ring-2 outline-none;
+		ring-color: hsl(var(--primary));
+	}
+
+	.demo-flipcard-filter-section {
+		@apply relative;
+	}
+
+	.demo-flipcard-filter-toggle {
+		@apply flex items-center gap-2 rounded-lg border px-4 py-2 transition-colors;
+		background: hsl(var(--background));
+		border-color: hsl(var(--border));
+		color: hsl(var(--foreground));
+	}
+
+	.demo-flipcard-filter-toggle:hover {
+		background: hsl(var(--muted));
+	}
+
+	.demo-flipcard-filter-panel {
+		@apply absolute top-full right-0 z-20 mt-2 min-w-80 rounded-lg border p-4 shadow-lg;
+		background: hsl(var(--background));
+		border-color: hsl(var(--border));
+	}
+
+	.demo-flipcard-filter-group {
+		@apply mb-4 last:mb-0;
+	}
+
+	.demo-flipcard-filter-label {
+		@apply mb-2 block text-sm font-medium;
+		color: hsl(var(--foreground));
+	}
+
+	.demo-flipcard-filter-select {
+		@apply w-full rounded border px-3 py-2;
+		background: hsl(var(--background));
+		border-color: hsl(var(--border));
+		color: hsl(var(--foreground));
+	}
+
+	.demo-flipcard-filter-actions {
+		@apply flex justify-end border-t pt-2;
+		border-color: hsl(var(--border));
+	}
+
+	.demo-flipcard-clear-filters-btn {
+		@apply flex items-center gap-1 rounded px-3 py-1.5 text-sm transition-colors;
+		color: hsl(var(--muted-foreground));
+	}
+
+	.demo-flipcard-clear-filters-btn:hover {
+		color: hsl(var(--foreground));
+		background: hsl(var(--muted));
+	}
+
+	/* Progress Overview */
+	.demo-flipcard-progress-overview {
+		@apply flex flex-col gap-4 rounded-lg border p-4 sm:flex-row sm:items-center sm:justify-between;
+		background: hsl(var(--muted) / 0.3);
+		border-color: hsl(var(--border));
+	}
+
+	.demo-flipcard-progress-stats {
+		@apply flex gap-6;
+	}
+
+	.demo-flipcard-progress-stat {
+		@apply flex items-center gap-2 text-sm;
+		color: hsl(var(--muted-foreground));
+	}
+
+	.demo-flipcard-progress-label {
+		@apply font-medium;
+	}
+
+	.demo-flipcard-progress-value {
+		@apply font-semibold;
+		color: hsl(var(--foreground));
+	}
+
+	.demo-flipcard-reset-progress-btn {
+		@apply rounded border px-4 py-2 text-sm transition-colors;
+		background: hsl(var(--background));
+		border-color: hsl(var(--border));
+		color: hsl(var(--muted-foreground));
+	}
+
+	.demo-flipcard-reset-progress-btn:hover {
+		color: hsl(var(--foreground));
+		background: hsl(var(--muted));
+	}
+
+	/* Results Header */
+	.demo-flipcard-results-header {
+		@apply flex items-center justify-between;
+	}
+
+	.demo-flipcard-results-count {
+		@apply text-xl font-semibold;
+		color: hsl(var(--foreground));
+	}
+
+	.demo-flipcard-clear-search-btn {
+		@apply rounded px-3 py-1.5 text-sm transition-colors;
+		color: hsl(var(--primary));
+	}
+
+	.demo-flipcard-clear-search-btn:hover {
+		background: hsl(var(--primary) / 0.1);
+	}
+
+	/* No Results */
+	.demo-flipcard-no-results {
+		@apply py-16 text-center;
+	}
+
+	.demo-flipcard-no-results-icon {
+		@apply mb-4 text-6xl;
+	}
+
+	.demo-flipcard-no-results-title {
+		@apply mb-2 text-xl font-semibold;
+		color: hsl(var(--foreground));
+	}
+
+	.demo-flipcard-no-results-message {
+		@apply mb-6;
+		color: hsl(var(--muted-foreground));
+	}
+
+	.demo-flipcard-no-results-button {
+		@apply rounded-lg px-6 py-3 transition-colors;
+		background: hsl(var(--primary));
+		color: hsl(var(--primary-foreground));
+	}
+
+	.demo-flipcard-no-results-button:hover {
+		background: hsl(var(--primary) / 0.9);
+	}
+
+	/* Mobile Responsiveness */
+	@media (max-width: 768px) {
+		.demo-flipcard-showcase {
+			@apply space-y-6 p-4;
+		}
+
+		.demo-flipcard-showcase-title {
+			@apply text-2xl;
+		}
+
+		.demo-flipcard-showcase-description {
+			@apply text-base;
+		}
+
+		.demo-flipcard-showcase-stats {
+			@apply grid grid-cols-3 gap-4;
+		}
+
+		.demo-flipcard-showcase-controls {
+			@apply space-y-4;
+		}
+
+		.demo-flipcard-filter-panel {
+			@apply right-0 left-0 min-w-0;
+		}
+
+		.demo-flipcard-progress-stats {
+			@apply flex-col gap-2;
+		}
+
+		.demo-flipcard-results-header {
+			@apply flex-col items-start gap-2;
+		}
+	}
+
+	@media (max-width: 390px) {
+		.demo-flipcard-showcase {
+			@apply space-y-4 p-3;
+		}
+
+		.demo-flipcard-showcase-stats {
+			@apply grid-cols-1 gap-3;
+		}
+
+		.demo-flipcard-stat-card {
+			@apply p-3;
+		}
+
+		.demo-flipcard-progress-overview {
+			@apply p-3;
+		}
+	}
+
+	/* =====================================================
+	     FLIP CARDS PAGE STYLES
+	     ===================================================== */
+
+	.demo-flipcards-page {
+		@apply min-h-screen;
+		background: hsl(var(--background));
+		color: hsl(var(--foreground));
+	}
+
+	/* =====================================================
+	     FLIP CARD MODAL STYLES
+	     ===================================================== */
+
+	/* Modal content container */
+	.demo-flipcard-modal-content {
+		@apply max-h-[85vh] max-w-2xl overflow-y-auto;
+		background: hsl(var(--background)) !important;
+		border: 1px solid hsl(var(--border)) !important;
+		z-index: 9999 !important;
+	}
+
+	/* Modal body */
+	.demo-flipcard-modal-body {
+		@apply space-y-6;
+	}
+
+	/* Modal sections */
+	.demo-flipcard-modal-section {
+		@apply space-y-3;
+	}
+
+	.demo-flipcard-modal-section-title {
+		@apply flex items-center gap-2 text-base font-semibold;
+		color: hsl(var(--foreground));
+	}
+
+	.demo-flipcard-modal-question {
+		@apply rounded-lg p-4 text-lg font-medium;
+		background: hsl(var(--muted) / 0.3);
+		border: 1px solid hsl(var(--border));
+		color: hsl(var(--foreground));
+	}
+
+	.demo-flipcard-modal-answer {
+		@apply rounded-lg p-4 text-base leading-relaxed;
+		background: hsl(var(--card));
+		border: 1px solid hsl(var(--border));
+		color: hsl(var(--foreground));
+	}
+
+	/* Learning objectives */
+	.demo-flipcard-modal-objectives {
+		@apply space-y-2 pl-0;
+		list-style: none;
+	}
+
+	.demo-flipcard-modal-objective {
+		@apply flex items-start gap-2 text-sm;
+		color: hsl(var(--muted-foreground));
+	}
+
+	.demo-flipcard-modal-objective-bullet {
+		@apply mt-0.5 flex-shrink-0 text-base font-bold;
+		color: hsl(var(--primary));
+	}
+
+	/* Modal metadata */
+	.demo-flipcard-modal-metadata {
+		@apply space-y-4 border-t pt-4;
+		border-color: hsl(var(--border));
+	}
+
+	.demo-flipcard-modal-badges {
+		@apply flex flex-wrap gap-2;
+	}
+
+	.demo-flipcard-modal-tags {
+		@apply flex flex-wrap gap-2;
+	}
+
+	.demo-flipcard-modal-stats {
+		@apply flex items-center gap-4 text-sm;
+		color: hsl(var(--muted-foreground));
+	}
+
+	.demo-flipcard-modal-stat {
+		@apply flex items-center gap-1;
+	}
+
+	/* Mobile modal styles */
+	@media (max-width: 768px) {
+		.demo-flipcard-modal-content {
+			@apply max-h-[90vh] max-w-[95vw];
+		}
+
+		.demo-flipcard-modal-question,
+		.demo-flipcard-modal-answer {
+			@apply p-3 text-base;
+		}
+
+		.demo-flipcard-modal-section-title {
+			@apply text-sm;
+		}
+
+		.demo-flipcard-modal-stats {
+			@apply flex-col items-start gap-2;
+		}
+	}
+
+	@media (max-width: 390px) {
+		.demo-flipcard-modal-body {
+			@apply space-y-4;
+		}
+
+		.demo-flipcard-modal-badges,
+		.demo-flipcard-modal-tags {
+			@apply gap-1;
+		}
+	}
+}

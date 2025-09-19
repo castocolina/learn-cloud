@@ -4,8 +4,11 @@
 	import CodeExamplesShowcase from "./CodeExamplesShowcase.svelte";
 	import DiagramViewer from "./DiagramViewer.svelte";
 	import CodeBlock from "./ui/CodeBlock.svelte";
+	import FlipCard from "./FlipCard.svelte";
+	import FlipCardShowcase from "./FlipCardShowcase.svelte";
 	import { getRandomDiagram } from "../../../data/demo/content/diagrams/mermaid-examples.js";
 	import { getRandomCodeExample } from "../../../data/demo/content/code/code-examples-utils.js";
+	import { getRandomFlipCards } from "../../../data/demo/content/flipcards/concept-cards.js";
 	import {
 		Clock,
 		Target,
@@ -50,6 +53,13 @@
 	 */
 	let randomCodeExample = $derived(
 		!isMermaidShowcase && !isCodeExamplesShowcase ? getRandomCodeExample() : null
+	);
+
+	/**
+	 * Get random flip cards for regular lessons (not the showcases)
+	 */
+	let randomFlipCards = $derived(
+		!isMermaidShowcase && !isCodeExamplesShowcase ? getRandomFlipCards(2) : []
 	);
 
 	/**
@@ -380,6 +390,42 @@
 									{randomCodeExample.complexity}-level concepts that complement the theoretical
 									knowledge from this lesson. Consider how you might adapt this pattern for your
 									specific use cases and requirements.
+								</p>
+							</div>
+						{/if}
+
+						<!-- Interactive Flip Cards Section -->
+						{#if randomFlipCards.length > 0}
+							<div class="content-block">
+								<h3 class="content-heading">Interactive Learning: Concept Cards</h3>
+								<p class="content-paragraph">
+									Test your understanding with these interactive flip cards. Each card presents a
+									key concept related to {lesson.title.toLowerCase()} and reveals detailed explanations
+									when clicked. Track your progress as you master each concept.
+								</p>
+								<p class="content-paragraph">
+									<strong>Study Tip:</strong> Click each card to reveal the answer and learning objectives.
+									Use the progress indicators to track which concepts you've viewed, flipped, and mastered.
+									Mark concepts as "mastered" using the eye icon when you feel confident about the topic.
+								</p>
+							</div>
+
+							<!-- Embedded Random Flip Cards -->
+							<div class="component-container">
+								<div class="demo-flipcard-container">
+									{#each randomFlipCards as flipCard (flipCard.id)}
+										<FlipCard card={flipCard} showMetadata={true} showProgress={true} />
+									{/each}
+								</div>
+							</div>
+
+							<div class="content-block">
+								<p class="content-paragraph">
+									<strong>Learning Integration:</strong> These flip cards cover {randomFlipCards
+										.map((card) => card.category.replace(/-/g, " "))
+										.join(" and ")} concepts that directly relate to {lesson.title.toLowerCase()}.
+									Each card includes estimated learning time and learning objectives to help you
+									structure your study sessions effectively.
 								</p>
 							</div>
 						{/if}

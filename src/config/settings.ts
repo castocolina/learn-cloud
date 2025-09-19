@@ -13,6 +13,10 @@ interface AppSettings {
 		modalPagePercent: number; // Viewport percentage for modal dialogs (default: 90)
 		// Add more Mermaid-specific settings here as needed
 	};
+	flipCard: {
+		modalPagePercent: number; // Viewport percentage for flip card modal dialogs (default: 90)
+		// Add more flip card-specific settings here as needed
+	};
 	// Future settings can be grouped here (e.g., api, ui, performance)
 }
 
@@ -21,6 +25,9 @@ export const SETTINGS: AppSettings = {
 	mermaid: {
 		debug: true, // Enabled for development - provides detailed error logging
 		modalPagePercent: 90 // Default modal viewport percentage
+	},
+	flipCard: {
+		modalPagePercent: 90 // Default modal viewport percentage for flip cards
 	}
 };
 
