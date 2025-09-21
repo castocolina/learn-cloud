@@ -303,6 +303,90 @@ export function generateLessonUrl(unitId: string, lessonId: string, section: Les
 - **Documentation**: Enums serve as living documentation
 - **Validation**: Runtime validation using enum values
 
+### **Svelte 5 Reactive Collections: SvelteMap and SvelteSet**
+
+**Critical: Use Svelte's Reactive Collections for State Management**
+
+When working with collections (Map, Set) inside Svelte 5 `$state`, use `SvelteMap` and `SvelteSet` instead of regular `Map` and `Set` to ensure proper reactivity.
+
+**Problem with Regular Collections**:
+
+```typescript
+// ❌ INCORRECT: Regular Map in $state doesn't trigger reactivity on mutations
+let state = $state({
+	answers: new Map<string, unknown>()
+});
+
+function updateAnswer(id: string, value: unknown) {
+	state.answers.set(id, value); // ❌ Doesn't trigger reactivity
+}
+```
+
+**Solution with SvelteMap**:
+
+```typescript
+// ✅ CORRECT: SvelteMap triggers reactivity on mutations
+import { SvelteMap } from "svelte/reactivity";
+
+let state = $state({
+	answers: new SvelteMap<string, unknown>()
+});
+
+function updateAnswer(id: string, value: unknown) {
+	state.answers.set(id, value); // ✅ Triggers reactivity automatically
+}
+```
+
+**Import Pattern**:
+
+```typescript
+import { SvelteMap, SvelteSet } from "svelte/reactivity";
+
+// Use in component state
+let quizState = $state({
+	answers: new SvelteMap<string, unknown>(),
+	selectedOptions: new SvelteSet<string>()
+});
+```
+
+**Derived Reactivity with SvelteMap**:
+
+```typescript
+// Derived values automatically update when SvelteMap changes
+let questionsAnswered = $derived(
+	!quizState.isStarted ? 0 : quiz.questions.filter((q) => quizState.answers.has(q.id)).length
+);
+
+let progressPercentage = $derived(
+	!quizState.isStarted ? 0 : (questionsAnswered / quiz.questions.length) * 100
+);
+```
+
+**TypeScript Interface Support**:
+
+```typescript
+interface QuizState {
+	currentQuestionIndex: number;
+	answers: SvelteMap<string, unknown>; // ✅ Properly typed
+	selectedOptions: SvelteSet<string>; // ✅ Properly typed
+	isStarted: boolean;
+}
+```
+
+**When to Use SvelteMap/SvelteSet**:
+
+- ✅ When collections are part of component state (`$state`)
+- ✅ When you need reactive updates on collection mutations
+- ✅ When derived values depend on collection contents
+- ✅ When collections are passed between components as props
+
+**Benefits**:
+
+- **Automatic Reactivity**: Mutations trigger component re-renders
+- **Derived Value Updates**: `$derived` expressions update when collections change
+- **Type Safety**: Full TypeScript support with proper generics
+- **Performance**: Optimized for Svelte's reactive system
+
 #### Component Architecture Patterns
 
 **Single Responsibility Components**:

@@ -21,74 +21,100 @@
 	--z-toast: 400;
 	--z-debug: 9999;
 
-	/* Theme colors - Stone theme with better contrast */
+	/* Theme colors - Slate palette with excellent contrast */
 	--background: 0 0% 100%;
-	--foreground: 20 14.3% 4.1%;
+	--foreground: 215 28% 17%;
 	--card: 0 0% 100%;
-	--card-foreground: 20 14.3% 4.1%;
+	--card-foreground: 215 28% 17%;
 	--popover: 0 0% 100%;
-	--popover-foreground: 20 14.3% 4.1%;
-	--primary: 24 9.8% 10%;
-	--primary-foreground: 60 9.1% 97.8%;
-	--secondary: 60 4.8% 95.9%;
-	--secondary-foreground: 24 9.8% 10%;
-	--muted: 60 4.8% 95.9%;
-	--muted-foreground: 25 5.3% 44.7%;
-	--accent: 60 4.8% 95.9%;
-	--accent-foreground: 24 9.8% 10%;
+	--popover-foreground: 215 28% 17%;
+	--primary: 215 28% 17%;
+	--primary-foreground: 210 40% 98%;
+	--secondary: 210 40% 96%;
+	--secondary-foreground: 215 28% 17%;
+	--muted: 210 40% 96%;
+	--muted-foreground: 215 16% 47%;
+	--accent: 210 40% 96%;
+	--accent-foreground: 215 28% 17%;
 	--destructive: 0 84.2% 60.2%;
-	--border: 20 5.9% 90%;
-	--input: 20 5.9% 90%;
-	--ring: 20 14.3% 4.1%;
+	--border: 214 32% 91%;
+	--input: 214 32% 91%;
+	--ring: 215 28% 17%;
 	--chart-1: 12 76% 61%;
 	--chart-2: 173 58% 39%;
 	--chart-3: 197 37% 24%;
 	--chart-4: 43 74% 66%;
 	--chart-5: 27 87% 67%;
 	/* Sidebar with better contrast */
-	--sidebar: 60 9.1% 97.8%;
-	--sidebar-foreground: 24 9.8% 10%;
-	--sidebar-primary: 24 9.8% 10%;
-	--sidebar-primary-foreground: 60 9.1% 97.8%;
-	--sidebar-accent: 60 4.8% 95.9%;
-	--sidebar-accent-foreground: 24 9.8% 10%;
-	--sidebar-border: 20 5.9% 90%;
-	--sidebar-ring: 20 14.3% 4.1%;
+	--sidebar: 210 40% 98%;
+	--sidebar-foreground: 215 28% 17%;
+	--sidebar-primary: 215 28% 17%;
+	--sidebar-primary-foreground: 210 40% 98%;
+	--sidebar-accent: 210 40% 96%;
+	--sidebar-accent-foreground: 215 28% 17%;
+	--sidebar-border: 214 32% 91%;
+	--sidebar-ring: 215 28% 17%;
+
+	/* Quiz-specific slate palette */
+	--slate-50: 210 40% 98%;
+	--slate-100: 210 40% 96%;
+	--slate-200: 214 32% 91%;
+	--slate-300: 213 27% 84%;
+	--slate-400: 215 20% 65%;
+	--slate-500: 215 16% 47%;
+	--slate-600: 215 19% 35%;
+	--slate-700: 215 25% 27%;
+	--slate-800: 215 28% 17%;
+	--slate-900: 222 84% 5%;
+	--slate-950: 229 84% 5%;
 }
 
 .dark {
-	--background: 20 14.3% 4.1%;
-	--foreground: 60 9.1% 97.8%;
-	--card: 20 14.3% 4.1%;
-	--card-foreground: 60 9.1% 97.8%;
-	--popover: 20 14.3% 4.1%;
-	--popover-foreground: 60 9.1% 97.8%;
-	--primary: 60 9.1% 97.8%;
-	--primary-foreground: 20 14.3% 4.1%;
-	--secondary: 12 6.5% 15.1%;
-	--secondary-foreground: 60 9.1% 97.8%;
-	--muted: 12 6.5% 15.1%;
-	--muted-foreground: 24 5.4% 63.9%;
-	--accent: 12 6.5% 15.1%;
-	--accent-foreground: 60 9.1% 97.8%;
+	--background: 222 84% 5%;
+	--foreground: 210 40% 98%;
+	--card: 222 84% 5%;
+	--card-foreground: 210 40% 98%;
+	--popover: 222 84% 5%;
+	--popover-foreground: 210 40% 98%;
+	--primary: 210 40% 98%;
+	--primary-foreground: 222 84% 5%;
+	--secondary: 215 28% 17%;
+	--secondary-foreground: 210 40% 98%;
+	--muted: 215 28% 17%;
+	--muted-foreground: 215 20% 65%;
+	--accent: 215 28% 17%;
+	--accent-foreground: 210 40% 98%;
 	--destructive: 0 62.8% 30.6%;
-	--border: 12 6.5% 15.1%;
-	--input: 12 6.5% 15.1%;
-	--ring: 24 5.7% 82.9%;
+	--border: 215 28% 17%;
+	--input: 215 28% 17%;
+	--ring: 215 20% 65%;
 	--chart-1: 220 70% 50%;
 	--chart-2: 160 60% 45%;
 	--chart-3: 30 80% 55%;
 	--chart-4: 280 65% 60%;
 	--chart-5: 340 75% 55%;
-	/* Dark sidebar with strong contrast */
-	--sidebar: 12 6.5% 15.1%;
-	--sidebar-foreground: 60 9.1% 97.8%;
+	/* Dark sidebar with slate theme */
+	--sidebar: 215 28% 17%;
+	--sidebar-foreground: 210 40% 98%;
 	--sidebar-primary: 210 40% 60%;
-	--sidebar-primary-foreground: 60 9.1% 97.8%;
-	--sidebar-accent: 20 14.3% 4.1%;
-	--sidebar-accent-foreground: 60 9.1% 97.8%;
-	--sidebar-border: 12 6.5% 15.1%;
-	--sidebar-ring: 24 5.7% 82.9%;
+	--sidebar-primary-foreground: 210 40% 98%;
+	--sidebar-accent: 222 84% 5%;
+	--sidebar-accent-foreground: 210 40% 98%;
+	--sidebar-border: 215 28% 17%;
+	--sidebar-ring: 215 20% 65%;
+
+	/* Quiz-specific dark slate palette */
+	--slate-50: 222 84% 5%;
+	--slate-100: 215 28% 17%;
+	--slate-200: 215 25% 27%;
+	--slate-300: 215 19% 35%;
+	--slate-400: 215 16% 47%;
+	--slate-500: 215 20% 65%;
+	--slate-600: 213 27% 84%;
+	--slate-700: 214 32% 91%;
+	--slate-800: 210 40% 96%;
+	--slate-900: 210 40% 98%;
+	--slate-950: 210 40% 98%;
 }
 
 @theme inline {

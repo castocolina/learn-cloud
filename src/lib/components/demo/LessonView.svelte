@@ -6,9 +6,11 @@
 	import CodeBlock from "./ui/CodeBlock.svelte";
 	import FlipCard from "./FlipCard.svelte";
 	import FlipCardShowcase from "./FlipCardShowcase.svelte";
+	import QuizRenderer from "./quiz/QuizRenderer.svelte";
 	import { getRandomDiagram } from "../../../data/demo/content/diagrams/mermaid-examples.js";
 	import { getRandomCodeExample } from "../../../data/demo/content/code/code-examples-utils.js";
 	import { getRandomFlipCards } from "../../../data/demo/content/flipcards/concept-cards.js";
+	import { allQuizzes, type Quiz } from "../../../data/demo/content/quizzes/quiz-examples.js";
 	import {
 		Clock,
 		Target,
@@ -42,24 +44,40 @@
 	);
 
 	/**
+	 * Check if this is the Interactive Quiz System lesson
+	 */
+	let isQuizShowcase = $derived(
+		lesson.id === "demo-lesson-showcase-4" || lesson.title.includes("Interactive Quiz System")
+	);
+
+	/**
 	 * Get a random diagram for regular lessons (not the showcase)
 	 */
 	let randomDiagram = $derived(
-		!isMermaidShowcase && !isCodeExamplesShowcase ? getRandomDiagram() : null
+		!isMermaidShowcase && !isCodeExamplesShowcase && !isQuizShowcase ? getRandomDiagram() : null
 	);
 
 	/**
 	 * Get a random code example for regular lessons (not the code showcase)
 	 */
 	let randomCodeExample = $derived(
-		!isMermaidShowcase && !isCodeExamplesShowcase ? getRandomCodeExample() : null
+		!isMermaidShowcase && !isCodeExamplesShowcase && !isQuizShowcase ? getRandomCodeExample() : null
 	);
 
 	/**
 	 * Get random flip cards for regular lessons (not the showcases)
 	 */
 	let randomFlipCards = $derived(
-		!isMermaidShowcase && !isCodeExamplesShowcase ? getRandomFlipCards(2) : []
+		!isMermaidShowcase && !isCodeExamplesShowcase && !isQuizShowcase ? getRandomFlipCards(2) : []
+	);
+
+	/**
+	 * Get a random quiz for the quiz showcase
+	 */
+	let randomQuiz = $derived(
+		isQuizShowcase && allQuizzes.length > 0
+			? allQuizzes[Math.floor(Math.random() * allQuizzes.length)]
+			: null
 	);
 
 	/**
@@ -302,6 +320,74 @@
 								All examples are designed to be <strong>production-ready</strong> and follow security
 								best practices. They're perfect for learning new technologies, understanding implementation
 								patterns, or as starting points for your own projects.
+							</p>
+						</div>
+					{:else if isQuizShowcase}
+						<!-- Interactive Quiz System Content -->
+						<div class="content-block">
+							<h3 class="content-heading">Interactive Quiz System</h3>
+							<p class="content-paragraph">
+								Welcome to our comprehensive quiz system designed for interactive learning and
+								assessment. This system features multiple question types including multiple choice,
+								true/false, drag-and-drop, and code completion questions. Each quiz includes
+								real-time progress tracking, timer functionality, and detailed results analysis.
+							</p>
+							<p class="content-paragraph">
+								The quiz system is built with accessibility in mind, featuring proper ARIA labels,
+								keyboard navigation support, and mobile-first responsive design. All quizzes are
+								automatically scored and provide detailed feedback to help you understand the
+								concepts better.
+							</p>
+						</div>
+
+						<!-- Embedded Quiz Renderer -->
+						{#if randomQuiz}
+							<div class="component-container">
+								<h4 class="content-subheading">Demo Quiz: {randomQuiz.title}</h4>
+								<p class="content-paragraph quiz-intro">
+									{randomQuiz.description}
+								</p>
+								<QuizRenderer
+									quiz={randomQuiz}
+									onComplete={(results: any) => {
+										console.log("Quiz completed:", results);
+									}}
+								/>
+							</div>
+						{/if}
+
+						<!-- Quiz System Features -->
+						<div class="content-block">
+							<h3 class="content-heading">Quiz System Features</h3>
+							<p class="content-paragraph">
+								Our interactive quiz system includes the following advanced features:
+							</p>
+							<ul class="content-list">
+								<li>
+									<strong>Multiple Question Types:</strong> Support for multiple choice, true/false,
+									drag-and-drop, and code completion questions
+								</li>
+								<li>
+									<strong>Real-time Timer:</strong> Optional time limits with visual progress indicators
+								</li>
+								<li>
+									<strong>Progress Tracking:</strong> Visual progress bars and question navigation
+								</li>
+								<li>
+									<strong>Detailed Results:</strong> Comprehensive scoring with performance analysis
+								</li>
+								<li>
+									<strong>Mobile Responsive:</strong> Optimized for all device sizes and orientations
+								</li>
+								<li>
+									<strong>Accessibility Features:</strong> Full keyboard navigation and screen reader
+									support
+								</li>
+							</ul>
+							<p class="content-paragraph">
+								All quizzes are designed to reinforce learning objectives and provide immediate
+								feedback to help you identify areas for improvement and consolidate your
+								understanding.
 							</p>
 						</div>
 					{:else}

@@ -421,6 +421,64 @@ export const quizExample: QuizContent = {
 };
 ```
 
+##### Code Completion Question Standards
+
+For **Code Completion** questions (`QuestionType.CODE_COMPLETION`), strict underscore patterns must be followed:
+
+**Mandatory Standard:**
+
+- **Blank Pattern**: Use exactly **5 underscores** (`_____`) for ALL code completion blanks
+- **Regex Compatibility**: The pattern `/(_{3,})/g` matches 3 or more underscores, ensuring forward compatibility
+- **Consistency**: ALL code completion questions must use the same underscore count to avoid parsing ambiguity
+
+**Example Implementation:**
+
+```typescript
+export const codeCompletionExample: CodeCompletionQuestion = {
+	id: "kb-003",
+	type: QuestionType.CODE_COMPLETION,
+	question: "Complete the Kubernetes YAML configuration:",
+	points: 10,
+	codeSnippet: `apiVersion: apps/v1
+kind: _____
+metadata:
+  name: web-app
+spec:
+  replicas: _____
+  selector:
+    matchLabels:
+      app: _____`,
+	blanks: [
+		{
+			id: "deployment-kind",
+			options: ["Deployment", "Service", "Pod", "ConfigMap"]
+		},
+		{
+			id: "replica-count",
+			options: ["1", "3", "5", "10"]
+		},
+		{
+			id: "app-label",
+			options: ["web-app", "frontend", "backend", "database"]
+		}
+	],
+	correctAnswers: {
+		"deployment-kind": "Deployment",
+		"replica-count": "3",
+		"app-label": "web-app"
+	},
+	explanation: "Kubernetes Deployment with 3 replicas and proper label matching"
+};
+```
+
+**Validation Requirements:**
+
+- ✅ **MUST use**: Exactly 5 underscores (`_____`) per blank
+- ✅ **MUST match**: Number of blanks equals number of `_____` patterns in code snippet
+- ✅ **MUST provide**: Same number of option arrays as blank patterns
+- ❌ **NEVER use**: Inconsistent underscore counts (e.g., `___`, `____`, `______`)
+- ❌ **NEVER mix**: Different underscore patterns within the same question
+
 **Features**:
 
 - Single question display with smooth transitions

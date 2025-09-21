@@ -84,7 +84,7 @@ export const demoSidebarMenu: DemoNavigationStructure = {
 	metadata: {
 		title: "Cloud-Native Technologies Mastery Course",
 		totalUnits: 13,
-		totalLessons: 97,
+		totalLessons: 98,
 		description: "Comprehensive learning platform for cloud-native development and deployment"
 	},
 	units: [
@@ -149,6 +149,22 @@ export const demoSidebarMenu: DemoNavigationStructure = {
 						"Master cloud-native concepts through interactive flip cards",
 						"Track learning progress with built-in educational metrics",
 						"Experience 3D flip animations and mobile-first responsive design"
+					]
+				},
+				{
+					id: "demo-lesson-showcase-4",
+					title: "Interactive Quiz System",
+					description:
+						"Comprehensive quiz system with multiple question types, timers, progress tracking, and detailed results analysis",
+					url: "/demo/quiz",
+					contentType: DemoContentType.INTERACTIVE,
+					duration: "45 min",
+					difficulty: DemoDifficulty.BEGINNER,
+					icon: "📝",
+					learningObjectives: [
+						"Test knowledge with comprehensive interactive quizzes",
+						"Experience multiple question types and timed assessments",
+						"Track performance with detailed analytics and progress indicators"
 					]
 				}
 			]
