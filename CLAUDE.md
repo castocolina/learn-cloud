@@ -2,7 +2,7 @@
 
 > **📚 Documentation Structure:**
 >
-> - **[TECHNICAL-SPECS.md](TECHNICAL-SPECS.md)** - Technical architecture and user experience standards
+> - **[SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md)** - Technical architecture and user experience standards
 > - **[CONTENT-STANDARDS.md](CONTENT-STANDARDS.md)** - Content creation workflows and quality assurance standards
 
 ---
@@ -38,7 +38,7 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 
 ## 2. TECHNICAL ARCHITECTURE
 
-> **📋 Detailed Technical Specifications:** See [TECHNICAL-SPECS.md](TECHNICAL-SPECS.md) for comprehensive technical architecture and user experience standards including:
+> **📋 Detailed Technical Specifications:** See [SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md) for comprehensive technical architecture and user experience standards including:
 >
 > - Technology stack requirements and standardized libraries
 > - File structure and path consistency rules
@@ -99,7 +99,7 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 - **Mobile-First:** Always design and test mobile experience first
 - **shadcn-svelte Priority:** Check component library before building custom components
 
-> **📋 Detailed Technical Specifications:** See [TECHNICAL-SPECS.md](TECHNICAL-SPECS.md) for comprehensive file structure, component development standards, and data loading patterns.
+> **📋 Detailed Technical Specifications:** See [SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md) for comprehensive file structure, component development standards, and data loading patterns.
 
 ### Content Integration Workflow
 
@@ -182,6 +182,26 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 3. **Document:** Add the rule to the appropriate section in CLAUDE.md with clear, actionable language
 4. **Validate:** Ensure the rule doesn't conflict with existing guidelines
 
+**Documentation Architecture Strategy:**
+
+**Inline Documentation Approach:**
+- **Component-Level Documentation:** All component-specific knowledge stored as comprehensive inline comments
+- **Co-location Principle:** Documentation lives alongside implementation for better maintainability
+- **Recurring Issues:** Critical issues and solutions documented directly in affected component files
+- **Technical Architecture:** Consolidated in SVELTEKIT-GUIDE.md for comprehensive reference
+
+**Documentation Distribution:**
+- **SVELTEKIT-GUIDE.md:** Complete technical architecture, development standards, and troubleshooting
+- **CONTENT-STANDARDS.md:** Content creation workflows and quality assurance standards
+- **MERMAID-STANDARDS.md:** Diagram rendering requirements and syntax standards
+- **Component Files:** Specific implementation details, known issues, and architectural decisions
+
+**Issue Documentation Workflow:**
+- **Recurring Issues (2+ occurrences):** Document as inline comments in affected component files
+- **Architecture Patterns:** Add to SVELTEKIT-GUIDE.md for project-wide reference
+- **Component-Specific:** Include in relevant component file headers
+- **Avoid Separate Issue Files:** Do not create standalone documentation files for issues
+
 **Examples of Guidelines That Should Persist:**
 
 - File organization standards (scripts execute from root)
@@ -189,6 +209,7 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 - Validation procedures (always run `pnpm run format`, `pnpm run check`, and `pnpm run lint` after SvelteKit changes)
 - Mobile-first development mandates
 - Security requirements (secure by default, no exposed secrets)
+- Issue documentation co-location (inline comments in affected components)
 
 ---
 
@@ -202,6 +223,7 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 - **SVELTEKIT DEVELOPMENT:** Use components and TypeScript - avoid vanilla HTML/CSS/JS
 - **shadcn-svelte PRIORITY:** Always check component library first before building custom components
 - **SVELTEKIT VALIDATION:** Run `pnpm run format`, `pnpm run check` for TypeScript/component validation, and `pnpm run lint` for code quality
+- **ZERO TOLERANCE POLICY:** NO TypeScript errors, NO warnings, NO unused variables (unless user-requested or ShadCN components), NO deprecated components
 - **AUTOMATED VALIDATION:** ESLint and Prettier handle code formatting and quality automatically
 - **CONTENT VALIDATION:** Use `make content-validate` for JSON structure validation when needed
 - **CONTENT-FIRST:** All new features should consume JSON data from `src/data/` structure

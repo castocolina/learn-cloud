@@ -141,9 +141,8 @@ You are responsible for creating an intelligent documentation system with cross-
 **Technical Documents to Review:**
 
 - `CLAUDE.md` (current structure and guidelines)
-- `TECHNICAL-SPECS.md` (architecture technical standards)
+- `SVELTEKIT-GUIDE.md` (architecture technical standards and development patterns)
 - `CONTENT-STANDARDS.md` (content creation standards)
-- `SVELTEKIT-GUIDE.md` (development patterns)
 - `SEARCH-ARCHITECTURE.md` (search system architecture)
 - `MERMAID-STANDARDS.md` (diagram standards)
 
@@ -581,7 +580,7 @@ You are responsible for designing and implementing SPA architecture with single 
 
 - `src/data/types.ts` (TypeScript foundation)
 - `scripts/content-menu-generator.ts` (content structure)
-- `TECHNICAL-SPECS.md` (technical architecture)
+- `SVELTEKIT-GUIDE.md` (technical architecture)
 - `SVELTEKIT-GUIDE.md` (SvelteKit patterns)
 
 **Prerequisites:**
@@ -632,7 +631,7 @@ You are responsible for implementing robust theme system with CSS custom propert
 
 **Technical Documents to Review:**
 
-- `TECHNICAL-SPECS.md` (CSS architecture standards)
+- `SVELTEKIT-GUIDE.md` (CSS architecture standards)
 - `SVELTEKIT-GUIDE.md` (theme patterns and Tailwind CSS v4 centralized architecture - CRITICAL)
 - `src/routes/+layout.svelte` (layout architecture)
 
@@ -814,7 +813,7 @@ You are responsible for implementing core UI components using shadcn-svelte with
 
 - `src/lib/stores/theme.ts` (theme system)
 - `src/app.css` (centralized CSS architecture)
-- `TECHNICAL-SPECS.md` (component requirements)
+- `SVELTEKIT-GUIDE.md` (component requirements)
 - `SVELTEKIT-GUIDE.md` (component patterns, Svelte 5 runes syntax, enum-first patterns - CRITICAL)
 
 **Prerequisites:**
@@ -1156,7 +1155,7 @@ You are responsible for developing a responsive sidebar navigation component usi
 - `src/data/types.ts` (navigation structure enums from Task 2)
 - `src/lib/components/ui/` (shadcn-svelte components from Task 6)
 - `src/app.css` (centralized CSS architecture from Task 5)
-- `TECHNICAL-SPECS.md` (mobile-first responsive design)
+- `SVELTEKIT-GUIDE.md` (mobile-first responsive design)
 
 **Prerequisites:**
 
@@ -1325,7 +1324,7 @@ You are responsible for developing a sticky header component with proper z-index
 
 - `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and component standards)
 - `RECURRING-ISSUES.md` (z-index hierarchy violations prevention)
-- `TECHNICAL-SPECS.md` (sticky positioning and responsive design)
+- `SVELTEKIT-GUIDE.md` (sticky positioning and responsive design)
 
 **Prerequisites:**
 
@@ -1371,7 +1370,7 @@ You are responsible for developing a dynamic breadcrumb navigation component wit
 
 - `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and enum-based navigation)
 - `src/data/types.ts` (navigation and content type enums)
-- `TECHNICAL-SPECS.md` (hierarchical navigation system)
+- `SVELTEKIT-GUIDE.md` (hierarchical navigation system)
 
 **Prerequisites:**
 
@@ -1418,7 +1417,7 @@ You are responsible for developing comprehensive search functionality with Searc
 - `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and component standards)
 - `scripts/search-indexer.ts` (search foundation from TASK 3D)
 - `SEARCH-ARCHITECTURE.md` (search specifications)
-- `TECHNICAL-SPECS.md` (enhanced search implementation)
+- `SVELTEKIT-GUIDE.md` (enhanced search implementation)
 
 **Prerequisites:**
 
@@ -1466,7 +1465,7 @@ You are responsible for developing a responsive IconGrid component with flipcard
 
 - `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and component standards)
 - `src/lib/components/ui/` (shadcn-svelte components)
-- `TECHNICAL-SPECS.md` (mobile-first responsive design)
+- `SVELTEKIT-GUIDE.md` (mobile-first responsive design)
 
 **Prerequisites:**
 
@@ -1512,7 +1511,7 @@ You are responsible for developing a theme switcher component with light/dark mo
 
 - `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and state management)
 - `src/lib/stores/theme.ts` (theme store integration)
-- `TECHNICAL-SPECS.md` (theme system specifications)
+- `SVELTEKIT-GUIDE.md` (theme system specifications)
 
 **Prerequisites:**
 
@@ -1558,7 +1557,7 @@ You are responsible for developing progress tracking components with visual indi
 
 - `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and derived state)
 - `src/data/types.ts` (progress status enums)
-- `TECHNICAL-SPECS.md` (progress tracking system)
+- `SVELTEKIT-GUIDE.md` (progress tracking system)
 
 **Prerequisites:**
 
@@ -1606,7 +1605,7 @@ You are responsible for developing modal dialog components using shadcn-svelte D
 - `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and component standards)
 - `RECURRING-ISSUES.md` (stacking context issues prevention)
 - `src/lib/components/ui/` (shadcn-svelte Dialog components)
-- `TECHNICAL-SPECS.md` (modal system specifications)
+- `SVELTEKIT-GUIDE.md` (modal system specifications)
 
 **Prerequisites:**
 
@@ -1748,7 +1747,7 @@ You are responsible for developing interactive flipcard/flashcard components for
 
 - `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and animation patterns)
 - `src/data/types.ts` (ChapterType.STUDY_GUIDE enum)
-- `TECHNICAL-SPECS.md` (interactive component specifications)
+- `SVELTEKIT-GUIDE.md` (interactive component specifications)
 
 **Prerequisites:**
 
@@ -1804,7 +1803,7 @@ You are responsible for developing enhanced code block components with Shiki syn
 **Technical Documents to Review:**
 
 - `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and component standards)
-- `TECHNICAL-SPECS.md` (code highlighting specifications)
+- `SVELTEKIT-GUIDE.md` (code highlighting specifications)
 - `src/lib/components/ui/` (shadcn-svelte components)
 
 **Prerequisites:**
@@ -1923,7 +1922,7 @@ You are responsible for developing popover components using shadcn-svelte Popove
 - `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and component standards)
 - `RECURRING-ISSUES.md` (z-index hierarchy violations prevention)
 - `src/lib/components/ui/` (shadcn-svelte Popover components)
-- `TECHNICAL-SPECS.md` (popover system specifications)
+- `SVELTEKIT-GUIDE.md` (popover system specifications)
 
 **Prerequisites:**
 
@@ -1971,7 +1970,7 @@ You are responsible for integrating all developed UI components (Tasks 8A-8N) in
 - All Task 8A-8N implementations (component outputs)
 - `src/app.css` (centralized component styles)
 - `src/data/types.ts` (enum definitions for component integration)
-- `TECHNICAL-SPECS.md` (integration requirements)
+- `SVELTEKIT-GUIDE.md` (integration requirements)
 
 **Prerequisites:**
 
@@ -2196,7 +2195,7 @@ You are responsible for implementing comprehensive testing strategy, validation 
 
 **Technical Documents to Review:**
 
-- `TECHNICAL-SPECS.md` (validation requirements)
+- `SVELTEKIT-GUIDE.md` (validation requirements)
 - `CONTENT-STANDARDS.md` (testing standards)
 - All implemented components and scripts
 - `src/data/types.ts` (enum definitions)
@@ -2246,7 +2245,7 @@ You are responsible for integrating all system components, optimizing performanc
 **Technical Documents to Review:**
 
 - All outputs from previous tasks
-- `TECHNICAL-SPECS.md` (performance requirements)
+- `SVELTEKIT-GUIDE.md` (performance requirements)
 - `CONTENT-STANDARDS.md` (quality standards)
 - Production deployment requirements
 

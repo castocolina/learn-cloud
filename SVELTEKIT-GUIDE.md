@@ -1,4 +1,36 @@
-# SvelteKit Guide
+# SvelteKit Guide: Technical Architecture & Development Standards
+
+This comprehensive guide covers the complete technical architecture, development standards, and user experience guidelines for the Cloud-Native Learning Platform.
+
+> **📚 Related Documentation:**
+>
+> - [CLAUDE.md](CLAUDE.md) - Core project rules and agent implementation guidelines
+> - [CONTENT-STANDARDS.md](CONTENT-STANDARDS.md) - Content creation workflows and quality assurance standards
+
+---
+
+## CRITICAL TESTING REQUIREMENT
+
+**🚨 MANDATORY**: All agents modifying web assets (HTML, CSS, JS, Svelte components) **MUST**:
+
+1. **Execute complete validation cycle** after any changes:
+
+   ```bash
+   pnpm run format   # Code formatting (mandatory first step)
+   pnpm run check    # SvelteKit validation
+   pnpm run lint     # Code quality
+   pnpm run dev      # Development server test
+   ```
+
+2. **Continue testing until ZERO errors** are achieved
+3. **Document any persistent issues** as inline comments in affected components
+4. **Update this document** when discovering new architectural requirements
+
+**Rationale**: Tailwind CSS v4 + Svelte 5 combination has specific compatibility requirements that cause runtime failures if not properly validated.
+
+---
+
+## TECHNICAL ARCHITECTURE
 
 **Common Theme Adjustments:**
 
@@ -31,17 +63,197 @@ pnpm run build  # Verify production build
 - TypeScript support for type safety and developer experience
 - Static site generation for GitHub Pages deployment
 
-**Styling**: Tailwind CSS v4 with Centralized Architecture
+**Svelte 5 Critical Syntax** (Common Migration Errors):
 
+```typescript
+// ✅ CORRECT Svelte 5 Runes
+let count = $state(0);
+const doubled = $derived(count * 2);
+let { title, items = [] }: Props = $props();
+
+// ❌ DEPRECATED Svelte 4 Syntax
+export let title;
+$: doubled = count * 2;
+```
+
+**Code Quality Requirements**:
+
+```typescript
+// ✅ CORRECT: Clean imports, no unused variables
+import { Button } from "$lib/components/ui/button";
+import { ChevronRight } from "lucide-svelte";
+
+// ❌ INCORRECT: Unused imports, deprecated components
+import { Button } from "$lib/components/ui/button";
+import { AlertTriangle } from "lucide-svelte"; // Deprecated! Use TriangleAlert
+import { Card } from "$lib/components/ui/card"; // Unused import
+```
+
+**Styling**: Tailwind CSS v4 with **Modular Architecture**
+
+- **CRITICAL**: Follow modular CSS architecture detailed in [CSS Architecture Standards](#css-architecture-standards)
+- **NEVER**: Use `<style>` blocks with `@apply` in Svelte components
+- **Reason**: [Official Tailwind recommendation](https://tailwindcss.com/docs/compatibility#vue-svelte-and-astro) to avoid performance issues
 - Single CSS import: `@import "tailwindcss";`
 - CSS-based configuration using `@theme` directive
 - Centralized component styles in `src/app.css`
 
-**UI Components**: shadcn-svelte
+**UI Components**: `shadcn-svelte`
 
+- **Installation**: `pnpm dlx shadcn-svelte@latest add [component-name]`
+- **Priority**: Always check component library before building custom components
+- **Mandatory Usage**: Progress bars and modal dialogs MUST use shadcn components
+  - Progress: Use `shadcn-svelte` Progress component instead of custom progress bars
+  - Modals: Use `shadcn-svelte` Dialog component instead of custom modal implementations
 - Copy-paste component system with full customization
 - Built on Bits UI primitives for accessibility
 - Tailwind CSS integration for theming
+
+**shadcn-svelte Component Handling Strategy**:
+
+- **❌ Do NOT document**: shadcn-svelte components directly (they are third-party code)
+- **❌ Do NOT format**: Components in `src/lib/components/ui/` are excluded from Prettier formatting
+- **✅ Do validate**: TypeScript validation still applies to ensure code quality
+- **✅ General documentation**: CSS patterns, z-index hierarchies, and architectural decisions belong in this guide
+- **✅ Component-specific issues**: Document in custom wrapper components or this architecture guide
+- **⚠️ Updates**: When updating shadcn-svelte components, any custom documentation would be lost
+
+**Icons**: `lucide-svelte`
+
+- **Usage**: Import specific icons as Svelte components
+- **Note**: Some icons were renamed (e.g., `AlertTriangle` → `TriangleAlert`)
+
+**Theme Management**: Robust dark mode system with localStorage persistence
+
+- **Components**: `ThemeToggle.svelte` component using shadcn-svelte DropdownMenu and Button
+- **Store**: `src/lib/stores/theme.ts` with Svelte writable stores for reactive theme state
+- **Themes**: Support for 'light', 'dark', and 'system' preference modes
+- **Persistence**: localStorage integration with automatic system preference detection
+- **Integration**: Positioned in demo layout header to the right of breadcrumbs
+
+#### Theme System Architecture
+
+**Implementation Details:**
+
+**Theme Store (`src/lib/stores/theme.ts`)**:
+
+- **Type Definition**: `Theme = 'light' | 'dark' | 'system'`
+- **Reactive State**: Uses Svelte `writable` stores for real-time theme updates
+- **System Detection**: Automatically detects OS dark/light preference via `prefers-color-scheme`
+- **DOM Integration**: Applies theme by adding/removing `light`/`dark` classes on `<html>` element
+- **Persistence**: Saves user preference to localStorage and restores on page load
+
+**ThemeToggle Component (`src/lib/components/ThemeToggle.svelte`)**:
+
+- **UI Framework**: Built with shadcn-svelte DropdownMenu and Button components
+- **Icons**: Uses lucide-svelte Sun, Moon, and Monitor icons
+- **Visual Feedback**: Shows active theme with small primary-colored indicator dot
+- **Accessibility**: Proper ARIA labels and keyboard navigation support
+
+**CSS Variables Integration**:
+
+- **Root Variables**: Comprehensive light/dark theme variables defined in `src/app.css`
+- **Automatic Application**: Theme class on `<html>` element triggers CSS variable switching
+- **shadcn-svelte Compatibility**: Full integration with shadcn design system colors
+
+**Usage Pattern**:
+
+```typescript
+import { themeStore, setTheme, resolvedTheme } from "$lib/stores/theme";
+
+// In Svelte components, use auto-subscription
+$: currentTheme = $themeStore; // 'light' | 'dark' | 'system'
+
+// Set theme using utility function
+setTheme("dark");
+
+// Get resolved theme (system resolves to actual preference)
+$: actualTheme = $resolvedTheme; // 'light' | 'dark'
+```
+
+#### CSS Architecture Standards
+
+**MANDATORY: Modular CSS Architecture for SvelteKit Components**
+
+**Core Principle**: All custom component styles MUST be organized in modular CSS files and imported into `src/app.css`
+
+**Required File Structure**:
+
+```
+src/styles/
+├── components.css      # Custom Svelte component styles
+├── utilities.css       # Custom utility classes
+├── layout.css         # SvelteKit layout-specific styles
+├── variables.css      # Custom CSS variables and theme tokens
+└── overrides.css      # shadcn-svelte customizations (minimal use)
+```
+
+**CSS Import Order in `src/app.css`**:
+
+```css
+@import "tailwindcss";
+@import "./styles/variables.css";    # Theme variables first
+@import "./styles/components.css";   # Component styles
+@import "./styles/utilities.css";    # Utility classes
+@import "./styles/layout.css";      # Layout styles
+@import "./styles/overrides.css";   # shadcn overrides (if needed)
+/* shadcn-svelte theme variables follow */
+```
+
+**SvelteKit Component Integration Rules**:
+
+- ✅ **ALWAYS** define custom styles in separate CSS files with `@layer components`
+- ✅ **ALWAYS** use semantic class names with project prefixes (`app-`, `lesson-`, `quiz-`)
+- ✅ **ALWAYS** import styles via `src/app.css` for global availability
+- ✅ **ALWAYS** use CSS custom properties for theming consistency
+- ❌ **NEVER** put custom component styles directly in `src/app.css`
+- ❌ **NEVER** use `<style>` blocks in Svelte components with `@apply` (Tailwind v4 incompatible)
+- ❌ **NEVER** use inline styles in Svelte component templates
+
+**SvelteKit-Specific Benefits**:
+
+- ✅ Single CSS bundle with optimal build performance
+- ✅ Global class availability across all routes and components
+- ✅ Eliminates Tailwind v4 + Svelte compatibility issues
+- ✅ Better maintainability with modular organization
+- ✅ Consistent theming across component library integrations
+
+**Z-Index Hierarchy Standards (CRITICAL ISSUE PREVENTION)**:
+
+**Global Z-Index Hierarchy**: All components MUST use CSS custom properties for z-index values to prevent stacking context violations.
+
+```css
+/* Define in src/app.css */
+:root {
+  --z-base: 1;
+  --z-dropdown: 10;
+  --z-sticky: 50;
+  --z-sidebar: 90;
+  --z-header: 100;
+  --z-overlay: 200;
+  --z-modal: 210;
+  --z-popover: 300;
+  --z-toast: 400;
+}
+
+/* ✅ CORRECT: Use CSS custom properties */
+.demo-header-sticky {
+  z-index: var(--z-header);
+}
+
+/* ❌ INCORRECT: Hardcoded z-index values */
+.demo-header-sticky {
+  z-index: 50;
+}
+```
+
+**Stacking Context Issue Prevention**:
+
+- **Root Cause**: Transform properties on navigation items create new stacking contexts
+- **Symptoms**: Modals/dialogs appearing behind active sidebar navigation items
+- **Prevention**: Use `margin` instead of `transform` for visual positioning
+- **Solution**: Always use shadcn-svelte Dialog components with proper z-index hierarchy
+- **Avoid**: `transform`, `opacity < 1`, `filter`, or `position: relative` with z-index on navigation items
 
 #### File Structure Deep Dive
 
@@ -685,406 +897,43 @@ Organize settings by functional area:
 
 ### Demo Data Architecture
 
-The demo implementation follows a **data-driven approach** where all content, navigation, and component configurations are stored in TypeScript files within `src/data/demo/`. This architecture ensures easy identification, modification, and future cleanup of demo assets.
+**Data-Driven Approach**: All demo content stored in TypeScript files within `src/data/demo/` for easy identification and cleanup.
 
-#### Directory Structure
+**Key Structure**:
+- `src/data/demo/types.ts` - TypeScript interfaces for demo components
+- `src/data/demo/navigation/` - Sidebar and breadcrumb configuration
+- `src/data/demo/content/` - Demo units and component examples
+- `src/data/demo/config/` - Route definitions and feature flags
 
-```
-src/data/demo/
-├── types.ts                    # Demo-specific TypeScript interfaces
-├── navigation/
-│   ├── sidebar-menu.ts         # Sidebar navigation structure
-│   ├── breadcrumbs.ts         # Breadcrumb configuration
-│   └── quick-nav.ts           # Quick navigation shortcuts
-├── content/
-│   ├── units/                 # Demo units (structured like lessons)
-│   │   ├── unit-overview.ts   # Demo overview and introduction
-│   │   ├── unit-layout.ts     # Layout components showcase
-│   │   ├── unit-interactive.ts # Interactive elements showcase
-│   │   ├── unit-content.ts    # Content display components
-│   │   ├── unit-modals.ts     # Modal system showcase
-│   │   ├── unit-educational.ts # Educational tools
-│   │   └── unit-integration.ts # Final integration
-│   └── components/
-│       ├── code-examples.ts   # Code block examples
-│       ├── diagram-examples.ts # Mermaid diagram definitions
-│       ├── quiz-questions.ts  # Quiz content
-│       └── flashcard-data.ts  # Study guide content
-├── assets/
-│   ├── icons.ts              # Icon mappings and configurations
-│   ├── themes.ts             # Theme configuration data
-│   └── progress.ts           # Progress tracking configuration
-└── config/
-    ├── routes.ts             # SPA route definitions
-    ├── features.ts           # Feature flags for demo
-    └── settings.ts           # Demo-specific settings
-```
+**Core Interfaces**: `DemoUnit`, `DemoLesson`, `ComponentDemo` with full TypeScript support.
 
-#### Core TypeScript Interfaces
-
-**Demo Navigation Structure:**
-
-```typescript
-// src/data/demo/types.ts
-export interface DemoUnit {
-	id: string;
-	title: string;
-	description: string;
-	icon: string;
-	url: string; // SPA-friendly URL (no redirects)
-	order: number;
-	status: "draft" | "ready" | "complete";
-	lessons: DemoLesson[];
-}
-
-export interface DemoLesson {
-	id: string;
-	title: string;
-	description: string;
-	icon: string;
-	url: string; // SPA-friendly URL fragment
-	order: number;
-	duration?: string; // Estimated interaction time
-	components: string[]; // List of components showcased
-	content: DemoContent;
-}
-
-export interface DemoContent {
-	type: "overview" | "showcase" | "interactive" | "tutorial";
-	sections: DemoSection[];
-	metadata: {
-		created: string;
-		lastModified: string;
-		author: string;
-		tags: string[];
-	};
-}
-
-export interface DemoSection {
-	id: string;
-	title: string;
-	type: "text" | "component" | "code" | "diagram" | "interactive";
-	content: any; // Content varies by type
-	order: number;
-}
-```
-
-**Component Configuration:**
-
-```typescript
-// Component-specific interfaces for demo data
-export interface ComponentDemo {
-	name: string;
-	category: "layout" | "interactive" | "content" | "educational";
-	description: string;
-	props?: Record<string, any>;
-	examples: ComponentExample[];
-	documentation: string;
-}
-
-export interface ComponentExample {
-	title: string;
-	description: string;
-	code: string;
-	preview?: boolean;
-	interactive?: boolean;
-}
-```
-
-#### Example Data Implementation
-
-**Sidebar Navigation Data:**
-
-```typescript
-// src/data/demo/navigation/sidebar-menu.ts
-import type { DemoUnit } from "../types.js";
-import {
-	Home,
-	Layout,
-	MousePointer,
-	FileText,
-	Square,
-	GraduationCap,
-	Puzzle,
-	CheckCircle
-} from "lucide-svelte";
-
-export const demoUnits: DemoUnit[] = [
-	{
-		id: "demo-overview",
-		title: "Demo Overview",
-		description: "Introduction to the component showcase",
-		icon: "Home",
-		url: "/demo",
-		order: 1,
-		status: "ready",
-		lessons: [
-			{
-				id: "introduction",
-				title: "Platform Introduction",
-				description: "Overview of SvelteKit architecture and demo purpose",
-				icon: "Info",
-				url: "/demo#introduction",
-				order: 1,
-				duration: "5 min",
-				components: ["Header", "Breadcrumbs", "Navigation"],
-				content: {
-					/* content definition */
-				}
-			}
-		]
-	},
-	{
-		id: "layout-components",
-		title: "Layout Components",
-		description: "Headers, sidebars, and navigation patterns",
-		icon: "Layout",
-		url: "/demo/layout",
-		order: 2,
-		status: "ready",
-		lessons: [
-			{
-				id: "sticky-header",
-				title: "Sticky Header",
-				description: "Responsive header with breadcrumbs",
-				icon: "Navigation",
-				url: "/demo/layout#sticky-header",
-				order: 1,
-				duration: "3 min",
-				components: ["Header", "Breadcrumbs"],
-				content: {
-					/* content definition */
-				}
-			},
-			{
-				id: "collapsible-sidebar",
-				title: "Collapsible Sidebar",
-				description: "Mobile-responsive sidebar navigation",
-				icon: "Sidebar",
-				url: "/demo/layout#sidebar",
-				order: 2,
-				duration: "4 min",
-				components: ["Sidebar", "Navigation"],
-				content: {
-					/* content definition */
-				}
-			}
-		]
-	}
-	// ... additional units
-];
-```
-
-**Component Examples Data:**
-
-```typescript
-// src/data/demo/content/components/code-examples.ts
-export const codeExamples = [
-	{
-		id: "sveltekit-component",
-		title: "SvelteKit Component with Runes",
-		language: "typescript",
-		category: "component",
-		description: "Modern Svelte 5 component using runes syntax",
-		code: `<script lang="ts">
-  interface Props {
-    title: string;
-    items?: string[];
-  }
-
-  let count = $state(0);
-  const doubled = $derived(count * 2);
-  let { title, items = [] }: Props = $props();
-
-  function handleClick() {
-    count++;
-  }
-</script>
-
-<div class="component-container">
-  <h2>{title}</h2>
-  <p>Count: {count}, Doubled: {doubled}</p>
-  <button onclick={handleClick}>Increment</button>
-
-  {#each items as item}
-    <div class="item">{item}</div>
-  {/each}
-</div>`,
-		tags: ["svelte", "typescript", "runes", "component"]
-	}
-	// ... additional examples
-];
-```
-
-#### Asset Organization Strategy
-
-**Modular Architecture for Easy Management:**
-
-1. **Prefix-based Organization**: All demo files use `demo-` prefix for easy identification
-2. **Isolated Dependencies**: Demo-specific types and utilities in separate namespace
-3. **Clean Separation**: Demo assets don't interfere with main application logic
-4. **Easy Cleanup**: All demo files can be identified and removed via glob patterns
-
-**Cleanup Commands:**
-
-```bash
-# Remove all demo data (future cleanup)
-find src/data -name "*demo*" -type f -delete
-rm -rf src/data/demo/
-
-# Remove demo routes
-rm -rf src/routes/demo/
-
-# Remove demo-specific CSS classes
-grep -l "demo-" src/app.css | xargs sed -i '/\.demo-/d'
-```
-
-**Migration Strategy for Permanent Use:**
-
-```typescript
-// If demo components become permanent, rename and move:
-// src/data/demo/components/ → src/data/components/
-// Remove 'demo-' prefixes from class names and file names
-// Update imports throughout the application
-```
-
-#### SPA Route Configuration
-
-**Hash-based Navigation (No Page Redirects):**
-
-```typescript
-// src/data/demo/config/routes.ts
-export const demoRoutes = {
-	base: "/demo",
-	sections: {
-		overview: "#overview",
-		layout: "#layout",
-		interactive: "#interactive",
-		content: "#content",
-		modals: "#modals",
-		educational: "#educational",
-		integration: "#integration"
-	},
-	subsections: {
-		"layout.header": "#layout-header",
-		"layout.sidebar": "#layout-sidebar",
-		"interactive.darkmode": "#interactive-darkmode",
-		"interactive.search": "#interactive-search"
-		// ... additional subsections
-	}
-};
-
-// Navigation function for SPA behavior
-export function navigateToSection(sectionId: string) {
-	const element = document.getElementById(sectionId);
-	if (element) {
-		element.scrollIntoView({ behavior: "smooth" });
-		history.replaceState(null, "", `${demoRoutes.base}#${sectionId}`);
-	}
-}
-```
-
-This data-driven architecture ensures that the demo remains organized, easily maintainable, and ready for future cleanup or integration into the main application.
+**Organization Strategy**:
+- Prefix-based naming (`demo-*`) for easy identification
+- Isolated dependencies in separate namespace
+- Hash-based SPA navigation without page redirects
+- Cleanup commands available for future removal
 
 ## Global Navigation Architecture
 
 ### Overview
 
-The Global Navigation System provides seamless lesson-to-lesson navigation across the entire learning platform. It acts as a centralized "GPS" that maintains state synchronization between URLs, sidebar navigation, progress tracking, and floating navigation controls.
+**Centralized Navigation System**: Seamless lesson-to-lesson navigation with URL synchronization, progress tracking, and mobile-optimized controls.
 
-### Architecture Components
+### Key Components
 
 #### Navigation Store (`src/lib/stores/navigation.ts`)
-
-**Core Responsibility**: Central state management for lesson navigation
-
-```typescript
-export interface NavigationState {
-	flattenedLessons: FlattenedLesson[]; // All lessons in sequential order
-	currentLessonIndex: number | null; // Current position in sequence
-	previousLessonUrl: string | null; // Previous lesson URL
-	nextLessonUrl: string | null; // Next lesson URL
-	currentLesson: FlattenedLesson | null; // Current lesson data
-	totalLessons: number; // Total lesson count
-	completionPercentage: number; // Overall progress percentage
-}
-
-export interface FlattenedLesson {
-	id: string;
-	title: string;
-	description: string;
-	url: string;
-	contentType: string;
-	duration: string;
-	difficulty: string;
-	icon: string;
-	unitId: string;
-	unitTitle: string;
-	unitIcon: string;
-	lessonIndex: number; // Index within unit
-	globalIndex: number; // Index across all lessons
-}
-```
-
-**Key Features**:
-
-- **Reactive State**: Uses SvelteKit's derived store with `$page` integration
-- **URL Parsing**: Handles both hash-based (`#/demo/unit/id/lesson/id`) and route-based (`/demo/mermaid`) navigation
-- **Lesson Sequencing**: Creates flattened, ordered list from hierarchical sidebar menu
-- **Progress Calculation**: Automatic completion percentage based on current position
+- **State Management**: `NavigationState` and `FlattenedLesson` interfaces
+- **Reactive Integration**: SvelteKit derived store with `$page` integration
+- **Features**: URL parsing, lesson sequencing, automatic progress calculation
 
 #### FloatingNav Component (`src/lib/components/demo/FloatingNav.svelte`)
-
-**Core Responsibility**: Persistent navigation UI at bottom of screen
-
-**Features**:
-
-- **Semi-transparent Design**: Backdrop blur with transparency for content visibility
-- **Previous/Next Buttons**: Disabled states when at sequence boundaries
-- **Progress Indicator**: Visual progress bar with "X of Y" display
-- **Keyboard Navigation**: Ctrl+Arrow keys for power users
-- **Mobile Optimization**: Responsive design with proper touch targets (44px+)
-- **Accessibility**: ARIA labels, screen reader support, keyboard navigation
-
-**Implementation Pattern**:
-
-```svelte
-<!-- Only show when on a lesson page -->
-{#if $navigation.currentLesson}
-	<nav class="floating-nav" role="navigation" aria-label="Lesson navigation">
-		<div class="floating-nav-container">
-			<Button disabled={!$navigation.previousLessonUrl} onclick={goToPrevious}>
-				<ChevronLeft size={16} />
-				<span class="floating-nav-text">Previous</span>
-			</Button>
-
-			<!-- Progress indicator -->
-			<div class="floating-nav-progress">
-				<span>{$navigation.currentLessonIndex + 1} of {$navigation.totalLessons}</span>
-				<div class="floating-nav-progress-bar">
-					<div style:width="{$navigation.completionPercentage}%"></div>
-				</div>
-			</div>
-
-			<Button disabled={!$navigation.nextLessonUrl} onclick={goToNext}>
-				<span class="floating-nav-text">Next</span>
-				<ChevronRight size={16} />
-			</Button>
-		</div>
-	</nav>
-{/if}
-```
+- **Persistent UI**: Bottom-screen navigation with backdrop blur
+- **Accessibility**: ARIA labels, keyboard navigation (Ctrl+Arrow keys)
+- **Mobile Optimized**: Touch targets (44px+), responsive design
 
 #### Swipe Gesture Action (`src/lib/actions/swipe.ts`)
-
-**Core Responsibility**: Mobile touch navigation for lesson traversal
-
-**Configuration Parameters**:
-
-- `threshold: 80px` - Minimum swipe distance
-- `velocity: 0.2px/ms` - Minimum swipe speed
-- `verticalTolerance: 120px` - Maximum vertical movement during horizontal swipe
-- `debounceTime: 500ms` - Prevent rapid-fire navigation
+- **Touch Navigation**: Mobile swipe gestures for lesson traversal
+- **Configuration**: Threshold, velocity, and debounce parameters
 
 **Touch Event Handling**:
 
@@ -1212,117 +1061,18 @@ function navigateToNext() {
 - **Visual Feedback**: Clear indication of navigation state and progress
 - **Reduced Motion**: Respects user's motion preferences
 
-### Testing Strategy
+### Testing & Future Extensions
 
-#### Component Testing
+**Testing Strategy**:
+- Component testing with navigation store URL parsing
+- Integration testing for cross-component synchronization
+- Headless testing using Chromium for consistency
+- Screenshot naming: `./tmp/screenshot/YYYYMMDD-HHMMSS-reason.png`
 
-```typescript
-// Example test for navigation store
-import { navigationStore } from "$lib/stores/navigation.js";
-import { page } from "$app/stores";
-
-test("navigation store updates on URL change", async () => {
-	// Simulate URL change
-	page.set({ url: new URL("/demo/mermaid", "http://localhost") });
-
-	// Verify navigation state
-	const nav = get(navigationStore);
-	expect(nav.currentLesson?.id).toBe("demo-lesson-showcase-1");
-	expect(nav.currentLessonIndex).toBe(0);
-	expect(nav.nextLessonUrl).toBe("/demo/code-examples");
-});
-```
-
-#### Integration Testing
-
-- **Cross-Component Sync**: Verify sidebar and floating nav stay synchronized
-- **Mobile Gestures**: Test swipe functionality across different devices
-- **URL Handling**: Test both hash-based and route-based navigation patterns
-- **Edge Cases**: Test navigation at sequence boundaries (first/last lessons)
-
-#### Headless Testing Configuration
-
-**Browser for Testing**: Use Chromium for headless testing and screenshots
-
-```bash
-# Headless screenshot capture
-chromium-browser --headless --disable-gpu \
-  --screenshot="/tmp/screenshot/test_screenshot.png" \
-  --window-size=1200,800 "http://localhost:5174/demo"
-
-# Why Chromium over Firefox:
-# - Better headless mode stability in containerized environments
-# - More reliable screenshot generation
-# - Fewer snap/permission issues in development containers
-# - Consistent rendering across different environments
-```
-
-**Screenshot Naming Conventions**:
-
-All screenshots must be saved using the standardized naming format to prevent read issues later:
-
-```bash
-# REQUIRED FORMAT: ./tmp/screenshot/$(date +%Y%m%d-%H%M%S)-reason.png
-./tmp/screenshot/20250921-122828-navbar-before-fix.png
-./tmp/screenshot/20250921-122843-navbar-after-fix.png
-./tmp/screenshot/20250921-123015-mobile-responsive-test.png
-
-# Generate screenshots with proper naming
-DATE_TIME=$(date +%Y%m%d-%H%M%S)
-chromium-browser --headless --disable-gpu \
-  --screenshot="./tmp/screenshot/${DATE_TIME}-your-reason-here.png" \
-  --window-size=1200,800 "http://localhost:5174/demo"
-```
-
-**Browser Compatibility Issues**:
-
-**Firefox/Chromium Issues Encountered:**
-
-- Firefox snap package has permission issues accessing `/tmp/` directory for screenshot generation
-- Firefox headless mode occasionally fails to render certain CSS backdrop-filter effects properly
-- Chromium provides more consistent headless screenshot generation across different environments
-- Firefox requires additional configuration for proper font rendering in headless mode
-
-**Recommended Browser Priority:**
-
-1. **Chromium** (Primary): Most reliable for automated testing and screenshot generation
-2. **Google Chrome** (Secondary): Good for manual testing and debugging
-3. **Firefox** (Tertiary): Manual testing only, avoid for automated workflows due to snap issues
-
-**Common Testing Commands**:
-
-```bash
-# Basic functionality test
-curl -s "http://localhost:5174/demo" | head -20
-
-# Check server status and logs
-pnpm run dev  # Check for compilation errors
-
-# Screenshot comparison testing with proper naming
-DATE_TIME=$(date +%Y%m%d-%H%M%S)
-chromium-browser --headless --disable-gpu \
-  --screenshot="./tmp/screenshot/${DATE_TIME}-before-changes.png" \
-  --window-size=1200,800 "http://localhost:5174/demo"
-
-# Mobile screenshot testing
-chromium-browser --headless --disable-gpu \
-  --screenshot="./tmp/screenshot/${DATE_TIME}-mobile-view.png" \
-  --window-size=390,844 "http://localhost:5174/demo"
-```
-
-### Future Extensions
-
-#### Planned Enhancements
-
-- **Progress Persistence**: Save navigation state to localStorage
-- **Lesson Bookmarks**: Allow users to bookmark favorite lessons
-- **Navigation History**: Track user's lesson completion path
-- **Search Integration**: Navigate directly to lessons from search results
-- **Lesson Notes**: Per-lesson note-taking with navigation integration
-
-This architecture provides a robust, scalable foundation for lesson navigation that maintains state consistency across all components while providing an intuitive user experience on both desktop and mobile devices.
-
-The demo route (`/demo`) will showcase all integrated components through a systematic, incremental build process. Each step adds specific functionality while maintaining the existing architecture.
+**Planned Enhancements**:
+- Progress persistence and lesson bookmarking
+- Navigation history and search integration
+- Per-lesson note-taking capabilities
 
 #### Target Component Set
 
@@ -1350,3 +1100,122 @@ The demo route (`/demo`) will showcase all integrated components through a syste
 - Quiz interface with timer and scoring
 - Study guide flashcards
 - Progress tracking visualizations
+
+---
+
+## USER EXPERIENCE STANDARDS
+
+### Mobile-First Design
+
+**Responsive Breakpoints**:
+
+- **Mobile**: ≤390px (primary target)
+- **Tablet**: ≤768px
+- **Desktop**: ≥1024px
+
+**Design Principles**:
+
+- Touch targets minimum 44px
+- Progressive enhancement
+- Fast loading with optimized bundles
+
+### Interactive Components
+
+**Learning Flow**:
+
+1. Unit Overview → Lesson Content → Study Guides → Quizzes
+2. Progress tracking with visual indicators
+3. Accessible navigation with keyboard support
+
+**Modal System**:
+
+- Fullscreen on mobile (100vh x 100vw)
+- Large modals on desktop (90-95% viewport)
+- Escape key support and focus management
+- **MANDATORY**: Use `shadcn-svelte` Dialog component for all modal implementations
+
+**Navigation Standards**:
+
+- **Sidebar Accordion**: Only one unit can be open at a time (accordion behavior)
+- **Breadcrumb Navigation**: Dynamic breadcrumbs based on current content state:
+  - Home view: Site title only
+  - Unit view: Unit name with home link
+  - Chapter view: Unit name and chapter name
+- **Cursor Indicators**: All interactive elements must have `cursor-pointer` styling
+
+**Quiz System**:
+
+- **Explanation Timing**: Explanations are withheld until quiz completion
+- **Results Display**: Comprehensive review with all answers and explanations shown after completion
+- **Progress Tracking**: Use standardized Progress component for quiz completion tracking
+
+**Theming Standards**:
+
+- **Color Palette**: Primary theme uses Tailwind CSS slate palette for consistency
+- **Code Blocks**: Enhanced with visible container borders (`border-slate-300`) and theme-aligned backgrounds (`bg-slate-50`)
+- **Icon Consistency**: All metadata icons (Prerequisites, Learning Objectives) use consistent `text-slate-500` coloring
+- **Component Styling**: Standardized styling across all interactive components with consistent hover states and transitions
+
+---
+
+## DEVELOPMENT STANDARDS
+
+### Component Development Rules
+
+- **TypeScript Interfaces**: All component props must use TypeScript interfaces
+- **shadcn-svelte Priority**: Check component library before building custom components
+- **Mobile-First Development**: Always design and test mobile experience first
+- **CSS Architecture**: Follow modular CSS patterns defined in this guide
+
+### Code Quality Standards
+
+- **Validation Cycle**: Run `pnpm run format`, `pnpm run check`, `pnpm run lint` after changes
+- **Zero Tolerance Policy**:
+  - **NO TypeScript errors** - All code must pass TypeScript validation
+  - **NO TypeScript warnings** - Address all compiler warnings before completion
+  - **NO unused variables** - Remove unused imports/variables unless explicitly requested by user or required by ShadCN components
+  - **NO deprecated components** - Avoid deprecated Lucide icons and other library components
+- **Error Handling**: Implement comprehensive error boundaries and fallbacks
+- **Performance**: Optimize bundle size and runtime performance
+- **Accessibility**: Ensure WCAG compliance and keyboard navigation
+
+### Security Considerations
+
+- **Secure by Default**: All code and architectural patterns designed with security first
+- **No Exposed Secrets**: Never commit or log sensitive information
+- **Production Ready**: All examples must be robust and production-ready
+
+---
+
+## COMMON TROUBLESHOOTING
+
+### Tailwind CSS v4 Issues
+
+**Problem**: Build failures with `Cannot apply unknown utility class`
+**Solution**:
+1. Move custom styles to modular CSS files in `src/styles/`
+2. Use `@layer components` for custom classes
+3. Never use `@apply` in Svelte component `<style>` blocks
+
+### Svelte 5 Migration Issues
+
+**Problem**: Deprecated syntax errors and code quality issues
+**Solution**:
+- Replace `export let` with `let { prop }: Props = $props()`
+- Replace `$:` reactivity with `$derived()` or `$effect()`
+- Use `$state()` for reactive variables
+- Remove all unused variables and imports
+- Update deprecated Lucide icons (e.g., `AlertTriangle` → `TriangleAlert`)
+- Address all TypeScript warnings and errors before completion
+
+### Performance Issues
+
+**Common Problems**:
+- Large bundle sizes from unused component imports
+- Inefficient reactivity patterns
+- Missing optimization for production builds
+
+**Solutions**:
+- Use selective imports from component libraries
+- Implement proper error boundaries
+- Optimize images and assets for web delivery

@@ -1,3 +1,22 @@
+/**
+ * StickyHeader Component
+ *
+ * CRITICAL Z-INDEX HIERARCHY ISSUE PREVENTION:
+ *
+ * Issue: Z-Index Hierarchy Violations
+ * - Root Cause: Sticky headers using hardcoded z-index values
+ * - Symptoms: Modal dialogs appearing behind sticky headers
+ *
+ * PREVENTION RULES:
+ * ✅ ALWAYS use CSS custom properties: z-index: var(--z-header)
+ * ❌ NEVER use hardcoded z-index values (z-index: 50)
+ *
+ * GLOBAL Z-INDEX HIERARCHY:
+ * base(1) → dropdown(10) → sticky(50) → sidebar(90) → header(100) →
+ * overlay(200) → modal(210) → popover(300) → toast(400)
+ *
+ * This component should use var(--z-header) for proper layering.
+ */
 <script lang="ts">
 	import { browser } from "$app/environment";
 	import { onMount } from "svelte";

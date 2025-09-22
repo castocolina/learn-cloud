@@ -2,7 +2,7 @@
  * @file A comprehensive library of code examples for various technologies.
  * @description This file contains a curated list of code snippets for demonstration purposes,
  * covering a wide range of languages and technologies from backend to DevOps.
- * Generated following the ts-morph strategy documented in TECHNICAL-SPECS.md
+ * Generated following the ts-morph strategy documented in SVELTEKIT-GUIDE.md
  */
 
 /**

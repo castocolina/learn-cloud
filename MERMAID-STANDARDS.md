@@ -5,8 +5,10 @@
 > **📚 Related Documentation:**
 >
 > - [CLAUDE.md](CLAUDE.md) - Complete agent implementation guidelines
-> - [CONTENT-STANDARDS.md](CONTENT-STANDARDS.md) - Content creation workflows
-> - [TECHNICAL-SPECS.md](TECHNICAL-SPECS.md) - Technical architecture standards
+> - [CONTENT-STANDARDS.md](CONTENT-STANDARDS.md) - Content creation workflows and educational guidelines
+> - [SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md) - Technical architecture standards
+
+> **🎯 Content Creators**: For educational context, accessibility guidelines, and content integration workflows, see [CONTENT-STANDARDS.md - Mermaid Diagrams](CONTENT-STANDARDS.md#mermaid-diagrams).
 
 ---
 

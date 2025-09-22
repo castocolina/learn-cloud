@@ -1,4 +1,54 @@
 <script lang="ts">
+	/**
+	 * MermaidDiagram Component
+	 *
+	 * CRITICAL MERMAID SYNTAX REQUIREMENTS:
+	 *
+	 * 1. DOUBLE QUOTE ALL TEXT - ALL text in nodes and links MUST be enclosed in double quotes
+	 *    ✅ CORRECT: graph TD A["User Login"] --> B{"Valid?"}
+	 *    ❌ INCORRECT: graph TD A[User Login] --> B{Valid?}
+	 *
+	 * 2. ESCAPE SPECIAL CHARACTERS - Use backslashes for quotes within text
+	 *    ✅ CORRECT: A["Function: \"getName()\""]
+	 *    ❌ INCORRECT: A["Function: "getName()""]
+	 *
+	 * 3. PREFER RAW SPECIAL CHARACTERS - Use <, >, & directly (not HTML entities)
+	 *    ✅ PREFERRED: A["API Call <request>"] --> B["Process & Validate"]
+	 *    ⚠️ LESS PREFERRED: A["API Call &lt;request&gt;"] --> B["Process &amp; Validate"]
+	 *
+	 * 4. MOBILE-FIRST LAYOUT - Prefer LR (Left-Right) for mobile optimization
+	 *    ✅ PREFERRED: graph LR (better for narrow screens)
+	 *    ⚠️ USE SPARINGLY: graph TD (can cause horizontal scrolling on mobile)
+	 *
+	 * EXPAND FUNCTIONALITY REQUIREMENTS:
+	 * - All Mermaid diagrams MUST include expand-to-modal functionality
+	 * - Expand button in top-right corner opens full-screen modal
+	 * - Modal size configurable via modalPagePercent prop (default: 95%)
+	 * - Expand button hidden when diagram fails to render
+	 *
+	 * DEBUG CAPABILITIES:
+	 * - Accepts debug prop or checks URL parameter ?debug=true
+	 * - Logs all rendering errors with full diagram source
+	 * - Displays fallback content with diagram source on failures
+	 * - Includes retry and copy functionality in debug mode
+	 *
+	 * KNOWN ISSUES & SOLUTIONS:
+	 *
+	 * Issue: Mermaid Initial Render Failures
+	 * - Cause: Race conditions between DOM availability and Mermaid initialization
+	 * - Solution: Check isRendering state in $effect to prevent concurrent renders
+	 * - Prevention: Always initialize isRendering to false, not true
+	 *
+	 * Issue: Orphaned DOM Elements from Failed Renders
+	 * - Cause: mermaid.render() creates DOM elements even on syntax errors
+	 * - Solution: cleanupOrphanedMermaidElement() removes elements after failures
+	 * - Pattern: Elements with IDs like "mermaid-diagram-xxxxxxxx" left in DOM
+	 *
+	 * Issue: "Cannot read properties of null (reading 'firstChild')"
+	 * - Cause: Direct DOM manipulation during connected element rendering
+	 * - Solution: Use mermaid.render() API with suppressErrors: true
+	 * - Prevention: Never call mermaid.init() on connected DOM elements
+	 */
 	import { onMount } from "svelte";
 	import { page } from "$app/stores";
 	import mermaid from "mermaid";

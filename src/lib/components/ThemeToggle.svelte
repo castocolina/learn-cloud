@@ -1,4 +1,44 @@
 <script lang="ts">
+	/**
+	 * ThemeToggle Component
+	 *
+	 * THEME SYSTEM ARCHITECTURE:
+	 *
+	 * 1. THEME MODES SUPPORTED:
+	 *    - light: Light color scheme
+	 *    - dark: Dark color scheme
+	 *    - system: Follows OS preference
+	 *
+	 * 2. PERSISTENCE & DETECTION:
+	 *    - Saves user preference to localStorage
+	 *    - Automatically detects OS dark/light preference via prefers-color-scheme
+	 *    - Applies theme by adding/removing 'light'/'dark' classes on <html> element
+	 *    - Real-time theme updates using Svelte writable stores
+	 *
+	 * 3. COMPONENT INTEGRATION:
+	 *    - Built with shadcn-svelte DropdownMenu and Button components
+	 *    - Uses lucide-svelte icons (Sun, Moon, Monitor)
+	 *    - Shows active theme with primary-colored indicator dot
+	 *    - Proper ARIA labels and keyboard navigation
+	 *
+	 * 4. CSS VARIABLE INTEGRATION:
+	 *    - Theme variables defined in src/app.css @theme directive
+	 *    - Automatic CSS variable switching based on theme class
+	 *    - Full shadcn-svelte design system compatibility
+	 *
+	 * KNOWN ISSUES & SOLUTIONS:
+	 *
+	 * Issue: Stacking Context Issues with Modal/Tooltip Components
+	 * - Cause: Transform properties on active navigation items create new stacking contexts
+	 * - Solution: Use margin instead of transform for visual positioning
+	 * - Prevention: Avoid transform, opacity < 1, filter on navigation elements
+	 * - Z-Index: Always use CSS custom properties (var(--z-*)) not hardcoded values
+	 *
+	 * Issue: Theme Switching Without FOUC (Flash of Unstyled Content)
+	 * - Solution: Theme applied synchronously on HTML element before component render
+	 * - localStorage persistence ensures theme restored on page load
+	 * - System preference detection happens immediately on mount
+	 */
 	import { Sun, Moon, Monitor } from "lucide-svelte";
 	import { Button } from "$lib/components/ui/button";
 	import * as DropdownMenu from "$lib/components/ui/dropdown-menu";

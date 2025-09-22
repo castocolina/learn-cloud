@@ -1,4 +1,50 @@
 <script lang="ts">
+	/**
+	 * CodeBlock Component
+	 *
+	 * CODE BLOCK ESCAPING STRATEGY & IMPLEMENTATION:
+	 *
+	 * 1. TS-MORPH AST MANIPULATION APPROACH:
+	 *    - Uses ts-morph library for programmatic TypeScript code generation
+	 *    - Eliminates manual escaping errors through AST-based approach
+	 *    - Provides built-in validation and type safety
+	 *    - Handles template literals and complex string patterns automatically
+	 *
+	 * 2. SHIKI SYNTAX HIGHLIGHTING:
+	 *    - Server-side compatible syntax highlighting with 200+ languages
+	 *    - Theme support: GitHub Light/Dark themes with dark mode integration
+	 *    - Language support: TypeScript, Svelte, Python, Go, Rust, Docker, YAML, etc.
+	 *    - Mobile-responsive horizontal scroll and line number support
+	 *
+	 * 3. CODE EXAMPLES SHOWCASE ARCHITECTURE:
+	 *    - Advanced filtering by language, complexity, and search terms
+	 *    - Real-time search with instant filtering
+	 *    - Statistics display with example counts by category
+	 *    - Mobile-first responsive design with collapsible filters
+	 *
+	 * 4. COPY-TO-CLIPBOARD FUNCTIONALITY:
+	 *    - Modern async clipboard API with fallback
+	 *    - Visual feedback with success state
+	 *    - Error handling for clipboard permission issues
+	 *    - Cross-browser compatibility
+	 *
+	 * 5. PERFORMANCE OPTIMIZATIONS:
+	 *    - Lazy loading: Highlighter initialized on component mount
+	 *    - Theme caching: Light/dark themes loaded once
+	 *    - Language bundle: Only required languages loaded
+	 *    - Fallback handling: Plain text fallback for loading errors
+	 *
+	 * ALTERNATIVE APPROACHES CONSIDERED:
+	 * - Manual Template Literals: Error-prone, requires manual escaping
+	 * - JSON.stringify(): Reduces readability significantly
+	 * - External File References: Complicates deployment and maintenance
+	 *
+	 * VALIDATION WORKFLOW:
+	 * 1. Generate TypeScript file using ts-morph
+	 * 2. Run `pnpm run check` to validate TypeScript compilation
+	 * 3. Run `pnpm run format` for consistent formatting
+	 * 4. Run `pnpm run lint` for code quality validation
+	 */
 	import { onMount } from "svelte";
 	import { Copy, Check, Eye, EyeOff } from "lucide-svelte";
 	import type { CodeExample, Language } from "../../../../data/demo/content/code/code-examples";

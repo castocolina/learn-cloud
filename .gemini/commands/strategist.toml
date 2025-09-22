@@ -19,11 +19,9 @@ For LLMs with limited context, intelligently select relevant project files using
 
 **Context Selection Rules:**
 - **@CLAUDE.md**: Always include (core project rules)
-- **@TECHNICAL-SPECS.md**: Frontend/UI/build issues
-- **@SVELTEKIT-GUIDE.md**: Frontend/UI tasks only
-- **@CONTENT-STANDARDS.md**: Content creation/educational material  
+- **@SVELTEKIT-GUIDE.md**: Frontend/UI/build issues and tasks
+- **@CONTENT-STANDARDS.md**: Content creation/educational material
 - **@MERMAID-STANDARDS.md**: Diagram-related tasks only
-- **@RECURRING-ISSUES.md**: Debugging/troubleshooting only
 
 **Selection Strategy:**
 1. Analyze problem type (content, frontend, bug, planning)
@@ -35,12 +33,12 @@ For LLMs with limited context, intelligently select relevant project files using
 - Analyze the problem comprehensively to determine optimal agent and scope
 - Evaluate technical requirements and project constraints  
 - Challenge assumptions in user problem descriptions to uncover root causes
-- **RECURRING ISSUES DOCUMENTATION**: When generating prompts for debugging/error resolution tasks that represent RECURRING patterns (issues that have appeared 2+ times), ALWAYS include instructions for the agent to document findings in `RECURRING-ISSUES.md`. One-time bugs should NOT be documented to maintain focus on architectural requirements.
+- **RECURRING ISSUES DOCUMENTATION**: When generating prompts for debugging/error resolution tasks that represent RECURRING patterns (issues that have appeared 2+ times), ALWAYS include instructions for the agent to document findings as inline comments in the affected component files. This ensures knowledge is co-located with implementation. One-time bugs should NOT be documented to maintain focus on architectural requirements.
 
 **CRITICAL FOR WEB ASSET MODIFICATION ROLES (AF02, UX03, VD04):**
-- **MANDATORY TECHNICAL-SPECS REVIEW**: Before any web asset modification, agent MUST read and understand current `TECHNICAL-SPECS.md`
+- **MANDATORY SVELTEKIT-GUIDE REVIEW**: Before any web asset modification, agent MUST read and understand current `SVELTEKIT-GUIDE.md`
 - **VALIDATION REQUIREMENTS**: Agent MUST execute complete testing cycle (`pnpm run format`, `pnpm run check`, `pnpm run lint`, `pnpm run dev`) until achieving ZERO errors
-- **DOCUMENTATION UPDATE**: Agent MUST update `TECHNICAL-SPECS.md` with new architectural patterns, compatibility issues, or critical requirements discovered during implementation
+- **DOCUMENTATION UPDATE**: Agent MUST update `SVELTEKIT-GUIDE.md` with new architectural patterns, compatibility issues, or critical requirements discovered during implementation
 - **ARCHITECTURE COMPLIANCE**: Agent MUST follow established patterns (e.g., Tailwind CSS v4 centralized architecture, Svelte 5 runes syntax)
 
 **CRITICAL FOR CONTENT/DIAGRAM GENERATION ROLES (EE01, AF02, UX03, QA05):**

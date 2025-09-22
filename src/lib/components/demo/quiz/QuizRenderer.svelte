@@ -2,15 +2,55 @@
 @component
 Comprehensive Interactive Quiz System for Cloud-Native Learning Platform
 
-This component renders a complete quiz experience with:
-- Multiple question types (multiple choice, true/false, drag-and-drop, code completion)
-- Timer functionality with configurable limits and warnings
-- Automatic scoring with detailed analytics
-- Progress tracking and question navigation
-- Accessible keyboard navigation and ARIA support
-- Mobile-first responsive design
+QUIZ SYSTEM STANDARDS:
 
-The component consumes quiz data from the TypeScript library and provides
+1. QUESTION TYPES SUPPORTED:
+   - Multiple Choice (single or multi-select)
+   - True/False
+   - Drag and Drop
+   - Code Completion
+
+2. CODE COMPLETION QUESTION STANDARDS (MANDATORY):
+   - Use exactly 5 underscores (_____) for ALL code completion blanks
+   - Pattern /(_{3,})/g matches 3+ underscores for forward compatibility
+   - NEVER mix different underscore counts in same question
+   - Number of blanks must equal number of _____ patterns in code snippet
+   - Example: "Complete: kind: _____\nreplicas: _____" requires 2 blank definitions
+
+3. INTERACTIVE QUIZ REQUIREMENTS:
+   - Single question display with navigation controls
+   - Timer functionality with configurable limits and warnings
+   - Automatic scoring with detailed analytics
+   - Progress tracking and question navigation
+   - Pass/fail determination (80% threshold for quizzes, 70% for exams)
+   - Restart functionality that clears all answers
+
+4. NAVIGATION STANDARDS:
+   - Previous/Next buttons with smart visibility
+   - Submit shown only on last question
+   - Progress indicator: "Question X of Y"
+   - Keyboard navigation: Arrow keys + Enter
+   - Auto-advance for True/False if allowReview=false
+
+5. ASSESSMENT CONFIGURATION:
+   - Quizzes: 5 questions, 80% required to pass
+   - Unit Final Exams: 10-20 questions, 70% required to pass
+   - Question randomization support
+   - Option randomization for multiple choice
+
+6. MOBILE-FIRST DESIGN:
+   - Touch-friendly navigation buttons (44px+ targets)
+   - Responsive layout for narrow screens (≤390px)
+   - Swipe gesture support for question navigation
+   - Collapsible progress indicators on mobile
+
+7. ACCESSIBILITY FEATURES:
+   - ARIA labels and screen reader support
+   - Keyboard navigation with focus management
+   - High contrast for visual elements
+   - Proper semantic markup for questions
+
+This component consumes quiz data from the TypeScript library and provides
 a seamless, educational quiz experience following SvelteKit architecture patterns.
 -->
 

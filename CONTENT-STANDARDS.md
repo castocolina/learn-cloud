@@ -6,12 +6,14 @@ All diagrams in this project must use Mermaid.js for consistency, clarity, and m
 
 Mermaid diagrams must follow the syntax, accessibility, and validation requirements defined in that file. Only a brief summary is maintained here; all details and updates are managed in `MERMAID-STANDARDS.md`.
 
+> **🛠️ Technical Implementers**: For syntax rules, component requirements, debug standards, and validation scripts, see [MERMAID-STANDARDS.md](MERMAID-STANDARDS.md).
+
 This document contains the content creation workflows and quality assurance standards for the Cloud-Native Learning Platform.
 
 > **📚 Related Documentation:**
 >
-> - [AGENTS.md](AGENTS.md) - Core project rules and agent implementation guidelines
-> - [TECHNICAL-SPECS.md](TECHNICAL-SPECS.md) - Technical architecture and user experience standards
+> - [CLAUDE.md](CLAUDE.md) - Core project rules and agent implementation guidelines
+> - [SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md) - Technical architecture and user experience standards
 
 ---
 
@@ -89,7 +91,7 @@ src/lib/components/content/
 - **Styling:** Tailwind CSS with component isolation
 - **State Management:** Svelte's built-in reactivity system
 - **Type Safety:** Full TypeScript coverage with interface inheritance
-- **Code Generation:** ts-morph for TypeScript AST manipulation (see [Code Block Escaping Strategy](TECHNICAL-SPECS.md#code-block-escaping-strategy-for-data-generation))
+- **Code Generation:** ts-morph for TypeScript AST manipulation (see [Code Block Escaping Strategy](SVELTEKIT-GUIDE.md#code-block-escaping-strategy-for-data-generation))
 
 ### Data Structure in src/data/
 
@@ -347,16 +349,20 @@ export const studyGuideExample: StudyGuideContent = {
 
 #### Mermaid Diagrams
 
-- **GitHub-style Implementation**: Expandable diagrams with expand icon
-- **Direction Preference**: LR (Left-Right) for vertical display optimization
-- **Fullscreen Modal**: Touch/click to expand to maximize screen real estate
-  - **Mobile**: 100vh x 100vw (full viewport coverage)
-  - **Desktop**: Large modal with minimal padding (e.g., 95% width/height)
-  - **Responsive**: Adapts to available screen space
-- **Mobile Optimization**: Responsive scaling for all screen sizes
-- **Integration**: Use standard Mermaid.js with custom expand functionality
+For comprehensive Mermaid implementation details, syntax rules, and technical requirements, see [MERMAID-STANDARDS.md](MERMAID-STANDARDS.md).
 
-**Mobile-First Guideline**: To optimize readability on mobile devices, prioritize the `LR` (Left-to-Right) direction for diagrams with more than 5 nodes. This orientation facilitates vertical rendering, ideal for narrow screens. `TB` (Top-to-Bottom) may suffice for basic diagrams.
+**Content Creation Guidelines**:
+- **Educational Context**: Include clear title and caption explaining the diagram's purpose
+- **Learning Integration**: Ensure diagrams support lesson objectives and flow naturally with content
+- **Accessibility**: Provide alternative text descriptions for complex diagrams
+- **Validation**: All diagrams must pass syntax validation before content publication
+
+**Technical Implementation**:
+- Expandable diagrams with modal functionality
+- Mobile-responsive design with touch optimization
+- Debug capabilities for troubleshooting
+
+> **📋 Technical Details**: For syntax rules, direction preferences, component requirements, and validation standards, refer to [MERMAID-STANDARDS.md](MERMAID-STANDARDS.md).
 
 #### Code Highlighting
 
@@ -621,6 +627,41 @@ import LessonRenderer from '$lib/components/content/LessonRenderer.svelte';
 - **Required Fields**: All mandatory fields must be present
 - **Link Integrity**: All referenced links must be functional
 - **Content Quality**: Follow technical writing standards
+
+#### Mermaid Content Validation Workflow
+
+**🚧 PLACEHOLDER: Automated Mermaid Validation for Lesson Content**
+
+When creating lesson content that includes Mermaid diagram blocks, the following validation workflow should be implemented:
+
+```typescript
+// TODO: Implement automated validation function
+// validateLessonMermaidContent(lessonContent: LessonContent): ValidationResult
+
+// Validation Steps:
+// 1. Scan lesson content sections for diagram blocks (type: "diagram", diagramType: "mermaid")
+// 2. Extract diagram definition strings from each mermaid block
+// 3. Validate each diagram using Mermaid parser (see MERMAID-STANDARDS.md validation section)
+// 4. Report validation results with specific error locations within lesson structure
+// 5. Generate validation report with file path, section index, diagram title, and error details
+```
+
+**Integration Points**:
+- **Content Creation**: Run validation after lesson content is created/modified
+- **Build Process**: Include in `make content-validate` command
+- **Pre-commit**: Validate all modified lesson files before commit
+- **CI/CD**: Automated validation in deployment pipeline
+
+**Validation Output Example**:
+```
+❌ src/data/unit1/lesson_1_2.json - Section 3, Diagram "System Architecture"
+   Error: Parse error on line 2: Missing double quotes around node text
+
+✅ src/data/unit1/lesson_1_3.json - Section 1, Diagram "User Flow"
+   Valid diagram parsed successfully
+```
+
+> **📋 Implementation Details**: For validation script requirements and technical implementation, see [MERMAID-STANDARDS.md - Validating Diagrams in TypeScript](MERMAID-STANDARDS.md#validating-diagrams-in-typescript).
 
 #### Question Pool Management
 

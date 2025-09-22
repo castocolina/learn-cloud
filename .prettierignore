@@ -8,3 +8,6 @@ bun.lockb
 # Miscellaneous
 /static/
 src/book/
+
+# shadcn-svelte components (third-party, prevent formatting but allow validation)
+src/lib/components/ui/
