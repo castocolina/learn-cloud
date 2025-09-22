@@ -1,5 +1,6 @@
 <script lang="ts">
 	import MermaidShowcase from "$lib/components/demo/MermaidShowcase.svelte";
+	import { FloatingNav } from "$lib/components/demo";
 	import { page } from "$app/stores";
 
 	// Get initial filter from URL params
@@ -69,3 +70,6 @@
 		</div>
 	</div>
 </div>
+
+<!-- Global FloatingNav for lesson navigation -->
+<FloatingNav />

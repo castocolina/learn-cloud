@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { DifficultyBadge, ContentTypeBadge } from "$lib/components/demo";
+	import { ArrowLeft, ArrowRight } from "lucide-svelte";
 	import MermaidShowcase from "./MermaidShowcase.svelte";
 	import CodeExamplesShowcase from "./CodeExamplesShowcase.svelte";
 	import DiagramViewer from "./DiagramViewer.svelte";
@@ -11,15 +12,7 @@
 	import { getRandomCodeExample } from "../../../data/demo/content/code/code-examples-utils.js";
 	import { getRandomFlipCards } from "../../../data/demo/content/flipcards/concept-cards.js";
 	import { allQuizzes, type Quiz } from "../../../data/demo/content/quizzes/quiz-examples.js";
-	import {
-		Clock,
-		Target,
-		BookOpen,
-		CheckCircle2,
-		ArrowLeft,
-		ArrowRight,
-		ExternalLink
-	} from "lucide-svelte";
+	import { Clock, Target, BookOpen, CheckCircle2, ExternalLink } from "lucide-svelte";
 	import type { DemoLesson } from "../../../data/demo/navigation/demo-sidebar-menu.js";
 
 	// Props interface for type safety
@@ -1228,13 +1221,14 @@
 
 	/* Navigation */
 	.lesson-navigation {
+		padding: 3rem 2rem;
 		background: hsl(var(--muted) / 0.3);
-		border-radius: 12px;
-		padding: 2rem;
-		margin-bottom: 0;
+		border-top: 1px solid hsl(var(--border));
 	}
 
 	.nav-actions {
+		max-width: 1000px;
+		margin: 0 auto;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -1291,22 +1285,22 @@
 	.nav-progress-bar {
 		width: 100%;
 		height: 8px;
-		background: hsl(var(--muted) / 0.3);
+		background: hsl(var(--border));
 		border-radius: 4px;
 		overflow: hidden;
 	}
 
 	.nav-progress-fill {
 		height: 100%;
-		background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--primary)) / 0.8);
+		background: hsl(var(--primary));
 		border-radius: 4px;
 		transition: width 0.3s ease;
 	}
 
 	.nav-progress-percentage {
-		font-size: 0.85rem;
-		color: hsl(var(--primary));
+		font-size: 0.8rem;
 		font-weight: 600;
+		color: hsl(var(--primary));
 	}
 
 	/* Mobile Responsive */

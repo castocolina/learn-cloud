@@ -986,7 +986,341 @@ export function navigateToSection(sectionId: string) {
 
 This data-driven architecture ensures that the demo remains organized, easily maintainable, and ready for future cleanup or integration into the main application.
 
-### Incremental Build Strategy
+## Global Navigation Architecture
+
+### Overview
+
+The Global Navigation System provides seamless lesson-to-lesson navigation across the entire learning platform. It acts as a centralized "GPS" that maintains state synchronization between URLs, sidebar navigation, progress tracking, and floating navigation controls.
+
+### Architecture Components
+
+#### Navigation Store (`src/lib/stores/navigation.ts`)
+
+**Core Responsibility**: Central state management for lesson navigation
+
+```typescript
+export interface NavigationState {
+	flattenedLessons: FlattenedLesson[]; // All lessons in sequential order
+	currentLessonIndex: number | null; // Current position in sequence
+	previousLessonUrl: string | null; // Previous lesson URL
+	nextLessonUrl: string | null; // Next lesson URL
+	currentLesson: FlattenedLesson | null; // Current lesson data
+	totalLessons: number; // Total lesson count
+	completionPercentage: number; // Overall progress percentage
+}
+
+export interface FlattenedLesson {
+	id: string;
+	title: string;
+	description: string;
+	url: string;
+	contentType: string;
+	duration: string;
+	difficulty: string;
+	icon: string;
+	unitId: string;
+	unitTitle: string;
+	unitIcon: string;
+	lessonIndex: number; // Index within unit
+	globalIndex: number; // Index across all lessons
+}
+```
+
+**Key Features**:
+
+- **Reactive State**: Uses SvelteKit's derived store with `$page` integration
+- **URL Parsing**: Handles both hash-based (`#/demo/unit/id/lesson/id`) and route-based (`/demo/mermaid`) navigation
+- **Lesson Sequencing**: Creates flattened, ordered list from hierarchical sidebar menu
+- **Progress Calculation**: Automatic completion percentage based on current position
+
+#### FloatingNav Component (`src/lib/components/demo/FloatingNav.svelte`)
+
+**Core Responsibility**: Persistent navigation UI at bottom of screen
+
+**Features**:
+
+- **Semi-transparent Design**: Backdrop blur with transparency for content visibility
+- **Previous/Next Buttons**: Disabled states when at sequence boundaries
+- **Progress Indicator**: Visual progress bar with "X of Y" display
+- **Keyboard Navigation**: Ctrl+Arrow keys for power users
+- **Mobile Optimization**: Responsive design with proper touch targets (44px+)
+- **Accessibility**: ARIA labels, screen reader support, keyboard navigation
+
+**Implementation Pattern**:
+
+```svelte
+<!-- Only show when on a lesson page -->
+{#if $navigation.currentLesson}
+	<nav class="floating-nav" role="navigation" aria-label="Lesson navigation">
+		<div class="floating-nav-container">
+			<Button disabled={!$navigation.previousLessonUrl} onclick={goToPrevious}>
+				<ChevronLeft size={16} />
+				<span class="floating-nav-text">Previous</span>
+			</Button>
+
+			<!-- Progress indicator -->
+			<div class="floating-nav-progress">
+				<span>{$navigation.currentLessonIndex + 1} of {$navigation.totalLessons}</span>
+				<div class="floating-nav-progress-bar">
+					<div style:width="{$navigation.completionPercentage}%"></div>
+				</div>
+			</div>
+
+			<Button disabled={!$navigation.nextLessonUrl} onclick={goToNext}>
+				<span class="floating-nav-text">Next</span>
+				<ChevronRight size={16} />
+			</Button>
+		</div>
+	</nav>
+{/if}
+```
+
+#### Swipe Gesture Action (`src/lib/actions/swipe.ts`)
+
+**Core Responsibility**: Mobile touch navigation for lesson traversal
+
+**Configuration Parameters**:
+
+- `threshold: 80px` - Minimum swipe distance
+- `velocity: 0.2px/ms` - Minimum swipe speed
+- `verticalTolerance: 120px` - Maximum vertical movement during horizontal swipe
+- `debounceTime: 500ms` - Prevent rapid-fire navigation
+
+**Touch Event Handling**:
+
+```typescript
+export function navigationSwipe(node: HTMLElement, options: Partial<SwipeOptions> = {}) {
+	const swipeOptions: SwipeOptions = {
+		threshold: 80,
+		velocity: 0.2,
+		verticalTolerance: 120,
+		debounceTime: 500,
+		onSwipeLeft: () => navigateToNext(), // Swipe left = next lesson
+		onSwipeRight: () => navigateToPrevious(), // Swipe right = previous lesson
+		...options
+	};
+
+	return swipe(node, swipeOptions);
+}
+```
+
+### Integration Pattern
+
+#### Layout Integration (`src/routes/demo/+layout.svelte`)
+
+**Global Integration Strategy**:
+
+```svelte
+<script lang="ts">
+	import { FloatingNav } from "$lib/components/demo";
+	import { navigationSwipe } from "$lib/actions/swipe.js";
+</script>
+
+<!-- Apply swipe action to main content area -->
+<main class="demo-layout-main demo-layout-main--with-floating-nav" use:navigationSwipe>
+	{@render children()}
+</main>
+
+<!-- Floating navigation (globally available) -->
+<FloatingNav />
+
+<style>
+	.demo-layout-main--with-floating-nav {
+		/* Content-safe padding to prevent floating nav overlap */
+		padding-bottom: 120px; /* Desktop */
+	}
+
+	@media (max-width: 480px) {
+		.demo-layout-main--with-floating-nav {
+			padding-bottom: 140px; /* Mobile - larger touch targets */
+		}
+	}
+</style>
+```
+
+### Navigation Flow
+
+#### URL-Based State Synchronization
+
+1. **URL Change** → SvelteKit `$page` store updates
+2. **Store Derivation** → Navigation store parses new URL
+3. **State Update** → All components reactively update
+4. **UI Synchronization** → Sidebar active state, progress bars, floating nav all update automatically
+
+#### Lesson Transition Sequence
+
+```typescript
+// Example navigation flow
+function navigateToNext() {
+	const nav = $navigation;
+	if (nav.nextLessonUrl) {
+		if (nav.nextLessonUrl.startsWith("#")) {
+			// Hash-based navigation (SPA behavior)
+			window.location.hash = nav.nextLessonUrl.slice(1);
+		} else {
+			// Route-based navigation (SvelteKit routing)
+			goto(nav.nextLessonUrl);
+		}
+	}
+}
+```
+
+### State Management Philosophy
+
+#### Reactive Architecture
+
+- **Single Source of Truth**: Navigation store is the authoritative state
+- **Derived State**: All UI components derive state from central store
+- **Automatic Updates**: URL changes automatically propagate to all navigation elements
+- **No Manual Synchronization**: Components don't need to manually update each other
+
+#### URL as State Container
+
+- **Bookmarkable**: Any lesson can be directly accessed via URL
+- **Shareable**: URLs can be shared and maintain exact navigation state
+- **History-Aware**: Browser back/forward buttons work correctly
+- **Deep Linking**: Direct links to specific lessons work seamlessly
+
+### Performance Considerations
+
+#### Optimization Strategies
+
+- **Lazy Loading**: Navigation functions loaded on-demand to avoid circular dependencies
+- **Minimal Re-renders**: Derived stores only update when necessary
+- **Touch Optimization**: Debounced touch handlers prevent rapid navigation
+- **CSS Transitions**: Hardware-accelerated animations for smooth interactions
+
+#### Memory Management
+
+- **Store Cleanup**: Automatic subscription cleanup in component destroy
+- **Event Listener Cleanup**: Touch event listeners properly removed
+- **Minimal State**: Only essential navigation data stored in memory
+
+### Accessibility Features
+
+#### Keyboard Navigation
+
+- **Ctrl + Left Arrow**: Navigate to previous lesson
+- **Ctrl + Right Arrow**: Navigate to next lesson
+- **Focus Management**: Proper focus handling during navigation
+- **Screen Reader Support**: ARIA labels and live regions for progress updates
+
+#### Mobile Accessibility
+
+- **Touch Targets**: Minimum 44px touch targets (48px on mobile)
+- **Gesture Tolerance**: Forgiving swipe detection with configurable thresholds
+- **Visual Feedback**: Clear indication of navigation state and progress
+- **Reduced Motion**: Respects user's motion preferences
+
+### Testing Strategy
+
+#### Component Testing
+
+```typescript
+// Example test for navigation store
+import { navigationStore } from "$lib/stores/navigation.js";
+import { page } from "$app/stores";
+
+test("navigation store updates on URL change", async () => {
+	// Simulate URL change
+	page.set({ url: new URL("/demo/mermaid", "http://localhost") });
+
+	// Verify navigation state
+	const nav = get(navigationStore);
+	expect(nav.currentLesson?.id).toBe("demo-lesson-showcase-1");
+	expect(nav.currentLessonIndex).toBe(0);
+	expect(nav.nextLessonUrl).toBe("/demo/code-examples");
+});
+```
+
+#### Integration Testing
+
+- **Cross-Component Sync**: Verify sidebar and floating nav stay synchronized
+- **Mobile Gestures**: Test swipe functionality across different devices
+- **URL Handling**: Test both hash-based and route-based navigation patterns
+- **Edge Cases**: Test navigation at sequence boundaries (first/last lessons)
+
+#### Headless Testing Configuration
+
+**Browser for Testing**: Use Chromium for headless testing and screenshots
+
+```bash
+# Headless screenshot capture
+chromium-browser --headless --disable-gpu \
+  --screenshot="/tmp/screenshot/test_screenshot.png" \
+  --window-size=1200,800 "http://localhost:5174/demo"
+
+# Why Chromium over Firefox:
+# - Better headless mode stability in containerized environments
+# - More reliable screenshot generation
+# - Fewer snap/permission issues in development containers
+# - Consistent rendering across different environments
+```
+
+**Screenshot Naming Conventions**:
+
+All screenshots must be saved using the standardized naming format to prevent read issues later:
+
+```bash
+# REQUIRED FORMAT: ./tmp/screenshot/$(date +%Y%m%d-%H%M%S)-reason.png
+./tmp/screenshot/20250921-122828-navbar-before-fix.png
+./tmp/screenshot/20250921-122843-navbar-after-fix.png
+./tmp/screenshot/20250921-123015-mobile-responsive-test.png
+
+# Generate screenshots with proper naming
+DATE_TIME=$(date +%Y%m%d-%H%M%S)
+chromium-browser --headless --disable-gpu \
+  --screenshot="./tmp/screenshot/${DATE_TIME}-your-reason-here.png" \
+  --window-size=1200,800 "http://localhost:5174/demo"
+```
+
+**Browser Compatibility Issues**:
+
+**Firefox/Chromium Issues Encountered:**
+
+- Firefox snap package has permission issues accessing `/tmp/` directory for screenshot generation
+- Firefox headless mode occasionally fails to render certain CSS backdrop-filter effects properly
+- Chromium provides more consistent headless screenshot generation across different environments
+- Firefox requires additional configuration for proper font rendering in headless mode
+
+**Recommended Browser Priority:**
+
+1. **Chromium** (Primary): Most reliable for automated testing and screenshot generation
+2. **Google Chrome** (Secondary): Good for manual testing and debugging
+3. **Firefox** (Tertiary): Manual testing only, avoid for automated workflows due to snap issues
+
+**Common Testing Commands**:
+
+```bash
+# Basic functionality test
+curl -s "http://localhost:5174/demo" | head -20
+
+# Check server status and logs
+pnpm run dev  # Check for compilation errors
+
+# Screenshot comparison testing with proper naming
+DATE_TIME=$(date +%Y%m%d-%H%M%S)
+chromium-browser --headless --disable-gpu \
+  --screenshot="./tmp/screenshot/${DATE_TIME}-before-changes.png" \
+  --window-size=1200,800 "http://localhost:5174/demo"
+
+# Mobile screenshot testing
+chromium-browser --headless --disable-gpu \
+  --screenshot="./tmp/screenshot/${DATE_TIME}-mobile-view.png" \
+  --window-size=390,844 "http://localhost:5174/demo"
+```
+
+### Future Extensions
+
+#### Planned Enhancements
+
+- **Progress Persistence**: Save navigation state to localStorage
+- **Lesson Bookmarks**: Allow users to bookmark favorite lessons
+- **Navigation History**: Track user's lesson completion path
+- **Search Integration**: Navigate directly to lessons from search results
+- **Lesson Notes**: Per-lesson note-taking with navigation integration
+
+This architecture provides a robust, scalable foundation for lesson navigation that maintains state consistency across all components while providing an intuitive user experience on both desktop and mobile devices.
 
 The demo route (`/demo`) will showcase all integrated components through a systematic, incremental build process. Each step adds specific functionality while maintaining the existing architecture.
 

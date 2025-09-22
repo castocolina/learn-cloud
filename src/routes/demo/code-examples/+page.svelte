@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { LessonView } from "$lib/components/demo";
+	import { LessonView, FloatingNav } from "$lib/components/demo";
 	import type { DemoLesson } from "$lib/../data/demo/navigation/demo-sidebar-menu";
 	import { DemoContentType, DemoDifficulty } from "$lib/../data/demo/navigation/demo-sidebar-menu";
 
@@ -31,3 +31,6 @@
 </svelte:head>
 
 <LessonView lesson={codeExamplesLesson} />
+
+<!-- Global FloatingNav for lesson navigation -->
+<FloatingNav />

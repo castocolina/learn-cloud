@@ -523,7 +523,7 @@
 
 	<!-- Main Content Area -->
 	<div class="demo-content-container">
-		<!-- Main Page Content -->
+		<!-- Main Page Content with Swipe Navigation Support -->
 		<main class="demo-layout-main">
 			{@render children()}
 		</main>
@@ -536,6 +536,8 @@
 	on:close={closeSearchModal}
 	on:select={handleSearchSelect}
 />
+
+<!-- Global Floating Navigation - Temporarily removed -->
 
 <style>
 	/* Demo Layout Styles */
@@ -792,6 +794,8 @@
 		background: hsl(var(--background));
 	}
 
+	/* Removed: Content-safe padding - was for floating navigation */
+
 	/* Mobile Responsiveness */
 	@media (max-width: 768px) {
 		.demo-mobile-menu-toggle {
@@ -824,6 +828,8 @@
 		.demo-mobile-sidebar {
 			width: 85vw;
 		}
+
+		/* Removed: Mobile-specific floating navigation padding */
 	}
 
 	/* Tablet Styles */

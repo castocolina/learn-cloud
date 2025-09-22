@@ -1,5 +1,6 @@
 <script lang="ts">
 	import FlipCardShowcase from "$lib/components/demo/FlipCardShowcase.svelte";
+	import { FloatingNav } from "$lib/components/demo";
 </script>
 
 <svelte:head>
@@ -13,3 +14,6 @@
 <div class="demo-flipcards-page">
 	<FlipCardShowcase showStats={true} maxCards={50} />
 </div>
+
+<!-- Global FloatingNav for lesson navigation -->
+<FloatingNav />

@@ -1,6 +1,12 @@
 <script lang="ts">
 	import { demoSidebarMenu } from "../../data/demo/navigation/demo-sidebar-menu.js";
-	import { DemoSidebar, WelcomeView, UnitView, LessonView } from "$lib/components/demo";
+	import {
+		DemoSidebar,
+		WelcomeView,
+		UnitView,
+		LessonView,
+		FloatingNav
+	} from "$lib/components/demo";
 	import { getContext } from "svelte";
 	import { visitUnit, completeLesson } from "../../lib/stores/progress.js";
 	import type {
@@ -205,6 +211,11 @@
 		{/if}
 	</main>
 </div>
+
+<!-- Show FloatingNav only when viewing a lesson -->
+{#if currentView() === "lesson" && selectedLesson}
+	<FloatingNav />
+{/if}
 
 <style>
 	/* Demo Interactive Layout - Two Column Design */
