@@ -1,4 +1,6 @@
-import type { SearchableItem, ContentType, SearchCategory } from "$lib/types/search.js";
+import type { ContentType } from "$lib/types";
+import { CONTENT_TYPES } from "$lib/types";
+import type { SearchableItem, SearchCategory } from "$lib/types";
 
 export interface SearchConfiguration {
 	debounceMs: number;
@@ -8,7 +10,7 @@ export interface SearchConfiguration {
 		open: string;
 		close: string;
 	};
-	weights: Record<ContentType, number>;
+	weights: { [K in ContentType]: number };
 	categories: SearchCategory[];
 }
 
@@ -25,7 +27,9 @@ export const searchConfig: SearchConfiguration = {
 		lesson: 0.9,
 		code: 0.8,
 		diagram: 0.7,
-		interactive: 0.85
+		interactive: 0.85,
+		text: 0.6,
+		mixed: 0.75
 	},
 	categories: [
 		{ id: "all", name: "All Content", icon: "search" },

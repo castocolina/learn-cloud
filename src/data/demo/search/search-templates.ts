@@ -1,4 +1,5 @@
-import type { ContentType, SearchResult } from "$lib/types/search.js";
+import type { ContentType } from "$lib/types";
+import type { SearchResult } from "$lib/types";
 
 export interface SearchResultTemplate {
 	type: ContentType;
@@ -10,7 +11,7 @@ export interface SearchResultTemplate {
 	actionLabel: string;
 }
 
-export const searchResultTemplates: Record<ContentType, SearchResultTemplate> = {
+export const searchResultTemplates: { [K in ContentType]: SearchResultTemplate } = {
 	component: {
 		type: "component",
 		icon: "🧩",
@@ -55,6 +56,24 @@ export const searchResultTemplates: Record<ContentType, SearchResultTemplate> = 
 		showContent: true,
 		maxContentLength: 100,
 		actionLabel: "Try Interactive"
+	},
+	text: {
+		type: "text",
+		icon: "📄",
+		badgeColor: "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200",
+		titlePrefix: "Text:",
+		showContent: true,
+		maxContentLength: 200,
+		actionLabel: "Read Text"
+	},
+	mixed: {
+		type: "mixed",
+		icon: "🔀",
+		badgeColor: "bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200",
+		titlePrefix: "Mixed:",
+		showContent: true,
+		maxContentLength: 150,
+		actionLabel: "View Content"
 	}
 };
 

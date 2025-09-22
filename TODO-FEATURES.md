@@ -205,14 +205,14 @@ This unified type system is the foundation for a **single, cohesive navigation a
 This project requires a comprehensive architectural refactoring to create a unified, cohesive system with two critical code quality standards:
 
 1. **Path Aliases Enforcement**: Exclusive use of path aliases (e.g., `$lib/types`, `$lib`) instead of relative paths (`../`)
-2. **Enum-First Design**: Strict "Enum-First" approach replacing all hard-coded string comparisons with type-safe enums
+2. **Union Type-First Design**: Strict "Union Type-First" approach replacing all hard-coded string comparisons with type-safe union types optimized for SvelteKit performance (zero runtime overhead)
 
 **Implementation Details:**
 
 1. **Directory Restructure**: Migrate `src/data/types.ts` → `src/lib/types/` (multiple domain-separated files following SvelteKit 2024 conventions)
 2. **Type System Unification**: Synthesize foundational types from feature/spa branch with demo extensions:
    - Merge `DemoContentType`, `SearchableItem`, navigation interfaces into unified system
-   - Consolidate `ContentType`, `ChapterType`, `DifficultyLevel` enums
+   - Consolidate `ContentType`, `ChapterType`, `ContentDifficulty` union types
    - Unify navigation metadata across all systems
 3. **Centralized Type Architecture** (SvelteKit Convention):
    ```typescript
@@ -220,7 +220,7 @@ This project requires a comprehensive architectural refactoring to create a unif
    ├── content.ts       // ContentMetadata, LessonContent, QuizContent, StudyGuideContent
    ├── navigation.ts    // NavigationItem, FlatNavEntry, BreadcrumbItem, MenuStructure
    ├── search.ts        // SearchableItem unified with navigation metadata (already exists)
-   ├── enums.ts         // All project enums consolidated (ContentType, ChapterType, etc.)
+   ├── types.ts         // All project union types consolidated (ContentType, ChapterType, etc.)
    └── index.ts         // Centralized exports with re-exports
    ```
 4. **Path Alias Implementation**: Use existing `$lib` alias for type imports throughout codebase
@@ -232,7 +232,7 @@ This project requires a comprehensive architectural refactoring to create a unif
    - Search index with navigation metadata
    - Sequential navigation (previous/next)
    - Direct navigation and deep linking
-6. **Enum-First Migration**: Replace all hardcoded strings with type-safe enum references
+6. **Union Type-First Migration**: Replace all hardcoded strings with type-safe union type references
 7. **Educational Metadata Enhancement**: Include complexity, duration, prerequisites, learning objectives
 
 **Critical Navigation Architecture Requirements:**
@@ -246,7 +246,7 @@ This project requires a comprehensive architectural refactoring to create a unif
 
 **Type System Enhancement Areas:**
 
-- **Content Complexity**: Beginner, Intermediate, Advanced, Expert levels (enum-based)
+- **Content Complexity**: Beginner, Intermediate, Advanced, Expert levels (union type-based)
 - **Duration Estimates**: Ranges for different content types (lessons, quizzes, projects)
 - **Difficulty Progression**: Prerequisites, skill requirements, learning outcomes
 - **Interactive Elements**: Quiz types, assessment formats, progress tracking
@@ -258,18 +258,21 @@ This project requires a comprehensive architectural refactoring to create a unif
 **⚠️ CRITICAL**: Successful completion of this refactoring will require mandatory updates to ALL subsequent tasks and documentation:
 
 **TASK 3 Scripts Requiring Updates:**
+
 - **TASK 3A**: Update `content-menu-generator.ts` to use `$lib/types` imports and unified NavigationItem interface
-- **TASK 3B**: Update `content-scaffolding.ts` to use new enum definitions and path aliases
-- **TASK 3C**: Update `mermaid-validator.ts` to use centralized enum system via `$lib/types`
+- **TASK 3B**: Update `content-scaffolding.ts` to use new union type definitions and path aliases
+- **TASK 3C**: Update `mermaid-validator.ts` to use centralized union type system via `$lib/types`
 - **TASK 3D**: Update `search-indexer.ts` to use unified SearchableItem and navigation types
 - **TASK 3E** (New): Create `flatnav-generator.ts` using unified type system
 
 **Script Output Path Standardization:**
+
 - **TASK 3A Output**: `src/data/generated/content-menu.ts` (updated from `src/data/book/content-menu.ts`)
 - **TASK 3D Output**: `src/data/generated/search-index.ts` (standardized location)
 - **TASK 3E Output**: `src/data/generated/flatnav.ts` (new flat navigation map)
 
 **Documentation Updates Required:**
+
 - **CONTENT-STANDARDS.md**: Update all `types.ts` references to new `src/lib/types/` structure (SvelteKit convention)
 - **SVELTEKIT-GUIDE.md**: Update TypeScript patterns and path alias examples to use `$lib/types`
 - **SEARCH-ARCHITECTURE.md**: Update SearchableItem interface references and navigation integration
@@ -277,6 +280,7 @@ This project requires a comprehensive architectural refactoring to create a unif
 - **All .md files**: Find and replace `src/data/types.ts` references with correct `src/lib/types/` paths
 
 **Component Integration Updates:**
+
 - All SvelteKit components importing types must use `$lib/types` path aliases
 - Search system components must use unified SearchableItem interface
 - Navigation components must use unified NavigationItem interfaces
@@ -304,7 +308,7 @@ This project requires a comprehensive architectural refactoring to create a unif
 - ✅ Path alias resolution working correctly (`$lib/types`, `$lib`, `$data`)
 - ✅ All TASK 3 scripts updated and functional with new type system
 - ✅ All documentation references updated to new structure
-- ✅ Enum imports working correctly with no hardcoded strings
+- ✅ Union type imports working correctly with no hardcoded strings
 - ✅ Interface inheritance verified with educational metadata
 - ✅ No `any` types in code, comprehensive type coverage
 - ✅ Demo examples fully typed with new unified interfaces
@@ -316,7 +320,7 @@ This project requires a comprehensive architectural refactoring to create a unif
 **Documentation Architecture Updates:**
 
 - **Path Reference Migration**: Global update of all type system references
-- **Enum Usage Guidelines**: Enhanced patterns with navigation integration
+- **Union Type Usage Guidelines**: Enhanced patterns with navigation integration
 - **Interface Extension Patterns**: Content metadata and navigation hierarchy
 - **Type Safety Best Practices**: Educational content with navigation support
 - **Architecture Decision Records**: Rationale for unified type system approach
@@ -451,12 +455,12 @@ You are responsible for developing a TypeScript content scaffolding generator sc
 
 **Script Specification (`scripts/content-scaffolding.ts`):**
 
-- **Purpose**: Creates TypeScript content files with proper enum usage and structure
-- **Input**: Unit name, chapter type (from enum), chapter ID
+- **Purpose**: Creates TypeScript content files with proper union type usage and structure
+- **Input**: Unit name, chapter type (from union type), chapter ID
 - **Output**: Generated `.ts` files in `src/data/book/unit-{name}/`
 - **Reference**: Migrate logic from `src/python/generate_content_scaffolding.py`
 - **Follow Pattern**: Must follow `src/data/demo/content/diagrams/mermaid-examples.ts` structure
-- **Enum Integration**: Use ChapterType enum, ContentStatus enum from types.ts
+- **Union Type Integration**: Use ChapterType union type, ContentStatus union type from types.ts
 - **CLI Usage**: `pnpm run scaffold-content --unit="unit-name" --type="lesson" --id="chapter-id"`
 
 **Build System Integration:**
@@ -487,7 +491,7 @@ You are responsible for developing a TypeScript content scaffolding generator sc
 
 - ✅ Script executes without errors using tsx
 - ✅ ts-morph correctly generates TypeScript files
-- ✅ Generated files follow enum-first patterns and mermaid-examples.ts structure
+- ✅ Generated files follow union type-first patterns and mermaid-examples.ts structure
 - ✅ Test coverage comprehensive
 - ✅ Makefile target functional
 - ✅ Package.json script working
@@ -495,12 +499,12 @@ You are responsible for developing a TypeScript content scaffolding generator sc
 **Verification Notes:**
 
 - **Pattern Updates**: Check mermaid-examples.ts for structural changes that should be reflected in scaffolding
-- **Enum Changes**: Verify ChapterType and ContentStatus enums are current in types.ts
+- **Union Type Changes**: Verify ChapterType and ContentStatus union types are current in types.ts
 
 **Documentation to Update:**
 
 - Content scaffolding workflow documentation
-- Enum integration patterns
+- Union type integration patterns
 
 ---
 
@@ -717,24 +721,24 @@ You are responsible for developing a TypeScript flat navigation generator script
 
 ```typescript
 interface FlatNavEntry {
-  id: string;
-  title: string;
-  url: string;
-  unitId: string;
-  unitTitle: string;
-  chapterType: ChapterType;
-  chapterIndex: number;      // Index within unit
-  globalIndex: number;       // Global sequence index
-  previousEntry?: FlatNavEntry | null;
-  nextEntry?: FlatNavEntry | null;
+	id: string;
+	title: string;
+	url: string;
+	unitId: string;
+	unitTitle: string;
+	chapterType: ChapterType;
+	chapterIndex: number; // Index within unit
+	globalIndex: number; // Global sequence index
+	previousEntry?: FlatNavEntry | null;
+	nextEntry?: FlatNavEntry | null;
 }
 
 interface FlatNavStructure {
-  entries: FlatNavEntry[];
-  totalCount: number;
-  sequenceMap: Map<string, FlatNavEntry>;
-  getNextEntry: (currentId: string) => FlatNavEntry | null;
-  getPreviousEntry: (currentId: string) => FlatNavEntry | null;
+	entries: FlatNavEntry[];
+	totalCount: number;
+	sequenceMap: Map<string, FlatNavEntry>;
+	getNextEntry: (currentId: string) => FlatNavEntry | null;
+	getPreviousEntry: (currentId: string) => FlatNavEntry | null;
 }
 ```
 
@@ -757,7 +761,7 @@ interface FlatNavStructure {
 
 4. **Type Safety**: Use unified type system from Task 2:
    - Import from `$lib/types/navigation` and `$lib/types/content`
-   - Leverage ChapterType enum for content classification
+   - Leverage ChapterType union type for content classification
    - Ensure NavigationItem interface compatibility
 
 **Build System Integration:**
@@ -862,7 +866,7 @@ You are responsible for designing and implementing SPA architecture with single 
 **Verification Notes:**
 
 - **SvelteKit Updates**: Check for changes in SvelteKit routing or layout patterns
-- **Types Updates**: Review types.ts for new ChapterType enums that require renderer updates
+- **Types Updates**: Review types.ts for new ChapterType union types that require renderer updates
 - **Content Structure**: Verify content-menu-generator output matches SPA navigation requirements
 
 **Documentation to Update:**
@@ -1094,10 +1098,10 @@ You are responsible for implementing core UI components using shadcn-svelte with
    </script>
    ```
 
-2. **Enum-First TypeScript Patterns**:
-   - Use TypeScript enums as single source of truth for all string values
+2. **Union Type-First TypeScript Patterns**:
+   - Use TypeScript union types as single source of truth for all string values
    - Never use hardcoded strings in components, types, or logic
-   - Import enums from `$lib/types/enums` using path aliases
+   - Import union types from `$lib/types/types` using path aliases
 
 3. **Centralized Styling Approach**:
    - All component styles in `src/app.css` using `@layer components`
@@ -1125,33 +1129,33 @@ pnpm dlx shadcn-svelte@latest add separator
 **Expected Output:**
 
 - `src/lib/components/ui/` (shadcn components with Svelte 5 runes)
-- `src/lib/components/shared/` (wrapper components with enum integration)
+- `src/lib/components/shared/` (wrapper components with union type integration)
 - `src/app.css` (component styles using `@layer components`)
-- TypeScript interfaces with enum constraints
-- Component usage documentation with enum patterns
+- TypeScript interfaces with union type constraints
+- Component usage documentation with union type patterns
 
 **Final Validations:**
 
 - ✅ Components render correctly with Svelte 5 runes syntax
 - ✅ Theme switching functional with centralized CSS
 - ✅ Mobile responsive (≤390px) following mobile-first design
-- ✅ TypeScript compilation without errors using enum patterns
+- ✅ TypeScript compilation without errors using union type patterns
 - ✅ No accessibility warnings
 - ✅ No `@apply` usage in component `<style>` blocks
-- ✅ All components use enum-first patterns from SVELTEKIT-GUIDE.md
+- ✅ All components use union type-first patterns from SVELTEKIT-GUIDE.md
 
 **Verification Notes:**
 
 - **shadcn-svelte Updates**: Check for new components and Svelte 5 compatibility updates
-- **SVELTEKIT-GUIDE Updates**: Review for changes in component architecture or enum patterns
+- **SVELTEKIT-GUIDE Updates**: Review for changes in component architecture or union type patterns
 - **Theme Integration**: Verify components adopt latest theme system changes
 
 **Documentation to Update:**
 
 - Component usage patterns with Svelte 5 runes examples
-- Props interface documentation with enum constraints
+- Props interface documentation with union type constraints
 - Theme integration examples following centralized approach
-- Enum-first component development guide
+- Union type-first component development guide
 
 ---
 
@@ -1162,38 +1166,38 @@ You are responsible for creating type-specific renderers for each ChapterType wi
 
 **Technical Documents to Review:**
 
-- `src/lib/types/enums.ts` (ChapterType enums - enhanced from TASK 2)
+- `src/lib/types/types.ts` (ChapterType union types - enhanced from TASK 2)
 - `src/lib/components/ui/` (shadcn components from Task 6)
 - `src/lib/stores/theme.ts` (theme integration)
 - `CONTENT-STANDARDS.md` (content structure)
-- `SVELTEKIT-GUIDE.md` (enum-first TypeScript patterns, Svelte 5 runes, centralized CSS - CRITICAL)
+- `SVELTEKIT-GUIDE.md` (union type-first TypeScript patterns, Svelte 5 runes, centralized CSS - CRITICAL)
 
 **Prerequisites:**
 
 - Task 6: shadcn-svelte UI Components completed
 
 **Context:**
-Based on ChapterType enum values (LESSON, STUDY_GUIDE, QUIZ, EXAM, PROJECT), create differentiated renderers with unique headers, icons, and styling for each content type across all technology units.
+Based on ChapterType union type values ("lesson", "study_guide", "quiz", "exam", "project"), create differentiated renderers with unique headers, icons, and styling for each content type across all technology units.
 
 **Implementation Details:**
 
 **Critical Architecture Requirements (from SVELTEKIT-GUIDE.md):**
 
-1. **Enum-First Pattern Implementation**:
+1. **Union Type-First Pattern Implementation**:
 
    ```typescript
-   // ✅ CORRECT: Use enums from types.ts
-   import { ChapterType, ContentStatus } from "$data/types.js";
+   // ✅ CORRECT: Use union types from types.ts
+   import type { ChapterType, ContentStatus } from "$lib/types";
 
    interface Props {
-   	chapterType: ChapterType; // Enum constraint
-   	status: ContentStatus; // Enum constraint
+   	chapterType: ChapterType; // Union type constraint
+   	status: ContentStatus; // Union type constraint
    	unitName: string;
    }
 
    // Type-safe conditional rendering
-   let isQuizMode = $derived(chapterType === ChapterType.QUIZ);
-   let isStudyMode = $derived(chapterType === ChapterType.STUDY_GUIDE);
+   let isQuizMode = $derived(chapterType === "quiz");
+   let isStudyMode = $derived(chapterType === "study_guide");
    ```
 
 2. **Svelte 5 Runes Syntax Requirements**:
@@ -1236,14 +1240,8 @@ Based on ChapterType enum values (LESSON, STUDY_GUIDE, QUIZ, EXAM, PROJECT), cre
 **1. Type-Specific Renderer Components:**
 
 ```typescript
-// ChapterType enum values from TASK 2
-enum ChapterType {
-	LESSON = "lesson",
-	STUDY_GUIDE = "study_guide",
-	QUIZ = "quiz",
-	EXAM = "exam",
-	PROJECT = "project"
-}
+// ChapterType union type values from TASK 2
+export type ChapterType = "lesson" | "study_guide" | "quiz" | "exam" | "project";
 ```
 
 **Component Structure:**
@@ -1329,7 +1327,7 @@ enum ChapterType {
 	interface Props {
 		title: string;
 		unitName: "python" | "go" | "rust" | "cloud-db" | "graphql";
-		chapterType: ChapterType.LESSON;
+		chapterType: "lesson";
 		estimatedTime?: string;
 		difficulty?: "beginner" | "intermediate" | "advanced";
 	}
@@ -1362,35 +1360,35 @@ enum ChapterType {
 - `src/lib/components/renderers/RichTextViewer.svelte` (generic renderer for structured rich text)
 - `src/lib/components/common/ContentHeader.svelte` (shared header component)
 - `src/app.css` (differentiated header styles in `@layer components`)
-- TypeScript interfaces with enum constraints for all renderer props
-- Content rendering system with real examples following enum-first patterns
+- TypeScript interfaces with union type constraints for all renderer props
+- Content rendering system with real examples following union type-first patterns
 
 **Final Validations:**
 
 - ✅ All 5 renderer types load content correctly with proper headers
 - ✅ Headers show correct icons, colors, and styling for each ChapterType
 - ✅ Unit-specific accent colors properly applied
-- ✅ TypeScript interfaces functioning with proper enum integration from types.ts
+- ✅ TypeScript interfaces functioning with proper union type integration from types.ts
 - ✅ Mobile responsive headers (≤390px tested)
 - ✅ Theme switching maintains header contrast and readability
 - ✅ All example content types render correctly
 - ✅ Components use Svelte 5 runes syntax exclusively
 - ✅ No `@apply` usage in component `<style>` blocks
-- ✅ Enum-first patterns implemented throughout
+- ✅ Union type-first patterns implemented throughout
 
 **Verification Notes:**
 
-- **ChapterType Updates**: Check types.ts for new chapter types or enum value changes
+- **ChapterType Updates**: Check types.ts for new chapter types or union type value changes
 - **SVELTEKIT-GUIDE Updates**: Review for changes in component architecture patterns
 - **shadcn-svelte Updates**: Verify compatibility with latest component versions
 
 **Documentation to Update:**
 
-- Renderer component specifications with ChapterType examples and enum usage
+- Renderer component specifications with ChapterType examples and union type usage
 - Header styling guidelines with color schemes and icon usage
 - Content block rendering patterns with Svelte 5 runes examples
 - Unit-specific styling integration guide
-- Enum-first development patterns for content renderers
+- Union type-first development patterns for content renderers
 
 ---
 
@@ -1580,7 +1578,7 @@ describe("Sidebar Component", () => {
 - ✅ TypeScript compilation without errors using enum constraints
 - ✅ All tests pass and protect against regressions
 - ✅ No `@apply` usage in component `<style>` blocks
-- ✅ Enum-first patterns implemented throughout
+- ✅ Union type-first patterns implemented throughout
 - ✅ Accessibility compliance verified
 
 **Verification Notes:**

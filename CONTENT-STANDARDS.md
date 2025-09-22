@@ -222,21 +222,20 @@ export type ContentStatus = "scaffold" | "draft" | "final";
 - **Quality Gates**: Each transition should meet specific quality criteria
 - **Rollback**: Content can be moved back to previous status if issues are discovered
 
-### TypeScript Enum Utilization for Type Safety
+### TypeScript Union Type Utilization for Type Safety and Performance
 
-To enhance type safety and maintainability, the platform now uses TypeScript `enum`s for all predefined value sets. This approach eliminates ambiguities, reduces errors, and provides better IntelliSense support.
+To enhance type safety, maintainability, and SvelteKit performance optimization, the platform now uses TypeScript union types for all predefined value sets. This approach eliminates ambiguities, reduces errors, provides better IntelliSense support, and achieves zero runtime overhead.
 
-#### ContentStatus Enum
+#### ContentStatus Union Type
 
 ```typescript
 /**
  * Content lifecycle status tracking for content maturity management
  */
-export enum ContentStatus {
-	SCAFFOLD = "scaffold",
-	DRAFT = "draft",
-	FINAL = "final"
-}
+export type ContentStatus = "scaffold" | "draft" | "final";
+
+// Constant array for iteration (replaces Object.values() for union types)
+export const CONTENT_STATUSES: ContentStatus[] = ["scaffold", "draft", "final"];
 ```
 
 **Usage in Interfaces:**
@@ -245,43 +244,40 @@ export enum ContentStatus {
 export interface BaseContent {
 	title: string;
 	summary: string;
-	status?: ContentStatus; // Type-safe status tracking
+	status?: ContentStatus; // Type-safe status tracking with union types
 }
 ```
 
-#### ContentDifficulty Enum
+#### ContentDifficulty Union Type
 
 ```typescript
 /**
  * Content difficulty levels for educational content classification
  */
-export enum ContentDifficulty {
-	BEGINNER = "beginner",
-	INTERMEDIATE = "intermediate",
-	ADVANCED = "advanced"
-}
+export type ContentDifficulty = "beginner" | "intermediate" | "advanced" | "expert";
+
+// Constant array for iteration
+export const CONTENT_DIFFICULTIES: ContentDifficulty[] = ["beginner", "intermediate", "advanced", "expert"];
 ```
 
 **Usage in Interfaces:**
 
 ```typescript
 export interface ProjectContent extends BaseContent {
-	difficulty?: ContentDifficulty; // Type-safe difficulty classification
+	difficulty?: ContentDifficulty; // Type-safe difficulty classification with union types
 }
 ```
 
-#### MermaidDirection Enum
+#### MermaidDirection Union Type
 
 ```typescript
 /**
  * Mermaid diagram direction options for visual flow representation
  */
-export enum MermaidDirection {
-	TB = "TB", // Top-Bottom
-	LR = "LR", // Left-Right
-	BT = "BT", // Bottom-Top
-	RL = "RL" // Right-Left
-}
+export type MermaidDirection = "TB" | "LR" | "BT" | "RL";
+
+// Constant array for iteration
+export const MERMAID_DIRECTIONS: MermaidDirection[] = ["TB", "LR", "BT", "RL"];
 ```
 
 **Usage in Interfaces:**
@@ -291,14 +287,16 @@ export interface DiagramBlock {
 	type: "diagram";
 	diagramType: "mermaid" | "flowchart" | "sequence" | "gantt" | "gitgraph";
 	definition: string;
-	direction?: MermaidDirection; // Type-safe diagram orientation
+	direction?: MermaidDirection; // Type-safe diagram orientation with union types
 }
 ```
 
-#### Benefits of Enum-Based Type Safety
+#### Benefits of Union Type-Based Type Safety
 
-- **Compile-time Validation**: Catch invalid values at compile time
-- **IntelliSense Support**: Auto-completion for valid enum values
+- **Compile-time Validation**: Catch invalid values at compile time with zero runtime overhead
+- **Performance Optimization**: Zero runtime overhead compared to enums (SvelteKit optimization)
+- **IntelliSense Support**: Auto-completion for valid union type values
+- **Bundle Size**: Smaller JavaScript bundles with string literals
 - **Refactoring Safety**: Confident code changes with type checking
 - **Documentation**: Self-documenting code with clear value meanings
 - **Consistency**: Standardized values across the entire codebase
@@ -352,12 +350,14 @@ export const studyGuideExample: StudyGuideContent = {
 For comprehensive Mermaid implementation details, syntax rules, and technical requirements, see [MERMAID-STANDARDS.md](MERMAID-STANDARDS.md).
 
 **Content Creation Guidelines**:
+
 - **Educational Context**: Include clear title and caption explaining the diagram's purpose
 - **Learning Integration**: Ensure diagrams support lesson objectives and flow naturally with content
 - **Accessibility**: Provide alternative text descriptions for complex diagrams
 - **Validation**: All diagrams must pass syntax validation before content publication
 
 **Technical Implementation**:
+
 - Expandable diagrams with modal functionality
 - Mobile-responsive design with touch optimization
 - Debug capabilities for troubleshooting
@@ -647,12 +647,14 @@ When creating lesson content that includes Mermaid diagram blocks, the following
 ```
 
 **Integration Points**:
+
 - **Content Creation**: Run validation after lesson content is created/modified
 - **Build Process**: Include in `make content-validate` command
 - **Pre-commit**: Validate all modified lesson files before commit
 - **CI/CD**: Automated validation in deployment pipeline
 
 **Validation Output Example**:
+
 ```
 ❌ src/data/unit1/lesson_1_2.json - Section 3, Diagram "System Architecture"
    Error: Parse error on line 2: Missing double quotes around node text

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from "svelte";
-	import type { SearchResult } from "$lib/types/search.js";
+	import type { SearchResult } from "$lib/types";
 	import {
 		formatSearchResult,
 		getEmptyStateForContext

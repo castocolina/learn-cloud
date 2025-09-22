@@ -225,25 +225,25 @@ src/styles/
 ```css
 /* Define in src/app.css */
 :root {
-  --z-base: 1;
-  --z-dropdown: 10;
-  --z-sticky: 50;
-  --z-sidebar: 90;
-  --z-header: 100;
-  --z-overlay: 200;
-  --z-modal: 210;
-  --z-popover: 300;
-  --z-toast: 400;
+	--z-base: 1;
+	--z-dropdown: 10;
+	--z-sticky: 50;
+	--z-sidebar: 90;
+	--z-header: 100;
+	--z-overlay: 200;
+	--z-modal: 210;
+	--z-popover: 300;
+	--z-toast: 400;
 }
 
 /* ✅ CORRECT: Use CSS custom properties */
 .demo-header-sticky {
-  z-index: var(--z-header);
+	z-index: var(--z-header);
 }
 
 /* ❌ INCORRECT: Hardcoded z-index values */
 .demo-header-sticky {
-  z-index: 50;
+	z-index: 50;
 }
 ```
 
@@ -364,45 +364,30 @@ The `lib` directory serves as the component library and utility hub:
 </script>
 ```
 
-#### Enum-First TypeScript Patterns
+#### Union Type-First TypeScript Patterns
 
-**Critical Architecture Pattern**: Use TypeScript enums as the single source of truth for all string values. Never use hardcoded strings in components, types, or logic.
+**Critical Architecture Pattern**: Use TypeScript union types as the single source of truth for all string values optimized for SvelteKit performance (zero runtime overhead). Never use hardcoded strings in components, types, or logic.
 
 **Content Type System**:
 
 ```typescript
-// src/data/types.ts - Core type system with enums
+// src/lib/types/types.ts - Core type system with union types
 
-export enum ContentStatus {
-	SCAFFOLD = "scaffold",
-	DRAFT = "draft",
-	FINAL = "final"
-}
+export type ContentStatus = "scaffold" | "draft" | "final";
 
-export enum ChapterType {
-	LESSON = "lesson",
-	STUDY_GUIDE = "study_guide",
-	QUIZ = "quiz",
-	EXAM = "exam",
-	PROJECT = "project"
-}
+export type ChapterType = "lesson" | "study_guide" | "quiz" | "exam" | "project";
 
-export enum ContentSection {
-	INTRODUCTION = "introduction",
-	THEORY = "theory",
-	PRACTICE = "practice",
-	ASSESSMENT = "assessment",
-	SUMMARY = "summary"
-}
+export type ContentSection = "introduction" | "theory" | "practice" | "assessment" | "summary";
 
-export enum ProgressStatus {
-	NOT_STARTED = "not_started",
-	IN_PROGRESS = "in_progress",
-	COMPLETED = "completed",
-	REVIEW = "review"
-}
+export type ProgressStatus = "not_started" | "in_progress" | "completed" | "review";
 
-// Base interfaces using enums
+// Constant arrays for iteration (replaces Object.values() for union types)
+export const CONTENT_STATUSES: ContentStatus[] = ["scaffold", "draft", "final"];
+export const CHAPTER_TYPES: ChapterType[] = ["lesson", "study_guide", "quiz", "exam", "project"];
+export const CONTENT_SECTIONS: ContentSection[] = ["introduction", "theory", "practice", "assessment", "summary"];
+export const PROGRESS_STATUSES: ProgressStatus[] = ["not_started", "in_progress", "completed", "review"];
+
+// Base interfaces using union types
 export interface ContentMetadata {
 	id: string;
 	title: string;
@@ -459,61 +444,55 @@ export interface ProgressTracking {
     displayMode?: ChapterType;
   }
 
-  let { content, onComplete, displayMode = ChapterType.LESSON }: Props = $props();
+  let { content, onComplete, displayMode = "lesson" }: Props = $props();
 
-  // Type-safe status updates using enums
+  // Type-safe status updates using union types
   function updateStatus(newStatus: ContentStatus) {
     onComplete?.(newStatus);
   }
 
-  // Conditional rendering based on enum values
-  let isQuizMode = $derived(displayMode === ChapterType.QUIZ);
-  let isStudyMode = $derived(displayMode === ChapterType.STUDY_GUIDE);
+  // Conditional rendering based on union type values
+  let isQuizMode = $derived(displayMode === "quiz");
+  let isStudyMode = $derived(displayMode === "study_guide");
 </script>
 ```
 
-**Enum-Based Routing and Navigation**:
+**Union Type-Based Routing and Navigation**:
 
 ```typescript
 // src/lib/utils/routing.ts
-export enum AppRoute {
-  HOME = "/",
-  UNITS = "/units",
-  LESSONS = "/lessons",
-  QUIZZES = "/quizzes",
-  PROGRESS = "/progress",
-  SETTINGS = "/settings"
-}
+export type AppRoute = "/" | "/units" | "/lessons" | "/quizzes" | "/progress" | "/settings";
 
-export enum LessonRoute {
-  OVERVIEW = "overview",
-  CONTENT = "content",
-  PRACTICE = "practice",
-  ASSESSMENT = "assessment"
-}
+export type LessonRoute = "overview" | "content" | "practice" | "assessment";
+
+// Constant arrays for iteration
+export const APP_ROUTES: AppRoute[] = ["/", "/units", "/lessons", "/quizzes", "/progress", "/settings"];
+export const LESSON_ROUTES: LessonRoute[] = ["overview", "content", "practice", "assessment"];
 
 // Type-safe URL generation
 export function generateLessonUrl(unitId: string, lessonId: string, section: LessonRoute): string {
-  return `${AppRoute.LESSONS}/${unitId}/${lessonId}#${section}`;
+  return `/lessons/${unitId}/${lessonId}#${section}`;
 }
 
 // Component usage
 <script lang="ts">
-  import { AppRoute, LessonRoute } from '$lib/utils/routing.js';
+  import type { AppRoute, LessonRoute } from '$lib/utils/routing.js';
 
-  let currentRoute = $derived(AppRoute.LESSONS);
-  let currentSection = $derived(LessonRoute.CONTENT);
+  let currentRoute = $derived("/lessons" as AppRoute);
+  let currentSection = $derived("content" as LessonRoute);
 </script>
 ```
 
-**Benefits of Enum-First Approach**:
+**Benefits of Union Type-First Approach**:
 
-- **Type Safety**: Compile-time validation of all string values
+- **Type Safety**: Compile-time validation of all string values with zero runtime overhead
+- **Performance**: Zero runtime overhead compared to enums (SvelteKit optimization)
 - **Refactoring**: Easy to rename values across entire codebase
 - **Autocomplete**: IDE suggestions for all valid options
 - **Consistency**: Single source of truth prevents typos
-- **Documentation**: Enums serve as living documentation
-- **Validation**: Runtime validation using enum values
+- **Bundle Size**: Smaller JavaScript bundles with string literals
+- **Documentation**: Union types serve as living documentation
+- **Validation**: Runtime validation using constant arrays
 
 ### **Svelte 5 Reactive Collections: SvelteMap and SvelteSet**
 
@@ -900,6 +879,7 @@ Organize settings by functional area:
 **Data-Driven Approach**: All demo content stored in TypeScript files within `src/data/demo/` for easy identification and cleanup.
 
 **Key Structure**:
+
 - `src/data/demo/types.ts` - TypeScript interfaces for demo components
 - `src/data/demo/navigation/` - Sidebar and breadcrumb configuration
 - `src/data/demo/content/` - Demo units and component examples
@@ -908,6 +888,7 @@ Organize settings by functional area:
 **Core Interfaces**: `DemoUnit`, `DemoLesson`, `ComponentDemo` with full TypeScript support.
 
 **Organization Strategy**:
+
 - Prefix-based naming (`demo-*`) for easy identification
 - Isolated dependencies in separate namespace
 - Hash-based SPA navigation without page redirects
@@ -922,16 +903,19 @@ Organize settings by functional area:
 ### Key Components
 
 #### Navigation Store (`src/lib/stores/navigation.ts`)
+
 - **State Management**: `NavigationState` and `FlattenedLesson` interfaces
 - **Reactive Integration**: SvelteKit derived store with `$page` integration
 - **Features**: URL parsing, lesson sequencing, automatic progress calculation
 
 #### FloatingNav Component (`src/lib/components/demo/FloatingNav.svelte`)
+
 - **Persistent UI**: Bottom-screen navigation with backdrop blur
 - **Accessibility**: ARIA labels, keyboard navigation (Ctrl+Arrow keys)
 - **Mobile Optimized**: Touch targets (44px+), responsive design
 
 #### Swipe Gesture Action (`src/lib/actions/swipe.ts`)
+
 - **Touch Navigation**: Mobile swipe gestures for lesson traversal
 - **Configuration**: Threshold, velocity, and debounce parameters
 
@@ -1064,12 +1048,14 @@ function navigateToNext() {
 ### Testing & Future Extensions
 
 **Testing Strategy**:
+
 - Component testing with navigation store URL parsing
 - Integration testing for cross-component synchronization
 - Headless testing using Chromium for consistency
 - Screenshot naming: `./tmp/screenshot/YYYYMMDD-HHMMSS-reason.png`
 
 **Planned Enhancements**:
+
 - Progress persistence and lesson bookmarking
 - Navigation history and search integration
 - Per-lesson note-taking capabilities
@@ -1193,6 +1179,7 @@ function navigateToNext() {
 
 **Problem**: Build failures with `Cannot apply unknown utility class`
 **Solution**:
+
 1. Move custom styles to modular CSS files in `src/styles/`
 2. Use `@layer components` for custom classes
 3. Never use `@apply` in Svelte component `<style>` blocks
@@ -1201,6 +1188,7 @@ function navigateToNext() {
 
 **Problem**: Deprecated syntax errors and code quality issues
 **Solution**:
+
 - Replace `export let` with `let { prop }: Props = $props()`
 - Replace `$:` reactivity with `$derived()` or `$effect()`
 - Use `$state()` for reactive variables
@@ -1211,11 +1199,13 @@ function navigateToNext() {
 ### Performance Issues
 
 **Common Problems**:
+
 - Large bundle sizes from unused component imports
 - Inefficient reactivity patterns
 - Missing optimization for production builds
 
 **Solutions**:
+
 - Use selective imports from component libraries
 - Implement proper error boundaries
 - Optimize images and assets for web delivery

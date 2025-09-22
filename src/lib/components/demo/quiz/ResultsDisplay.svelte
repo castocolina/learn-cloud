@@ -15,7 +15,6 @@ Provides detailed feedback to help users understand their performance.
 
 <script lang="ts">
 	import type { Quiz, DragAndDropQuestion } from "$data/demo/content/quizzes/quiz-examples";
-	import { QuestionType } from "$data/demo/content/quizzes/quiz-examples";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import { Card, CardContent, CardHeader, CardTitle } from "$lib/components/ui/card/index.js";
 	import { Badge } from "$lib/components/ui/badge/index.js";
@@ -135,7 +134,7 @@ Provides detailed feedback to help users understand their performance.
 		const q = question as any;
 
 		switch (q.type) {
-			case QuestionType.MULTIPLE_CHOICE:
+			case "multiple_choice":
 				if (!q.options) {
 					console.warn("Multiple choice question missing options:", q);
 					return "Invalid question structure";
@@ -158,12 +157,12 @@ Provides detailed feedback to help users understand their performance.
 					return `Unknown option (${answer})`;
 				}
 				return singleOption;
-			case QuestionType.TRUE_FALSE:
+			case "true_false":
 				if (typeof answer === "boolean") {
 					return answer ? "True" : "False";
 				}
 				return "No answer";
-			case QuestionType.DRAG_AND_DROP:
+			case "drag_and_drop":
 				if (Array.isArray(answer) && answer.length > 0) {
 					const matches = (answer as Array<{ itemId: string; targetId: string }>).map((match) => {
 						const item = q.items?.find((i: any) => i.id === match.itemId);
@@ -177,7 +176,7 @@ Provides detailed feedback to help users understand their performance.
 					return matches.map((match) => `${match.item} → ${match.target}`).join(", ");
 				}
 				return "No matches";
-			case QuestionType.CODE_COMPLETION:
+			case "code_completion":
 				if (typeof answer === "object" && answer !== null) {
 					const entries = Object.entries(answer as Record<string, string>)
 						.filter(([, value]) => value && value.trim() !== "")
@@ -198,15 +197,15 @@ Provides detailed feedback to help users understand their performance.
 		const q = question as any;
 
 		switch (q.type) {
-			case QuestionType.MULTIPLE_CHOICE:
+			case "multiple_choice":
 				if (!q.options) return "Invalid question structure";
 				if (Array.isArray(q.correct)) {
 					return q.correct.map((index: number) => q.options[index] || `Option ${index}`).join(", ");
 				}
 				return q.options[q.correct] || `Option ${q.correct}`;
-			case QuestionType.TRUE_FALSE:
+			case "true_false":
 				return q.correct ? "True" : "False";
-			case QuestionType.DRAG_AND_DROP:
+			case "drag_and_drop":
 				if (!q.correctMatches || !q.items || !q.targets) return "Invalid question structure";
 				return q.correctMatches
 					.map(
@@ -214,7 +213,7 @@ Provides detailed feedback to help users understand their performance.
 							`${q.items.find((i: any) => i.id === match.itemId)?.content || "Unknown"} → ${q.targets.find((t: any) => t.id === match.targetId)?.content || "Unknown"}`
 					)
 					.join(", ");
-			case QuestionType.CODE_COMPLETION:
+			case "code_completion":
 				if (!q.blanks) return "Invalid question structure";
 				return q.blanks
 					.map((blank: any) => `${blank.id}: ${blank.options?.[blank.correct] || blank.correct}`)
@@ -363,7 +362,7 @@ Provides detailed feedback to help users understand their performance.
 								<div class="demo-results-answer-comparison">
 									<div class="demo-results-answer-section">
 										<h4 class="demo-results-answer-label">Your Answer:</h4>
-										{#if question.type === QuestionType.DRAG_AND_DROP && Array.isArray(userAnswer.answer) && userAnswer.answer.length > 0}
+										{#if question.type === "drag_and_drop" && Array.isArray(userAnswer.answer) && userAnswer.answer.length > 0}
 											{@const ddQuestion = question as DragAndDropQuestion}
 											<ul
 												class="demo-results-drag-matches {userAnswer.isCorrect
@@ -400,7 +399,7 @@ Provides detailed feedback to help users understand their performance.
 									{#if !userAnswer.isCorrect}
 										<div class="demo-results-answer-section">
 											<h4 class="demo-results-answer-label">Correct Answer:</h4>
-											{#if question.type === QuestionType.DRAG_AND_DROP && question.correctMatches}
+											{#if question.type === "drag_and_drop" && question.correctMatches}
 												{@const ddQuestion = question as DragAndDropQuestion}
 												<ul class="demo-results-drag-matches text-green-700">
 													{#each ddQuestion.correctMatches as match}

@@ -65,7 +65,6 @@ a seamless, educational quiz experience following SvelteKit architecture pattern
 		DragAndDropQuestion,
 		CodeCompletionQuestion
 	} from "$data/demo/content/quizzes/quiz-examples";
-	import { QuestionType } from "$data/demo/content/quizzes/quiz-examples";
 	import { Card, CardContent, CardHeader, CardTitle } from "$lib/components/ui/card/index.js";
 	import { Badge } from "$lib/components/ui/badge/index.js";
 	import QuestionRenderer from "./QuestionRenderer.svelte";
@@ -167,7 +166,7 @@ a seamless, educational quiz experience following SvelteKit architecture pattern
 		// Randomize options for multiple choice questions if configured
 		if (quiz.config.progress.randomizeOptions) {
 			quiz.questions.forEach((question) => {
-				if (question.type === QuestionType.MULTIPLE_CHOICE) {
+				if (question.type === "multiple_choice") {
 					const mcq = question as MultipleChoiceQuestion;
 					const shuffled = shuffleOptionsWithCorrectMapping(mcq.options, mcq.correct);
 					mcq.options = shuffled.options;
@@ -208,7 +207,7 @@ a seamless, educational quiz experience following SvelteKit architecture pattern
 		quizState.answers.set(questionId, answer);
 
 		// Auto-advance for certain question types if configured
-		if (!quiz.config.progress.allowReview && currentQuestion.type === QuestionType.TRUE_FALSE) {
+		if (!quiz.config.progress.allowReview && currentQuestion.type === "true_false") {
 			setTimeout(() => {
 				if (!isLastQuestion) {
 					nextQuestion();
@@ -292,7 +291,7 @@ a seamless, educational quiz experience following SvelteKit architecture pattern
 		if (!userAnswer) return false;
 
 		switch (question.type) {
-			case QuestionType.MULTIPLE_CHOICE: {
+			case "multiple_choice": {
 				const mcq = question as MultipleChoiceQuestion;
 				if (mcq.multipleSelection) {
 					const correct = Array.isArray(mcq.correct) ? mcq.correct : [mcq.correct];
@@ -307,11 +306,11 @@ a seamless, educational quiz experience following SvelteKit architecture pattern
 					return userAnswer === correct;
 				}
 			}
-			case QuestionType.TRUE_FALSE: {
+			case "true_false": {
 				const tfq = question as TrueFalseQuestion;
 				return userAnswer === tfq.correct;
 			}
-			case QuestionType.DRAG_AND_DROP: {
+			case "drag_and_drop": {
 				const ddq = question as DragAndDropQuestion;
 				if (!Array.isArray(userAnswer)) return false;
 				return ddq.correctMatches.every((match) =>
@@ -321,7 +320,7 @@ a seamless, educational quiz experience following SvelteKit architecture pattern
 					)
 				);
 			}
-			case QuestionType.CODE_COMPLETION: {
+			case "code_completion": {
 				const ccq = question as CodeCompletionQuestion;
 				if (!userAnswer || typeof userAnswer !== "object") return false;
 				return ccq.blanks.every(
@@ -539,7 +538,7 @@ a seamless, educational quiz experience following SvelteKit architecture pattern
 					questionNumber={quizState.currentQuestionIndex + 1}
 					userAnswer={quizState.answers.get(currentQuestion.id)}
 					onAnswerChange={handleAnswerChange}
-					allowMultipleSelection={currentQuestion.type === QuestionType.MULTIPLE_CHOICE
+					allowMultipleSelection={currentQuestion.type === "multiple_choice"
 						? (currentQuestion as MultipleChoiceQuestion).multipleSelection
 						: false}
 				/>

@@ -2,9 +2,9 @@ import type {
 	SearchableItem,
 	SearchResult,
 	SearchFilters,
-	SearchOptions,
-	ContentType
+	SearchOptions
 } from "$lib/types/search.js";
+import type { ContentType } from "$lib/types";
 import { searchConfig, highlightSearchTerms } from "./search-index.js";
 
 export interface RankingWeights {

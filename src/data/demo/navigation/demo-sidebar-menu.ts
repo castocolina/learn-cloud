@@ -13,8 +13,12 @@
  * - Mixed-content: 10% (9 lessons)
  */
 
+// Import centralized types instead of duplicating
+import type { ContentType, ContentDifficulty } from "$lib/types";
+
 /**
- * Content type enumeration for lessons
+ * Legacy content type mapping for demo compatibility
+ * @deprecated Use ContentType from centralized types instead
  */
 export enum DemoContentType {
 	CODE = "code",
@@ -25,7 +29,8 @@ export enum DemoContentType {
 }
 
 /**
- * Lesson difficulty levels
+ * Legacy difficulty mapping for demo compatibility
+ * @deprecated Use ContentDifficulty from centralized types instead
  */
 export enum DemoDifficulty {
 	BEGINNER = "beginner",

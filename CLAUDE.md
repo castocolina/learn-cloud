@@ -185,18 +185,21 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 **Documentation Architecture Strategy:**
 
 **Inline Documentation Approach:**
+
 - **Component-Level Documentation:** All component-specific knowledge stored as comprehensive inline comments
 - **Co-location Principle:** Documentation lives alongside implementation for better maintainability
 - **Recurring Issues:** Critical issues and solutions documented directly in affected component files
 - **Technical Architecture:** Consolidated in SVELTEKIT-GUIDE.md for comprehensive reference
 
 **Documentation Distribution:**
+
 - **SVELTEKIT-GUIDE.md:** Complete technical architecture, development standards, and troubleshooting
 - **CONTENT-STANDARDS.md:** Content creation workflows and quality assurance standards
 - **MERMAID-STANDARDS.md:** Diagram rendering requirements and syntax standards
 - **Component Files:** Specific implementation details, known issues, and architectural decisions
 
 **Issue Documentation Workflow:**
+
 - **Recurring Issues (2+ occurrences):** Document as inline comments in affected component files
 - **Architecture Patterns:** Add to SVELTEKIT-GUIDE.md for project-wide reference
 - **Component-Specific:** Include in relevant component file headers

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from "svelte";
-	import type { SearchResult, SearchFilters, ContentType } from "$lib/types/search.js";
+	import type { SearchResult, SearchFilters, ContentType } from "$lib/types";
 	import { searchConfig, getSearchableContent } from "../../../data/demo/search/search-index.js";
 	import {
 		defaultSearchEngine,

@@ -18,7 +18,6 @@ Supports user answer tracking, validation states, and responsive design.
 		DragAndDropQuestion,
 		CodeCompletionQuestion
 	} from "$data/demo/content/quizzes/quiz-examples";
-	import { QuestionType } from "$data/demo/content/quizzes/quiz-examples";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import { Checkbox } from "$lib/components/ui/checkbox/index.js";
 	import { RadioGroup, RadioGroupItem } from "$lib/components/ui/radio-group/index.js";
@@ -65,7 +64,7 @@ Supports user answer tracking, validation states, and responsive design.
 
 	// Initialize user answers
 	$effect(() => {
-		if (question.type === QuestionType.DRAG_AND_DROP) {
+		if (question.type === "drag_and_drop") {
 			if (userAnswer && Array.isArray(userAnswer)) {
 				const newTargets = new SvelteMap<string, string>();
 				userAnswer.forEach((match: { targetId: string; itemId: string }) => {
@@ -73,7 +72,7 @@ Supports user answer tracking, validation states, and responsive design.
 				});
 				dropTargets = newTargets;
 			}
-		} else if (question.type === QuestionType.CODE_COMPLETION) {
+		} else if (question.type === "code_completion") {
 			if (userAnswer && typeof userAnswer === "object" && userAnswer !== null) {
 				codeInputs = { ...(userAnswer as Record<string, string>) };
 			} else {
@@ -183,7 +182,7 @@ Supports user answer tracking, validation states, and responsive design.
 		</div>
 
 		<!-- Question Type Specific Rendering -->
-		{#if question.type === QuestionType.MULTIPLE_CHOICE}
+		{#if question.type === "multiple_choice"}
 			{@const mcq = question as MultipleChoiceQuestion}
 			<div class="demo-quiz-question-options" role="group" aria-label="Answer options">
 				{#if allowMultipleSelection}
@@ -223,7 +222,7 @@ Supports user answer tracking, validation states, and responsive design.
 					</RadioGroup>
 				{/if}
 			</div>
-		{:else if question.type === QuestionType.TRUE_FALSE}
+		{:else if question.type === "true_false"}
 			<div class="demo-quiz-question-options" role="group" aria-label="True or False">
 				<RadioGroup
 					value={userAnswer !== undefined && userAnswer !== null
@@ -250,7 +249,7 @@ Supports user answer tracking, validation states, and responsive design.
 					</label>
 				</RadioGroup>
 			</div>
-		{:else if question.type === QuestionType.DRAG_AND_DROP}
+		{:else if question.type === "drag_and_drop"}
 			{@const ddq = question as DragAndDropQuestion}
 			<div class="demo-quiz-drag-drop">
 				<!-- Draggable items -->
@@ -313,7 +312,7 @@ Supports user answer tracking, validation states, and responsive design.
 					</div>
 				</div>
 			</div>
-		{:else if question.type === QuestionType.CODE_COMPLETION}
+		{:else if question.type === "code_completion"}
 			{@const ccq = question as CodeCompletionQuestion}
 			<div class="demo-quiz-code-completion">
 				<div class="demo-quiz-code-block" role="group" aria-label="Code completion exercise">

@@ -11,33 +11,9 @@
 // TYPESCRIPT INTERFACES - ROBUST AND EXTENSIBLE QUIZ DATA MODELING
 // =============================================================================
 
-/**
- * Content lifecycle status tracking for content maturity management
- */
-export enum ContentStatus {
-	SCAFFOLD = "scaffold",
-	DRAFT = "draft",
-	FINAL = "final"
-}
-
-/**
- * Content difficulty levels for educational content classification
- */
-export enum ContentDifficulty {
-	BEGINNER = "beginner",
-	INTERMEDIATE = "intermediate",
-	ADVANCED = "advanced"
-}
-
-/**
- * Question types supported by the quiz system using discriminated unions
- */
-export enum QuestionType {
-	MULTIPLE_CHOICE = "multiple_choice",
-	TRUE_FALSE = "true_false",
-	DRAG_AND_DROP = "drag_and_drop",
-	CODE_COMPLETION = "code_completion"
-}
+// Import centralized types instead of defining duplicates
+import type { ContentStatus, ContentDifficulty, QuestionType } from "$lib/types";
+import { CONTENT_DIFFICULTIES, QUESTION_TYPES } from "$lib/types";
 
 /**
  * Quiz categories for topic-based organization
@@ -68,7 +44,7 @@ export interface BaseQuizQuestion {
  * Multiple choice question with single or multiple correct answers
  */
 export interface MultipleChoiceQuestion extends BaseQuizQuestion {
-	type: QuestionType.MULTIPLE_CHOICE;
+	type: "multiple_choice";
 	options: string[];
 	correct: number | number[]; // Single choice (number) or multiple choice (array)
 	multipleSelection: boolean; // Indicates if multiple answers are allowed
@@ -78,7 +54,7 @@ export interface MultipleChoiceQuestion extends BaseQuizQuestion {
  * True/False question format
  */
 export interface TrueFalseQuestion extends BaseQuizQuestion {
-	type: QuestionType.TRUE_FALSE;
+	type: "true_false";
 	correct: boolean;
 	statement: string;
 }
@@ -87,7 +63,7 @@ export interface TrueFalseQuestion extends BaseQuizQuestion {
  * Drag and drop question with items to match
  */
 export interface DragAndDropQuestion extends BaseQuizQuestion {
-	type: QuestionType.DRAG_AND_DROP;
+	type: "drag_and_drop";
 	items: Array<{
 		id: string;
 		content: string;
@@ -108,7 +84,7 @@ export interface DragAndDropQuestion extends BaseQuizQuestion {
  * Code completion question with code snippets
  */
 export interface CodeCompletionQuestion extends BaseQuizQuestion {
-	type: QuestionType.CODE_COMPLETION;
+	type: "code_completion";
 	codeSnippet: string;
 	language: string;
 	blanks: Array<{
@@ -205,7 +181,7 @@ export const cloudBasicsQuiz: Quiz = {
 	description:
 		"Essential concepts of cloud computing including service models, deployment types, and core characteristics.",
 	category: QuizCategory.CLOUD_FUNDAMENTALS,
-	difficulty: ContentDifficulty.BEGINNER,
+	difficulty: "beginner",
 	estimatedTime: 15,
 	prerequisites: ["Basic understanding of computing concepts"],
 	learningObjectives: [
@@ -240,7 +216,7 @@ export const cloudBasicsQuiz: Quiz = {
 	questions: [
 		{
 			id: "cf-001",
-			type: QuestionType.MULTIPLE_CHOICE,
+			type: "multiple_choice",
 			question: "Which of the following best describes Infrastructure as a Service (IaaS)?",
 			options: [
 				"Provides complete applications over the internet",
@@ -254,12 +230,12 @@ export const cloudBasicsQuiz: Quiz = {
 				"IaaS provides virtualized computing resources including servers, storage, and networking infrastructure that users can provision and manage.",
 			points: 10,
 			category: QuizCategory.CLOUD_FUNDAMENTALS,
-			difficulty: ContentDifficulty.BEGINNER,
+			difficulty: "beginner",
 			tags: ["iaas", "service-models", "infrastructure"]
 		},
 		{
 			id: "cf-002",
-			type: QuestionType.TRUE_FALSE,
+			type: "true_false",
 			question: "Public clouds are always less secure than private clouds.",
 			statement: "Public clouds are always less secure than private clouds.",
 			correct: false,
@@ -267,12 +243,12 @@ export const cloudBasicsQuiz: Quiz = {
 				"Security depends on implementation and management practices, not just the deployment model. Major public cloud providers often have more resources for security than individual organizations.",
 			points: 10,
 			category: QuizCategory.CLOUD_FUNDAMENTALS,
-			difficulty: ContentDifficulty.BEGINNER,
+			difficulty: "beginner",
 			tags: ["security", "public-cloud", "private-cloud"]
 		},
 		{
 			id: "cf-003",
-			type: QuestionType.MULTIPLE_CHOICE,
+			type: "multiple_choice",
 			question:
 				"Which characteristics are essential features of cloud computing? (Select all that apply)",
 			options: [
@@ -287,12 +263,12 @@ export const cloudBasicsQuiz: Quiz = {
 				"The five essential characteristics of cloud computing are: on-demand self-service, broad network access, resource pooling, rapid elasticity, and measured service. Physical server ownership contradicts the cloud model.",
 			points: 15,
 			category: QuizCategory.CLOUD_FUNDAMENTALS,
-			difficulty: ContentDifficulty.INTERMEDIATE,
+			difficulty: "intermediate",
 			tags: ["characteristics", "nist", "cloud-definition"]
 		},
 		{
 			id: "cf-004",
-			type: QuestionType.DRAG_AND_DROP,
+			type: "drag_and_drop",
 			question: "Match each cloud service model with its appropriate description:",
 			items: [
 				{ id: "iaas-item", content: "Virtual machines and storage", category: "service" },
@@ -317,11 +293,11 @@ export const cloudBasicsQuiz: Quiz = {
 				"Each service model provides different levels of abstraction: IaaS provides infrastructure, PaaS provides development platforms, and SaaS provides complete applications.",
 			points: 20,
 			category: QuizCategory.CLOUD_FUNDAMENTALS,
-			difficulty: ContentDifficulty.INTERMEDIATE,
+			difficulty: "intermediate",
 			tags: ["service-models", "iaas", "paas", "saas"]
 		}
 	],
-	status: ContentStatus.FINAL,
+	status: "final",
 	version: "1.0.0",
 	createdAt: "2024-01-15T10:00:00Z",
 	updatedAt: "2024-01-15T10:00:00Z"
@@ -333,7 +309,7 @@ export const cloudSecurityBasicsQuiz: Quiz = {
 	description:
 		"Core security principles and practices for cloud environments including shared responsibility and common threats.",
 	category: QuizCategory.CLOUD_FUNDAMENTALS,
-	difficulty: ContentDifficulty.INTERMEDIATE,
+	difficulty: "intermediate",
 	estimatedTime: 18,
 	prerequisites: ["Cloud computing basics", "Basic security concepts"],
 	learningObjectives: [
@@ -368,7 +344,7 @@ export const cloudSecurityBasicsQuiz: Quiz = {
 	questions: [
 		{
 			id: "cs-001",
-			type: QuestionType.MULTIPLE_CHOICE,
+			type: "multiple_choice",
 			question:
 				"In the cloud shared responsibility model, who is responsible for securing data in transit?",
 			options: [
@@ -383,12 +359,12 @@ export const cloudSecurityBasicsQuiz: Quiz = {
 				"Data in transit security is a shared responsibility. The cloud provider secures the underlying network infrastructure, while customers must implement proper encryption and secure protocols.",
 			points: 15,
 			category: QuizCategory.CLOUD_FUNDAMENTALS,
-			difficulty: ContentDifficulty.INTERMEDIATE,
+			difficulty: "intermediate",
 			tags: ["shared-responsibility", "data-transit", "encryption"]
 		},
 		{
 			id: "cs-002",
-			type: QuestionType.TRUE_FALSE,
+			type: "true_false",
 			question: "Multi-factor authentication should be enabled for all cloud service accounts.",
 			statement: "Multi-factor authentication should be enabled for all cloud service accounts.",
 			correct: true,
@@ -396,12 +372,12 @@ export const cloudSecurityBasicsQuiz: Quiz = {
 				"MFA is a critical security control that should be enabled for all accounts, especially privileged accounts, to prevent unauthorized access even if passwords are compromised.",
 			points: 10,
 			category: QuizCategory.CLOUD_FUNDAMENTALS,
-			difficulty: ContentDifficulty.BEGINNER,
+			difficulty: "beginner",
 			tags: ["mfa", "authentication", "access-control"]
 		},
 		{
 			id: "cs-003",
-			type: QuestionType.MULTIPLE_CHOICE,
+			type: "multiple_choice",
 			question: "Which are common cloud security threats? (Select all that apply)",
 			options: ["Data breaches", "Insecure APIs", "Account hijacking", "Unlimited bandwidth usage"],
 			correct: [0, 1, 2],
@@ -410,11 +386,11 @@ export const cloudSecurityBasicsQuiz: Quiz = {
 				"Data breaches, insecure APIs, and account hijacking are major cloud security threats. Unlimited bandwidth usage is a cost concern but not primarily a security threat.",
 			points: 20,
 			category: QuizCategory.CLOUD_FUNDAMENTALS,
-			difficulty: ContentDifficulty.INTERMEDIATE,
+			difficulty: "intermediate",
 			tags: ["threats", "data-breach", "api-security", "account-security"]
 		}
 	],
-	status: ContentStatus.FINAL,
+	status: "final",
 	version: "1.0.0",
 	createdAt: "2024-01-15T11:00:00Z",
 	updatedAt: "2024-01-15T11:00:00Z"
@@ -430,7 +406,7 @@ export const dockerBasicsQuiz: Quiz = {
 	description:
 		"Essential Docker concepts including containers, images, and basic Docker commands for containerization.",
 	category: QuizCategory.CONTAINER_TECHNOLOGIES,
-	difficulty: ContentDifficulty.BEGINNER,
+	difficulty: "beginner",
 	estimatedTime: 20,
 	prerequisites: ["Basic command line knowledge", "Understanding of virtualization concepts"],
 	learningObjectives: [
@@ -465,7 +441,7 @@ export const dockerBasicsQuiz: Quiz = {
 	questions: [
 		{
 			id: "db-001",
-			type: QuestionType.MULTIPLE_CHOICE,
+			type: "multiple_choice",
 			question: "What is the difference between a Docker image and a Docker container?",
 			options: [
 				"They are the same thing",
@@ -479,12 +455,12 @@ export const dockerBasicsQuiz: Quiz = {
 				"A Docker image is a read-only template that contains application code and dependencies. A container is a running instance of an image with its own filesystem, processes, and network.",
 			points: 15,
 			category: QuizCategory.CONTAINER_TECHNOLOGIES,
-			difficulty: ContentDifficulty.BEGINNER,
+			difficulty: "beginner",
 			tags: ["docker", "images", "containers", "fundamentals"]
 		},
 		{
 			id: "db-002",
-			type: QuestionType.CODE_COMPLETION,
+			type: "code_completion",
 			question: "Complete this Dockerfile to create a Node.js application container:",
 			codeSnippet: `FROM node:18
 WORKDIR /app
@@ -512,12 +488,12 @@ CMD ["node", "server.js"]`,
 				"RUN executes commands during image build (like npm install), and EXPOSE documents which ports the container will listen on.",
 			points: 20,
 			category: QuizCategory.CONTAINER_TECHNOLOGIES,
-			difficulty: ContentDifficulty.INTERMEDIATE,
+			difficulty: "intermediate",
 			tags: ["dockerfile", "nodejs", "build", "ports"]
 		},
 		{
 			id: "db-003",
-			type: QuestionType.TRUE_FALSE,
+			type: "true_false",
 			question: "Docker containers share the host operating system kernel.",
 			statement: "Docker containers share the host operating system kernel.",
 			correct: true,
@@ -525,11 +501,11 @@ CMD ["node", "server.js"]`,
 				"Unlike virtual machines, Docker containers share the host OS kernel, making them more lightweight and efficient in resource usage.",
 			points: 10,
 			category: QuizCategory.CONTAINER_TECHNOLOGIES,
-			difficulty: ContentDifficulty.BEGINNER,
+			difficulty: "beginner",
 			tags: ["kernel", "virtualization", "efficiency"]
 		}
 	],
-	status: ContentStatus.FINAL,
+	status: "final",
 	version: "1.0.0",
 	createdAt: "2024-01-15T12:00:00Z",
 	updatedAt: "2024-01-15T12:00:00Z"
@@ -541,7 +517,7 @@ export const kubernetesBasicsQuiz: Quiz = {
 	description:
 		"Core Kubernetes concepts including pods, services, deployments, and cluster architecture.",
 	category: QuizCategory.CONTAINER_TECHNOLOGIES,
-	difficulty: ContentDifficulty.INTERMEDIATE,
+	difficulty: "intermediate",
 	estimatedTime: 25,
 	prerequisites: ["Docker knowledge", "Basic containerization concepts", "YAML syntax"],
 	learningObjectives: [
@@ -576,7 +552,7 @@ export const kubernetesBasicsQuiz: Quiz = {
 	questions: [
 		{
 			id: "kb-001",
-			type: QuestionType.DRAG_AND_DROP,
+			type: "drag_and_drop",
 			question: "Match each Kubernetes component with its primary function:",
 			items: [
 				{ id: "pod-item", content: "Smallest deployable unit", category: "component" },
@@ -604,12 +580,12 @@ export const kubernetesBasicsQuiz: Quiz = {
 				"Each Kubernetes object serves a specific purpose: Pods run containers, Services provide networking, Deployments manage scaling and updates, and ConfigMaps store configuration.",
 			points: 25,
 			category: QuizCategory.CONTAINER_TECHNOLOGIES,
-			difficulty: ContentDifficulty.INTERMEDIATE,
+			difficulty: "intermediate",
 			tags: ["kubernetes", "pods", "services", "deployments", "configmap"]
 		},
 		{
 			id: "kb-002",
-			type: QuestionType.MULTIPLE_CHOICE,
+			type: "multiple_choice",
 			question: "Which components make up the Kubernetes control plane? (Select all that apply)",
 			options: ["kube-apiserver", "etcd", "kube-scheduler", "kubelet"],
 			correct: [0, 1, 2],
@@ -618,12 +594,12 @@ export const kubernetesBasicsQuiz: Quiz = {
 				"The control plane consists of kube-apiserver, etcd, kube-scheduler, and kube-controller-manager. Kubelet runs on worker nodes, not in the control plane.",
 			points: 20,
 			category: QuizCategory.CONTAINER_TECHNOLOGIES,
-			difficulty: ContentDifficulty.INTERMEDIATE,
+			difficulty: "intermediate",
 			tags: ["control-plane", "architecture", "components"]
 		},
 		{
 			id: "kb-003",
-			type: QuestionType.CODE_COMPLETION,
+			type: "code_completion",
 			question: "Complete this Kubernetes Deployment YAML:",
 			codeSnippet: `apiVersion: apps/v1
 kind: Deployment
@@ -669,11 +645,11 @@ spec:
 				"This deployment creates 3 replicas of nginx containers using version 1.20, exposing port 80 which is the default HTTP port for nginx.",
 			points: 25,
 			category: QuizCategory.CONTAINER_TECHNOLOGIES,
-			difficulty: ContentDifficulty.INTERMEDIATE,
+			difficulty: "intermediate",
 			tags: ["yaml", "deployment", "nginx", "replicas"]
 		}
 	],
-	status: ContentStatus.FINAL,
+	status: "final",
 	version: "1.0.0",
 	createdAt: "2024-01-15T13:00:00Z",
 	updatedAt: "2024-01-15T13:00:00Z"
@@ -685,7 +661,7 @@ export const containerOrchestrationQuiz: Quiz = {
 	description:
 		"Advanced container orchestration patterns including service mesh, ingress controllers, and multi-cluster management.",
 	category: QuizCategory.CONTAINER_TECHNOLOGIES,
-	difficulty: ContentDifficulty.ADVANCED,
+	difficulty: "advanced",
 	estimatedTime: 30,
 	prerequisites: ["Kubernetes fundamentals", "Docker expertise", "Networking basics"],
 	learningObjectives: [
@@ -720,7 +696,7 @@ export const containerOrchestrationQuiz: Quiz = {
 	questions: [
 		{
 			id: "co-001",
-			type: QuestionType.MULTIPLE_CHOICE,
+			type: "multiple_choice",
 			question:
 				"What are the primary benefits of implementing a service mesh in a microservices architecture?",
 			options: [
@@ -735,12 +711,12 @@ export const containerOrchestrationQuiz: Quiz = {
 				"Service mesh provides comprehensive benefits including service discovery, security through mTLS, observability with tracing and metrics, traffic management, and policy enforcement.",
 			points: 20,
 			category: QuizCategory.CONTAINER_TECHNOLOGIES,
-			difficulty: ContentDifficulty.ADVANCED,
+			difficulty: "advanced",
 			tags: ["service-mesh", "microservices", "mtls", "observability"]
 		},
 		{
 			id: "co-002",
-			type: QuestionType.TRUE_FALSE,
+			type: "true_false",
 			question:
 				"Istio service mesh requires modification of application code to implement traffic routing policies.",
 			statement:
@@ -750,12 +726,12 @@ export const containerOrchestrationQuiz: Quiz = {
 				"Istio operates at the infrastructure level using sidecar proxies (Envoy), allowing traffic management, security, and observability without modifying application code.",
 			points: 15,
 			category: QuizCategory.CONTAINER_TECHNOLOGIES,
-			difficulty: ContentDifficulty.ADVANCED,
+			difficulty: "advanced",
 			tags: ["istio", "sidecar", "traffic-routing", "infrastructure"]
 		},
 		{
 			id: "co-003",
-			type: QuestionType.MULTIPLE_CHOICE,
+			type: "multiple_choice",
 			question:
 				"Which strategies are recommended for managing secrets in container orchestration? (Select all that apply)",
 			options: [
@@ -770,11 +746,11 @@ export const containerOrchestrationQuiz: Quiz = {
 				"Best practices include using Kubernetes Secrets with encryption, external secret managers like HashiCorp Vault, and mounting secrets as files. Never store secrets in container images.",
 			points: 25,
 			category: QuizCategory.CONTAINER_TECHNOLOGIES,
-			difficulty: ContentDifficulty.ADVANCED,
+			difficulty: "advanced",
 			tags: ["secrets", "security", "encryption", "vault"]
 		}
 	],
-	status: ContentStatus.FINAL,
+	status: "final",
 	version: "1.0.0",
 	createdAt: "2024-01-15T14:00:00Z",
 	updatedAt: "2024-01-15T14:00:00Z"
@@ -790,7 +766,7 @@ export const microservicesBasicsQuiz: Quiz = {
 	description:
 		"Core principles of microservices design including decomposition strategies, communication patterns, and data management.",
 	category: QuizCategory.MICROSERVICES_ARCHITECTURE,
-	difficulty: ContentDifficulty.BEGINNER,
+	difficulty: "beginner",
 	estimatedTime: 22,
 	prerequisites: ["Distributed systems basics", "API concepts", "Database fundamentals"],
 	learningObjectives: [
@@ -825,7 +801,7 @@ export const microservicesBasicsQuiz: Quiz = {
 	questions: [
 		{
 			id: "mb-001",
-			type: QuestionType.MULTIPLE_CHOICE,
+			type: "multiple_choice",
 			question: "What is the primary advantage of microservices over monolithic architecture?",
 			options: [
 				"Simpler deployment process",
@@ -839,12 +815,12 @@ export const microservicesBasicsQuiz: Quiz = {
 				"Microservices enable teams to develop, deploy, and scale services independently, allowing for faster development cycles and technology diversity.",
 			points: 15,
 			category: QuizCategory.MICROSERVICES_ARCHITECTURE,
-			difficulty: ContentDifficulty.BEGINNER,
+			difficulty: "beginner",
 			tags: ["microservices", "monolith", "scaling", "independence"]
 		},
 		{
 			id: "mb-002",
-			type: QuestionType.DRAG_AND_DROP,
+			type: "drag_and_drop",
 			question: "Match each communication pattern with its appropriate use case:",
 			items: [
 				{ id: "sync-item", content: "Real-time user requests", category: "pattern" },
@@ -871,12 +847,12 @@ export const microservicesBasicsQuiz: Quiz = {
 				"Synchronous communication works for real-time requests and queries, asynchronous messaging for event notifications, and pub-sub for broadcasting updates to multiple subscribers.",
 			points: 20,
 			category: QuizCategory.MICROSERVICES_ARCHITECTURE,
-			difficulty: ContentDifficulty.INTERMEDIATE,
+			difficulty: "intermediate",
 			tags: ["communication", "patterns", "synchronous", "asynchronous"]
 		},
 		{
 			id: "mb-003",
-			type: QuestionType.TRUE_FALSE,
+			type: "true_false",
 			question:
 				"In microservices architecture, services should share databases to ensure data consistency.",
 			statement:
@@ -886,11 +862,11 @@ export const microservicesBasicsQuiz: Quiz = {
 				"Each microservice should own its data and have its own database to maintain loose coupling and service independence. Data consistency is achieved through eventual consistency patterns.",
 			points: 15,
 			category: QuizCategory.MICROSERVICES_ARCHITECTURE,
-			difficulty: ContentDifficulty.INTERMEDIATE,
+			difficulty: "intermediate",
 			tags: ["database", "data-ownership", "coupling", "consistency"]
 		}
 	],
-	status: ContentStatus.FINAL,
+	status: "final",
 	version: "1.0.0",
 	createdAt: "2024-01-15T15:00:00Z",
 	updatedAt: "2024-01-15T15:00:00Z"
@@ -902,7 +878,7 @@ export const microservicesPatternsQuiz: Quiz = {
 	description:
 		"Advanced microservices patterns including circuit breaker, saga, CQRS, and event sourcing for resilient distributed systems.",
 	category: QuizCategory.MICROSERVICES_ARCHITECTURE,
-	difficulty: ContentDifficulty.ADVANCED,
+	difficulty: "advanced",
 	estimatedTime: 28,
 	prerequisites: [
 		"Microservices basics",
@@ -941,7 +917,7 @@ export const microservicesPatternsQuiz: Quiz = {
 	questions: [
 		{
 			id: "mp-001",
-			type: QuestionType.MULTIPLE_CHOICE,
+			type: "multiple_choice",
 			question:
 				"Which pattern helps prevent cascading failures when a downstream service becomes unresponsive?",
 			options: ["Bulkhead Pattern", "Circuit Breaker Pattern", "Retry Pattern", "Timeout Pattern"],
@@ -951,12 +927,12 @@ export const microservicesPatternsQuiz: Quiz = {
 				"Circuit Breaker Pattern monitors failures and 'opens' to prevent calls to failing services, allowing them to recover while protecting upstream services from cascading failures.",
 			points: 20,
 			category: QuizCategory.MICROSERVICES_ARCHITECTURE,
-			difficulty: ContentDifficulty.ADVANCED,
+			difficulty: "advanced",
 			tags: ["circuit-breaker", "resilience", "failure-handling", "patterns"]
 		},
 		{
 			id: "mp-002",
-			type: QuestionType.MULTIPLE_CHOICE,
+			type: "multiple_choice",
 			question:
 				"What are the key benefits of implementing the CQRS pattern? (Select all that apply)",
 			options: [
@@ -971,12 +947,12 @@ export const microservicesPatternsQuiz: Quiz = {
 				"CQRS (Command Query Responsibility Segregation) allows independent scaling and optimization of read and write operations, enabling different data models optimized for specific use cases.",
 			points: 25,
 			category: QuizCategory.MICROSERVICES_ARCHITECTURE,
-			difficulty: ContentDifficulty.ADVANCED,
+			difficulty: "advanced",
 			tags: ["cqrs", "scaling", "optimization", "separation"]
 		},
 		{
 			id: "mp-003",
-			type: QuestionType.CODE_COMPLETION,
+			type: "code_completion",
 			question: "Complete this implementation of a basic circuit breaker pattern:",
 			codeSnippet: `class CircuitBreaker {
   constructor(threshold = 5, timeout = 60000) {
@@ -1025,11 +1001,11 @@ export const microservicesPatternsQuiz: Quiz = {
 				"Circuit breaker starts in CLOSED state (allowing calls). When failures exceed threshold, it opens. After timeout, it moves to HALF_OPEN to test if service has recovered.",
 			points: 30,
 			category: QuizCategory.MICROSERVICES_ARCHITECTURE,
-			difficulty: ContentDifficulty.ADVANCED,
+			difficulty: "advanced",
 			tags: ["circuit-breaker", "implementation", "states", "javascript"]
 		}
 	],
-	status: ContentStatus.FINAL,
+	status: "final",
 	version: "1.0.0",
 	createdAt: "2024-01-15T16:00:00Z",
 	updatedAt: "2024-01-15T16:00:00Z"
@@ -1045,7 +1021,7 @@ export const cicdBasicsQuiz: Quiz = {
 	description:
 		"Essential concepts of Continuous Integration and Continuous Deployment including pipeline design, automation, and best practices.",
 	category: QuizCategory.DEVOPS_PRACTICES,
-	difficulty: ContentDifficulty.BEGINNER,
+	difficulty: "beginner",
 	estimatedTime: 20,
 	prerequisites: ["Version control basics", "Software development lifecycle", "Basic scripting"],
 	learningObjectives: [
@@ -1080,7 +1056,7 @@ export const cicdBasicsQuiz: Quiz = {
 	questions: [
 		{
 			id: "cd-001",
-			type: QuestionType.MULTIPLE_CHOICE,
+			type: "multiple_choice",
 			question: "What is the primary goal of Continuous Integration (CI)?",
 			options: [
 				"Automate deployment to production",
@@ -1094,12 +1070,12 @@ export const cicdBasicsQuiz: Quiz = {
 				"CI focuses on integrating code changes frequently (multiple times per day) and running automated tests to detect integration issues and bugs as early as possible in the development cycle.",
 			points: 15,
 			category: QuizCategory.DEVOPS_PRACTICES,
-			difficulty: ContentDifficulty.BEGINNER,
+			difficulty: "beginner",
 			tags: ["ci", "integration", "testing", "automation"]
 		},
 		{
 			id: "cd-002",
-			type: QuestionType.DRAG_AND_DROP,
+			type: "drag_and_drop",
 			question: "Arrange these CI/CD pipeline stages in the correct order:",
 			items: [
 				{ id: "build-item", content: "Build & Compile", category: "stage" },
@@ -1123,12 +1099,12 @@ export const cicdBasicsQuiz: Quiz = {
 				"A typical CI/CD pipeline follows: 1) Source code commit triggers the pipeline, 2) Build and compile the application, 3) Run automated tests, 4) Deploy to production if all stages pass.",
 			points: 20,
 			category: QuizCategory.DEVOPS_PRACTICES,
-			difficulty: ContentDifficulty.BEGINNER,
+			difficulty: "beginner",
 			tags: ["pipeline", "stages", "workflow", "sequence"]
 		},
 		{
 			id: "cd-003",
-			type: QuestionType.TRUE_FALSE,
+			type: "true_false",
 			question:
 				"Feature branches should be long-lived to allow thorough development before integration.",
 			statement:
@@ -1138,11 +1114,11 @@ export const cicdBasicsQuiz: Quiz = {
 				"CI practices encourage short-lived feature branches that are integrated frequently to reduce merge conflicts and integration complexity. Long-lived branches contradict CI principles.",
 			points: 15,
 			category: QuizCategory.DEVOPS_PRACTICES,
-			difficulty: ContentDifficulty.INTERMEDIATE,
+			difficulty: "intermediate",
 			tags: ["branching", "integration", "feature-branches", "version-control"]
 		}
 	],
-	status: ContentStatus.FINAL,
+	status: "final",
 	version: "1.0.0",
 	createdAt: "2024-01-15T17:00:00Z",
 	updatedAt: "2024-01-15T17:00:00Z"
@@ -1154,7 +1130,7 @@ export const infrastructureAsCodeQuiz: Quiz = {
 	description:
 		"Core concepts of Infrastructure as Code including declarative vs imperative approaches, state management, and popular IaC tools.",
 	category: QuizCategory.DEVOPS_PRACTICES,
-	difficulty: ContentDifficulty.INTERMEDIATE,
+	difficulty: "intermediate",
 	estimatedTime: 25,
 	prerequisites: ["Cloud computing basics", "YAML/JSON syntax", "Version control concepts"],
 	learningObjectives: [
@@ -1189,7 +1165,7 @@ export const infrastructureAsCodeQuiz: Quiz = {
 	questions: [
 		{
 			id: "iac-001",
-			type: QuestionType.MULTIPLE_CHOICE,
+			type: "multiple_choice",
 			question: "What are the key benefits of Infrastructure as Code? (Select all that apply)",
 			options: [
 				"Version control for infrastructure changes",
@@ -1203,12 +1179,12 @@ export const infrastructureAsCodeQuiz: Quiz = {
 				"IaC provides version control, consistency, repeatability, and reduces manual errors through automation. It doesn't improve manual processes but replaces them with automated ones.",
 			points: 20,
 			category: QuizCategory.DEVOPS_PRACTICES,
-			difficulty: ContentDifficulty.INTERMEDIATE,
+			difficulty: "intermediate",
 			tags: ["iac", "benefits", "automation", "consistency"]
 		},
 		{
 			id: "iac-002",
-			type: QuestionType.CODE_COMPLETION,
+			type: "code_completion",
 			question: "Complete this Terraform configuration for an AWS S3 bucket:",
 			codeSnippet: `resource "aws_s3_bucket" "example" {
   bucket = "my-terraform-bucket"
@@ -1254,12 +1230,12 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "example" {
 				"Terraform resource references use 'id' for bucket identification, versioning status should be 'Enabled' for version control, and AES256 provides standard S3 encryption.",
 			points: 25,
 			category: QuizCategory.DEVOPS_PRACTICES,
-			difficulty: ContentDifficulty.INTERMEDIATE,
+			difficulty: "intermediate",
 			tags: ["terraform", "aws", "s3", "encryption", "versioning"]
 		},
 		{
 			id: "iac-003",
-			type: QuestionType.TRUE_FALSE,
+			type: "true_false",
 			question:
 				"Terraform state files should be stored in version control alongside the configuration code.",
 			statement:
@@ -1269,11 +1245,11 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "example" {
 				"Terraform state files contain sensitive information and can cause conflicts. They should be stored in remote backends like S3 with state locking, not in version control.",
 			points: 15,
 			category: QuizCategory.DEVOPS_PRACTICES,
-			difficulty: ContentDifficulty.INTERMEDIATE,
+			difficulty: "intermediate",
 			tags: ["terraform", "state", "security", "remote-backend"]
 		}
 	],
-	status: ContentStatus.FINAL,
+	status: "final",
 	version: "1.0.0",
 	createdAt: "2024-01-15T18:00:00Z",
 	updatedAt: "2024-01-15T18:00:00Z"
@@ -1285,7 +1261,7 @@ export const devopsAdvancedQuiz: Quiz = {
 	description:
 		"Advanced DevOps concepts including GitOps, chaos engineering, progressive delivery, and site reliability engineering practices.",
 	category: QuizCategory.DEVOPS_PRACTICES,
-	difficulty: ContentDifficulty.ADVANCED,
+	difficulty: "advanced",
 	estimatedTime: 30,
 	prerequisites: [
 		"CI/CD expertise",
@@ -1325,7 +1301,7 @@ export const devopsAdvancedQuiz: Quiz = {
 	questions: [
 		{
 			id: "da-001",
-			type: QuestionType.MULTIPLE_CHOICE,
+			type: "multiple_choice",
 			question: "What is the core principle of GitOps deployment methodology?",
 			options: [
 				"Git repositories serve as the single source of truth for infrastructure and applications",
@@ -1339,12 +1315,12 @@ export const devopsAdvancedQuiz: Quiz = {
 				"GitOps treats Git repositories as the single source of truth for both infrastructure and application configurations, with automated systems continuously reconciling the actual state with the desired state defined in Git.",
 			points: 20,
 			category: QuizCategory.DEVOPS_PRACTICES,
-			difficulty: ContentDifficulty.ADVANCED,
+			difficulty: "advanced",
 			tags: ["gitops", "deployment", "git", "automation"]
 		},
 		{
 			id: "da-002",
-			type: QuestionType.MULTIPLE_CHOICE,
+			type: "multiple_choice",
 			question:
 				"Which chaos engineering practices help improve system resilience? (Select all that apply)",
 			options: [
@@ -1359,12 +1335,12 @@ export const devopsAdvancedQuiz: Quiz = {
 				"Chaos engineering involves controlled experiments like instance termination, network simulation, and resource stress testing. Disabling monitoring reduces observability and safety during experiments.",
 			points: 25,
 			category: QuizCategory.DEVOPS_PRACTICES,
-			difficulty: ContentDifficulty.ADVANCED,
+			difficulty: "advanced",
 			tags: ["chaos-engineering", "resilience", "testing", "experiments"]
 		},
 		{
 			id: "da-003",
-			type: QuestionType.DRAG_AND_DROP,
+			type: "drag_and_drop",
 			question: "Match each progressive delivery strategy with its primary characteristic:",
 			items: [
 				{
@@ -1400,7 +1376,7 @@ export const devopsAdvancedQuiz: Quiz = {
 				"Each progressive delivery strategy has distinct characteristics: Blue-Green uses parallel environments, Canary gradually increases traffic, Feature Flags control features at runtime, and Rolling Updates replace instances sequentially.",
 			points: 30,
 			category: QuizCategory.DEVOPS_PRACTICES,
-			difficulty: ContentDifficulty.ADVANCED,
+			difficulty: "advanced",
 			tags: [
 				"progressive-delivery",
 				"deployment-strategies",
@@ -1410,7 +1386,7 @@ export const devopsAdvancedQuiz: Quiz = {
 			]
 		}
 	],
-	status: ContentStatus.FINAL,
+	status: "final",
 	version: "1.0.0",
 	createdAt: "2024-01-15T19:00:00Z",
 	updatedAt: "2024-01-15T19:00:00Z"
@@ -1426,7 +1402,7 @@ export const cloudSecurityAdvancedQuiz: Quiz = {
 	description:
 		"Advanced cloud security concepts including zero-trust architecture, compliance frameworks, and advanced threat protection.",
 	category: QuizCategory.SECURITY_MONITORING,
-	difficulty: ContentDifficulty.ADVANCED,
+	difficulty: "advanced",
 	estimatedTime: 35,
 	prerequisites: [
 		"Cloud security basics",
@@ -1466,7 +1442,7 @@ export const cloudSecurityAdvancedQuiz: Quiz = {
 	questions: [
 		{
 			id: "csa-001",
-			type: QuestionType.MULTIPLE_CHOICE,
+			type: "multiple_choice",
 			question: "What are the fundamental principles of Zero Trust security architecture?",
 			options: [
 				"Trust but verify all network traffic",
@@ -1480,12 +1456,12 @@ export const cloudSecurityAdvancedQuiz: Quiz = {
 				"Zero Trust operates on the principle of 'never trust, always verify' - every user, device, and transaction must be authenticated and authorized regardless of location or previous trust status.",
 			points: 20,
 			category: QuizCategory.SECURITY_MONITORING,
-			difficulty: ContentDifficulty.ADVANCED,
+			difficulty: "advanced",
 			tags: ["zero-trust", "authentication", "authorization", "security-architecture"]
 		},
 		{
 			id: "csa-002",
-			type: QuestionType.MULTIPLE_CHOICE,
+			type: "multiple_choice",
 			question:
 				"Which security controls are essential for SOC 2 Type II compliance? (Select all that apply)",
 			options: [
@@ -1500,12 +1476,12 @@ export const cloudSecurityAdvancedQuiz: Quiz = {
 				"SOC 2 Type II requires robust access controls, encryption, continuous monitoring, and regular auditing. While security training is important, it's not specifically mandated by SOC 2 Type II.",
 			points: 25,
 			category: QuizCategory.SECURITY_MONITORING,
-			difficulty: ContentDifficulty.ADVANCED,
+			difficulty: "advanced",
 			tags: ["soc2", "compliance", "access-control", "encryption", "monitoring"]
 		},
 		{
 			id: "csa-003",
-			type: QuestionType.CODE_COMPLETION,
+			type: "code_completion",
 			question: "Complete this AWS IAM policy that implements least privilege access:",
 			codeSnippet: `{
   "Version": "2012-10-17",
@@ -1560,11 +1536,11 @@ export const cloudSecurityAdvancedQuiz: Quiz = {
 				"This policy allows specific S3 actions in us-east-1 region only, and denies all actions when MFA is not present (false), implementing least privilege and requiring MFA.",
 			points: 30,
 			category: QuizCategory.SECURITY_MONITORING,
-			difficulty: ContentDifficulty.ADVANCED,
+			difficulty: "advanced",
 			tags: ["iam", "least-privilege", "mfa", "conditions", "aws"]
 		}
 	],
-	status: ContentStatus.FINAL,
+	status: "final",
 	version: "1.0.0",
 	createdAt: "2024-01-15T20:00:00Z",
 	updatedAt: "2024-01-15T20:00:00Z"
@@ -1576,7 +1552,7 @@ export const observabilityQuiz: Quiz = {
 	description:
 		"Comprehensive observability concepts including the three pillars of observability, distributed tracing, and SLO/SLI implementation.",
 	category: QuizCategory.SECURITY_MONITORING,
-	difficulty: ContentDifficulty.INTERMEDIATE,
+	difficulty: "intermediate",
 	estimatedTime: 26,
 	prerequisites: ["Distributed systems basics", "Monitoring concepts", "Application performance"],
 	learningObjectives: [
@@ -1611,7 +1587,7 @@ export const observabilityQuiz: Quiz = {
 	questions: [
 		{
 			id: "obs-001",
-			type: QuestionType.DRAG_AND_DROP,
+			type: "drag_and_drop",
 			question: "Match each observability pillar with its primary purpose:",
 			items: [
 				{ id: "metrics-item", content: "Numerical measurements over time", category: "pillar" },
@@ -1636,12 +1612,12 @@ export const observabilityQuiz: Quiz = {
 				"The three pillars of observability are: Metrics (time-series numerical data), Logs (structured event records), and Traces (request flow tracking across services).",
 			points: 20,
 			category: QuizCategory.SECURITY_MONITORING,
-			difficulty: ContentDifficulty.INTERMEDIATE,
+			difficulty: "intermediate",
 			tags: ["observability", "metrics", "logs", "traces", "pillars"]
 		},
 		{
 			id: "obs-002",
-			type: QuestionType.MULTIPLE_CHOICE,
+			type: "multiple_choice",
 			question: "What is the difference between SLI and SLO in site reliability engineering?",
 			options: [
 				"SLI is a target, SLO is a measurement",
@@ -1655,12 +1631,12 @@ export const observabilityQuiz: Quiz = {
 				"SLI (Service Level Indicator) is a quantitative measurement of service behavior, while SLO (Service Level Objective) is a target value or range for an SLI that represents desired service performance.",
 			points: 20,
 			category: QuizCategory.SECURITY_MONITORING,
-			difficulty: ContentDifficulty.INTERMEDIATE,
+			difficulty: "intermediate",
 			tags: ["sli", "slo", "sre", "reliability", "targets"]
 		},
 		{
 			id: "obs-003",
-			type: QuestionType.TRUE_FALSE,
+			type: "true_false",
 			question:
 				"Distributed tracing requires modification of application code to inject trace context.",
 			statement:
@@ -1670,11 +1646,11 @@ export const observabilityQuiz: Quiz = {
 				"Distributed tracing requires applications to propagate trace context (trace ID, span ID) across service boundaries, typically through headers or instrumentation libraries, which requires some level of code modification.",
 			points: 15,
 			category: QuizCategory.SECURITY_MONITORING,
-			difficulty: ContentDifficulty.INTERMEDIATE,
+			difficulty: "intermediate",
 			tags: ["distributed-tracing", "instrumentation", "trace-context", "implementation"]
 		}
 	],
-	status: ContentStatus.FINAL,
+	status: "final",
 	version: "1.0.0",
 	createdAt: "2024-01-15T21:00:00Z",
 	updatedAt: "2024-01-15T21:00:00Z"
@@ -1686,7 +1662,7 @@ export const incidentResponseQuiz: Quiz = {
 	description:
 		"Best practices for incident response including detection, escalation, communication, and post-incident review processes.",
 	category: QuizCategory.SECURITY_MONITORING,
-	difficulty: ContentDifficulty.ADVANCED,
+	difficulty: "advanced",
 	estimatedTime: 32,
 	prerequisites: ["Monitoring and alerting", "SRE practices", "Communication protocols"],
 	learningObjectives: [
@@ -1721,7 +1697,7 @@ export const incidentResponseQuiz: Quiz = {
 	questions: [
 		{
 			id: "ir-001",
-			type: QuestionType.MULTIPLE_CHOICE,
+			type: "multiple_choice",
 			question: "What should be the first priority during a production incident?",
 			options: [
 				"Identify the root cause of the issue",
@@ -1735,12 +1711,12 @@ export const incidentResponseQuiz: Quiz = {
 				"During an incident, the first priority is always to restore service and minimize customer impact. Root cause analysis and documentation come after service restoration.",
 			points: 20,
 			category: QuizCategory.SECURITY_MONITORING,
-			difficulty: ContentDifficulty.ADVANCED,
+			difficulty: "advanced",
 			tags: ["incident-response", "priorities", "service-restoration", "customer-impact"]
 		},
 		{
 			id: "ir-002",
-			type: QuestionType.MULTIPLE_CHOICE,
+			type: "multiple_choice",
 			question:
 				"Which elements are essential in an effective post-incident review? (Select all that apply)",
 			options: [
@@ -1755,12 +1731,12 @@ export const incidentResponseQuiz: Quiz = {
 				"Effective post-incident reviews focus on timeline, root causes, and preventive actions. They should be blameless and focus on improving systems and processes, not assigning blame to individuals.",
 			points: 25,
 			category: QuizCategory.SECURITY_MONITORING,
-			difficulty: ContentDifficulty.ADVANCED,
+			difficulty: "advanced",
 			tags: ["post-incident", "blameless", "root-cause", "prevention"]
 		},
 		{
 			id: "ir-003",
-			type: QuestionType.DRAG_AND_DROP,
+			type: "drag_and_drop",
 			question: "Arrange these incident severity levels from highest to lowest impact:",
 			items: [
 				{ id: "sev1-item", content: "Complete service outage", category: "severity" },
@@ -1784,11 +1760,11 @@ export const incidentResponseQuiz: Quiz = {
 				"Incident severity typically follows: Sev1 (complete outage), Sev2 (significant degradation), Sev3 (minor issues), Sev4 (cosmetic issues). Each level determines response time and escalation procedures.",
 			points: 25,
 			category: QuizCategory.SECURITY_MONITORING,
-			difficulty: ContentDifficulty.ADVANCED,
+			difficulty: "advanced",
 			tags: ["severity", "classification", "escalation", "response-time"]
 		}
 	],
-	status: ContentStatus.FINAL,
+	status: "final",
 	version: "1.0.0",
 	createdAt: "2024-01-15T22:00:00Z",
 	updatedAt: "2024-01-15T22:00:00Z"
@@ -1872,10 +1848,10 @@ export function getQuizStatistics() {
 	Object.values(QuizCategory).forEach((category) => {
 		stats.byCategory[category] = 0;
 	});
-	Object.values(ContentDifficulty).forEach((difficulty) => {
+	CONTENT_DIFFICULTIES.forEach((difficulty) => {
 		stats.byDifficulty[difficulty] = 0;
 	});
-	Object.values(QuestionType).forEach((type) => {
+	QUESTION_TYPES.forEach((type) => {
 		stats.questionTypes[type] = 0;
 	});
 
@@ -1914,14 +1890,14 @@ export function validateQuizData(): { isValid: boolean; errors: string[] } {
 			}
 
 			// Type-specific validations
-			if (question.type === QuestionType.MULTIPLE_CHOICE) {
+			if (question.type === "multiple_choice") {
 				const mcq = question as MultipleChoiceQuestion;
 				if (!mcq.options || mcq.options.length < 2) {
 					errors.push(`Multiple choice question ${question.id} needs at least 2 options`);
 				}
 			}
 
-			if (question.type === QuestionType.CODE_COMPLETION) {
+			if (question.type === "code_completion") {
 				const ccq = question as CodeCompletionQuestion;
 				if (!ccq.codeSnippet || !ccq.blanks || ccq.blanks.length === 0) {
 					errors.push(`Code completion question ${question.id} needs code snippet and blanks`);
@@ -1942,7 +1918,7 @@ export const QUIZ_LIBRARY_METADATA = {
 	totalQuizzes: allQuizzes.length,
 	createdAt: "2024-01-15T10:00:00Z",
 	lastUpdated: "2024-01-15T22:00:00Z",
-	supportedQuestionTypes: Object.values(QuestionType),
+	supportedQuestionTypes: QUESTION_TYPES,
 	supportedCategories: Object.values(QuizCategory),
-	supportedDifficulties: Object.values(ContentDifficulty)
+	supportedDifficulties: CONTENT_DIFFICULTIES
 };
