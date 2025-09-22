@@ -11,6 +11,7 @@ export { default as CodeBlock } from "./ui/CodeBlock.svelte";
 // Main Components
 export { default as StickyHeader } from "./StickyHeader.svelte";
 export { default as FloatingNav } from "./FloatingNav.svelte";
+export { default as SidebarToggle } from "./SidebarToggle.svelte";
 
 // Demo View Components
 export { default as DemoSidebar } from "./DemoSidebar.svelte";

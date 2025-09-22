@@ -21,6 +21,7 @@
 		clearProgress,
 		isLessonCompleted
 	} from "../../stores/progress.js";
+	import { useSidebar } from "../../stores/sidebar.js";
 
 	// Props interface for type safety
 	interface Props {
@@ -54,6 +55,9 @@
 	const progressStats = $derived(() =>
 		calculateProgressStats(navigationData.metadata.totalUnits, totalLessons, progress)
 	);
+
+	// Sidebar collapse state
+	const { isCollapsed } = useSidebar();
 
 	// Show/hide reset dialog
 	let showResetDialog = $state(false);
@@ -204,7 +208,7 @@
 </script>
 
 <!-- Modularized Demo Sidebar Navigation -->
-<aside class="demo-sidebar-container">
+<aside class="demo-sidebar-container" class:demo-sidebar-container--collapsed={$isCollapsed}>
 	{#if isLoading}
 		<div class="demo-sidebar-loading">
 			<LoadingSpinner size="md" message="Loading navigation..." centered={true} />
@@ -221,162 +225,180 @@
 			/>
 		</div>
 	{:else if isValidNavigation()}
-		<nav class="demo-sidebar-nav">
-			<!-- Progress & Stats Container -->
-			<div class="demo-progress-container">
-				<!-- Progress Bar -->
-				<div class="demo-progress-section">
-					<div class="demo-progress-header">
-						<span class="demo-progress-label">Overall Progress</span>
-						<div class="demo-progress-actions">
-							<span class="demo-progress-percentage">{progressStats().progressPercentage}%</span>
-							<div class="demo-reset-container">
-								<button
-									class="demo-reset-btn"
-									onclick={(event) => {
-										// CRITICAL: Prevent event bubbling to avoid closing the sidebar
-										// when the reset button is clicked. Without this, clicking the reset
-										// button would trigger the sidebar's close handler.
-										event.stopPropagation();
-										showResetDialog = !showResetDialog;
-									}}
-									aria-label="Reset progress"
-									title="Reset progress"
-								>
-									<RotateCcw size={12} />
-								</button>
-								{#if showResetDialog}
-									<!-- Debug: This should be visible -->
-									<div
-										bind:this={resetPopoverElement}
-										class="demo-reset-popover"
-										role="dialog"
-										aria-modal="true"
-										aria-labelledby="reset-title"
-										tabindex="-1"
+		<nav class="demo-sidebar-nav" class:demo-sidebar-nav--collapsed={$isCollapsed}>
+			{#if !$isCollapsed}
+				<!-- Progress & Stats Container - Hidden when collapsed -->
+				<div class="demo-progress-container">
+					<!-- Progress Bar -->
+					<div class="demo-progress-section">
+						<div class="demo-progress-header">
+							<span class="demo-progress-label">Overall Progress</span>
+							<div class="demo-progress-actions">
+								<span class="demo-progress-percentage">{progressStats().progressPercentage}%</span>
+								<div class="demo-reset-container">
+									<button
+										class="demo-reset-btn"
 										onclick={(event) => {
-											// CRITICAL: Prevent clicks inside the popover from closing it
-											// or triggering sidebar close. This keeps the dialog open when
-											// users interact with its content.
+											// CRITICAL: Prevent event bubbling to avoid closing the sidebar
+											// when the reset button is clicked. Without this, clicking the reset
+											// button would trigger the sidebar's close handler.
 											event.stopPropagation();
+											showResetDialog = !showResetDialog;
 										}}
-										onkeydown={(e) => {
-											if (e.key === "Escape") {
-												showResetDialog = false;
-											}
-										}}
+										aria-label="Reset progress"
+										title="Reset progress"
 									>
-										<div class="demo-reset-content">
-											<div class="demo-reset-header">
-												<h3 id="reset-title" class="demo-reset-title">Reset Progress</h3>
-											</div>
-											<div class="demo-reset-message">
-												This will clear all visited units and completed lessons. This action cannot
-												be undone.
-											</div>
-											<div class="demo-reset-actions">
-												<button class="demo-reset-cancel" onclick={() => (showResetDialog = false)}>
-													Cancel
-												</button>
-												<button class="demo-reset-confirm" onclick={handleClearProgress}>
-													Clear All
-												</button>
+										<RotateCcw size={12} />
+									</button>
+									{#if showResetDialog}
+										<!-- Debug: This should be visible -->
+										<div
+											bind:this={resetPopoverElement}
+											class="demo-reset-popover"
+											role="dialog"
+											aria-modal="true"
+											aria-labelledby="reset-title"
+											tabindex="-1"
+											onclick={(event) => {
+												// CRITICAL: Prevent clicks inside the popover from closing it
+												// or triggering sidebar close. This keeps the dialog open when
+												// users interact with its content.
+												event.stopPropagation();
+											}}
+											onkeydown={(e) => {
+												if (e.key === "Escape") {
+													showResetDialog = false;
+												}
+											}}
+										>
+											<div class="demo-reset-content">
+												<div class="demo-reset-header">
+													<h3 id="reset-title" class="demo-reset-title">Reset Progress</h3>
+												</div>
+												<div class="demo-reset-message">
+													This will clear all visited units and completed lessons. This action
+													cannot be undone.
+												</div>
+												<div class="demo-reset-actions">
+													<button
+														class="demo-reset-cancel"
+														onclick={() => (showResetDialog = false)}
+													>
+														Cancel
+													</button>
+													<button class="demo-reset-confirm" onclick={handleClearProgress}>
+														Clear All
+													</button>
+												</div>
 											</div>
 										</div>
-									</div>
-								{/if}
+									{/if}
+								</div>
 							</div>
 						</div>
+						<div class="demo-progress-bar">
+							<div
+								class="demo-progress-fill"
+								style="width: {progressStats().progressPercentage}%"
+							></div>
+						</div>
 					</div>
-					<div class="demo-progress-bar">
-						<div
-							class="demo-progress-fill"
-							style="width: {progressStats().progressPercentage}%"
-						></div>
-					</div>
-				</div>
 
-				<!-- Compact Stats -->
-				<div class="demo-nav-stats-compact">
-					<div class="demo-stat-item-compact">
-						<span class="demo-stat-value"
-							>{progressStats().visitedUnits}/{navigationData.metadata.totalUnits}</span
-						>
-						<span class="demo-stat-label">Units</span>
-					</div>
-					<div class="demo-stat-separator">•</div>
-					<div class="demo-stat-item-compact">
-						<span class="demo-stat-value">{progressStats().completedLessons}/{totalLessons}</span>
-						<span class="demo-stat-label">Lessons</span>
+					<!-- Compact Stats -->
+					<div class="demo-nav-stats-compact">
+						<div class="demo-stat-item-compact">
+							<span class="demo-stat-value"
+								>{progressStats().visitedUnits}/{navigationData.metadata.totalUnits}</span
+							>
+							<span class="demo-stat-label">Units</span>
+						</div>
+						<div class="demo-stat-separator">•</div>
+						<div class="demo-stat-item-compact">
+							<span class="demo-stat-value">{progressStats().completedLessons}/{totalLessons}</span>
+							<span class="demo-stat-label">Lessons</span>
+						</div>
 					</div>
 				</div>
-			</div>
+			{/if}
 
 			<!-- Units Navigation -->
-			<div class="demo-nav-units">
+			<div class="demo-nav-units" class:demo-nav-units--collapsed={$isCollapsed}>
 				{#each navigationData.units as unit (unit.id)}
-					<div class="demo-nav-unit">
-						<!-- Unit Header with Toggle -->
-						<button
-							class="demo-nav-unit-header"
-							class:demo-nav-unit-header--active={selectedUnit?.id === unit.id}
-							class:demo-nav-unit-header--expanded={expandedUnitId === unit.id}
-							onclick={() => handleUnitClick(unit)}
-							aria-expanded={expandedUnitId === unit.id}
-						>
-							<div class="demo-nav-unit-icon">{unit.icon}</div>
-							<div class="demo-nav-unit-info">
-								<h3 class="demo-nav-unit-title">{unit.title}</h3>
-								<div class="demo-nav-unit-meta">
-									<DifficultyBadge difficulty={unit.difficulty} />
-									<span class="demo-nav-unit-duration">{unit.estimatedHours}h</span>
-									<span class="demo-nav-unit-count">{unit.lessons.length} lessons</span>
+					<div class="demo-nav-unit" class:demo-nav-unit--collapsed={$isCollapsed}>
+						{#if $isCollapsed}
+							<!-- Collapsed View: Only show unit icon with tooltip -->
+							<button
+								class="demo-nav-unit-collapsed"
+								class:demo-nav-unit-collapsed--active={selectedUnit?.id === unit.id}
+								onclick={() => handleUnitClick(unit)}
+								aria-label={unit.title}
+								title={unit.title}
+							>
+								<div class="demo-nav-unit-icon-collapsed">{unit.icon}</div>
+							</button>
+						{:else}
+							<!-- Expanded View: Full unit display -->
+							<button
+								class="demo-nav-unit-header"
+								class:demo-nav-unit-header--active={selectedUnit?.id === unit.id}
+								class:demo-nav-unit-header--expanded={expandedUnitId === unit.id}
+								onclick={() => handleUnitClick(unit)}
+								aria-expanded={expandedUnitId === unit.id}
+							>
+								<div class="demo-nav-unit-icon">{unit.icon}</div>
+								<div class="demo-nav-unit-info">
+									<h3 class="demo-nav-unit-title">{unit.title}</h3>
+									<div class="demo-nav-unit-meta">
+										<DifficultyBadge difficulty={unit.difficulty} />
+										<span class="demo-nav-unit-duration">{unit.estimatedHours}h</span>
+										<span class="demo-nav-unit-count">{unit.lessons.length} lessons</span>
+									</div>
+									<!-- Progress Indicator -->
+									<div class="demo-nav-unit-progress">
+										<ProgressBar
+											value={unit.lessons.filter((l) => isLessonCompleted(l.id, progress)).length}
+											max={unit.lessons.length}
+											size="sm"
+											variant="primary"
+											showLabel={true}
+											label={`${unit.lessons.filter((l) => isLessonCompleted(l.id, progress)).length}/${unit.lessons.length}`}
+										/>
+									</div>
 								</div>
-								<!-- Progress Indicator -->
-								<div class="demo-nav-unit-progress">
-									<ProgressBar
-										value={unit.lessons.filter((l) => isLessonCompleted(l.id, progress)).length}
-										max={unit.lessons.length}
-										size="sm"
-										variant="primary"
-										showLabel={true}
-										label={`${unit.lessons.filter((l) => isLessonCompleted(l.id, progress)).length}/${unit.lessons.length}`}
-									/>
+								<div class="demo-nav-unit-toggle">
+									{#if expandedUnitId === unit.id}
+										<ChevronDown size={16} />
+									{:else}
+										<ChevronRight size={16} />
+									{/if}
 								</div>
-							</div>
-							<div class="demo-nav-unit-toggle">
-								{#if expandedUnitId === unit.id}
-									<ChevronDown size={16} />
-								{:else}
-									<ChevronRight size={16} />
-								{/if}
-							</div>
-						</button>
+							</button>
 
-						<!-- Unit Lessons (Accordion Content) -->
-						{#if expandedUnitId === unit.id}
-							<div class="demo-nav-lessons">
-								{#each unit.lessons as lesson (lesson.id)}
-									{@const lessonStatus = getLessonStatus(lesson, unit)}
-									<button
-										class="demo-nav-lesson {lessonStatus.className}"
-										class:demo-nav-lesson--active={selectedLesson?.id === lesson.id}
-										onclick={() => handleLessonClick(lesson)}
-									>
-										<div class="demo-nav-lesson-status">
-											<lessonStatus.icon size={14} />
-										</div>
-										<span class="demo-nav-lesson-icon">{lesson.icon}</span>
-										<div class="demo-nav-lesson-info">
-											<h4 class="demo-nav-lesson-title">{lesson.title}</h4>
-											<div class="demo-nav-lesson-meta">
-												<ContentTypeBadge contentType={lesson.contentType} />
-												<span class="demo-nav-lesson-duration">{lesson.duration}</span>
+							<!-- Unit Lessons (Accordion Content) -->
+							{#if expandedUnitId === unit.id}
+								<div class="demo-nav-lessons">
+									{#each unit.lessons as lesson (lesson.id)}
+										{@const lessonStatus = getLessonStatus(lesson, unit)}
+										<button
+											class="demo-nav-lesson {lessonStatus.className}"
+											class:demo-nav-lesson--active={selectedLesson?.id === lesson.id}
+											onclick={() => handleLessonClick(lesson)}
+										>
+											<div class="demo-nav-lesson-status">
+												<lessonStatus.icon size={14} />
 											</div>
-										</div>
-									</button>
-								{/each}
-							</div>
+											<span class="demo-nav-lesson-icon">{lesson.icon}</span>
+											<div class="demo-nav-lesson-info">
+												<h4 class="demo-nav-lesson-title">{lesson.title}</h4>
+												<div class="demo-nav-lesson-meta">
+													<ContentTypeBadge contentType={lesson.contentType} />
+													<span class="demo-nav-lesson-duration">{lesson.duration}</span>
+												</div>
+											</div>
+										</button>
+									{/each}
+								</div>
+							{/if}
 						{/if}
 					</div>
 				{/each}
@@ -392,6 +414,14 @@
 		flex-direction: column;
 		height: 100%;
 		background: hsl(var(--sidebar, 60 9.1% 97.8%));
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	/* Collapsed sidebar container */
+	.demo-sidebar-container--collapsed {
+		width: 60px;
+		min-width: 60px;
+		overflow: hidden;
 	}
 
 	/* Loading & Error States */
@@ -410,6 +440,13 @@
 		flex-direction: column;
 		height: 100%;
 		overflow-y: auto;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	/* Navigation container collapsed state */
+	.demo-sidebar-nav--collapsed {
+		padding: 0.5rem 0;
+		overflow-x: hidden;
 	}
 
 	/* Sidebar Header */
@@ -692,10 +729,29 @@
 		padding: 1rem;
 		flex: 1;
 		overflow-y: auto;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	/* Collapsed units navigation */
+	.demo-nav-units--collapsed {
+		padding: 0.5rem 0.25rem;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.5rem;
 	}
 
 	.demo-nav-unit {
 		margin-bottom: 0.5rem;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	/* Collapsed unit container */
+	.demo-nav-unit--collapsed {
+		margin-bottom: 0.25rem;
+		width: 100%;
+		display: flex;
+		justify-content: center;
 	}
 
 	.demo-nav-unit-header {
@@ -777,6 +833,39 @@
 		flex-shrink: 0;
 		color: hsl(var(--muted-foreground, 215.4 16.3% 46.9%));
 		margin-top: 0.125rem;
+	}
+
+	/* Collapsed Unit Button */
+	.demo-nav-unit-collapsed {
+		width: 44px;
+		height: 44px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: transparent;
+		border: none;
+		border-radius: 8px;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		color: hsl(var(--sidebar-foreground, 222.2 84% 4.9%));
+		position: relative;
+	}
+
+	.demo-nav-unit-collapsed:hover {
+		background: hsl(var(--sidebar-accent, 60 4.8% 95.9%));
+		transform: scale(1.05);
+	}
+
+	.demo-nav-unit-collapsed--active {
+		background: hsl(var(--sidebar-primary, 222.2 84% 4.9%) / 0.1);
+		color: hsl(var(--sidebar-primary, 222.2 84% 4.9%));
+		box-shadow: 0 0 0 2px hsl(var(--sidebar-primary, 222.2 84% 4.9%) / 0.2);
+	}
+
+	.demo-nav-unit-icon-collapsed {
+		font-size: 1.5rem;
+		line-height: 1;
+		user-select: none;
 	}
 
 	/* Lesson Navigation */

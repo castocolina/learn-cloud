@@ -11,9 +11,11 @@
 	import { getBreadcrumbPath } from "../../data/demo/navigation/breadcrumbs.js";
 	import { visitUnit, completeLesson } from "../../lib/stores/progress.js";
 	import DemoSidebar from "../../lib/components/demo/DemoSidebar.svelte";
+	import { SidebarToggle } from "../../lib/components/demo/index.js";
 	import ThemeSwitch from "../../lib/components/ThemeSwitch.svelte";
 	import SearchModal from "../../lib/components/search/SearchModal.svelte";
 	import type { SearchResult } from "../../lib/types/search.js";
+	import { SETTINGS } from "../../config/settings.js";
 
 	// Layout children prop
 	let { children } = $props();
@@ -31,6 +33,9 @@
 
 	// Search modal state
 	let isSearchModalOpen = $state<boolean>(false);
+
+	// Breadcrumb configuration - use global settings
+	let showBreadcrumbIcon = $state<boolean>(SETTINGS.ui.breadcrumb.showIcon);
 
 	// Error handling
 	interface NavigationError {
@@ -57,12 +62,22 @@
 		get navigationError() {
 			return navigationError;
 		},
+		get showBreadcrumbIcon() {
+			return showBreadcrumbIcon;
+		},
 		// Allow child components to update selected items for breadcrumb
 		updateSelectedUnit: (unit: DemoUnit | null) => {
 			selectedUnit = unit;
 		},
 		updateSelectedLesson: (lesson: DemoLesson | null) => {
 			selectedLesson = lesson;
+		},
+		// Allow child components to control breadcrumb icon visibility
+		toggleBreadcrumbIcon: () => {
+			showBreadcrumbIcon = !showBreadcrumbIcon;
+		},
+		setBreadcrumbIcon: (visible: boolean) => {
+			showBreadcrumbIcon = visible;
 		}
 	});
 
@@ -388,26 +403,36 @@
 	>
 		<div class="demo-header-container">
 			<div class="demo-header-content">
-				<!-- Mobile Menu Toggle (Hidden on Desktop) -->
-				<button
-					class="demo-mobile-menu-toggle"
-					onclick={toggleMobileMenu}
-					aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-					aria-expanded={isMobileMenuOpen}
-				>
-					{#if isMobileMenuOpen}
-						<X size={24} />
-					{:else}
-						<Menu size={24} />
-					{/if}
-				</button>
+				<!-- Left Section: Mobile Menu Toggle + Sidebar Toggle (Desktop) -->
+				<div class="demo-header-left">
+					<!-- Mobile Menu Toggle (Hidden on Desktop) -->
+					<button
+						class="demo-mobile-menu-toggle"
+						onclick={toggleMobileMenu}
+						aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+						aria-expanded={isMobileMenuOpen}
+					>
+						{#if isMobileMenuOpen}
+							<X size={24} />
+						{:else}
+							<Menu size={24} />
+						{/if}
+					</button>
+
+					<!-- Sidebar Toggle (Desktop Only) -->
+					<div class="demo-sidebar-toggle-container">
+						<SidebarToggle />
+					</div>
+				</div>
 
 				<!-- Breadcrumb Navigation (moved inside header content) -->
 				{#if breadcrumbPath && breadcrumbPath.items.length > 1}
 					<nav class="demo-breadcrumbs" aria-label="Breadcrumb navigation">
 						<div class="demo-breadcrumb-container">
 							<!-- Book Emoji Icon -->
-							<span class="demo-breadcrumb-icon">📚</span>
+							{#if showBreadcrumbIcon}
+								<span class="demo-breadcrumb-icon">📚</span>
+							{/if}
 							<ol class="demo-breadcrumb-list">
 								{#each breadcrumbPath.items as breadcrumb, index (breadcrumb.id)}
 									<li class="demo-breadcrumb-item">
@@ -568,14 +593,21 @@
 	.demo-header-container {
 		max-width: 100%;
 		margin: 0 auto;
-		padding: 1rem 2rem;
+		padding: 0.75rem 1rem;
 	}
 
 	.demo-header-content {
 		display: grid;
 		grid-template-columns: auto 1fr auto;
 		align-items: center;
-		gap: 1rem;
+		gap: 0.5rem;
+	}
+
+	/* Header Left Section */
+	.demo-header-left {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
 	}
 
 	/* Mobile Menu Toggle */
@@ -688,7 +720,8 @@
 
 	/* Breadcrumb Navigation */
 	.demo-breadcrumbs {
-		justify-self: center;
+		justify-self: start;
+		margin-left: 1rem;
 	}
 
 	/* Header Controls */
@@ -697,6 +730,13 @@
 		display: flex;
 		align-items: center;
 		gap: 0.75rem;
+	}
+
+	/* Sidebar Toggle Container - Desktop Only */
+	.demo-sidebar-toggle-container {
+		display: flex;
+		align-items: center;
+		margin-left: 0;
 	}
 
 	/* Search Button */
@@ -804,13 +844,22 @@
 			justify-content: center;
 		}
 
+		/* Hide sidebar toggle on mobile - use mobile menu instead */
+		.demo-sidebar-toggle-container {
+			display: none;
+		}
+
 		.demo-header-container {
-			padding: 1rem;
+			padding: 0.75rem 0.75rem;
 		}
 
 		.demo-header-content {
 			grid-template-columns: auto 1fr auto;
 			gap: 0.5rem;
+		}
+
+		.demo-header-left {
+			gap: 0.25rem;
 		}
 
 		.demo-search-button {
@@ -825,6 +874,10 @@
 			font-size: 0.8rem;
 		}
 
+		.demo-breadcrumbs {
+			margin-left: 0.5rem;
+		}
+
 		.demo-mobile-sidebar {
 			width: 85vw;
 		}
@@ -835,7 +888,7 @@
 	/* Tablet Styles */
 	@media (min-width: 769px) and (max-width: 1024px) {
 		.demo-header-container {
-			padding: 1.5rem;
+			padding: 0.75rem 1.25rem;
 		}
 	}
 
@@ -843,7 +896,7 @@
 	@media (min-width: 1280px) {
 		.demo-header-container {
 			max-width: 1400px;
-			padding: 1.5rem 2rem;
+			padding: 0.75rem 1.5rem;
 		}
 	}
 </style>

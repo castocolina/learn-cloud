@@ -7,8 +7,9 @@
 		LessonView,
 		FloatingNav
 	} from "$lib/components/demo";
-	import { getContext } from "svelte";
+	import { getContext, onMount } from "svelte";
 	import { visitUnit, completeLesson } from "../../lib/stores/progress.js";
+	import { useSidebar } from "../../lib/stores/sidebar.js";
 	import type {
 		DemoUnit,
 		DemoLesson,
@@ -37,6 +38,9 @@
 	// Use layout context state directly instead of local state
 	const selectedUnit = $derived(layoutContext?.selectedUnit || null);
 	const selectedLesson = $derived(layoutContext?.selectedLesson || null);
+
+	// Sidebar state management
+	const { isCollapsed, sidebarWidth, init } = useSidebar();
 
 	// Event handlers for sidebar navigation
 	function handleUnitSelect(unit: DemoUnit): void {
@@ -155,9 +159,12 @@
 		}, 1000);
 	}
 
-	// Set up event listener for breadcrumb navigation
-	import { onMount } from "svelte";
+	// Set up event listener for breadcrumb navigation and initialize sidebar
 	onMount(() => {
+		// Initialize sidebar state from localStorage
+		init();
+
+		// Set up breadcrumb navigation listener
 		const handleEvent = (e: Event) => handleBreadcrumbNavigation(e as CustomEvent);
 		document.addEventListener("breadcrumb-navigate", handleEvent);
 		return () => document.removeEventListener("breadcrumb-navigate", handleEvent);
@@ -180,9 +187,13 @@
 </svelte:head>
 
 <!-- Demo Page Two-Column Layout -->
-<div class="demo-interactive-layout">
+<div
+	class="demo-interactive-layout"
+	class:demo-interactive-layout--collapsed={$isCollapsed}
+	style="--sidebar-width: {$sidebarWidth}"
+>
 	<!-- Left Column: Navigation Sidebar -->
-	<aside class="demo-content-sidebar">
+	<aside class="demo-content-sidebar" class:demo-content-sidebar--collapsed={$isCollapsed}>
 		<DemoSidebar
 			navigationData={demoSidebarMenu}
 			{selectedUnit}
@@ -198,7 +209,7 @@
 	</aside>
 
 	<!-- Right Column: Dynamic Content Area -->
-	<main class="demo-content-main">
+	<main class="demo-content-main" class:demo-content-main--sidebar-collapsed={$isCollapsed}>
 		{#if currentView() === "lesson" && selectedLesson}
 			<!-- Lesson View: When a specific lesson is selected -->
 			<LessonView lesson={selectedLesson} />
@@ -218,14 +229,20 @@
 {/if}
 
 <style>
-	/* Demo Interactive Layout - Two Column Design */
+	/* Demo Interactive Layout - Two Column Design with Collapsible Sidebar */
 	.demo-interactive-layout {
 		display: grid;
-		grid-template-columns: 320px 1fr;
+		grid-template-columns: var(--sidebar-width, 320px) 1fr;
 		gap: 0;
 		height: calc(100vh - 4rem); /* Account for layout header */
 		max-height: calc(100vh - 4rem);
 		overflow: hidden;
+		transition: grid-template-columns 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	/* Collapsed state */
+	.demo-interactive-layout--collapsed {
+		grid-template-columns: 60px 1fr;
 	}
 
 	/* Left Column: Sidebar */
@@ -234,6 +251,14 @@
 		border-right: 1px solid hsl(var(--sidebar-border, 220 13% 91%));
 		overflow-y: auto;
 		position: relative;
+		width: var(--sidebar-width, 320px);
+		transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	/* Collapsed sidebar state */
+	.demo-content-sidebar--collapsed {
+		width: 60px;
+		overflow: hidden;
 	}
 
 	/* Right Column: Main Content */
@@ -242,37 +267,76 @@
 		overflow-y: auto;
 		position: relative;
 		padding: 0; /* Let individual views handle their own padding */
+		transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	/* Content area adjustment when sidebar is collapsed */
+	.demo-content-main--sidebar-collapsed {
+		/* Additional content space available when sidebar is collapsed */
+		margin-left: 0;
 	}
 
 	/* Mobile-First Responsive Design */
 	@media (max-width: 768px) {
-		.demo-interactive-layout {
+		.demo-interactive-layout,
+		.demo-interactive-layout--collapsed {
+			/* Reset grid for mobile - disable collapsible behavior */
 			grid-template-columns: 1fr;
 			grid-template-rows: 1fr;
 			height: calc(100vh - 4rem);
+			transition: none; /* Disable transition on mobile */
 		}
 
 		/* Hide desktop sidebar completely on mobile - use mobile overlay instead */
-		.demo-content-sidebar {
+		.demo-content-sidebar,
+		.demo-content-sidebar--collapsed {
 			display: none;
+			transition: none; /* Disable transition on mobile */
 		}
 
-		.demo-content-main {
+		.demo-content-main,
+		.demo-content-main--sidebar-collapsed {
 			min-height: 100vh;
+			margin-left: 0; /* Reset margin on mobile */
+			transition: none; /* Disable transition on mobile */
 		}
 	}
 
 	/* Tablet Layout */
 	@media (min-width: 769px) and (max-width: 1024px) {
 		.demo-interactive-layout {
-			grid-template-columns: 280px 1fr;
+			grid-template-columns: var(--sidebar-width, 280px) 1fr;
+		}
+
+		.demo-interactive-layout--collapsed {
+			grid-template-columns: 60px 1fr;
+		}
+
+		.demo-content-sidebar {
+			width: var(--sidebar-width, 280px);
+		}
+
+		.demo-content-sidebar--collapsed {
+			width: 60px;
 		}
 	}
 
 	/* Large Desktop Layout */
 	@media (min-width: 1280px) {
 		.demo-interactive-layout {
-			grid-template-columns: 360px 1fr;
+			grid-template-columns: var(--sidebar-width, 360px) 1fr;
+		}
+
+		.demo-interactive-layout--collapsed {
+			grid-template-columns: 60px 1fr;
+		}
+
+		.demo-content-sidebar {
+			width: var(--sidebar-width, 360px);
+		}
+
+		.demo-content-sidebar--collapsed {
+			width: 60px;
 		}
 	}
 

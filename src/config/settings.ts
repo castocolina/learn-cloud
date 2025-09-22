@@ -17,7 +17,17 @@ interface AppSettings {
 		modalPagePercent: number; // Viewport percentage for flip card modal dialogs (default: 90)
 		// Add more flip card-specific settings here as needed
 	};
-	// Future settings can be grouped here (e.g., api, ui, performance)
+	ui: {
+		breadcrumb: {
+			showIcon: boolean; // Whether to show the emoji icon in breadcrumbs (default: true)
+		};
+		sidebar: {
+			collapsible: boolean; // Whether sidebar can be collapsed on desktop (default: true)
+			defaultCollapsed: boolean; // Default collapsed state (default: false)
+		};
+		// Future UI settings can be grouped here
+	};
+	// Future settings can be grouped here (e.g., api, performance)
 }
 
 // Export a single, constant object with all settings.
@@ -28,6 +38,15 @@ export const SETTINGS: AppSettings = {
 	},
 	flipCard: {
 		modalPagePercent: 90 // Default modal viewport percentage for flip cards
+	},
+	ui: {
+		breadcrumb: {
+			showIcon: true // Show emoji icon in breadcrumbs by default
+		},
+		sidebar: {
+			collapsible: true, // Enable sidebar collapse functionality
+			defaultCollapsed: false // Sidebar expanded by default
+		}
 	}
 };
 
