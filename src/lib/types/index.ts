@@ -36,7 +36,7 @@ export type {
 } from "./types.js";
 
 // Union type constants - For iteration and Object.values() replacement
-export { CONTENT_DIFFICULTIES, QUESTION_TYPES, CONTENT_TYPES } from "./types.js";
+export { CONTENT_DIFFICULTIES, CHAPTER_TYPES, QUESTION_TYPES, CONTENT_TYPES } from "./types.js";
 
 // Rich text exports - Structured content system
 export type {
@@ -95,7 +95,10 @@ export type {
 	MenuChapter,
 	NavigationContext,
 	RouteInfo,
-	NavigationEvent
+	NavigationEvent,
+	UnifiedPathConfig,
+	NavigationPaths,
+	ParsedNavigation
 } from "./navigation.js";
 
 // Search exports - Enhanced search with navigation integration

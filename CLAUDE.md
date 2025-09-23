@@ -254,5 +254,5 @@ import { demoContent } from "src/data/demo/content";
 - **SVELTEKIT VALIDATION:** Run `pnpm run format`, `pnpm run check` for TypeScript/component validation, and `pnpm run lint` for code quality
 - **ZERO TOLERANCE POLICY:** NO TypeScript errors, NO warnings, NO unused variables (unless user-requested or ShadCN components), NO deprecated components
 - **AUTOMATED VALIDATION:** ESLint and Prettier handle code formatting and quality automatically
-- **CONTENT VALIDATION:** Use `make content-validate` for JSON structure validation when needed
+- **CONTENT VALIDATION:** Use `make validate-content` for JSON structure validation when needed
 - **CONTENT-FIRST:** All new features should consume TypeScript data from `src/data/` structure using `$data` alias

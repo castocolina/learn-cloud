@@ -20,8 +20,9 @@ export type ContentDifficulty = "beginner" | "intermediate" | "advanced" | "expe
 
 /**
  * Chapter types for content categorization and renderer selection
+ * Extended to include overview pages for unit introductions
  */
-export type ChapterType = "lesson" | "study_guide" | "quiz" | "exam" | "project";
+export type ChapterType = "overview" | "lesson" | "study_guide" | "quiz" | "exam" | "project";
 
 /**
  * Content types for search and display classification
@@ -218,6 +219,14 @@ export const CONTENT_DIFFICULTIES: ContentDifficulty[] = [
 	"intermediate",
 	"advanced",
 	"expert"
+];
+export const CHAPTER_TYPES: ChapterType[] = [
+	"overview",
+	"lesson",
+	"study_guide",
+	"quiz",
+	"exam",
+	"project"
 ];
 export const QUESTION_TYPES: QuestionType[] = [
 	"single_choice",

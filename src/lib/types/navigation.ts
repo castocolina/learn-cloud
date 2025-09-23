@@ -404,6 +404,9 @@ export interface MenuUnit {
 	/** Unit icon */
 	icon: string;
 
+	/** Unit emoji for enhanced visual display */
+	emoji?: string;
+
 	/** Technology unit for styling */
 	technologyUnit: TechnologyUnit;
 
@@ -412,12 +415,6 @@ export interface MenuUnit {
 
 	/** Estimated total hours for unit completion */
 	estimatedHours?: number;
-
-	/** Unit overview link */
-	overviewDataLink?: string;
-
-	/** Unit exam link */
-	examDataLink?: string;
 
 	/** Array of chapters in this unit */
 	chapters: MenuChapter[];
@@ -444,6 +441,9 @@ export interface MenuChapter {
 
 	/** Chapter icon */
 	icon: string;
+
+	/** Chapter emoji for enhanced visual display */
+	emoji?: string;
 
 	/** Chapter type for renderer selection */
 	type: ChapterType;
@@ -560,4 +560,79 @@ export interface NavigationEvent {
 
 	/** Timestamp of the event */
 	timestamp: Date;
+}
+
+/**
+ * Configuration interface for unified path generation
+ * Used by both build-time generation and runtime navigation components
+ */
+export interface UnifiedPathConfig {
+	/** Type of content (overview, lesson, quiz, exam, etc.) */
+	contentType: ChapterType;
+
+	/** Unit number (e.g., "1", "2", "10") */
+	unitNum: string;
+
+	/** Chapter number within unit (e.g., "1", "2", "10") - optional for unit-level content like overview/exam */
+	chapterNum?: string;
+
+	/** URL-friendly slug from title (optional for some content types) */
+	titleSlug?: string;
+}
+
+/**
+ * Comprehensive path result covering all navigation scenarios
+ * Used by build-time generators and runtime navigation handlers
+ */
+export interface NavigationPaths {
+	// Build-time paths (for menu generation and static references)
+	/** Legacy HTML path for backward compatibility */
+	htmlPath: string;
+
+	/** TypeScript data file path for $data imports */
+	dataPath: string;
+
+	// Runtime navigation paths
+	/** Hash-based URL for SPA navigation (#unit01/chapter01_01) */
+	hashUrl: string;
+
+	/** SvelteKit route path for server-side routing */
+	routePath: string;
+
+	/** Complete SPA URL including hash for external sharing */
+	spaUrl: string;
+
+	// Asset resolution
+	/** Import path for dynamic asset loading */
+	importPath: string;
+
+	/** Unique asset key for caching and tracking */
+	assetKey: string;
+
+	// UI identifiers and display
+	/** Zero-padded identifier for sorting and uniqueness */
+	id: string;
+
+	/** Human-readable path for breadcrumbs and UI display */
+	displayPath: string;
+
+	/** Short display name for compact UI elements */
+	shortName: string;
+}
+
+/**
+ * Parse result from URL parsing operations
+ */
+export interface ParsedNavigation {
+	/** Parsed configuration */
+	config: UnifiedPathConfig;
+
+	/** Generated paths based on parsed config */
+	paths: NavigationPaths;
+
+	/** Whether the URL was successfully parsed */
+	isValid: boolean;
+
+	/** Error message if parsing failed */
+	error?: string;
 }

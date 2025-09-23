@@ -33,14 +33,11 @@ def run_validation(file_path, project_dir):
             cmd = ['make', 'check']  # SvelteKit check for TypeScript and Svelte files
             action = "SvelteKit TypeScript/Svelte validation"
         elif file_path.endswith('.json'):
-            cmd = ['make', 'content-validate']  # JSON content validation
+            cmd = ['make', 'validate-content']  # JSON content validation
             action = "JSON content validation"
         elif file_path.endswith('.sh'):
             cmd = ['make', 'validate-bash']  # Bash script validation
             action = "Bash script validation"
-        elif file_path.endswith('.py'):
-            cmd = ['make', 'validate-python']  # Python script validation
-            action = "Python script validation"
         else:
             return True, f"No validation needed for {file_path}"
         

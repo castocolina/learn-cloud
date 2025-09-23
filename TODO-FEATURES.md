@@ -378,7 +378,7 @@ You are responsible for developing a TypeScript content menu generator script th
 
 **Implementation Details:**
 
-**Script Specification (`scripts/content-menu-generator.ts`):**
+**Script Specification (`src/scripts/content-menu-generator.ts`):**
 
 - **Purpose**: Parse @CONTENT.md file and generate navigation structure in `src/data/generated/content-menu.ts`
 - **Input**: File to parse (default: `@CONTENT.md`)
@@ -393,20 +393,20 @@ You are responsible for developing a TypeScript content menu generator script th
   ```makefile
   .PHONY: generate-menu
   generate-menu:
-  	npx tsx scripts/content-menu-generator.ts
+  	npx tsx src/scripts/content-menu-generator.ts
   ```
 - **Package.json Script**:
   ```json
   {
   	"scripts": {
-  		"generate-menu": "npx tsx scripts/content-menu-generator.ts"
+  		"generate-menu": "npx tsx src/scripts/content-menu-generator.ts"
   	}
   }
   ```
 
 **Expected Output:**
 
-- `scripts/content-menu-generator.ts` (with ts-morph integration)
+- `src/scripts/content-menu-generator.ts` (with ts-morph integration)
 - Updated `Makefile` with `generate-menu` target
 - Updated `package.json` with `generate-menu` script
 - Test suite in `src/test/scripts/content-menu-generator.test.ts`
@@ -440,7 +440,7 @@ You are responsible for developing a TypeScript content scaffolding generator sc
 **Technical Documents to Review:**
 
 - `src/lib/types/` (result from Task 2 - unified type system)
-- `src/python/generate_content_scaffolding.py` (existing Python implementation for reference)
+- `src/python/generate_content_scaffolding.py` (existing Python implementation for reference but respecting new type system)
 - `CONTENT-STANDARDS.md` (content structure and validation standards)
 - `MERMAID-STANDARDS.md` (diagram standards)
 - `src/data/demo/content/diagrams/mermaid-examples.ts` (reference implementation pattern)
@@ -453,7 +453,7 @@ You are responsible for developing a TypeScript content scaffolding generator sc
 
 **Implementation Details:**
 
-**Script Specification (`scripts/content-scaffolding.ts`):**
+**Script Specification (`src/scripts/content-scaffolding.ts`):**
 
 - **Purpose**: Creates TypeScript content files with proper union type usage and structure
 - **Input**: Unit name, chapter type (from union type), chapter ID
@@ -469,20 +469,20 @@ You are responsible for developing a TypeScript content scaffolding generator sc
   ```makefile
   .PHONY: scaffold-content
   scaffold-content:
-  	npx tsx scripts/content-scaffolding.ts $(ARGS)
+  	npx tsx src/scripts/content-scaffolding.ts $(ARGS)
   ```
 - **Package.json Script**:
   ```json
   {
   	"scripts": {
-  		"scaffold-content": "npx tsx scripts/content-scaffolding.ts"
+  		"scaffold-content": "npx tsx src/scripts/content-scaffolding.ts"
   	}
   }
   ```
 
 **Expected Output:**
 
-- `scripts/content-scaffolding.ts` (following mermaid-examples.ts pattern)
+- `src/scripts/content-scaffolding.ts` (following mermaid-examples.ts pattern)
 - Updated `Makefile` with `scaffold-content` target
 - Updated `package.json` with `scaffold-content` script
 - Test suite in `src/test/scripts/content-scaffolding.test.ts`
@@ -527,7 +527,7 @@ You are responsible for developing a TypeScript Mermaid validator script that va
 
 **Implementation Details:**
 
-**Script Specification (`scripts/mermaid-validator.ts`):**
+**Script Specification (`src/scripts/mermaid-validator.ts`):**
 
 - **Purpose**: Validates Mermaid diagrams in TypeScript files using ts-morph AST parsing
 - **Technology**: ts-morph for TypeScript parsing, mermaid for syntax validation
@@ -551,20 +551,20 @@ You are responsible for developing a TypeScript Mermaid validator script that va
   ```makefile
   .PHONY: validate-mermaid
   validate-mermaid:
-  	npx tsx scripts/mermaid-validator.ts $(ARGS)
+  	npx tsx src/scripts/mermaid-validator.ts $(ARGS)
   ```
 - **Package.json Script**:
   ```json
   {
   	"scripts": {
-  		"validate-mermaid": "npx tsx scripts/mermaid-validator.ts"
+  		"validate-mermaid": "npx tsx src/scripts/mermaid-validator.ts"
   	}
   }
   ```
 
 **Expected Output:**
 
-- `scripts/mermaid-validator.ts` (precise error reporting)
+- `src/scripts/mermaid-validator.ts` (precise error reporting)
 - Updated `Makefile` with `validate-mermaid` target
 - Updated `package.json` with `validate-mermaid` script
 - Test suite in `src/test/scripts/mermaid-validator.test.ts`
@@ -610,7 +610,7 @@ You are responsible for developing a TypeScript search index generator script th
 
 **Implementation Details:**
 
-**Script Specification (`scripts/search-indexer.ts`):**
+**Script Specification (`src/scripts/search-indexer.ts`):**
 
 - **Purpose**: Auto-generates search index from content files in `src/data/book/`
 - **Input**: Content directory path, output format (development/production)
@@ -626,7 +626,7 @@ You are responsible for developing a TypeScript search index generator script th
   ```makefile
   .PHONY: generate-search-index
   generate-search-index:
-  	npx tsx scripts/search-indexer.ts $(ARGS)
+  	npx tsx src/scripts/search-indexer.ts $(ARGS)
 
   .PHONY: validate-all-scripts
   validate-all-scripts: validate-mermaid generate-menu generate-search-index
@@ -637,7 +637,7 @@ You are responsible for developing a TypeScript search index generator script th
   ```json
   {
   	"scripts": {
-  		"generate-search-index": "npx tsx scripts/search-indexer.ts",
+  		"generate-search-index": "npx tsx src/scripts/search-indexer.ts",
   		"validate-content": "npm run validate-mermaid && npm run generate-menu && npm run generate-search-index"
   	}
   }
@@ -657,7 +657,7 @@ You are responsible for developing a TypeScript search index generator script th
 
 **Expected Output:**
 
-- `scripts/search-indexer.ts` (Lunr.js integration)
+- `src/scripts/search-indexer.ts` (Lunr.js integration)
 - Updated `Makefile` with `generate-search-index` and `validate-all-scripts` targets
 - Updated `package.json` with `generate-search-index` and `validate-content` scripts
 - Updated `.github/workflows/` for CI/CD integration
@@ -709,7 +709,7 @@ You are responsible for developing a TypeScript flat navigation generator script
 
 **Implementation Details:**
 
-**Script Specification (`scripts/flatnav-generator.ts`):**
+**Script Specification (`src/scripts/flatnav-generator.ts`):**
 
 - **Purpose**: Generate flat sequence map (flatnav) for sequential content navigation
 - **Input**: Content menu structure from `src/data/generated/content-menu.ts`
@@ -770,13 +770,13 @@ interface FlatNavStructure {
   ```makefile
   .PHONY: generate-flatnav
   generate-flatnav:
-  	npx tsx scripts/flatnav-generator.ts
+  	npx tsx src/scripts/flatnav-generator.ts
   ```
 - **Package.json Script**:
   ```json
   {
   	"scripts": {
-  		"generate-flatnav": "npx tsx scripts/flatnav-generator.ts"
+  		"generate-flatnav": "npx tsx src/scripts/flatnav-generator.ts"
   	}
   }
   ```
@@ -791,7 +791,7 @@ interface FlatNavStructure {
 
 **Expected Output:**
 
-- `scripts/flatnav-generator.ts` (TypeScript generator script)
+- `src/scripts/flatnav-generator.ts` (TypeScript generator script)
 - Updated `Makefile` with `generate-flatnav` target
 - Updated `package.json` with `generate-flatnav` script
 - Test suite in `src/test/scripts/flatnav-generator.test.ts`
@@ -832,7 +832,7 @@ You are responsible for designing and implementing SPA architecture with single 
 **Technical Documents to Review:**
 
 - `src/lib/types/` (unified TypeScript foundation)
-- `scripts/content-menu-generator.ts` (content structure)
+- `src/scripts/content-menu-generator.ts` (content structure)
 - `SVELTEKIT-GUIDE.md` (technical architecture)
 - `SVELTEKIT-GUIDE.md` (SvelteKit patterns)
 
@@ -1013,7 +1013,7 @@ You are responsible for implementing robust theme system with CSS custom propert
 - `src/app.css` with centralized theme architecture and global z-index hierarchy (following SVELTEKIT-GUIDE.md)
 - `src/lib/stores/theme.ts` (Svelte 5 runes implementation)
 - `src/lib/components/ThemeToggle.svelte` (shadcn integration)
-- `scripts/validate-theme.ts` (theme validation script with z-index compliance checking)
+- `src/scripts/validate-theme.ts` (theme validation script with z-index compliance checking)
 - Updated layout with theme integration
 - Global z-index custom properties for all layered components
 
@@ -1704,7 +1704,7 @@ You are responsible for developing comprehensive search functionality with Searc
 **Technical Documents to Review:**
 
 - `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and component standards)
-- `scripts/search-indexer.ts` (search foundation from TASK 3D)
+- `src/scripts/search-indexer.ts` (search foundation from TASK 3D)
 - `SEARCH-ARCHITECTURE.md` (search specifications)
 - `SVELTEKIT-GUIDE.md` (enhanced search implementation)
 
@@ -2151,7 +2151,7 @@ You are responsible for enhancing MermaidDiagram component with error handling, 
 **Technical Documents to Review:**
 
 - `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and error handling)
-- `scripts/mermaid-validator.ts` (validation integration from TASK 3C)
+- `src/scripts/mermaid-validator.ts` (validation integration from TASK 3C)
 - `MERMAID-STANDARDS.md` (diagram standards and error reporting)
 - `RECURRING-ISSUES.md` (Mermaid rendering issues prevention)
 
@@ -2437,8 +2437,8 @@ You are responsible for migrating content structure to `src/data/book/` with con
 
 **Technical Documents to Review:**
 
-- `scripts/content-menu-generator.ts` (menu generation)
-- `scripts/content-scaffolding.ts` (structure creation)
+- `src/scripts/content-menu-generator.ts` (menu generation)
+- `src/scripts/content-scaffolding.ts` (structure creation)
 - `src/lib/types/` (unified type definitions)
 - Existing content in `src/book/` or `src/data/demo/`
 
@@ -2503,9 +2503,9 @@ You are responsible for implementing comprehensive testing strategy, validation 
 
 **Expected Output:**
 
-- `scripts/validate-all.sh` (validation pipeline)
-- `scripts/validate-mobile.ts` (mobile testing)
-- `scripts/validate-enum-usage.ts` (enum compliance)
+- `src/scripts/validate-all.sh` (validation pipeline)
+- `src/scripts/validate-mobile.ts` (mobile testing)
+- `src/scripts/validate-enum-usage.ts` (enum compliance)
 - Complete test suite
 - Quality gates documentation
 
@@ -2588,7 +2588,7 @@ You are responsible for developing comprehensive lesson content for Unit 1 (Pyth
 - `CONTENT.md` (Unit 1 structure: 1.1-1.9 lessons)
 - `src/book/unit1/` (existing content reference)
 - `src/types/content.ts` (content type definitions)
-- `scripts/content-scaffolding.ts` (content generation)
+- `src/scripts/content-scaffolding.ts` (content generation)
 - `CONTENT-STANDARDS.md` (quality standards)
 
 **Prerequisites:**
@@ -2812,7 +2812,7 @@ You are responsible for developing comprehensive lesson content for Unit 2 (Go f
 - `CONTENT.md` (Unit 2 structure: 2.1-2.9 lessons)
 - `src/book/unit2/` (existing content reference)
 - `src/types/content.ts` (content type definitions)
-- `scripts/content-scaffolding.ts` (content generation)
+- `src/scripts/content-scaffolding.ts` (content generation)
 - `CONTENT-STANDARDS.md` (quality standards)
 
 **Prerequisites:**
@@ -3037,7 +3037,7 @@ You are responsible for extending existing Python and Go units with comprehensiv
 
 - `CONTENT.md` (current Python and Go unit structure)
 - `src/types/content.ts` (content type definitions)
-- `scripts/content-scaffolding.ts` (content generation)
+- `src/scripts/content-scaffolding.ts` (content generation)
 - `CONTENT-STANDARDS.md` (content quality standards)
 
 **Prerequisites:**
@@ -3092,7 +3092,7 @@ You are responsible for creating a comprehensive Rust programming unit with mode
 
 - `CONTENT.md` (structure and content standards)
 - `src/types/content.ts` (content type definitions)
-- `scripts/content-scaffolding.ts` (content generation)
+- `src/scripts/content-scaffolding.ts` (content generation)
 - `CONTENT-STANDARDS.md` (quality standards)
 - Official Rust documentation and best practices
 
@@ -3149,7 +3149,7 @@ You are responsible for creating a specialized cloud databases unit focusing on 
 
 - `CONTENT.md` (structure standards)
 - `src/types/content.ts` (content type definitions)
-- `scripts/content-scaffolding.ts` (content generation)
+- `src/scripts/content-scaffolding.ts` (content generation)
 - AWS documentation for DynamoDB and Neptune
 - `CONTENT-STANDARDS.md` (quality requirements)
 
@@ -3208,7 +3208,7 @@ You are responsible for creating a comprehensive GraphQL unit with modern API de
 
 - `CONTENT.md` (structure standards)
 - `src/types/content.ts` (content type definitions)
-- `scripts/content-scaffolding.ts` (content generation)
+- `src/scripts/content-scaffolding.ts` (content generation)
 - GraphQL and AWS AppSync official documentation
 - `CONTENT-STANDARDS.md` (quality requirements)
 

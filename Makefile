@@ -1,4 +1,4 @@
-.PHONY: help setup install run build clean validate validate-bash validate-python check lint format test content-validate
+.PHONY: help setup install run build clean validate validate-bash validate-python check lint format test validate-content
 
 # Load environment variables from .env file
 ifneq (,$(wildcard .env))
@@ -38,7 +38,7 @@ format: ## Format code with Prettier
 	pnpm run format
 
 # Validation targets
-validate: validate-bash validate-python content-validate ## Run all validation checks
+validate: validate-bash validate-python validate-content ## Run all validation checks
 
 validate-bash: ## Validate bash scripts with shellcheck
 	@echo "🔍 Validating Bash scripts..."
@@ -60,7 +60,7 @@ validate-python: ## Validate Python scripts
 	done || echo "No Python scripts found to validate"
 	@echo "✅ Python script validation completed"
 
-content-validate: ## Validate content JSON structure
+validate-content: ## Validate content JSON structure
 	@echo "🔍 Validating content structure..."
 	@find src/data -name "*.json" -type f 2>/dev/null | while read -r file; do \
 		echo "Validating $$file"; \
@@ -81,6 +81,10 @@ test-e2e: ## Run end-to-end tests
 test-python-unit: ## Run Python unit tests
 	@echo "🧪 Running Python unit tests..."
 	@python3 -m pytest src/test/python/ -v 2>/dev/null || echo "No Python tests found or pytest not installed"
+
+test-scripts: ## Run tests for utility scripts in src/test/scripts
+	@echo "🧪 Running script tests..."
+	@pnpm run test src/test/scripts/ || echo "No script tests found or tests failed"
 
 # Cleanup
 clean: ## Clean build artifacts and dependencies
@@ -113,8 +117,10 @@ dev-tools: ## Install additional development tools
 # Content management
 generate-content-menu: ## Generate content-menu.ts from CONTENT.md
 	@echo "🔄 Generating content-menu.ts from CONTENT.md..."
-	@python3 src/python/generate_content_menu.py
+	@npx tsx src/scripts/content-menu-generator.ts
 	@echo "✅ Content generation complete!"
+
+generate-menu: generate-content-menu ## Alias for generate-content-menu
 
 generate-content-scaffolding: ## Generate placeholder TypeScript content files from content-menu.ts
 	@echo "🔄 Generating content scaffolding files..."

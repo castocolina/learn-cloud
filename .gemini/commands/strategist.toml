@@ -198,7 +198,6 @@ You must indicate in a structured TOML format using multiline syntax:
       
       [Additional instructions based on the framework and specific requirements]
     \"\"\"
-      
 - complete = true/false indicating if the prompt is complete or if questions need to be answered
 
 Wrap your TOML response between ```toml and ``` markers. Do not include any other text outside these markers.

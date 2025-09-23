@@ -515,43 +515,102 @@ spec:
 - **Updates**: Use recent but stable versions of all technologies
 - **Security**: Emphasize security considerations throughout
 
-### Content Navigation Structure
+### Enhanced CONTENT.md Structure for Complete Menu Generation
 
-The `src/data/content-menu.ts` file serves as the single source of truth for:
+The `CONTENT.md` file has been redesigned to provide all necessary data for generating type-safe navigation menus. The new structure supports:
 
-- Unit organization and metadata
-- Chapter sequencing and types
-- Navigation links (both legacy HTML and new JSON data links)
-- Icons and descriptions
+- Complete metadata extraction for all navigation interfaces
+- Emoji icons for visual navigation enhancement
+- Estimated completion times for progress tracking
+- Difficulty levels for adaptive learning paths
+- Prerequisites and learning objectives for educational scaffolding
 
-**Structure**:
+#### New Markdown Table Structure
 
-```json
-{
-	"metadata": {
-		"title": "Mastering Cloud-Native Technologies",
-		"total_units": 9,
-		"total_chapters": 119
-	},
-	"units": [
-		{
-			"title": "Unit Title",
-			"icon": "IconName",
-			"description": "Unit description",
-			"overview_data_link": "data/unit1/overview_*.json",
-			"exam_data_link": "data/unit1/exam_*.json",
-			"chapters": [
-				{
-					"title": "Chapter Title",
-					"icon": "IconName",
-					"type": "lesson|study_guide|quiz|exam|project",
-					"chapter_data_link": "data/unit1/chapter_*.json"
-				}
-			]
-		}
-	]
+Each unit now uses a comprehensive Markdown table format:
+
+```markdown
+## Unit X: Unit Title [icon: IconName]
+
+| Chapter | Content          | Icon       | Emoji | Time | Complexity | Prerequisites    | Learning Objectives                                     |
+| ------- | ---------------- | ---------- | ----- | ---- | ---------- | ---------------- | ------------------------------------------------------- |
+| **X.Y** | **Lesson Title** | IconName   | 🔧    | 45   | beginner   | To Be Determined | Learn core concepts, Master techniques, Apply knowledge |
+| X.Y     | Study Guide      | BookOpen   | 📚    | 15   | beginner   | To Be Determined | Review key concepts from lesson                         |
+| X.Y     | Quiz             | HelpCircle | ❓    | 10   | beginner   | To Be Determined | Test understanding of concepts                          |
+```
+
+#### Field Definitions
+
+**Required Fields:**
+
+- `Chapter`: Chapter number (e.g., "1.1", "2.3") or content identifier
+- `Content`: Descriptive title of the content
+- `Icon`: Lucide icon name for UI components
+- `Emoji`: Unicode emoji for visual enhancement
+- `Time`: Estimated completion time in minutes
+- `Complexity`: Difficulty level ("beginner" | "intermediate" | "advanced" | "expert")
+- `Prerequisites`: Comma-separated list or "To Be Determined"
+- `Learning Objectives`: Comma-separated learning goals
+
+**Content Type Detection:**
+
+- **Bold chapter numbers** (e.g., `**1.1**`) indicate primary lessons
+- `Study Guide` entries are automatically detected as study_guide type
+- `Quiz` entries are automatically detected as quiz type
+- `Project:` prefix indicates project type
+- `Final Exam` indicates exam type
+
+#### Enhanced Data Mapping
+
+The new structure provides complete data for all TypeScript interfaces:
+
+**MenuChapter Interface Satisfaction:**
+
+```typescript
+interface MenuChapter {
+	id: string; // Generated from chapter number
+	title: string; // From Content column
+	description?: string; // Extracted from Learning Objectives
+	icon: string; // From Icon column
+	type: ChapterType; // Auto-detected from Content
+	chapterNumber: string; // From Chapter column
+	estimatedTime?: number; // From Time column (minutes)
+	difficulty?: ContentDifficulty; // From Complexity column
+	prerequisites?: string[]; // From Prerequisites column
+	learningObjectives?: string[]; // From Learning Objectives column
+	// ... additional navigation fields auto-generated
 }
 ```
+
+#### Placeholder System
+
+The enhanced structure uses "To Be Determined" as a standardized placeholder for:
+
+- Prerequisites that need to be defined
+- Learning objectives requiring detailed specification
+- Any metadata pending educational review
+
+This ensures the generator can create complete type-safe objects while clearly marking areas needing further development.
+
+#### Benefits of Enhanced Structure
+
+1. **Complete Type Safety**: All TypeScript navigation interfaces fully satisfied
+2. **Rich Metadata**: Time estimates, difficulty levels, and educational scaffolding
+3. **Visual Enhancement**: Emoji support for improved user experience
+4. **Educational Alignment**: Prerequisites and learning objectives for proper sequencing
+5. **Generator Compatibility**: Structured data easily parsed by TypeScript generator
+6. **Human Readable**: Maintains markdown readability while providing structured data
+7. **Future-Proof**: Extensible structure for additional metadata as needed
+
+### Generated Content Navigation Structure
+
+The enhanced generator now produces complete `src/data/generated/content-menu.ts` files with:
+
+- Full MenuStructure compliance with all required and optional fields
+- Type-safe chapter metadata including time estimates and difficulty levels
+- Rich navigation context for educational progression
+- Emoji icons for enhanced visual navigation
+- Comprehensive learning objective and prerequisite mapping
 
 ### Development Workflow
 
@@ -617,7 +676,7 @@ When creating lesson content that includes Mermaid diagram blocks, the following
 **Integration Points**:
 
 - **Content Creation**: Run validation after lesson content is created/modified
-- **Build Process**: Include in `make content-validate` command
+- **Build Process**: Include in `make validate-content` command
 - **Pre-commit**: Validate all modified lesson files before commit
 - **CI/CD**: Automated validation in deployment pipeline
 
@@ -887,7 +946,7 @@ This project uses modern development tools integrated with SvelteKit for automat
 
 **📝 Project-Specific Validation:**
 
-- `make content-validate` - Validate JSON content structure
+- `make validate-content` - Validate JSON content structure
 - `make validate-bash` - Validate bash scripts with shellcheck
 - `make validate-python` - Validate Python scripts compilation
 - `make validate` - Run all project-specific validations
