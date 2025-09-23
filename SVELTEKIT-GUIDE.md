@@ -872,14 +872,25 @@ Organize settings by functional area:
 
 ### Demo Data Architecture
 
-**Data-Driven Approach**: All demo content stored in TypeScript files within `src/data/demo/` for easy identification and cleanup.
+**Data-Driven Approach**: All demo content stored in TypeScript files within `src/data/demo/` for easy identification and cleanup. Use `$data` alias for cleaner imports (`$data` → `src/data/`).
 
 **Key Structure**:
 
-- `src/data/demo/types.ts` - TypeScript interfaces for demo components
-- `src/data/demo/navigation/` - Sidebar and breadcrumb configuration
-- `src/data/demo/content/` - Demo units and component examples
-- `src/data/demo/config/` - Route definitions and feature flags
+- `$data/demo/types.ts` - TypeScript interfaces for demo components
+- `$data/demo/navigation/` - Sidebar and breadcrumb configuration
+- `$data/demo/content/` - Demo units and component examples
+- `$data/demo/config/` - Route definitions and feature flags
+
+**Import Examples:**
+
+```typescript
+// ✅ PREFERRED: Using $data alias
+import { demoSidebarMenu } from "$data/demo/navigation/demo-sidebar-menu";
+import { searchIndex } from "$data/demo/search/search-index";
+
+// ✅ ALTERNATIVE: Direct path (less preferred)
+import { demoSidebarMenu } from "src/data/demo/navigation/demo-sidebar-menu";
+```
 
 **Core Interfaces**: `DemoUnit`, `DemoLesson`, `ComponentDemo` with full TypeScript support.
 

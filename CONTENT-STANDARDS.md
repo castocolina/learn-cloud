@@ -121,18 +121,19 @@ src/lib/components/content/
 - **Type Safety:** Full TypeScript coverage with interface inheritance
 - **Code Generation:** ts-morph for TypeScript AST manipulation (see [Code Block Escaping Strategy](SVELTEKIT-GUIDE.md#code-block-escaping-strategy-for-data-generation))
 
-### Data Structure in src/data/
+### Data Structure in src/data/book/
 
-Content data is stored as TypeScript files exporting properly typed objects, enabling type checking and better developer experience:
+Content data is stored as TypeScript files exporting properly typed objects, enabling type checking and better developer experience. Use the `$data` path alias for cleaner imports (`$data` → `src/data/`):
 
 ```
-src/data/
+src/data/book/
 ├── unit1/
-│   ├── overview_python_for_cloud_native_backend_development.json
-│   ├── chapter_1_1_development_environment_tooling.json
-│   ├── study_guide_1_1.json
-│   ├── quiz_1_1.json
-│   ├── exam_python_for_cloud_native_backend_development.json
+│   ├── 0_unit_python_for_cloud_native_backend_development.ts
+│   ├── 1_1_chapter_development_environment_tooling.ts
+│   ├── 1_2_chapter_containerization_basics.ts
+│   ├── 1_1_study_guide_1_1.ts
+│   ├── 1_1_quiz_1_1.ts
+│   ├── 1_1_exam_python_for_cloud_native_backend_development.ts
 │   └── ...
 ├── unit2/
 ├── content-menu.ts (navigation structure - source of truth)
@@ -558,7 +559,7 @@ The `src/data/content-menu.ts` file serves as the single source of truth for:
 
 1. **Plan**: Use `CONTENT.md` as authoritative outline
 2. **Define Types**: Create TypeScript interfaces extending BaseContent
-3. **Create Content**: Export typed objects from TypeScript files in `src/data/`
+3. **Create Content**: Export typed objects from TypeScript files in `src/data/` using `$data` alias
 4. **Implement Renderers**: Use appropriate content renderer components
 5. **Validate**: Run TypeScript checks and SvelteKit validation
 6. **Test**: Verify content displays correctly across all device sizes
@@ -566,13 +567,19 @@ The `src/data/content-menu.ts` file serves as the single source of truth for:
 #### Component Integration Workflow
 
 ```typescript
-// 1. Import content and renderer
-import { demoLesson } from '$data/demo';
+// 1. Import content and renderer using $data alias
+import { demoLesson } from '$data/demo/content';
 import LessonRenderer from '$lib/components/content/LessonRenderer.svelte';
 
 // 2. Use in SvelteKit route
 <LessonRenderer content={demoLesson} />
 ```
+
+**Path Alias Benefits:**
+
+- **Cleaner Imports**: `$data/demo/content` vs `src/data/demo/content`
+- **Refactoring Safety**: Changes to directory structure only require alias update
+- **Consistency**: Matches other project aliases (`$lib`, `$types`, `$ui`, `$config`)
 
 #### TypeScript Development Benefits
 
@@ -617,10 +624,10 @@ When creating lesson content that includes Mermaid diagram blocks, the following
 **Validation Output Example**:
 
 ```
-❌ src/data/unit1/lesson_1_2.json - Section 3, Diagram "System Architecture"
+❌ src/data/book/unit1/1_2_lesson.ts - Section 3, Diagram "System Architecture"
    Error: Parse error on line 2: Missing double quotes around node text
 
-✅ src/data/unit1/lesson_1_3.json - Section 1, Diagram "User Flow"
+✅ src/data/book/unit1/1_3_lesson.ts - Section 1, Diagram "User Flow"
    Valid diagram parsed successfully
 ```
 

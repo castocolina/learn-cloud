@@ -14,7 +14,7 @@ For all project rules, technical specifications, and coding standards, refer to 
 - **Mobile-First Design**: Always prioritize mobile experience (≤390px) before desktop
 - **shadcn-svelte Priority**: Use component library before building custom components
 - **Tailwind CSS v4**: Centralized CSS architecture in `src/app.css` with `@layer components`
-- **Data-Driven**: Consume JSON data from `src/data/` structure
+- **Data-Driven**: Consume TypeScript/JSON data from `$data/` structure (alias for `src/data/`)
 - **Validation**: Run `pnpm run format`, `pnpm run check`, and `pnpm run lint` for code quality
 
 ## Critical Rules
@@ -28,7 +28,7 @@ For all project rules, technical specifications, and coding standards, refer to 
 
 - `/src/lib/`: Reusable SvelteKit components
 - `/src/routes/`: File-based routing structure
-- `/src/data/`: JSON data sources
+- `$data/`: TypeScript/JSON data sources (alias for `/src/data/`)
 - `/src/app.css`: Centralized Tailwind CSS architecture
 
 **⚠️ Important:** This file serves as a quick reference. Always consult [CLAUDE.md](../CLAUDE.md) for complete and authoritative project guidelines.

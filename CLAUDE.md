@@ -117,12 +117,24 @@ import type { ContentType } from "$lib/types/types.js";
 
 ### Content Integration Workflow
 
-**JSON-First Approach:**
+**TypeScript Content Approach:**
 
-- **Data Structure:** All content stored as structured JSON in `src/data/`
+- **Data Structure:** All content stored as structured TypeScript files in `src/data/`
+- **Path Alias:** Use `$data` alias for cleaner imports (`$data` → `src/data/`)
 - **Type Safety:** Use TypeScript interfaces to ensure data structure consistency
 - **Content Loading:** Implement dynamic imports with proper error handling
-- **Validation:** Validate JSON structure and required fields at runtime
+- **Validation:** Validate TypeScript structure and required fields at compile time
+
+**Import Pattern Examples:**
+
+```typescript
+// ✅ PREFERRED: Using $data alias
+import { demoContent } from "$data/demo/content";
+import { navigationMenu } from "$data/demo/navigation/demo-sidebar-menu";
+
+// ✅ ALTERNATIVE: Direct path (less preferred)
+import { demoContent } from "src/data/demo/content";
+```
 
 **Component-Based Content Display:**
 
@@ -243,4 +255,4 @@ import type { ContentType } from "$lib/types/types.js";
 - **ZERO TOLERANCE POLICY:** NO TypeScript errors, NO warnings, NO unused variables (unless user-requested or ShadCN components), NO deprecated components
 - **AUTOMATED VALIDATION:** ESLint and Prettier handle code formatting and quality automatically
 - **CONTENT VALIDATION:** Use `make content-validate` for JSON structure validation when needed
-- **CONTENT-FIRST:** All new features should consume JSON data from `src/data/` structure
+- **CONTENT-FIRST:** All new features should consume TypeScript data from `src/data/` structure using `$data` alias

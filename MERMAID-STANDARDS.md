@@ -473,10 +473,10 @@ The recommended validation script should perform these operations:
 **Example Output:**
 
 ```
-❌ src/data/diagrams/auth-flow.ts:15 - Variable 'loginSequence.diagram'
+❌ src/data/book/diagrams/auth-flow.ts:15 - Variable 'loginSequence.diagram'
    Error: Parse error on line 3: Expecting 'SOLID', 'SEMI', 'NEWLINE', 'EOF', got 'INVALID'
 
-✅ src/data/diagrams/user-journey.ts:8 - Variable 'onboardingFlow.definition'
+✅ src/data/book/diagrams/user-journey.ts:8 - Variable 'onboardingFlow.definition'
    Valid diagram parsed successfully
 ```
 

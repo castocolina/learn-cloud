@@ -184,7 +184,7 @@ export interface SearchResult extends SearchableItem {
 
 ### Adding a New Searchable Item
 
-To add content to the search index, edit `src/data/demo/search/search-index.ts`:
+To add content to the search index, edit `$data/demo/search/search-index.ts` (using `$data` alias → `src/data/`):
 
 ```typescript
 {
@@ -227,7 +227,7 @@ To add content to the search index, edit `src/data/demo/search/search-index.ts`:
 
 ### Search Behavior
 
-Search configuration in `src/data/demo/search/search-index.ts`:
+Search configuration in `$data/demo/search/search-index.ts` (using `$data` alias → `src/data/`):
 
 ```typescript
 export const searchConfig = {
@@ -273,24 +273,24 @@ Results are ranked by:
 **Current Structure:**
 
 ```
-src/data/demo/navigation/demo-sidebar-menu.ts (menu)
-src/data/demo/search/search-index.ts (manual index - 2,470 lines)
+$data/demo/navigation/demo-sidebar-menu.ts (menu)
+$data/demo/search/search-index.ts (manual index - 2,470 lines)
 ```
 
 **Proposed Structure:**
 
 ```
-src/data/demo/navigation/demo-sidebar-menu.ts (menu)
-src/data/book/
+$data/demo/navigation/demo-sidebar-menu.ts (menu)
+$data/book/
   ├── unit-01/
-  │   ├── lesson-01.ts      (real content)
-  │   ├── exam-01.ts        (exam)
-  │   └── study-guide-01.ts (study guide)
+  │   ├── 01_lesson.ts      (real content)
+  │   ├── 01_exam.ts        (exam)
+  │   └── 01_study_guide.ts (study guide)
   ├── unit-02/
-  │   ├── lesson-02.ts
-  │   └── quiz-02.ts
+  │   ├── 02_lesson.ts
+  │   └── 02_quiz.ts
   └── ...
-src/data/generated/search-index.ts (auto-generated)
+$data/generated/search-index.ts (auto-generated)
 ```
 
 ## Core Questions and Answers
