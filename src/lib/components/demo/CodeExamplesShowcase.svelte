@@ -2,12 +2,8 @@
 	import { onMount } from "svelte";
 	import { Search, Filter, X, Code2, BarChart3, Tag } from "lucide-svelte";
 	import CodeBlock from "./ui/CodeBlock.svelte";
-	import type {
-		CodeExample,
-		Language,
-		Complexity
-	} from "../../../data/demo/content/code/code-examples";
-	import { codeExamples } from "../../../data/demo/content/code/code-examples";
+	import type { CodeExample, Language, Complexity } from "$data/demo/content/code/code-examples";
+	import { codeExamples } from "$data/demo/content/code/code-examples";
 
 	// Props interface for type safety
 	interface Props {

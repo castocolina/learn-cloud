@@ -1,6 +1,6 @@
 <script lang="ts">
 	import MermaidDiagram from "./MermaidDiagram.svelte";
-	import type { MermaidExample } from "../../../data/demo/content/diagrams/mermaid-examples.js";
+	import type { MermaidExample } from "$data/demo/content/diagrams/mermaid-examples.js";
 
 	interface Props {
 		diagram: MermaidExample;

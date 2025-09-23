@@ -12,8 +12,8 @@
 // =============================================================================
 
 // Import centralized types instead of defining duplicates
-import type { ContentStatus, ContentDifficulty, QuestionType } from "$lib/types";
-import { CONTENT_DIFFICULTIES, QUESTION_TYPES } from "$lib/types";
+import type { ContentStatus, ContentDifficulty, QuestionType } from "$types";
+import { CONTENT_DIFFICULTIES, QUESTION_TYPES } from "$types";
 
 /**
  * Quiz categories for topic-based organization

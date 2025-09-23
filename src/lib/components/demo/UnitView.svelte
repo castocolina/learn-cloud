@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { DifficultyBadge, ContentTypeBadge } from "$lib/components/demo";
 	import { Clock, Target, BookOpen, CheckCircle2, Users, ArrowRight } from "lucide-svelte";
-	import type { DemoUnit } from "../../../data/demo/navigation/demo-sidebar-menu.js";
+	import type { DemoUnit } from "$data/demo/navigation/demo-sidebar-menu.js";
 
 	// Props interface for type safety
 	interface Props {

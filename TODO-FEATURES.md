@@ -204,7 +204,7 @@ This unified type system is the foundation for a **single, cohesive navigation a
 
 This project requires a comprehensive architectural refactoring to create a unified, cohesive system with two critical code quality standards:
 
-1. **Path Aliases Enforcement**: Exclusive use of path aliases (e.g., `$lib/types`, `$lib`) instead of relative paths (`../`)
+1. **Path Aliases Enforcement**: Exclusive use of path aliases (e.g., `$types`, `$lib`) instead of relative paths (`../`)
 2. **Union Type-First Design**: Strict "Union Type-First" approach replacing all hard-coded string comparisons with type-safe union types optimized for SvelteKit performance (zero runtime overhead)
 
 **Implementation Details:**
@@ -223,7 +223,7 @@ This project requires a comprehensive architectural refactoring to create a unif
    ├── types.ts         // All project union types consolidated (ContentType, ChapterType, etc.)
    └── index.ts         // Centralized exports with re-exports
    ```
-4. **Path Alias Implementation**: Use existing `$lib` alias for type imports throughout codebase
+4. **Path Alias Implementation**: Use `$types` alias for cleaner type imports throughout codebase (configured in svelte.config.js)
 5. **Navigation Data Model**: Create unified interfaces that power all navigation systems:
    - Menu scaffolding and generation
    - Sidebar accordion navigation
@@ -259,9 +259,9 @@ This project requires a comprehensive architectural refactoring to create a unif
 
 **TASK 3 Scripts Requiring Updates:**
 
-- **TASK 3A**: Update `content-menu-generator.ts` to use `$lib/types` imports and unified NavigationItem interface
+- **TASK 3A**: Update `content-menu-generator.ts` to use `$types` imports and unified NavigationItem interface
 - **TASK 3B**: Update `content-scaffolding.ts` to use new union type definitions and path aliases
-- **TASK 3C**: Update `mermaid-validator.ts` to use centralized union type system via `$lib/types`
+- **TASK 3C**: Update `mermaid-validator.ts` to use centralized union type system via `$types`
 - **TASK 3D**: Update `search-indexer.ts` to use unified SearchableItem and navigation types
 - **TASK 3E** (New): Create `flatnav-generator.ts` using unified type system
 
@@ -274,14 +274,14 @@ This project requires a comprehensive architectural refactoring to create a unif
 **Documentation Updates Required:**
 
 - **CONTENT-STANDARDS.md**: Update all `types.ts` references to new `src/lib/types/` structure (SvelteKit convention)
-- **SVELTEKIT-GUIDE.md**: Update TypeScript patterns and path alias examples to use `$lib/types`
+- **SVELTEKIT-GUIDE.md**: Update TypeScript patterns and path alias examples to use `$types`
 - **SEARCH-ARCHITECTURE.md**: Update SearchableItem interface references and navigation integration
 - **CLAUDE.md**: Update TypeScript development guidelines with SvelteKit 2024 conventions
 - **All .md files**: Find and replace `src/data/types.ts` references with correct `src/lib/types/` paths
 
 **Component Integration Updates:**
 
-- All SvelteKit components importing types must use `$lib/types` path aliases
+- All SvelteKit components importing types must use `$types` path aliases
 - Search system components must use unified SearchableItem interface
 - Navigation components must use unified NavigationItem interfaces
 - Breadcrumb components must use new BreadcrumbItem types
@@ -299,13 +299,13 @@ This project requires a comprehensive architectural refactoring to create a unif
 
 1. **Immediate Dependencies**: All TASK 3 scripts must be updated with new imports and types
 2. **Documentation Synchronization**: All `.md` files must reference correct type paths
-3. **Component Migration**: All existing components must migrate to `$lib/types` imports
+3. **Component Migration**: All existing components must migrate to `$types` imports
 4. **Validation Pipeline**: Comprehensive testing of path alias resolution and type consistency
 
 **Final Validations:**
 
 - ✅ `pnpm run check` without TypeScript errors across entire codebase
-- ✅ Path alias resolution working correctly (`$lib/types`, `$lib`, `$data`)
+- ✅ Path alias resolution working correctly (`$types`, `$lib`, `$data`)
 - ✅ All TASK 3 scripts updated and functional with new type system
 - ✅ All documentation references updated to new structure
 - ✅ Union type imports working correctly with no hardcoded strings
@@ -1187,7 +1187,7 @@ Based on ChapterType union type values ("lesson", "study_guide", "quiz", "exam",
 
    ```typescript
    // ✅ CORRECT: Use union types from types.ts
-   import type { ChapterType, ContentStatus } from "$lib/types";
+   import type { ChapterType, ContentStatus } from "$types";
 
    interface Props {
    	chapterType: ChapterType; // Union type constraint

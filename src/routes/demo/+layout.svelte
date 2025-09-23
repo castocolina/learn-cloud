@@ -7,15 +7,15 @@
 		type DemoNavigationStructure,
 		type DemoUnit,
 		type DemoLesson
-	} from "../../data/demo/navigation/demo-sidebar-menu.js";
-	import { getBreadcrumbPath } from "../../data/demo/navigation/breadcrumbs.js";
-	import { visitUnit, completeLesson } from "../../lib/stores/progress.js";
-	import DemoSidebar from "../../lib/components/demo/DemoSidebar.svelte";
-	import { SidebarToggle } from "../../lib/components/demo/index.js";
-	import ThemeSwitch from "../../lib/components/ThemeSwitch.svelte";
-	import SearchModal from "../../lib/components/search/SearchModal.svelte";
-	import type { SearchResult } from "../../lib/types/search.js";
-	import { SETTINGS } from "../../config/settings.js";
+	} from "$data/demo/navigation/demo-sidebar-menu.js";
+	import { getBreadcrumbPath } from "$data/demo/navigation/breadcrumbs.js";
+	import { visitUnit, completeLesson } from "$lib/stores/progress.js";
+	import DemoSidebar from "$lib/components/demo/DemoSidebar.svelte";
+	import { SidebarToggle } from "$lib/components/demo/index.js";
+	import ThemeSwitch from "$lib/components/ThemeSwitch.svelte";
+	import SearchModal from "$lib/components/search/SearchModal.svelte";
+	import type { SearchResult } from "$lib/types/search.js";
+	import { SETTINGS } from "$config/settings.js";
 
 	// Layout children prop
 	let { children } = $props();

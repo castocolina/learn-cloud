@@ -14,7 +14,7 @@
  */
 
 // Import centralized types instead of duplicating
-import type { ContentType, ContentDifficulty } from "$lib/types";
+import type { ContentType, ContentDifficulty } from "$types";
 
 /**
  * Legacy content type mapping for demo compatibility

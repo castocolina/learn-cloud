@@ -8,12 +8,12 @@
 	import FlipCard from "./FlipCard.svelte";
 	import FlipCardShowcase from "./FlipCardShowcase.svelte";
 	import QuizRenderer from "./quiz/QuizRenderer.svelte";
-	import { getRandomDiagram } from "../../../data/demo/content/diagrams/mermaid-examples.js";
-	import { getRandomCodeExample } from "../../../data/demo/content/code/code-examples-utils.js";
-	import { getRandomFlipCards } from "../../../data/demo/content/flipcards/concept-cards.js";
-	import { allQuizzes, type Quiz } from "../../../data/demo/content/quizzes/quiz-examples.js";
+	import { getRandomDiagram } from "$data/demo/content/diagrams/mermaid-examples.js";
+	import { getRandomCodeExample } from "$data/demo/content/code/code-examples-utils.js";
+	import { getRandomFlipCards } from "$data/demo/content/flipcards/concept-cards.js";
+	import { allQuizzes, type Quiz } from "$data/demo/content/quizzes/quiz-examples.js";
 	import { Clock, Target, BookOpen, CheckCircle2, ExternalLink } from "lucide-svelte";
-	import type { DemoLesson } from "../../../data/demo/navigation/demo-sidebar-menu.js";
+	import type { DemoLesson } from "$data/demo/navigation/demo-sidebar-menu.js";
 
 	// Props interface for type safety
 	interface Props {

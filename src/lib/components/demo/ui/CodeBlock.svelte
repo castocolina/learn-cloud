@@ -47,7 +47,7 @@
 	 */
 	import { onMount } from "svelte";
 	import { Copy, Check, Eye, EyeOff } from "lucide-svelte";
-	import type { CodeExample, Language } from "../../../../data/demo/content/code/code-examples";
+	import type { CodeExample, Language } from "$data/demo/content/code/code-examples";
 	import { createHighlighter } from "shiki";
 
 	// Props interface for type safety

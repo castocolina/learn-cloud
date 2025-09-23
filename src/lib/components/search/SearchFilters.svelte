@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { createEventDispatcher } from "svelte";
-	import type { SearchFilters, ContentType } from "$lib/types";
-	import { searchConfig } from "../../../data/demo/search/search-index.js";
-	import { searchResultTemplates } from "../../../data/demo/search/search-templates.js";
+	import type { SearchFilters, ContentType } from "$types";
+	import { searchConfig } from "$data/demo/search/search-index.js";
+	import { searchResultTemplates } from "$data/demo/search/search-templates.js";
 	import FilterIcon from "lucide-svelte/icons/filter";
 	import XIcon from "lucide-svelte/icons/x";
 	import ChevronDownIcon from "lucide-svelte/icons/chevron-down";

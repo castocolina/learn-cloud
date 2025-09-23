@@ -21,7 +21,7 @@ import {
 	demoSidebarMenu,
 	type DemoLesson,
 	type DemoUnit
-} from "../../data/demo/navigation/demo-sidebar-menu.js";
+} from "$data/demo/navigation/demo-sidebar-menu.js";
 
 export interface FlattenedLesson {
 	id: string;

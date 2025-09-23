@@ -39,66 +39,146 @@ User Input → SearchBox → SearchEngine → SearchIndex → SearchResults → 
 
 ## Current Data Structure
 
+> **🎯 CRITICAL**: All search interfaces are now part of the unified TypeScript architecture in `src/lib/types/`. This section documents the current implementation which integrates with the centralized type system.
+
 ### SearchableItem Interface
 
-The core data structure for all searchable content:
+**Import Pattern**: Always import from unified entry point:
 
 ```typescript
-interface SearchableItem {
+// ✅ PREFERRED: Using $types alias
+import type { SearchableItem, ContentType, SearchNavigationMetadata } from "$types";
+
+// ✅ ALTERNATIVE: Using $lib/types
+import type { SearchableItem, ContentType, SearchNavigationMetadata } from "$lib/types";
+```
+
+**Core Data Structure** (from `src/lib/types/search.ts`):
+
+```typescript
+export interface SearchableItem {
 	id: string; // Unique identifier
 	title: string; // Display title
 	description: string; // Brief description
 	content: string; // Full searchable content
-	type: ContentType; // Type of content (component, lesson, etc.)
-	category: string; // Content category for filtering
+	type: ContentType; // Union type from centralized system
+	nav: SearchNavigationMetadata; // Integrated navigation metadata
 	keywords: string[]; // Search keywords
 	tags: string[]; // Content tags
-	nav: {
-		// Navigation metadata
-		unitId?: string; // Associated unit ID
-		lessonId?: string; // Associated lesson ID
-		path: string; // Full navigation path
-	};
 	weight: number; // Search ranking weight
+	category?: SearchCategory; // Optional category filtering
 }
 ```
 
-### Navigation Object
+### Navigation Integration
 
-The `nav` object provides structured navigation information:
+**SearchNavigationMetadata** (integrated with `NavigationItem` system):
 
-- **unitId**: Optional unit identifier for unit-based content
-- **lessonId**: Optional lesson identifier for lesson-based content
-- **path**: Complete navigation path (e.g., `#/demo/unit/ui-components/lesson/button-primary`)
+```typescript
+export interface SearchNavigationMetadata {
+	unitId?: string; // Unit identifier
+	chapterId?: string; // Chapter identifier
+	path: string; // Navigation path
+	breadcrumbs?: BreadcrumbItem[]; // Integrated breadcrumb support
+	navigationItem?: NavigationItem; // Full navigation context
+}
+```
 
-### Content Types
+### Content Types (Union Type System)
 
-Supported content types:
+**From `src/lib/types/types.ts`** - Performance-optimized union types:
 
-- `component` - UI components and interactive elements
-- `lesson` - Educational content and tutorials
-- `code` - Code examples and implementations
-- `diagram` - Visual diagrams and flowcharts
-- `interactive` - Interactive tools and playgrounds
+```typescript
+export type ContentType =
+	| "component" // UI components and interactive elements
+	| "lesson" // Educational content and tutorials
+	| "code" // Code examples and implementations
+	| "diagram" // Visual diagrams and flowcharts
+	| "interactive" // Interactive tools and playgrounds
+	| "text" // Text-based content
+	| "mixed"; // Mixed content types
+
+// Constant array for iteration (replaces Object.values())
+export const CONTENT_TYPES: ContentType[] = [
+	"component",
+	"lesson",
+	"code",
+	"diagram",
+	"interactive",
+	"text",
+	"mixed"
+];
+```
+
+**SearchCategory** (from `src/lib/types/search.ts`):
+
+```typescript
+export type SearchCategory =
+	| "content"
+	| "components"
+	| "examples"
+	| "documentation"
+	| "interactive";
+```
 
 ## Navigation Integration
 
-### Hash-Based Routing
+> **🔗 UNIFIED ARCHITECTURE**: Search system fully integrates with the centralized navigation architecture from `src/lib/types/navigation.ts`.
 
-The search system integrates with the application's hash-based navigation system:
+### Hash-Based Routing with Unified Navigation
 
-- **Format**: `#/demo/unit/{unitId}/lesson/{lessonId}`
-- **Components**: `#/demo/unit/{unitId}/lesson/{componentId}`
+**Navigation Path Structure** (from `NavigationItem` system):
+
+- **Lessons**: `#/demo/unit/{unitId}/lesson/{lessonId}`
+- **Components**: `#/demo/unit/{unitId}/component/{componentId}`
+- **Overview**: `#/demo/unit/{unitId}/overview`
 - **External**: Full URLs for external resources
 
-### Navigation Flow
+### Integrated Navigation Flow
 
-1. User clicks search result
-2. `handleSearchSelect` extracts `result.nav.path`
-3. If path starts with `#`, update `window.location.hash`
-4. Hash change triggers navigation update
-5. Layout component parses hash and updates selected unit/lesson
-6. Content is displayed based on navigation state
+```typescript
+// Using unified navigation types with $types alias
+import type { NavigationEvent, RouteInfo, NavigationContext } from "$types";
+
+// 1. Search result selection
+function handleSearchSelect(result: SearchResult): void {
+	const navigationEvent: NavigationEvent = {
+		type: "navigate",
+		target: result.nav.navigationItem || result.nav.path,
+		source: "search",
+		timestamp: new Date()
+	};
+
+	// 2. Integrated with unified navigation system
+	unifiedNavigation.navigate(navigationEvent);
+}
+```
+
+**📋 Available Import Patterns**:
+
+```typescript
+// ✅ PREFERRED: Using $types alias (cleaner, more specific)
+import type { SearchResult, ContentType, SearchCategory } from "$types";
+
+// ✅ ALTERNATIVE: Using $lib/types (also valid)
+import type { SearchResult, ContentType } from "$lib/types";
+
+// ❌ NEVER: Direct file imports (breaks refactoring safety)
+import type { SearchResult } from "$lib/types/search.js";
+```
+
+### Breadcrumb Integration
+
+Search results now include full breadcrumb support:
+
+```typescript
+// Search results include breadcrumb metadata
+export interface SearchResult extends SearchableItem {
+	breadcrumbs?: BreadcrumbItem[]; // From unified navigation
+	highlightedContent?: string; // Search highlighting
+	relevanceScore: number; // Search ranking
+}
+```
 
 ## Current Content Management
 

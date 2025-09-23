@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { createEventDispatcher } from "svelte";
-	import type { SearchResult } from "$lib/types";
+	import type { SearchResult } from "$types";
 	import {
 		formatSearchResult,
 		getEmptyStateForContext
-	} from "../../../data/demo/search/search-templates.js";
-	import { defaultSearchEngine } from "../../../data/demo/search/search-algorithms.js";
+	} from "$data/demo/search/search-templates.js";
+	import { defaultSearchEngine } from "$data/demo/search/search-algorithms.js";
 	import ExternalLinkIcon from "lucide-svelte/icons/external-link";
 	import HashIcon from "lucide-svelte/icons/hash";
 

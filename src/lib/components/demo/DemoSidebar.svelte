@@ -12,7 +12,7 @@
 		type DemoUnit,
 		type DemoLesson,
 		totalLessons
-	} from "../../../data/demo/navigation/demo-sidebar-menu.js";
+	} from "$data/demo/navigation/demo-sidebar-menu.js";
 	import {
 		progressStore,
 		visitUnit,
@@ -20,8 +20,8 @@
 		calculateProgressStats,
 		clearProgress,
 		isLessonCompleted
-	} from "../../stores/progress.js";
-	import { useSidebar } from "../../stores/sidebar.js";
+	} from "$lib/stores/progress.js";
+	import { useSidebar } from "$lib/stores/sidebar.js";
 
 	// Props interface for type safety
 	interface Props {

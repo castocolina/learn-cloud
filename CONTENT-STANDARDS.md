@@ -23,50 +23,78 @@ This document contains the content creation workflows and quality assurance stan
 
 The platform uses a modern component-based architecture with TypeScript interface inheritance for type safety and code reusability.
 
-#### TypeScript Interface Hierarchy
+#### TypeScript Interface Hierarchy (Unified Architecture)
 
-All content types inherit from a base interface with content lifecycle tracking:
+> **🎯 CRITICAL**: All content types use the unified TypeScript architecture from `src/lib/types/`. Import all content interfaces from the centralized system:
 
 ```typescript
-// Content lifecycle status tracking
-export enum ContentStatus {
-	SCAFFOLD = "scaffold",
-	DRAFT = "draft",
-	FINAL = "final"
-}
+// ✅ ALWAYS: Import from unified entry point using $types alias
+import type {
+	ContentStatus,
+	ChapterType,
+	BaseContent,
+	LessonContent,
+	QuizContent,
+	StudyGuideContent,
+	ContentSection,
+	ContentBlock
+} from "$types";
 
-// Base interface with common properties and status tracking
+// ✅ ALTERNATIVE: Using $lib/types (also valid)
+import type { ContentStatus } from "$lib/types";
+```
+
+**Content Type System** (from `src/lib/types/types.ts`):
+
+```typescript
+// Union types for zero runtime overhead (SvelteKit performance optimization)
+export type ContentStatus = "scaffold" | "draft" | "final";
+export type ChapterType = "lesson" | "study_guide" | "quiz" | "exam" | "project";
+
+// Constants for iteration (replaces Object.values() for union types)
+export const CONTENT_STATUSES: ContentStatus[] = ["scaffold", "draft", "final"];
+export const CHAPTER_TYPES: ChapterType[] = ["lesson", "study_guide", "quiz", "exam", "project"];
+```
+
+**Content Interface Structure** (from `src/lib/types/content.ts`):
+
+```typescript
+// Base interface with unified types
 export interface BaseContent {
 	title: string;
 	summary: string;
-	status?: ContentStatus; // Track content maturity from scaffold to final
+	status?: ContentStatus; // Union type for lifecycle tracking
+	id?: string;
+	unitId?: string;
+	chapterNumber?: string;
+	metadata?: ContentMetadata; // Rich metadata system
 }
 
-// Consolidated section interface for all content types
-export interface ContentSection {
-	title?: string;
-	content: ContentBlock[];
-}
-
-// Specific content types extending the base
+// Educational content types with rich text integration
 export interface LessonContent extends BaseContent {
 	type: "lesson";
-	sections: ContentSection[]; // Uses consolidated content section system
+	sections: ContentSection[]; // Rich content system
 	prerequisites?: string[];
-	estimatedTime?: number;
 	learningObjectives?: string[];
+	assessment?: QuizContent; // Optional integrated assessment
 }
 
 export interface QuizContent extends BaseContent {
 	type: "quiz";
-	quiz: Quiz;
+	quiz: Quiz; // Comprehensive quiz system
+	configuration?: QuizConfiguration; // Interactive quiz settings
 }
 
 export interface StudyGuideContent extends BaseContent {
 	type: "study_guide";
-	studyGuide: StudyGuide;
+	studyGuide: StudyGuide; // Flashcard and review system
+	interactiveElements?: FlipCard[]; // Interactive study components
 }
 ```
+
+**🔗 Integration with Rich Text System**:
+
+Content blocks support secure rich text rendering through the unified system (see `src/lib/types/rich-text.ts`).
 
 #### Component Structure
 
@@ -222,84 +250,17 @@ export type ContentStatus = "scaffold" | "draft" | "final";
 - **Quality Gates**: Each transition should meet specific quality criteria
 - **Rollback**: Content can be moved back to previous status if issues are discovered
 
-### TypeScript Union Type Utilization for Type Safety and Performance
+### Union Type Integration
 
-To enhance type safety, maintainability, and SvelteKit performance optimization, the platform now uses TypeScript union types for all predefined value sets. This approach eliminates ambiguities, reduces errors, provides better IntelliSense support, and achieves zero runtime overhead.
+> **📋 Complete Union Type Documentation**: See the TypeScript Interface Hierarchy section above and [SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md) for comprehensive union type patterns, performance optimizations, and refactoring workflows.
 
-#### ContentStatus Union Type
+**Key Union Types for Content**:
 
-```typescript
-/**
- * Content lifecycle status tracking for content maturity management
- */
-export type ContentStatus = "scaffold" | "draft" | "final";
+- `ContentStatus`: "scaffold" | "draft" | "final"
+- `ChapterType`: "lesson" | "study_guide" | "quiz" | "exam" | "project"
+- `ContentDifficulty`: "beginner" | "intermediate" | "advanced" | "expert"
 
-// Constant array for iteration (replaces Object.values() for union types)
-export const CONTENT_STATUSES: ContentStatus[] = ["scaffold", "draft", "final"];
-```
-
-**Usage in Interfaces:**
-
-```typescript
-export interface BaseContent {
-	title: string;
-	summary: string;
-	status?: ContentStatus; // Type-safe status tracking with union types
-}
-```
-
-#### ContentDifficulty Union Type
-
-```typescript
-/**
- * Content difficulty levels for educational content classification
- */
-export type ContentDifficulty = "beginner" | "intermediate" | "advanced" | "expert";
-
-// Constant array for iteration
-export const CONTENT_DIFFICULTIES: ContentDifficulty[] = ["beginner", "intermediate", "advanced", "expert"];
-```
-
-**Usage in Interfaces:**
-
-```typescript
-export interface ProjectContent extends BaseContent {
-	difficulty?: ContentDifficulty; // Type-safe difficulty classification with union types
-}
-```
-
-#### MermaidDirection Union Type
-
-```typescript
-/**
- * Mermaid diagram direction options for visual flow representation
- */
-export type MermaidDirection = "TB" | "LR" | "BT" | "RL";
-
-// Constant array for iteration
-export const MERMAID_DIRECTIONS: MermaidDirection[] = ["TB", "LR", "BT", "RL"];
-```
-
-**Usage in Interfaces:**
-
-```typescript
-export interface DiagramBlock {
-	type: "diagram";
-	diagramType: "mermaid" | "flowchart" | "sequence" | "gantt" | "gitgraph";
-	definition: string;
-	direction?: MermaidDirection; // Type-safe diagram orientation with union types
-}
-```
-
-#### Benefits of Union Type-Based Type Safety
-
-- **Compile-time Validation**: Catch invalid values at compile time with zero runtime overhead
-- **Performance Optimization**: Zero runtime overhead compared to enums (SvelteKit optimization)
-- **IntelliSense Support**: Auto-completion for valid union type values
-- **Bundle Size**: Smaller JavaScript bundles with string literals
-- **Refactoring Safety**: Confident code changes with type checking
-- **Documentation**: Self-documenting code with clear value meanings
-- **Consistency**: Standardized values across the entire codebase
+All types use zero runtime overhead and include constant arrays for iteration.
 
 #### Implementation Example
 

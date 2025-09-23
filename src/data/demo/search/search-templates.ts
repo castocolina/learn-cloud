@@ -1,5 +1,4 @@
-import type { ContentType } from "$lib/types";
-import type { SearchResult } from "$lib/types";
+import type { ContentType, SearchResult } from "$types";
 
 export interface SearchResultTemplate {
 	type: ContentType;

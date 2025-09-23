@@ -364,135 +364,131 @@ The `lib` directory serves as the component library and utility hub:
 </script>
 ```
 
-#### Union Type-First TypeScript Patterns
+#### Unified TypeScript Architecture (`src/lib/types/`)
 
-**Critical Architecture Pattern**: Use TypeScript union types as the single source of truth for all string values optimized for SvelteKit performance (zero runtime overhead). Never use hardcoded strings in components, types, or logic.
+**🎯 CRITICAL**: The `src/lib/types/` directory is the **architectural foundation** of the entire project. All types must be managed through this centralized system for refactoring safety and scalability.
 
-**Content Type System**:
+**📁 Type System Structure**:
 
-```typescript
-// src/lib/types/types.ts - Core type system with union types
-
-export type ContentStatus = "scaffold" | "draft" | "final";
-
-export type ChapterType = "lesson" | "study_guide" | "quiz" | "exam" | "project";
-
-export type ContentSection = "introduction" | "theory" | "practice" | "assessment" | "summary";
-
-export type ProgressStatus = "not_started" | "in_progress" | "completed" | "review";
-
-// Constant arrays for iteration (replaces Object.values() for union types)
-export const CONTENT_STATUSES: ContentStatus[] = ["scaffold", "draft", "final"];
-export const CHAPTER_TYPES: ChapterType[] = ["lesson", "study_guide", "quiz", "exam", "project"];
-export const CONTENT_SECTIONS: ContentSection[] = ["introduction", "theory", "practice", "assessment", "summary"];
-export const PROGRESS_STATUSES: ProgressStatus[] = ["not_started", "in_progress", "completed", "review"];
-
-// Base interfaces using union types
-export interface ContentMetadata {
-	id: string;
-	title: string;
-	status: ContentStatus;
-	type: ChapterType;
-	created: string;
-	lastModified: string;
-	author: string;
-	tags: string[];
-}
-
-export interface Section {
-	id: string;
-	title: string;
-	type: ContentSection;
-	content: string;
-	order: number;
-}
-
-export interface LessonContent {
-	metadata: ContentMetadata;
-	sections: Section[];
-	prerequisites?: string[];
-	learningObjectives: string[];
-}
-
-export interface QuizContent extends LessonContent {
-	questions: Question[];
-	timeLimit?: number;
-	passingScore: number;
-}
-
-export interface ProgressTracking {
-	contentId: string;
-	status: ProgressStatus;
-	completedSections: string[];
-	score?: number;
-	timeSpent: number;
-	lastAccessed: string;
-}
+```
+src/lib/types/
+├── index.ts          # 🎯 Single entry point (ALWAYS import from here)
+├── types.ts          # 🔧 Core union types (base system)
+├── navigation.ts     # 🧭 Complete navigation architecture
+├── content.ts        # 📚 Educational content definitions
+├── search.ts         # 🔍 Advanced search system
+├── interactive.ts    # 🎮 Interactive components
+├── educational.ts    # 🎓 Educational resources
+├── learning.ts       # 📊 Analytics & progress tracking
+└── rich-text.ts      # ✨ Secure rich text system
 ```
 
-**Enum-Based Component Props**:
+**🛤️ SvelteKit Path Aliases** (configured in `svelte.config.js`):
 
 ```typescript
-// Component implementation using enum constraints
+// ✅ PREFERRED: Use dedicated aliases for clean imports
+import type { ContentType } from "$types"; // → src/lib/types
+import { Button } from "$lib/components/ui"; // → src/lib/components/ui
+import { config } from "$config"; // → src/config
+import { demoData } from "$data"; // → src/data
+
+// ✅ ALTERNATIVE: Standard SvelteKit aliases
+import type { ContentType } from "$lib/types"; // → src/lib/types
+import { utilities } from "$lib/utils"; // → src/lib/utils
+```
+
+**🚀 Critical Import Pattern**:
+
+```typescript
+// ✅ ALWAYS: Import from unified entry point using $types alias
+import type { ContentType, NavigationItem, QuizContent, RichParagraph } from "$types";
+
+// ✅ ALTERNATIVE: Using $lib/types (also valid)
+import type { ContentType } from "$lib/types";
+
+// ❌ NEVER: Direct file imports (breaks refactoring)
+import type { ContentType } from "$lib/types/types.js";
+import type { NavigationItem } from "$lib/types/navigation.js";
+```
+
+**🏗️ Union Type-First Architecture**:
+
+```typescript
+// Performance-optimized union types (zero runtime overhead)
+export type ContentStatus = "scaffold" | "draft" | "final";
+export type ChapterType = "lesson" | "study_guide" | "quiz";
+
+// Constants for iteration (see CONTENT-STANDARDS.md for complete definitions)
+export const CONTENT_STATUSES: ContentStatus[] = ["scaffold", "draft", "final"];
+```
+
+**🔗 Domain Integration**: See CONTENT-STANDARDS.md and SEARCH-ARCHITECTURE.md for complete interfaces.
+
+**🛠️ Refactoring Steps**:
+
+1. Add union type in `types.ts`
+2. Create interface in domain file
+3. Export through `index.ts`
+4. Import from `$lib/types`
+
+**🔒 Type Safety**: Built-in type guards available for runtime validation.
+
+**📋 REFACTORING BEST PRACTICES**:
+
+- **Extend, Don't Modify**: Use `extends` for new features (maintains compatibility)
+- **Domain Separation**: Group types by domain (navigation, content, search, interactive)
+- **Union Types > Enums**: Zero runtime overhead for SvelteKit performance
+- **Constant Arrays**: Use const arrays for iteration instead of `Object.values()`
+
+**🚨 CRITICAL REFACTORING RULES**:
+
+1. **Always Import from Index**: `import type {} from '$types'` or `'$lib/types'` only
+2. **Extend, Don't Replace**: Use `extends` to maintain compatibility
+3. **Union Types First**: Zero runtime overhead for SvelteKit performance
+4. **Type Guards Required**: Runtime validation for complex interfaces
+
+**🔧 REFACTORING WORKFLOW**:
+
+**Before**: `pnpm run check && pnpm run lint && pnpm run format`
+**During**: Update types.ts → domain files → index.ts → update imports to use `$types`
+**After**: Validate with mandatory cycle above
+
+**📄 Documentation Updates**: Update SVELTEKIT-GUIDE.md, SEARCH-ARCHITECTURE.md, CONTENT-STANDARDS.md as needed.
+
+**🎯 CRITICAL INTEGRATION NOTES**:
+
+- **Search System**: All search interfaces must extend from `src/lib/types/search.ts` (see SEARCH-ARCHITECTURE.md)
+- **Navigation**: All navigation components use `src/lib/types/navigation.ts`
+- **Content**: Educational content follows `src/lib/types/content.ts` patterns (see CONTENT-STANDARDS.md)
+- **Interactive**: Quiz/interactive elements use `src/lib/types/interactive.ts` (see CONTENT-STANDARDS.md)
+
+**Component Implementation Example**:
+
+```typescript
+// Minimal component example with $types alias
 <script lang="ts">
-  import { ContentStatus, ChapterType } from '$data/types.js';
-  import type { LessonContent } from '$data/types.js';
+  import type { NavigationItem, ComponentState } from '$types';
 
   interface Props {
-    content: LessonContent;
-    onComplete?: (status: ContentStatus) => void;
-    displayMode?: ChapterType;
+    navItem: NavigationItem;
+    onStateChange?: (state: ComponentState) => void;
   }
 
-  let { content, onComplete, displayMode = "lesson" }: Props = $props();
+  let { navItem, onStateChange }: Props = $props();
 
-  // Type-safe status updates using union types
-  function updateStatus(newStatus: ContentStatus) {
-    onComplete?.(newStatus);
+  function updateState(newState: ComponentState) {
+    onStateChange?.(newState);
   }
-
-  // Conditional rendering based on union type values
-  let isQuizMode = $derived(displayMode === "quiz");
-  let isStudyMode = $derived(displayMode === "study_guide");
 </script>
 ```
 
-**Union Type-Based Routing and Navigation**:
+**Key Benefits of Unified Type Architecture**:
 
-```typescript
-// src/lib/utils/routing.ts
-export type AppRoute = "/" | "/units" | "/lessons" | "/quizzes" | "/progress" | "/settings";
-
-export type LessonRoute = "overview" | "content" | "practice" | "assessment";
-
-// Constant arrays for iteration
-export const APP_ROUTES: AppRoute[] = ["/", "/units", "/lessons", "/quizzes", "/progress", "/settings"];
-export const LESSON_ROUTES: LessonRoute[] = ["overview", "content", "practice", "assessment"];
-
-// Type-safe URL generation
-export function generateLessonUrl(unitId: string, lessonId: string, section: LessonRoute): string {
-  return `/lessons/${unitId}/${lessonId}#${section}`;
-}
-
-// Component usage
-<script lang="ts">
-  import type { AppRoute, LessonRoute } from '$lib/utils/routing.js';
-
-  let currentRoute = $derived("/lessons" as AppRoute);
-  let currentSection = $derived("content" as LessonRoute);
-</script>
-```
-
-**Benefits of Union Type-First Approach**:
-
-- **Type Safety**: Compile-time validation of all string values with zero runtime overhead
-- **Performance**: Zero runtime overhead compared to enums (SvelteKit optimization)
-- **Refactoring**: Easy to rename values across entire codebase
-- **Autocomplete**: IDE suggestions for all valid options
-- **Consistency**: Single source of truth prevents typos
-- **Bundle Size**: Smaller JavaScript bundles with string literals
-- **Documentation**: Union types serve as living documentation
-- **Validation**: Runtime validation using constant arrays
+- **Zero Runtime Overhead**: Union types compile away completely in SvelteKit
+- **Refactoring Safety**: Type-safe renames across entire codebase
+- **Single Source of Truth**: Eliminates hardcoded strings and duplicated types
+- **IDE Integration**: Full autocomplete and validation support
+- **Performance**: Smaller bundle size than enum-based approaches
 
 ### **Svelte 5 Reactive Collections: SvelteMap and SvelteSet**
 

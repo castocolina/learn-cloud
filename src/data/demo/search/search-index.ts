@@ -1,6 +1,6 @@
-import type { ContentType } from "$lib/types";
-import { CONTENT_TYPES } from "$lib/types";
-import type { SearchableItem, SearchCategory } from "$lib/types";
+import type { ContentType } from "$types";
+import { CONTENT_TYPES } from "$types";
+import type { SearchableItem, SearchCategory } from "$types";
 
 export interface SearchConfiguration {
 	debounceMs: number;

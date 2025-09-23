@@ -5,14 +5,14 @@
 		FlipCard as FlipCardType,
 		FlipCardCategory,
 		FlipCardComplexity
-	} from "../../../data/demo/content/flipcards/concept-cards.js";
+	} from "$data/demo/content/flipcards/concept-cards.js";
 	import {
 		conceptCards,
 		getFlipCardsByCategory,
 		getFlipCardsByComplexity,
 		searchFlipCards,
 		getFlipCardStats
-	} from "../../../data/demo/content/flipcards/concept-cards.js";
+	} from "$data/demo/content/flipcards/concept-cards.js";
 
 	// Props interface
 	interface Props {

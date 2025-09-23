@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { DemoContentType } from "../../../../data/demo/navigation/demo-sidebar-menu.js";
+	import { DemoContentType } from "$data/demo/navigation/demo-sidebar-menu.js";
 
 	interface Props {
 		/** Content type to display */

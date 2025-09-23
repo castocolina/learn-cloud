@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { DemoDifficulty } from "../../../../data/demo/navigation/demo-sidebar-menu.js";
+	import { DemoDifficulty } from "$data/demo/navigation/demo-sidebar-menu.js";
 
 	interface Props {
 		/** Difficulty level to display */

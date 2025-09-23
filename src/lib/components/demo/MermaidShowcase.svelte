@@ -9,7 +9,7 @@
 		type MermaidDiagramType,
 		type ComplexityLevel,
 		type DiagramCategory
-	} from "../../../data/demo/content/diagrams/mermaid-examples.js";
+	} from "$data/demo/content/diagrams/mermaid-examples.js";
 
 	interface Props {
 		initialFilter?: string;

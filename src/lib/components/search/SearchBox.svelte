@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { createEventDispatcher } from "svelte";
-	import type { SearchResult, SearchFilters, ContentType } from "$lib/types";
-	import { searchConfig, getSearchableContent } from "../../../data/demo/search/search-index.js";
+	import type { SearchResult, SearchFilters, ContentType } from "$types";
+	import { searchConfig, getSearchableContent } from "$data/demo/search/search-index.js";
 	import {
 		defaultSearchEngine,
 		getSearchSuggestions
-	} from "../../../data/demo/search/search-algorithms.js";
+	} from "$data/demo/search/search-algorithms.js";
 	import {
 		formatSearchResult,
 		getEmptyStateForContext
-	} from "../../../data/demo/search/search-templates.js";
+	} from "$data/demo/search/search-templates.js";
 	import SearchIcon from "lucide-svelte/icons/search";
 	import XIcon from "lucide-svelte/icons/x";
 	import LoaderIcon from "lucide-svelte/icons/loader-2";

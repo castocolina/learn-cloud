@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from "svelte";
 	import { fly, fade } from "svelte/transition";
-	import type { SearchResult, SearchFilters } from "$lib/types";
+	import type { SearchResult, SearchFilters } from "$types";
 	import SearchBox from "./SearchBox.svelte";
 	import SearchFiltersComponent from "./SearchFilters.svelte";
 	import SearchResults from "./SearchResults.svelte";

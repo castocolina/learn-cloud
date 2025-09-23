@@ -4,7 +4,7 @@ import type {
 	SearchFilters,
 	SearchOptions
 } from "$lib/types/search.js";
-import type { ContentType } from "$lib/types";
+import type { ContentType } from "$types";
 import { searchConfig, highlightSearchTerms } from "./search-index.js";
 
 export interface RankingWeights {

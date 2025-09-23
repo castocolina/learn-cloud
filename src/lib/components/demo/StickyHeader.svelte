@@ -22,7 +22,7 @@
 		type BreadcrumbConfig,
 		type BreadcrumbPath,
 		type BreadcrumbIcon
-	} from "../../../data/demo/navigation/breadcrumbs.js";
+	} from "$data/demo/navigation/breadcrumbs.js";
 
 	// Props for the sticky header component
 	interface Props {

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { demoSidebarMenu } from "../../data/demo/navigation/demo-sidebar-menu.js";
+	import { demoSidebarMenu } from "$data/demo/navigation/demo-sidebar-menu.js";
 	import {
 		DemoSidebar,
 		WelcomeView,
@@ -8,13 +8,13 @@
 		FloatingNav
 	} from "$lib/components/demo";
 	import { getContext, onMount } from "svelte";
-	import { visitUnit, completeLesson } from "../../lib/stores/progress.js";
-	import { useSidebar } from "../../lib/stores/sidebar.js";
+	import { visitUnit, completeLesson } from "$lib/stores/progress.js";
+	import { useSidebar } from "$lib/stores/sidebar.js";
 	import type {
 		DemoUnit,
 		DemoLesson,
 		DemoNavigationStructure
-	} from "../../data/demo/navigation/demo-sidebar-menu.js";
+	} from "$data/demo/navigation/demo-sidebar-menu.js";
 
 	// Context interface for layout navigation
 	interface LayoutNavigationContext {

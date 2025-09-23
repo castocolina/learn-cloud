@@ -7,7 +7,7 @@
 
 import { writable, derived } from "svelte/store";
 import { browser } from "$app/environment";
-import { SETTINGS } from "../../config/settings.js";
+import { SETTINGS } from "$config/settings.js";
 
 // Sidebar state interface
 export interface SidebarState {

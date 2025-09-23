@@ -7,12 +7,12 @@
 		FlipCardProgress,
 		FlipCardAnimation,
 		FlipCardInteraction
-	} from "../../../data/demo/content/flipcards/concept-cards.js";
+	} from "$data/demo/content/flipcards/concept-cards.js";
 	import {
 		defaultFlipCardAnimation,
 		defaultFlipCardInteraction,
 		defaultFlipCardProgress
-	} from "../../../data/demo/content/flipcards/concept-cards.js";
+	} from "$data/demo/content/flipcards/concept-cards.js";
 
 	// Props interface for type safety
 	interface Props {

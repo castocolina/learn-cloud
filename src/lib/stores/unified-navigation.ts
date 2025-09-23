@@ -16,7 +16,7 @@ import {
 	type DemoLesson,
 	type DemoUnit,
 	DemoContentType
-} from "../../data/demo/navigation/demo-sidebar-menu.js";
+} from "$data/demo/navigation/demo-sidebar-menu.js";
 
 /**
  * Enhanced lesson interface with navigation metadata

@@ -96,10 +96,24 @@ Act as a world-class, expert educator specializing in Information Technology (IT
 **Agent Workflow Standards:**
 
 - **TypeScript First:** All components must use TypeScript with proper interfaces
+- **Unified Type System:** Always import types from `$types` alias (centralized architecture)
 - **Mobile-First:** Always design and test mobile experience first
 - **shadcn-svelte Priority:** Check component library before building custom components
 
-> **📋 Detailed Technical Specifications:** See [SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md) for comprehensive file structure, component development standards, and data loading patterns.
+**Critical Type Import Pattern:**
+
+```typescript
+// ✅ PREFERRED: Use $types alias for cleaner imports
+import type { ContentType, NavigationItem } from "$types";
+
+// ✅ ALTERNATIVE: Using $lib/types (also valid)
+import type { ContentType } from "$lib/types";
+
+// ❌ NEVER: Direct file imports
+import type { ContentType } from "$lib/types/types.js";
+```
+
+> **📋 Detailed Technical Specifications:** See [SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md) for comprehensive file structure, component development standards, and unified TypeScript architecture.
 
 ### Content Integration Workflow
 
