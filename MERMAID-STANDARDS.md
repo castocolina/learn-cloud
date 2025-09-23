@@ -539,6 +539,7 @@ test("debug mode logs rendering errors", async () => {
 pnpm run dev    # Check rendering in browser console
 pnpm run test   # Run component tests including error scenarios
 pnpm run check  # TypeScript validation
+pnpm run lint   # Linting checks
 ```
 
 ---

@@ -1137,6 +1137,6 @@ Before considering any implementation complete, verify:
 3. **Progress Accuracy:** Progress bars reflect actual completion state
 4. **Search Integration:** Search works across all content types
 5. **Performance:** Fast loading and smooth interactions
-6. **TypeScript Validation:** All code passes `pnpm run check` without errors
+6. **TypeScript Validation:** All code passes `pnpm run check`, `pnpm run lint` without errors
 7. **Component Quality:** Proper SvelteKit component structure and TypeScript interfaces
 8. **Build Success:** `pnpm run build` completes without errors or warnings

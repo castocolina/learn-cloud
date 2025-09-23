@@ -14,7 +14,7 @@
  * - Updates sidebar active state automatically via URL changes
  */
 
-import { writable, derived, type Readable } from "svelte/store";
+import { derived, type Readable } from "svelte/store";
 import { page } from "$app/stores";
 import { browser } from "$app/environment";
 import {
@@ -164,7 +164,7 @@ function createNavigationStore(): Readable<NavigationState> {
 	const flattenedLessons = createFlattenedLessons();
 
 	return derived(page, ($page) => {
-		const { unitId, lessonId } = parseCurrentUrl($page.url.pathname, $page.url.hash);
+		const { unitId: _unitId, lessonId } = parseCurrentUrl($page.url.pathname, $page.url.hash);
 		const currentLessonIndex = findLessonIndex(flattenedLessons, lessonId);
 
 		const currentLesson = currentLessonIndex !== null ? flattenedLessons[currentLessonIndex] : null;

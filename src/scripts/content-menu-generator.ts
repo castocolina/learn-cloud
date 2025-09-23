@@ -52,14 +52,15 @@
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync, statSync } from "fs";
 import { join, dirname } from "path";
-import { Project, SourceFile, SyntaxKind } from "ts-morph";
+import { Project } from "ts-morph";
 import type {
 	MenuStructure,
 	MenuUnit,
 	MenuChapter,
 	ChapterType,
 	TechnologyUnit,
-	UnifiedPathConfig
+	UnifiedPathConfig,
+	ContentDifficulty
 } from "$types";
 import { generateNavigationPaths } from "$lib/utils/navigation-paths.js";
 
@@ -581,7 +582,7 @@ export class MarkdownContentGenerator {
 		}
 
 		if (parseResult.difficulty) {
-			chapter.difficulty = parseResult.difficulty as any; // Cast to ContentDifficulty
+			chapter.difficulty = parseResult.difficulty as ContentDifficulty;
 		}
 
 		if (parseResult.prerequisites && parseResult.prerequisites.length > 0) {

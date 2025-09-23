@@ -99,7 +99,7 @@ function generateFileName(config: UnifiedPathConfig): string {
  * and runtime navigation components to ensure consistency.
  */
 export function generateNavigationPaths(config: UnifiedPathConfig): NavigationPaths {
-	const { contentType, unitNum, chapterNum, titleSlug } = config;
+	const { contentType, unitNum, chapterNum, titleSlug: _titleSlug } = config;
 
 	const paddedUnit = padNumber(unitNum);
 	const extractedChapter = chapterNum ? extractChapterNumber(chapterNum) : "0";

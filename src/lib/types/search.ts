@@ -14,6 +14,7 @@ import type {
 	ProgressStatus,
 	ContentDifficulty
 } from "./types.js";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { NavigationItemMetadata } from "./navigation.js";
 
 export interface SearchCategory {

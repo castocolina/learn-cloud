@@ -12,12 +12,21 @@
  *
  * Test cases cover both happy path scenarios and edge cases to ensure
  * robust content generation for the learning platform.
+ *
+ * ESLINT EXCEPTION: This test file uses `any` types to access private methods
+ * for testing purposes. Following user preference for pragmatic approach over
+ * complex type redeclarations in utility script tests.
  */
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync } from "fs";
 import { join } from "path";
 import MarkdownContentGenerator from "../../scripts/content-menu-generator.js";
+
+// Simplified approach for testing - using any to avoid complex type redeclarations
+// Following user preference for pragmatic approach in utility scripts
 import { generateNavigationPaths } from "../../lib/utils/navigation-paths.js";
 import type { UnifiedPathConfig } from "$types";
 
@@ -90,7 +99,7 @@ and complex formatting.
 `;
 
 describe("MarkdownContentGenerator", () => {
-	let generator: MarkdownContentGenerator;
+	let generator: any; // Simplified approach for testing private methods
 	let testContentPath: string;
 	let testOutputPath: string;
 
@@ -110,10 +119,10 @@ describe("MarkdownContentGenerator", () => {
 
 		// Initialize generator with test paths (use relative path from project root)
 		const relativeTestPath = join("tmp", "test-data", "test-content.md");
-		generator = new MarkdownContentGenerator(relativeTestPath);
+		generator = new MarkdownContentGenerator(relativeTestPath) as any;
 
 		// Override output path for testing
-		(generator as any).outputPath = testOutputPath;
+		generator.outputPath = testOutputPath;
 	});
 
 	afterEach(() => {
@@ -125,7 +134,7 @@ describe("MarkdownContentGenerator", () => {
 
 	describe("Content Reading and Validation", () => {
 		it("should read and validate CONTENT.md file successfully", () => {
-			const content = (generator as any).readContentMd();
+			const content = generator.readContentMd();
 			expect(content).toBeDefined();
 			expect(content).toContain("Mastering Cloud-Native Technologies");
 			expect(content).toContain("Unit 1: Python");
@@ -133,8 +142,8 @@ describe("MarkdownContentGenerator", () => {
 		});
 
 		it("should throw error for non-existent file", () => {
-			const nonExistentGenerator = new MarkdownContentGenerator("non-existent.md");
-			expect(() => (nonExistentGenerator as any).readContentMd()).toThrow();
+			const nonExistentGenerator = new MarkdownContentGenerator("non-existent.md") as any;
+			expect(() => nonExistentGenerator.readContentMd()).toThrow();
 		});
 
 		it("should throw error for empty file", () => {
@@ -144,14 +153,14 @@ describe("MarkdownContentGenerator", () => {
 
 			// Use relative path from project root
 			const relativeEmptyPath = join("tmp", "test-data", emptyFileName);
-			const emptyGenerator = new MarkdownContentGenerator(relativeEmptyPath);
-			expect(() => (emptyGenerator as any).readContentMd()).toThrow();
+			const emptyGenerator = new MarkdownContentGenerator(relativeEmptyPath) as any;
+			expect(() => emptyGenerator.readContentMd()).toThrow();
 		});
 	});
 
 	describe("Metadata Extraction", () => {
 		it("should extract title and description from markdown header", () => {
-			const metadata = (generator as any).extractMetadata(SAMPLE_CONTENT);
+			const metadata = generator.extractMetadata(SAMPLE_CONTENT);
 
 			expect(metadata.title).toBe("Mastering Cloud-Native Technologies");
 			expect(metadata.description).toContain("comprehensive guide");
@@ -159,14 +168,14 @@ describe("MarkdownContentGenerator", () => {
 		});
 
 		it("should handle minimal content with default values", () => {
-			const minimalMetadata = (generator as any).extractMetadata(MINIMAL_CONTENT);
+			const minimalMetadata = generator.extractMetadata(MINIMAL_CONTENT);
 
 			expect(minimalMetadata.title).toBe("Test Book");
 			expect(minimalMetadata.description).toBe("Basic test content.");
 		});
 
 		it("should handle complex titles with special characters", () => {
-			const complexMetadata = (generator as any).extractMetadata(EDGE_CASE_CONTENT);
+			const complexMetadata = generator.extractMetadata(EDGE_CASE_CONTENT);
 
 			expect(complexMetadata.title).toContain("With Special Characters & Symbols!");
 			expect(complexMetadata.description).toContain("multiple lines");
@@ -176,7 +185,7 @@ describe("MarkdownContentGenerator", () => {
 	describe("Icon and Emoji Extraction", () => {
 		it("should extract icon from markdown line", () => {
 			const testLine = "- **1.1: Test Content** [icon: Settings]";
-			const result = (generator as any).extractIconFromLine(testLine);
+			const result = generator.extractIconFromLine(testLine);
 
 			expect(result.iconName).toBe("Settings");
 			expect(result.cleanedLine).toBe("- **1.1: Test Content**");
@@ -184,7 +193,7 @@ describe("MarkdownContentGenerator", () => {
 
 		it("should extract both icon and emoji from markdown line", () => {
 			const testLine = "## Unit 1: Test Unit [icon: Box] [emoji: 🐍]";
-			const result = (generator as any).extractIconAndEmojiFromLine(testLine);
+			const result = generator.extractIconAndEmojiFromLine(testLine);
 
 			expect(result.iconName).toBe("Box");
 			expect(result.emoji).toBe("🐍");
@@ -193,7 +202,7 @@ describe("MarkdownContentGenerator", () => {
 
 		it("should handle emoji only", () => {
 			const testLine = "- **1.1: Test Content** [emoji: ⚙️]";
-			const result = (generator as any).extractIconAndEmojiFromLine(testLine);
+			const result = generator.extractIconAndEmojiFromLine(testLine);
 
 			expect(result.iconName).toBeNull();
 			expect(result.emoji).toBe("⚙️");
@@ -202,7 +211,7 @@ describe("MarkdownContentGenerator", () => {
 
 		it("should handle lines without icons or emojis", () => {
 			const testLine = "- **1.1: Test Content**";
-			const result = (generator as any).extractIconAndEmojiFromLine(testLine);
+			const result = generator.extractIconAndEmojiFromLine(testLine);
 
 			expect(result.iconName).toBeNull();
 			expect(result.emoji).toBeNull();
@@ -211,7 +220,7 @@ describe("MarkdownContentGenerator", () => {
 
 		it("should handle malformed icon/emoji syntax", () => {
 			const testLine = "- **1.1: Test Content** [icon:] [emoji:]";
-			const result = (generator as any).extractIconAndEmojiFromLine(testLine);
+			const result = generator.extractIconAndEmojiFromLine(testLine);
 
 			expect(result.iconName).toBeNull();
 			expect(result.emoji).toBeNull();
@@ -222,7 +231,7 @@ describe("MarkdownContentGenerator", () => {
 	describe("Content Type Detection", () => {
 		it("should detect lesson content type", () => {
 			const testLine = "- **1.1: Development Environment & Tooling** [icon: Settings]";
-			const result = (generator as any).determineContentTypeAndData(testLine);
+			const result = generator.determineContentTypeAndData(testLine);
 
 			expect(result.content_type).toBe("lesson");
 			expect(result.chapter_num).toBe("1.1");
@@ -233,7 +242,7 @@ describe("MarkdownContentGenerator", () => {
 
 		it("should detect study guide content type", () => {
 			const testLine = "- **1.1: Study Guide** [icon: BookOpen]";
-			const result = (generator as any).determineContentTypeAndData(testLine);
+			const result = generator.determineContentTypeAndData(testLine);
 
 			expect(result.content_type).toBe("study_guide");
 			expect(result.chapter_num).toBe("1.1");
@@ -244,7 +253,7 @@ describe("MarkdownContentGenerator", () => {
 
 		it("should detect quiz content type", () => {
 			const testLine = "- **1.1: Quiz** [icon: HelpCircle]";
-			const result = (generator as any).determineContentTypeAndData(testLine);
+			const result = generator.determineContentTypeAndData(testLine);
 
 			expect(result.content_type).toBe("quiz");
 			expect(result.chapter_num).toBe("1.1");
@@ -255,7 +264,7 @@ describe("MarkdownContentGenerator", () => {
 
 		it("should detect project content type", () => {
 			const testLine = "- **1.3: Project: Building a Microservice in Python** [icon: Rocket]";
-			const result = (generator as any).determineContentTypeAndData(testLine);
+			const result = generator.determineContentTypeAndData(testLine);
 
 			expect(result.content_type).toBe("project");
 			expect(result.chapter_num).toBe("1.3");
@@ -266,7 +275,7 @@ describe("MarkdownContentGenerator", () => {
 
 		it("should detect exam content type", () => {
 			const testLine = "- **1.4: Unit 1 Final Exam** [icon: Target]";
-			const result = (generator as any).determineContentTypeAndData(testLine);
+			const result = generator.determineContentTypeAndData(testLine);
 
 			expect(result.content_type).toBe("exam");
 			expect(result.chapter_num).toBe("1.4");
@@ -277,7 +286,7 @@ describe("MarkdownContentGenerator", () => {
 
 		it("should return null for unrecognized content", () => {
 			const testLine = "- Invalid content line format";
-			const result = (generator as any).determineContentTypeAndData(testLine);
+			const result = generator.determineContentTypeAndData(testLine);
 
 			expect(result.content_type).toBeNull();
 			expect(result.chapter_num).toBeNull();
@@ -289,7 +298,7 @@ describe("MarkdownContentGenerator", () => {
 
 	describe("Path Generation", () => {
 		it("should generate correct paths for lesson content", () => {
-			const { htmlPath, dataPath } = (generator as any).generateContentPaths(
+			const { htmlPath, dataPath } = generator.generateContentPaths(
 				"lesson",
 				"1",
 				"1.1",
@@ -301,7 +310,7 @@ describe("MarkdownContentGenerator", () => {
 		});
 
 		it("should generate correct paths for overview content", () => {
-			const { htmlPath, dataPath } = (generator as any).generateContentPaths(
+			const { htmlPath, dataPath } = generator.generateContentPaths(
 				"overview",
 				"1",
 				undefined,
@@ -316,19 +325,14 @@ describe("MarkdownContentGenerator", () => {
 		});
 
 		it("should generate correct paths for study guide content", () => {
-			const { htmlPath, dataPath } = (generator as any).generateContentPaths(
-				"study_guide",
-				"1",
-				"1.1",
-				""
-			);
+			const { htmlPath, dataPath } = generator.generateContentPaths("study_guide", "1", "1.1", "");
 
 			expect(htmlPath).toBe("book/unit/01/01_01_study_guide.html");
 			expect(dataPath).toBe("book/unit01/01_01_study_guide.ts");
 		});
 
 		it("should generate correct paths for exam content", () => {
-			const { htmlPath, dataPath } = (generator as any).generateContentPaths(
+			const { htmlPath, dataPath } = generator.generateContentPaths(
 				"exam",
 				"1",
 				"1.4",
@@ -340,7 +344,7 @@ describe("MarkdownContentGenerator", () => {
 		});
 
 		it("should handle special characters in titles", () => {
-			const { htmlPath, dataPath } = (generator as any).generateContentPaths(
+			const { htmlPath, dataPath } = generator.generateContentPaths(
 				"lesson",
 				"1",
 				"1.1",
@@ -354,18 +358,18 @@ describe("MarkdownContentGenerator", () => {
 
 	describe("Icon Assignment", () => {
 		it("should return direct icon mapping for content types", () => {
-			expect((generator as any).getIconForContent("lesson")).toBe("BookOpen");
-			expect((generator as any).getIconForContent("quiz")).toBe("HelpCircle");
-			expect((generator as any).getIconForContent("project")).toBe("Rocket");
-			expect((generator as any).getIconForContent("exam")).toBe("Target");
+			expect(generator.getIconForContent("lesson")).toBe("BookOpen");
+			expect(generator.getIconForContent("quiz")).toBe("HelpCircle");
+			expect(generator.getIconForContent("project")).toBe("Rocket");
+			expect(generator.getIconForContent("exam")).toBe("Target");
 		});
 
 		it("should return keyword-based icons for titles", () => {
 			// Note: Since getIconForContent might return fallback icons, we test more general behavior
-			const pythonIcon = (generator as any).getIconForContent("lesson", "Python Development");
-			const goIcon = (generator as any).getIconForContent("lesson", "Go Programming");
-			const devopsIcon = (generator as any).getIconForContent("lesson", "DevOps Practices");
-			const securityIcon = (generator as any).getIconForContent("lesson", "Security Testing");
+			const pythonIcon = generator.getIconForContent("lesson", "Python Development");
+			const goIcon = generator.getIconForContent("lesson", "Go Programming");
+			const devopsIcon = generator.getIconForContent("lesson", "DevOps Practices");
+			const securityIcon = generator.getIconForContent("lesson", "Security Testing");
 
 			// Icons should be strings and not empty
 			expect(typeof pythonIcon).toBe("string");
@@ -376,10 +380,8 @@ describe("MarkdownContentGenerator", () => {
 		});
 
 		it("should return fallback icons for unknown content", () => {
-			expect((generator as any).getIconForContent("unknown_type")).toBe("BookOpen");
-			expect((generator as any).getIconForContent("lesson", "Unrecognized Content")).toBe(
-				"BookOpen"
-			);
+			expect(generator.getIconForContent("unknown_type")).toBe("BookOpen");
+			expect(generator.getIconForContent("lesson", "Unrecognized Content")).toBe("BookOpen");
 		});
 	});
 
@@ -470,43 +472,39 @@ describe("MarkdownContentGenerator", () => {
 
 	describe("Slug Generation", () => {
 		it("should generate URL-friendly slugs", () => {
-			expect((generator as any).generateSlug("Development Environment & Tooling")).toBe(
+			expect(generator.generateSlug("Development Environment & Tooling")).toBe(
 				"development_environment_tooling"
 			);
-			expect((generator as any).generateSlug("Testing: Special Characters!")).toBe(
+			expect(generator.generateSlug("Testing: Special Characters!")).toBe(
 				"testing_special_characters"
 			);
-			expect((generator as any).generateSlug("Multi   Spaces   Content")).toBe(
-				"multi_spaces_content"
-			);
+			expect(generator.generateSlug("Multi   Spaces   Content")).toBe("multi_spaces_content");
 		});
 
 		it("should handle edge cases in slug generation", () => {
-			expect((generator as any).generateSlug("")).toBe("");
-			expect((generator as any).generateSlug("   ")).toBe("");
-			expect((generator as any).generateSlug("123-456")).toBe("123_456");
-			expect((generator as any).generateSlug("_leading_trailing_")).toBe("leading_trailing");
+			expect(generator.generateSlug("")).toBe("");
+			expect(generator.generateSlug("   ")).toBe("");
+			expect(generator.generateSlug("123-456")).toBe("123_456");
+			expect(generator.generateSlug("_leading_trailing_")).toBe("leading_trailing");
 		});
 	});
 
 	describe("TypeScript Code Generation", () => {
 		it("should format primitive values correctly", () => {
-			expect((generator as any).formatTypeScriptValue(null)).toBe("null");
-			expect((generator as any).formatTypeScriptValue(true)).toBe("true");
-			expect((generator as any).formatTypeScriptValue(false)).toBe("false");
-			expect((generator as any).formatTypeScriptValue(42)).toBe("42");
-			expect((generator as any).formatTypeScriptValue("test")).toBe('"test"');
+			expect(generator.formatTypeScriptValue(null)).toBe("null");
+			expect(generator.formatTypeScriptValue(true)).toBe("true");
+			expect(generator.formatTypeScriptValue(false)).toBe("false");
+			expect(generator.formatTypeScriptValue(42)).toBe("42");
+			expect(generator.formatTypeScriptValue("test")).toBe('"test"');
 		});
 
 		it("should format enum references without quotes", () => {
-			expect((generator as any).formatTypeScriptValue("ChapterType.LESSON")).toBe(
-				"ChapterType.LESSON"
-			);
-			expect((generator as any).formatTypeScriptValue("ChapterType.QUIZ")).toBe("ChapterType.QUIZ");
+			expect(generator.formatTypeScriptValue("ChapterType.LESSON")).toBe("ChapterType.LESSON");
+			expect(generator.formatTypeScriptValue("ChapterType.QUIZ")).toBe("ChapterType.QUIZ");
 		});
 
 		it("should format arrays correctly", () => {
-			const result = (generator as any).formatTypeScriptValue(["a", "b", "c"]);
+			const result = generator.formatTypeScriptValue(["a", "b", "c"]);
 			expect(result).toContain("[\n");
 			expect(result).toContain('"a"');
 			expect(result).toContain('"b"');
@@ -516,7 +514,7 @@ describe("MarkdownContentGenerator", () => {
 
 		it("should format objects correctly", () => {
 			const obj = { title: "Test", type: "ChapterType.LESSON", count: 5 };
-			const result = (generator as any).formatTypeScriptValue(obj);
+			const result = generator.formatTypeScriptValue(obj);
 
 			expect(result).toContain("{\n");
 			expect(result).toContain('title: "Test"');
@@ -528,7 +526,7 @@ describe("MarkdownContentGenerator", () => {
 
 	describe("Structure Parsing", () => {
 		it("should parse markdown structure correctly", () => {
-			const units = (generator as any).parseMarkdownStructure(SAMPLE_CONTENT);
+			const units = generator.parseMarkdownStructure(SAMPLE_CONTENT);
 
 			expect(units).toHaveLength(2);
 
@@ -553,7 +551,7 @@ describe("MarkdownContentGenerator", () => {
 		});
 
 		it("should handle minimal content structure", () => {
-			const units = (generator as any).parseMarkdownStructure(MINIMAL_CONTENT);
+			const units = generator.parseMarkdownStructure(MINIMAL_CONTENT);
 
 			expect(units).toHaveLength(1);
 			expect(units[0].title).toBe("Unit 1: Test Unit");
@@ -561,7 +559,7 @@ describe("MarkdownContentGenerator", () => {
 		});
 
 		it("should handle edge cases in content structure", () => {
-			const units = (generator as any).parseMarkdownStructure(EDGE_CASE_CONTENT);
+			const units = generator.parseMarkdownStructure(EDGE_CASE_CONTENT);
 
 			expect(units).toHaveLength(1);
 			expect(units[0].title).toContain("Unit with Complex: Title & Symbols");
@@ -575,14 +573,14 @@ describe("MarkdownContentGenerator", () => {
 
 	describe("Structure Validation", () => {
 		it("should validate correct structure", () => {
-			const units = (generator as any).parseMarkdownStructure(SAMPLE_CONTENT);
-			const isValid = (generator as any).validateParsedStructure(units);
+			const units = generator.parseMarkdownStructure(SAMPLE_CONTENT);
+			const isValid = generator.validateParsedStructure(units);
 
 			expect(isValid).toBe(true);
 		});
 
 		it("should reject empty structure", () => {
-			const isValid = (generator as any).validateParsedStructure([]);
+			const isValid = generator.validateParsedStructure([]);
 			expect(isValid).toBe(false);
 		});
 
@@ -595,7 +593,7 @@ describe("MarkdownContentGenerator", () => {
 				}
 			];
 
-			const isValid = (generator as any).validateParsedStructure(invalidUnits);
+			const isValid = generator.validateParsedStructure(invalidUnits);
 			expect(isValid).toBe(false);
 		});
 
@@ -610,7 +608,7 @@ describe("MarkdownContentGenerator", () => {
 				}
 			];
 
-			const isValid = (generator as any).validateParsedStructure(unitsWithoutChapters);
+			const isValid = generator.validateParsedStructure(unitsWithoutChapters);
 			expect(isValid).toBe(false);
 		});
 	});
@@ -652,8 +650,8 @@ describe("MarkdownContentGenerator", () => {
 
 			// Use relative path from project root
 			const relativeCustomPath = join("tmp", "test-data", customFileName);
-			const customGenerator = new MarkdownContentGenerator(relativeCustomPath);
-			(customGenerator as any).outputPath = join(TEST_OUTPUT_DIR, "custom-menu.ts");
+			const customGenerator = new MarkdownContentGenerator(relativeCustomPath) as any;
+			customGenerator.outputPath = join(TEST_OUTPUT_DIR, "custom-menu.ts");
 
 			const success = await customGenerator.generate();
 
@@ -663,7 +661,7 @@ describe("MarkdownContentGenerator", () => {
 
 		it("should handle generation errors gracefully", async () => {
 			// Test with non-existent input file
-			const invalidGenerator = new MarkdownContentGenerator("non-existent.md");
+			const invalidGenerator = new MarkdownContentGenerator("non-existent.md") as any;
 
 			const success = await invalidGenerator.generate();
 			expect(success).toBe(false);
@@ -672,8 +670,8 @@ describe("MarkdownContentGenerator", () => {
 
 	describe("ts-morph Integration", () => {
 		it("should initialize ts-morph project correctly", () => {
-			expect((generator as any).project).toBeDefined();
-			expect((generator as any).project.getCompilerOptions()).toBeDefined();
+			expect(generator.project).toBeDefined();
+			expect(generator.project.getCompilerOptions()).toBeDefined();
 		});
 
 		// Note: Import testing removed - linting handles TypeScript syntax validation
@@ -728,7 +726,7 @@ describe("MarkdownContentGenerator", () => {
 				const readOnlyDir = join(TEST_DATA_DIR, "readonly");
 				mkdirSync(readOnlyDir, { recursive: true });
 
-				(generator as any).outputPath = join(readOnlyDir, "readonly-output.ts");
+				generator.outputPath = join(readOnlyDir, "readonly-output.ts");
 
 				// This test may vary based on OS permissions
 				const success = await generator.generate();

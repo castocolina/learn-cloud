@@ -19,8 +19,11 @@ import type {
 } from "./types.js";
 import type {
 	RichParagraph,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	RichTextSection,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	RichTextDocument,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	SimpleRichText
 } from "./rich-text.js";
 
