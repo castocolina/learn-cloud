@@ -18,9 +18,9 @@ Supports user answer tracking, validation states, and responsive design.
 		DragAndDropQuestion,
 		CodeCompletionQuestion
 	} from "$data/demo/content/quizzes/quiz-examples";
-	import { Button } from "$lib/components/ui/button/index.js";
-	import { Checkbox } from "$lib/components/ui/checkbox/index.js";
-	import { RadioGroup, RadioGroupItem } from "$lib/components/ui/radio-group/index.js";
+	import { Button } from "$ui/button/index.js";
+	import { Checkbox } from "$ui/checkbox/index.js";
+	import { RadioGroup, RadioGroupItem } from "$ui/radio-group/index.js";
 	import { SvelteMap } from "svelte/reactivity";
 
 	interface Props {

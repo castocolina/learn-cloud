@@ -15,9 +15,9 @@ Provides detailed feedback to help users understand their performance.
 
 <script lang="ts">
 	import type { Quiz, DragAndDropQuestion } from "$data/demo/content/quizzes/quiz-examples";
-	import { Button } from "$lib/components/ui/button/index.js";
-	import { Card, CardContent, CardHeader, CardTitle } from "$lib/components/ui/card/index.js";
-	import { Badge } from "$lib/components/ui/badge/index.js";
+	import { Button } from "$ui/button/index.js";
+	import { Card, CardContent, CardHeader, CardTitle } from "$ui/card/index.js";
+	import { Badge } from "$ui/badge/index.js";
 
 	interface QuizResults {
 		score: number;

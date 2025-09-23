@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Sun, Moon, Monitor } from "lucide-svelte";
-	import { Switch } from "$lib/components/ui/switch";
+	import { Switch } from "$ui/switch";
 	import { themeStore, setTheme, type Theme } from "$lib/stores/theme";
 
 	interface Props {

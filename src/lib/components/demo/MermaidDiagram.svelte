@@ -53,7 +53,7 @@
 	import { page } from "$app/stores";
 	import mermaid from "mermaid";
 	import { Expand, Copy, Check, RotateCcw } from "lucide-svelte";
-	import * as Dialog from "$lib/components/ui/dialog";
+	import * as Dialog from "$ui/dialog";
 	import { SETTINGS } from "$config/settings";
 
 	interface Props {

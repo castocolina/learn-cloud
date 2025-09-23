@@ -16,15 +16,15 @@ Showcases the complete quiz functionality for the cloud-native learning platform
 	import { onMount } from "svelte";
 	import { page } from "$app/stores";
 	import type { Quiz } from "$data/demo/content/quizzes/quiz-examples";
-	import { Button } from "$lib/components/ui/button/index.js";
-	import { Card, CardContent, CardHeader, CardTitle } from "$lib/components/ui/card/index.js";
-	import { Badge } from "$lib/components/ui/badge/index.js";
+	import { Button } from "$ui/button/index.js";
+	import { Card, CardContent, CardHeader, CardTitle } from "$ui/card/index.js";
+	import { Badge } from "$ui/badge/index.js";
 	import {
 		Select,
 		SelectContent,
 		SelectItem,
 		SelectTrigger
-	} from "$lib/components/ui/select/index.js";
+	} from "$ui/select/index.js";
 	import QuizRenderer from "$lib/components/demo/quiz/QuizRenderer.svelte";
 
 	// Quiz data

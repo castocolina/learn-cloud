@@ -5,7 +5,7 @@
   Uses shadcn-svelte Button component with smooth animations and accessibility features.
 -->
 <script lang="ts">
-	import { Button } from "$lib/components/ui/button";
+	import { Button } from "$ui/button";
 	import { PanelLeftClose, PanelLeftOpen } from "lucide-svelte";
 	import { useSidebar } from "$lib/stores/sidebar.js";
 

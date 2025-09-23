@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Clock, Eye, RotateCcw, BookOpen, Expand } from "lucide-svelte";
-	import * as Dialog from "$lib/components/ui/dialog";
+	import * as Dialog from "$ui/dialog";
 	import { SETTINGS } from "$config/settings";
 	import type {
 		FlipCard as FlipCardType,

@@ -22,7 +22,7 @@ Architecture:
 -->
 
 <script lang="ts">
-	import { Button } from "$lib/components/ui/button";
+	import { Button } from "$ui/button";
 	import { ChevronLeft, ChevronRight } from "lucide-svelte";
 	import { unifiedNavigation } from "$lib/stores/unified-navigation.js";
 	import { browser } from "$app/environment";

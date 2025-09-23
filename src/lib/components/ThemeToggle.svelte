@@ -40,8 +40,8 @@
 	 * - System preference detection happens immediately on mount
 	 */
 	import { Sun, Moon, Monitor } from "lucide-svelte";
-	import { Button } from "$lib/components/ui/button";
-	import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
+	import { Button } from "$ui/button";
+	import * as DropdownMenu from "$ui/dropdown-menu";
 	import { themeStore, setTheme, type Theme } from "$lib/stores/theme";
 
 	interface Props {

@@ -65,8 +65,8 @@ a seamless, educational quiz experience following SvelteKit architecture pattern
 		DragAndDropQuestion,
 		CodeCompletionQuestion
 	} from "$data/demo/content/quizzes/quiz-examples";
-	import { Card, CardContent, CardHeader, CardTitle } from "$lib/components/ui/card/index.js";
-	import { Badge } from "$lib/components/ui/badge/index.js";
+	import { Card, CardContent, CardHeader, CardTitle } from "$ui/card/index.js";
+	import { Badge } from "$ui/badge/index.js";
 	import QuestionRenderer from "./QuestionRenderer.svelte";
 	import Timer from "./Timer.svelte";
 	import ProgressIndicator from "./ProgressIndicator.svelte";

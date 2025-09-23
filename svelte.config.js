@@ -16,7 +16,7 @@ const config = {
 			$config: "src/config",
 			$data: "src/data",
 			$types: "src/lib/types",
-			"$lib/components/ui": "src/lib/components/ui",
+			$ui: "src/lib/components/ui",
 			"$lib/components": "src/lib/components",
 			"$lib/utils": "src/lib/utils",
 			"$lib/hooks": "src/lib/hooks"
