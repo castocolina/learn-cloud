@@ -498,7 +498,7 @@ describe("MarkdownContentGenerator", () => {
 			expect(generator.formatTypeScriptValue("test")).toBe('"test"');
 		});
 
-		it("should format enum references without quotes", () => {
+		it("should format union references without quotes", () => {
 			expect(generator.formatTypeScriptValue("ChapterType.LESSON")).toBe("ChapterType.LESSON");
 			expect(generator.formatTypeScriptValue("ChapterType.QUIZ")).toBe("ChapterType.QUIZ");
 		});
@@ -534,20 +534,21 @@ describe("MarkdownContentGenerator", () => {
 			expect(units[0].title).toBe("Unit 1: Python for Cloud-Native Backend Development");
 			expect(units[0].icon).toBe("Box");
 			expect(units[0].emoji).toBe("🐍");
-			expect(units[0].chapters).toHaveLength(8);
+			expect(units[0].chapters).toHaveLength(9); // Updated: now includes overview chapter
 
-			// Check chapter types (now just checking types, not metadata since it's legacy format)
-			expect(units[0].chapters[0].type).toBe("lesson");
-			expect(units[0].chapters[1].type).toBe("study_guide");
-			expect(units[0].chapters[2].type).toBe("quiz");
-			expect(units[0].chapters[6].type).toBe("project");
-			expect(units[0].chapters[7].type).toBe("exam");
+			// Check chapter types - first should be overview, then original content
+			expect(units[0].chapters[0].type).toBe("overview");
+			expect(units[0].chapters[1].type).toBe("lesson");
+			expect(units[0].chapters[2].type).toBe("study_guide");
+			expect(units[0].chapters[3].type).toBe("quiz");
+			expect(units[0].chapters[7].type).toBe("project");
+			expect(units[0].chapters[8].type).toBe("exam");
 
 			// Check second unit
 			expect(units[1].title).toBe("Unit 2: Go for Cloud-Native Backend Development");
 			expect(units[1].icon).toBe("Cpu");
 			expect(units[1].emoji).toBe("🔧");
-			expect(units[1].chapters).toHaveLength(4);
+			expect(units[1].chapters).toHaveLength(5); // Updated: now includes overview chapter
 		});
 
 		it("should handle minimal content structure", () => {
@@ -555,7 +556,7 @@ describe("MarkdownContentGenerator", () => {
 
 			expect(units).toHaveLength(1);
 			expect(units[0].title).toBe("Unit 1: Test Unit");
-			expect(units[0].chapters).toHaveLength(3);
+			expect(units[0].chapters).toHaveLength(4); // Updated: now includes overview chapter
 		});
 
 		it("should handle edge cases in content structure", () => {
@@ -563,11 +564,40 @@ describe("MarkdownContentGenerator", () => {
 
 			expect(units).toHaveLength(1);
 			expect(units[0].title).toContain("Unit with Complex: Title & Symbols");
-			expect(units[0].chapters).toHaveLength(5);
+			expect(units[0].chapters).toHaveLength(6); // Updated: now includes overview chapter
 
-			// Verify complex title handling
-			expect(units[0].chapters[0].title).toContain("Special Characters: Testing & Validation");
-			expect(units[0].chapters[2].title).toContain("Quiz");
+			// First chapter should be overview, then original content
+			expect(units[0].chapters[0].type).toBe("overview");
+			// Verify complex title handling (now at index 1 due to overview prepend)
+			expect(units[0].chapters[1].title).toContain("Special Characters: Testing & Validation");
+			expect(units[0].chapters[3].title).toContain("Quiz");
+		});
+
+		it("should automatically prepend overview chapters to each unit", () => {
+			const units = generator.parseMarkdownStructure(SAMPLE_CONTENT);
+
+			// Check that each unit has overview as first chapter
+			for (const unit of units) {
+				expect(unit.chapters[0].type).toBe("overview");
+				expect(unit.chapters[0].id).toMatch(/^\d{2}_00$/); // Should match {unit_padded}_00 format
+				expect(unit.chapters[0].title).toContain("Overview");
+				expect(unit.chapters[0].title).toContain(`Unit ${unit.unitNumber}:`);
+				expect(unit.chapters[0].chapterNumber).toBe("0.0");
+			}
+
+			// Verify specific format for Unit 1
+			const unit1 = units[0];
+			expect(unit1.chapters[0].id).toBe("01_00");
+			expect(unit1.chapters[0].title).toBe(
+				"Unit 1: Overview - Python for Cloud-Native Backend Development"
+			);
+
+			// Verify specific format for Unit 2
+			const unit2 = units[1];
+			expect(unit2.chapters[0].id).toBe("02_00");
+			expect(unit2.chapters[0].title).toBe(
+				"Unit 2: Overview - Go for Cloud-Native Backend Development"
+			);
 		});
 	});
 

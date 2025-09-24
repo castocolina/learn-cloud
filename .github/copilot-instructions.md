@@ -19,6 +19,7 @@ For all project rules, technical specifications, and coding standards, refer to 
 
 ## Critical Rules
 
+- All conversational interactions **must be in English**
 - Follow Mermaid diagram syntax rules (double quotes for all text)
 - Use TypeScript interfaces for all component props
 - Never create vanilla HTML/CSS/JS files for new features

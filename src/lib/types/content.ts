@@ -3,7 +3,7 @@
  *
  * This module defines all content-related interfaces and types used throughout
  * the application. It integrates with the rich text system for secure content
- * display and follows enum-first patterns for type safety.
+ * display and follows union-first patterns for type safety.
  *
  * Synthesizes foundational types from feature/spa branch with current
  * demo extensions and rich text integration from TASK 2B.
@@ -295,7 +295,7 @@ export interface Quiz {
 	description?: string;
 	passingScore: number;
 	timeLimit?: number;
-	questions: Question[];
+	questions: AnyQuestion[];
 	randomizeQuestions?: boolean;
 	showResults?: boolean;
 }
@@ -417,6 +417,17 @@ export interface DragAndDropQuestion extends Question {
 		targetId: string;
 	}>;
 }
+
+/**
+ * Union type for all question types
+ */
+export type AnyQuestion =
+	| SingleChoiceQuestion
+	| MultipleChoiceQuestion
+	| CodeCompletionQuestion
+	| TrueFalseQuestion
+	| ShortAnswerQuestion
+	| DragAndDropQuestion;
 
 /**
  * Flashcard interface for study guides

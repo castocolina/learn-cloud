@@ -8,7 +8,7 @@
  * Usage:
  * import type { ContentType, NavigationItem, RichParagraph } from '$lib/types';
  *
- * Following SvelteKit 2024 conventions and enum-first design patterns.
+ * Following SvelteKit 2024 conventions and union-first design patterns.
  */
 
 // Union Type exports - All project union types consolidated for zero runtime overhead

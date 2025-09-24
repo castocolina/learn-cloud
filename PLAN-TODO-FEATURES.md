@@ -135,376 +135,13 @@ graph TD
 
 ## 🏗️ FOUNDATION-FIRST MIGRATION TASKS
 
-### TASK 1: Documentation Foundation Setup
-
-**Agent Responsibility:**
-You are responsible for creating an intelligent documentation system with cross-references that automatically guides development according to task context, eliminating redundancy and establishing clear navigation patterns.
-
-**Technical Documents to Review:**
-
-- `CLAUDE.md` (current structure and guidelines)
-- `SVELTEKIT-GUIDE.md` (architecture technical standards and development patterns)
-- `CONTENT-STANDARDS.md` (content creation standards)
-- `SEARCH-ARCHITECTURE.md` (search system architecture)
-- `MERMAID-STANDARDS.md` (diagram standards)
-
-**Prerequisites:**
-
-- None (this is the foundation task)
-
-**Implementation Details:**
-
-1. Reorganize CLAUDE.md with contextual reference system
-2. Create guidance matrix by task type
-3. Implement documentation navigation map
-4. Establish automatic triggers by specific keywords
-5. Eliminate redundancies between documents
-
-**Expected Output:**
-
-- Updated CLAUDE.md with intelligent cross-reference system
-- Documentation reorganized with clear roles
-- Contextual guidance system implemented
-- Navigation map for each work type
-
-**Final Validations:**
-
-- ✅ Consistency between documents verified
-- ✅ Reference completeness confirmed
-- ✅ Intuitive navigation established
-- ✅ Duplicate information eliminated
-
-**Documentation to Update:**
-
-- Update change log of modifications made
-- Cross-reference map
-- Usage guide for new system
-
----
-
-### TASK 2: TypeScript Foundation Setup
-
-**Agent Responsibility:**
-You are responsible for establishing a unified, cohesive TypeScript foundation that serves as the bedrock for the entire project's navigation architecture. This major architectural refactoring will create a centralized type system in `src/types/` that synthesizes foundational types from the `feature/spa` branch with useful extensions from current `src/data/demo/*` files. The goal is to eliminate hardcoded strings, enforce enum-first patterns, mandate path alias usage, and create a single, coherent navigation data model that powers menu scaffolding, sidebar navigation, friendly URLs, breadcrumbs, search indexing, and sequential (previous/next) navigation systems.
-
-**Critical Architectural Principle:**
-This unified type system is the foundation for a **single, cohesive navigation architecture**. The menu scaffolding system, sidebar navigation logic, friendly URLs, breadcrumbs, the search index, and the bottom (previous/next) navigation are all interdependent. They must all be driven by this same data model to ensure that clicking any link correctly updates the URL and renders the corresponding content. This includes handling direct navigation and hash-based URLs.
-
-**Technical Documents to Review:**
-
-- `https://github.com/castocolina/learn-cloud/blob/feature/spa/src/data/types.ts` (foundational reference)
-- `CONTENT-STANDARDS.md` (content interfaces and enum requirements)
-- `SVELTEKIT-GUIDE.md` (TypeScript patterns and path alias standards)
-- `SEARCH-ARCHITECTURE.md` (navigation integration requirements)
-- Task 1 output (documentation foundation)
-- `src/data/demo/` (existing type implementations for synthesis)
-- `src/lib/types/search.ts` (current search type definitions)
-
-**Major Architectural Refactoring Requirements:**
-
-This project requires a comprehensive architectural refactoring to create a unified, cohesive system with two critical code quality standards:
-
-1. **Path Aliases Enforcement**: Exclusive use of path aliases (e.g., `$types`, `$lib`) instead of relative paths (`../`)
-2. **Union Type-First Design**: Strict "Union Type-First" approach replacing all hard-coded string comparisons with type-safe union types optimized for SvelteKit performance (zero runtime overhead)
-
-**Implementation Details:**
-
-1. **Directory Restructure**: Migrate `src/data/types.ts` → `src/lib/types/` (multiple domain-separated files following SvelteKit 2024 conventions)
-2. **Type System Unification**: Synthesize foundational types from feature/spa branch with demo extensions:
-   - Merge `DemoContentType`, `SearchableItem`, navigation interfaces into unified system
-   - Consolidate `ContentType`, `ChapterType`, `ContentDifficulty` union types
-   - Unify navigation metadata across all systems
-3. **Centralized Type Architecture** (SvelteKit Convention):
-   ```typescript
-   src/lib/types/
-   ├── content.ts       // ContentMetadata, LessonContent, QuizContent, StudyGuideContent
-   ├── navigation.ts    // NavigationItem, FlatNavEntry, BreadcrumbItem, MenuStructure
-   ├── search.ts        // SearchableItem unified with navigation metadata (already exists)
-   ├── types.ts         // All project union types consolidated (ContentType, ChapterType, etc.)
-   └── index.ts         // Centralized exports with re-exports
-   ```
-4. **Path Alias Implementation**: Use `$types` alias for cleaner type imports throughout codebase (configured in svelte.config.js)
-5. **Navigation Data Model**: Create unified interfaces that power all navigation systems:
-   - Menu scaffolding and generation
-   - Sidebar accordion navigation
-   - URL generation and parsing (hash-based routing)
-   - Breadcrumb generation
-   - Search index with navigation metadata
-   - Sequential navigation (previous/next)
-   - Direct navigation and deep linking
-6. **Union Type-First Migration**: Replace all hardcoded strings with type-safe union type references
-7. **Educational Metadata Enhancement**: Include complexity, duration, prerequisites, learning objectives
-
-**Critical Navigation Architecture Requirements:**
-
-- **NavigationItem Interface**: Base interface for all navigable content
-- **FlatNavEntry Interface**: Sequential navigation with previous/next relationships
-- **ContentMetadata Interface**: Unified metadata for all content types
-- **BreadcrumbItem Interface**: Hierarchical navigation display
-- **SearchableItem Integration**: Search results with navigation metadata
-- **URL Generation Types**: Hash-based routing and deep linking support
-
-**Type System Enhancement Areas:**
-
-- **Content Complexity**: Beginner, Intermediate, Advanced, Expert levels (union type-based)
-- **Duration Estimates**: Ranges for different content types (lessons, quizzes, projects)
-- **Difficulty Progression**: Prerequisites, skill requirements, learning outcomes
-- **Interactive Elements**: Quiz types, assessment formats, progress tracking
-- **Content Organization**: Unit dependencies, topic relationships, learning paths
-- **Navigation Metadata**: URL patterns, routing information, sequential relationships
-
-**Cascade Impact & Update Requirements:**
-
-**⚠️ CRITICAL**: Successful completion of this refactoring will require mandatory updates to ALL subsequent tasks and documentation:
-
-**TASK 3 Scripts Requiring Updates:**
-
-- **TASK 3A**: Update `content-menu-generator.ts` to use `$types` imports and unified NavigationItem interface
-- **TASK 3B**: Update `content-scaffolding.ts` to use new union type definitions and path aliases
-- **TASK 3C**: Update `mermaid-validator.ts` to use centralized union type system via `$types`
-- **TASK 3D**: Update `search-indexer.ts` to use unified SearchableItem and navigation types
-- **TASK 3E** (New): Create `flatnav-generator.ts` using unified type system
-
-**Script Output Path Standardization:**
-
-- **TASK 3A Output**: `src/data/generated/content-menu.ts` (updated from `src/data/book/content-menu.ts`)
-- **TASK 3D Output**: `src/data/generated/search-index.ts` (standardized location)
-- **TASK 3E Output**: `src/data/generated/flatnav.ts` (new flat navigation map)
-
-**Documentation Updates Required:**
-
-- **CONTENT-STANDARDS.md**: Update all `types.ts` references to new `src/lib/types/` structure (SvelteKit convention)
-- **SVELTEKIT-GUIDE.md**: Update TypeScript patterns and path alias examples to use `$types`
-- **SEARCH-ARCHITECTURE.md**: Update SearchableItem interface references and navigation integration
-- **CLAUDE.md**: Update TypeScript development guidelines with SvelteKit 2024 conventions
-- **All .md files**: Find and replace `src/data/types.ts` references with correct `src/lib/types/` paths
-
-**Component Integration Updates:**
-
-- All SvelteKit components importing types must use `$types` path aliases
-- Search system components must use unified SearchableItem interface
-- Navigation components must use unified NavigationItem interfaces
-- Breadcrumb components must use new BreadcrumbItem types
-
-**Expected Output:**
-
-- **Centralized Type System**: Complete `src/lib/types/` directory with domain-separated files (SvelteKit convention)
-- **Path Alias Integration**: Use existing `$lib` alias for type imports (no additional configuration needed)
-- **Unified Navigation Types**: Single data model powering all navigation systems
-- **Enum-First Implementation**: Zero hardcoded strings, comprehensive enum usage
-- **Enhanced Educational Metadata**: Full support for complexity, duration, prerequisites
-- **Navigation Integration**: Types supporting menu, sidebar, URLs, breadcrumbs, search, sequential navigation
-
-**Post-Completion Mandatory Updates:**
-
-1. **Immediate Dependencies**: All TASK 3 scripts must be updated with new imports and types
-2. **Documentation Synchronization**: All `.md` files must reference correct type paths
-3. **Component Migration**: All existing components must migrate to `$types` imports
-4. **Validation Pipeline**: Comprehensive testing of path alias resolution and type consistency
-
-**Final Validations:**
-
-- ✅ `pnpm run check`, `pnpm run lint` without TypeScript errors across entire codebase
-- ✅ Path alias resolution working correctly (`$types`, `$lib`, `$data`)
-- ✅ All TASK 3 scripts updated and functional with new type system
-- ✅ All documentation references updated to new structure
-- ✅ Union type imports working correctly with no hardcoded strings
-- ✅ Interface inheritance verified with educational metadata
-- ✅ No `any` types in code, comprehensive type coverage
-- ✅ Demo examples fully typed with new unified interfaces
-- ✅ Navigation systems using unified data model
-- ✅ Search integration with navigation metadata functional
-- ✅ Sequential navigation types supporting previous/next relationships
-- ✅ All script outputs generating in `src/data/generated/` directory
-
-**Documentation Architecture Updates:**
-
-- **Path Reference Migration**: Global update of all type system references
-- **Union Type Usage Guidelines**: Enhanced patterns with navigation integration
-- **Interface Extension Patterns**: Content metadata and navigation hierarchy
-- **Type Safety Best Practices**: Educational content with navigation support
-- **Architecture Decision Records**: Rationale for unified type system approach
-
----
-
-### TASK 2B: Define Rich Text Data Structures
-
-**Agent Responsibility:**
-You are responsible for extending the TypeScript foundation by defining a secure, structured system for rich text content. This involves creating types to represent formatted text as an array of objects, replacing simple string properties and preventing raw HTML injection.
-
-**Prerequisites:**
-
-- Task 2: TypeScript Foundation Setup completed
-
-**Implementation Details:**
-
-1.  **Create Rich Text Type Definition File**:
-    - Create a new file at `src/lib/types/rich-text.ts`.
-
-2.  **Define Core Rich Text Interfaces**:
-    - **`RichTextFragment`**: Define an interface with a `text: string` property and optional formatting properties (e.g., `bold?: boolean`, `italic?: boolean`, `strikethrough?: boolean`, `code?: boolean`, `color?: string`, `highlight?: string`, `headingLevel?: 1 | 2 | 3 | 4 | 5 | 6`).
-    - **`RichParagraph`**: Define a type alias for an array of fragments: `type RichParagraph = RichTextFragment[];`.
-
-3.  **Integrate Rich Text Types into Content Models**:
-    - Modify existing content interfaces (e.g., `LessonContent`, `StudyGuideContent` in `src/lib/types/content.ts`) to replace relevant `string` properties (like `introduction`, `details`, or other free-form text fields) with the new `RichParagraph` type.
-
-4.  **Update Centralized Exports**:
-    - Ensure the new types are exported from the main `src/lib/types/index.ts` file for consistent access across the application.
-
-**Final Validations:**
-
-- ✅ `pnpm run check`, `pnpm run lint` passes without any new TypeScript errors.
-- ✅ The new `RichTextFragment` and `RichParagraph` types are correctly defined and exported.
-- ✅ Relevant content interfaces in `src/lib/types/content.ts` are updated to use `RichParagraph` instead of `string` for applicable fields.
-- ✅ The changes are purely type-level and do not introduce any runtime errors.
-
----
-
-### TASK 3A: Content Menu Generator Script
-
-**Agent Responsibility:**
-You are responsible for developing a TypeScript content menu generator script that auto-generates navigation menu from content directory structure using ts-morph for TypeScript AST manipulation.
-
-**Technical Documents to Review:**
-
-- `src/lib/types/` (result from Task 2 - unified type system)
-- `src/python/generate_content_menu.py` (existing Python implementation for reference)
-- `CONTENT-STANDARDS.md` (content structure and validation standards)
-
-**Prerequisites:**
-
-- Task 2: TypeScript Foundation Setup completed
-- Install ts-morph dependency: `pnpm add -D ts-morph @types/node tsx` (dev dependencies - not needed at runtime)
-
-**Implementation Details:**
-
-**Script Specification (`src/scripts/content-menu-generator.ts`):**
-
-- **Purpose**: Parse @CONTENT.md file and generate navigation structure in `src/data/generated/content-menu.ts`
-- **Input**: File to parse (default: `@CONTENT.md`)
-- **Output**: `src/data/generated/content-menu.ts` with type-safe navigation structure
-- **Reference**: Migrate logic from `src/python/generate_content_menu.py`
-- **Technology**: fs, path, ts-morph for TypeScript file analysis
-- **CLI Usage**: `pnpm run generate-menu [path]`
-
-**Build System Integration:**
-
-- **Makefile Target**:
-  ```makefile
-  .PHONY: generate-menu
-  generate-menu:
-  	npx tsx src/scripts/content-menu-generator.ts
-  ```
-- **Package.json Script**:
-  ```json
-  {
-  	"scripts": {
-  		"generate-menu": "npx tsx src/scripts/content-menu-generator.ts"
-  	}
-  }
-  ```
-
-**Expected Output:**
-
-- `src/scripts/content-menu-generator.ts` (with ts-morph integration)
-- Updated `Makefile` with `generate-menu` target
-- Updated `package.json` with `generate-menu` script
-- Test suite in `src/test/scripts/content-menu-generator.test.ts`
-
-**Final Validations:**
-
-- ✅ Script executes without errors using tsx
-- ✅ ts-morph correctly parses TypeScript AST
-- ✅ Generated files follow enum-first patterns
-- ✅ Test coverage comprehensive
-- ✅ Makefile target functional
-- ✅ Package.json script working
-
-**Verification Notes:**
-
-- **Dependency Updates**: Check for ts-morph updates and compatibility with current TypeScript version
-- **Integration Updates**: Review existing Python implementation for logic changes that should be migrated
-
-**Documentation to Update:**
-
-- Script usage documentation with CLI examples
-- ts-morph integration patterns
-
----
-
-### TASK 3B: Content Scaffolding Generator Script
-
-**Agent Responsibility:**
-You are responsible for developing a TypeScript content scaffolding generator script that creates TypeScript content files with proper enum usage and structure using ts-morph for AST manipulation.
-
-**Technical Documents to Review:**
-
-- `src/lib/types/` (result from Task 2 - unified type system)
-- `src/python/generate_content_scaffolding.py` (existing Python implementation for reference but respecting new type system)
-- `CONTENT-STANDARDS.md` (content structure and validation standards)
-- `MERMAID-STANDARDS.md` (diagram standards)
-- `src/data/demo/content/diagrams/mermaid-examples.ts` (reference implementation pattern)
-
-**Prerequisites:**
-
-- Task 2: TypeScript Foundation Setup completed
-- Task 3A: Content Menu Generator Script completed
-- ts-morph dependency installed (dev dependency from Task 3A)
-
-**Implementation Details:**
-
-**Script Specification (`src/scripts/content-scaffolding.ts`):**
-
-- **Purpose**: Creates TypeScript content files with proper union type usage and structure
-- **Input**: Unit name, chapter type (from union type), chapter ID
-- **Output**: Generated `.ts` files in `src/data/book/unit-{name}/`
-- **Reference**: Migrate logic from `src/python/generate_content_scaffolding.py`
-- **Follow Pattern**: Must follow `src/data/demo/content/diagrams/mermaid-examples.ts` structure
-- **Union Type Integration**: Use ChapterType union type, ContentStatus union type from types.ts
-- **CLI Usage**: `pnpm run scaffold-content --unit="unit-name" --type="lesson" --id="chapter-id"`
-
-**Build System Integration:**
-
-- **Makefile Target**:
-  ```makefile
-  .PHONY: scaffold-content
-  scaffold-content:
-  	npx tsx src/scripts/content-scaffolding.ts $(ARGS)
-  ```
-- **Package.json Script**:
-  ```json
-  {
-  	"scripts": {
-  		"scaffold-content": "npx tsx src/scripts/content-scaffolding.ts"
-  	}
-  }
-  ```
-
-**Expected Output:**
-
-- `src/scripts/content-scaffolding.ts` (following mermaid-examples.ts pattern)
-- Updated `Makefile` with `scaffold-content` target
-- Updated `package.json` with `scaffold-content` script
-- Test suite in `src/test/scripts/content-scaffolding.test.ts`
-
-**Final Validations:**
-
-- ✅ Script executes without errors using tsx
-- ✅ ts-morph correctly generates TypeScript files
-- ✅ Generated files follow union type-first patterns and mermaid-examples.ts structure
-- ✅ Test coverage comprehensive
-- ✅ Makefile target functional
-- ✅ Package.json script working
-
-**Verification Notes:**
-
-- **Pattern Updates**: Check mermaid-examples.ts for structural changes that should be reflected in scaffolding
-- **Union Type Changes**: Verify ChapterType and ContentStatus union types are current in types.ts
-
-**Documentation to Update:**
-
-- Content scaffolding workflow documentation
-- Union type integration patterns
+### TASK 3B: Continue
+
+- Check generated src/data/generated & src/data/book validation scripts, make and node tasks for custom format, check, eslint, some of them are scanning all the project. make validate-generated-full for example.
+- Check eslint/svelte alias references
+- Check test referencing all enums instead of unions
+- test must be executed before commits?
+- Update documentation references
 
 ---
 
@@ -513,17 +150,38 @@ You are responsible for developing a TypeScript content scaffolding generator sc
 **Agent Responsibility:**
 You are responsible for developing a TypeScript Mermaid validator script that validates Mermaid diagrams in TypeScript files using ts-morph AST parsing and provides precise error reporting following MERMAID-STANDARDS.md.
 
+**CRITICAL:** Before creating any new type or interface, you must thoroughly review `$types/` (src/lib/types) to check if an appropriate type or interface already exists. Always reuse or extend existing types/interfaces from the unified type system. Only define new types if absolutely necessary and after confirming no suitable type exists.
+
 **Technical Documents to Review:**
 
 - `MERMAID-STANDARDS.md` (validation requirements and syntax rules - CRITICAL)
 - `src/lib/types/` (result from Task 2 - unified type system)
 - `src/data/demo/content/diagrams/mermaid-examples.ts` (reference implementation pattern)
 
+**Type Reuse Requirement:**
+
+- Before implementing any data structure or interface, check for existing types in `src/lib/types`. Reuse or extend these types for all validation results, error objects, and diagram representations. Document any type reuse or extension in the script comments.
+
 **Prerequisites:**
 
 - Task 2: TypeScript Foundation Setup completed
 - Install mermaid dependency: `pnpm add -D mermaid` (dev dependency - not needed at runtime)
 - ts-morph dependency installed (dev dependency from Task 3A)
+
+**Build System and Automation Integration:**
+
+- You must add a script entry in `package.json` for the mermaid validator (e.g., `"validate-mermaid": "npx tsx src/scripts/mermaid-validator.ts"`).
+- This script must be referenced in the Makefile, included in GitHub Actions CI workflows, and added to the Husky pre-commit hook to ensure validation runs automatically before every commit and in CI/CD pipelines.
+
+**GitHub Actions Integration:**
+
+- The `validate-mermaid` script must be explicitly added to the project's GitHub Actions workflow (e.g., `.github/workflows/validation.yml`).
+- It should be run as a dedicated step, for example:
+  ```yaml
+  - name: Validate Mermaid Diagrams
+     run: pnpm run validate-mermaid src/data/book
+  ```
+- This ensures all Mermaid diagrams are validated on every push and pull request, preventing invalid diagrams from being merged.
 
 **Implementation Details:**
 
@@ -579,6 +237,15 @@ You are responsible for developing a TypeScript Mermaid validator script that va
 - ✅ Makefile target functional
 - ✅ Package.json script working
 
+**Script Validation Requirements:**
+
+- ✅ Script-specific validation enabled with prettier and eslint (no svelte-check)
+- ✅ Auto-fix capabilities for formatting and simple lint errors
+- ✅ Validation runs automatically after mermaid validation script execution
+- ✅ Real-time streaming output during validation
+- ✅ Target-specific validation (validates script file itself)
+- ✅ Uses runScriptValidation() from validation-utils.ts library
+
 **Verification Notes:**
 
 - **Mermaid Updates**: Check for Mermaid.js version updates and new diagram types support
@@ -598,9 +265,14 @@ You are responsible for developing a TypeScript search index generator script th
 
 **Technical Documents to Review:**
 
-- `SEARCH-ARCHITECTURE.md` (indexing architecture)
+- `PLAN-SEARCH-ARCHITECTURE.md` (indexing architecture)
 - `src/lib/types/` (result from Task 2 - unified type system)
 - `CONTENT-STANDARDS.md` (content structure and validation standards)
+
+**Type Reuse Requirement:**
+
+- Before implementing any data structure or interface, check for existing types in `src/lib/types`. Reuse or extend these types for all validation results, error objects, and diagram representations. Document any type reuse or extension in the script comments.
+- Explore and try to reuse classes/functions from src/lib/utils/ if applicable.
 
 **Prerequisites:**
 
@@ -629,7 +301,7 @@ You are responsible for developing a TypeScript search index generator script th
   	npx tsx src/scripts/search-indexer.ts $(ARGS)
 
   .PHONY: validate-all-scripts
-  validate-all-scripts: validate-mermaid generate-menu generate-search-index
+  validate-all-scripts: validate-mermaid generate-content-menu generate-search-index
   	@echo "✅ All foundation scripts completed"
   ```
 
@@ -638,7 +310,7 @@ You are responsible for developing a TypeScript search index generator script th
   {
   	"scripts": {
   		"generate-search-index": "npx tsx src/scripts/search-indexer.ts",
-  		"validate-content": "npm run validate-mermaid && npm run generate-menu && npm run generate-search-index"
+  		"validate-content": "npm run validate-mermaid && npm run generate-content-menu && npm run generate-search-index"
   	}
   }
   ```
@@ -651,7 +323,7 @@ You are responsible for developing a TypeScript search index generator script th
   run: |
     pnpm run test src/test/scripts/
     pnpm run validate-mermaid src/data/
-    pnpm run generate-menu
+    pnpm run generate-content-menu
     pnpm run generate-search-index
 ```
 
@@ -674,10 +346,19 @@ You are responsible for developing a TypeScript search index generator script th
 - ✅ All package.json scripts functional
 - ✅ CI/CD integration functional
 
+**Script Validation Requirements:**
+
+- ✅ Script-specific validation enabled with prettier and eslint (no svelte-check)
+- ✅ Auto-fix capabilities for formatting and simple lint errors
+- ✅ Validation runs automatically after search index generation
+- ✅ Real-time streaming output during validation
+- ✅ Target-specific validation (validates generated search index file)
+- ✅ Uses runScriptValidation() from validation-utils.ts library
+
 **Verification Notes:**
 
 - **Lunr.js Updates**: Check for Lunr.js version updates and new indexing features
-- **Search Architecture**: Review SEARCH-ARCHITECTURE.md for index structure changes
+- **Search Architecture**: Review PLAN-SEARCH-ARCHITECTURE.md for index structure changes
 
 **Documentation to Update:**
 
@@ -700,6 +381,11 @@ You are responsible for developing a TypeScript flat navigation generator script
 - `src/data/generated/content-menu.ts` (generated navigation structure from Task 3A)
 - `CONTENT-STANDARDS.md` (content structure requirements)
 - `SVELTEKIT-GUIDE.md` (navigation architecture standards)
+
+**Type Reuse Requirement:**
+
+- Before implementing any data structure or interface, check for existing types in `src/lib/types`. Reuse or extend these types for all validation results, error objects, and diagram representations. Document any type reuse or extension in the script comments.
+- Explore and try to reuse classes/functions from src/lib/utils/ if applicable.
 
 **Prerequisites:**
 
@@ -809,6 +495,15 @@ interface FlatNavStructure {
 - ✅ Previous/next navigation functional across all content
 - ✅ Makefile and package.json integration working
 
+**Script Validation Requirements:**
+
+- ✅ Script-specific validation enabled with prettier and eslint (no svelte-check)
+- ✅ Auto-fix capabilities for formatting and simple lint errors
+- ✅ Validation runs automatically after flat navigation generation
+- ✅ Real-time streaming output during validation
+- ✅ Target-specific validation (validates generated flatnav file)
+- ✅ Uses runScriptValidation() from validation-utils.ts library
+
 **Verification Notes:**
 
 - **Content Structure Updates**: Verify navigation sequence when content menu changes
@@ -821,6 +516,73 @@ interface FlatNavStructure {
 - Sequential navigation architecture
 - Previous/next navigation implementation guide
 - URL-based navigation patterns
+
+---
+
+### TASK 3F: Tooling Integration & Workflow Automation
+
+**Agent Responsibility:**
+You are responsible for refactoring core logic into reusable modules and creating high-level automated workflows to ensure project consistency after content modifications. This task connects the individual scripts into a cohesive, automated system.
+
+**Technical Documents to Review:**
+
+- `@PLAN-CONTENT-GENERATION-PLAN.md` (Defines the target architecture)
+- `TASK 3C: Mermaid Validator Script` (The logic to be refactored)
+- All foundation scripts (`generate-content-menu`, `content-creator`, etc.)
+
+**Prerequisites:**
+
+- All other Task 3 scripts (3A-3E) are complete.
+
+---
+
+#### **Implementation Details**
+
+This task is divided into two main parts: refactoring for reusability and creating automated workflows.
+
+**1. Refactor for Reusable Libraries**
+
+- **Goal:** Decouple core logic from CLI execution to allow for internal reuse across different tools, as specified in the `@PLAN-CONTENT-GENERATION-PLAN.md` architecture.
+- **Action (Mermaid Validator):**
+  - The core Mermaid diagram validation logic from `mermaid-validator.ts` (TASK 3C) **must** be extracted into a new, reusable function within `src/lib/utils/validation-utils.ts`.
+  - This function must be pure; it should accept a Mermaid definition string as input and return a structured result (e.g., `{ isValid: boolean; error?: string; }`). It must not log directly to the console.
+  - The `validate` command of the `content-creator` CLI will then import and use this function to perform its content-specific validation step.
+
+**2. Define Automated Content Workflows**
+
+- **Goal:** Create high-level, composite scripts for developers and agents to run after making specific types of changes. This avoids having to manually run multiple scripts in the correct order.
+- **Action (Script Chaining):**
+  - These workflows should be defined in the `scripts` section of `package.json`.
+  - **Do not** have scripts call each other internally. Orchestrate the sequence in `package.json` to keep the tools decoupled.
+  - Create the following composite scripts:
+    - **`"workflow:metadata"`**: To be run after structural changes to `CONTENT.md`.
+
+      ```json
+      "workflow:metadata": "pnpm run generate-content-menu && pnpm run content-creator scaffold && pnpm run generate-flatnav && pnpm run generate-search-index"
+      ```
+
+    - **`"workflow:content"`**: To be run after real content is created or updated with the `content-creator` CLI.
+      ```json
+      "workflow:content": "pnpm run generate-flatnav && pnpm run generate-search-index"
+      ```
+
+- **Agent Instruction:** Any agent tasked with creating or modifying content structure should be instructed to run the appropriate workflow script (e.g., `pnpm run workflow:metadata`) as the final step of their task.
+
+---
+
+#### **Expected Output:**
+
+- An updated `src/lib/utils/validation-utils.ts` containing the reusable Mermaid validation function.
+- An updated `mermaid-validator.ts` script that is now a thin wrapper around the new reusable function.
+- New `workflow:metadata` and `workflow:content` scripts in `package.json`.
+- Updated documentation instructing developers and agents on when to use these new workflow commands.
+
+#### **Final Validations:**
+
+- ✅ The `validate` command in the `content-creator` CLI successfully uses the refactored Mermaid validation function.
+- ✅ Running `pnpm run workflow:metadata` executes the four scripts in the correct order.
+- ✅ Running `pnpm run workflow:content` executes the two scripts in the correct order.
+- ✅ The project remains in a consistent state after running the workflows.
 
 ---
 
@@ -1067,7 +829,7 @@ You are responsible for implementing core UI components using shadcn-svelte with
 - `src/lib/stores/theme.ts` (theme system)
 - `src/app.css` (centralized CSS architecture)
 - `SVELTEKIT-GUIDE.md` (component requirements)
-- `SVELTEKIT-GUIDE.md` (component patterns, Svelte 5 runes syntax, enum-first patterns - CRITICAL)
+- `SVELTEKIT-GUIDE.md` (component patterns, Svelte 5 runes syntax, union-first patterns - CRITICAL)
 
 **Prerequisites:**
 
@@ -1440,7 +1202,7 @@ You are responsible for developing a responsive sidebar navigation component usi
 
 **Technical Documents to Review:**
 
-- `SVELTEKIT-GUIDE.md` (Svelte 5 runes syntax, enum-first patterns, centralized CSS - CRITICAL)
+- `SVELTEKIT-GUIDE.md` (Svelte 5 runes syntax, union-first patterns, centralized CSS - CRITICAL)
 - `src/lib/types/navigation.ts` (navigation structure from Task 2)
 - `src/lib/components/ui/` (shadcn-svelte components from Task 6)
 - `src/app.css` (centralized CSS architecture from Task 5)
@@ -1474,17 +1236,17 @@ You are responsible for developing a responsive sidebar navigation component usi
    </script>
    ```
 
-2. **Enum-First Navigation Structure**:
+2. **Union-First Navigation Structure**:
 
    ```typescript
-   // Use navigation enums from types.ts
+   // Use navigation unions from types.ts
    import { NavigationSection, ComponentState } from "$data/types.js";
 
    interface NavigationItem {
    	id: string;
    	title: string;
-   	section: NavigationSection; // Enum constraint
-   	state: ComponentState; // Enum constraint
+   	section: NavigationSection; // Union constraint
+   	state: ComponentState; // Union constraint
    	icon?: string;
    	children?: NavigationItem[];
    }
@@ -1513,7 +1275,7 @@ You are responsible for developing a responsive sidebar navigation component usi
 **Component Specifications:**
 
 - **Component**: `src/lib/components/navigation/Sidebar.svelte`
-- **Props Interface**: TypeScript interface with enum constraints for navigation items, active states, and callbacks
+- **Props Interface**: TypeScript interface with union constraints for navigation items, active states, and callbacks
 - **Responsive Design**: Mobile-first with collapsible behavior (≤390px)
 - **Theme Integration**: Light/dark mode support with proper contrast following centralized CSS
 - **Accessibility**: Keyboard navigation and screen reader support
@@ -1528,9 +1290,9 @@ You are responsible for developing a responsive sidebar navigation component usi
   - ✅ Component rendering with Svelte 5 runes
   - ✅ Responsive behavior at breakpoints (≤390px, ≥768px)
   - ✅ Theme switching functionality
-  - ✅ Navigation item interaction with enum validation
+  - ✅ Navigation item interaction with union validation
   - ✅ Accessibility compliance (keyboard navigation, ARIA attributes)
-  - ✅ Enum-first pattern validation
+  - ✅ Union-first pattern validation
   - ✅ Props interface compliance
 
 **Refactor Protection Tests:**
@@ -1542,7 +1304,7 @@ import { NavigationSection, ComponentState } from "$data/types.js";
 import Sidebar from "$lib/components/navigation/Sidebar.svelte";
 
 describe("Sidebar Component", () => {
-	test("renders with enum-based navigation items", () => {
+	test("renders with union-based navigation items", () => {
 		const items = [
 			{
 				id: "lessons",
@@ -1567,7 +1329,7 @@ describe("Sidebar Component", () => {
 - `src/lib/components/navigation/Sidebar.svelte` (with Svelte 5 runes)
 - `src/test/components/navigation/Sidebar.test.ts` (comprehensive test suite)
 - `src/app.css` (sidebar styles in `@layer components`)
-- TypeScript interfaces with enum constraints for sidebar props
+- TypeScript interfaces with union constraints for sidebar props
 - Responsive CSS styles following centralized architecture
 
 **Final Validations:**
@@ -1575,7 +1337,7 @@ describe("Sidebar Component", () => {
 - ✅ Component renders correctly with Svelte 5 runes syntax
 - ✅ Mobile responsive behavior (≤390px tested)
 - ✅ Theme switching functional with centralized CSS
-- ✅ TypeScript compilation without errors using enum constraints
+- ✅ TypeScript compilation without errors using union constraints
 - ✅ All tests pass and protect against regressions
 - ✅ No `@apply` usage in component `<style>` blocks
 - ✅ Union type-first patterns implemented throughout
@@ -1585,13 +1347,13 @@ describe("Sidebar Component", () => {
 
 - **SVELTEKIT-GUIDE Updates**: Check for changes in component architecture or CSS patterns
 - **shadcn-svelte Updates**: Verify compatibility with navigation components
-- **Navigation Structure**: Review types.ts for navigation enum updates
+- **Navigation Structure**: Review types.ts for navigation union updates
 
 **Documentation to Update:**
 
 - Sidebar component specifications with Svelte 5 runes examples
 - Test suite documentation and refactor protection patterns
-- Navigation interface usage with enum constraints
+- Navigation interface usage with union constraints
 - Responsive design patterns following centralized CSS approach
 
 **Final Validations:**
@@ -1657,7 +1419,7 @@ You are responsible for developing a dynamic breadcrumb navigation component wit
 
 **Technical Documents to Review:**
 
-- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and enum-based navigation)
+- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and union-based navigation)
 - `src/lib/types/` (navigation and content type system)
 - `SVELTEKIT-GUIDE.md` (hierarchical navigation system)
 
@@ -1669,14 +1431,14 @@ You are responsible for developing a dynamic breadcrumb navigation component wit
 
 - **Component**: `src/lib/components/navigation/Breadcrumb.svelte`
 - **Dynamic Generation**: Auto-generate breadcrumbs from current route and content type
-- **Enum Integration**: Use ChapterType and navigation enums for type safety
+- **Union Integration**: Use ChapterType and navigation unions for type safety
 - **Mobile Optimization**: Truncation and collapsing for narrow screens
 - **Interactive Elements**: Clickable navigation with proper routing
 
 **Subtask: Breadcrumb Testing Suite**
 
 - **Test File**: `src/test/components/navigation/Breadcrumb.test.ts`
-- **Coverage**: Dynamic generation, route navigation, mobile truncation, enum integration
+- **Coverage**: Dynamic generation, route navigation, mobile truncation, union integration
 - **Refactor Protection**: Ensures navigation consistency during route changes
 
 **Expected Output:**
@@ -1689,7 +1451,7 @@ You are responsible for developing a dynamic breadcrumb navigation component wit
 **Final Validations:**
 
 - ✅ SVELTEKIT-GUIDE.md compliance verified
-- ✅ Enum-based navigation working
+- ✅ Union-based navigation working
 - ✅ Mobile truncation functional (≤390px)
 - ✅ Test suite covers all navigation scenarios
 - ✅ Dynamic generation accurate
@@ -1705,7 +1467,7 @@ You are responsible for developing comprehensive search functionality with Searc
 
 - `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and component standards)
 - `src/scripts/search-indexer.ts` (search foundation from TASK 3D)
-- `SEARCH-ARCHITECTURE.md` (search specifications)
+- `PLAN-SEARCH-ARCHITECTURE.md` (search specifications)
 - `SVELTEKIT-GUIDE.md` (enhanced search implementation)
 
 **Prerequisites:**
@@ -1845,7 +1607,7 @@ You are responsible for developing progress tracking components with visual indi
 **Technical Documents to Review:**
 
 - `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and derived state)
-- `src/types/enums.ts` (progress status enums)
+- `src/types/types.ts` (progress status unions)
 - `SVELTEKIT-GUIDE.md` (progress tracking system)
 
 **Prerequisites:**
@@ -1856,14 +1618,14 @@ You are responsible for developing progress tracking components with visual indi
 
 - **Components**: `src/lib/components/progress/ProgressBar.svelte`, `ProgressRing.svelte`
 - **Visual Indicators**: Progress bars, rings, and percentage displays
-- **Enum Integration**: Use ProgressStatus enum for type safety
+- **Union Integration**: Use ProgressStatus union for type safety
 - **Mobile Optimization**: Touch-friendly progress visualization
 - **Real-time Updates**: Dynamic progress calculation from content completion
 
 **Subtask: Progress Testing Suite**
 
 - **Test File**: `src/test/components/progress/Progress.test.ts`
-- **Coverage**: Progress calculation, visual updates, enum integration, mobile display
+- **Coverage**: Progress calculation, visual updates, union integration, mobile display
 - **Refactor Protection**: Ensures progress accuracy during content structure changes
 
 **Expected Output:**
@@ -1880,7 +1642,7 @@ You are responsible for developing progress tracking components with visual indi
 - ✅ Progress calculation accurate
 - ✅ Mobile-optimized display
 - ✅ Test suite validates progress logic
-- ✅ Enum integration working
+- ✅ Union integration working
 
 ---
 
@@ -1938,7 +1700,7 @@ You are responsible for developing a unified navigation system that integrates s
 
 **Technical Documents to Review:**
 
-- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and enum-based routing)
+- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and union-based routing)
 - Previous Tasks 8A-8C (Sidebar, Header, Breadcrumb implementations)
 - `src/types/navigation.ts` (navigation and routing structure)
 
@@ -1997,7 +1759,7 @@ You are responsible for developing specialized navigation components for quiz an
 **Technical Documents to Review:**
 
 - `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and conditional rendering)
-- `src/types/enums.ts` (ChapterType.QUIZ and ChapterType.EXAM)
+- `src/types/types.ts` (quiz and exam)
 - `CONTENT-STANDARDS.md` (quiz and exam structure requirements)
 
 **Prerequisites:**
@@ -2010,7 +1772,7 @@ You are responsible for developing specialized navigation components for quiz an
 - **Question Navigation**: Previous/Next question controls with progress indicators
 - **Progress Tracking**: Visual progress through quiz/exam with question status
 - **Mobile Controls**: Touch-friendly navigation buttons for mobile devices
-- **State Management**: Question completion tracking with enum-based status
+- **State Management**: Question completion tracking with union-based status
 
 **Subtask: Quiz/Exam Navigation Testing Suite**
 
@@ -2264,7 +2026,7 @@ You are responsible for integrating all developed UI components (Tasks 8A-8N) in
 
 **Technical Documents to Review:**
 
-- `SVELTEKIT-GUIDE.md` (Svelte 5 integration patterns, centralized CSS, enum-first architecture - CRITICAL)
+- `SVELTEKIT-GUIDE.md` (Svelte 5 integration patterns, centralized CSS, union-first architecture - CRITICAL)
 - All Task 8A-8N implementations (component outputs)
 - `src/app.css` (centralized component styles)
 - `src/lib/types/` (unified type system for component integration)
@@ -2296,7 +2058,7 @@ You are responsible for integrating all developed UI components (Tasks 8A-8N) in
    - **Theme Consistency**: All components respond to theme changes correctly
    - **Mobile Coordination**: Components maintain mobile-first behavior when integrated
    - **Z-Index Hierarchy**: No stacking context violations when components are combined
-   - **Enum Integration**: All components use enum-first patterns consistently
+   - **Union Integration**: All components use union-first patterns consistently
 
 3. **Centralized CSS Validation**:
    - **No Component-Level @apply**: Verify no components violate Tailwind v4 compatibility
@@ -2310,7 +2072,7 @@ You are responsible for integrating all developed UI components (Tasks 8A-8N) in
 - **Component**: `src/routes/scaffold-demo/+page.svelte`
 - **Purpose**: Demonstrate all components working together in realistic scenarios
 - **Layout**: Full application layout with all navigation, content, and interactive elements
-- **Content**: Mock content using enum-based types to test all component states
+- **Content**: Mock content using union-based types to test all component states
 - **Mobile Testing**: Comprehensive mobile experience verification
 
 **2. Component Showcase Sections**:
@@ -2367,7 +2129,7 @@ const scaffoldSections: ScaffoldSection[] = [
 - ✅ All 14 components (8A-8N) render without conflicts
 - ✅ Component state management works correctly when integrated
 - ✅ No CSS class name conflicts between components
-- ✅ All components follow enum-first patterns consistently
+- ✅ All components follow union-first patterns consistently
 - ✅ TypeScript compilation without errors across all components
 
 **Theme System Verification**:
@@ -2391,7 +2153,7 @@ const scaffoldSections: ScaffoldSection[] = [
 - ✅ All styles properly centralized in `src/app.css` using `@layer components`
 - ✅ Z-index hierarchy respected across all components (no stacking violations)
 - ✅ Svelte 5 runes syntax used consistently across all components
-- ✅ No hardcoded string values - all use enum-first patterns
+- ✅ No hardcoded string values - all use union-first patterns
 
 **Performance Verification**:
 
@@ -2415,7 +2177,7 @@ const scaffoldSections: ScaffoldSection[] = [
 - ✅ Scaffold demo shows complete application functionality
 - ✅ Mobile experience verified across all breakpoints (≤390px, ≥768px, ≥1024px)
 - ✅ Theme switching works flawlessly across all components
-- ✅ No architectural violations (CSS, TypeScript, enum-first patterns)
+- ✅ No architectural violations (CSS, TypeScript, union-first patterns)
 - ✅ Performance benchmarks met
 - ✅ Accessibility standards maintained across integrated system
 - ✅ All integration tests pass
@@ -2489,14 +2251,14 @@ You are responsible for migrating content structure to `src/data/book/` with con
 ### TASK 10: Quality Assurance & Validation Pipeline
 
 **Agent Responsibility:**
-You are responsible for implementing comprehensive testing strategy, validation pipelines, and quality gates to ensure production readiness with mobile-first validation and enum compliance.
+You are responsible for implementing comprehensive testing strategy, validation pipelines, and quality gates to ensure production readiness with mobile-first validation and union compliance.
 
 **Technical Documents to Review:**
 
 - `SVELTEKIT-GUIDE.md` (validation requirements)
 - `CONTENT-STANDARDS.md` (testing standards)
 - All implemented components and scripts
-- `src/types/enums.ts` (enum definitions)
+- `src/types/enums.ts` (union definitions)
 
 **Prerequisites:**
 
@@ -2506,7 +2268,7 @@ You are responsible for implementing comprehensive testing strategy, validation 
 
 1. Validation Pipeline Setup (automated validation commands)
 2. Mobile-first Testing (responsive design validation)
-3. Enum Compliance Testing (type safety verification)
+3. Union Compliance Testing (type safety verification)
 4. Integration Testing (end-to-end functionality)
 5. Performance testing and optimization
 
@@ -2514,7 +2276,7 @@ You are responsible for implementing comprehensive testing strategy, validation 
 
 - `src/scripts/validate-all.sh` (validation pipeline)
 - `src/scripts/validate-mobile.ts` (mobile testing)
-- `src/scripts/validate-enum-usage.ts` (enum compliance)
+- `src/scripts/validate-union-usage.ts` (union compliance)
 - Complete test suite
 - Quality gates documentation
 
@@ -2623,7 +2385,7 @@ You are responsible for developing comprehensive lesson content for Unit 1 (Pyth
 2. Generate TypeScript lesson files using scaffolding script
 3. Create comprehensive technical content with practical examples
 4. Include hands-on exercises and real-world scenarios
-5. Ensure mobile-first content design and enum compliance
+5. Ensure mobile-first content design and union compliance
 
 **Expected Output:**
 
@@ -2635,7 +2397,7 @@ You are responsible for developing comprehensive lesson content for Unit 1 (Pyth
 **Final Validations:**
 
 - ✅ All 9 lessons fully developed with technical depth
-- ✅ Content follows enum-first patterns
+- ✅ Content follows union-first patterns
 - ✅ Practical examples functional and tested
 - ✅ Mobile-first content design
 - ✅ Integration with existing unit structure
@@ -2847,7 +2609,7 @@ You are responsible for developing comprehensive lesson content for Unit 2 (Go f
 2. Generate TypeScript lesson files using scaffolding script
 3. Create comprehensive technical content with concurrency focus
 4. Include hands-on exercises and performance examples
-5. Ensure mobile-first content design and enum compliance
+5. Ensure mobile-first content design and union compliance
 
 **Expected Output:**
 
@@ -2859,7 +2621,7 @@ You are responsible for developing comprehensive lesson content for Unit 2 (Go f
 **Final Validations:**
 
 - ✅ All 9 lessons fully developed with Go-specific depth
-- ✅ Content follows enum-first patterns
+- ✅ Content follows union-first patterns
 - ✅ Concurrency examples functional and tested
 - ✅ Mobile-first content design
 - ✅ Integration with existing unit structure
@@ -3078,7 +2840,7 @@ You are responsible for extending existing Python and Go units with comprehensiv
 
 **Final Validations:**
 
-- ✅ Content follows enum-first patterns
+- ✅ Content follows union-first patterns
 - ✅ TypeScript compilation successful
 - ✅ Mobile responsive content design
 - ✅ Practical examples functional
@@ -3303,16 +3065,16 @@ You are responsible for creating a comprehensive GraphQL unit with modern API de
 **Quality Gates:**
 
 - ✅ Zero TypeScript errors
-- ✅ Enum compliance verified (no hardcoded strings)
+- ✅ Union compliance verified (no hardcoded strings)
 - ✅ Mobile responsive confirmed (≤390px)
 - ✅ Documentation updated
 - ✅ Integration tests passing
 
 ### Target Architecture:
 
-- **Foundation**: Enum-first TypeScript with shadcn-svelte SPA
+- **Foundation**: Union-first TypeScript with shadcn-svelte SPA
 - **Content Format**: TypeScript files in `src/data/book/unit-{name}/`
-- **File Naming**: `{chapterType}_{kebab-case-id}.ts` (enum-based)
+- **File Naming**: `{chapterType}_{kebab-case-id}.ts` (union-based)
 - **Rendering**: ChapterType-based renderers with differentiated headers
 - **Validation**: Comprehensive testing with mobile-first approach
 

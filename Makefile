@@ -1,4 +1,4 @@
-.PHONY: help setup install run build clean validate validate-bash validate-python check lint format test validate-content
+.PHONY: help setup install run build clean validate validate-bash check lint format test validate-content
 
 # Load environment variables from .env file
 ifneq (,$(wildcard .env))
@@ -38,7 +38,13 @@ format: ## Format code with Prettier
 	pnpm run format
 
 # Validation targets
-validate: validate-bash validate-python validate-content ## Run all validation checks
+validate: validate-bash validate-content validate-scripts ## Run all validation checks
+
+# Script validation examples:
+# make validate-script TARGETS="src/scripts/file1.ts src/scripts/file2.ts"
+# make validate-script TARGETS="src/data/book/ src/data/generated/"
+# make format-script TARGETS="src/scripts/content-scaffolding.ts"
+# make validate-script-single FILE="src/config/settings.ts"
 
 validate-bash: ## Validate bash scripts with shellcheck
 	@echo "🔍 Validating Bash scripts..."
@@ -50,15 +56,6 @@ validate-bash: ## Validate bash scripts with shellcheck
 	done || echo "No bash scripts found to validate"
 	@echo "✅ Bash script validation completed"
 
-validate-python: ## Validate Python scripts
-	@echo "� Validating Python scripts..."
-	@find src/python tmp/python -name "*.py" -type f 2>/dev/null | while read -r script; do \
-		if [ -f "$$script" ]; then \
-			echo "Checking $$script"; \
-			python3 -m py_compile "$$script" || exit 1; \
-		fi \
-	done || echo "No Python scripts found to validate"
-	@echo "✅ Python script validation completed"
 
 validate-content: ## Validate content JSON structure
 	@echo "🔍 Validating content structure..."
@@ -67,6 +64,55 @@ validate-content: ## Validate content JSON structure
 		python3 -m json.tool "$$file" > /dev/null || exit 1; \
 	done || echo "No JSON content files found to validate"
 	@echo "✅ Content validation completed"
+
+validate-scripts: ## Validate TypeScript utility scripts with prettier and eslint
+	@echo "🔍 Validating TypeScript scripts..."
+	@pnpm run validate:scripts
+	@echo "✅ Script validation completed"
+
+validate-script: ## Validate specific TypeScript files/directories (usage: make validate-script TARGETS="path1 path2")
+	@echo "🔍 Validating TypeScript files/directories: $(TARGETS)"
+	@if [ -z "$(TARGETS)" ]; then \
+		echo "❌ Please provide TARGETS parameter: make validate-script TARGETS=\"path1 path2\""; \
+		exit 1; \
+	fi
+	@for target in $(TARGETS); do \
+		echo "🔍 Validating: $$target"; \
+		pnpm run format:check "$$target" || exit 1; \
+		pnpm run lint:check "$$target" || exit 1; \
+	done
+	@echo "✅ Script validation completed for: $(TARGETS)"
+
+format-script: ## Format TypeScript files/directories with auto-fix (usage: make format-script TARGETS="path1 path2")
+	@echo "🎨 Formatting TypeScript files/directories: $(TARGETS)"
+	@if [ -z "$(TARGETS)" ]; then \
+		echo "❌ Please provide TARGETS parameter: make format-script TARGETS=\"path1 path2\""; \
+		exit 1; \
+	fi
+	@for target in $(TARGETS); do \
+		echo "🎨 Formatting: $$target"; \
+		pnpm run format:fix "$$target" || exit 1; \
+		pnpm run lint:fix "$$target" || exit 1; \
+	done
+	@echo "✅ Script formatting completed for: $(TARGETS)"
+
+validate-script-single: ## Validate single TypeScript file (usage: make validate-script-single FILE=path/to/file.ts)
+	@echo "🔍 Validating script: $(FILE)"
+	@if [ -z "$(FILE)" ]; then \
+		echo "❌ Please provide FILE parameter: make validate-script-single FILE=path/to/file.ts"; \
+		exit 1; \
+	fi
+	@pnpm run format:check "$(FILE)" && pnpm run lint:check "$(FILE)"
+	@echo "✅ Script validation completed for $(FILE)"
+
+format-script-single: ## Format single TypeScript file with auto-fix (usage: make format-script-single FILE=path/to/file.ts)
+	@echo "🎨 Formatting script: $(FILE)"
+	@if [ -z "$(FILE)" ]; then \
+		echo "❌ Please provide FILE parameter: make format-script-single FILE=path/to/file.ts"; \
+		exit 1; \
+	fi
+	@pnpm run format:fix "$(FILE)" && pnpm run lint:fix "$(FILE)"
+	@echo "✅ Script formatting completed for $(FILE)"
 
 # Testing
 test: ## Run tests
@@ -78,9 +124,6 @@ test-unit: ## Run unit tests only
 test-e2e: ## Run end-to-end tests
 	pnpm run test:e2e
 
-test-python-unit: ## Run Python unit tests
-	@echo "🧪 Running Python unit tests..."
-	@python3 -m pytest src/test/python/ -v 2>/dev/null || echo "No Python tests found or pytest not installed"
 
 test-scripts: ## Run tests for utility scripts in src/test/scripts
 	@echo "🧪 Running script tests..."
@@ -114,27 +157,34 @@ dev-tools: ## Install additional development tools
 	pnpm add -D @types/node
 	@echo "✅ Development tools installed"
 
-# Content management
+# Content generation
 generate-content-menu: ## Generate content-menu.ts from CONTENT.md
 	@echo "🔄 Generating content-menu.ts from CONTENT.md..."
 	@npx tsx src/scripts/content-menu-generator.ts
 	@echo "✅ Content generation complete!"
 
-generate-menu: generate-content-menu ## Alias for generate-content-menu
+scaffold-content: ## Generate TypeScript content scaffolding (New TypeScript implementation)
+	@echo "🔄 Generating TypeScript content scaffolding..."
+	@npx tsx src/scripts/content-scaffolding.ts $(ARGS)
+	@echo "✅ TypeScript content scaffolding complete!"
 
-generate-content-scaffolding: ## Generate placeholder TypeScript content files from content-menu.ts
-	@echo "🔄 Generating content scaffolding files..."
-	@PYTHONPYCACHEPREFIX=tmp/pycache python3 src/python/generate_content_scaffolding.py
-	@echo "✅ Content scaffolding generation complete!"
+generate-all-content: generate-content-menu scaffold-content validate-generated-full ## Generate all content files and validate them
+	@echo "🎉 All content generation and validation completed successfully!"
 
-validate-typescript: ## Validate generated TypeScript content files
-	@echo "🔍 Validating TypeScript content files..."
+# Project-wide validation
+validate-typescript: ## Run full SvelteKit TypeScript check (svelte-check for entire project)
+	@echo "🔍 Running full SvelteKit TypeScript validation..."
 	@pnpm run check
-	@echo "✅ TypeScript validation complete!"
+	@echo "✅ Full TypeScript validation complete!"
 
-validate-content-typescript: ## Validate only generated content TypeScript files in src/data/book/
+# Generated content validation
+
+validate-generated-full: ## Validate generated content TypeScript files with format, lint, and TypeScript check
 	@echo "🔍 Validating generated content TypeScript files..."
 	@if [ -d "src/data/book" ]; then \
+		echo "✅ Found src/data/book directory"; \
+		$(MAKE) validate-script TARGETS="src/data/book/"; \
+		echo "🔍 Running TypeScript syntax check..."; \
 		find src/data/book -name "*.ts" -exec npx tsc --noEmit {} + 2>/dev/null && \
 		echo "✅ All content files are syntactically valid" || \
 		echo "⚠️  Some content files have syntax issues"; \
@@ -143,8 +193,59 @@ validate-content-typescript: ## Validate only generated content TypeScript files
 	fi
 	@echo "✅ Content TypeScript validation complete!"
 
-generate-all-content: generate-content-menu generate-content-scaffolding validate-content-typescript ## Generate all content files and validate them
-	@echo "🎉 All content generation and validation completed successfully!"
+validate-generated: ## Validate generated content files with format and lint only (no svelte-check)
+	@echo "🔍 Validating all generated content files..."
+	@echo "📁 Checking if src/data/book exists..."
+	@if [ -d "src/data/book" ]; then \
+		echo "✅ Found src/data/book directory"; \
+		if $(MAKE) validate-script TARGETS="src/data/book/"; then \
+			echo "✅ All validations passed for generated content!"; \
+		else \
+			echo "❌ Generated content validation failed!"; \
+			exit 1; \
+		fi; \
+	else \
+		echo "📁 No generated content files found in src/data/book/"; \
+	fi
+	@echo "✅ Generated content validation complete!"
+
+validate-menu-file: ## Validate generated content-menu.ts file with format and lint only (no svelte-check)
+	@echo "🔍 Validating generated content-menu.ts..."
+	@if [ -f "src/data/generated/content-menu.ts" ]; then \
+		echo "✅ Found content-menu.ts"; \
+		if $(MAKE) validate-script-single FILE="src/data/generated/content-menu.ts"; then \
+			echo "✅ All validations passed for content-menu.ts!"; \
+		else \
+			echo "❌ Content menu validation failed!"; \
+			exit 1; \
+		fi; \
+	else \
+		echo "📁 content-menu.ts not found in src/data/generated/"; \
+	fi
+	@echo "✅ Content menu validation complete!"
+
+format-generated: ## Format generated content files with auto-fix
+	@echo "🎨 Formatting all generated content files..."
+	@echo "📁 Checking if src/data/book exists..."
+	@if [ -d "src/data/book" ]; then \
+		echo "✅ Found src/data/book directory"; \
+		$(MAKE) format-script TARGETS="src/data/book/"; \
+		echo "✅ All formatting completed for generated content!"; \
+	else \
+		echo "📁 No generated content files found in src/data/book/"; \
+	fi
+	@echo "✅ Generated content formatting complete!"
+
+format-menu-file: ## Format generated content-menu.ts file with auto-fix
+	@echo "🎨 Formatting generated content-menu.ts..."
+	@if [ -f "src/data/generated/content-menu.ts" ]; then \
+		echo "✅ Found content-menu.ts"; \
+		$(MAKE) format-script-single FILE="src/data/generated/content-menu.ts"; \
+		echo "✅ All formatting completed for content-menu.ts!"; \
+	else \
+		echo "📁 content-menu.ts not found in src/data/generated/"; \
+	fi
+	@echo "✅ Content menu formatting complete!"
 
 # CI/CD support
 ci-install: ## Install dependencies in CI environment

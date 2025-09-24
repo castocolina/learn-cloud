@@ -4,7 +4,7 @@ export const contentMenu: MenuStructure = {
 	metadata: {
 		title: "Mastering Cloud-Native Technologies",
 		totalUnits: 9,
-		totalChapters: 120,
+		totalChapters: 129,
 		version: "2.0.0"
 	},
 	units: [
@@ -17,6 +17,17 @@ export const contentMenu: MenuStructure = {
 			technologyUnit: "python",
 			unitNumber: 1,
 			chapters: [
+				{
+					id: "00_01",
+					title: "Unit 1: Overview - Python for Cloud-Native Backend Development",
+					icon: "BookOpen",
+					type: "overview",
+					chapterNumber: "0.0",
+					chapterLink:
+						"book/unit/01/01_00_overview_python_for_cloud-native_backend_development.html",
+					chapterDataLink:
+						"book/unit01/01_00_overview_python_for_cloud-native_backend_development.ts"
+				},
 				{
 					id: "01_01",
 					title: "1.1: Development Environment & Tooling",
@@ -487,6 +498,15 @@ export const contentMenu: MenuStructure = {
 			unitNumber: 2,
 			chapters: [
 				{
+					id: "00_02",
+					title: "Unit 2: Overview - Go for Cloud-Native Backend Development",
+					icon: "BookOpen",
+					type: "overview",
+					chapterNumber: "0.0",
+					chapterLink: "book/unit/02/02_00_overview_go_for_cloud-native_backend_development.html",
+					chapterDataLink: "book/unit02/02_00_overview_go_for_cloud-native_backend_development.ts"
+				},
+				{
 					id: "02_01",
 					title: "2.1: Development Environment & Tooling",
 					icon: "Settings",
@@ -954,6 +974,15 @@ export const contentMenu: MenuStructure = {
 			unitNumber: 3,
 			chapters: [
 				{
+					id: "00_03",
+					title: "Unit 3: Overview - DevOps, IaC, and CI/CD",
+					icon: "BookOpen",
+					type: "overview",
+					chapterNumber: "0.0",
+					chapterLink: "book/unit/03/03_00_overview_devops_iac_and_cicd.html",
+					chapterDataLink: "book/unit03/03_00_overview_devops_iac_and_cicd.ts"
+				},
+				{
 					id: "03_01",
 					title: "3.1: Terraform for Infrastructure as Code",
 					icon: "Cloud",
@@ -1167,6 +1196,15 @@ export const contentMenu: MenuStructure = {
 			unitNumber: 4,
 			chapters: [
 				{
+					id: "00_04",
+					title: "Unit 4: Overview - Secrets and Configuration Management",
+					icon: "BookOpen",
+					type: "overview",
+					chapterNumber: "0.0",
+					chapterLink: "book/unit/04/04_00_overview_secrets_and_configuration_management.html",
+					chapterDataLink: "book/unit04/04_00_overview_secrets_and_configuration_management.ts"
+				},
+				{
 					id: "04_01",
 					title: "4.1: HashiCorp Consul",
 					icon: "Server",
@@ -1285,6 +1323,15 @@ export const contentMenu: MenuStructure = {
 			technologyUnit: "microservices",
 			unitNumber: 5,
 			chapters: [
+				{
+					id: "00_05",
+					title: "Unit 5: Overview - DevSecOps",
+					icon: "BookOpen",
+					type: "overview",
+					chapterNumber: "0.0",
+					chapterLink: "book/unit/05/05_00_overview_devsecops.html",
+					chapterDataLink: "book/unit05/05_00_overview_devsecops.ts"
+				},
 				{
 					id: "05_01",
 					title: "5.1: Secure Communication with mTLS",
@@ -1499,6 +1546,15 @@ export const contentMenu: MenuStructure = {
 			unitNumber: 6,
 			chapters: [
 				{
+					id: "00_06",
+					title: "Unit 6: Overview - Automation",
+					icon: "BookOpen",
+					type: "overview",
+					chapterNumber: "0.0",
+					chapterLink: "book/unit/06/06_00_overview_automation.html",
+					chapterDataLink: "book/unit06/06_00_overview_automation.ts"
+				},
+				{
 					id: "06_01",
 					title: "6.1: RenovateBot for Dependency Automation",
 					icon: "RefreshCw",
@@ -1570,6 +1626,15 @@ export const contentMenu: MenuStructure = {
 			technologyUnit: "microservices",
 			unitNumber: 7,
 			chapters: [
+				{
+					id: "00_07",
+					title: "Unit 7: Overview - The Serverless Ecosystem on AWS",
+					icon: "BookOpen",
+					type: "overview",
+					chapterNumber: "0.0",
+					chapterLink: "book/unit/07/07_00_overview_the_serverless_ecosystem_on_aws.html",
+					chapterDataLink: "book/unit07/07_00_overview_the_serverless_ecosystem_on_aws.ts"
+				},
 				{
 					id: "07_01",
 					title: "7.1: The Serverless Spectrum",
@@ -1831,6 +1896,15 @@ export const contentMenu: MenuStructure = {
 			unitNumber: 8,
 			chapters: [
 				{
+					id: "00_08",
+					title: "Unit 8: Overview - Systems Integration and Security",
+					icon: "BookOpen",
+					type: "overview",
+					chapterNumber: "0.0",
+					chapterLink: "book/unit/08/08_00_overview_systems_integration_and_security.html",
+					chapterDataLink: "book/unit08/08_00_overview_systems_integration_and_security.ts"
+				},
+				{
 					id: "08_01",
 					title: "8.1: Securely Connecting Services",
 					icon: "Link",
@@ -1953,6 +2027,15 @@ export const contentMenu: MenuStructure = {
 			technologyUnit: "microservices",
 			unitNumber: 9,
 			chapters: [
+				{
+					id: "00_09",
+					title: "Unit 9: Overview - Capstone Projects",
+					icon: "BookOpen",
+					type: "overview",
+					chapterNumber: "0.0",
+					chapterLink: "book/unit/09/09_00_overview_capstone_projects.html",
+					chapterDataLink: "book/unit09/09_00_overview_capstone_projects.ts"
+				},
 				{
 					id: "09_01",
 					title: "9.1: Project 1: Python-based E-Commerce Microservices",

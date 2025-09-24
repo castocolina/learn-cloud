@@ -12,9 +12,19 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "prettier --write .",
 		"lint": "prettier --check . && eslint .",
-		"generate-menu": "npx tsx src/scripts/content-menu-generator.ts",
+		"format:fix": "prettier --write",
+		"lint:fix": "eslint --fix",
+		"format:check": "prettier --check",
+		"lint:check": "eslint",
+		"validate:scripts": "prettier --write \"src/scripts/**/*.ts\" && eslint --fix \"src/scripts/**/*.ts\"",
+		"generate-content-menu": "npx tsx src/scripts/content-menu-generator.ts",
+		"scaffold-content": "tsx src/scripts/content-scaffolding.ts",
+		"validate-generated": "prettier --write \"src/data/book/\" && eslint --fix \"src/data/book/\"",
+		"validate-menu-file": "prettier --write \"src/data/generated/content-menu.ts\" && eslint --fix \"src/data/generated/content-menu.ts\"",
 		"test": "vitest",
-		"test:run": "vitest run"
+		"test:run": "vitest run",
+		"test:unit": "vitest run",
+		"test:e2e": "playwright test"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",

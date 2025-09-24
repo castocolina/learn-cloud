@@ -4,7 +4,7 @@
  * This module extends the existing search system to integrate with the unified
  * navigation architecture while maintaining backward compatibility.
  *
- * Updated to use enum-first patterns and enhanced navigation metadata.
+ * Updated to use union-first patterns and enhanced navigation metadata.
  */
 
 import type {
@@ -132,7 +132,7 @@ export interface SearchNavigationMetadata {
  * Search filters interface with enhanced filtering options
  */
 export interface SearchFilters {
-	/** Content type filter using enum */
+	/** Content type filter using union */
 	contentType?: ContentType;
 
 	/** Chapter type filter */

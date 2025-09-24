@@ -10,6 +10,7 @@ For complete agent implementation guidelines, project rules, and technical speci
 
 ## Platform-Specific Notes for Gemini
 
+- All conversational interactions **must be in English**
 - All core rules apply as specified in CLAUDE.md
 - Follow the same architectural patterns and quality standards
 - Use the same validation workflows and testing requirements

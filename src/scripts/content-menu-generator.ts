@@ -42,7 +42,7 @@
  * - Chapters with titles, icons, and links organized by type
  * - Hierarchical structure parsed from the Markdown outline
  * - Consistent URL patterns for all content types
- * - Strong TypeScript typing using enum references
+ * - Strong TypeScript typing using union references
  *
  * Usage:
  *     tsx src/scripts/content-menu-generator.ts [path]
@@ -63,6 +63,7 @@ import type {
 	ContentDifficulty
 } from "$types";
 import { generateNavigationPaths } from "$lib/utils/navigation-paths.js";
+import { runScriptValidation } from "../lib/utils/validation-utils.js";
 
 // Configuration constants
 const CONFIG = {
@@ -602,6 +603,41 @@ export class MarkdownContentGenerator {
 	}
 
 	/**
+	 * Create an overview chapter for a unit
+	 */
+	private createOverviewChapter(unit: MenuUnit): MenuChapter {
+		const unitNum = unit.unitNumber.toString();
+
+		// Extract unit title without "Unit X: " prefix for overview title
+		const unitTitleWithoutPrefix = unit.title.replace(/^Unit \d+:\s*/, "");
+		const overviewTitle = `Unit ${unitNum}: Overview - ${unitTitleWithoutPrefix}`;
+
+		// Use unified path generation system for overview
+		const config: UnifiedPathConfig = {
+			contentType: "overview",
+			unitNum,
+			chapterNum: "0", // Pass chapter "0" to generate {unit}_00 format
+			titleSlug: unitTitleWithoutPrefix
+		};
+
+		const paths = generateNavigationPaths(config);
+
+		// Create overview chapter with consistent ID format: {unit_padded}_00
+		const overviewChapter: MenuChapter = {
+			id: paths.id, // Use the paths.id from navigation utility for consistency
+			title: overviewTitle,
+			icon: "BookOpen", // Default icon for overview
+			type: "overview",
+			chapterNumber: "0.0", // Special chapter number for overview
+			chapterLink: paths.htmlPath,
+			chapterDataLink: paths.dataPath
+		};
+
+		console.log(`Created overview chapter with ID: ${overviewChapter.id}`);
+		return overviewChapter;
+	}
+
+	/**
 	 * Parse markdown structure and extract hierarchical content with enhanced table support
 	 */
 	private parseMarkdownStructure(content: string): MenuUnit[] {
@@ -714,6 +750,13 @@ export class MarkdownContentGenerator {
 			units.push(currentUnit);
 		}
 
+		// Automatically prepend overview chapters to each unit
+		for (const unit of units) {
+			const overviewChapter = this.createOverviewChapter(unit);
+			unit.chapters.unshift(overviewChapter);
+			console.log(`Added overview chapter for ${unit.title}`);
+		}
+
 		const totalChapters = units.reduce((sum, unit) => sum + unit.chapters.length, 0);
 		console.log(`Parsed ${units.length} units with ${totalChapters} total chapters`);
 		return units;
@@ -792,7 +835,7 @@ export class MarkdownContentGenerator {
 		} else if (typeof value === "number") {
 			return String(value);
 		} else if (typeof value === "string") {
-			// Handle enum references (don't quote them)
+			// Handle union references (don't quote them)
 			if (value.startsWith("ChapterType.")) {
 				return value;
 			}
@@ -937,6 +980,8 @@ export const contentMenu: MenuStructure = ${typescriptObject};
 		}
 	}
 
+	// Validation logic moved to src/lib/utils/validation-utils.ts for reusability
+
 	/**
 	 * Main generation process
 	 */
@@ -968,6 +1013,13 @@ export const contentMenu: MenuStructure = ${typescriptObject};
 			this.writeTypeScriptFile(typescriptContent);
 
 			console.log(`${CONFIG.OUTPUT_FILE_NAME} generation completed successfully`);
+
+			// Run script validation if enabled
+			const validationResults = await runScriptValidation(this.outputPath);
+			const hasFailures = validationResults.some((result) => !result.success);
+			if (hasFailures) {
+				console.error("⚠️  Some validation checks failed, but generation was successful");
+			}
 
 			// Summary
 			const totalChapters = units.reduce((sum, unit) => sum + unit.chapters.length, 0);

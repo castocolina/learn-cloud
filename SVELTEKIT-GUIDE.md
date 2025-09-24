@@ -422,7 +422,7 @@ export type ChapterType = "lesson" | "study_guide" | "quiz";
 export const CONTENT_STATUSES: ContentStatus[] = ["scaffold", "draft", "final"];
 ```
 
-**🔗 Domain Integration**: See CONTENT-STANDARDS.md and SEARCH-ARCHITECTURE.md for complete interfaces.
+**🔗 Domain Integration**: See CONTENT-STANDARDS.md and PLAN-SEARCH-ARCHITECTURE.md for complete interfaces.
 
 **🛠️ Refactoring Steps**:
 
@@ -453,11 +453,11 @@ export const CONTENT_STATUSES: ContentStatus[] = ["scaffold", "draft", "final"];
 **During**: Update types.ts → domain files → index.ts → update imports to use `$types`
 **After**: Validate with mandatory cycle above
 
-**📄 Documentation Updates**: Update SVELTEKIT-GUIDE.md, SEARCH-ARCHITECTURE.md, CONTENT-STANDARDS.md as needed.
+**📄 Documentation Updates**: Update SVELTEKIT-GUIDE.md, PLAN-SEARCH-ARCHITECTURE.md, CONTENT-STANDARDS.md as needed.
 
 **🎯 CRITICAL INTEGRATION NOTES**:
 
-- **Search System**: All search interfaces must extend from `src/lib/types/search.ts` (see SEARCH-ARCHITECTURE.md)
+- **Search System**: All search interfaces must extend from `src/lib/types/search.ts` (see PLAN-SEARCH-ARCHITECTURE.md)
 - **Navigation**: All navigation components use `src/lib/types/navigation.ts`
 - **Content**: Educational content follows `src/lib/types/content.ts` patterns (see CONTENT-STANDARDS.md)
 - **Interactive**: Quiz/interactive elements use `src/lib/types/interactive.ts` (see CONTENT-STANDARDS.md)
@@ -488,7 +488,7 @@ export const CONTENT_STATUSES: ContentStatus[] = ["scaffold", "draft", "final"];
 - **Refactoring Safety**: Type-safe renames across entire codebase
 - **Single Source of Truth**: Eliminates hardcoded strings and duplicated types
 - **IDE Integration**: Full autocomplete and validation support
-- **Performance**: Smaller bundle size than enum-based approaches
+- **Performance**: Smaller bundle size than union-based approaches
 
 ### **Svelte 5 Reactive Collections: SvelteMap and SvelteSet**
 
