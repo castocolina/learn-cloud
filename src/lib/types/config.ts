@@ -69,6 +69,93 @@ export interface AppSettings {
 				/** Enable verbose output for debugging */
 				verbose: boolean;
 			};
+			/** Path configurations for validation */
+			paths: {
+				/** Temporary configuration directory */
+				tempConfigDir: string;
+				/** Generated TypeScript config filename */
+				generatedConfigFile: string;
+				/** Work-in-progress config filename */
+				wipConfigFile: string;
+				/** Root TypeScript config path */
+				rootTsConfig: string;
+				/** SvelteKit TypeScript config path */
+				svelteKitTsConfig: string;
+			};
+			/** Command configurations for validation tools */
+			commands: {
+				/** Prettier format command */
+				format: readonly string[];
+				/** TypeScript check command */
+				check: readonly string[];
+				/** Generated content check command */
+				checkGenerated: readonly string[];
+				/** ESLint command */
+				lint: readonly string[];
+			};
+			/** TypeScript compiler configuration */
+			typescript: {
+				/** Compiler strictness settings */
+				strictness: {
+					/** Allow unused local variables */
+					allowUnusedLocals: boolean;
+					/** Allow unused parameters */
+					allowUnusedParameters: boolean;
+					/** Allow unused type definitions */
+					allowUnusedTypes: boolean;
+				};
+				/** Suppression patterns for unused items */
+				suppressionPatterns: {
+					/** Prefix for variables to ignore (default: "_") */
+					unusedPrefix: string;
+					/** Prefix for types to ignore (default: "_") */
+					typePrefix: string;
+					/** Comment to mark future use items */
+					futureUseComment: string;
+				};
+				/** Compiler options to apply */
+				compilerOptions: {
+					/** Disable emit during validation */
+					noEmit: boolean;
+					/** Use verbatim module syntax */
+					verbatimModuleSyntax: boolean;
+					/** Isolated modules */
+					isolatedModules: boolean;
+				};
+				/** Path to extend from */
+				extendsPath: string;
+			};
+			/** ESLint configuration */
+			eslint: {
+				/** Enable auto-fix */
+				autoFix: boolean;
+				/** Ignore warnings during validation */
+				ignoreWarnings: boolean;
+				/** Pattern for unused variables to ignore */
+				unusedVarPattern: string;
+			};
+			/** Logging configuration */
+			logging: {
+				/** Show command execution */
+				showCommands: boolean;
+				/** Use emojis in output */
+				useEmojis: boolean;
+				/** Show timestamps */
+				showTimestamps: boolean;
+				/** Enable verbose output */
+				verboseOutput: boolean;
+			};
+			/** File cleanup configuration */
+			cleanup: {
+				/** Automatically clean temporary files */
+				autoCleanup: boolean;
+				/** Retain files on error for debugging */
+				retainOnError: boolean;
+				/** Prefix for temporary config files */
+				tempFilePrefix: string;
+				/** Name for file list temporary file */
+				fileListName: string;
+			};
 		};
 		/** Content scaffolding configuration */
 		scaffolding: {

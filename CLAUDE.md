@@ -251,7 +251,10 @@ import { demoContent } from "src/data/demo/content";
 - **MOBILE-FIRST MANDATE:** Always test mobile experience (≤390px) before desktop
 - **SVELTEKIT DEVELOPMENT:** Use components and TypeScript - avoid vanilla HTML/CSS/JS
 - **shadcn-svelte PRIORITY:** Always check component library first before building custom components
-- **SVELTEKIT VALIDATION:** Run `pnpm run format`, `pnpm run check` for TypeScript/component validation, and `pnpm run lint` for code quality
+- **THREE-TIERED VALIDATION STRATEGY:** Always use the performance-optimized three-tiered approach for code validation:
+  - **Tier 1 (Local WIP - Fast ~5-15s):** `make check-wip` or `pnpm run check:wip` - validates only modified/untracked files
+  - **Tier 2 (Code Quality - Moderate ~30-45s):** `pnpm run format` + `pnpm run lint` - complete project formatting and linting
+  - **Tier 3 (Comprehensive - Slower ~1-3m):** `pnpm run test` + `pnpm run check` - unit tests and complete TypeScript/SvelteKit validation
 - **ZERO TOLERANCE POLICY:** NO TypeScript errors, NO warnings, NO unused variables (unless user-requested or ShadCN components), NO deprecated components
 - **AUTOMATED VALIDATION:** ESLint and Prettier handle code formatting and quality automatically
 - **CONTENT VALIDATION:** Use `make validate-content` for JSON structure validation when needed

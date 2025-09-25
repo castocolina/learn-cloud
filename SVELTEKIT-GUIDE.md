@@ -1185,7 +1185,10 @@ function navigateToNext() {
 
 ### Code Quality Standards
 
-- **Validation Cycle**: Run `pnpm run format`, `pnpm run check`, `pnpm run lint` after changes
+- **Three-Tiered Validation Strategy**: Performance-optimized approach for efficient development workflow:
+  - **Tier 1 (Local WIP - Fast ~5-15s):** `make check-wip` or `pnpm run check:wip` - validates only modified/untracked files with prettier and eslint
+  - **Tier 2 (Code Quality - Moderate ~30-45s):** `pnpm run format` + `pnpm run lint` - complete project formatting and linting
+  - **Tier 3 (Comprehensive - Slower ~1-3m):** `pnpm run test` + `pnpm run check` - unit tests and complete TypeScript/SvelteKit validation
 - **Zero Tolerance Policy**:
   - **NO TypeScript errors** - All code must pass TypeScript validation
   - **NO TypeScript warnings** - Address all compiler warnings before completion

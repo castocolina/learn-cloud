@@ -1,4 +1,4 @@
-.PHONY: help setup install run build clean validate validate-bash check lint format test validate-content
+.PHONY: help setup install run build clean validate validate-bash check lint format test validate-content check-wip
 
 # Load environment variables from .env file
 ifneq (,$(wildcard .env))
@@ -30,6 +30,10 @@ preview: ## Preview the production build
 
 check: ## Run SvelteKit check for type safety and accessibility
 	pnpm run check
+
+check-wip: ## Check work-in-progress files (modified and untracked) with prettier and eslint
+	@echo "🔍 Checking modified and untracked files..."
+	@pnpm run check:wip
 
 lint: ## Run ESLint
 	pnpm run lint

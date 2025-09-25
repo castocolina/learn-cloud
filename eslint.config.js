@@ -16,7 +16,6 @@ export default defineConfig(
 	globalIgnores(
 		[
 			"src/book/**", // Legacy directory
-			"src/js/validate-mermaid.cjs", // Existing mermaid validation
 			"src/data/demo/**", // Demo content (will be removed)
 			"src/lib/components/demo/**", // Demo components (will be removed)
 			"src/routes/demo/**", // Demo routes (will be removed)
@@ -26,9 +25,13 @@ export default defineConfig(
 			"src/lib/components/search/SearchFilters.svelte", // Technical debt - TASK 8D
 			"src/lib/components/search/SearchResults.svelte", // Technical debt - TASK 8D
 			"src/lib/components/ui/button/button.svelte", // shadcn-svelte component (external)
-			"src/lib/actions/swipe.ts" // Technical debt - TASK 8X
+			"src/lib/actions/swipe.ts", // Technical debt - TASK 8X
+			"**/*.md", // Markdown files (handled by Prettier only)
+			"package.json", // Configuration file (handled by Prettier only)
+			"components.json", // Configuration file (handled by Prettier only)
+			".github/**/*.md" // GitHub configuration markdown files
 		],
-		"Ignore legacy directories, demo content (temporary), and problematic components (technical debt)"
+		"Ignore legacy directories, demo content (temporary), problematic components (technical debt), and files handled by Prettier only"
 	),
 	js.configs.recommended,
 	...tsConfigs.recommended,

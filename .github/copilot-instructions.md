@@ -15,7 +15,10 @@ For all project rules, technical specifications, and coding standards, refer to 
 - **shadcn-svelte Priority**: Use component library before building custom components
 - **Tailwind CSS v4**: Centralized CSS architecture in `src/app.css` with `@layer components`
 - **Data-Driven**: Consume TypeScript/JSON data from `$data/` structure (alias for `src/data/`)
-- **Validation**: Run `pnpm run format`, `pnpm run check`, and `pnpm run lint` for code quality
+- **Three-Tiered Validation**: Performance-optimized validation for efficient development:
+  - **Tier 1 (~5-15s)**: `make check-wip` or `pnpm run check:wip` (modified/untracked files only)
+  - **Tier 2 (~30-45s)**: `pnpm run format` + `pnpm run lint` (complete project code quality)
+  - **Tier 3 (~1-3m)**: `pnpm run test` + `pnpm run check` (tests + complete TypeScript validation)
 
 ## Critical Rules
 
