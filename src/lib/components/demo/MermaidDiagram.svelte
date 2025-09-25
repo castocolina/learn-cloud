@@ -54,7 +54,7 @@
 	import mermaid from "mermaid";
 	import { Expand, Copy, Check, RotateCcw } from "lucide-svelte";
 	import * as Dialog from "$ui/dialog";
-	import { SETTINGS } from "$config/settings";
+	import { SETTINGS } from "$config/settings.js";
 
 	interface Props {
 		diagram: string;

@@ -20,7 +20,7 @@ import {
 	generateFilePath,
 	getContentGenerator
 } from "../../scripts/content-scaffolding.js";
-import { SETTINGS } from "../../config/settings.js";
+import { SETTINGS } from "$config/settings.js";
 
 // Mock process.argv for CLI testing
 const originalArgv = process.argv;

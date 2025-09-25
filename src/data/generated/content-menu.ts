@@ -18,7 +18,7 @@ export const contentMenu: MenuStructure = {
 			unitNumber: 1,
 			chapters: [
 				{
-					id: "00_01",
+					id: "01_00",
 					title: "Unit 1: Overview - Python for Cloud-Native Backend Development",
 					icon: "BookOpen",
 					type: "overview",
@@ -498,7 +498,7 @@ export const contentMenu: MenuStructure = {
 			unitNumber: 2,
 			chapters: [
 				{
-					id: "00_02",
+					id: "02_00",
 					title: "Unit 2: Overview - Go for Cloud-Native Backend Development",
 					icon: "BookOpen",
 					type: "overview",
@@ -974,7 +974,7 @@ export const contentMenu: MenuStructure = {
 			unitNumber: 3,
 			chapters: [
 				{
-					id: "00_03",
+					id: "03_00",
 					title: "Unit 3: Overview - DevOps, IaC, and CI/CD",
 					icon: "BookOpen",
 					type: "overview",
@@ -1196,7 +1196,7 @@ export const contentMenu: MenuStructure = {
 			unitNumber: 4,
 			chapters: [
 				{
-					id: "00_04",
+					id: "04_00",
 					title: "Unit 4: Overview - Secrets and Configuration Management",
 					icon: "BookOpen",
 					type: "overview",
@@ -1324,7 +1324,7 @@ export const contentMenu: MenuStructure = {
 			unitNumber: 5,
 			chapters: [
 				{
-					id: "00_05",
+					id: "05_00",
 					title: "Unit 5: Overview - DevSecOps",
 					icon: "BookOpen",
 					type: "overview",
@@ -1546,7 +1546,7 @@ export const contentMenu: MenuStructure = {
 			unitNumber: 6,
 			chapters: [
 				{
-					id: "00_06",
+					id: "06_00",
 					title: "Unit 6: Overview - Automation",
 					icon: "BookOpen",
 					type: "overview",
@@ -1627,7 +1627,7 @@ export const contentMenu: MenuStructure = {
 			unitNumber: 7,
 			chapters: [
 				{
-					id: "00_07",
+					id: "07_00",
 					title: "Unit 7: Overview - The Serverless Ecosystem on AWS",
 					icon: "BookOpen",
 					type: "overview",
@@ -1896,7 +1896,7 @@ export const contentMenu: MenuStructure = {
 			unitNumber: 8,
 			chapters: [
 				{
-					id: "00_08",
+					id: "08_00",
 					title: "Unit 8: Overview - Systems Integration and Security",
 					icon: "BookOpen",
 					type: "overview",
@@ -2028,7 +2028,7 @@ export const contentMenu: MenuStructure = {
 			unitNumber: 9,
 			chapters: [
 				{
-					id: "00_09",
+					id: "09_00",
 					title: "Unit 9: Overview - Capstone Projects",
 					icon: "BookOpen",
 					type: "overview",

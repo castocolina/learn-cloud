@@ -308,7 +308,7 @@ export interface Exam {
 	instructions?: RichParagraph;
 	passingScore: number;
 	timeLimit?: number;
-	questions: Question[];
+	questions: AnyQuestion[];
 	randomizeQuestions?: boolean;
 	questionsToShow?: number;
 	showResults?: boolean;

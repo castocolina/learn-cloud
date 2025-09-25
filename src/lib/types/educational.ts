@@ -17,9 +17,9 @@ import type {
 	ProgrammingLanguage,
 	EducationalCategory,
 	MermaidDiagramType,
-	EducationalResourceType
+	EducationalResourceType,
+	ContentStatus
 } from "./types.js";
-import type { ContentStatus } from "./types.js";
 
 /**
  * Code example interface for technical education

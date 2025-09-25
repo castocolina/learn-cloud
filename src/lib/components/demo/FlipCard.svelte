@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Clock, Eye, RotateCcw, BookOpen, Expand } from "lucide-svelte";
 	import * as Dialog from "$ui/dialog";
-	import { SETTINGS } from "$config/settings";
+	import { SETTINGS } from "$config/settings.js";
 	import type {
 		FlipCard as FlipCardType,
 		FlipCardProgress,

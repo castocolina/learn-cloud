@@ -151,6 +151,9 @@ export type {
 	LearningAchievement
 } from "./learning.js";
 
+// Configuration exports - Application settings and validation
+export type { AppSettings } from "./config.js";
+
 /**
  * Common type utilities for the application
  */
@@ -302,3 +305,11 @@ export {
 	isLearningProgress,
 	isLearningEvent
 } from "./learning.js";
+
+// Validation exports - Testing and validation utilities
+export type { ValidationOptions, ValidationResult } from "./validation.js";
+
+/**
+ * Configuration type guards
+ */
+export { isAppSettings, isMermaidConfig, isUIConfig, isContentGenerationConfig } from "./config.js";

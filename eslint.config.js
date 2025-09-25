@@ -5,8 +5,9 @@ import js from "@eslint/js";
 import svelte from "eslint-plugin-svelte";
 import { defineConfig, globalIgnores } from "eslint/config";
 import globals from "globals";
-import ts from "typescript-eslint";
-import svelteConfig from "./svelte.config.js";
+import { configs as tsConfigs, parser as tsParser } from "typescript-eslint";
+import importPlugin from "eslint-plugin-import";
+import svelteConfig from "./svelte.config.js"; // eslint-disable-line import/extensions
 
 const gitignorePath = fileURLToPath(new URL("./.gitignore", import.meta.url));
 
@@ -30,13 +31,26 @@ export default defineConfig(
 		"Ignore legacy directories, demo content (temporary), and problematic components (technical debt)"
 	),
 	js.configs.recommended,
-	...ts.configs.recommended,
+	...tsConfigs.recommended,
 	...svelte.configs.recommended,
+	importPlugin.flatConfigs.recommended,
+	importPlugin.flatConfigs.typescript,
 	prettier,
 	...svelte.configs.prettier,
 	{
 		languageOptions: {
 			globals: { ...globals.browser, ...globals.node }
+		},
+		settings: {
+			"import/resolver": {
+				typescript: {
+					alwaysTryTypes: true,
+					project: "./.svelte-kit/tsconfig.json"
+				},
+				node: {
+					extensions: [".js", ".jsx", ".ts", ".tsx", ".svelte"]
+				}
+			}
 		},
 		rules: {
 			// typescript-eslint strongly recommend that you do not use the no-undef lint rule on TypeScript projects.
@@ -46,6 +60,24 @@ export default defineConfig(
 			"@typescript-eslint/no-unused-vars": [
 				"error",
 				{ argsIgnorePattern: "^_", varsIgnorePattern: "^_" }
+			],
+			// Configure import rules to work with TypeScript path mapping
+			"import/no-unresolved": [
+				"error",
+				{
+					ignore: ["^\\$app/", "^\\$lib/", "^\\$types", "^\\$config/", "^\\$data/", "^\\$ui/"]
+				}
+			],
+			"import/extensions": [
+				"error",
+				"ignorePackages",
+				{
+					js: "never",
+					jsx: "never",
+					ts: "never",
+					tsx: "never",
+					svelte: "always"
+				}
 			]
 		}
 	},
@@ -55,9 +87,15 @@ export default defineConfig(
 			parserOptions: {
 				projectService: true,
 				extraFileExtensions: [".svelte"],
-				parser: ts.parser,
+				parser: tsParser,
 				svelteConfig
 			}
+		}
+	},
+	{
+		files: ["src/lib/stores/**/*.ts"],
+		rules: {
+			"import/extensions": "off" // Disable for SvelteKit store files that use $app imports
 		}
 	}
 );

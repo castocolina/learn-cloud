@@ -35,8 +35,8 @@ import {
 import { existsSync, mkdirSync, readdirSync, statSync } from "fs";
 import { dirname, join, basename } from "path";
 import { parseArgs } from "util";
-import { SETTINGS } from "../config/settings.js";
-import { runContentValidation } from "../lib/utils/validation-utils.js";
+import { SETTINGS } from "$config/settings.js";
+import { runGeneratedFileValidation } from "../lib/utils/validation-utils.js";
 import { generateNavigationPaths } from "../lib/utils/navigation-paths.js";
 import { contentMenu } from "../data/generated/content-menu.js";
 import type {
@@ -1155,8 +1155,11 @@ function generateExamContent(args: ValidatedScaffoldingArgs): Record<string, unk
 		passingScore: 75,
 		exam: {
 			description: extractLoremText(CONFIG.contentLengths.summary),
-			instructions:
-				"Read each question carefully and select the best answer. You have 90 minutes to complete all questions.",
+			instructions: [
+				{
+					text: "Read each question carefully and select the best answer. You have 90 minutes to complete all questions."
+				}
+			],
 			passingScore: 75,
 			timeLimit: 90,
 			questions,
@@ -1279,6 +1282,7 @@ function createContentFile(
 			importTypes.push(
 				"ExamContent",
 				"Exam",
+				"AnyQuestion",
 				"SingleChoiceQuestion",
 				"MultipleChoiceQuestion",
 				"CodeCompletionQuestion",
@@ -1998,7 +2002,7 @@ async function executeFlexibleGeneration(
 		console.log("✅ Batch generation completed successfully!");
 
 		// Run validation if enabled and files were created
-		const validationResults = await runContentValidation();
+		const validationResults = await runGeneratedFileValidation(bookPath);
 		const hasFailures = validationResults.some((result) => !result.success);
 		if (hasFailures) {
 			console.error("⚠️  Some validation checks failed, but generation was successful");
@@ -2103,11 +2107,12 @@ function extractAllChapters(): MenuChapter[] {
 	return allChapters;
 }
 
+const bookPath = join(process.cwd(), "src", "data", "book");
+
 /**
  * Scan $data/book directory for existing files
  */
 function scanBookDirectory(): string[] {
-	const bookPath = join(process.cwd(), "src", "data", "book");
 	const existingFiles: string[] = [];
 
 	try {
@@ -2295,7 +2300,7 @@ async function printFinalReport(stats: ScaffoldingStats): Promise<void> {
 
 		// Run validation if enabled and files were created
 		if (stats.newFiles > 0) {
-			const validationResults = await runContentValidation();
+			const validationResults = await runGeneratedFileValidation(bookPath);
 			const hasFailures = validationResults.some((result) => !result.success);
 			if (hasFailures) {
 				console.error("⚠️  Some validation checks failed, but generation was successful");
@@ -2394,7 +2399,7 @@ async function main(): Promise<void> {
 		console.log("✅ Content scaffolding generated successfully!");
 
 		// Run validation if enabled
-		const validationResults = await runContentValidation();
+		const validationResults = await runGeneratedFileValidation(bookPath);
 		const hasFailures = validationResults.some((result) => !result.success);
 		if (hasFailures) {
 			console.error("⚠️  Some validation checks failed, but generation was successful");

@@ -6,27 +6,8 @@
  */
 
 import { spawn, type ChildProcess } from "child_process";
-import { SETTINGS } from "../../config/settings.js";
-
-export interface ValidationOptions {
-	/** Target files or directories to validate */
-	target?: string;
-	/** Whether to run format validation (prettier) */
-	includeFormat?: boolean;
-	/** Whether to run TypeScript check validation */
-	includeCheck?: boolean;
-	/** Whether to run lint validation (eslint) */
-	includeLint?: boolean;
-	/** Whether validation should run at all */
-	enabled?: boolean;
-}
-
-export interface ValidationResult {
-	success: boolean;
-	command: string;
-	output: string;
-	error?: string;
-}
+import { SETTINGS } from "$config/settings.js";
+import type { ValidationOptions, ValidationResult } from "$types";
 
 /**
  * Execute a command with real-time streaming output
@@ -96,7 +77,7 @@ async function executeWithStreaming(
  * Run prettier format validation on specific target
  */
 export async function runFormatValidation(target: string): Promise<ValidationResult> {
-	return executeWithStreaming("pnpm", ["run", "format", target]);
+	return executeWithStreaming("pnpm", ["run", "format:fix", target]);
 }
 
 /**
@@ -108,22 +89,31 @@ export async function runTypeScriptCheck(): Promise<ValidationResult> {
 }
 
 /**
+ * Run TypeScript check validation specifically for generated content
+ * Uses tsconfig.generated.json to check only src/data/book/ and src/data/generated/
+ */
+export async function runGeneratedTypeScriptCheck(): Promise<ValidationResult> {
+	return executeWithStreaming("pnpm", ["run", "check:generated"]);
+}
+
+/**
  * Run ESLint validation on specific target
  */
 export async function runLintValidation(target: string): Promise<ValidationResult> {
-	return executeWithStreaming("pnpm", ["run", "lint", target]);
+	return executeWithStreaming("pnpm", ["run", "lint:fix", target]);
 }
 
 /**
  * Get validation configuration from settings, with overrides
  */
 export function getValidationConfig(
-	overrides?: Partial<ValidationOptions>
+	overrides?: Partial<ValidationOptions>,
+	target?: string
 ): Required<ValidationOptions> {
-	const config = SETTINGS.contentScaffolding.validation;
+	const config = SETTINGS.contentGeneration.validation;
 
 	return {
-		target: overrides?.target || "",
+		target: target || overrides?.target || "",
 		includeFormat: overrides?.includeFormat ?? config.includeFormat,
 		includeCheck: overrides?.includeCheck ?? config.includeCheck,
 		includeLint: overrides?.includeLint ?? config.includeLint,
@@ -132,19 +122,24 @@ export function getValidationConfig(
 }
 
 /**
- * Run comprehensive validation based on configuration
+ * Run validation for generated TypeScript files (content-menu.ts, search-index.ts, etc.)
  */
-export async function runValidation(options?: ValidationOptions): Promise<ValidationResult[]> {
-	const config = getValidationConfig(options);
+export async function runGeneratedFileValidation(
+	target: string,
+	options?: ValidationOptions
+): Promise<ValidationResult[]> {
+	const config = getValidationConfig(options, target);
 
 	if (!config.enabled) {
-		console.log("⏭️  Validation disabled in configuration");
-		return [];
-	}
-
-	if (!config.target) {
-		console.error("❌ Validation target is required");
-		return [];
+		console.log("🔄 Content generation validation is disabled in settings");
+		return [
+			{
+				command: "validation-check",
+				success: true,
+				output: "Validation disabled",
+				error: ""
+			}
+		];
 	}
 
 	console.log("");
@@ -156,37 +151,26 @@ export async function runValidation(options?: ValidationOptions): Promise<Valida
 	console.log(`🧹 Lint: ${config.includeLint ? "✅" : "⏭️"}`);
 	console.log("");
 
+	// For generated TypeScript files, we run our specific TypeScript check
 	const results: ValidationResult[] = [];
 
 	try {
-		// Run format validation
+		// Run format validation if enabled
 		if (config.includeFormat) {
 			const formatResult = await runFormatValidation(config.target);
 			results.push(formatResult);
-
-			if (!formatResult.success) {
-				console.error("⚠️  Format validation failed, but continuing with other checks...");
-			}
 		}
 
-		// Run TypeScript check validation
+		// Run TypeScript check validation for generated content
 		if (config.includeCheck) {
-			const checkResult = await runTypeScriptCheck();
+			const checkResult = await runGeneratedTypeScriptCheck();
 			results.push(checkResult);
-
-			if (!checkResult.success) {
-				console.error("⚠️  TypeScript check failed, but continuing with other checks...");
-			}
 		}
 
-		// Run lint validation
+		// Run lint validation if enabled
 		if (config.includeLint) {
 			const lintResult = await runLintValidation(config.target);
 			results.push(lintResult);
-
-			if (!lintResult.success) {
-				console.error("⚠️  Lint validation failed, but continuing with other checks...");
-			}
 		}
 
 		// Summary
@@ -195,141 +179,18 @@ export async function runValidation(options?: ValidationOptions): Promise<Valida
 
 		console.log("");
 		if (allSuccessful) {
-			console.log("✅ All validation checks completed successfully!");
+			console.log("✅ All generated file validation checks completed successfully!");
 		} else {
-			console.log(`⚠️  ${failedCount}/${results.length} validation checks failed`);
+			console.log(`⚠️  ${failedCount}/${results.length} generated file validation checks failed`);
 		}
 	} catch (error) {
 		console.error("");
-		console.error("❌ Validation process failed:");
+		console.error("❌ Generated file validation process failed:");
 		console.error(error instanceof Error ? error.message : String(error));
-		console.error("");
-		console.error(
-			"💡 You can disable validation by setting contentScaffolding.validation.runAfterGeneration to false in src/config/settings.ts"
-		);
 
 		results.push({
 			success: false,
-			command: "validation",
-			output: "",
-			error: error instanceof Error ? error.message : String(error)
-		});
-	}
-
-	return results;
-}
-
-/**
- * Run validation for generated content in src/data/book
- */
-export async function runContentValidation(): Promise<ValidationResult[]> {
-	return runValidation({
-		target: "src/data/book/",
-		enabled: SETTINGS.contentScaffolding.validation.runAfterGeneration
-	});
-}
-
-/**
- * Run validation for generated content menu in src/data/generated
- */
-export async function runContentMenuValidation(): Promise<ValidationResult[]> {
-	return runValidation({
-		target: "src/data/generated/content-menu.ts",
-		enabled: SETTINGS.contentScaffolding.validation.runAfterGeneration
-	});
-}
-
-/**
- * Run script-specific validation (prettier + eslint only, no svelte-check)
- * Used for utility scripts in Task 3A-3E
- */
-export async function runScriptValidation(target: string): Promise<ValidationResult[]> {
-	const config = SETTINGS.scriptValidation;
-
-	if (!config.runAfterGeneration) {
-		console.log("⏭️  Script validation disabled in configuration");
-		return [];
-	}
-
-	if (!target) {
-		console.error("❌ Script validation target is required");
-		return [];
-	}
-
-	console.log("");
-	console.log("🔍 Running post-generation script validation...");
-	console.log("==============================================");
-	console.log(`📁 Target: ${target}`);
-	console.log(
-		`🎨 Format: ${config.includeFormat ? "✅" : "⏭️"} ${config.autoFix ? "(auto-fix)" : "(check only)"}`
-	);
-	console.log(
-		`🧹 Lint: ${config.includeLint ? "✅" : "⏭️"} ${config.autoFix ? "(auto-fix)" : "(check only)"}`
-	);
-	console.log(
-		`🔍 Svelte Check: ${config.includeSvelteCheck ? "✅" : "⏭️  (scripts don't need svelte-check)"}`
-	);
-	console.log("");
-
-	const results: ValidationResult[] = [];
-
-	try {
-		// Run format validation (with or without auto-fix)
-		if (config.includeFormat) {
-			const formatArgs = config.autoFix
-				? ["run", "format:fix", target]
-				: ["run", "format:check", target];
-
-			const formatResult = await executeWithStreaming("pnpm", formatArgs);
-			results.push(formatResult);
-
-			if (!formatResult.success) {
-				console.error("⚠️  Format validation failed, but continuing with other checks...");
-			}
-		}
-
-		// Run lint validation (with or without auto-fix)
-		if (config.includeLint) {
-			const lintArgs = config.autoFix ? ["run", "lint:fix", target] : ["run", "lint:check", target];
-
-			const lintResult = await executeWithStreaming("pnpm", lintArgs);
-			results.push(lintResult);
-
-			if (!lintResult.success) {
-				console.error("⚠️  Lint validation failed, but continuing with other checks...");
-			}
-		}
-
-		// NOTE: No svelte-check for scripts (config.includeSvelteCheck should be false)
-		if (config.includeSvelteCheck) {
-			console.log("⚠️  svelte-check requested for scripts but not recommended - skipping");
-		}
-
-		// Summary
-		const allSuccessful = results.every((r) => r.success);
-		const failedCount = results.filter((r) => !r.success).length;
-
-		console.log("");
-		if (allSuccessful) {
-			console.log("✅ All script validation checks completed successfully!");
-			if (config.autoFix) {
-				console.log("🔧 Auto-fix applied for format and lint issues");
-			}
-		} else {
-			console.log(`⚠️  ${failedCount}/${results.length} script validation checks failed`);
-		}
-	} catch (error) {
-		console.error("");
-		console.error("❌ Script validation process failed:");
-		console.error(error instanceof Error ? error.message : String(error));
-		console.error("");
-		console.error(
-			"💡 You can disable script validation by setting scriptValidation.runAfterGeneration to false in src/config/settings.ts"
-		);
-
-		results.push({
-			success: false,
-			command: "script-validation",
+			command: "generated-file-validation",
 			output: "",
 			error: error instanceof Error ? error.message : String(error)
 		});

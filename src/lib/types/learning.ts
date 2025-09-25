@@ -9,8 +9,7 @@
  * a unified learning experience with robust progress tracking.
  */
 
-import type { ContentDifficulty, TechnologyUnit, ChapterType } from "./types.js";
-import type { ProgressStatus } from "./types.js";
+import type { ContentDifficulty, TechnologyUnit, ChapterType, ProgressStatus } from "./types.js";
 
 /**
  * Learning style preferences for personalized education

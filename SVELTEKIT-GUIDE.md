@@ -389,7 +389,7 @@ src/lib/types/
 // ✅ PREFERRED: Use dedicated aliases for clean imports
 import type { ContentType } from "$types"; // → src/lib/types
 import { Button } from "$lib/components/ui"; // → src/lib/components/ui
-import { config } from "$config"; // → src/config
+import { SETTINGS } from "$config/settings.js"; // → src/config
 import { demoData } from "$data"; // → src/data
 
 // ✅ ALTERNATIVE: Standard SvelteKit aliases
@@ -659,41 +659,60 @@ function completeQuiz() {
 
 #### Centralized Settings Architecture
 
-The project uses a centralized configuration pattern to manage global application parameters through `src/config/settings.ts`. This approach provides type-safe, organized settings that can be imported throughout the application.
+The project uses a centralized configuration pattern to manage global application parameters through `src/config/settings.ts`. Configuration types are now centralized in the unified type system at `src/lib/types/config.ts` for consistency with the project's architectural standards.
 
 **Configuration File Structure:**
 
 ```typescript
 // src/config/settings.ts
-
-// Defines the structure for the application settings for type safety.
-interface AppSettings {
-	mermaid: {
-		debug: boolean;
-		// Add more Mermaid-specific settings here as needed
-	};
-	// Future settings can be grouped here (e.g., api, ui, performance)
-}
+import type { AppSettings } from "$types";
 
 // Export a single, constant object with all settings.
 export const SETTINGS: AppSettings = {
 	mermaid: {
-		debug: true // Enabled for development - provides detailed error logging
+		debug: true, // Enabled for development - provides detailed error logging
+		modalPagePercent: 90
+	},
+	flipCard: {
+		modalPagePercent: 90
+	},
+	ui: {
+		breadcrumb: {
+			showIcon: true
+		},
+		sidebar: {
+			collapsible: true,
+			defaultCollapsed: false
+		}
 	}
+	// ... additional configuration sections
 };
 
-// Export types for use in other parts of the application
-export type { AppSettings };
+// Note: AppSettings type is now centralized in src/lib/types/config.ts
+// and can be imported via: import type { AppSettings } from "$types";
+```
+
+**Type Definitions:**
+
+Configuration types are defined in `src/lib/types/config.ts` and exported through the unified type system:
+
+```typescript
+// Import configuration types
+import type { AppSettings } from "$types";
+
+// Type guards are also available
+import { isAppSettings, isMermaidConfig } from "$types";
 ```
 
 **Usage in Components:**
 
 ```typescript
 // In any Svelte component
-import { SETTINGS } from "$config/settings";
+import { SETTINGS } from "$config/settings.js";
 
 // Access configuration values
 const debugMode = SETTINGS.mermaid.debug;
+const modalPercent = SETTINGS.mermaid.modalPagePercent;
 
 // Use in reactive statements
 let debugEnabled = $derived(
@@ -701,6 +720,10 @@ let debugEnabled = $derived(
 		$page.url.searchParams.has("debug") || // URL parameter
 		SETTINGS.mermaid.debug // Global setting
 );
+
+// Type-safe access to nested configuration
+const sidebarConfig = SETTINGS.ui.sidebar;
+const shouldCollapse = sidebarConfig.collapsible && sidebarConfig.defaultCollapsed;
 ```
 
 **Benefits:**
@@ -709,7 +732,7 @@ let debugEnabled = $derived(
 - **Centralized Control**: Single source of truth for all settings
 - **Developer Experience**: Auto-completion and error detection
 - **Maintainability**: Easy to extend with new configuration groups
-- **Import Consistency**: Standard `$config/settings` import path
+- **Import Consistency**: Standard `$config/settings.js` import path
 
 **Configuration Groups:**
 

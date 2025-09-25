@@ -63,7 +63,7 @@ import type {
 	ContentDifficulty
 } from "$types";
 import { generateNavigationPaths } from "$lib/utils/navigation-paths.js";
-import { runScriptValidation } from "../lib/utils/validation-utils.js";
+import { runGeneratedFileValidation } from "../lib/utils/validation-utils.js";
 
 // Configuration constants
 const CONFIG = {
@@ -154,11 +154,13 @@ export class MarkdownContentGenerator {
 	private readonly contentMdPath: string;
 	private readonly outputPath: string;
 	private readonly project: Project;
+	private readonly skipValidation: boolean;
 
-	constructor(inputFile?: string) {
+	constructor(inputFile?: string, options?: { skipValidation?: boolean }) {
 		this.projectRoot = process.cwd();
 		this.contentMdPath = join(this.projectRoot, inputFile || CONFIG.DEFAULT_INPUT_FILE);
 		this.outputPath = join(this.projectRoot, "src", "data", "generated", CONFIG.OUTPUT_FILE_NAME);
+		this.skipValidation = options?.skipValidation ?? false;
 
 		// Initialize ts-morph project for TypeScript manipulation
 		this.project = new Project({
@@ -166,8 +168,10 @@ export class MarkdownContentGenerator {
 			skipAddingFilesFromTsConfig: true
 		});
 
-		console.log(`📍 Input: ${this.contentMdPath}`);
-		console.log(`📍 Output: ${this.outputPath}`);
+		if (!this.skipValidation) {
+			console.log(`📍 Input: ${this.contentMdPath}`);
+			console.log(`📍 Output: ${this.outputPath}`);
+		}
 	}
 
 	/**
@@ -1012,13 +1016,15 @@ export const contentMenu: MenuStructure = ${typescriptObject};
 			// Write TypeScript file
 			this.writeTypeScriptFile(typescriptContent);
 
-			console.log(`${CONFIG.OUTPUT_FILE_NAME} generation completed successfully`);
+			if (!this.skipValidation) {
+				console.log(`${CONFIG.OUTPUT_FILE_NAME} generation completed successfully`);
 
-			// Run script validation if enabled
-			const validationResults = await runScriptValidation(this.outputPath);
-			const hasFailures = validationResults.some((result) => !result.success);
-			if (hasFailures) {
-				console.error("⚠️  Some validation checks failed, but generation was successful");
+				// Run validation for the generated file
+				const validationResults = await runGeneratedFileValidation(this.outputPath);
+				const hasFailures = validationResults.some((result) => !result.success);
+				if (hasFailures) {
+					console.error("⚠️  Some validation checks failed, but generation was successful");
+				}
 			}
 
 			// Summary

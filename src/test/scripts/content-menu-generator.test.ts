@@ -23,7 +23,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync } from "fs";
 import { join } from "path";
-import MarkdownContentGenerator from "../../scripts/content-menu-generator.js";
+import { MarkdownContentGenerator } from "../../scripts/content-menu-generator.js";
 
 // Simplified approach for testing - using any to avoid complex type redeclarations
 // Following user preference for pragmatic approach in utility scripts
@@ -118,8 +118,9 @@ describe("MarkdownContentGenerator", () => {
 		writeFileSync(testContentPath, SAMPLE_CONTENT, "utf-8");
 
 		// Initialize generator with test paths (use relative path from project root)
+		// Skip validation for performance in tests
 		const relativeTestPath = join("tmp", "test-data", "test-content.md");
-		generator = new MarkdownContentGenerator(relativeTestPath) as any;
+		generator = new MarkdownContentGenerator(relativeTestPath, { skipValidation: true }) as any;
 
 		// Override output path for testing
 		generator.outputPath = testOutputPath;
@@ -142,7 +143,9 @@ describe("MarkdownContentGenerator", () => {
 		});
 
 		it("should throw error for non-existent file", () => {
-			const nonExistentGenerator = new MarkdownContentGenerator("non-existent.md") as any;
+			const nonExistentGenerator = new MarkdownContentGenerator("non-existent.md", {
+				skipValidation: true
+			}) as any;
 			expect(() => nonExistentGenerator.readContentMd()).toThrow();
 		});
 
@@ -153,7 +156,9 @@ describe("MarkdownContentGenerator", () => {
 
 			// Use relative path from project root
 			const relativeEmptyPath = join("tmp", "test-data", emptyFileName);
-			const emptyGenerator = new MarkdownContentGenerator(relativeEmptyPath) as any;
+			const emptyGenerator = new MarkdownContentGenerator(relativeEmptyPath, {
+				skipValidation: true
+			}) as any;
 			expect(() => emptyGenerator.readContentMd()).toThrow();
 		});
 	});
@@ -680,7 +685,9 @@ describe("MarkdownContentGenerator", () => {
 
 			// Use relative path from project root
 			const relativeCustomPath = join("tmp", "test-data", customFileName);
-			const customGenerator = new MarkdownContentGenerator(relativeCustomPath) as any;
+			const customGenerator = new MarkdownContentGenerator(relativeCustomPath, {
+				skipValidation: true
+			}) as any;
 			customGenerator.outputPath = join(TEST_OUTPUT_DIR, "custom-menu.ts");
 
 			const success = await customGenerator.generate();
@@ -691,7 +698,9 @@ describe("MarkdownContentGenerator", () => {
 
 		it("should handle generation errors gracefully", async () => {
 			// Test with non-existent input file
-			const invalidGenerator = new MarkdownContentGenerator("non-existent.md") as any;
+			const invalidGenerator = new MarkdownContentGenerator("non-existent.md", {
+				skipValidation: true
+			}) as any;
 
 			const success = await invalidGenerator.generate();
 			expect(success).toBe(false);
@@ -772,6 +781,46 @@ describe("MarkdownContentGenerator", () => {
 });
 
 /**
+ * Integration test for full validation (performance intensive)
+ */
+describe("Full Validation Integration", () => {
+	it("should generate complete TypeScript module with validation", async () => {
+		// Create test data directory
+		const testDataDir = join(process.cwd(), "tmp", "validation-test-data");
+		const testContentPath = join(testDataDir, "test-content.md");
+		const testOutputPath = join(testDataDir, "output", "content-menu.ts");
+
+		mkdirSync(testDataDir, { recursive: true });
+		mkdirSync(join(testDataDir, "output"), { recursive: true });
+
+		// Write test content
+		writeFileSync(testContentPath, SAMPLE_CONTENT, "utf-8");
+
+		try {
+			// Create generator WITH validation enabled
+			const relativeTestPath = join("tmp", "validation-test-data", "test-content.md");
+			const generator = new MarkdownContentGenerator(relativeTestPath) as any;
+			generator.outputPath = testOutputPath;
+
+			const success = await generator.generate();
+
+			expect(success).toBe(true);
+			expect(existsSync(testOutputPath)).toBe(true);
+
+			// Verify generated content
+			const generatedContent = readFileSync(testOutputPath, "utf-8");
+			expect(generatedContent).toContain("export const contentMenu");
+			expect(generatedContent).toContain("MenuStructure");
+		} finally {
+			// Clean up
+			if (existsSync(testDataDir)) {
+				rmSync(testDataDir, { recursive: true, force: true });
+			}
+		}
+	}, 15000); // Extended timeout for validation test
+});
+
+/**
  * Integration tests for CLI functionality
  */
 describe("CLI Integration", () => {
@@ -782,12 +831,12 @@ describe("CLI Integration", () => {
 
 	it("should handle command line arguments correctly", () => {
 		// Test with custom input file
-		const generator = new MarkdownContentGenerator("custom-input.md");
+		const generator = new MarkdownContentGenerator("custom-input.md", { skipValidation: true });
 		expect((generator as any).contentMdPath).toContain("custom-input.md");
 	});
 
 	it("should use default input file when none provided", () => {
-		const generator = new MarkdownContentGenerator();
+		const generator = new MarkdownContentGenerator(undefined, { skipValidation: true });
 		expect((generator as any).contentMdPath).toContain("CONTENT.md");
 	});
 });
