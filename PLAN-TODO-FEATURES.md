@@ -135,14 +135,6 @@ graph TD
 
 ## 🏗️ FOUNDATION-FIRST MIGRATION TASKS
 
-### TASK 3B: Continue
-
-- Check generated src/data/generated & src/data/book validation scripts, make and node tasks for custom format, check, eslint, some of them are scanning all the project. make validate-generated-full for example.
-- Check eslint/svelte alias references
-- Check test referencing all enums instead of unions
-- test must be executed before commits?
-- Update documentation references
-
 ---
 
 ### TASK 3C: Mermaid Validator Script
@@ -157,6 +149,8 @@ You are responsible for developing a TypeScript Mermaid validator script that va
 - `MERMAID-STANDARDS.md` (validation requirements and syntax rules - CRITICAL)
 - `src/lib/types/` (result from Task 2 - unified type system)
 - `src/data/demo/content/diagrams/mermaid-examples.ts` (reference implementation pattern)
+- `SVELTEKIT-GUIDE.md` (SPA architecture standards)
+- `CLAUDE.md` (Project entry guidelines)
 
 **Type Reuse Requirement:**
 
@@ -165,7 +159,7 @@ You are responsible for developing a TypeScript Mermaid validator script that va
 **Prerequisites:**
 
 - Task 2: TypeScript Foundation Setup completed
-- Install mermaid dependency: `pnpm add -D mermaid` (dev dependency - not needed at runtime)
+- Install mermaid dependency: `pnpm add -D mmdc` (dev dependency - not needed at runtime)
 - ts-morph dependency installed (dev dependency from Task 3A)
 
 **Build System and Automation Integration:**
@@ -244,11 +238,10 @@ You are responsible for developing a TypeScript Mermaid validator script that va
 - ✅ Validation runs automatically after mermaid validation script execution
 - ✅ Real-time streaming output during validation
 - ✅ Target-specific validation (validates script file itself)
-- ✅ Uses runScriptValidation() from validation-utils.ts library
 
 **Verification Notes:**
 
-- **Mermaid Updates**: Check for Mermaid.js version updates and new diagram types support
+- **Mermaid Updates**: Check for mmdc version updates and new diagram types support
 - **Standards Updates**: Review MERMAID-STANDARDS.md for any syntax rule changes or additions
 
 **Documentation to Update:**
@@ -268,6 +261,8 @@ You are responsible for developing a TypeScript search index generator script th
 - `PLAN-SEARCH-ARCHITECTURE.md` (indexing architecture)
 - `src/lib/types/` (result from Task 2 - unified type system)
 - `CONTENT-STANDARDS.md` (content structure and validation standards)
+- `SVELTEKIT-GUIDE.md` (SPA architecture standards)
+- `CLAUDE.md` (Project entry guidelines)
 
 **Type Reuse Requirement:**
 
@@ -353,7 +348,7 @@ You are responsible for developing a TypeScript search index generator script th
 - ✅ Validation runs automatically after search index generation
 - ✅ Real-time streaming output during validation
 - ✅ Target-specific validation (validates generated search index file)
-- ✅ Uses runScriptValidation() from validation-utils.ts library
+- ✅ Uses runGeneratedFileValidation() from validation-utils.ts library
 
 **Verification Notes:**
 
@@ -381,6 +376,7 @@ You are responsible for developing a TypeScript flat navigation generator script
 - `src/data/generated/content-menu.ts` (generated navigation structure from Task 3A)
 - `CONTENT-STANDARDS.md` (content structure requirements)
 - `SVELTEKIT-GUIDE.md` (navigation architecture standards)
+- `CLAUDE.md` (Project entry guidelines)
 
 **Type Reuse Requirement:**
 
@@ -502,7 +498,7 @@ interface FlatNavStructure {
 - ✅ Validation runs automatically after flat navigation generation
 - ✅ Real-time streaming output during validation
 - ✅ Target-specific validation (validates generated flatnav file)
-- ✅ Uses runScriptValidation() from validation-utils.ts library
+- ✅ Uses runGeneratedFileValidation() from validation-utils.ts library
 
 **Verification Notes:**
 

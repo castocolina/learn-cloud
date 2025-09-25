@@ -307,9 +307,23 @@ export {
 } from "./learning.js";
 
 // Validation exports - Testing and validation utilities
-export type { ValidationOptions, ValidationResult } from "./validation.js";
+export type {
+	ValidationOptions,
+	ValidationResult,
+	DiagramReference,
+	MermaidValidationResult,
+	FileProcessingResult,
+	MermaidValidationStats
+} from "./validation.js";
 
 /**
  * Configuration type guards
  */
-export { isAppSettings, isMermaidConfig, isUIConfig, isContentGenerationConfig } from "./config.js";
+export {
+	isAppSettings,
+	isMermaidConfig,
+	isUIConfig,
+	isGeneratedValidationConfig,
+	isScriptsConfig,
+	isMermaidValidationConfig
+} from "./config.js";

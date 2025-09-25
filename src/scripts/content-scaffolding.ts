@@ -88,7 +88,7 @@ interface UnitIdentification {
 }
 
 // Get configuration from settings
-const CONFIG = SETTINGS.contentScaffolding;
+const CONFIG = SETTINGS.scripts.scaffolding;
 
 // ============================================================================
 // LOREM IPSUM CONTENT BASE

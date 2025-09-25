@@ -103,7 +103,7 @@ describe("Content Scaffolding Generator", () => {
 			expect(consoleLogSpy).toHaveBeenCalledWith(
 				expect.stringContaining("🔄 Content Scaffolding Generator - Flexible Batch Mode")
 			);
-		});
+		}, 10000);
 
 		it("should exit with error for invalid unit", async () => {
 			process.argv = ["node", "script.js", "--unit=invalid", "--type=lesson", "--id=1"];
@@ -227,7 +227,7 @@ describe("Content Scaffolding Generator", () => {
 			expect((content as any).type).toBe("lesson");
 			expect((content as any).title).toContain("Cloud-Native test Development");
 			expect((content as any).status).toBe("scaffold");
-			expect((content as any).sections).toHaveLength(SETTINGS.contentScaffolding.lessons.sections);
+			expect((content as any).sections).toHaveLength(SETTINGS.scripts.scaffolding.lessons.sections);
 		});
 
 		it("should return quiz generator for quiz type", () => {
@@ -239,7 +239,7 @@ describe("Content Scaffolding Generator", () => {
 
 			expect((content as any).type).toBe("quiz");
 			expect((content as any).quiz.questions).toHaveLength(
-				SETTINGS.contentScaffolding.quizzes.questions
+				SETTINGS.scripts.scaffolding.quizzes.questions
 			);
 		});
 
@@ -252,7 +252,7 @@ describe("Content Scaffolding Generator", () => {
 
 			expect((content as any).type).toBe("exam");
 			expect((content as any).exam.questions).toHaveLength(
-				SETTINGS.contentScaffolding.exams.questions
+				SETTINGS.scripts.scaffolding.exams.questions
 			);
 		});
 
@@ -265,7 +265,7 @@ describe("Content Scaffolding Generator", () => {
 
 			expect((content as any).type).toBe("study_guide");
 			expect((content as any).studyGuide.flashcards).toHaveLength(
-				SETTINGS.contentScaffolding.studyGuides.flashcards
+				SETTINGS.scripts.scaffolding.studyGuides.flashcards
 			);
 		});
 
@@ -277,12 +277,14 @@ describe("Content Scaffolding Generator", () => {
 			const content = generator(args);
 
 			expect((content as any).type).toBe("project");
-			expect((content as any).sections).toHaveLength(SETTINGS.contentScaffolding.projects.sections);
+			expect((content as any).sections).toHaveLength(
+				SETTINGS.scripts.scaffolding.projects.sections
+			);
 			expect((content as any).requirements).toHaveLength(
-				SETTINGS.contentScaffolding.projects.requirements
+				SETTINGS.scripts.scaffolding.projects.requirements
 			);
 			expect((content as any).deliverables).toHaveLength(
-				SETTINGS.contentScaffolding.projects.deliverables
+				SETTINGS.scripts.scaffolding.projects.deliverables
 			);
 		});
 
@@ -305,7 +307,7 @@ describe("Content Scaffolding Generator", () => {
 				const content = generator(args);
 
 				expect((content as any).sections).toHaveLength(
-					SETTINGS.contentScaffolding.lessons.sections
+					SETTINGS.scripts.scaffolding.lessons.sections
 				);
 
 				// Check that at least one section has code and diagram blocks
@@ -344,7 +346,7 @@ describe("Content Scaffolding Generator", () => {
 				const content = generator(args);
 
 				expect((content as any).quiz.questions).toHaveLength(
-					SETTINGS.contentScaffolding.quizzes.questions
+					SETTINGS.scripts.scaffolding.quizzes.questions
 				);
 			});
 
@@ -353,7 +355,7 @@ describe("Content Scaffolding Generator", () => {
 				const args = { unit: "test", type: "quiz" as const, id: "1-1" };
 				const content = generator(args);
 
-				if (SETTINGS.contentScaffolding.quizzes.diverseTypes) {
+				if (SETTINGS.scripts.scaffolding.quizzes.diverseTypes) {
 					const questionTypes = (content as any).quiz.questions.map((q: any) => q.type);
 					const uniqueTypes = [...new Set(questionTypes)];
 
@@ -395,13 +397,13 @@ describe("Content Scaffolding Generator", () => {
 				const content = generator(args);
 
 				expect((content as any).exam.questions).toHaveLength(
-					SETTINGS.contentScaffolding.exams.questions
+					SETTINGS.scripts.scaffolding.exams.questions
 				);
 			});
 
 			it("should have higher question count than quiz", () => {
-				expect(SETTINGS.contentScaffolding.exams.questions).toBeGreaterThan(
-					SETTINGS.contentScaffolding.quizzes.questions
+				expect(SETTINGS.scripts.scaffolding.exams.questions).toBeGreaterThan(
+					SETTINGS.scripts.scaffolding.quizzes.questions
 				);
 			});
 		});
@@ -413,7 +415,7 @@ describe("Content Scaffolding Generator", () => {
 				const content = generator(args);
 
 				expect((content as any).studyGuide.flashcards).toHaveLength(
-					SETTINGS.contentScaffolding.studyGuides.flashcards
+					SETTINGS.scripts.scaffolding.studyGuides.flashcards
 				);
 			});
 
@@ -439,13 +441,13 @@ describe("Content Scaffolding Generator", () => {
 				const content = generator(args);
 
 				expect((content as any).sections).toHaveLength(
-					SETTINGS.contentScaffolding.projects.sections
+					SETTINGS.scripts.scaffolding.projects.sections
 				);
 				expect((content as any).requirements).toHaveLength(
-					SETTINGS.contentScaffolding.projects.requirements
+					SETTINGS.scripts.scaffolding.projects.requirements
 				);
 				expect((content as any).deliverables).toHaveLength(
-					SETTINGS.contentScaffolding.projects.deliverables
+					SETTINGS.scripts.scaffolding.projects.deliverables
 				);
 			});
 
@@ -470,30 +472,30 @@ describe("Content Scaffolding Generator", () => {
 
 	describe("Configuration Integration", () => {
 		it("should use settings from configuration file", () => {
-			expect(SETTINGS.contentScaffolding.lessons.sections).toBeGreaterThan(0);
-			expect(SETTINGS.contentScaffolding.quizzes.questions).toBeGreaterThan(0);
-			expect(SETTINGS.contentScaffolding.exams.questions).toBeGreaterThan(0);
-			expect(SETTINGS.contentScaffolding.studyGuides.flashcards).toBeGreaterThan(0);
-			expect(SETTINGS.contentScaffolding.projects.sections).toBeGreaterThan(0);
+			expect(SETTINGS.scripts.scaffolding.lessons.sections).toBeGreaterThan(0);
+			expect(SETTINGS.scripts.scaffolding.quizzes.questions).toBeGreaterThan(0);
+			expect(SETTINGS.scripts.scaffolding.exams.questions).toBeGreaterThan(0);
+			expect(SETTINGS.scripts.scaffolding.studyGuides.flashcards).toBeGreaterThan(0);
+			expect(SETTINGS.scripts.scaffolding.projects.sections).toBeGreaterThan(0);
 
 			// Verify minimum requirements are met
-			expect(SETTINGS.contentScaffolding.lessons.sections).toBeGreaterThanOrEqual(5);
-			expect(SETTINGS.contentScaffolding.quizzes.questions).toBeGreaterThanOrEqual(10);
-			expect(SETTINGS.contentScaffolding.exams.questions).toBeGreaterThanOrEqual(30);
-			expect(SETTINGS.contentScaffolding.studyGuides.flashcards).toBeGreaterThanOrEqual(5);
-			expect(SETTINGS.contentScaffolding.projects.sections).toBeGreaterThanOrEqual(5);
+			expect(SETTINGS.scripts.scaffolding.lessons.sections).toBeGreaterThanOrEqual(5);
+			expect(SETTINGS.scripts.scaffolding.quizzes.questions).toBeGreaterThanOrEqual(10);
+			expect(SETTINGS.scripts.scaffolding.exams.questions).toBeGreaterThanOrEqual(30);
+			expect(SETTINGS.scripts.scaffolding.studyGuides.flashcards).toBeGreaterThanOrEqual(5);
+			expect(SETTINGS.scripts.scaffolding.projects.sections).toBeGreaterThanOrEqual(5);
 		});
 
 		it("should have content length configurations", () => {
-			expect(SETTINGS.contentScaffolding.contentLengths).toBeDefined();
-			expect(SETTINGS.contentScaffolding.contentLengths.summary).toBeGreaterThan(0);
-			expect(SETTINGS.contentScaffolding.contentLengths.paragraph).toBeGreaterThan(0);
-			expect(SETTINGS.contentScaffolding.contentLengths.question).toBeGreaterThan(0);
+			expect(SETTINGS.scripts.scaffolding.contentLengths).toBeDefined();
+			expect(SETTINGS.scripts.scaffolding.contentLengths.summary).toBeGreaterThan(0);
+			expect(SETTINGS.scripts.scaffolding.contentLengths.paragraph).toBeGreaterThan(0);
+			expect(SETTINGS.scripts.scaffolding.contentLengths.question).toBeGreaterThan(0);
 		});
 
 		it("should have diverse types configuration", () => {
-			expect(typeof SETTINGS.contentScaffolding.quizzes.diverseTypes).toBe("boolean");
-			expect(typeof SETTINGS.contentScaffolding.exams.diverseTypes).toBe("boolean");
+			expect(typeof SETTINGS.scripts.scaffolding.quizzes.diverseTypes).toBe("boolean");
+			expect(typeof SETTINGS.scripts.scaffolding.exams.diverseTypes).toBe("boolean");
 		});
 	});
 

@@ -70,7 +70,7 @@
 		debug = false,
 		title,
 		className = "",
-		modalPagePercent = SETTINGS.mermaid.modalPagePercent,
+		modalPagePercent = SETTINGS.ui.mermaid.modalPagePercent,
 		showExpandButton = true
 	}: Props = $props();
 
@@ -82,7 +82,9 @@
 	let copySuccess = $state(false);
 
 	// Check URL parameter for debug mode and global settings
-	let debugMode = $derived(debug || $page.url.searchParams.has("debug") || SETTINGS.mermaid.debug);
+	let debugMode = $derived(
+		debug || $page.url.searchParams.has("debug") || SETTINGS.ui.mermaid.debug
+	);
 
 	// Initialize Mermaid configuration once
 	onMount(() => {

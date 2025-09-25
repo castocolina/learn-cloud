@@ -38,7 +38,7 @@ format: ## Format code with Prettier
 	pnpm run format
 
 # Validation targets
-validate: validate-bash validate-content validate-scripts ## Run all validation checks
+validate: validate-bash validate-content validate-scripts validate-mermaid ## Run all validation checks
 
 # Script validation examples:
 # make validate-script TARGETS="src/scripts/file1.ts src/scripts/file2.ts"
@@ -69,6 +69,17 @@ validate-scripts: ## Validate TypeScript utility scripts with prettier and eslin
 	@echo "🔍 Validating TypeScript scripts..."
 	@pnpm run validate:scripts
 	@echo "✅ Script validation completed"
+
+validate-mermaid: ## Validate Mermaid diagrams in TypeScript files (usage: make validate-mermaid ARGS="path")
+	@echo "🔍 Validating Mermaid diagrams..."
+	@if [ -z "$(ARGS)" ]; then \
+		echo "Using default path: src/data/book"; \
+		pnpm run validate-mermaid src/data/book; \
+	else \
+		echo "Validating path: $(ARGS)"; \
+		pnpm run validate-mermaid $(ARGS); \
+	fi
+	@echo "✅ Mermaid validation completed"
 
 validate-script: ## Validate specific TypeScript files/directories (usage: make validate-script TARGETS="path1 path2")
 	@echo "🔍 Validating TypeScript files/directories: $(TARGETS)"

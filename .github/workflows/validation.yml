@@ -47,7 +47,8 @@ jobs:
     strategy:
       fail-fast: false # Continue with other validations even if one fails
       matrix:
-        validation: [svelte-check, svelte-lint, validate-bash, validate-content, tests]
+        validation:
+          [svelte-check, svelte-lint, validate-bash, validate-content, validate-mermaid, tests]
 
     steps:
       - name: Checkout
@@ -87,6 +88,10 @@ jobs:
       - name: Run Content Validation
         if: matrix.validation == 'validate-content'
         run: make validate-content
+
+      - name: Run Mermaid Validation
+        if: matrix.validation == 'validate-mermaid'
+        run: make validate-mermaid
 
       - name: Run Unit Tests
         if: matrix.validation == 'tests'

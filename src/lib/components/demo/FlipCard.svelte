@@ -348,9 +348,9 @@
 <Dialog.Root bind:open={isModalOpen}>
 	<Dialog.Content
 		class="demo-flipcard-modal-content"
-		style="max-width: {SETTINGS.flipCard.modalPagePercent}vw !important; max-height: {SETTINGS
-			.flipCard.modalPagePercent}vh !important; width: {SETTINGS.flipCard
-			.modalPagePercent}vw; height: {SETTINGS.flipCard.modalPagePercent}vh;"
+		style="max-width: {SETTINGS.ui.flipCard.modalPagePercent}vw !important; max-height: {SETTINGS.ui
+			.flipCard.modalPagePercent}vh !important; width: {SETTINGS.ui.flipCard
+			.modalPagePercent}vw; height: {SETTINGS.ui.flipCard.modalPagePercent}vh;"
 	>
 		<Dialog.Header>
 			<Dialog.Title>{card.front}</Dialog.Title>

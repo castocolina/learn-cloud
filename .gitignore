@@ -65,3 +65,5 @@ tmp/pycache/
 # Vite specific files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+src/data/book/

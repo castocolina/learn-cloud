@@ -110,7 +110,7 @@ export function getValidationConfig(
 	overrides?: Partial<ValidationOptions>,
 	target?: string
 ): Required<ValidationOptions> {
-	const config = SETTINGS.contentGeneration.validation;
+	const config = SETTINGS.scripts.validation.generated;
 
 	return {
 		target: target || overrides?.target || "",
