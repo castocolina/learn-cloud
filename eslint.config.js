@@ -11,6 +11,19 @@ import svelteConfig from "./svelte.config.js"; // eslint-disable-line import/ext
 
 const gitignorePath = fileURLToPath(new URL("./.gitignore", import.meta.url));
 
+// Generate ESLint paths dynamically from SvelteKit aliases
+const generateESLintPaths = (aliases) => {
+	const paths = {};
+	for (const [alias, path] of Object.entries(aliases)) {
+		// Add both exact alias and wildcard versions with proper relative paths
+		paths[alias] = [`./${path}`];
+		paths[`${alias}/*`] = [`./${path}/*`];
+	}
+	return paths;
+};
+
+const dynamicPaths = generateESLintPaths(svelteConfig.kit.alias);
+
 export default defineConfig(
 	includeIgnoreFile(gitignorePath),
 	globalIgnores(
@@ -48,7 +61,12 @@ export default defineConfig(
 			"import/resolver": {
 				typescript: {
 					alwaysTryTypes: true,
-					project: "./.svelte-kit/tsconfig.json"
+					// Use standard TypeScript configs
+					project: ["./.svelte-kit/tsconfig.json", "./tsconfig.json"],
+					// Dynamically map SvelteKit aliases from svelte.config.js
+					paths: dynamicPaths,
+					// Suppress multiple projects warning
+					noWarnOnMultipleProjects: true
 				},
 				node: {
 					extensions: [".js", ".jsx", ".ts", ".tsx", ".svelte"]
@@ -62,13 +80,20 @@ export default defineConfig(
 			// Allow unused variables that start with underscore (convention for intentionally unused)
 			"@typescript-eslint/no-unused-vars": [
 				"error",
-				{ argsIgnorePattern: "^_", varsIgnorePattern: "^_" }
+				{
+					argsIgnorePattern: "^_",
+					varsIgnorePattern: "^_",
+					ignoreRestSiblings: true
+				}
 			],
-			// Configure import rules to work with TypeScript path mapping
+			// Configure import rules to work with SvelteKit path aliases
 			"import/no-unresolved": [
 				"error",
 				{
-					ignore: ["^\\$app/", "^\\$lib/", "^\\$types", "^\\$config/", "^\\$data/", "^\\$ui/"]
+					// Only ignore core SvelteKit aliases that ESLint resolver might not understand
+					ignore: [
+						"^\\$app/" // SvelteKit internal app module
+					]
 				}
 			],
 			"import/extensions": [

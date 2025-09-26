@@ -12,6 +12,11 @@ import fs from "fs";
 import { join, isAbsolute } from "path";
 import crypto from "crypto";
 
+// Destructure validation configuration at module level for cleaner code
+const {
+	scripts: { validation: validationConf }
+} = SETTINGS;
+
 /**
  * Generate unique configuration ID for test isolation
  * @param prefix Prefix for the config ID (e.g., "test-search-idx")
@@ -33,13 +38,13 @@ async function executeWithStreaming(
 	args: string[],
 	cwd: string = process.cwd()
 ): Promise<ValidationResult> {
-	const logging = SETTINGS.scripts.validation.logging;
+	const { logging: validationLogging } = validationConf;
 
 	return new Promise((resolve) => {
 		const fullCommand = `${command} ${args.join(" ")}`;
 
-		if (logging.showCommands) {
-			if (logging.useEmojis) {
+		if (validationLogging.showCommands) {
+			if (validationLogging.useEmojis) {
 				console.log(`🔄 Running: ${fullCommand}`);
 			} else {
 				console.log(`Running: ${fullCommand}`);
@@ -59,7 +64,7 @@ async function executeWithStreaming(
 		child.stdout?.on("data", (data: Buffer) => {
 			const chunk = data.toString();
 			output += chunk;
-			if (logging.verboseOutput) {
+			if (validationLogging.verboseOutput) {
 				process.stdout.write(chunk); // Show real-time output only if verbose
 			}
 		});
@@ -68,7 +73,7 @@ async function executeWithStreaming(
 		child.stderr?.on("data", (data: Buffer) => {
 			const chunk = data.toString();
 			errorOutput += chunk;
-			if (logging.verboseOutput) {
+			if (validationLogging.verboseOutput) {
 				process.stderr.write(chunk); // Show real-time errors only if verbose
 			}
 		});
@@ -76,15 +81,15 @@ async function executeWithStreaming(
 		child.on("close", (code: number) => {
 			const success = code === 0;
 
-			if (logging.showCommands) {
+			if (validationLogging.showCommands) {
 				if (success) {
-					if (logging.useEmojis) {
+					if (validationLogging.useEmojis) {
 						console.log(`✅ ${fullCommand} completed successfully`);
 					} else {
 						console.log(`${fullCommand} completed successfully`);
 					}
 				} else {
-					if (logging.useEmojis) {
+					if (validationLogging.useEmojis) {
 						console.error(`❌ ${fullCommand} failed with exit code ${code}`);
 					} else {
 						console.error(`${fullCommand} failed with exit code ${code}`);
@@ -101,8 +106,8 @@ async function executeWithStreaming(
 		});
 
 		child.on("error", (error: Error) => {
-			if (logging.showCommands) {
-				if (logging.useEmojis) {
+			if (validationLogging.showCommands) {
+				if (validationLogging.useEmojis) {
 					console.error(`❌ Failed to start command: ${error.message}`);
 				} else {
 					console.error(`Failed to start command: ${error.message}`);
@@ -119,29 +124,26 @@ async function executeWithStreaming(
 }
 
 /**
- * Run TypeScript check validation
- * Note: SvelteKit check doesn't support targeting specific files, so it always checks the entire project
- */
-export async function runTypeScriptCheck(): Promise<ValidationResult> {
-	const checkCmd = SETTINGS.scripts.validation.commands.check;
-	return executeWithStreaming(checkCmd[0], checkCmd.slice(1));
-}
-
-/**
  * Run TypeScript check validation specifically for generated content
  * Uses dynamic tsconfig.generated.json to check only specified target files
  */
 export async function runGeneratedTypeScriptCheck(): Promise<ValidationResult> {
-	const checkCmd = SETTINGS.scripts.validation.commands.checkGenerated;
-	return executeWithStreaming(checkCmd[0], checkCmd.slice(1));
+	const { commands: validationCommands } = validationConf;
+	return executeWithStreaming(
+		validationCommands.checkGenerated[0],
+		validationCommands.checkGenerated.slice(1)
+	);
 }
 
 /**
  * Run ESLint validation on specific target
  */
 export async function runLintValidation(target: string): Promise<ValidationResult> {
-	const lintCmd = SETTINGS.scripts.validation.commands.lint;
-	return executeWithStreaming(lintCmd[0], [...lintCmd.slice(1), target]);
+	const { commands: validationCommands } = validationConf;
+	return executeWithStreaming(validationCommands.lint[0], [
+		...validationCommands.lint.slice(1),
+		target
+	]);
 }
 
 /**
@@ -151,13 +153,13 @@ export function getValidationConfig(
 	overrides?: Partial<ValidationOptions>,
 	target?: string
 ): Required<ValidationOptions> {
-	const config = SETTINGS.scripts.validation.generated;
+	const { generated: generatedValidationConfig } = validationConf;
 
 	return {
 		target: target || overrides?.target || "",
-		includeCheck: overrides?.includeCheck ?? config.includeCheck,
-		includeLint: overrides?.includeLint ?? config.includeLint,
-		enabled: overrides?.enabled ?? config.runAfterGeneration
+		includeCheck: overrides?.includeCheck ?? generatedValidationConfig.includeCheck,
+		includeLint: overrides?.includeLint ?? generatedValidationConfig.includeLint,
+		enabled: overrides?.enabled ?? generatedValidationConfig.runAfterGeneration
 	};
 }
 
@@ -284,6 +286,12 @@ export async function runGeneratedFileValidation(
 		});
 	}
 
+	// Cleanup temporary files if enabled
+	if (results.length > 0) {
+		const hasErrors = results.some((r) => !r.success);
+		await cleanupValidationFiles(configId, hasErrors);
+	}
+
 	return results;
 }
 
@@ -295,13 +303,17 @@ export async function runGeneratedFileValidation(
  * @param configId Optional unique identifier for test isolation
  */
 export async function createDynamicTsConfig(target: string, configId?: string): Promise<void> {
-	const paths = SETTINGS.scripts.validation.paths;
-	const tsConfig = SETTINGS.scripts.validation.typescript;
-	const logging = SETTINGS.scripts.validation.logging;
+	const {
+		paths: validationPaths,
+		typescript: tsValidationConfig,
+		logging: validationLogging
+	} = validationConf;
 
 	// Generate unique config filename if configId is provided (test isolation)
-	const configDir = paths.tempConfigDir;
-	const configFileName = configId ? `${configId}.tsconfig.json` : paths.generatedConfigFile;
+	const configDir = validationPaths.tempConfigDir;
+	const configFileName = configId
+		? `${configId}.tsconfig.json`
+		: validationPaths.generatedConfigFile;
 	const configPath = join(configDir, configFileName);
 
 	// Ensure temp config directory exists
@@ -310,7 +322,7 @@ export async function createDynamicTsConfig(target: string, configId?: string): 
 	}
 
 	// Read root tsconfig.json and strip JavaScript-style comments
-	const rootTsConfigPath = paths.rootTsConfig;
+	const rootTsConfigPath = validationPaths.rootTsConfig;
 	if (!fs.existsSync(rootTsConfigPath)) {
 		throw new Error(`Root tsconfig.json not found at ${rootTsConfigPath}`);
 	}
@@ -331,20 +343,16 @@ export async function createDynamicTsConfig(target: string, configId?: string): 
 
 	const dynamicConfig = {
 		...rootTsConfig,
-		extends: `${projectRoot}/${tsConfig.extendsPath}`, // Absolute path to extends
-		compilerOptions: {
-			...rootTsConfig.compilerOptions,
-			...tsConfig.compilerOptions // Apply configured compiler options
-		},
+		extends: `${projectRoot}/${tsValidationConfig.extendsPath}`, // Absolute path to extends
 		include: [absoluteTarget], // Always use absolute path
 		exclude: rootTsConfig.exclude?.map((path: string) => `${projectRoot}/${path}`) || [] // Absolute paths for excludes
 	};
 
 	// Write dynamic configuration
-	fs.writeFileSync(configPath, JSON.stringify(dynamicConfig));
+	fs.writeFileSync(configPath, JSON.stringify(dynamicConfig, null, 2));
 
-	if (logging.showCommands) {
-		if (logging.useEmojis) {
+	if (validationLogging.showCommands) {
+		if (validationLogging.useEmojis) {
 			console.log(`📝 Created dynamic TypeScript config: ${configPath}`);
 			console.log(`🎯 Target: ${absoluteTarget}`);
 			if (configId) {
@@ -355,6 +363,92 @@ export async function createDynamicTsConfig(target: string, configId?: string): 
 			console.log(`Target: ${absoluteTarget}`);
 			if (configId) {
 				console.log(`Config ID: ${configId} (test isolation)`);
+			}
+		}
+	}
+}
+
+/**
+ * Clean up temporary validation files based on cleanup configuration
+ * @param configId Optional unique identifier for test isolation
+ */
+export async function cleanupValidationFiles(
+	configId?: string,
+	hasErrors?: boolean
+): Promise<void> {
+	const {
+		paths: validationPaths,
+		cleanup: cleanupConf,
+		logging: validationLogging
+	} = validationConf;
+
+	// Skip cleanup if disabled or retaining files on error
+	if (!cleanupConf.autoCleanup || (hasErrors && cleanupConf.retainOnError)) {
+		if (validationLogging.showCommands) {
+			if (!cleanupConf.autoCleanup) {
+				if (validationLogging.useEmojis) {
+					console.log("🚫 Automatic cleanup is disabled");
+				} else {
+					console.log("Automatic cleanup is disabled");
+				}
+			} else if (hasErrors && cleanupConf.retainOnError) {
+				if (validationLogging.useEmojis) {
+					console.log("🔍 Retaining temporary files for debugging (validation errors detected)");
+				} else {
+					console.log("Retaining temporary files for debugging (validation errors detected)");
+				}
+			}
+		}
+		return;
+	}
+
+	const tempConfigDir = validationPaths.tempConfigDir;
+
+	try {
+		if (configId) {
+			// Clean up specific test isolation files
+			const configFileName = `${configId}.tsconfig.json`;
+			const configPath = join(tempConfigDir, configFileName);
+
+			if (fs.existsSync(configPath)) {
+				fs.unlinkSync(configPath);
+				if (validationLogging.showCommands) {
+					if (validationLogging.useEmojis) {
+						console.log(`🧹 Cleaned up test config: ${configPath}`);
+					} else {
+						console.log(`Cleaned up test config: ${configPath}`);
+					}
+				}
+			}
+		} else {
+			// Clean up standard temporary files
+			const generatedConfigPath = join(tempConfigDir, validationPaths.generatedConfigFile);
+			const wipConfigPath = join(tempConfigDir, validationPaths.wipConfigFile);
+			const fileListPath = join(tempConfigDir, cleanupConf.fileListName);
+
+			const filesToClean = [generatedConfigPath, wipConfigPath, fileListPath];
+
+			for (const filePath of filesToClean) {
+				if (fs.existsSync(filePath)) {
+					fs.unlinkSync(filePath);
+					if (validationLogging.showCommands) {
+						if (validationLogging.useEmojis) {
+							console.log(`🧹 Cleaned up: ${filePath}`);
+						} else {
+							console.log(`Cleaned up: ${filePath}`);
+						}
+					}
+				}
+			}
+		}
+	} catch (error) {
+		if (validationLogging.showCommands) {
+			if (validationLogging.useEmojis) {
+				console.warn(
+					`⚠️  Cleanup warning: ${error instanceof Error ? error.message : String(error)}`
+				);
+			} else {
+				console.warn(`Cleanup warning: ${error instanceof Error ? error.message : String(error)}`);
 			}
 		}
 	}

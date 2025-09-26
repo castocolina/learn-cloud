@@ -49,33 +49,11 @@ export const SETTINGS: AppSettings = {
 				svelteKitTsConfig: ".svelte-kit/tsconfig.json" // SvelteKit TypeScript config path
 			},
 			commands: {
-				format: ["pnpm", "run", "format:fix"], // Prettier format command
-				check: ["pnpm", "run", "check"], // TypeScript check command
 				checkGenerated: ["pnpm", "run", "check:generated"], // Generated content check command
 				lint: ["pnpm", "run", "lint:fix", "--no-ignore"] // ESLint command
 			},
 			typescript: {
-				strictness: {
-					allowUnusedLocals: true, // Allow unused local variables for flexibility
-					allowUnusedParameters: true, // Allow unused parameters for interface compatibility
-					allowUnusedTypes: true // Allow unused type definitions for preparatory work
-				},
-				suppressionPatterns: {
-					unusedPrefix: "_", // Prefix for variables to ignore
-					typePrefix: "_", // Prefix for types to ignore
-					futureUseComment: "// @future-use" // Comment to mark future use items
-				},
-				compilerOptions: {
-					noEmit: true, // Disable emit during validation
-					verbatimModuleSyntax: true, // Use verbatim module syntax
-					isolatedModules: true // Isolated modules
-				},
 				extendsPath: ".svelte-kit/tsconfig.json" // Path to extend from (relative to project root)
-			},
-			eslint: {
-				autoFix: true, // Enable auto-fix
-				ignoreWarnings: true, // Ignore warnings during validation
-				unusedVarPattern: "^_" // Pattern for unused variables to ignore
 			},
 			logging: {
 				showCommands: true, // Show command execution

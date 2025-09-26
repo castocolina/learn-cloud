@@ -2,11 +2,14 @@
 
 set -e
 
-
+# Configuration constants
 ENABLE_PRETTIER_CHECK=true
 ENABLE_ESLINT_CHECK=true
-# Configuration
-ENABLE_SVELTE_CHECK=true  # Testing with absolute paths
+ENABLE_SVELTE_CHECK=true
+PROJECT_ROOT="$(pwd)"
+MAIN_SVELTE_TS_CONFIG="${PROJECT_ROOT}/.svelte-kit/tsconfig.json"
+TMP_CONFIG_DIR="tmp/config"
+WIP_TSCONFIG_FILE="${TMP_CONFIG_DIR}/tsconfig.wip.json"
 
 # Function to display messages with consistent styling
 echo_step() {
@@ -84,6 +87,9 @@ fi
 
 if [ "$ENABLE_ESLINT_CHECK" = true ]; then
 	# Process with eslint (linting and auto-fixing)
+	# First ensure tmp/config directory exists for dynamic tsconfig
+	mkdir -p "${TMP_CONFIG_DIR}"
+
 	if echo "$filtered_files" | xargs -r pnpm eslint --fix --no-warn-ignored; then
 		echo_success "ESLint auto-fixing completed successfully"
 	else
@@ -102,41 +108,49 @@ if [ "$ENABLE_SVELTE_CHECK" = true ]; then
 
 	if [ -n "$ts_svelte_files" ]; then
 		# Create tmp/config directory if it doesn't exist
-		mkdir -p tmp/config
+		mkdir -p "${TMP_CONFIG_DIR}"
 
-		# Copy root tsconfig.json to tmp/config/tsconfig.wip.json, removing JavaScript-style comments
-		# Remove lines that start with // (after whitespace) and empty lines
-		sed '/^[[:space:]]*\/\//d; /^[[:space:]]*$/d' tsconfig.json > tmp/config/tsconfig.wip.json
+		# Create a simpler config that just includes the specific files
+		# Convert file paths to absolute paths for svelte-check compatibility
+		ts_files_list=$(echo "$ts_svelte_files" | sed "s|^|		\"${PROJECT_ROOT}/|" | sed 's/$/",/')
 
-		# Also update exclude paths to use absolute paths
-		PROJECT_ROOT="$(pwd)"
-		jq --arg project_root "${PROJECT_ROOT}" '.exclude = (.exclude | map($project_root + "/" + .))' tmp/config/tsconfig.wip.json > tmp/config/tsconfig.wip.json.tmp2
-		mv tmp/config/tsconfig.wip.json.tmp2 tmp/config/tsconfig.wip.json
+		cat > "${WIP_TSCONFIG_FILE}" << EOF
+{
+	"extends": "${MAIN_SVELTE_TS_CONFIG}",
+	"include": [
+${ts_files_list}
+		""
+	],
+	"exclude": [
+		"${PROJECT_ROOT}/src/book/",
+		"${PROJECT_ROOT}/tmp/config/"
+	]
+}
+EOF
 
-		# Create temporary file with the files list
-		echo "$ts_svelte_files" > tmp/config/files.txt
+		# Clean up the JSON file
+		# Remove the empty string line and fix the JSON structure
+		sed -i '/^\s*""\s*$/d' "${WIP_TSCONFIG_FILE}"
+		sed -i '$s/,$//' "${WIP_TSCONFIG_FILE}"
 
-		MAIN_SVELTE_TS_CONFIG="${PROJECT_ROOT}/.svelte-kit/tsconfig.json"
-
-		# Use jq to read the file paths and create the include array, with absolute paths
-		jq --rawfile files tmp/config/files.txt \
-			--arg extends_path "${MAIN_SVELTE_TS_CONFIG}" \
-			--arg project_root "${PROJECT_ROOT}" \
-			'.extends = $extends_path | .include = ($files | split("\n") | map(select(length > 0)) | map($project_root + "/" + .))' \
-			tmp/config/tsconfig.wip.json > tmp/config/tsconfig.wip.json.tmp
-		mv tmp/config/tsconfig.wip.json.tmp tmp/config/tsconfig.wip.json
+		# Ensure proper JSON structure
+		if ! tail -n 1 "${WIP_TSCONFIG_FILE}" | grep -q '^}$'; then
+			sed -i '/^\s*]\s*$/d' "${WIP_TSCONFIG_FILE}"
+			echo '	]' >> "${WIP_TSCONFIG_FILE}"
+			echo '}' >> "${WIP_TSCONFIG_FILE}"
+		fi
 
 		echo_info "Created dynamic TypeScript config for $(echo "$ts_svelte_files" | wc -l) files"
 
-		# Run svelte-check with absolute path to the config file
-		if (pnpm svelte-check --tsconfig ./tmp/config/tsconfig.wip.json); then
+		# Run svelte-check with the simplified config
+		if (pnpm svelte-check --tsconfig "./${WIP_TSCONFIG_FILE}"); then
 			echo_success "Svelte TypeScript check completed successfully"
 		else
 			echo_warning "Svelte TypeScript check encountered issues"
 		fi
 
 		# Cleanup: Remove temporary files after use
-		# rm -f tmp/config/tsconfig.wip.json tmp/config/tsconfig.wip.json.tmp tmp/config/tsconfig.wip.json.tmp2 tmp/config/files.txt
+		# rm -f "${WIP_TSCONFIG_FILE}"
 	else
 		echo_info "No TypeScript/Svelte files found, skipping Svelte check"
 	fi

@@ -82,10 +82,6 @@ export interface AppSettings {
 			};
 			/** Command configurations for validation tools */
 			commands: {
-				/** Prettier format command */
-				format: readonly string[];
-				/** TypeScript check command */
-				check: readonly string[];
 				/** Generated content check command */
 				checkGenerated: readonly string[];
 				/** ESLint command */
@@ -93,44 +89,8 @@ export interface AppSettings {
 			};
 			/** TypeScript compiler configuration */
 			typescript: {
-				/** Compiler strictness settings */
-				strictness: {
-					/** Allow unused local variables */
-					allowUnusedLocals: boolean;
-					/** Allow unused parameters */
-					allowUnusedParameters: boolean;
-					/** Allow unused type definitions */
-					allowUnusedTypes: boolean;
-				};
-				/** Suppression patterns for unused items */
-				suppressionPatterns: {
-					/** Prefix for variables to ignore (default: "_") */
-					unusedPrefix: string;
-					/** Prefix for types to ignore (default: "_") */
-					typePrefix: string;
-					/** Comment to mark future use items */
-					futureUseComment: string;
-				};
-				/** Compiler options to apply */
-				compilerOptions: {
-					/** Disable emit during validation */
-					noEmit: boolean;
-					/** Use verbatim module syntax */
-					verbatimModuleSyntax: boolean;
-					/** Isolated modules */
-					isolatedModules: boolean;
-				};
 				/** Path to extend from */
 				extendsPath: string;
-			};
-			/** ESLint configuration */
-			eslint: {
-				/** Enable auto-fix */
-				autoFix: boolean;
-				/** Ignore warnings during validation */
-				ignoreWarnings: boolean;
-				/** Pattern for unused variables to ignore */
-				unusedVarPattern: string;
 			};
 			/** Logging configuration */
 			logging: {
