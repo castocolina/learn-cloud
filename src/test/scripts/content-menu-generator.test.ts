@@ -24,15 +24,56 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync } from "fs";
 import { join } from "path";
 import { MarkdownContentGenerator } from "../../scripts/content-menu-generator.js";
+import { generateConfigId } from "../../lib/utils/validation-utils.js";
+import { SETTINGS } from "$config/settings.js";
+const { contentMenu: contentMenuSettings } = SETTINGS.scripts;
 
 // Simplified approach for testing - using any to avoid complex type redeclarations
 // Following user preference for pragmatic approach in utility scripts
 import { generateNavigationPaths } from "../../lib/utils/navigation-paths.js";
 import type { UnifiedPathConfig } from "$types";
 
-// Test fixtures and utilities
-const TEST_DATA_DIR = join(process.cwd(), "tmp", "test-data");
-const TEST_OUTPUT_DIR = join(TEST_DATA_DIR, "output");
+/**
+ * Test setup class for test isolation and dynamic configuration
+ */
+class TestSetup {
+	public tempDir: string;
+	public testContentDir: string;
+	public testOutputDir: string;
+	public readonly configId: string;
+	public contentMdPath: string;
+	public outputPath: string;
+
+	constructor(testSuiteId: string = "main") {
+		const timestamp = Date.now();
+		const uniqueId = `${testSuiteId}-${timestamp}`;
+		this.tempDir = join(process.cwd(), "tmp", `test-content-menu-${uniqueId}`);
+		this.testContentDir = this.tempDir;
+		this.testOutputDir = join(this.tempDir, "output");
+		this.configId = generateConfigId(contentMenuSettings.validationPrefix, testSuiteId);
+		this.contentMdPath = join(this.testContentDir, "CONTENT.md");
+		this.outputPath = join(this.testOutputDir, "content-menu.ts");
+	}
+
+	async setup(): Promise<void> {
+		// Create temp directories
+		if (!existsSync(this.tempDir)) {
+			mkdirSync(this.tempDir, { recursive: true });
+		}
+		if (!existsSync(this.testOutputDir)) {
+			mkdirSync(this.testOutputDir, { recursive: true });
+		}
+
+		// Write mock content file
+		writeFileSync(this.contentMdPath, SAMPLE_CONTENT, "utf-8");
+	}
+
+	cleanup(): void {
+		if (existsSync(this.tempDir)) {
+			rmSync(this.tempDir, { recursive: true, force: true });
+		}
+	}
+}
 
 // Sample CONTENT.md content for testing with simplified structure
 const SAMPLE_CONTENT = `# Book Index: Mastering Cloud-Native Technologies
@@ -99,38 +140,22 @@ and complex formatting.
 `;
 
 describe("MarkdownContentGenerator", () => {
+	let testSetup: TestSetup;
 	let generator: any; // Simplified approach for testing private methods
-	let testContentPath: string;
-	let testOutputPath: string;
 
-	beforeEach(() => {
-		// Setup test directories
-		if (existsSync(TEST_DATA_DIR)) {
-			rmSync(TEST_DATA_DIR, { recursive: true, force: true });
-		}
-		mkdirSync(TEST_DATA_DIR, { recursive: true });
-		mkdirSync(TEST_OUTPUT_DIR, { recursive: true });
+	beforeEach(async () => {
+		testSetup = new TestSetup();
+		await testSetup.setup();
 
-		// Create test content file
-		testContentPath = join(TEST_DATA_DIR, "test-content.md");
-		testOutputPath = join(TEST_OUTPUT_DIR, "content-menu.ts");
-
-		writeFileSync(testContentPath, SAMPLE_CONTENT, "utf-8");
-
-		// Initialize generator with test paths (use relative path from project root)
-		// Skip validation for performance in tests
-		const relativeTestPath = join("tmp", "test-data", "test-content.md");
-		generator = new MarkdownContentGenerator(relativeTestPath, { skipValidation: true }) as any;
-
-		// Override output path for testing
-		generator.outputPath = testOutputPath;
+		// Initialize generator with test isolation
+		// Skip validation by default for performance in tests
+		generator = new MarkdownContentGenerator(testSetup.contentMdPath, {
+			skipValidation: true
+		}) as any;
 	});
 
 	afterEach(() => {
-		// Cleanup test directories
-		if (existsSync(TEST_DATA_DIR)) {
-			rmSync(TEST_DATA_DIR, { recursive: true, force: true });
-		}
+		testSetup.cleanup();
 	});
 
 	describe("Content Reading and Validation", () => {
@@ -151,12 +176,10 @@ describe("MarkdownContentGenerator", () => {
 
 		it("should throw error for empty file", () => {
 			const emptyFileName = "empty.md";
-			const emptyFilePath = join(TEST_DATA_DIR, emptyFileName);
+			const emptyFilePath = join(testSetup.testContentDir, emptyFileName);
 			writeFileSync(emptyFilePath, "", "utf-8");
 
-			// Use relative path from project root
-			const relativeEmptyPath = join("tmp", "test-data", emptyFileName);
-			const emptyGenerator = new MarkdownContentGenerator(relativeEmptyPath, {
+			const emptyGenerator = new MarkdownContentGenerator(emptyFilePath, {
 				skipValidation: true
 			}) as any;
 			expect(() => emptyGenerator.readContentMd()).toThrow();
@@ -494,40 +517,7 @@ describe("MarkdownContentGenerator", () => {
 		});
 	});
 
-	describe("TypeScript Code Generation", () => {
-		it("should format primitive values correctly", () => {
-			expect(generator.formatTypeScriptValue(null)).toBe("null");
-			expect(generator.formatTypeScriptValue(true)).toBe("true");
-			expect(generator.formatTypeScriptValue(false)).toBe("false");
-			expect(generator.formatTypeScriptValue(42)).toBe("42");
-			expect(generator.formatTypeScriptValue("test")).toBe('"test"');
-		});
-
-		it("should format union references without quotes", () => {
-			expect(generator.formatTypeScriptValue("ChapterType.LESSON")).toBe("ChapterType.LESSON");
-			expect(generator.formatTypeScriptValue("ChapterType.QUIZ")).toBe("ChapterType.QUIZ");
-		});
-
-		it("should format arrays correctly", () => {
-			const result = generator.formatTypeScriptValue(["a", "b", "c"]);
-			expect(result).toContain("[\n");
-			expect(result).toContain('"a"');
-			expect(result).toContain('"b"');
-			expect(result).toContain('"c"');
-			expect(result).toContain("\n]");
-		});
-
-		it("should format objects correctly", () => {
-			const obj = { title: "Test", type: "ChapterType.LESSON", count: 5 };
-			const result = generator.formatTypeScriptValue(obj);
-
-			expect(result).toContain("{\n");
-			expect(result).toContain('title: "Test"');
-			expect(result).toContain("type: ChapterType.LESSON");
-			expect(result).toContain("count: 5");
-			expect(result).toContain("\n}");
-		});
-	});
+	// Note: TypeScript Code Generation tests removed - Prettier now handles all formatting
 
 	describe("Structure Parsing", () => {
 		it("should parse markdown structure correctly", () => {
@@ -650,12 +640,14 @@ describe("MarkdownContentGenerator", () => {
 
 	describe("Full Generation Process", () => {
 		it("should generate complete TypeScript module", async () => {
+			// Update generator's output path to use test isolation
+			generator.outputPath = testSetup.outputPath;
 			const success = await generator.generate();
 
 			expect(success).toBe(true);
-			expect(existsSync(testOutputPath)).toBe(true);
+			expect(existsSync(testSetup.outputPath)).toBe(true);
 
-			const generatedContent = readFileSync(testOutputPath, "utf-8");
+			const generatedContent = readFileSync(testSetup.outputPath, "utf-8");
 
 			// Check imports
 			expect(generatedContent).toContain("import type { MenuStructure }");
@@ -680,20 +672,19 @@ describe("MarkdownContentGenerator", () => {
 		it("should handle generation with custom input file", async () => {
 			// Create custom content file
 			const customFileName = "custom-content.md";
-			const customContentPath = join(TEST_DATA_DIR, customFileName);
+			const customContentPath = join(testSetup.tempDir, customFileName);
 			writeFileSync(customContentPath, MINIMAL_CONTENT, "utf-8");
 
-			// Use relative path from project root
-			const relativeCustomPath = join("tmp", "test-data", customFileName);
-			const customGenerator = new MarkdownContentGenerator(relativeCustomPath, {
+			const customOutputPath = join(testSetup.testOutputDir, "custom-menu.ts");
+			const customGenerator = new MarkdownContentGenerator(customContentPath, {
 				skipValidation: true
 			}) as any;
-			customGenerator.outputPath = join(TEST_OUTPUT_DIR, "custom-menu.ts");
+			customGenerator.outputPath = customOutputPath;
 
 			const success = await customGenerator.generate();
 
 			expect(success).toBe(true);
-			expect(existsSync(join(TEST_OUTPUT_DIR, "custom-menu.ts"))).toBe(true);
+			expect(existsSync(customOutputPath)).toBe(true);
 		});
 
 		it("should handle generation errors gracefully", async () => {
@@ -715,13 +706,15 @@ describe("MarkdownContentGenerator", () => {
 
 		// Note: Import testing removed - linting handles TypeScript syntax validation
 		it("should generate valid TypeScript file structure", async () => {
+			// Update generator's output path for test isolation
+			generator.outputPath = testSetup.outputPath;
 			// Generate a file first
 			await generator.generate();
 
 			// Verify the file exists and has basic structure
-			expect(existsSync(testOutputPath)).toBe(true);
+			expect(existsSync(testSetup.outputPath)).toBe(true);
 
-			const content = readFileSync(testOutputPath, "utf-8");
+			const content = readFileSync(testSetup.outputPath, "utf-8");
 
 			// Check for basic export structure (what matters for functionality)
 			expect(content).toMatch(/export\s+const\s+\w+:/);
@@ -740,29 +733,31 @@ describe("MarkdownContentGenerator", () => {
             - **Invalid: format here
             `;
 
-			writeFileSync(testContentPath, malformedContent, "utf-8");
+			writeFileSync(testSetup.contentMdPath, malformedContent, "utf-8");
+			generator.outputPath = testSetup.outputPath;
 
 			const success = await generator.generate();
 
 			// Should still generate something, even if structure is malformed
 			expect(success).toBe(true);
-			expect(existsSync(testOutputPath)).toBe(true);
+			expect(existsSync(testSetup.outputPath)).toBe(true);
 		});
 
 		it("should handle missing directories", async () => {
 			// Remove output directory
-			rmSync(TEST_OUTPUT_DIR, { recursive: true, force: true });
+			rmSync(testSetup.testOutputDir, { recursive: true, force: true });
+			generator.outputPath = testSetup.outputPath;
 
 			const success = await generator.generate();
 
 			expect(success).toBe(true);
-			expect(existsSync(testOutputPath)).toBe(true);
+			expect(existsSync(testSetup.outputPath)).toBe(true);
 		});
 
 		it("should handle file write errors gracefully", async () => {
 			// Test with read-only directory (if supported by OS)
 			try {
-				const readOnlyDir = join(TEST_DATA_DIR, "readonly");
+				const readOnlyDir = join(testSetup.tempDir, "readonly");
 				mkdirSync(readOnlyDir, { recursive: true });
 
 				generator.outputPath = join(readOnlyDir, "readonly-output.ts");

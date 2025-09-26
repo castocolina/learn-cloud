@@ -15,26 +15,116 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { writeFileSync, existsSync, mkdirSync, rmSync } from "fs";
+import { join } from "path";
 import {
 	parseCliArguments,
 	generateFilePath,
 	getContentGenerator
 } from "../../scripts/content-scaffolding.js";
+import { generateConfigId } from "../../lib/utils/validation-utils.js";
 import { SETTINGS } from "$config/settings.js";
+const { scaffolding: scaffoldingSettings } = SETTINGS.scripts;
 
 // Mock process.argv for CLI testing
 const originalArgv = process.argv;
 const _originalExit = process.exit;
 
+/**
+ * Test setup class for test isolation and temporary file handling
+ */
+class TestSetup {
+	public tempDir: string;
+	public testDataDir: string;
+	public readonly configId: string;
+	public contentMdPath: string;
+
+	constructor(testSuiteId: string = "scaffolding") {
+		const timestamp = Date.now();
+		const uniqueId = `${testSuiteId}-${timestamp}`;
+		this.tempDir = join(process.cwd(), "tmp", `test-scaffolding-${uniqueId}`);
+		this.testDataDir = join(this.tempDir, "data", "book");
+		this.configId = generateConfigId(scaffoldingSettings.validationPrefix, testSuiteId);
+		this.contentMdPath = join(this.tempDir, "CONTENT.md");
+	}
+
+	async setup(): Promise<void> {
+		// Create temp directories
+		if (!existsSync(this.tempDir)) {
+			mkdirSync(this.tempDir, { recursive: true });
+		}
+		if (!existsSync(this.testDataDir)) {
+			mkdirSync(this.testDataDir, { recursive: true });
+		}
+
+		// Create unit directories
+		for (let i = 1; i <= 6; i++) {
+			const unitDir = join(this.testDataDir, `unit${i.toString().padStart(2, "0")}`);
+			if (!existsSync(unitDir)) {
+				mkdirSync(unitDir, { recursive: true });
+			}
+		}
+
+		// Write minimal test CONTENT.md
+		writeFileSync(this.contentMdPath, MINIMAL_CONTENT, "utf-8");
+	}
+
+	cleanup(): void {
+		if (existsSync(this.tempDir)) {
+			rmSync(this.tempDir, { recursive: true, force: true });
+		}
+	}
+}
+
+// Minimal content for testing - just what's needed for validation
+const MINIMAL_CONTENT = `# Book Index: Test Content
+
+## Unit 1: Python [icon: Box] [emoji: 🐍]
+- **1.1: Test Lesson** [icon: Settings] [emoji: ⚙️]
+- **1.1: Study Guide** [icon: BookOpen] [emoji: 📚]
+- **1.1: Quiz** [icon: HelpCircle] [emoji: ❓]
+
+## Unit 2: Go [icon: Zap] [emoji: ⚡]
+- **2.1: Test Lesson** [icon: Settings] [emoji: ⚙️]
+- **2.3: Test Quiz** [icon: HelpCircle] [emoji: ❓]
+
+## Unit 3: DevOps [icon: Server] [emoji: 🛠️]
+- **3.5: Test Exam** [icon: Target] [emoji: 🎯]
+
+## Unit 4: Infrastructure [icon: Cloud] [emoji: ☁️]
+- **4.2: Study Guide** [icon: BookOpen] [emoji: 📚]
+
+## Unit 5: Security [icon: Shield] [emoji: 🔒]
+- **5.10: Project** [icon: Rocket] [emoji: 🚀]
+
+## Unit 6: Advanced [icon: Cpu] [emoji: ⚡]
+- **Overview** [icon: BookOpen] [emoji: 📖]
+`;
+
 describe("Content Scaffolding Generator", () => {
-	beforeEach(() => {
+	let testSetup: TestSetup;
+
+	beforeEach(async () => {
 		// Mock process.exit to prevent test termination
 		vi.spyOn(process, "exit").mockImplementation(() => {
 			throw new Error("process.exit");
 		});
+
+		// Setup test environment with temporary files
+		testSetup = new TestSetup("main");
+		await testSetup.setup();
+
+		// Mock process.cwd to use test directory
+		vi.spyOn(process, "cwd").mockReturnValue(testSetup.tempDir);
+
+		// Note: Scaffolding settings don't have validation.generated structure
+		// Test isolation is handled through TestSetup class and temporary directories
 	});
 
 	afterEach(() => {
+		// Cleanup test files
+		testSetup?.cleanup();
+
 		// Restore original functions
 		process.argv = originalArgv;
 		vi.restoreAllMocks();
@@ -97,13 +187,25 @@ describe("Content Scaffolding Generator", () => {
 
 		it("should trigger flexible batch generation when only valid unit is provided", async () => {
 			process.argv = ["node", "script.js", "--unit=1"];
-			const consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+			// Mock console.log to prevent actual output during test
+
+			// Mock the internal batch generation by making it resolve immediately
+			const originalConsoleLog = console.log;
+			let flexibleModeDetected = false;
+
+			vi.spyOn(console, "log").mockImplementation((...args) => {
+				const message = args.join(" ");
+				if (message.includes("🔄 Content Scaffolding Generator - Flexible Batch Mode")) {
+					flexibleModeDetected = true;
+					// Immediately throw to simulate process.exit
+					throw new Error("process.exit");
+				}
+				return originalConsoleLog(...args);
+			});
 
 			await expect(() => parseCliArguments()).rejects.toThrow("process.exit");
-			expect(consoleLogSpy).toHaveBeenCalledWith(
-				expect.stringContaining("🔄 Content Scaffolding Generator - Flexible Batch Mode")
-			);
-		}, 10000);
+			expect(flexibleModeDetected).toBe(true);
+		}, 1000);
 
 		it("should exit with error for invalid unit", async () => {
 			process.argv = ["node", "script.js", "--unit=invalid", "--type=lesson", "--id=1"];
@@ -227,7 +329,7 @@ describe("Content Scaffolding Generator", () => {
 			expect((content as any).type).toBe("lesson");
 			expect((content as any).title).toContain("Cloud-Native test Development");
 			expect((content as any).status).toBe("scaffold");
-			expect((content as any).sections).toHaveLength(SETTINGS.scripts.scaffolding.lessons.sections);
+			expect((content as any).sections).toHaveLength(scaffoldingSettings.lessons.sections);
 		});
 
 		it("should return quiz generator for quiz type", () => {
@@ -238,9 +340,7 @@ describe("Content Scaffolding Generator", () => {
 			const content = generator(args);
 
 			expect((content as any).type).toBe("quiz");
-			expect((content as any).quiz.questions).toHaveLength(
-				SETTINGS.scripts.scaffolding.quizzes.questions
-			);
+			expect((content as any).quiz.questions).toHaveLength(scaffoldingSettings.quizzes.questions);
 		});
 
 		it("should return exam generator for exam type", () => {
@@ -251,9 +351,7 @@ describe("Content Scaffolding Generator", () => {
 			const content = generator(args);
 
 			expect((content as any).type).toBe("exam");
-			expect((content as any).exam.questions).toHaveLength(
-				SETTINGS.scripts.scaffolding.exams.questions
-			);
+			expect((content as any).exam.questions).toHaveLength(scaffoldingSettings.exams.questions);
 		});
 
 		it("should return study guide generator for study_guide type", () => {
@@ -265,7 +363,7 @@ describe("Content Scaffolding Generator", () => {
 
 			expect((content as any).type).toBe("study_guide");
 			expect((content as any).studyGuide.flashcards).toHaveLength(
-				SETTINGS.scripts.scaffolding.studyGuides.flashcards
+				scaffoldingSettings.studyGuides.flashcards
 			);
 		});
 
@@ -277,15 +375,9 @@ describe("Content Scaffolding Generator", () => {
 			const content = generator(args);
 
 			expect((content as any).type).toBe("project");
-			expect((content as any).sections).toHaveLength(
-				SETTINGS.scripts.scaffolding.projects.sections
-			);
-			expect((content as any).requirements).toHaveLength(
-				SETTINGS.scripts.scaffolding.projects.requirements
-			);
-			expect((content as any).deliverables).toHaveLength(
-				SETTINGS.scripts.scaffolding.projects.deliverables
-			);
+			expect((content as any).sections).toHaveLength(scaffoldingSettings.projects.sections);
+			expect((content as any).requirements).toHaveLength(scaffoldingSettings.projects.requirements);
+			expect((content as any).deliverables).toHaveLength(scaffoldingSettings.projects.deliverables);
 		});
 
 		it("should default to lesson generator for unknown type", () => {
@@ -306,9 +398,7 @@ describe("Content Scaffolding Generator", () => {
 				const args = { unit: "test", type: "lesson" as const, id: "1-1" };
 				const content = generator(args);
 
-				expect((content as any).sections).toHaveLength(
-					SETTINGS.scripts.scaffolding.lessons.sections
-				);
+				expect((content as any).sections).toHaveLength(scaffoldingSettings.lessons.sections);
 
 				// Check that at least one section has code and diagram blocks
 				const hasCodeBlock = (content as any).sections.some((section: any) =>
@@ -345,9 +435,7 @@ describe("Content Scaffolding Generator", () => {
 				const args = { unit: "test", type: "quiz" as const, id: "1-1" };
 				const content = generator(args);
 
-				expect((content as any).quiz.questions).toHaveLength(
-					SETTINGS.scripts.scaffolding.quizzes.questions
-				);
+				expect((content as any).quiz.questions).toHaveLength(scaffoldingSettings.quizzes.questions);
 			});
 
 			it("should generate diverse question types when configured", () => {
@@ -355,7 +443,7 @@ describe("Content Scaffolding Generator", () => {
 				const args = { unit: "test", type: "quiz" as const, id: "1-1" };
 				const content = generator(args);
 
-				if (SETTINGS.scripts.scaffolding.quizzes.diverseTypes) {
+				if (scaffoldingSettings.quizzes.diverseTypes) {
 					const questionTypes = (content as any).quiz.questions.map((q: any) => q.type);
 					const uniqueTypes = [...new Set(questionTypes)];
 
@@ -396,14 +484,12 @@ describe("Content Scaffolding Generator", () => {
 				const args = { unit: "test", type: "exam" as const, id: "final" };
 				const content = generator(args);
 
-				expect((content as any).exam.questions).toHaveLength(
-					SETTINGS.scripts.scaffolding.exams.questions
-				);
+				expect((content as any).exam.questions).toHaveLength(scaffoldingSettings.exams.questions);
 			});
 
 			it("should have higher question count than quiz", () => {
-				expect(SETTINGS.scripts.scaffolding.exams.questions).toBeGreaterThan(
-					SETTINGS.scripts.scaffolding.quizzes.questions
+				expect(scaffoldingSettings.exams.questions).toBeGreaterThan(
+					scaffoldingSettings.quizzes.questions
 				);
 			});
 		});
@@ -415,7 +501,7 @@ describe("Content Scaffolding Generator", () => {
 				const content = generator(args);
 
 				expect((content as any).studyGuide.flashcards).toHaveLength(
-					SETTINGS.scripts.scaffolding.studyGuides.flashcards
+					scaffoldingSettings.studyGuides.flashcards
 				);
 			});
 
@@ -440,14 +526,12 @@ describe("Content Scaffolding Generator", () => {
 				const args = { unit: "test", type: "project" as const, id: "capstone" };
 				const content = generator(args);
 
-				expect((content as any).sections).toHaveLength(
-					SETTINGS.scripts.scaffolding.projects.sections
-				);
+				expect((content as any).sections).toHaveLength(scaffoldingSettings.projects.sections);
 				expect((content as any).requirements).toHaveLength(
-					SETTINGS.scripts.scaffolding.projects.requirements
+					scaffoldingSettings.projects.requirements
 				);
 				expect((content as any).deliverables).toHaveLength(
-					SETTINGS.scripts.scaffolding.projects.deliverables
+					scaffoldingSettings.projects.deliverables
 				);
 			});
 
@@ -472,30 +556,30 @@ describe("Content Scaffolding Generator", () => {
 
 	describe("Configuration Integration", () => {
 		it("should use settings from configuration file", () => {
-			expect(SETTINGS.scripts.scaffolding.lessons.sections).toBeGreaterThan(0);
-			expect(SETTINGS.scripts.scaffolding.quizzes.questions).toBeGreaterThan(0);
-			expect(SETTINGS.scripts.scaffolding.exams.questions).toBeGreaterThan(0);
-			expect(SETTINGS.scripts.scaffolding.studyGuides.flashcards).toBeGreaterThan(0);
-			expect(SETTINGS.scripts.scaffolding.projects.sections).toBeGreaterThan(0);
+			expect(scaffoldingSettings.lessons.sections).toBeGreaterThan(0);
+			expect(scaffoldingSettings.quizzes.questions).toBeGreaterThan(0);
+			expect(scaffoldingSettings.exams.questions).toBeGreaterThan(0);
+			expect(scaffoldingSettings.studyGuides.flashcards).toBeGreaterThan(0);
+			expect(scaffoldingSettings.projects.sections).toBeGreaterThan(0);
 
 			// Verify minimum requirements are met
-			expect(SETTINGS.scripts.scaffolding.lessons.sections).toBeGreaterThanOrEqual(5);
-			expect(SETTINGS.scripts.scaffolding.quizzes.questions).toBeGreaterThanOrEqual(10);
-			expect(SETTINGS.scripts.scaffolding.exams.questions).toBeGreaterThanOrEqual(30);
-			expect(SETTINGS.scripts.scaffolding.studyGuides.flashcards).toBeGreaterThanOrEqual(5);
-			expect(SETTINGS.scripts.scaffolding.projects.sections).toBeGreaterThanOrEqual(5);
+			expect(scaffoldingSettings.lessons.sections).toBeGreaterThanOrEqual(5);
+			expect(scaffoldingSettings.quizzes.questions).toBeGreaterThanOrEqual(10);
+			expect(scaffoldingSettings.exams.questions).toBeGreaterThanOrEqual(30);
+			expect(scaffoldingSettings.studyGuides.flashcards).toBeGreaterThanOrEqual(5);
+			expect(scaffoldingSettings.projects.sections).toBeGreaterThanOrEqual(5);
 		});
 
 		it("should have content length configurations", () => {
-			expect(SETTINGS.scripts.scaffolding.contentLengths).toBeDefined();
-			expect(SETTINGS.scripts.scaffolding.contentLengths.summary).toBeGreaterThan(0);
-			expect(SETTINGS.scripts.scaffolding.contentLengths.paragraph).toBeGreaterThan(0);
-			expect(SETTINGS.scripts.scaffolding.contentLengths.question).toBeGreaterThan(0);
+			expect(scaffoldingSettings.contentLengths).toBeDefined();
+			expect(scaffoldingSettings.contentLengths.summary).toBeGreaterThan(0);
+			expect(scaffoldingSettings.contentLengths.paragraph).toBeGreaterThan(0);
+			expect(scaffoldingSettings.contentLengths.question).toBeGreaterThan(0);
 		});
 
 		it("should have diverse types configuration", () => {
-			expect(typeof SETTINGS.scripts.scaffolding.quizzes.diverseTypes).toBe("boolean");
-			expect(typeof SETTINGS.scripts.scaffolding.exams.diverseTypes).toBe("boolean");
+			expect(typeof scaffoldingSettings.quizzes.diverseTypes).toBe("boolean");
+			expect(typeof scaffoldingSettings.exams.diverseTypes).toBe("boolean");
 		});
 	});
 

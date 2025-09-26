@@ -11,8 +11,6 @@
 export interface ValidationOptions {
 	/** Target files or directories to validate */
 	target?: string;
-	/** Whether to run format validation (prettier) */
-	includeFormat?: boolean;
 	/** Whether to run TypeScript check validation */
 	includeCheck?: boolean;
 	/** Whether to run lint validation (eslint) */

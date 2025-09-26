@@ -119,14 +119,6 @@ async function executeWithStreaming(
 }
 
 /**
- * Run prettier format validation on specific target
- */
-export async function runFormatValidation(target: string): Promise<ValidationResult> {
-	const formatCmd = SETTINGS.scripts.validation.commands.format;
-	return executeWithStreaming(formatCmd[0], [...formatCmd.slice(1), target]);
-}
-
-/**
  * Run TypeScript check validation
  * Note: SvelteKit check doesn't support targeting specific files, so it always checks the entire project
  */
@@ -163,7 +155,6 @@ export function getValidationConfig(
 
 	return {
 		target: target || overrides?.target || "",
-		includeFormat: overrides?.includeFormat ?? config.includeFormat,
 		includeCheck: overrides?.includeCheck ?? config.includeCheck,
 		includeLint: overrides?.includeLint ?? config.includeLint,
 		enabled: overrides?.enabled ?? config.runAfterGeneration
@@ -248,7 +239,6 @@ export async function runGeneratedFileValidation(
 	console.log("🔍 Running post-generation validation...");
 	console.log("=====================================");
 	console.log(`📁 Target: ${config.target}`);
-	console.log(`🎨 Format: ${config.includeFormat ? "✅" : "⏭️"}`);
 	console.log(`🔍 Check: ${config.includeCheck ? "✅" : "⏭️"}`);
 	console.log(`🧹 Lint: ${config.includeLint ? "✅" : "⏭️"}`);
 	console.log("");
@@ -257,19 +247,13 @@ export async function runGeneratedFileValidation(
 	const results: ValidationResult[] = [];
 
 	try {
-		// Run format validation if enabled (Step 1)
-		if (config.includeFormat) {
-			const formatResult = await runFormatValidation(config.target);
-			results.push(formatResult);
-		}
-
-		// Run lint validation if enabled (Step 2 - BEFORE TypeScript check)
+		// Run lint validation if enabled (Step 1 - BEFORE TypeScript check)
 		if (config.includeLint) {
 			const lintResult = await runLintValidation(config.target);
 			results.push(lintResult);
 		}
 
-		// Run TypeScript check validation for generated content (Step 3 - AFTER lint)
+		// Run TypeScript check validation for generated content (Step 2 - AFTER lint)
 		if (config.includeCheck) {
 			// Create dynamic tsconfig for this specific target
 			await createDynamicTsConfig(config.target, configId);
@@ -357,7 +341,7 @@ export async function createDynamicTsConfig(target: string, configId?: string): 
 	};
 
 	// Write dynamic configuration
-	fs.writeFileSync(configPath, JSON.stringify(dynamicConfig, null, 2));
+	fs.writeFileSync(configPath, JSON.stringify(dynamicConfig));
 
 	if (logging.showCommands) {
 		if (logging.useEmojis) {

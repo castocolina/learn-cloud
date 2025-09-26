@@ -53,8 +53,6 @@ export interface AppSettings {
 			generated: {
 				/** Run validation after content generation */
 				runAfterGeneration: boolean;
-				/** Run format validation */
-				includeFormat: boolean;
 				/** Run TypeScript check validation */
 				includeCheck: boolean;
 				/** Run lint validation */
@@ -159,6 +157,15 @@ export interface AppSettings {
 		};
 		/** Content scaffolding configuration */
 		scaffolding: {
+			/** Path configurations for content scaffolding */
+			paths: {
+				/** Input file for reading unit structure */
+				inputFile: string;
+				/** Output folder for generated content files */
+				outputFolder: string;
+			};
+			/** Validation prefix for generating unique config IDs */
+			validationPrefix: string;
 			/** Minimum content requirements for lessons */
 			lessons: {
 				/** Minimum sections per lesson */
@@ -223,6 +230,18 @@ export interface AppSettings {
 				/** Diagram caption length */
 				diagramCaption: number;
 			};
+		};
+		/** Content menu generator configuration */
+		contentMenu: {
+			/** Path configurations for content menu generation */
+			paths: {
+				/** Input markdown file path */
+				inputFile: string;
+				/** Output TypeScript file path */
+				outputFile: string;
+			};
+			/** Validation prefix for generating unique config IDs */
+			validationPrefix: string;
 		};
 		/** Search index generation configuration */
 		searchIndex: {
@@ -345,12 +364,10 @@ export function isGeneratedValidationConfig(
 		typeof obj === "object" &&
 		obj !== null &&
 		"runAfterGeneration" in obj &&
-		"includeFormat" in obj &&
 		"includeCheck" in obj &&
 		"includeLint" in obj &&
 		typeof (obj as AppSettings["scripts"]["validation"]["generated"]).runAfterGeneration ===
 			"boolean" &&
-		typeof (obj as AppSettings["scripts"]["validation"]["generated"]).includeFormat === "boolean" &&
 		typeof (obj as AppSettings["scripts"]["validation"]["generated"]).includeCheck === "boolean" &&
 		typeof (obj as AppSettings["scripts"]["validation"]["generated"]).includeLint === "boolean"
 	);

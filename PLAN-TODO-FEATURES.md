@@ -292,7 +292,7 @@ During Task 3E implementation, you MUST also address the test concurrency issue 
   - Override cleanup settings: `autoCleanup: false`, `retainOnError: true`
   - Maintain backward compatibility for normal script execution
 
-- **Documentation**: See detailed implementation notes in `src/lib/utils/validation-utils.ts:162-209`
+- **Documentation**: See detailed implementation notes in `src/lib/utils/validation-utils.ts`
 
 **Prerequisites:**
 
@@ -309,7 +309,8 @@ During Task 3E implementation, you MUST also address the test concurrency issue 
 - **Output**: `src/data/generated/flatnav.ts` with sequential navigation mapping
 - **Technology**: ts-morph for TypeScript parsing, path for file operations
 - **CLI Usage**: `pnpm run generate-flatnav`
-- **Use Settings** `src/config/settings.ts` for configuration management the input, output paths and any others under .scripts.navigation. This is similar to Search Indexer to avoid hardcoding values and conflicts during concurrent test runs, the test suites must use different paths under `tmp/navigation/` for isolation.
+- **Use Settings** `src/config/settings.ts` for configuration management the input, output paths and any others under .scripts.navigation. This is similar to Search Indexer to avoid hardcoding values and conflicts during concurrent test runs, the test suites must use different paths under `tmp/navigation/` for isolation. Siempre usar spreading para usar la configuracion especifica y evitar usar la mas general.
+- **Code Verfication**: Use `pnpm run check:wip` to verify code quality and standards compliance of working files.
 
 **FlatNav Data Structure:**
 
@@ -389,7 +390,7 @@ interface FlatNavStructure {
 - Updated `Makefile` with `generate-flatnav` target
 - Updated `package.json` with `generate-flatnav` script
 - Updated `.github/workflows/` for CI/CD integration
-- Test suite in `src/test/scripts/flatnav-generator.test.ts`
+- Test suite in `src/test/scripts/flatnav-generator.test.ts`. Generar configuraciones para los test como `TestSetup` en `content-menu-generator.test.ts` para evitar conflictos en ejecuciones concurrentes y usar deshabilitada la validacion por performance pero generar algunos casos para probar su correcto funcionamiento.
 - Generated file: `src/data/generated/flatnav.ts` with complete navigation map
 - New types in `src/lib/types/navigation.ts` if needed
 

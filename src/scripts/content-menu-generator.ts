@@ -50,8 +50,8 @@
  *     make generate-menu
  */
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync, statSync } from "fs";
-import { join, dirname } from "path";
+import { readFileSync, existsSync, mkdirSync, statSync } from "fs";
+import { join, dirname, isAbsolute } from "path";
 import { Project } from "ts-morph";
 import type {
 	MenuStructure,
@@ -64,59 +64,50 @@ import type {
 } from "$types";
 import { generateNavigationPaths } from "$lib/utils/navigation-paths.js";
 import { runGeneratedFileValidation } from "../lib/utils/validation-utils.js";
+import { SETTINGS } from "$config/settings.js";
+const { contentMenu: contentMenuSettings } = SETTINGS.scripts;
+import { writeFormattedFile } from "../lib/utils/prettier-writer.js";
 
-// Configuration constants
-const CONFIG = {
-	// TypeScript generation options
-	USE_PROPERTY_QUOTES: false, // Use unquoted properties for TS-style objects
-	STRING_QUOTE_STYLE: "double" as "single" | "double", // Match project Prettier config
-	RUN_FORMATTER: true, // Run Prettier after generation
+// Icon mappings - using standard Lucide icons
+const CONTENT_ICONS = {
+	// Content types
+	lesson: "BookOpen",
+	study_guide: "BookOpen",
+	quiz: "HelpCircle",
+	exam: "Target",
+	project: "Rocket",
+	unit: "BookOpen",
 
-	// File paths
-	OUTPUT_FILE_NAME: "content-menu.ts",
-	DEFAULT_INPUT_FILE: "CONTENT.md",
+	// Special unit icons based on keywords
+	python: "Box",
+	go: "Cpu",
+	devops: "Settings",
+	secrets: "Lock",
+	security: "ShieldCheck",
+	automation: "Bot",
+	serverless: "Zap",
+	integration: "Shield",
+	capstone: "GraduationCap",
 
-	// Icon mappings - using standard Lucide icons
-	CONTENT_ICONS: {
-		// Content types
-		lesson: "BookOpen",
-		study_guide: "BookOpen",
-		quiz: "HelpCircle",
-		exam: "Target",
-		project: "Rocket",
-		unit: "BookOpen",
-
-		// Special unit icons based on keywords
-		python: "Box",
-		go: "Cpu",
-		devops: "Settings",
-		secrets: "Lock",
-		security: "ShieldCheck",
-		automation: "Bot",
-		serverless: "Zap",
-		integration: "Shield",
-		capstone: "GraduationCap",
-
-		// Chapter-specific icons
-		environment: "Settings",
-		tooling: "Settings",
-		overview: "BookOpen",
-		foundational: "BookOpen",
-		concepts: "BookOpen",
-		quality: "CheckCircle",
-		standards: "CheckCircle",
-		testing: "TestTube",
-		observability: "BarChart3",
-		monitoring: "BarChart3",
-		api: "Globe",
-		restful: "Globe",
-		concurrency: "Zap",
-		caching: "Zap",
-		database: "Database",
-		backend: "Database",
-		advanced: "Target"
-	} as const
-};
+	// Chapter-specific icons
+	environment: "Settings",
+	tooling: "Settings",
+	overview: "BookOpen",
+	foundational: "BookOpen",
+	concepts: "BookOpen",
+	quality: "CheckCircle",
+	standards: "CheckCircle",
+	testing: "TestTube",
+	observability: "BarChart3",
+	monitoring: "BarChart3",
+	api: "Globe",
+	restful: "Globe",
+	concurrency: "Zap",
+	caching: "Zap",
+	database: "Database",
+	backend: "Database",
+	advanced: "Target"
+} as const;
 
 // Parsing result interface for enhanced table structure
 interface ContentParseResult {
@@ -158,8 +149,9 @@ export class MarkdownContentGenerator {
 
 	constructor(inputFile?: string, options?: { skipValidation?: boolean }) {
 		this.projectRoot = process.cwd();
-		this.contentMdPath = join(this.projectRoot, inputFile || CONFIG.DEFAULT_INPUT_FILE);
-		this.outputPath = join(this.projectRoot, "src", "data", "generated", CONFIG.OUTPUT_FILE_NAME);
+		const inputPath = inputFile || contentMenuSettings.paths.inputFile;
+		this.contentMdPath = isAbsolute(inputPath) ? inputPath : join(this.projectRoot, inputPath);
+		this.outputPath = join(this.projectRoot, contentMenuSettings.paths.outputFile);
 		this.skipValidation = options?.skipValidation ?? false;
 
 		// Initialize ts-morph project for TypeScript manipulation
@@ -303,13 +295,13 @@ export class MarkdownContentGenerator {
 	 */
 	private getIconForContent(contentType: ChapterType, title = ""): string {
 		// Direct content type mapping
-		if (contentType in CONFIG.CONTENT_ICONS) {
-			return CONFIG.CONTENT_ICONS[contentType as keyof typeof CONFIG.CONTENT_ICONS];
+		if (contentType in CONTENT_ICONS) {
+			return CONTENT_ICONS[contentType as keyof typeof CONTENT_ICONS];
 		}
 
 		// For units and chapters, check title keywords
 		const titleLower = title.toLowerCase();
-		for (const [keyword, icon] of Object.entries(CONFIG.CONTENT_ICONS)) {
+		for (const [keyword, icon] of Object.entries(CONTENT_ICONS)) {
 			if (titleLower.includes(keyword)) {
 				return icon;
 			}
@@ -828,60 +820,6 @@ export class MarkdownContentGenerator {
 	/**
 	 * Format a value as idiomatic TypeScript syntax
 	 */
-	private formatTypeScriptValue(value: unknown, indentLevel = 0): string {
-		const indent = "\t".repeat(indentLevel);
-		const nextIndent = "\t".repeat(indentLevel + 1);
-
-		if (value === null) {
-			return "null";
-		} else if (typeof value === "boolean") {
-			return value ? "true" : "false";
-		} else if (typeof value === "number") {
-			return String(value);
-		} else if (typeof value === "string") {
-			// Handle union references (don't quote them)
-			if (value.startsWith("ChapterType.")) {
-				return value;
-			}
-			// Apply configured quote style for regular strings
-			const quoteChar = CONFIG.STRING_QUOTE_STYLE === "double" ? '"' : "'";
-			const escapedValue = value
-				.replace(/\\/g, "\\\\")
-				.replace(new RegExp(quoteChar, "g"), `\\${quoteChar}`);
-			return `${quoteChar}${escapedValue}${quoteChar}`;
-		} else if (Array.isArray(value)) {
-			if (value.length === 0) {
-				return "[]";
-			}
-
-			const formattedItems = value.map(
-				(item) => `${nextIndent}${this.formatTypeScriptValue(item, indentLevel + 1)}`
-			);
-
-			return "[\n" + formattedItems.join(",\n") + `\n${indent}]`;
-		} else if (typeof value === "object" && value !== null) {
-			const entries = Object.entries(value);
-			if (entries.length === 0) {
-				return "{}";
-			}
-
-			const formattedPairs = entries.map(([key, val]) => {
-				// Format key according to USE_PROPERTY_QUOTES setting
-				const isValidIdentifier = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(key);
-				const formattedKey =
-					CONFIG.USE_PROPERTY_QUOTES || !isValidIdentifier
-						? `${CONFIG.STRING_QUOTE_STYLE === "double" ? '"' : "'"}${key}${CONFIG.STRING_QUOTE_STYLE === "double" ? '"' : "'"}`
-						: key;
-
-				const formattedValue = this.formatTypeScriptValue(val, indentLevel + 1);
-				return `${nextIndent}${formattedKey}: ${formattedValue}`;
-			});
-
-			return "{\n" + formattedPairs.join(",\n") + `\n${indent}}`;
-		} else {
-			return String(value);
-		}
-	}
 
 	/**
 	 * Generate TypeScript module content from parsed units and metadata
@@ -900,16 +838,10 @@ export class MarkdownContentGenerator {
 			units
 		};
 
-		// Use custom TypeScript formatter
-		const typescriptObject = this.formatTypeScriptValue(menuStructure);
-
-		// Apply configured quote style to import statements
-		const quoteChar = CONFIG.STRING_QUOTE_STYLE === "double" ? '"' : "'";
-
 		// Create TypeScript module with proper imports and exports
-		return `import type { MenuStructure } from ${quoteChar}$types${quoteChar};
+		return `import type { MenuStructure } from "$types";
 
-export const contentMenu: MenuStructure = ${typescriptObject};
+export const contentMenu: MenuStructure = ${JSON.stringify(menuStructure)};
 `;
 	}
 
@@ -925,36 +857,18 @@ export const contentMenu: MenuStructure = ${typescriptObject};
 	}
 
 	/**
-	 * Write TypeScript file and optionally format it
+	 * Write TypeScript file using writeFormattedFile for proper formatting
 	 */
-	private writeTypeScriptFile(content: string): void {
+	private async writeTypeScriptFile(content: string): Promise<void> {
 		try {
 			this.ensureOutputDirectory();
 
-			// Write the file
-			writeFileSync(this.outputPath, content, "utf-8");
+			// Write the file with Prettier formatting
+			await writeFormattedFile(this.outputPath, content);
 
 			const fileSize = statSync(this.outputPath).size;
-			console.log(`Successfully wrote ${CONFIG.OUTPUT_FILE_NAME} to ${this.outputPath}`);
+			console.log(`Successfully wrote ${"content-menu.ts"} to ${this.outputPath}`);
 			console.log(`File size: ${fileSize} bytes`);
-
-			// Run formatter if enabled
-			if (CONFIG.RUN_FORMATTER) {
-				console.log("Running code formatter on generated TypeScript file...");
-				try {
-					// Use ts-morph to format the file
-					const sourceFile = this.project.addSourceFileAtPath(this.outputPath);
-					sourceFile.formatText();
-					sourceFile.saveSync();
-
-					const formattedSize = statSync(this.outputPath).size;
-					console.log(`File formatted successfully. New size: ${formattedSize} bytes`);
-				} catch (error) {
-					console.warn("Code formatting encountered issues, but file generation succeeded:", error);
-				}
-			} else {
-				console.log("Code formatting skipped (RUN_FORMATTER=false)");
-			}
 		} catch (error) {
 			console.error("Error writing TypeScript file:", error);
 			throw error;
@@ -992,7 +906,7 @@ export const contentMenu: MenuStructure = ${typescriptObject};
 	 */
 	public async generate(configId?: string): Promise<boolean> {
 		try {
-			console.log(`Starting ${CONFIG.OUTPUT_FILE_NAME} generation from CONTENT.md`);
+			console.log(`Starting ${"content-menu.ts"} generation from CONTENT.md`);
 
 			// Read and parse Markdown content
 			const markdownContent = this.readContentMd();
@@ -1015,10 +929,10 @@ export const contentMenu: MenuStructure = ${typescriptObject};
 			const typescriptContent = this.generateTypeScriptModule(units, metadata);
 
 			// Write TypeScript file
-			this.writeTypeScriptFile(typescriptContent);
+			await this.writeTypeScriptFile(typescriptContent);
 
 			if (!this.skipValidation) {
-				console.log(`${CONFIG.OUTPUT_FILE_NAME} generation completed successfully`);
+				console.log(`${"content-menu.ts"} generation completed successfully`);
 
 				// Run validation for the generated file
 				const validationResults = await runGeneratedFileValidation(this.outputPath, configId);
@@ -1030,7 +944,7 @@ export const contentMenu: MenuStructure = ${typescriptObject};
 
 			// Summary
 			const totalChapters = units.reduce((sum, unit) => sum + unit.chapters.length, 0);
-			console.log(`✅ Generated ${CONFIG.OUTPUT_FILE_NAME} from CONTENT.md successfully!`);
+			console.log(`✅ Generated ${"content-menu.ts"} from CONTENT.md successfully!`);
 			console.log(`📊 Structure: ${units.length} units, ${totalChapters} chapters`);
 			console.log(`🔗 Generated consistent URL patterns and data paths`);
 			console.log(`🎯 TypeScript module with type safety`);
@@ -1054,7 +968,7 @@ async function main() {
 	if (success) {
 		console.log(`📍 Output: ${generator["outputPath"]}`);
 	} else {
-		console.log(`❌ Failed to generate ${CONFIG.OUTPUT_FILE_NAME} from CONTENT.md`);
+		console.log(`❌ Failed to generate ${"content-menu.ts"} from CONTENT.md`);
 		process.exit(1);
 	}
 }

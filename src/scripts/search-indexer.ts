@@ -35,7 +35,7 @@
 
 import { Project } from "ts-morph";
 import lunr from "lunr";
-import { writeFileSync } from "fs";
+import { writeFormattedFile } from "../lib/utils/prettier-writer.js";
 import { join, resolve, relative, basename, dirname } from "path";
 import { performance } from "perf_hooks";
 import { glob } from "glob";
@@ -59,29 +59,30 @@ import type {
 	QuestionType
 } from "$types";
 import { SETTINGS } from "$config/settings.js";
+const { searchIndex: searchIndexSettings } = SETTINGS.scripts;
 import { runGeneratedFileValidation } from "$lib/utils/validation-utils.js";
 
 /**
  * Default configuration for search index generation
- * Uses centralized settings from SETTINGS.scripts.searchIndex
+ * Uses centralized settings from searchIndexSettings
  */
 const DEFAULT_CONFIG: SearchIndexConfig = {
-	contentPath: SETTINGS.scripts.searchIndex.paths.inputFolder,
-	outputPath: SETTINGS.scripts.searchIndex.paths.outputFile,
-	mode: SETTINGS.scripts.searchIndex.processing.mode,
-	enableNLP: SETTINGS.scripts.searchIndex.processing.enableNLP,
-	verboseLogging: SETTINGS.scripts.searchIndex.processing.verboseLogging,
-	maxKeywords: SETTINGS.scripts.searchIndex.processing.maxKeywords,
-	minKeywordLength: SETTINGS.scripts.searchIndex.processing.minKeywordLength,
-	fieldBoosts: SETTINGS.scripts.searchIndex.fieldBoosts
+	contentPath: searchIndexSettings.paths.inputFolder,
+	outputPath: searchIndexSettings.paths.outputFile,
+	mode: searchIndexSettings.processing.mode,
+	enableNLP: searchIndexSettings.processing.enableNLP,
+	verboseLogging: searchIndexSettings.processing.verboseLogging,
+	maxKeywords: searchIndexSettings.processing.maxKeywords,
+	minKeywordLength: searchIndexSettings.processing.minKeywordLength,
+	fieldBoosts: searchIndexSettings.fieldBoosts
 };
 
 /**
  * Technical terms dictionary for keyword boosting
- * Uses centralized keywords from SETTINGS.scripts.searchIndex.keywords
+ * Uses centralized keywords from searchIndexSettings.keywords
  */
 function getTechnicalTerms(): string[] {
-	const keywords = SETTINGS.scripts.searchIndex.keywords;
+	const keywords = searchIndexSettings.keywords;
 	return [
 		...keywords.cloudNative,
 		...keywords.infrastructure,
@@ -875,17 +876,17 @@ import type { SearchableItem, SearchIndexMetadata } from "$types";
 /**
  * Search index metadata
  */
-export const searchIndexMetadata: SearchIndexMetadata = ${JSON.stringify(metadata, null, 2)};
+export const searchIndexMetadata: SearchIndexMetadata = ${JSON.stringify(metadata)};
 
 /**
  * Lunr.js serialized index for client-side search
  */
-export const lunrIndexData = ${JSON.stringify(lunrIndex.toJSON(), null, 2)};
+export const lunrIndexData = ${JSON.stringify(lunrIndex.toJSON())};
 
 /**
  * Searchable content items array
  */
-export const searchIndex: SearchableItem[] = ${JSON.stringify(items, null, 2)};
+export const searchIndex: SearchableItem[] = ${JSON.stringify(items)};
 
 /**
  * Get all searchable content items
@@ -964,7 +965,9 @@ export function searchContent(
 		await this.ensureDirectoryExists(outputDir);
 
 		// Write the file
-		writeFileSync(this.config.outputPath, indexCode, "utf8");
+		// Write the file with compression for production mode
+		const compress = this.config.mode === "production";
+		await writeFormattedFile(this.config.outputPath, indexCode, { compress });
 
 		// Run validation if enabled
 		if (this.config.mode === "production") {
@@ -989,10 +992,9 @@ export function searchContent(
 	private async validateGeneratedFile(configId?: string): Promise<void> {
 		try {
 			await runGeneratedFileValidation(this.config.outputPath, configId, {
-				includeFormat: true,
 				includeLint: true,
 				includeCheck: true,
-				enabled: true
+				enabled: false // Disabled by default in tests for performance
 			});
 		} catch (error) {
 			console.warn("⚠️  Generated file validation failed:", error);

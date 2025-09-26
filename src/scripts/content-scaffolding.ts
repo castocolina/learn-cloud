@@ -36,6 +36,7 @@ import { existsSync, mkdirSync, readdirSync, statSync } from "fs";
 import { dirname, join, basename } from "path";
 import { parseArgs } from "util";
 import { SETTINGS } from "$config/settings.js";
+import { writeFormattedFile } from "../lib/utils/prettier-writer.js";
 import { runGeneratedFileValidation } from "../lib/utils/validation-utils.js";
 import { generateNavigationPaths } from "../lib/utils/navigation-paths.js";
 import { contentMenu } from "../data/generated/content-menu.js";
@@ -1681,6 +1682,7 @@ function generateFilePath(args: ValidatedScaffoldingArgs): string {
 	const paths = generateNavigationPaths(config);
 
 	// Return the data path but as a full file system path
+	// Note: paths.dataPath already includes "book/" prefix, so we use "src/data" instead of CONFIG.paths.outputFolder
 	return join("src/data", paths.dataPath);
 }
 
@@ -1932,7 +1934,7 @@ async function executeFlexibleGeneration(
 	for (const item of chaptersToProcess) {
 		const { unit, chapter } = item;
 		const dataLink = chapter.chapterDataLink;
-		const fullPath = join(process.cwd(), "src", "data", dataLink);
+		const fullPath = join(process.cwd(), CONFIG.paths.outputFolder, dataLink);
 
 		console.log(`   Processing: Unit ${unit.unitNumber} - ${chapter.id} - ${chapter.title}`);
 
@@ -1975,9 +1977,9 @@ async function executeFlexibleGeneration(
 			// Add content to source file using AST
 			addContentToSourceFile(sourceFile, content, args);
 
-			// Format and save
-			sourceFile.formatText();
-			await sourceFile.save();
+			// Write formatted file
+			const sourceCode = sourceFile.getFullText();
+			await writeFormattedFile(fullPath, sourceCode);
 
 			stats.created++;
 			console.log(`     ✅ Generated: ${basename(fullPath)}`);
@@ -2107,7 +2109,7 @@ function extractAllChapters(): MenuChapter[] {
 	return allChapters;
 }
 
-const bookPath = join(process.cwd(), "src", "data", "book");
+const bookPath = join(process.cwd(), CONFIG.paths.outputFolder);
 
 /**
  * Scan $data/book directory for existing files
@@ -2193,7 +2195,7 @@ async function executeDataDrivenMode(): Promise<void> {
 	// Process each chapter
 	for (const chapter of allChapters) {
 		const dataLink = chapter.chapterDataLink;
-		const fullPath = join(process.cwd(), "src", "data", dataLink);
+		const fullPath = join(process.cwd(), CONFIG.paths.outputFolder, dataLink);
 
 		console.log(`   Checking: ${dataLink}`);
 
@@ -2235,9 +2237,9 @@ async function executeDataDrivenMode(): Promise<void> {
 			// Add content to source file using AST
 			addContentToSourceFile(sourceFile, content, args);
 
-			// Format and save
-			sourceFile.formatText();
-			await sourceFile.save();
+			// Write formatted file
+			const sourceCode = sourceFile.getFullText();
+			await writeFormattedFile(fullPath, sourceCode);
 
 			stats.newFiles++;
 			console.log(`     ✨ Generated successfully`);
@@ -2392,9 +2394,9 @@ async function main(): Promise<void> {
 		// Add content to source file using AST
 		addContentToSourceFile(sourceFile, content, args);
 
-		// Format and save
-		sourceFile.formatText();
-		await sourceFile.save();
+		// Write formatted file
+		const sourceCode = sourceFile.getFullText();
+		await writeFormattedFile(filePath, sourceCode);
 
 		console.log("✅ Content scaffolding generated successfully!");
 

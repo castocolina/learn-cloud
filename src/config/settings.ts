@@ -33,7 +33,6 @@ export const SETTINGS: AppSettings = {
 		validation: {
 			generated: {
 				runAfterGeneration: true, // Run validation after content generation (enabled by default)
-				includeFormat: true, // Run format validation
 				includeCheck: true, // Run TypeScript check validation
 				includeLint: true // Run lint validation
 			},
@@ -92,6 +91,11 @@ export const SETTINGS: AppSettings = {
 			}
 		},
 		scaffolding: {
+			paths: {
+				inputFile: "CONTENT.md", // Input file for reading unit structure
+				outputFolder: "src/data/book" // Output folder for generated content files
+			},
+			validationPrefix: "scaffolding", // Prefix for validation config IDs
 			lessons: {
 				sections: 5, // Minimum 5 sections per lesson
 				codeBlocks: 1, // Minimum 1 code block per lesson
@@ -128,7 +132,15 @@ export const SETTINGS: AppSettings = {
 				diagramCaption: 150
 			}
 		},
+		contentMenu: {
+			paths: {
+				inputFile: "CONTENT.md", // Input markdown file path
+				outputFile: "src/data/generated/content-menu.ts" // Output TypeScript file path
+			},
+			validationPrefix: "content-menu" // Prefix for validation config IDs
+		},
 		searchIndex: {
+			validationPrefix: "search-idx",
 			paths: {
 				inputFolder: "src/data/book",
 				outputFile: "src/data/generated/search-index.ts"
@@ -152,7 +164,6 @@ export const SETTINGS: AppSettings = {
 				keywords: 9,
 				tags: 3
 			},
-			validationPrefix: "search-idx",
 			keywords: {
 				cloudNative: [
 					"kubernetes",
