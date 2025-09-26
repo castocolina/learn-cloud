@@ -87,7 +87,7 @@ jobs:
 
       - name: Run Content Validation
         if: matrix.validation == 'validate-content'
-        run: make validate-content
+        run: make validate-all-scripts-prod
 
       - name: Run Mermaid Validation
         if: matrix.validation == 'validate-mermaid'

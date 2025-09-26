@@ -224,6 +224,54 @@ export interface AppSettings {
 				diagramCaption: number;
 			};
 		};
+		/** Search index generation configuration */
+		searchIndex: {
+			/** Path configuration for input and output */
+			paths: {
+				/** Input directory containing content files */
+				inputFolder: string;
+				/** Output file path for generated search index */
+				outputFile: string;
+			};
+			/** Processing options and behavior settings */
+			processing: {
+				/** Generation mode for development vs production */
+				mode: "development" | "production";
+				/** Enable/disable NLP processing for keyword extraction */
+				enableNLP: boolean;
+				/** Enable/disable verbose logging during generation */
+				verboseLogging: boolean;
+				/** Maximum keywords to extract per content item */
+				maxKeywords: number;
+				/** Minimum keyword length for filtering */
+				minKeywordLength: number;
+			};
+			/** Lunr.js field boost configuration for search relevance */
+			fieldBoosts: {
+				title: number;
+				summary: number;
+				content: number;
+				codeBlocks: number;
+				diagrams: number;
+				flashcards: number;
+				questions: number;
+				requirements: number;
+				keywords: number;
+				tags: number;
+			};
+			/** Prefix for generating unique validation config IDs */
+			validationPrefix: string;
+			/** Technical keywords organized by category for enhanced search */
+			keywords: {
+				cloudNative: string[];
+				infrastructure: string[];
+				languages: string[];
+				databases: string[];
+				webTechnologies: string[];
+				cloudProviders: string[];
+				security: string[];
+			};
+		};
 	};
 
 	// Future settings can be grouped here (e.g., api, performance)

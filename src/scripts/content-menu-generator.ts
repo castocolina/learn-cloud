@@ -988,8 +988,9 @@ export const contentMenu: MenuStructure = ${typescriptObject};
 
 	/**
 	 * Main generation process
+	 * @param configId Optional unique identifier for test isolation
 	 */
-	public async generate(): Promise<boolean> {
+	public async generate(configId?: string): Promise<boolean> {
 		try {
 			console.log(`Starting ${CONFIG.OUTPUT_FILE_NAME} generation from CONTENT.md`);
 
@@ -1020,7 +1021,7 @@ export const contentMenu: MenuStructure = ${typescriptObject};
 				console.log(`${CONFIG.OUTPUT_FILE_NAME} generation completed successfully`);
 
 				// Run validation for the generated file
-				const validationResults = await runGeneratedFileValidation(this.outputPath);
+				const validationResults = await runGeneratedFileValidation(this.outputPath, configId);
 				const hasFailures = validationResults.some((result) => !result.success);
 				if (hasFailures) {
 					console.error("⚠️  Some validation checks failed, but generation was successful");

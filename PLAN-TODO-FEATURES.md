@@ -137,120 +137,6 @@ graph TD
 
 ---
 
-### TASK 3C: Mermaid Validator Script
-
-**Agent Responsibility:**
-You are responsible for developing a TypeScript Mermaid validator script that validates Mermaid diagrams in TypeScript files using ts-morph AST parsing and provides precise error reporting following MERMAID-STANDARDS.md.
-
-**CRITICAL:** Before creating any new type or interface, you must thoroughly review `$types/` (src/lib/types) to check if an appropriate type or interface already exists. Always reuse or extend existing types/interfaces from the unified type system. Only define new types if absolutely necessary and after confirming no suitable type exists.
-
-**Technical Documents to Review:**
-
-- `MERMAID-STANDARDS.md` (validation requirements and syntax rules - CRITICAL)
-- `src/lib/types/` (result from Task 2 - unified type system)
-- `src/data/demo/content/diagrams/mermaid-examples.ts` (reference implementation pattern)
-- `SVELTEKIT-GUIDE.md` (SPA architecture standards)
-- `CLAUDE.md` (Project entry guidelines)
-
-**Type Reuse Requirement:**
-
-- Before implementing any data structure or interface, check for existing types in `src/lib/types`. Reuse or extend these types for all validation results, error objects, and diagram representations. Document any type reuse or extension in the script comments.
-
-**Prerequisites:**
-
-- Task 2: TypeScript Foundation Setup completed
-- Install mermaid dependency: `pnpm add -D mmdc` (dev dependency - not needed at runtime)
-- ts-morph dependency installed (dev dependency from Task 3A)
-
-**Build System and Automation Integration:**
-
-- You must add a script entry in `package.json` for the mermaid validator (e.g., `"validate-mermaid": "npx tsx src/scripts/mermaid-validator.ts"`).
-- This script must be referenced in the Makefile, included in GitHub Actions CI workflows, and added to the Husky pre-commit hook to ensure validation runs automatically before every commit and in CI/CD pipelines.
-
-**GitHub Actions Integration:**
-
-- The `validate-mermaid` script must be explicitly added to the project's GitHub Actions workflow (e.g., `.github/workflows/validation.yml`).
-- It should be run as a dedicated step, for example:
-  ```yaml
-  - name: Validate Mermaid Diagrams
-     run: pnpm run validate-mermaid src/data/book
-  ```
-- This ensures all Mermaid diagrams are validated on every push and pull request, preventing invalid diagrams from being merged.
-
-**Implementation Details:**
-
-**Script Specification (`src/scripts/mermaid-validator.ts`):**
-
-- **Purpose**: Validates Mermaid diagrams in TypeScript files using ts-morph AST parsing
-- **Technology**: ts-morph for TypeScript parsing, mermaid for syntax validation
-- **Scope**: Scan `.ts` files for Mermaid diagram strings following MERMAID-STANDARDS.md naming convention
-- **Detection Pattern**: Find objects with properties: `diagram`, `definition`, or `diagramDefinition`
-- **Output Format**:
-
-  ```
-  ❌ src/data/diagrams/auth-flow.ts:15 - Variable 'loginSequence.diagram'
-     Error: Parse error on line 3: Expecting 'SOLID', 'SEMI', 'NEWLINE', 'EOF', got 'INVALID'
-
-  ✅ src/data/diagrams/user-journey.ts:8 - Variable 'onboardingFlow.definition'
-     Valid diagram parsed successfully
-  ```
-
-- **CLI Usage**: `pnpm run validate-mermaid [file-or-directory]`
-
-**Build System Integration:**
-
-- **Makefile Target**:
-  ```makefile
-  .PHONY: validate-mermaid
-  validate-mermaid:
-  	npx tsx src/scripts/mermaid-validator.ts $(ARGS)
-  ```
-- **Package.json Script**:
-  ```json
-  {
-  	"scripts": {
-  		"validate-mermaid": "npx tsx src/scripts/mermaid-validator.ts"
-  	}
-  }
-  ```
-
-**Expected Output:**
-
-- `src/scripts/mermaid-validator.ts` (precise error reporting)
-- Updated `Makefile` with `validate-mermaid` target
-- Updated `package.json` with `validate-mermaid` script
-- Test suite in `src/test/scripts/mermaid-validator.test.ts`
-
-**Final Validations:**
-
-- ✅ Script executes without errors using tsx
-- ✅ ts-morph correctly parses TypeScript AST for Mermaid detection
-- ✅ Mermaid validator provides precise line-level error reporting
-- ✅ Follows MERMAID-STANDARDS.md requirements exactly
-- ✅ Test coverage comprehensive
-- ✅ Makefile target functional
-- ✅ Package.json script working
-
-**Script Validation Requirements:**
-
-- ✅ Script-specific validation enabled with prettier and eslint (no svelte-check)
-- ✅ Auto-fix capabilities for formatting and simple lint errors
-- ✅ Validation runs automatically after mermaid validation script execution
-- ✅ Real-time streaming output during validation
-- ✅ Target-specific validation (validates script file itself)
-
-**Verification Notes:**
-
-- **Mermaid Updates**: Check for mmdc version updates and new diagram types support
-- **Standards Updates**: Review MERMAID-STANDARDS.md for any syntax rule changes or additions
-
-**Documentation to Update:**
-
-- Mermaid validation workflow
-- Error reporting format specification
-
----
-
 ### TASK 3D: Search Index Generator Script
 
 **Agent Responsibility:**
@@ -327,8 +213,9 @@ You are responsible for developing a TypeScript search index generator script th
 - `src/scripts/search-indexer.ts` (Lunr.js integration)
 - Updated `Makefile` with `generate-search-index` and `validate-all-scripts` targets
 - Updated `package.json` with `generate-search-index` and `validate-content` scripts
-- Updated `.github/workflows/` for CI/CD integration
+- Updated `.github/workflows/` for CI/CD integration with production mode enabled.
 - Test suite in `src/test/scripts/search-indexer.test.ts`
+- New types in `src/lib/types/search-index.ts` if needed
 
 **Final Validations:**
 
@@ -348,7 +235,7 @@ You are responsible for developing a TypeScript search index generator script th
 - ✅ Validation runs automatically after search index generation
 - ✅ Real-time streaming output during validation
 - ✅ Target-specific validation (validates generated search index file)
-- ✅ Uses runGeneratedFileValidation() from validation-utils.ts library
+- ✅ Uses runGeneratedFileValidation() from validation-utils.ts library to validate generated index file
 
 **Verification Notes:**
 
@@ -371,7 +258,7 @@ You are responsible for developing a TypeScript flat navigation generator script
 
 **Technical Documents to Review:**
 
-- `src/types/navigation.ts` (unified navigation types from Task 2)
+- `src/types/navigation.ts` (unified navigation types from Task 2). Check for existing types to reuse or extend.
 - `src/types/content.ts` (content type definitions from Task 2)
 - `src/data/generated/content-menu.ts` (generated navigation structure from Task 3A)
 - `CONTENT-STANDARDS.md` (content structure requirements)
@@ -382,6 +269,30 @@ You are responsible for developing a TypeScript flat navigation generator script
 
 - Before implementing any data structure or interface, check for existing types in `src/lib/types`. Reuse or extend these types for all validation results, error objects, and diagram representations. Document any type reuse or extension in the script comments.
 - Explore and try to reuse classes/functions from src/lib/utils/ if applicable.
+
+**CRITICAL: Test Concurrency Fix Required:**
+
+During Task 3E implementation, you MUST also address the test concurrency issue in the shared validation utility function:
+
+- **Problem**: `runGeneratedFileValidation()` in `src/lib/utils/validation-utils.ts` causes race conditions during parallel test execution
+- **Root Cause**: Multiple tests write to the same config file: `tmp/config/tsconfig.generated.json`
+- **Solution Required**: Add optional `configId` parameter to enable test isolation:
+
+  ```typescript
+  export async function runGeneratedFileValidation(
+  	target: string,
+  	configId?: string // NEW: For unique test config files
+  	options?: ValidationOptions,
+  ): Promise<ValidationResult[]>;
+  ```
+
+- **Implementation Strategy**:
+  - Generate hash-based unique IDs: `test-flatnav-a3f2b1c4`
+  - Use test-specific temp directories: `tmp/test-flatnav-generator/`
+  - Override cleanup settings: `autoCleanup: false`, `retainOnError: true`
+  - Maintain backward compatibility for normal script execution
+
+- **Documentation**: See detailed implementation notes in `src/lib/utils/validation-utils.ts:162-209`
 
 **Prerequisites:**
 
@@ -398,6 +309,7 @@ You are responsible for developing a TypeScript flat navigation generator script
 - **Output**: `src/data/generated/flatnav.ts` with sequential navigation mapping
 - **Technology**: ts-morph for TypeScript parsing, path for file operations
 - **CLI Usage**: `pnpm run generate-flatnav`
+- **Use Settings** `src/config/settings.ts` for configuration management the input, output paths and any others under .scripts.navigation. This is similar to Search Indexer to avoid hardcoding values and conflicts during concurrent test runs, the test suites must use different paths under `tmp/navigation/` for isolation.
 
 **FlatNav Data Structure:**
 
@@ -476,8 +388,10 @@ interface FlatNavStructure {
 - `src/scripts/flatnav-generator.ts` (TypeScript generator script)
 - Updated `Makefile` with `generate-flatnav` target
 - Updated `package.json` with `generate-flatnav` script
+- Updated `.github/workflows/` for CI/CD integration
 - Test suite in `src/test/scripts/flatnav-generator.test.ts`
 - Generated file: `src/data/generated/flatnav.ts` with complete navigation map
+- New types in `src/lib/types/navigation.ts` if needed
 
 **Final Validations:**
 
@@ -498,7 +412,7 @@ interface FlatNavStructure {
 - ✅ Validation runs automatically after flat navigation generation
 - ✅ Real-time streaming output during validation
 - ✅ Target-specific validation (validates generated flatnav file)
-- ✅ Uses runGeneratedFileValidation() from validation-utils.ts library
+- ✅ Uses runGeneratedFileValidation() from validation-utils.ts library to validate generated flatnav file
 
 **Verification Notes:**
 
@@ -612,6 +526,7 @@ You are responsible for designing and implementing SPA architecture with single 
 - `src/lib/utils/contentLoader.ts`
 - `src/lib/components/renderers/` (type-specific renderers)
 - Navigation state management system
+- New types in `src/lib/types/navigation.ts` if needed
 
 **Final Validations:**
 

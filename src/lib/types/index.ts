@@ -101,7 +101,7 @@ export type {
 	ParsedNavigation
 } from "./navigation.js";
 
-// Search exports - Enhanced search with navigation integration
+// Search exports - Enhanced search with navigation integration and index generation
 export type {
 	SearchCategory,
 	SearchableItem,
@@ -110,7 +110,20 @@ export type {
 	SearchResult,
 	SearchState,
 	SearchOptions,
-	SearchAnalytics
+	SearchAnalytics,
+	SearchIndexConfig,
+	RawContentItem,
+	ExtractedCodeBlock,
+	ExtractedDiagram,
+	ExtractedFlashcard,
+	ExtractedQuestion,
+	ContentExtractionResult,
+	ContentExtractionFailure,
+	ExtractionStats,
+	LunrIndexResult,
+	SearchIndexMetadata,
+	IndexGenerationStats,
+	SearchIndexValidation
 } from "./search.js";
 
 // Interactive learning exports - Educational components and configuration

@@ -183,7 +183,28 @@ scaffold-content: ## Generate TypeScript content scaffolding (New TypeScript imp
 	@npx tsx src/scripts/content-scaffolding.ts $(ARGS)
 	@echo "✅ TypeScript content scaffolding complete!"
 
-generate-all-content: generate-content-menu scaffold-content validate-generated-full ## Generate all content files and validate them
+generate-search-index: ## Generate search index from content files using Lunr.js (default mode)
+	@echo "🔍 Generating search index from content files..."
+	@npx tsx src/scripts/search-indexer.ts $(ARGS)
+
+generate-search-index-dev: ## Generate search index in development mode (fast, no validation)
+	@echo "🔍 Generating search index in development mode..."
+	@npx tsx src/scripts/search-indexer.ts --mode=development $(ARGS)
+
+generate-search-index-prod: ## Generate search index in production mode (with validation)
+	@echo "🔍 Generating search index in production mode..."
+	@npx tsx src/scripts/search-indexer.ts --mode=production $(ARGS)
+	@echo "✅ Search index generation complete!"
+
+validate-all-scripts: validate-mermaid generate-content-menu generate-search-index-dev ## Run all foundation scripts validation (development mode)
+	@echo "✅ All foundation scripts completed"
+
+validate-all-scripts-prod: validate-mermaid generate-content-menu generate-search-index-prod ## Run all foundation scripts validation (production mode)
+	@echo "✅ All foundation scripts completed (production)"
+
+generate-all-content: generate-content-menu scaffold-content generate-search-index-dev validate-generated-full ## Generate all content files and validate them (development mode)
+
+generate-all-content-prod: generate-content-menu scaffold-content generate-search-index-prod validate-generated-full ## Generate all content files and validate them (production mode)
 	@echo "🎉 All content generation and validation completed successfully!"
 
 # Project-wide validation

@@ -50,6 +50,9 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Generate Production Content
+        run: make generate-all-content-prod
+
       - name: Build SvelteKit
         run: pnpm run build
 

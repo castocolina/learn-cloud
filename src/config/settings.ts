@@ -127,6 +127,107 @@ export const SETTINGS: AppSettings = {
 				diagramTitle: 60,
 				diagramCaption: 150
 			}
+		},
+		searchIndex: {
+			paths: {
+				inputFolder: "src/data/book",
+				outputFile: "src/data/generated/search-index.ts"
+			},
+			processing: {
+				mode: "development",
+				enableNLP: false,
+				verboseLogging: true,
+				maxKeywords: 15,
+				minKeywordLength: 3
+			},
+			fieldBoosts: {
+				title: 10,
+				summary: 8,
+				content: 5,
+				codeBlocks: 7,
+				diagrams: 6,
+				flashcards: 4,
+				questions: 5,
+				requirements: 6,
+				keywords: 9,
+				tags: 3
+			},
+			validationPrefix: "search-idx",
+			keywords: {
+				cloudNative: [
+					"kubernetes",
+					"docker",
+					"containerization",
+					"microservices",
+					"orchestration",
+					"deployment",
+					"scaling",
+					"service mesh",
+					"istio",
+					"helm",
+					"operators"
+				],
+				infrastructure: [
+					"terraform",
+					"ansible",
+					"jenkins",
+					"gitlab",
+					"ci/cd",
+					"infrastructure as code",
+					"monitoring",
+					"prometheus",
+					"grafana",
+					"logging",
+					"observability"
+				],
+				languages: ["typescript", "javascript", "python", "go", "rust", "java", "nodejs"],
+				databases: [
+					"postgresql",
+					"mongodb",
+					"redis",
+					"elasticsearch",
+					"database",
+					"storage",
+					"persistence"
+				],
+				webTechnologies: [
+					"api",
+					"rest",
+					"graphql",
+					"http",
+					"websocket",
+					"json",
+					"xml",
+					"oauth",
+					"jwt",
+					"cors",
+					"ssl",
+					"tls"
+				],
+				cloudProviders: [
+					"aws",
+					"azure",
+					"gcp",
+					"cloud",
+					"serverless",
+					"lambda",
+					"functions",
+					"s3",
+					"ec2",
+					"rds"
+				],
+				security: [
+					"authentication",
+					"authorization",
+					"security",
+					"encryption",
+					"certificate",
+					"firewall",
+					"vpn",
+					"iam",
+					"rbac"
+				]
+			}
 		}
 	}
 };

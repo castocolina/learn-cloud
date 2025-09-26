@@ -9,7 +9,21 @@ import { spawn, type ChildProcess } from "child_process";
 import { SETTINGS } from "$config/settings.js";
 import type { ValidationOptions, ValidationResult } from "$types";
 import fs from "fs";
-import { join } from "path";
+import { join, isAbsolute } from "path";
+import crypto from "crypto";
+
+/**
+ * Generate unique configuration ID for test isolation
+ * @param prefix Prefix for the config ID (e.g., "test-search-idx")
+ * @param testName Optional test name for uniqueness
+ */
+export function generateConfigId(prefix: string, testName?: string): string {
+	const timestamp = Date.now().toString();
+	const pid = process.pid.toString();
+	const hashInput = `${testName || "default"}-${timestamp}-${pid}`;
+	const hash = crypto.createHash("md5").update(hashInput).digest("hex").substring(0, 8);
+	return `${prefix}-${hash}`;
+}
 
 /**
  * Execute a command with real-time streaming output
@@ -158,9 +172,62 @@ export function getValidationConfig(
 
 /**
  * Run validation for generated TypeScript files (content-menu.ts, search-index.ts, etc.)
+ *
+ * CRITICAL: Test Concurrency Issue Documentation
+ * ============================================
+ *
+ * PROBLEM IDENTIFICATION:
+ * This function is called by multiple content generation scripts:
+ * - src/scripts/search-indexer.ts (line 1025)
+ * - src/scripts/content-menu-generator.ts (line 1023)
+ * - src/scripts/content-scaffolding.ts (lines 2005, 2303, 2402)
+ *
+ * During concurrent test execution (Vitest parallel mode), multiple instances
+ * call this function simultaneously, causing race conditions in the TypeScript
+ * validation step (line 208: createDynamicTsConfig) which writes to a shared
+ * configuration file: tmp/config/tsconfig.generated.json
+ *
+ * SYMPTOMS:
+ * - Random test failures during parallel execution
+ * - "Configuration file not found" errors
+ * - Tests overwriting each other's TypeScript configs
+ * - Inconsistent validation results
+ *
+ * SOLUTION (Implementation Required):
+ * Add optional `configId` parameter to enable test isolation:
+ *
+ * ```typescript
+ * export async function runGeneratedFileValidation(
+ *   target: string,
+ *   options?: ValidationOptions,
+ *   configId?: string  // NEW: Unique identifier for test isolation
+ * ): Promise<ValidationResult[]>
+ * ```
+ *
+ * When `configId` is provided (test environment):
+ * - Use unique config filenames: `${configId}.tsconfig.json`
+ * - Create test-specific temporary directories
+ * - Override cleanup settings from SETTINGS.scripts.validation.cleanup
+ * - Enable retainOnError for debugging failed tests
+ * - Generate hash-based IDs: `test-search-idx-a3f2b1c4`
+ *
+ * When `configId` is NOT provided (normal script execution):
+ * - Use current behavior with fixed paths (backward compatibility)
+ * - Single-process execution works correctly
+ *
+ * CRITICAL: ALL scripts calling this function need test isolation:
+ * - search-indexer.ts tests
+ * - content-menu-generator.ts tests
+ * - content-scaffolding.ts tests
+ * - Any future flatnav-generator.ts tests (Task 3E)
+ *
+ * @param target Path to TypeScript file(s) to validate
+ * @param options Validation configuration options
+ * @param configId Optional unique identifier for test isolation (Task 3E)
  */
 export async function runGeneratedFileValidation(
 	target: string,
+	configId?: string,
 	options?: ValidationOptions
 ): Promise<ValidationResult[]> {
 	const config = getValidationConfig(options, target);
@@ -205,7 +272,7 @@ export async function runGeneratedFileValidation(
 		// Run TypeScript check validation for generated content (Step 3 - AFTER lint)
 		if (config.includeCheck) {
 			// Create dynamic tsconfig for this specific target
-			await createDynamicTsConfig(config.target);
+			await createDynamicTsConfig(config.target, configId);
 			const checkResult = await runGeneratedTypeScriptCheck();
 			results.push(checkResult);
 		}
@@ -239,14 +306,19 @@ export async function runGeneratedFileValidation(
 /**
  * Create dynamic TypeScript configuration for generated file validation
  * Dynamically generates tmp/config/tsconfig.generated.json based on target
+ *
+ * @param target Path to TypeScript file(s) to validate
+ * @param configId Optional unique identifier for test isolation
  */
-export async function createDynamicTsConfig(target: string): Promise<void> {
+export async function createDynamicTsConfig(target: string, configId?: string): Promise<void> {
 	const paths = SETTINGS.scripts.validation.paths;
 	const tsConfig = SETTINGS.scripts.validation.typescript;
 	const logging = SETTINGS.scripts.validation.logging;
 
+	// Generate unique config filename if configId is provided (test isolation)
 	const configDir = paths.tempConfigDir;
-	const configPath = join(configDir, paths.generatedConfigFile);
+	const configFileName = configId ? `${configId}.tsconfig.json` : paths.generatedConfigFile;
+	const configPath = join(configDir, configFileName);
 
 	// Ensure temp config directory exists
 	if (!fs.existsSync(configDir)) {
@@ -270,6 +342,9 @@ export async function createDynamicTsConfig(target: string): Promise<void> {
 
 	// Create new configuration with absolute paths for consistency
 	const projectRoot = process.cwd();
+	// Ensure target is absolute path
+	const absoluteTarget = isAbsolute(target) ? target : join(projectRoot, target);
+
 	const dynamicConfig = {
 		...rootTsConfig,
 		extends: `${projectRoot}/${tsConfig.extendsPath}`, // Absolute path to extends
@@ -277,18 +352,26 @@ export async function createDynamicTsConfig(target: string): Promise<void> {
 			...rootTsConfig.compilerOptions,
 			...tsConfig.compilerOptions // Apply configured compiler options
 		},
-		include: [`${target}`], // Absolute path to target
+		include: [absoluteTarget], // Always use absolute path
 		exclude: rootTsConfig.exclude?.map((path: string) => `${projectRoot}/${path}`) || [] // Absolute paths for excludes
 	};
 
 	// Write dynamic configuration
 	fs.writeFileSync(configPath, JSON.stringify(dynamicConfig, null, 2));
 
-	if (logging.showCommands && logging.useEmojis) {
-		console.log(`📝 Created dynamic TypeScript config: ${configPath}`);
-		console.log(`🎯 Target: ${target}`);
-	} else if (logging.showCommands) {
-		console.log(`Created dynamic TypeScript config: ${configPath}`);
-		console.log(`Target: ${target}`);
+	if (logging.showCommands) {
+		if (logging.useEmojis) {
+			console.log(`📝 Created dynamic TypeScript config: ${configPath}`);
+			console.log(`🎯 Target: ${absoluteTarget}`);
+			if (configId) {
+				console.log(`🔧 Config ID: ${configId} (test isolation)`);
+			}
+		} else {
+			console.log(`Created dynamic TypeScript config: ${configPath}`);
+			console.log(`Target: ${absoluteTarget}`);
+			if (configId) {
+				console.log(`Config ID: ${configId} (test isolation)`);
+			}
+		}
 	}
 }
