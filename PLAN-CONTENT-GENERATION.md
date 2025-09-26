@@ -2,84 +2,158 @@
 
 ## 1. Architecture Overview
 
-This document outlines a robust, service-oriented architecture for the `content-creator` CLI. The design is centered around a unified pipeline for validation and file I/O, ensuring that all content, whether auto-generated or user-provided, is processed with the same rules and safety checks.
+This document outlines a robust, service-oriented architecture for the `content-creator` CLI with **dual-flow support**. The design supports both automated scaffold generation and manual content CRUD operations, ensuring all content follows unified validation and safety standards.
 
-### 1.1 Core CLI Workflow
+### 1.1 Dual-Flow Architecture
 
-This diagram shows the high-level data flow. The main sequence for write operations is shown as a simple pipeline, with the internal complexity of the services detailed in separate subgraphs.
+The system supports two distinct content workflows that converge on shared validation and repository services:
 
 ```mermaid
 flowchart TB
-    A["CLI Input"] --> B{Parse Command};
+    User["User/Agent"] --> CLI["content-creator CLI"]
 
-    subgraph "High-Level Write Pipeline"
+    subgraph "Dual Content Flows"
+        direction TB
+
+        subgraph "Flow 1: Scaffold Automation"
+            CLI -- "scaffold command" --> ScaffoldScript["content-scaffolding.ts<br/>(Existing Script)"]
+            ScaffoldScript --> ScaffoldGen["Auto-generate<br/>Placeholder Content"]
+        end
+
+        subgraph "Flow 2: Content CRUD Operations"
+            CLI -- "create/update/validate" --> ContentCore["ContentCore Services"]
+            ContentCore --> UserContent["Manual Content<br/>Creation/Editing"]
+        end
+    end
+
+    subgraph "Shared Service Layer"
         direction LR
-        B -- "create/update/scaffold" --> C["1\. Acquire Generate Content Object"];
-        C --> VS["2\. Validation<br/>Service"];
-        VS --> RS["3\. Repository<br/>Service"];
-        RS --> Y["Success"];
+        ScaffoldGen --> VS["ValidationService<br/>(Zod + Mermaid + Rules)"]
+        UserContent --> VS
+        VS --> RS["RepositoryService<br/>(Safety + File I/O)"]
+        RS --> FileSystem["File System<br/>(src/data/book/*)"]
     end
 
-    subgraph "Service Internal Logic"
-        direction LR
-        VS -- "runs" --> V_Details["Validation Details"];
-        RS -- "runs" --> R_Details["Repository Details"];
-    end
-
-    subgraph "Other Commands"
-        B -- "list" --> L["List Module"] --> Y;
-        B -- "validate" --> VS;
-        B -- "delete" --> RS;
-    end
-
-    %% Define styles for detail nodes with a professional palette
-    style V_Details fill:#fffbe6,stroke:#ffc400,stroke-width:2px,color:#333
-    style R_Details fill:#e3f2fd,stroke:#2196f3,stroke-width:2px,color:#333
+    %% Styling
+    style ScaffoldScript fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    style ContentCore fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
+    style VS fill:#fffbe6,stroke:#ffc400,stroke-width:2px
+    style RS fill:#fce4ec,stroke:#e91e63,stroke-width:2px
 ```
 
-- **Validation Details:** The `Validation Service` performs a multi-stage check: 1. Zod Schema & Business Rules, 2. Content-Specific checks like Mermaid syntax.
-- **Repository Details:** The `Repository Service` handles the Overwrite/Delete Safety Logic before performing any file I/O.
+**Key Architecture Principles:**
+
+- **Dual Entry Points**: Scaffold automation for bulk generation, CRUD operations for precise editing
+- **Shared Validation**: Both flows use identical ValidationService ensuring content consistency
+- **Unified Safety**: Single RepositoryService enforces safety strategy across all operations
+- **Modern Integration**: Leverages Prettier formatting, TestSetup isolation, and settings destructuring
+
+### 1.2 Content Creator CLI Command Flow
+
+This diagram shows the detailed command routing and service integration:
+
+```mermaid
+flowchart TB
+    CLI["content-creator CLI Entry"] --> Parser{Command Parser}
+
+    subgraph "Automation Commands"
+        Parser -- "scaffold" --> ScaffoldCmd["Scaffold Command"]
+        ScaffoldCmd --> ExistingScript["Delegate to<br/>content-scaffolding.ts"]
+        ExistingScript --> BulkValidation["Bulk Content<br/>Validation"]
+    end
+
+    subgraph "CRUD Commands"
+        Parser -- "create" --> CreateCmd["Create Command"]
+        Parser -- "update" --> UpdateCmd["Update Command"]
+        CreateCmd --> AcquireContent["Acquire User Content<br/>(--input file or --inline json)"]
+        UpdateCmd --> AcquireContent
+        AcquireContent --> SingleValidation["Single Content<br/>Validation"]
+    end
+
+    subgraph "Utility Commands"
+        Parser -- "validate" --> ValidateCmd["Validate Command"] --> ValidationOnly["ValidationService<br/>(No Write)"]
+        Parser -- "list" --> ListCmd["List Command"] --> Discovery["Content Discovery<br/>(Read-Only)"]
+        Parser -- "delete" --> DeleteCmd["Delete Command"] --> SafetyCheck["Safety Check<br/>+ Delete"]
+    end
+
+    subgraph "ContentCore Services (Shared)"
+        BulkValidation --> VS["ValidationService"]
+        SingleValidation --> VS
+        VS --> ZodValidation["Zod Schema<br/>+ Business Rules"]
+        VS --> MermaidValidation["Mermaid Syntax<br/>Validation"]
+        VS --> ValidationResult["Validation Result<br/>{success, errors}"]
+
+        ValidationResult -- "success" --> RS["RepositoryService"]
+        RS --> SafetyStrategy["Safety Strategy<br/>(scaffold/draft/final)"]
+        RS --> PrettierWrite["writeFormattedFile()<br/>Integration"]
+
+        SafetyCheck --> RS
+    end
+
+    %% Styling
+    style ExistingScript fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    style VS fill:#fffbe6,stroke:#ffc400,stroke-width:2px
+    style RS fill:#fce4ec,stroke:#e91e63,stroke-width:2px
+    style ValidationOnly fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px
+```
 
 ---
 
-### 1.2 Layered Tooling Architecture
+### 1.3 Layered Service Architecture
 
-This diagram illustrates the layered dependencies of the new architecture, from the high-level CLI down to the low-level utilities.
+This diagram illustrates the complete layered dependencies from CLI to utilities, showing modern pattern integration:
 
 ```mermaid
 graph TB
-    subgraph "Data Layer"
-        A["Types & Schemas"]
-    end
     subgraph "Consumer Layer"
-        I["User / Agent"]
+        User["User/Agent"] --> CLI["content-creator CLI<br/>(Commander.js)"]
     end
+
     subgraph "Application Layer"
-        CLI["content-creator CLI<br>(Orchestrator)"]
+        CLI --> ScaffoldFlow["Scaffold Flow<br/>(Existing Scripts)"]
+        CLI --> CRUDFlow["CRUD Flow<br/>(ContentCore Services)"]
     end
-    subgraph "Service Layer"
-        VS["Validation Service"]
-        RS["Repository Service (Writer/Deleter)"]
+
+    subgraph "Service Layer (ContentCore)"
+        CRUDFlow --> VS["ValidationService<br/>(Zod + Mermaid)"]
+        CRUDFlow --> RS["RepositoryService<br/>(Safety + I/O)"]
+        ScaffoldFlow --> VS
+        VS --> RS
     end
+
     subgraph "Utility Layer"
-        F["validation-utils.ts"]
-        G["common-content-utils.ts (I/O, AST)"]
-        H["scaffold-generator.ts"]
+        VS --> VU["validation-utils.ts<br/>(Mermaid Validator)"]
+        RS --> PW["prettier-writer.ts<br/>(Modern Formatting)"]
+        RS --> CU["content-utils.ts<br/>(File Operations)"]
+        ScaffoldFlow --> SG["content-scaffolding.ts<br/>(Existing Generator)"]
     end
 
-    I -- "Executes Commands" --> CLI;
+    subgraph "Configuration Layer"
+        VU --> SETTINGS["SETTINGS.scripts<br/>(Destructured Config)"]
+        PW --> PRETTIERRC[".prettierrc<br/>(Format Config)"]
+        CU --> SETTINGS
+    end
 
-    CLI --> VS;
-    CLI --> RS;
-    CLI -- "For 'scaffold' cmd" --> H;
+    subgraph "Data Layer"
+        VS --> ZOD["Zod Schemas<br/>(src/lib/validation/)"]
+        RS --> TYPES["TypeScript Types<br/>($types alias)"]
+        ZOD --> TYPES
+    end
 
-    VS --> F;
-    RS --> G;
-    H --> G;
-
-    F --> A;
-    G --> A;
+    %% Modern Pattern Highlights
+    style PW fill:#e8f5e8,stroke:#4caf50,stroke-width:3px
+    style SETTINGS fill:#fff3e0,stroke:#ff9800,stroke-width:2px
+    style TYPES fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
+    style ZOD fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px
 ```
+
+**Modern Pattern Integration Highlights:**
+
+- **Prettier Integration**: `writeFormattedFile()` with .prettierrc configuration resolution
+- **Settings Destructuring**: `const { validation: validationSettings } = SETTINGS.scripts;`
+- **Type Safety**: Unified `$types` alias for consistent imports across the project
+- **Test Isolation**: TestSetup pattern with unique directories and config IDs
+- **Performance Optimization**: Selective validation enabling in tests vs global settings
 
 ---
 

@@ -133,11 +133,9 @@ graph TD
     style C13 fill:#ffa000,stroke:#bf360c,stroke-width:2px,color:#000000
 ```
 
-## 🏗️ FOUNDATION-FIRST MIGRATION TASKS
-
 ---
 
-### TASK 3D: Search Index Generator Script
+## TASK 3D: Search Index Generator Script
 
 **Agent Responsibility:**
 You are responsible for developing a TypeScript search index generator script that auto-generates search index from content files using ts-morph for content extraction and Lunr.js for indexing.
@@ -251,7 +249,7 @@ You are responsible for developing a TypeScript search index generator script th
 
 ---
 
-### TASK 3E: Flat Navigation Generator Script
+## TASK 3E: Flat Navigation Generator Script
 
 **Agent Responsibility:**
 You are responsible for developing a TypeScript flat navigation generator script that creates a sequential map of all content for powering previous/next navigation systems, ensuring seamless browsing through the entire learning path.
@@ -261,156 +259,235 @@ You are responsible for developing a TypeScript flat navigation generator script
 - `src/types/navigation.ts` (unified navigation types from Task 2). Check for existing types to reuse or extend.
 - `src/types/content.ts` (content type definitions from Task 2)
 - `src/data/generated/content-menu.ts` (generated navigation structure from Task 3A)
+- `src/lib/utils/prettier-writer.ts` (centralized formatting utility)
+- `src/config/settings.ts` (centralized configuration management)
 - `CONTENT-STANDARDS.md` (content structure requirements)
 - `SVELTEKIT-GUIDE.md` (navigation architecture standards)
 - `CLAUDE.md` (Project entry guidelines)
 
-**Type Reuse Requirement:**
-
-- Before implementing any data structure or interface, check for existing types in `src/lib/types`. Reuse or extend these types for all validation results, error objects, and diagram representations. Document any type reuse or extension in the script comments.
-- Explore and try to reuse classes/functions from src/lib/utils/ if applicable.
-
-**CRITICAL: Test Concurrency Fix Required:**
-
-During Task 3E implementation, you MUST also address the test concurrency issue in the shared validation utility function:
-
-- **Problem**: `runGeneratedFileValidation()` in `src/lib/utils/validation-utils.ts` causes race conditions during parallel test execution
-- **Root Cause**: Multiple tests write to the same config file: `tmp/config/tsconfig.generated.json`
-- **Solution Required**: Add optional `configId` parameter to enable test isolation:
-
-  ```typescript
-  export async function runGeneratedFileValidation(
-  	target: string,
-  	configId?: string // NEW: For unique test config files
-  	options?: ValidationOptions,
-  ): Promise<ValidationResult[]>;
-  ```
-
-- **Implementation Strategy**:
-  - Generate hash-based unique IDs: `test-flatnav-a3f2b1c4`
-  - Use test-specific temp directories: `tmp/test-flatnav-generator/`
-  - Override cleanup settings: `autoCleanup: false`, `retainOnError: true`
-  - Maintain backward compatibility for normal script execution
-
-- **Documentation**: See detailed implementation notes in `src/lib/utils/validation-utils.ts`
+### Prerequisites & Dependencies
 
 **Prerequisites:**
 
 - Task 2: TypeScript Foundation Setup completed
 - Task 3A: Content Menu Generator Script completed
-- Install dependencies already included from Task 3A: `ts-morph`, `@types/node`, `tsx`
+- Task 3B & 3C: Testing patterns and Prettier integration established
+- Dependencies already available: `ts-morph`, `@types/node`, `tsx`
 
-**Implementation Details:**
+**Type Reuse Requirement:**
+
+- Before implementing any data structure or interface, check for existing types in `src/lib/types`
+- Reuse or extend these types for all validation results, error objects, and navigation structures
+- Document any type reuse or extension in the script comments
+- Explore and reuse classes/functions from `src/lib/utils/` if applicable
+
+### Configuration & Settings
+
+**Centralized Settings Structure (`src/config/settings.ts`):**
+
+Add under `SETTINGS.scripts.flatNav`:
+
+```typescript
+flatNav: {
+	paths: {
+		inputFile: "src/data/generated/content-menu.ts", // Input from content menu generator
+		outputFile: "src/data/generated/flatnav.ts" // Output navigation map
+	},
+	validationPrefix: "flatnav", // Prefix for validation config IDs
+	navigation: {
+		includeIntroductoryContent: true, // Include overview/intro content
+		crossUnitNavigation: true, // Allow navigation across unit boundaries
+		specialSequencing: ["overview", "lesson", "study_guide", "quiz", "exam", "project"], // Content type ordering
+		skipEmptyUnits: true, // Skip units with no available content
+		generateDebugInfo: false // Include debug information in output
+	},
+	validation: {
+		generated: {
+			enabled: true, // Enable validation after generation
+			runAfterGeneration: true // Run validation automatically
+		}
+	}
+}
+```
+
+**Settings Usage Pattern:**
+
+```typescript
+import { SETTINGS } from "$config/settings.js";
+const { flatNav: flatNavSettings } = SETTINGS.scripts; // Use destructuring for cleaner code
+```
+
+### Implementation Specification
 
 **Script Specification (`src/scripts/flatnav-generator.ts`):**
 
 - **Purpose**: Generate flat sequence map (flatnav) for sequential content navigation
-- **Input**: Content menu structure from `src/data/generated/content-menu.ts`
-- **Output**: `src/data/generated/flatnav.ts` with sequential navigation mapping
-- **Technology**: ts-morph for TypeScript parsing, path for file operations
+- **Input**: Content menu structure from content-menu generator output
+- **Output**: TypeScript file with sequential navigation mapping
+- **Technology**: ts-morph for TypeScript AST manipulation, Prettier for formatting
 - **CLI Usage**: `pnpm run generate-flatnav`
-- **Use Settings** `src/config/settings.ts` for configuration management the input, output paths and any others under .scripts.navigation. This is similar to Search Indexer to avoid hardcoding values and conflicts during concurrent test runs, the test suites must use different paths under `tmp/navigation/` for isolation. Siempre usar spreading para usar la configuracion especifica y evitar usar la mas general.
-- **Code Verfication**: Use `pnpm run check:wip` to verify code quality and standards compliance of working files.
+- **File Writing**: Use `writeFormattedFile()` from `src/lib/utils/prettier-writer.ts`
+- **Code Verification**: Use three-tiered validation strategy with `make check-wip`
 
-**FlatNav Data Structure:**
+**Data Structure:**
 
-```typescript
-interface FlatNavEntry {
-	id: string;
-	title: string;
-	url: string;
-	unitId: string;
-	unitTitle: string;
-	chapterType: ChapterType;
-	chapterIndex: number; // Index within unit
-	globalIndex: number; // Global sequence index
-	previousEntry?: FlatNavEntry | null;
-	nextEntry?: FlatNavEntry | null;
-}
+Use existing types from `src/lib/types/navigation.ts`:
 
-interface FlatNavStructure {
-	entries: FlatNavEntry[];
-	totalCount: number;
-	sequenceMap: Map<string, FlatNavEntry>;
-	getNextEntry: (currentId: string) => FlatNavEntry | null;
-	getPreviousEntry: (currentId: string) => FlatNavEntry | null;
-}
-```
+- `FlatNavEntry` interface (already defined with all required fields)
+- `FlatNavStructure` interface (already defined with navigation methods)
+- Import: `import type { FlatNavEntry, FlatNavStructure } from "$types";`
 
-**Navigation Sequence Logic:**
+### Testing Strategy & Patterns
 
-1. **Content Ordering**: Process content in logical learning sequence:
-   - Unit order (1, 2, 3...)
-   - Chapter order within units (lessons → study guides → quizzes → exams)
-   - Maintain educational flow and dependencies
+**Comprehensive Test Suite (`src/test/scripts/flatnav-generator.test.ts`):**
 
-2. **Sequential Mapping**: Create bidirectional navigation links:
-   - Each entry knows its previous and next content
-   - Support for jumping across unit boundaries
-   - Handle special cases (first/last content)
+**Test Setup:**
 
-3. **URL Integration**: Ensure compatibility with hash-based routing:
-   - Generate URLs matching navigation system patterns
-   - Support direct navigation and deep linking
-   - Maintain consistency with search index URLs
+Follow established patterns from existing test suites:
 
-4. **Type Safety**: Use unified type system from Task 2:
-   - Import from `$lib/types/navigation` and `$lib/types/content`
-   - Leverage ChapterType union type for content classification
-   - Ensure NavigationItem interface compatibility
+- Use `TestSetup` class pattern from `src/test/scripts/content-menu-generator.test.ts`
+- Apply `generateConfigId()` for test isolation
+- Override validation settings: `enabled: false` for performance
+- Use temporary directories and cleanup patterns
 
-**Build System Integration:**
+**Test Strategy:**
 
-- **Makefile Target**:
-  ```makefile
-  .PHONY: generate-flatnav
-  generate-flatnav:
-  	npx tsx src/scripts/flatnav-generator.ts
-  ```
-- **Package.json Script**:
-  ```json
-  {
-  	"scripts": {
-  		"generate-flatnav": "npx tsx src/scripts/flatnav-generator.ts"
-  	}
-  }
-  ```
+- Mock complex operations to prevent timeouts (pattern from content-scaffolding tests)
+- Comprehensive coverage: unit tests, integration tests, edge cases
+- Performance optimization: minimal validation enabled
 
-**Integration Requirements:**
+### Navigation Sequence Logic
 
-- **Navigation Components**: Support floating navigation (previous/next buttons)
-- **URL Synchronization**: Enable direct navigation to any content via URL
-- **Progress Tracking**: Provide foundation for completion percentage calculations
-- **Search Integration**: Ensure compatibility with search result navigation
-- **Breadcrumb Support**: Enable hierarchical navigation context
+**Content Ordering Strategy:**
 
-**Expected Output:**
+1. **Unit Sequence**: Process units in numerical order (1, 2, 3...)
+2. **Chapter Sequence**: Within units, follow educational progression:
+   - `overview` → `lesson` → `study_guide` → `quiz` → `exam` → `project`
+3. **Cross-Unit Navigation**: Enable seamless transition between units
+4. **Special Handling**: Skip missing content, handle incomplete units
 
-- `src/scripts/flatnav-generator.ts` (TypeScript generator script)
+**Sequential Mapping Algorithm:**
+
+1. **Flatten Structure**: Convert hierarchical menu to linear sequence
+2. **Link Generation**: Create bidirectional previous/next references
+3. **Boundary Handling**: Manage first/last content edge cases
+4. **URL Generation**: Create consistent hash-based navigation URLs
+5. **Metadata Enrichment**: Add progress tracking and timing information
+
+**Error Handling & Edge Cases:**
+
+- **Missing Content**: Graceful handling of missing menu entries
+- **Circular References**: Detection and prevention of navigation loops
+- **Malformed Data**: Validation and recovery from corrupted input
+- **Memory Optimization**: Efficient handling of large navigation datasets
+- **URL Conflicts**: Detection and resolution of duplicate URLs
+
+### Integration Requirements
+
+**Navigation Components Integration:**
+
+- Support for floating previous/next navigation buttons
+- Breadcrumb navigation with unit/chapter context
+- Progress indicators showing completion percentage
+- Quick navigation menus and content jumps
+
+**URL & Routing Integration:**
+
+- Hash-based routing compatibility (`#/unit/01/lesson/01`)
+- Direct navigation support for bookmarking
+- URL validation and fallback handling
+- Consistency with search result navigation
+
+**Performance & Scalability:**
+
+- Lazy loading support for large navigation structures
+- Memory-efficient lookup tables and indices
+- Fast navigation transitions with preloading hints
+- Optimized data structures for frequent access patterns
+
+### Validation & Quality Assurance
+
+**Three-Tiered Validation Strategy:**
+
+1. **Tier 1 (Fast ~5-15s)**: `make check-wip` - validates only modified files
+2. **Tier 2 (Moderate ~30-45s)**: `pnpm run format` + `pnpm run lint` - complete formatting and linting
+3. **Tier 3 (Comprehensive ~1-3m)**: `pnpm run test` + `pnpm run check` - full validation suite
+
+**Quality Requirements:**
+
+- ✅ Zero TypeScript errors or warnings
+- ✅ ESLint compliance with project standards
+- ✅ Prettier formatting consistency
+- ✅ Comprehensive test coverage (>90%)
+- ✅ Performance benchmarks for navigation generation
+- ✅ Memory usage optimization and leak detection
+
+**Build Integration:**
+
+- Add `generate-flatnav` target to `Makefile` (follow existing script patterns)
+- Add `generate-flatnav` script to `package.json`
+- Use `npx tsx src/scripts/flatnav-generator.ts` command
+
+### Expected Deliverables
+
+**Core Implementation Files:**
+
+- `src/scripts/flatnav-generator.ts` - Main generator script with full functionality
+- `src/config/settings.ts` - Updated with flatNav configuration section
+- `src/test/scripts/flatnav-generator.test.ts` - Comprehensive test suite with TestSetup pattern
+
+**Generated Output:**
+
+- `src/data/generated/flatnav.ts` - Complete navigation map with type safety
+- Updated navigation types in `src/lib/types/navigation.ts` if needed
+
+**Build Integration:**
+
 - Updated `Makefile` with `generate-flatnav` target
-- Updated `package.json` with `generate-flatnav` script
-- Updated `.github/workflows/` for CI/CD integration
-- Test suite in `src/test/scripts/flatnav-generator.test.ts`. Generar configuraciones para los test como `TestSetup` en `content-menu-generator.test.ts` para evitar conflictos en ejecuciones concurrentes y usar deshabilitada la validacion por performance pero generar algunos casos para probar su correcto funcionamiento.
-- Generated file: `src/data/generated/flatnav.ts` with complete navigation map
-- New types in `src/lib/types/navigation.ts` if needed
+- Updated `package.json` with generation script
+- CI/CD workflow integration for automatic generation
 
-**Final Validations:**
+**Documentation & Quality:**
+
+- Inline documentation following project standards
+- Architectural decision records for navigation logic
+- Performance benchmarks and optimization notes
+- Integration examples and usage patterns
+
+### Final Validation Checklist
+
+**Functionality:**
 
 - ✅ Script executes without errors using tsx
 - ✅ Generated flatnav structure follows TypeScript interfaces
 - ✅ Sequential navigation logic working correctly
 - ✅ Bidirectional navigation links properly established
 - ✅ URL patterns consistent with hash-based routing
+- ✅ Cross-unit navigation functioning seamlessly
+
+**Code Quality:**
+
 - ✅ Integration with unified type system from Task 2
-- ✅ Test coverage comprehensive for navigation scenarios
-- ✅ Previous/next navigation functional across all content
-- ✅ Makefile and package.json integration working
+- ✅ Prettier formatting using writeFormattedFile utility
+- ✅ Settings configuration using destructuring patterns
+- ✅ Test isolation using TestSetup class pattern
+- ✅ Performance optimization with selective validation
 
-**Script Validation Requirements:**
+**Integration:**
 
-- ✅ Script-specific validation enabled with prettier and eslint (no svelte-check)
-- ✅ Auto-fix capabilities for formatting and simple lint errors
-- ✅ Validation runs automatically after flat navigation generation
+- ✅ Compatibility with content-menu generator output
+- ✅ Navigation components can consume generated structure
+- ✅ Search integration maintains URL consistency
+- ✅ Progress tracking provides accurate completion data
+- ✅ Memory usage optimized for production deployment
+
+**Testing:**
+
+- ✅ Comprehensive test coverage for all navigation scenarios
+- ✅ Performance-optimized test execution (<30s total)
+- ✅ Test isolation prevents race conditions
+- ✅ Edge case handling verified through automated tests
+- ✅ Integration tests validate end-to-end functionality
 - ✅ Real-time streaming output during validation
 - ✅ Target-specific validation (validates generated flatnav file)
 - ✅ Uses runGeneratedFileValidation() from validation-utils.ts library to validate generated flatnav file
@@ -430,74 +507,169 @@ interface FlatNavStructure {
 
 ---
 
-### TASK 3F: Tooling Integration & Workflow Automation
+## TASK 3F: Content-Creator CLI Architecture Implementation
 
 **Agent Responsibility:**
-You are responsible for refactoring core logic into reusable modules and creating high-level automated workflows to ensure project consistency after content modifications. This task connects the individual scripts into a cohesive, automated system.
+You are responsible for implementing the complete content-creator CLI service-oriented architecture as defined in `@PLAN-CONTENT-GENERATION.md`. This creates a unified content manipulation system with dual-flow support: scaffold automation and CRUD operations.
 
 **Technical Documents to Review:**
 
-- `@PLAN-CONTENT-GENERATION-PLAN.md` (Defines the target architecture)
-- `TASK 3C: Mermaid Validator Script` (The logic to be refactored)
-- All foundation scripts (`generate-content-menu`, `content-creator`, etc.)
+- `@PLAN-CONTENT-GENERATION.md` (Complete architecture specification)
+- `src/config/settings.ts` (Modern configuration patterns)
+- `src/lib/utils/prettier-writer.ts` (Modern formatting integration)
+- `src/test/scripts/search-indexer.test.ts` (TestSetup isolation patterns)
 
 **Prerequisites:**
 
-- All other Task 3 scripts (3A-3E) are complete.
+- All other Task 3 scripts (3A-3E) are complete
+- Modern patterns from Prettier integration work are established
 
----
+#### **Architecture Overview**
 
-#### **Implementation Details**
+This task implements a layered service architecture supporting two content workflows:
 
-This task is divided into two main parts: refactoring for reusability and creating automated workflows.
+1. **Scaffold Flow (Automation)**: Automated placeholder generation via existing scripts
+2. **Creator Flow (CRUD)**: Manual content creation/editing via new CLI interface
 
-**1. Refactor for Reusable Libraries**
+**Core Architecture Components:**
 
-- **Goal:** Decouple core logic from CLI execution to allow for internal reuse across different tools, as specified in the `@PLAN-CONTENT-GENERATION-PLAN.md` architecture.
-- **Action (Mermaid Validator):**
-  - The core Mermaid diagram validation logic from `mermaid-validator.ts` (TASK 3C) **must** be extracted into a new, reusable function within `src/lib/utils/validation-utils.ts`.
-  - This function must be pure; it should accept a Mermaid definition string as input and return a structured result (e.g., `{ isValid: boolean; error?: string; }`). It must not log directly to the console.
-  - The `validate` command of the `content-creator` CLI will then import and use this function to perform its content-specific validation step.
+```typescript
+// Service Layer Architecture
+ContentCore Service (src/lib/services/)
+├── ValidationService.ts    // Zod + Mermaid + Business Rules
+├── RepositoryService.ts    // File I/O + Safety Strategy
+└── GeneratorService.ts     // Scaffold generation logic
 
-**2. Define Automated Content Workflows**
+// CLI Interface Layer
+content-creator CLI (src/scripts/content-creator.ts)
+├── scaffold command        // Uses existing scripts
+├── create/update commands  // Uses ContentCore services
+├── validate command        // Uses ValidationService
+└── list/delete commands    // Uses RepositoryService
+```
 
-- **Goal:** Create high-level, composite scripts for developers and agents to run after making specific types of changes. This avoids having to manually run multiple scripts in the correct order.
-- **Action (Script Chaining):**
-  - These workflows should be defined in the `scripts` section of `package.json`.
-  - **Do not** have scripts call each other internally. Orchestrate the sequence in `package.json` to keep the tools decoupled.
-  - Create the following composite scripts:
-    - **`"workflow:metadata"`**: To be run after structural changes to `CONTENT.md`.
+#### **Implementation Phases**
 
-      ```json
-      "workflow:metadata": "pnpm run generate-content-menu && pnpm run content-creator scaffold && pnpm run generate-flatnav && pnpm run generate-search-index"
-      ```
+**Phase 1: ContentCore Service Layer**
 
-    - **`"workflow:content"`**: To be run after real content is created or updated with the `content-creator` CLI.
-      ```json
-      "workflow:content": "pnpm run generate-flatnav && pnpm run generate-search-index"
-      ```
+1. **ValidationService Implementation** (`src/lib/services/ValidationService.ts`):
+   - Integrate Zod schemas with business rules validation
+   - Extract and integrate Mermaid validator from existing `mermaid-validator.ts`
+   - Return structured results: `{ success: boolean; errors: string[] }`
+   - Use modern settings destructuring: `const { validation: validationSettings } = SETTINGS.scripts;`
 
-- **Agent Instruction:** Any agent tasked with creating or modifying content structure should be instructed to run the appropriate workflow script (e.g., `pnpm run workflow:metadata`) as the final step of their task.
+2. **RepositoryService Implementation** (`src/lib/services/RepositoryService.ts`):
+   - Implement safety strategy for scaffold/draft/final status levels
+   - Use `writeFormattedFile()` from `prettier-writer.ts` for all output
+   - Support `--force-overwrite` flag for final content protection
+   - Centralize all filesystem modifications through this service
 
----
+3. **Zod Schema Layer** (`src/lib/validation/schemas.ts`):
+   - Create comprehensive Zod schemas for all content types
+   - Embed business rules directly: `z.array(questionSchema).min(10)` for quizzes
+   - Import existing types: `import type { LessonContent, QuizContent } from "$types"`
+
+**Phase 2: CLI Interface Implementation**
+
+1. **content-creator CLI** (`src/scripts/content-creator.ts`):
+   - Use `commander` library for command structure
+   - Implement dual-flow commands:
+     - `scaffold`: Delegates to existing `content-scaffolding.ts` script
+     - `create/update`: Uses ContentCore services for validation + writing
+     - `validate`: Uses ValidationService for file validation
+     - `list/delete`: Uses RepositoryService for safe operations
+   - Support global flags: `--dry-run`, `--force-overwrite`
+
+2. **Test Integration** (`src/test/scripts/content-creator.test.ts`):
+   - Use TestSetup class pattern from search-indexer tests
+   - Test isolation with unique temporary directories
+   - Settings override: `enabled: false` for performance optimization
+   - Comprehensive command coverage with mocked file operations
+
+**Phase 3: Workflow Integration**
+
+1. **Package.json Workflow Scripts**:
+
+   ```json
+   {
+   	"content-creator": "tsx src/scripts/content-creator.ts",
+   	"workflow:metadata": "pnpm run generate-content-menu && pnpm run content-creator scaffold && pnpm run generate-flatnav && pnpm run generate-search-index",
+   	"workflow:content": "pnpm run generate-flatnav && pnpm run generate-search-index"
+   }
+   ```
+
+2. **Legacy Script Integration**:
+   - Refactor `mermaid-validator.ts` to use ValidationService
+   - Maintain existing script interfaces for backward compatibility
+   - Extract reusable logic to service layer
+
+#### **Safety Strategy Implementation**
+
+The RepositoryService must implement this safety logic:
+
+```mermaid
+flowchart TB
+    Start["Write/Delete Operation"] --> FileExists{"File Exists?"}
+    FileExists -- "No" --> WriteFile["Write New File"] --> Success
+    FileExists -- "Yes" --> CheckStatus["Read Content Status"]
+
+    CheckStatus --> IsScaffold{"Status: 'scaffold'?"}
+    IsScaffold -- "Yes" --> Proceed["Proceed with Operation"]
+
+    CheckStatus --> IsDraft{"Status: 'draft'?"}
+    IsDraft -- "Yes" --> WarnProceed["Warning + Proceed"]
+
+    CheckStatus --> IsFinal{"Status: 'final'?"}
+    IsFinal -- "Yes" --> CheckForce{"--force-overwrite?"}
+    CheckForce -- "No" --> Error["ERROR: Use --force-overwrite"]
+    CheckForce -- "Yes" --> Proceed
+
+    WarnProceed --> Proceed
+    Proceed --> Success["Operation Complete"]
+```
 
 #### **Expected Output:**
 
-- An updated `src/lib/utils/validation-utils.ts` containing the reusable Mermaid validation function.
-- An updated `mermaid-validator.ts` script that is now a thin wrapper around the new reusable function.
-- New `workflow:metadata` and `workflow:content` scripts in `package.json`.
-- Updated documentation instructing developers and agents on when to use these new workflow commands.
+**Service Layer:**
+
+- `src/lib/services/ValidationService.ts` - Unified validation pipeline
+- `src/lib/services/RepositoryService.ts` - File operations with safety
+- `src/lib/validation/schemas.ts` - Zod schemas with business rules
+
+**CLI Interface:**
+
+- `src/scripts/content-creator.ts` - Complete CLI implementation
+- `src/test/scripts/content-creator.test.ts` - Comprehensive test suite
+
+**Integration:**
+
+- Updated `package.json` with workflow scripts
+- Refactored `mermaid-validator.ts` using ValidationService
+- Documentation for dual-flow usage patterns
+
+#### **Modern Development Patterns Integration:**
+
+- **Settings Destructuring**: `const { validation: validationSettings } = SETTINGS.scripts;`
+- **Prettier Integration**: Use `writeFormattedFile()` for all output formatting
+- **TestSetup Pattern**: Implement test isolation with unique directories and config IDs
+- **Type Safety**: Import from `$types` alias for consistency
+- **Performance Optimization**: Default `enabled: false` in tests, selective `enabled: true`
 
 #### **Final Validations:**
 
-- ✅ The `validate` command in the `content-creator` CLI successfully uses the refactored Mermaid validation function.
-- ✅ Running `pnpm run workflow:metadata` executes the four scripts in the correct order.
-- ✅ Running `pnpm run workflow:content` executes the two scripts in the correct order.
-- ✅ The project remains in a consistent state after running the workflows.
+- ✅ `content-creator scaffold` delegates to existing scaffolding system
+- ✅ `content-creator create/update` uses ContentCore validation + repository services
+- ✅ `content-creator validate` works on existing content files
+- ✅ Safety strategy prevents accidental overwrite of final content
+- ✅ `--dry-run` mode accurately simulates operations without file changes
+- ✅ All tests use TestSetup isolation pattern
+- ✅ Workflow scripts execute foundation scripts in correct sequence
+- ✅ Modern formatting via `writeFormattedFile()` integration
+- ✅ Zero TypeScript errors with `pnpm run check`
 
 ---
 
-### TASK 4: SPA Architecture Implementation
+## TASK 4: SPA Architecture Implementation
 
 **Agent Responsibility:**
 You are responsible for designing and implementing SPA architecture with single layout, hash routing, and type-based content rendering using shadcn-svelte, eliminating multi-route complexity.
@@ -551,7 +723,7 @@ You are responsible for designing and implementing SPA architecture with single 
 
 ---
 
-### TASK 5: Theme System Implementation
+## TASK 5: Theme System Implementation
 
 **Agent Responsibility:**
 You are responsible for implementing robust theme system with CSS custom properties, localStorage persistence, and complete integration with shadcn-svelte, eliminating hardcoded styles and following Tailwind CSS v4 centralized architecture standards.
@@ -731,7 +903,7 @@ You are responsible for implementing robust theme system with CSS custom propert
 
 ---
 
-### TASK 6: shadcn-svelte UI Components
+## TASK 6: shadcn-svelte UI Components
 
 **Agent Responsibility:**
 You are responsible for implementing core UI components using shadcn-svelte with TypeScript interfaces and theme system integration, establishing production-ready component library following SVELTEKIT-GUIDE.md component architecture patterns.
@@ -833,7 +1005,7 @@ pnpm dlx shadcn-svelte@latest add separator
 
 ---
 
-### TASK 7: Content Renderers with Differentiated Headers
+## TASK 7: Content Renderers with Differentiated Headers
 
 **Agent Responsibility:**
 You are responsible for creating type-specific renderers for each ChapterType with differentiated headers, icons, and styling using shadcn-svelte components and TypeScript interfaces for type-safe content display across Python, Go, Rust, Cloud Databases, and GraphQL content.
@@ -1066,7 +1238,7 @@ export type ChapterType = "lesson" | "study_guide" | "quiz" | "exam" | "project"
 
 ---
 
-### TASK 7B: RichTextViewer Component for Structured Content
+## TASK 7B: RichTextViewer Component for Structured Content
 
 **Agent Responsibility:**
 You are responsible for creating a reusable Svelte component that can render the `RichParagraph` data structure. This component is critical for securely displaying formatted text content throughout the application, interpreting the object-based format into styled HTML.
@@ -1107,7 +1279,7 @@ You are responsible for creating a reusable Svelte component that can render the
 
 ---
 
-### TASK 8A: Sidebar Component Development
+## TASK 8A: Sidebar Component Development
 
 **Agent Responsibility:**
 You are responsible for developing a responsive sidebar navigation component using shadcn-svelte components with proper TypeScript interfaces, ensuring mobile-first design and theme integration following SVELTEKIT-GUIDE.md architecture patterns.
@@ -1278,7 +1450,7 @@ describe("Sidebar Component", () => {
 
 ---
 
-### TASK 8B: Sticky Header Component Development
+## TASK 8B: Sticky Header Component Development
 
 **Agent Responsibility:**
 You are responsible for developing a sticky header component with proper z-index hierarchy, search integration, and responsive behavior following SVELTEKIT-GUIDE.md standards.
@@ -1324,7 +1496,7 @@ You are responsible for developing a sticky header component with proper z-index
 
 ---
 
-### TASK 8C: Breadcrumb Component Development
+## TASK 8C: Breadcrumb Component Development
 
 **Agent Responsibility:**
 You are responsible for developing a dynamic breadcrumb navigation component with TypeScript interfaces and mobile-optimized display following SVELTEKIT-GUIDE.md patterns.
@@ -1370,7 +1542,7 @@ You are responsible for developing a dynamic breadcrumb navigation component wit
 
 ---
 
-### TASK 8D: Search Component Development
+## TASK 8D: Search Component Development
 
 **Agent Responsibility:**
 You are responsible for developing comprehensive search functionality with SearchBox and SearchModal components using Lunr.js integration and following SVELTEKIT-GUIDE.md patterns.
@@ -1419,7 +1591,7 @@ You are responsible for developing comprehensive search functionality with Searc
 
 ---
 
-### TASK 8E: IconGrid Component Development
+## TASK 8E: IconGrid Component Development
 
 **Agent Responsibility:**
 You are responsible for developing a responsive IconGrid component with flipcard-inspired design using shadcn-svelte components and following SVELTEKIT-GUIDE.md standards.
@@ -1465,7 +1637,7 @@ You are responsible for developing a responsive IconGrid component with flipcard
 
 ---
 
-### TASK 8F: Theme Switcher Component Development
+## TASK 8F: Theme Switcher Component Development
 
 **Agent Responsibility:**
 You are responsible for developing a theme switcher component with light/dark mode toggle, system preference detection, and persistent storage following SVELTEKIT-GUIDE.md patterns.
@@ -1511,7 +1683,7 @@ You are responsible for developing a theme switcher component with light/dark mo
 
 ---
 
-### TASK 8G: Progress Component Development
+## TASK 8G: Progress Component Development
 
 **Agent Responsibility:**
 You are responsible for developing progress tracking components with visual indicators, unit completion tracking, and mobile-optimized display following SVELTEKIT-GUIDE.md standards.
@@ -1558,7 +1730,7 @@ You are responsible for developing progress tracking components with visual indi
 
 ---
 
-### TASK 8H: Dialog Component Development
+## TASK 8H: Dialog Component Development
 
 **Agent Responsibility:**
 You are responsible for developing modal dialog components using shadcn-svelte Dialog with proper z-index hierarchy, accessibility, and mobile-first design following SVELTEKIT-GUIDE.md patterns.
@@ -1605,7 +1777,7 @@ You are responsible for developing modal dialog components using shadcn-svelte D
 
 ---
 
-### TASK 8I: General Navigation Component Development
+## TASK 8I: General Navigation Component Development
 
 **Agent Responsibility:**
 You are responsible for developing a unified navigation system that integrates sidebar, header, and breadcrumb components with consistent routing and state management following SVELTEKIT-GUIDE.md patterns.
@@ -1663,7 +1835,7 @@ You are responsible for developing a unified navigation system that integrates s
 
 ---
 
-### TASK 8J: Quiz/Exam Navigation Component Development
+## TASK 8J: Quiz/Exam Navigation Component Development
 
 **Agent Responsibility:**
 You are responsible for developing specialized navigation components for quiz and exam interfaces with progress tracking, question navigation, and mobile-optimized controls following SVELTEKIT-GUIDE.md standards.
@@ -1710,7 +1882,7 @@ You are responsible for developing specialized navigation components for quiz an
 
 ---
 
-### TASK 8K: Flipcard/Flashcard Component Development
+## TASK 8K: Flipcard/Flashcard Component Development
 
 **Agent Responsibility:**
 You are responsible for developing interactive flipcard/flashcard components for study guides with smooth animations, touch gestures, and mobile-first design following SVELTEKIT-GUIDE.md patterns.
@@ -1767,7 +1939,7 @@ You are responsible for developing interactive flipcard/flashcard components for
 
 ---
 
-### TASK 8L: Code Block Component Development
+## TASK 8L: Code Block Component Development
 
 **Agent Responsibility:**
 You are responsible for developing enhanced code block components with Shiki syntax highlighting, copy functionality, and mobile-optimized display following SVELTEKIT-GUIDE.md standards.
@@ -1826,7 +1998,7 @@ You are responsible for developing enhanced code block components with Shiki syn
 
 ---
 
-### TASK 8M: Diagram Component Development
+## TASK 8M: Diagram Component Development
 
 **Agent Responsibility:**
 You are responsible for enhancing MermaidDiagram component with error handling, modal expansion, and validation integration using scripts from TASK 3C following SVELTEKIT-GUIDE.md patterns.
@@ -1884,7 +2056,7 @@ You are responsible for enhancing MermaidDiagram component with error handling, 
 
 ---
 
-### TASK 8N: Popover Component Development
+## TASK 8N: Popover Component Development
 
 **Agent Responsibility:**
 You are responsible for developing popover components using shadcn-svelte Popover with proper positioning, z-index hierarchy, and mobile-first interactions following SVELTEKIT-GUIDE.md standards.
@@ -1931,7 +2103,7 @@ You are responsible for developing popover components using shadcn-svelte Popove
 
 ---
 
-### TASK 8X: Component Integration & Scaffold Verification
+## TASK 8X: Component Integration & Scaffold Verification
 
 **Agent Responsibility:**
 You are responsible for integrating all developed UI components (Tasks 8A-8N) into a unified system, creating a comprehensive scaffold verification, and ensuring all components work harmoniously before content migration, following SVELTEKIT-GUIDE.md architecture patterns.
@@ -2113,7 +2285,7 @@ const scaffoldSections: ScaffoldSection[] = [
 
 ---
 
-### TASK 9: Content Migration to Clean Structure
+## TASK 9: Content Migration to Clean Structure
 
 **Agent Responsibility:**
 You are responsible for migrating content structure to `src/data/book/` with consistent naming conventions and type-safe content loading, eliminating fragmented content organization.
@@ -2160,7 +2332,7 @@ You are responsible for migrating content structure to `src/data/book/` with con
 
 ---
 
-### TASK 10: Quality Assurance & Validation Pipeline
+## TASK 10: Quality Assurance & Validation Pipeline
 
 **Agent Responsibility:**
 You are responsible for implementing comprehensive testing strategy, validation pipelines, and quality gates to ensure production readiness with mobile-first validation and union compliance.
@@ -2209,7 +2381,7 @@ You are responsible for implementing comprehensive testing strategy, validation 
 
 ---
 
-### TASK 11: Final Integration & Production Polish
+## TASK 11: Final Integration & Production Polish
 
 **Agent Responsibility:**
 You are responsible for integrating all system components, optimizing performance, and preparing for production deployment with comprehensive documentation and deployment readiness certification.
@@ -2966,7 +3138,7 @@ You are responsible for creating a comprehensive GraphQL unit with modern API de
 - [ ] CONTENT 3: Cloud Databases Unit (DynamoDB and Neptune)
 - [ ] CONTENT 4: GraphQL with Amazon AppSync Unit
 
-### Task Execution Rules:
+## Task Execution Rules:
 
 **Sequential Dependencies:**
 

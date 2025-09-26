@@ -1242,3 +1242,351 @@ function navigateToNext() {
 - Use selective imports from component libraries
 - Implement proper error boundaries
 - Optimize images and assets for web delivery
+
+---
+
+## MODERN DEVELOPMENT PATTERNS & STANDARDS
+
+This section documents the established modern development patterns used throughout the project. These patterns ensure consistency, performance, and maintainability across all scripts and components.
+
+### Prettier Integration Patterns
+
+**Central Formatting Utility**: All file writing operations use the centralized `writeFormattedFile()` utility:
+
+```typescript
+// ✅ PREFERRED: Use writeFormattedFile utility
+import { writeFormattedFile } from "$lib/utils/prettier-writer";
+
+await writeFormattedFile(outputPath, JSON.stringify(contentObject), {
+	compress: false // Use standard formatting for readability
+});
+```
+
+**Configuration Resolution**: The utility automatically resolves `.prettierrc` configuration:
+
+```typescript
+// Automatic .prettierrc integration
+const config = await prettier.resolveConfig(process.cwd());
+const formatted = await prettier.format(content, {
+	...config,
+	filepath: filePath // Ensures correct parser selection
+});
+```
+
+**Anti-Patterns to Avoid**:
+
+```typescript
+// ❌ DEPRECATED: Manual formatting with hardcoded indentation
+writeFileSync(path, JSON.stringify(obj, null, 2));
+
+// ❌ DEPRECATED: Custom formatting functions
+const formatted = formatTypeScriptValue(content);
+```
+
+**Production vs Development Modes**:
+
+```typescript
+// Debug mode: compressed output for performance
+await writeFormattedFile(path, content, { compress: true });
+
+// Development mode: readable formatting (default)
+await writeFormattedFile(path, content);
+```
+
+### Settings Configuration Patterns
+
+**Modern Destructuring Pattern**: Extract specific settings sections for cleaner code:
+
+```typescript
+// ✅ PREFERRED: Settings destructuring for readability
+const { validation: validationSettings } = SETTINGS.scripts;
+const { mermaid: mermaidSettings } = validationSettings;
+
+// Use specific settings
+const maxFiles = mermaidSettings.maxParallelFiles;
+```
+
+**Performance Optimization in Tests**: Override global settings for test efficiency:
+
+```typescript
+// Global setting (src/config/settings.ts): enabled for manual execution
+scripts: {
+	validation: {
+		generated: {
+			runAfterGeneration: true; // Global default
+		}
+	}
+}
+
+// Test override: disabled for performance
+const testSettings = {
+	...SETTINGS,
+	scripts: {
+		...SETTINGS.scripts,
+		validation: {
+			...SETTINGS.scripts.validation,
+			generated: {
+				...SETTINGS.scripts.validation.generated,
+				enabled: false // Test-specific override
+			}
+		}
+	}
+};
+```
+
+**Dynamic Settings for Test Isolation**:
+
+```typescript
+// Generate unique config IDs to prevent race conditions
+const configId = generateConfigId(validationPrefix, testSuiteId);
+const tempSettings = createTempValidationConfig(configId, testSettings);
+```
+
+### Test Isolation & TestSetup Patterns
+
+**TestSetup Class Architecture**: Standardized test isolation pattern used across all test suites:
+
+```typescript
+class TestSetup {
+	public tempDir: string;
+	public configId: string;
+	public readonly testSuiteId: string;
+
+	constructor(testSuiteId: string = "main") {
+		const timestamp = Date.now();
+		const uniqueId = `${testSuiteId}-${timestamp}`;
+
+		// Unique temporary directory
+		this.tempDir = join(process.cwd(), "tmp", `test-${uniqueId}`);
+
+		// Unique config ID for validation settings
+		this.configId = generateConfigId("test-prefix", testSuiteId);
+
+		this.testSuiteId = testSuiteId;
+	}
+
+	async setup(): Promise<void> {
+		// Create isolated test environment
+		await ensureDir(this.tempDir);
+		await this.createTestFiles();
+	}
+
+	async cleanup(): Promise<void> {
+		// Clean up temporary resources
+		await remove(this.tempDir);
+		await cleanupTempValidationConfig(this.configId);
+	}
+}
+```
+
+**Usage Pattern in Tests**:
+
+```typescript
+describe("Script Tests", () => {
+	let testSetup: TestSetup;
+
+	beforeEach(async () => {
+		testSetup = new TestSetup("unique-suite-id");
+		await testSetup.setup();
+	});
+
+	afterEach(async () => {
+		await testSetup.cleanup();
+	});
+
+	it("should execute with isolation", async () => {
+		// Test uses testSetup.tempDir and testSetup.configId
+		// No interference with other parallel tests
+	});
+});
+```
+
+**Race Condition Prevention**: Unique identifiers prevent parallel test conflicts:
+
+```typescript
+// Each test gets unique resources
+const timestamp = Date.now();
+const randomId = Math.random().toString(36).substring(7);
+const uniqueId = `${testSuiteId}-${timestamp}-${randomId}`;
+```
+
+### Type Safety & Import Patterns
+
+**Centralized Type Imports**: Use `$types` alias for consistent type imports:
+
+```typescript
+// ✅ PREFERRED: Centralized type imports
+import type { ContentType, LessonContent, QuizContent, NavigationItem } from "$types";
+
+// ✅ ALTERNATIVE: Direct lib import (also valid)
+import type { ContentType } from "$lib/types";
+
+// ❌ DEPRECATED: Direct file imports
+import type { ContentType } from "$lib/types/types.js";
+```
+
+**Content Data Imports**: Use `$data` alias for content structure:
+
+```typescript
+// ✅ PREFERRED: Content data imports
+import { demoContent } from "$data/demo/content";
+import { navigationMenu } from "$data/demo/navigation/demo-sidebar-menu";
+
+// Path resolution in configuration
+const dataPath = "$data/book"; // Resolves to src/data/book
+```
+
+**Union Type Consistency**: Maintain type safety across the application:
+
+```typescript
+// Consistent union types from centralized definitions
+type ChapterType = "lesson" | "quiz" | "exam" | "project" | "study-guide";
+type ContentStatus = "scaffold" | "draft" | "final";
+```
+
+### Service Layer Architecture Patterns
+
+**Separation of Concerns**: Clear boundaries between CLI, services, and utilities:
+
+```typescript
+// CLI Layer: Orchestration only
+class ContentCreatorCLI {
+    constructor(
+        private validationService: ValidationService,
+        private repositoryService: RepositoryService
+    ) {}
+
+    async createContent(options: CreateOptions): Promise<void> {
+        const content = await this.acquireContent(options);
+        const validation = await this.validationService.validate(content);
+
+        if (validation.success) {
+            await this.repositoryService.writeFile(options.path, content);
+        }
+    }
+}
+
+// Service Layer: Business logic
+class ValidationService {
+    async validate(content: ContentObject): Promise<ValidationResult> {
+        // 1. Zod schema validation
+        // 2. Business rules validation
+        // 3. Content-specific validation (Mermaid, etc.)
+        return { success: boolean, errors: string[] };
+    }
+}
+
+// Utility Layer: Pure functions
+export function validateMermaidSyntax(definition: string): MermaidValidationResult {
+    // Pure function with no side effects
+    return { isValid: boolean, error?: string };
+}
+```
+
+**Shared Service Integration**: Services used by both automation and manual flows:
+
+```typescript
+// Scaffold flow uses shared services
+const scaffoldContent = generatePlaceholderContent();
+const validation = await validationService.validate(scaffoldContent);
+await repositoryService.writeFile(path, scaffoldContent);
+
+// CRUD flow uses same services
+const userContent = parseUserInput(input);
+const validation = await validationService.validate(userContent);
+await repositoryService.writeFile(path, userContent);
+```
+
+### Error Prevention & Path Resolution Patterns
+
+**Path Duplication Prevention**: Always check for absolute paths before joining:
+
+```typescript
+// ✅ CORRECT: Prevent path duplication
+constructor(inputFile?: string) {
+    this.projectRoot = process.cwd();
+    const inputPath = inputFile || defaultPath;
+
+    // Critical: Check if path is already absolute
+    this.inputPath = isAbsolute(inputPath)
+        ? inputPath
+        : join(this.projectRoot, inputPath);
+}
+
+// ❌ INCORRECT: Creates /home/user/.../home/user/... paths
+this.inputPath = join(this.projectRoot, inputFile);
+```
+
+**Safe File Operations**: Comprehensive error handling with recovery:
+
+```typescript
+async function safeFileOperation(path: string, operation: () => Promise<void>): Promise<void> {
+	try {
+		await ensureDir(dirname(path));
+		await operation();
+	} catch (error) {
+		console.error(`Failed to process ${path}:`, error.message);
+
+		// Attempt recovery
+		if (error.code === "ENOENT") {
+			await ensureDir(dirname(path));
+			await operation(); // Retry once
+		} else {
+			throw error; // Re-throw if not recoverable
+		}
+	}
+}
+```
+
+**Validation Pipeline Patterns**: Structured error collection and reporting:
+
+```typescript
+interface ValidationResult {
+	success: boolean;
+	errors: string[];
+	warnings?: string[];
+}
+
+async function validateContent(content: ContentObject): Promise<ValidationResult> {
+	const errors: string[] = [];
+
+	// Schema validation
+	const schemaResult = validateSchema(content);
+	if (!schemaResult.success) {
+		errors.push(...schemaResult.errors);
+	}
+
+	// Content-specific validation
+	if (content.diagrams) {
+		for (const diagram of content.diagrams) {
+			const mermaidResult = validateMermaidSyntax(diagram.definition);
+			if (!mermaidResult.isValid) {
+				errors.push(`Invalid Mermaid syntax: ${mermaidResult.error}`);
+			}
+		}
+	}
+
+	return { success: errors.length === 0, errors };
+}
+```
+
+### Integration Guidelines
+
+**Consistent Pattern Application**: All new scripts and components should follow these patterns:
+
+1. **Use `writeFormattedFile()` for all output formatting**
+2. **Implement TestSetup class for test isolation**
+3. **Use settings destructuring for configuration access**
+4. **Import types from `$types` alias for consistency**
+5. **Implement proper error handling with path resolution checks**
+6. **Follow service layer architecture for business logic separation**
+
+**Migration from Legacy Patterns**: When updating existing code:
+
+1. Replace manual `JSON.stringify()` with `writeFormattedFile()`
+2. Extract hardcoded paths to settings configuration
+3. Add TestSetup pattern to existing test suites
+4. Update type imports to use centralized aliases
+5. Implement proper error recovery patterns
+
+These patterns ensure maintainability, testability, and consistency across the entire codebase while leveraging modern TypeScript and tooling capabilities.
