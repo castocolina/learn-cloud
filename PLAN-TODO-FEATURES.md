@@ -604,27 +604,48 @@ You are responsible for implementing the content-creator CLI interface and compl
 
 #### **Phase 2 Implementation Scope**
 
-**1. content-creator CLI Implementation:**
+**1. Complete ContentScaffoldingGenerator Modernization:**
+
+- **Remove ALL standalone functions** from `src/scripts/content-scaffolding.ts`:
+  - ❌ Delete: `parseCliArguments()`, `executeDataDrivenMode()`, `generateFilePath()`, etc.
+  - ❌ Delete: All `generateXContent()` functions (lessons, quiz, exam, etc.)
+  - ❌ Delete: All validation and file I/O functions
+- **Refactor ContentScaffoldingGenerator class**:
+  - Use Core API exclusively (ValidationService + RepositoryService)
+  - Keep ONLY template generation logic (lorem ipsum, random data)
+  - Constructor receives Core API interface
+  - All validation/storage delegated to Core API
+
+**2. content-creator CLI Implementation:**
 
 - `src/scripts/content-creator.ts`:
   - Use `commander` library for command structure
-  - Implement dual-flow commands:
-    - `scaffold`: Delegates to ContentScaffoldingGenerator class
-    - `create/update`: Uses ContentCore services for validation + writing
-    - `validate`: Uses ValidationService for file validation
-    - `list/delete`: Uses RepositoryService for safe operations
+  - Implement **unified Core API integration**:
+    - `scaffold`: ContentScaffoldingGenerator (templates) → Core API
+    - `create/update`: Real content (--inline/--file) → Core API
+    - `validate`: ValidationService standalone
+    - `list/delete`: RepositoryService operations
   - Support global flags: `--dry-run`, `--force-overwrite`
+  - **Both flows converge on ValidationService + RepositoryService**
 
-**2. Comprehensive Test Integration:**
+**3. 3-Tier Validation Integration:**
 
-- `src/test/scripts/content-creator.test.ts`:
-  - Use TestSetup class pattern with validation optimization (from flatnav-generator pattern)
-  - Test isolation with unique temporary directories
-  - Settings override: `runAfterGeneration: false` for performance optimization
-  - Comprehensive command coverage with mocked file operations
-  - TestSetupWithValidation for specific validation tests
+- **MANDATORY for ALL development workflows**:
+  - Tier 1: `make check-wip` before any code changes
+  - Tier 2: `pnpm run format` + `pnpm run lint` before commits
+  - Tier 3: `pnpm run test` + `pnpm run check` for integration tests only
+- **Apply to all test suites and development processes**
 
-**3. Type Consolidation Completion:**
+**4. TestSetup Optimization Standards:**
+
+- **96% Fast Tests**: Use `TestSetup` (validation disabled)
+- **4% Validation Tests**: Use `TestSetupWithValidation` (full validation)
+- Apply pattern to:
+  - ContentScaffoldingGenerator tests
+  - content-creator CLI tests
+  - Core API service tests
+
+**5. Type Consolidation Completion:**
 
 - Complete migration of remaining types across all scripts
 - Ensure consistent `$types` imports throughout the codebase
@@ -632,10 +653,22 @@ You are responsible for implementing the content-creator CLI interface and compl
 
 #### **Expected Output:**
 
-- `src/scripts/content-creator.ts` - Complete CLI implementation with Commander.js
-- `src/test/scripts/content-creator.test.ts` - Comprehensive test suite with optimized patterns
-- Complete type consolidation across all generator scripts
-- Integration tests validating dual-flow architecture
+- **Modernized ContentScaffoldingGenerator**:
+  - `src/scripts/content-scaffolding.ts` - Clean class-only implementation (zero standalone functions)
+  - Core API integration for all validation and file operations
+  - Pure template generation logic only
+- **content-creator CLI**:
+  - `src/scripts/content-creator.ts` - Complete CLI implementation with Commander.js
+  - Unified Core API integration for both template and real content flows
+  - Global flags and command routing
+- **Testing Infrastructure**:
+  - `src/test/scripts/content-creator.test.ts` - Comprehensive test suite with optimized patterns
+  - 3-tier validation integration in all test workflows
+  - TestSetup optimization applied consistently
+- **Architecture Compliance**:
+  - Complete type consolidation across all generator scripts
+  - Zero legacy functions in content generation
+  - All content flows through Core API pipeline
 
 ---
 
@@ -667,21 +700,33 @@ You are responsible for completing the legacy integration, workflow orchestratio
   - Update to use class-based architecture if beneficial
   - Ensure type consistency with consolidated type system
 
-**2. Package.json Workflow Scripts:**
+**2. 3-Tier Validation Project-Wide Implementation:**
+
+- **Apply 3-tier validation to ALL legacy test files**:
+  - Update all existing test suites to use TestSetup optimization
+  - Implement mandatory `make check-wip` in test workflows
+  - Ensure 96%/4% distribution (fast tests vs validation tests)
+- **Integrate into CI/CD workflows**:
+  - Update all automation scripts to follow 3-tier pattern
+  - Enforce validation requirements in build processes
+
+**3. Package.json Workflow Scripts with Validation:**
 
 ```json
 {
 	"content-creator": "tsx src/scripts/content-creator.ts",
-	"workflow:metadata": "pnpm run generate-content-menu && pnpm run content-creator scaffold && pnpm run generate-flatnav && pnpm run generate-search-index",
-	"workflow:content": "pnpm run generate-flatnav && pnpm run generate-search-index"
+	"workflow:metadata": "make check-wip && pnpm run generate-content-menu && pnpm run content-creator scaffold && pnpm run generate-flatnav && pnpm run generate-search-index && pnpm run format && pnpm run lint",
+	"workflow:content": "make check-wip && pnpm run generate-flatnav && pnpm run generate-search-index && pnpm run format && pnpm run lint",
+	"workflow:full-validation": "make check-wip && pnpm run format && pnpm run lint && pnpm run test && pnpm run check"
 }
 ```
 
-**3. Architecture Coherence Validation:**
+**4. Architecture Coherence Validation:**
 
-- Validate safety strategy implementation across all operations
-- Ensure consistent modern patterns (settings destructuring, prettier integration)
-- Verify TestSetup optimization patterns across all test files
+- **Zero Legacy Functions Rule**: Ensure NO standalone functions remain in content generation scripts
+- **Core API Compliance**: Validate ALL content operations flow through ValidationService + RepositoryService
+- **TestSetup Optimization**: Verify pattern applied across all test files
+- **3-Tier Validation**: Confirm mandatory implementation in all development workflows
 - Complete documentation for dual-flow usage patterns
 
 #### **Safety Strategy Implementation**
@@ -711,13 +756,31 @@ flowchart TB
 
 #### **Final Validations:**
 
+**Core Architecture Compliance:**
+
+- ✅ Zero standalone functions in `src/scripts/content-scaffolding.ts` (class-only implementation)
+- ✅ ContentScaffoldingGenerator uses Core API exclusively (ValidationService + RepositoryService)
+- ✅ `content-creator scaffold` and `create/update` converge on identical Core API pipeline
+- ✅ All content operations flow through unified validation and storage services
+
+**CLI Implementation:**
+
 - ✅ `content-creator scaffold` delegates to ContentScaffoldingGenerator class
 - ✅ `content-creator create/update` uses ContentCore validation + repository services
 - ✅ `content-creator validate` works on existing content files
 - ✅ Safety strategy prevents accidental overwrite of final content
 - ✅ `--dry-run` mode accurately simulates operations without file changes
-- ✅ All tests use optimized TestSetup isolation pattern
-- ✅ Workflow scripts execute foundation scripts in correct sequence
+
+**3-Tier Validation Implementation:**
+
+- ✅ ALL development workflows enforce mandatory `make check-wip` (Tier 1)
+- ✅ Code quality validation (`pnpm run format` + `pnpm run lint`) before commits (Tier 2)
+- ✅ Comprehensive validation (`pnpm run test` + `pnpm run check`) for integration tests only (Tier 3)
+- ✅ All test suites use TestSetup optimization (96% fast, 4% validation)
+
+**Technical Standards:**
+
+- ✅ Workflow scripts execute foundation scripts in correct sequence with validation
 - ✅ Modern formatting via `writeFormattedFile()` integration
 - ✅ Zero TypeScript errors with `pnpm run check`
 - ✅ Complete type system consolidation and consistency
@@ -729,6 +792,106 @@ flowchart TB
 - Complete documentation for dual-flow usage patterns
 - Architecture coherence validation report
 - Migration guide for legacy script integration
+
+---
+
+## 3-Tier Validation Standards (Project-Wide Requirements)
+
+### Mandatory Development Workflow
+
+**ALL development work in this project MUST follow the 3-tier validation pattern:**
+
+#### **Tier 1: Fast WIP Validation (~5-15s)**
+
+```bash
+make check-wip
+```
+
+- **Purpose**: Validate only modified/untracked files
+- **When**: Before ANY code changes, MANDATORY for all workflows
+- **Scope**: Modified files only (git diff + git ls-files)
+- **Tools**: prettier, eslint, svelte-check (with node_modules exclusion)
+
+#### **Tier 2: Code Quality Validation (~30-45s)**
+
+```bash
+pnpm run format
+pnpm run lint
+```
+
+- **Purpose**: Complete project formatting and linting
+- **When**: Before commits and pull requests
+- **Scope**: Entire project codebase
+- **Tools**: prettier (format), eslint (lint)
+
+#### **Tier 3: Comprehensive Validation (~1-3m)**
+
+```bash
+pnpm run test
+pnpm run check
+```
+
+- **Purpose**: Full test suite and TypeScript validation
+- **When**: Integration tests and critical functionality changes ONLY
+- **Scope**: Complete project validation
+- **Tools**: vitest (tests), svelte-check + tsc (TypeScript)
+
+### TestSetup Optimization Requirements
+
+**ALL test suites MUST use the optimization pattern:**
+
+```typescript
+// Default: 96% of tests use this (fast execution)
+class TestSetup {
+	protected configureValidation(): void {
+		SETTINGS.scripts.validation.generated.runAfterGeneration = false;
+	}
+
+	cleanup(): void {
+		SETTINGS.scripts.validation.generated.runAfterGeneration = true;
+	}
+}
+
+// Specialized: 4% of tests use this (full validation)
+class TestSetupWithValidation extends TestSetup {
+	protected configureValidation(): void {
+		SETTINGS.scripts.validation.generated.runAfterGeneration = true;
+	}
+}
+```
+
+### Integration Examples
+
+**Development Workflow:**
+
+```bash
+# Start any development work
+make check-wip
+
+# Make changes...
+
+# Before commit
+make check-wip
+pnpm run format
+pnpm run lint
+
+# Before critical PR (integration tests only)
+make check-wip
+pnpm run format
+pnpm run lint
+pnpm run test
+pnpm run check
+```
+
+**Package.json Integration:**
+
+```json
+{
+	"workflow:dev": "make check-wip",
+	"workflow:commit": "make check-wip && pnpm run format && pnpm run lint",
+	"workflow:full": "make check-wip && pnpm run format && pnpm run lint && pnpm run test && pnpm run check"
+}
+```
 
 ---
 

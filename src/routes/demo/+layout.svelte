@@ -14,7 +14,7 @@
 	import { SidebarToggle } from "$lib/components/demo/index.js";
 	import ThemeSwitch from "$lib/components/ThemeSwitch.svelte";
 	import SearchModal from "$lib/components/search/SearchModal.svelte";
-	import type { SearchResult } from "$lib/types/search.js";
+	import type { SearchResult } from "$types";
 	import { SETTINGS } from "$config/settings.js";
 
 	// Layout children prop

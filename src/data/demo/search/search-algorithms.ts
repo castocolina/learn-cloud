@@ -1,9 +1,4 @@
-import type {
-	SearchableItem,
-	SearchResult,
-	SearchFilters,
-	SearchOptions
-} from "$lib/types/search.js";
+import type { SearchableItem, SearchResult, SearchFilters, SearchOptions } from "$types";
 import type { ContentType } from "$types";
 import { searchConfig, highlightSearchTerms } from "./search-index.js";
 

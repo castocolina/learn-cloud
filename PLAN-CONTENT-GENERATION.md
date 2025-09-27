@@ -12,39 +12,45 @@ The system supports two distinct content workflows that converge on shared valid
 flowchart TB
     User["User/Agent"] --> CLI["content-creator CLI"]
 
-    subgraph "Dual Content Flows"
+    subgraph "Dual Content Sources"
         direction TB
 
-        subgraph "Flow 1: Scaffold Automation"
-            CLI -- "scaffold command" --> ScaffoldScript["content-scaffolding.ts<br/>(Existing Script)"]
-            ScaffoldScript --> ScaffoldGen["Auto-generate<br/>Placeholder Content"]
+        subgraph "Flow 1: Template Generation (Scaffolding)"
+            CLI -- "scaffold command" --> ScaffoldGen["ContentScaffoldingGenerator<br/>(Template Generation)"]
+            ScaffoldGen --> TemplateContent["Lorem Ipsum Templates<br/>Random Data"]
         end
 
-        subgraph "Flow 2: Content CRUD Operations"
-            CLI -- "create/update/validate" --> ContentCore["ContentCore Services"]
-            ContentCore --> UserContent["Manual Content<br/>Creation/Editing"]
+        subgraph "Flow 2: Real Content (Content Creator)"
+            CLI -- "create/update commands" --> ContentCreator["Content Creator CLI<br/>(Real Content Input)"]
+            ContentCreator --> RealContent["User Content<br/>(--inline json | --file path)"]
         end
     end
 
-    subgraph "Shared Service Layer"
+    subgraph "Core API (Shared Processing)"
         direction LR
-        ScaffoldGen --> VS["ValidationService<br/>(Zod + Mermaid + Rules)"]
-        UserContent --> VS
-        VS --> RS["RepositoryService<br/>(Safety + File I/O)"]
+        TemplateContent --> CoreAPI["Core API<br/>(ValidationService + RepositoryService)"]
+        RealContent --> CoreAPI
+        CoreAPI --> VS["ValidationService<br/>(Zod + Mermaid + Rules)"]
+        CoreAPI --> RS["RepositoryService<br/>(Safety + File I/O)"]
+        VS --> RS
         RS --> FileSystem["File System<br/>(src/data/book/*)"]
     end
 
     %% Styling
-    style ScaffoldScript fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
-    style ContentCore fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
+    style ScaffoldGen fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    style ContentCreator fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
+    style CoreAPI fill:#fff3e0,stroke:#ff9800,stroke-width:3px
     style VS fill:#fffbe6,stroke:#ffc400,stroke-width:2px
     style RS fill:#fce4ec,stroke:#e91e63,stroke-width:2px
 ```
 
 **Key Architecture Principles:**
 
-- **Dual Entry Points**: Scaffold automation for bulk generation, CRUD operations for precise editing
-- **Shared Validation**: Both flows use identical ValidationService ensuring content consistency
+- **Clear Separation of Concerns**:
+  - **Template Generation**: ContentScaffoldingGenerator creates lorem ipsum placeholders
+  - **Real Content Input**: Content Creator CLI accepts actual user content
+  - **Core API**: Unified ValidationService + RepositoryService for all content processing
+- **Single Processing Pipeline**: Both template and real content use identical Core API
 - **Unified Safety**: Single RepositoryService enforces safety strategy across all operations
 - **Modern Integration**: Leverages Prettier formatting, TestSetup isolation, and settings destructuring
 
@@ -52,29 +58,48 @@ flowchart TB
 
 This architecture implementation follows a **3-phase reengineering approach** that includes modernization of existing scripts alongside new ContentCore development:
 
-**Phase 1: Foundation Modernization & Service Layer (Task 3F1)**
+**Phase 1: Foundation Modernization & Service Layer (Task 3F1) ✅ COMPLETED**
 
-- Consolidate types: Move reusable interfaces to `$types` (ValidatedScaffoldingArgs, UnitIdentification, ScaffoldingStats)
-- Refactor content-scaffolding.ts to class-based architecture (ContentScaffoldingGenerator)
-- Implement ContentCore services: ValidationService, RepositoryService, Zod schemas
-- Apply optimized TestSetup patterns with `runAfterGeneration: false` by default
-- Maintain backward compatibility with function exports
+- ✅ Consolidate types: Move reusable interfaces to `$types` (ValidatedScaffoldingArgs, UnitIdentification, ScaffoldingStats)
+- ✅ Refactor content-scaffolding.ts to class-based architecture (ContentScaffoldingGenerator - hybrid implementation)
+- ✅ Implement ContentCore services: ValidationService, RepositoryService, Zod schemas
+- ✅ Apply optimized TestSetup patterns with `runAfterGeneration: false` by default
+- ✅ Maintain backward compatibility with function exports
 
-**Phase 2: CLI Interface & Architecture Integration (Task 3F2)**
+**Phase 2: Core API Integration & Complete Refactoring (Task 3F2)**
 
-- content-creator CLI with Commander.js routing to both legacy and new systems
-- Command integration: scaffold (delegates to existing), create/update (uses ContentCore)
-- Comprehensive test suite with optimized TestSetup patterns (`runAfterGeneration` optimization)
-- TestSetupWithValidation class for specific validation tests only
-- Type consolidation completion across all scripts
+- **Complete ContentScaffoldingGenerator Modernization**:
+  - Remove all standalone functions (parseCliArguments, executeDataDrivenMode, etc.)
+  - Refactor class to use Core API exclusively (ValidationService + RepositoryService)
+  - Keep only template generation logic, delegate all validation/I/O to Core API
+- **content-creator CLI Implementation**:
+  - Commander.js CLI with commands: scaffold, create, update, validate, list, delete
+  - scaffold command: Uses ContentScaffoldingGenerator (templates) → Core API
+  - create/update commands: Accepts real content (--inline/--file) → Core API
+  - All commands converge on ValidationService + RepositoryService
+- **3-Tier Validation Requirements**:
+  - Mandatory `make check-wip` before any operation
+  - Code quality: `pnpm run format` + `pnpm run lint`
+  - Comprehensive: `pnpm run test` + `pnpm run check` (integration tests only)
+- **TestSetup Optimization Standards**:
+  - 96% tests use `TestSetup` (validation disabled)
+  - 4% tests use `TestSetupWithValidation` (full validation)
+  - All test suites follow optimization pattern
 
-**Phase 3: Legacy Integration & Workflow Orchestration (Task 3F3)**
+**Phase 3: Legacy Integration & Architecture Finalization (Task 3F3)**
 
-- Refactor mermaid-validator.ts to use ValidationService
-- Apply validation optimization patterns across all legacy test files
-- Package.json workflow scripts for complete automation
-- Documentation and migration guides
-- Final architecture coherence validation
+- **Legacy Script Integration**:
+  - Refactor mermaid-validator.ts to use ValidationService
+  - Apply 3-tier validation pattern across all legacy test files
+  - Ensure all scripts use Core API for content operations
+- **Package.json Workflow Scripts**:
+  - Complete automation workflows with 3-tier validation
+  - Integration scripts that enforce architectural standards
+- **Final Architecture Validation**:
+  - Zero standalone functions in content generation scripts
+  - All content operations flow through Core API
+  - TestSetup optimization applied project-wide
+  - Documentation and migration guides
 
 ### 1.2 Content Creator CLI Command Flow
 
@@ -166,9 +191,129 @@ This pattern is applied consistently across:
 - New ContentCore services: `ValidationService`, `RepositoryService` tests
 - content-creator CLI comprehensive test suite
 
+#### **3-Tier Validation Requirements**
+
+**ALL development workflows MUST follow the 3-tier validation pattern before considering any task complete:**
+
+```mermaid
+flowchart LR
+    Start([Development Work]) --> Tier1[Tier 1: Fast WIP<br/>make check-wip]
+    Tier1 --> Check1{Pass?}
+    Check1 -- No --> Fix1[Fix Issues]
+    Fix1 --> Tier1
+    Check1 -- Yes --> Tier2[Tier 2: Code Quality<br/>pnpm run format<br/>pnpm run lint]
+    Tier2 --> Check2{Pass?}
+    Check2 -- No --> Fix2[Fix Issues]
+    Fix2 --> Tier2
+    Check2 -- Yes --> Critical{Integration/Critical<br/>Test?}
+    Critical -- Yes --> Tier3[Tier 3: Comprehensive<br/>pnpm run test<br/>pnpm run check]
+    Critical -- No --> Complete([Task Complete])
+    Tier3 --> Check3{Pass?}
+    Check3 -- No --> Fix3[Fix Issues]
+    Fix3 --> Tier1
+    Check3 -- Yes --> Complete
+
+    %% Styling
+    style Tier1 fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    style Tier2 fill:#fff3e0,stroke:#ff9800,stroke-width:2px
+    style Tier3 fill:#fce4ec,stroke:#e91e63,stroke-width:2px
+    style Complete fill:#e3f2fd,stroke:#2196f3,stroke-width:3px
+```
+
+**Tier Definitions:**
+
+- **Tier 1 (Fast WIP - ~5-15s)**: `make check-wip` - Validates only modified/untracked files
+- **Tier 2 (Code Quality - ~30-45s)**: `pnpm run format` + `pnpm run lint` - Complete project formatting and linting
+- **Tier 3 (Comprehensive - ~1-3m)**: `pnpm run test` + `pnpm run check` - Full test suite and TypeScript validation
+
+**Application Rules:**
+
+- **Tier 1**: MANDATORY for ALL development work
+- **Tier 2**: Required before commits and pull requests
+- **Tier 3**: Only for integration tests and critical functionality changes
+
 ---
 
-### 1.4 Layered Service Architecture
+### 1.4 Core API Architecture
+
+The **Core API** represents the unified processing layer that handles all content operations, regardless of whether content originates from template generation (scaffolding) or real user input (content creator CLI).
+
+#### **Core API Components**
+
+```mermaid
+flowchart LR
+    subgraph "Content Sources"
+        TemplateGen["Template Generation<br/>(Scaffolding)"]
+        UserContent["Real Content<br/>(Content Creator CLI)"]
+    end
+
+    subgraph "Core API"
+        TemplateGen --> CoreEntry["Core API Entry Point"]
+        UserContent --> CoreEntry
+        CoreEntry --> Validation["ValidationService<br/>(Zod + Mermaid + Rules)"]
+        Validation --> Repository["RepositoryService<br/>(Safety + File I/O)"]
+    end
+
+    subgraph "Output"
+        Repository --> Files["Validated Content Files<br/>(src/data/book/*)"]
+    end
+
+    %% Styling
+    style CoreEntry fill:#fff3e0,stroke:#ff9800,stroke-width:3px
+    style Validation fill:#fffbe6,stroke:#ffc400,stroke-width:2px
+    style Repository fill:#fce4ec,stroke:#e91e63,stroke-width:2px
+```
+
+#### **Core API Interface**
+
+```typescript
+// Core API unified interface
+interface ContentCoreAPI {
+	// Primary content processing pipeline
+	processContent(content: ContentObject): Promise<ValidationResult>;
+
+	// Validation layer
+	validation: ValidationService;
+
+	// Repository layer
+	repository: RepositoryService;
+}
+
+// Usage by ContentScaffoldingGenerator
+class ContentScaffoldingGenerator {
+	constructor(private coreAPI: ContentCoreAPI) {}
+
+	async generate(args: ValidatedScaffoldingArgs): Promise<boolean> {
+		// 1. Generate template content (lorem ipsum, random data)
+		const templateContent = this.generateTemplateContent(args);
+
+		// 2. Send to Core API for validation and storage
+		const result = await this.coreAPI.processContent(templateContent);
+		return result.success;
+	}
+}
+
+// Usage by Content Creator CLI
+async function createContent(options: CreateOptions): Promise<boolean> {
+	// 1. Get real content from user (--inline or --file)
+	const userContent = await getUserContent(options);
+
+	// 2. Send to Core API (same pipeline as scaffolding)
+	const result = await coreAPI.processContent(userContent);
+	return result.success;
+}
+```
+
+#### **Key Benefits**
+
+- **Unified Pipeline**: Single validation and storage flow for all content
+- **Consistency**: Template and real content follow identical validation rules
+- **Maintainability**: Changes to validation/storage logic affect both flows
+- **Testability**: Core API can be tested independently of content sources
+
+---
+
+### 1.5 Layered Service Architecture
 
 This diagram illustrates the complete layered dependencies from CLI to utilities, showing modern pattern integration:
 

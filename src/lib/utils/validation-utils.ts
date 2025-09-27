@@ -341,11 +341,20 @@ export async function createDynamicTsConfig(target: string, configId?: string): 
 	// Ensure target is absolute path
 	const absoluteTarget = isAbsolute(target) ? target : join(projectRoot, target);
 
+	// Base exclude patterns from root config
+	const baseExcludes = rootTsConfig.exclude?.map((path: string) => `${projectRoot}/${path}`) || [];
+
+	// For WIP-style validations (when configId is provided), add additional exclusions
+	// to avoid TypeScript errors from problematic node_modules dependencies
+	const wipExcludes = configId
+		? ["**/node_modules/**", "**/.pnpm/**", "**/dist/**", "**/build/**"]
+		: [];
+
 	const dynamicConfig = {
 		...rootTsConfig,
 		extends: `${projectRoot}/${tsValidationConfig.extendsPath}`, // Absolute path to extends
 		include: [absoluteTarget], // Always use absolute path
-		exclude: rootTsConfig.exclude?.map((path: string) => `${projectRoot}/${path}`) || [] // Absolute paths for excludes
+		exclude: [...baseExcludes, ...wipExcludes] // Combine base and conditional excludes
 	};
 
 	// Write dynamic configuration

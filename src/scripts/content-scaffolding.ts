@@ -54,6 +54,11 @@ import type {
 	AnyQuestion,
 	UnifiedPathConfig
 } from "$types";
+import type {
+	ValidatedScaffoldingArgs,
+	UnitIdentification,
+	ScaffoldingStats
+} from "$types/scaffolding";
 
 // ============================================================================
 // TYPE DEFINITIONS
@@ -69,24 +74,7 @@ interface _ScaffoldingArgs {
 	"list-chapters"?: boolean;
 }
 
-// Validated arguments interface - after parsing and validation
-interface ValidatedScaffoldingArgs {
-	unit: string;
-	type: ChapterType;
-	id: string;
-}
-
-// Unit identification interface for flexible matching
-interface UnitIdentification {
-	unitNumber?: number;
-	technologyUnit?: string;
-	isAmbiguous?: boolean;
-	matchedUnits?: Array<{
-		unitNumber: number;
-		title: string;
-		technologyUnit: string;
-	}>;
-}
+// Internal types kept in this script
 
 // Get configuration from settings
 const CONFIG = SETTINGS.scripts.scaffolding;
@@ -2038,13 +2026,7 @@ async function executeFlexibleGeneration(
 /**
  * Interface for tracking scaffolding statistics
  */
-interface ScaffoldingStats {
-	totalChapters: number;
-	existingFiles: number;
-	newFiles: number;
-	orphanFiles: string[];
-	errors: string[];
-}
+// ScaffoldingStats moved to $types/scaffolding
 
 /**
  * Parse chapter data link to extract unit, chapter, and type information
@@ -2314,6 +2296,175 @@ async function printFinalReport(stats: ScaffoldingStats): Promise<void> {
 }
 
 /**
+ * Content Scaffolding Generator Class
+ *
+ * Provides class-based architecture for content scaffolding operations,
+ * following the same pattern as other generator scripts in the project.
+ */
+class ContentScaffoldingGenerator {
+	private settings: typeof CONFIG;
+
+	constructor() {
+		this.settings = CONFIG;
+	}
+
+	/**
+	 * Generate content scaffolding based on provided arguments
+	 */
+	async generate(args?: ValidatedScaffoldingArgs): Promise<boolean> {
+		try {
+			// If no args provided, parse from CLI
+			const validatedArgs = args || (await this.parseCliArguments());
+
+			console.log("🔄 Content Scaffolding Generator");
+			console.log("================================");
+			console.log("");
+			console.log("📋 Configuration (from src/config/settings.ts):");
+			console.log(
+				`  Lessons:      ${this.settings.lessons.sections} sections, ${this.settings.lessons.codeBlocks} code blocks, ${this.settings.lessons.diagrams} diagrams`
+			);
+			console.log(
+				`  Quizzes:      ${this.settings.quizzes.questions} questions (diverse types: ${this.settings.quizzes.diverseTypes})`
+			);
+			console.log(
+				`  Exams:        ${this.settings.exams.questions} questions (diverse types: ${this.settings.exams.diverseTypes})`
+			);
+			console.log(`  Study Guides: ${this.settings.studyGuides.flashcards} flashcards`);
+			console.log(
+				`  Projects:     ${this.settings.projects.sections} sections, ${this.settings.projects.requirements} requirements, ${this.settings.projects.deliverables} deliverables`
+			);
+			console.log("");
+
+			// Generate file path
+			const filePath = this.generateFilePath(validatedArgs);
+			console.log(`📍 Target: ${filePath}`);
+
+			// Create output directory
+			const bookPath = dirname(filePath);
+			if (!existsSync(bookPath)) {
+				mkdirSync(bookPath, { recursive: true });
+			}
+
+			// Get content generator and generate content
+			const contentGenerator = this.getContentGenerator(validatedArgs.type);
+			const content = contentGenerator(validatedArgs);
+
+			// Create TypeScript project for AST generation
+			const project = new Project({
+				compilerOptions: {
+					target: ScriptTarget.ES2022,
+					module: ModuleKind.ES2022,
+					moduleResolution: ModuleResolutionKind.Bundler,
+					allowSyntheticDefaultImports: true,
+					esModuleInterop: true
+				}
+			});
+
+			// Create and write content file
+			const sourceCode = this.createContentFile(project, filePath, validatedArgs, content);
+			await writeFormattedFile(filePath, sourceCode);
+
+			console.log("✅ Content scaffolding generated successfully!");
+
+			// Run validation if enabled
+			const validationResults = await runGeneratedFileValidation(bookPath);
+			const hasFailures = validationResults.some((result) => !result.success);
+			if (hasFailures) {
+				console.error("⚠️  Some validation checks failed, but generation was successful");
+			}
+
+			console.log("");
+			console.log("📝 Next steps:");
+			console.log("1. Review the generated scaffolding content");
+			console.log("2. Replace placeholder content with real educational material");
+			console.log("3. Modify requirements in src/config/settings.ts if needed");
+
+			return true;
+		} catch (error) {
+			console.error("❌ Error generating content scaffolding:");
+			console.error(error instanceof Error ? error.message : String(error));
+			return false;
+		}
+	}
+
+	/**
+	 * Parse CLI arguments and validate them
+	 */
+	async parseCliArguments(): Promise<ValidatedScaffoldingArgs> {
+		// Implementation stays the same as the original function
+		return parseCliArguments();
+	}
+
+	/**
+	 * Generate file path based on arguments
+	 */
+	generateFilePath(args: ValidatedScaffoldingArgs): string {
+		// Implementation stays the same as the original function
+		return generateFilePath(args);
+	}
+
+	/**
+	 * Get content generator function for the specified type
+	 */
+	getContentGenerator(
+		type: ChapterType
+	): (args: ValidatedScaffoldingArgs) => Record<string, unknown> {
+		// Implementation stays the same as the original function
+		return getContentGenerator(type);
+	}
+
+	/**
+	 * Create TypeScript content file using AST
+	 */
+	private createContentFile(
+		project: Project,
+		filePath: string,
+		args: ValidatedScaffoldingArgs,
+		content: Record<string, unknown>
+	): string {
+		// Use the existing createContentFile function but as a method
+		const sourceFile = createContentFile(project, filePath, args);
+
+		// Add the content export
+		const contentVarName = `${args.type}Content`;
+		sourceFile.addVariableStatement({
+			declarationKind: VariableDeclarationKind.Const,
+			isExported: true,
+			declarations: [
+				{
+					name: contentVarName,
+					type: this.getTypeAnnotation(args.type),
+					initializer: JSON.stringify(content, null, 2)
+				}
+			]
+		});
+
+		return sourceFile.getFullText();
+	}
+
+	/**
+	 * Get TypeScript type annotation for content type
+	 */
+	private getTypeAnnotation(type: ChapterType): string {
+		switch (type) {
+			case "lesson":
+			case "overview":
+				return "LessonContent";
+			case "quiz":
+				return "QuizContent";
+			case "study_guide":
+				return "StudyGuideContent";
+			case "exam":
+				return "ExamContent";
+			case "project":
+				return "ProjectContent";
+			default:
+				return "LessonContent";
+		}
+	}
+}
+
+/**
  * Main execution function
  */
 async function main(): Promise<void> {
@@ -2327,94 +2478,14 @@ async function main(): Promise<void> {
 			return;
 		}
 
-		// Original parameter-based mode
-		console.log("🔄 Content Scaffolding Generator");
-		console.log("================================");
-		console.log("");
-		console.log("📋 Configuration (from src/config/settings.ts):");
-		console.log(
-			`  Lessons:      ${CONFIG.lessons.sections} sections, ${CONFIG.lessons.codeBlocks} code blocks, ${CONFIG.lessons.diagrams} diagrams`
-		);
-		console.log(
-			`  Quizzes:      ${CONFIG.quizzes.questions} questions (diverse types: ${CONFIG.quizzes.diverseTypes})`
-		);
-		console.log(
-			`  Exams:        ${CONFIG.exams.questions} questions (diverse types: ${CONFIG.exams.diverseTypes})`
-		);
-		console.log(`  Study Guides: ${CONFIG.studyGuides.flashcards} flashcards`);
-		console.log(
-			`  Projects:     ${CONFIG.projects.sections} sections, ${CONFIG.projects.requirements} requirements`
-		);
-		console.log("");
+		// Use the new class-based approach for parameter-based mode
+		const generator = new ContentScaffoldingGenerator();
+		const success = await generator.generate();
 
-		// Parse CLI arguments - may exit if flexible batch generation is triggered
-		const args = await parseCliArguments();
-		console.log(`Unit: ${args.unit}`);
-		console.log(`Type: ${args.type}`);
-		console.log(`ID: ${args.id}`);
-		console.log("");
-
-		// Generate file path
-		const filePath = generateFilePath(args);
-		console.log(`Target file: ${filePath}`);
-
-		// Check if file already exists
-		if (existsSync(filePath)) {
-			console.log("⚠️  File already exists, skipping generation");
-			console.log("Delete the existing file to regenerate content");
-			process.exit(0);
+		if (!success) {
+			process.exit(1);
 		}
-
-		// Ensure directory exists
-		const dir = dirname(filePath);
-		if (!existsSync(dir)) {
-			mkdirSync(dir, { recursive: true });
-			console.log(`📁 Created directory: ${dir}`);
-		}
-
-		// Create ts-morph project
-		const project = new Project({
-			compilerOptions: {
-				target: 2, // ES2015
-				module: 1, // CommonJS
-				strict: true,
-				esModuleInterop: true,
-				skipLibCheck: true,
-				forceConsistentCasingInFileNames: true
-			}
-		});
-
-		// Create source file with imports
-		const sourceFile = createContentFile(project, filePath, args);
-
-		// Generate content based on type
-		const contentGenerator = getContentGenerator(args.type);
-		const content = contentGenerator(args);
-
-		// Add content to source file using AST
-		addContentToSourceFile(sourceFile, content, args);
-
-		// Write formatted file
-		const sourceCode = sourceFile.getFullText();
-		await writeFormattedFile(filePath, sourceCode);
-
-		console.log("✅ Content scaffolding generated successfully!");
-
-		// Run validation if enabled
-		const validationResults = await runGeneratedFileValidation(bookPath);
-		const hasFailures = validationResults.some((result) => !result.success);
-		if (hasFailures) {
-			console.error("⚠️  Some validation checks failed, but generation was successful");
-		}
-
-		console.log("");
-		console.log("📊 Generated content summary:");
-		console.log(`  ${getContentSummary(args.type)}`);
-		console.log("");
-		console.log("Next steps:");
-		console.log("1. Review the generated content structure");
-		console.log("2. Replace placeholder content with real educational material");
-		console.log("3. Modify requirements in src/config/settings.ts if needed");
+		return;
 	} catch (error) {
 		console.error("❌ Error generating content scaffolding:");
 		console.error(error instanceof Error ? error.message : String(error));
@@ -2430,4 +2501,10 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 	});
 }
 
-export { main, parseCliArguments, generateFilePath, getContentGenerator };
+export {
+	main,
+	parseCliArguments,
+	generateFilePath,
+	getContentGenerator,
+	ContentScaffoldingGenerator
+};

@@ -123,7 +123,11 @@ ${ts_files_list}
 	],
 	"exclude": [
 		"${PROJECT_ROOT}/src/book/",
-		"${PROJECT_ROOT}/tmp/config/"
+		"${PROJECT_ROOT}/tmp/config/",
+		"**/node_modules/**",
+		"**/.pnpm/**",
+		"**/dist/**",
+		"**/build/**"
 	]
 }
 EOF

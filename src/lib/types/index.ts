@@ -329,6 +329,15 @@ export type {
 	MermaidValidationStats
 } from "./validation.js";
 
+// Scaffolding exports - Content generation and scaffolding types
+export type {
+	ValidatedScaffoldingArgs,
+	UnitIdentification,
+	ScaffoldingStats,
+	ContentGenerationResult,
+	SafetyCheckResult
+} from "./scaffolding.js";
+
 /**
  * Configuration type guards
  */
