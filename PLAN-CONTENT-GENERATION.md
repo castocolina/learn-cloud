@@ -48,6 +48,34 @@ flowchart TB
 - **Unified Safety**: Single RepositoryService enforces safety strategy across all operations
 - **Modern Integration**: Leverages Prettier formatting, TestSetup isolation, and settings destructuring
 
+### 1.1.1 Implementation Phases (Reengineering Approach)
+
+This architecture implementation follows a **3-phase reengineering approach** that includes modernization of existing scripts alongside new ContentCore development:
+
+**Phase 1: Foundation Modernization & Service Layer (Task 3F1)**
+
+- Consolidate types: Move reusable interfaces to `$types` (ValidatedScaffoldingArgs, UnitIdentification, ScaffoldingStats)
+- Refactor content-scaffolding.ts to class-based architecture (ContentScaffoldingGenerator)
+- Implement ContentCore services: ValidationService, RepositoryService, Zod schemas
+- Apply optimized TestSetup patterns with `runAfterGeneration: false` by default
+- Maintain backward compatibility with function exports
+
+**Phase 2: CLI Interface & Architecture Integration (Task 3F2)**
+
+- content-creator CLI with Commander.js routing to both legacy and new systems
+- Command integration: scaffold (delegates to existing), create/update (uses ContentCore)
+- Comprehensive test suite with optimized TestSetup patterns (`runAfterGeneration` optimization)
+- TestSetupWithValidation class for specific validation tests only
+- Type consolidation completion across all scripts
+
+**Phase 3: Legacy Integration & Workflow Orchestration (Task 3F3)**
+
+- Refactor mermaid-validator.ts to use ValidationService
+- Apply validation optimization patterns across all legacy test files
+- Package.json workflow scripts for complete automation
+- Documentation and migration guides
+- Final architecture coherence validation
+
 ### 1.2 Content Creator CLI Command Flow
 
 This diagram shows the detailed command routing and service integration:
@@ -99,7 +127,48 @@ flowchart TB
 
 ---
 
-### 1.3 Layered Service Architecture
+### 1.3 Optimized Testing Strategy
+
+The ContentCore implementation leverages the **validation optimization patterns** developed for existing generator scripts to ensure fast test execution while maintaining comprehensive validation coverage:
+
+#### **Test Performance Optimization Pattern**
+
+```typescript
+// Base TestSetup - validation disabled by default for speed
+class TestSetup {
+	protected configureValidation(): void {
+		(SETTINGS.scripts.validation.generated as any).runAfterGeneration = false;
+	}
+
+	cleanup(): void {
+		// Always restore original setting
+		(SETTINGS.scripts.validation.generated as any).runAfterGeneration = true;
+	}
+}
+
+// Specialized setup - validation enabled for specific tests
+class TestSetupWithValidation extends TestSetup {
+	protected configureValidation(): void {
+		(SETTINGS.scripts.validation.generated as any).runAfterGeneration = true;
+	}
+}
+```
+
+#### **Testing Strategy Distribution**
+
+- **96% Fast Tests**: Use `TestSetup` with validation disabled for unit tests and basic functionality
+- **4% Validation Tests**: Use `TestSetupWithValidation` for integration tests and validation scenarios
+- **Result**: Significant performance improvement while maintaining comprehensive validation coverage
+
+This pattern is applied consistently across:
+
+- Existing optimized generators: `flatnav-generator`, `search-indexer`, `content-menu-generator`
+- New ContentCore services: `ValidationService`, `RepositoryService` tests
+- content-creator CLI comprehensive test suite
+
+---
+
+### 1.4 Layered Service Architecture
 
 This diagram illustrates the complete layered dependencies from CLI to utilities, showing modern pattern integration:
 

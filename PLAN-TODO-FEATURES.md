@@ -12,11 +12,14 @@ graph TD
     T2 --> T3D["TASK 3D: Search Index Generator"]
     T3A --> T3B["TASK 3B: Content Scaffolding Generator"]
     T3A --> T3E["TASK 3E: Flat Navigation Generator"]
-    T3A --> T4["TASK 4: SPA Architecture"]
-    T3B --> T4
-    T3C --> T4
-    T3D --> T4
-    T3E --> T4
+    T3A --> T3F1["TASK 3F1: Foundation Modernization & Service Layer"]
+    T3B --> T3F1
+    T3C --> T3F1
+    T3D --> T3F1
+    T3E --> T3F1
+    T3F1 --> T3F2["TASK 3F2: CLI Interface & Architecture Integration"]
+    T3F2 --> T3F3["TASK 3F3: Legacy Integration & Workflow Orchestration"]
+    T3F3 --> T4["TASK 4: SPA Architecture"]
 
     T4 --> T5["TASK 5: Theme System"]
     T5 --> T6["TASK 6: shadcn-svelte UI"]
@@ -83,6 +86,9 @@ graph TD
     style T3C fill:#2196f3,stroke:#0d47a1,stroke-width:2px,color:#ffffff
     style T3D fill:#2196f3,stroke:#0d47a1,stroke-width:2px,color:#ffffff
     style T3E fill:#2196f3,stroke:#0d47a1,stroke-width:2px,color:#ffffff
+    style T3F1 fill:#1976d2,stroke:#0d47a1,stroke-width:3px,color:#ffffff
+    style T3F2 fill:#1976d2,stroke:#0d47a1,stroke-width:3px,color:#ffffff
+    style T3F3 fill:#1976d2,stroke:#0d47a1,stroke-width:3px,color:#ffffff
     style T4 fill:#42a5f5,stroke:#0d47a1,stroke-width:2px,color:#ffffff
     style T5 fill:#64b5f6,stroke:#0d47a1,stroke-width:2px,color:#000000
     style T6 fill:#90caf9,stroke:#0d47a1,stroke-width:2px,color:#000000
@@ -507,101 +513,176 @@ Follow established patterns from existing test suites:
 
 ---
 
-## TASK 3F: Content-Creator CLI Architecture Implementation
+## TASK 3F1: Foundation Modernization & Service Layer
 
 **Agent Responsibility:**
-You are responsible for implementing the complete content-creator CLI service-oriented architecture as defined in `@PLAN-CONTENT-GENERATION.md`. This creates a unified content manipulation system with dual-flow support: scaffold automation and CRUD operations.
+You are responsible for implementing the foundational modernization of existing scripts and the ContentCore service layer as defined in `@PLAN-CONTENT-GENERATION.md` Phase 1. This creates the solid architectural foundation for the unified content manipulation system.
 
 **Technical Documents to Review:**
 
-- `@PLAN-CONTENT-GENERATION.md` (Complete architecture specification)
+- `@PLAN-CONTENT-GENERATION.md` (Complete architecture specification - Phase 1)
 - `src/config/settings.ts` (Modern configuration patterns)
 - `src/lib/utils/prettier-writer.ts` (Modern formatting integration)
-- `src/test/scripts/search-indexer.test.ts` (TestSetup isolation patterns)
+- `src/scripts/content-scaffolding.ts` (Current functional implementation)
 
 **Prerequisites:**
 
 - All other Task 3 scripts (3A-3E) are complete
 - Modern patterns from Prettier integration work are established
 
-#### **Architecture Overview**
+#### **Phase 1 Implementation Scope**
 
-This task implements a layered service architecture supporting two content workflows:
+**1. Type System Consolidation:**
 
-1. **Scaffold Flow (Automation)**: Automated placeholder generation via existing scripts
-2. **Creator Flow (CRUD)**: Manual content creation/editing via new CLI interface
+- Move reusable interfaces from scripts to `src/lib/types/scaffolding.ts`:
+  - `ValidatedScaffoldingArgs` (from content-scaffolding.ts)
+  - `UnitIdentification` (from content-scaffolding.ts)
+  - `ScaffoldingStats` (from content-scaffolding.ts)
+- Update imports to use `$types` alias across all scripts
+- Keep script-specific interfaces internal (\_ScaffoldingArgs, ContentParseResult, etc.)
 
-**Core Architecture Components:**
+**2. ContentScaffoldingGenerator Class Architecture:**
 
-```typescript
-// Service Layer Architecture
-ContentCore Service (src/lib/services/)
-├── ValidationService.ts    // Zod + Mermaid + Business Rules
-├── RepositoryService.ts    // File I/O + Safety Strategy
-└── GeneratorService.ts     // Scaffold generation logic
+- Refactor `src/scripts/content-scaffolding.ts` from functional to class-based:
+  ```typescript
+  export class ContentScaffoldingGenerator {
+  	// Convert main functions to methods
+  	async generate(): Promise<boolean>;
+  	parseCliArguments(): Promise<ValidatedScaffoldingArgs>;
+  	generateFilePath(args: ValidatedScaffoldingArgs): string;
+  	getContentGenerator(type: ChapterType): Function;
+  }
+  ```
+- Maintain backward compatibility: Export function wrappers that use the class
+- Follow same pattern as other generators (MarkdownContentGenerator, etc.)
 
-// CLI Interface Layer
-content-creator CLI (src/scripts/content-creator.ts)
-├── scaffold command        // Uses existing scripts
-├── create/update commands  // Uses ContentCore services
-├── validate command        // Uses ValidationService
-└── list/delete commands    // Uses RepositoryService
+**3. ContentCore Service Layer:**
+
+- `src/lib/services/ValidationService.ts`:
+  - Integrate Zod schemas with business rules validation
+  - Extract and integrate Mermaid validator from existing `mermaid-validator.ts`
+  - Return structured results: `{ success: boolean; errors: string[] }`
+  - Use modern settings destructuring
+
+- `src/lib/services/RepositoryService.ts`:
+  - Implement safety strategy for scaffold/draft/final status levels
+  - Use `writeFormattedFile()` from `prettier-writer.ts` for all output
+  - Support `--force-overwrite` flag for final content protection
+  - Centralize all filesystem modifications
+
+- `src/lib/validation/schemas.ts`:
+  - Create comprehensive Zod schemas for all content types
+  - Embed business rules directly: `z.array(questionSchema).min(10)` for quizzes
+  - Import existing types: `import type { LessonContent, QuizContent } from "$types"`
+
+#### **Expected Output:**
+
+- `src/lib/types/scaffolding.ts` - Reusable type definitions
+- `src/scripts/content-scaffolding.ts` - Refactored to class-based architecture (with function compatibility)
+- `src/lib/services/ValidationService.ts` - Unified validation pipeline
+- `src/lib/services/RepositoryService.ts` - File operations with safety strategy
+- `src/lib/validation/schemas.ts` - Zod schemas with business rules
+- Updated imports across affected scripts to use `$types`
+
+---
+
+## TASK 3F2: CLI Interface & Architecture Integration
+
+**Agent Responsibility:**
+You are responsible for implementing the content-creator CLI interface and completing the architecture integration as defined in `@PLAN-CONTENT-GENERATION.md` Phase 2.
+
+**Technical Documents to Review:**
+
+- `@PLAN-CONTENT-GENERATION.md` (Complete architecture specification - Phase 2)
+- `src/test/scripts/search-indexer.test.ts` (TestSetup isolation patterns)
+- Task 3F1 output (ContentCore services and refactored scaffolding)
+
+**Prerequisites:**
+
+- Task 3F1 is complete (ContentCore services and type consolidation)
+- ContentScaffoldingGenerator class is implemented
+
+#### **Phase 2 Implementation Scope**
+
+**1. content-creator CLI Implementation:**
+
+- `src/scripts/content-creator.ts`:
+  - Use `commander` library for command structure
+  - Implement dual-flow commands:
+    - `scaffold`: Delegates to ContentScaffoldingGenerator class
+    - `create/update`: Uses ContentCore services for validation + writing
+    - `validate`: Uses ValidationService for file validation
+    - `list/delete`: Uses RepositoryService for safe operations
+  - Support global flags: `--dry-run`, `--force-overwrite`
+
+**2. Comprehensive Test Integration:**
+
+- `src/test/scripts/content-creator.test.ts`:
+  - Use TestSetup class pattern with validation optimization (from flatnav-generator pattern)
+  - Test isolation with unique temporary directories
+  - Settings override: `runAfterGeneration: false` for performance optimization
+  - Comprehensive command coverage with mocked file operations
+  - TestSetupWithValidation for specific validation tests
+
+**3. Type Consolidation Completion:**
+
+- Complete migration of remaining types across all scripts
+- Ensure consistent `$types` imports throughout the codebase
+- Validate type safety across the entire generator ecosystem
+
+#### **Expected Output:**
+
+- `src/scripts/content-creator.ts` - Complete CLI implementation with Commander.js
+- `src/test/scripts/content-creator.test.ts` - Comprehensive test suite with optimized patterns
+- Complete type consolidation across all generator scripts
+- Integration tests validating dual-flow architecture
+
+---
+
+## TASK 3F3: Legacy Integration & Workflow Orchestration
+
+**Agent Responsibility:**
+You are responsible for completing the legacy integration, workflow orchestration, and final architecture coherence validation as defined in `@PLAN-CONTENT-GENERATION.md` Phase 3.
+
+**Technical Documents to Review:**
+
+- `@PLAN-CONTENT-GENERATION.md` (Complete architecture specification - Phase 3)
+- `src/scripts/mermaid-validator.ts` (Current implementation to refactor)
+- `package.json` (Current script structure)
+- Task 3F1 and 3F2 outputs
+
+**Prerequisites:**
+
+- Task 3F1 and 3F2 are complete
+- ContentCore services are fully implemented and tested
+- content-creator CLI is operational
+
+#### **Phase 3 Implementation Scope**
+
+**1. Legacy Script Integration:**
+
+- Refactor `src/scripts/mermaid-validator.ts` to use ValidationService:
+  - Extract reusable validation logic to ValidationService
+  - Maintain existing script interface for backward compatibility
+  - Update to use class-based architecture if beneficial
+  - Ensure type consistency with consolidated type system
+
+**2. Package.json Workflow Scripts:**
+
+```json
+{
+	"content-creator": "tsx src/scripts/content-creator.ts",
+	"workflow:metadata": "pnpm run generate-content-menu && pnpm run content-creator scaffold && pnpm run generate-flatnav && pnpm run generate-search-index",
+	"workflow:content": "pnpm run generate-flatnav && pnpm run generate-search-index"
+}
 ```
 
-#### **Implementation Phases**
+**3. Architecture Coherence Validation:**
 
-**Phase 1: ContentCore Service Layer**
-
-1. **ValidationService Implementation** (`src/lib/services/ValidationService.ts`):
-   - Integrate Zod schemas with business rules validation
-   - Extract and integrate Mermaid validator from existing `mermaid-validator.ts`
-   - Return structured results: `{ success: boolean; errors: string[] }`
-   - Use modern settings destructuring: `const { validation: validationSettings } = SETTINGS.scripts;`
-
-2. **RepositoryService Implementation** (`src/lib/services/RepositoryService.ts`):
-   - Implement safety strategy for scaffold/draft/final status levels
-   - Use `writeFormattedFile()` from `prettier-writer.ts` for all output
-   - Support `--force-overwrite` flag for final content protection
-   - Centralize all filesystem modifications through this service
-
-3. **Zod Schema Layer** (`src/lib/validation/schemas.ts`):
-   - Create comprehensive Zod schemas for all content types
-   - Embed business rules directly: `z.array(questionSchema).min(10)` for quizzes
-   - Import existing types: `import type { LessonContent, QuizContent } from "$types"`
-
-**Phase 2: CLI Interface Implementation**
-
-1. **content-creator CLI** (`src/scripts/content-creator.ts`):
-   - Use `commander` library for command structure
-   - Implement dual-flow commands:
-     - `scaffold`: Delegates to existing `content-scaffolding.ts` script
-     - `create/update`: Uses ContentCore services for validation + writing
-     - `validate`: Uses ValidationService for file validation
-     - `list/delete`: Uses RepositoryService for safe operations
-   - Support global flags: `--dry-run`, `--force-overwrite`
-
-2. **Test Integration** (`src/test/scripts/content-creator.test.ts`):
-   - Use TestSetup class pattern from search-indexer tests
-   - Test isolation with unique temporary directories
-   - Settings override: `enabled: false` for performance optimization
-   - Comprehensive command coverage with mocked file operations
-
-**Phase 3: Workflow Integration**
-
-1. **Package.json Workflow Scripts**:
-
-   ```json
-   {
-   	"content-creator": "tsx src/scripts/content-creator.ts",
-   	"workflow:metadata": "pnpm run generate-content-menu && pnpm run content-creator scaffold && pnpm run generate-flatnav && pnpm run generate-search-index",
-   	"workflow:content": "pnpm run generate-flatnav && pnpm run generate-search-index"
-   }
-   ```
-
-2. **Legacy Script Integration**:
-   - Refactor `mermaid-validator.ts` to use ValidationService
-   - Maintain existing script interfaces for backward compatibility
-   - Extract reusable logic to service layer
+- Validate safety strategy implementation across all operations
+- Ensure consistent modern patterns (settings destructuring, prettier integration)
+- Verify TestSetup optimization patterns across all test files
+- Complete documentation for dual-flow usage patterns
 
 #### **Safety Strategy Implementation**
 
@@ -628,44 +709,26 @@ flowchart TB
     Proceed --> Success["Operation Complete"]
 ```
 
-#### **Expected Output:**
-
-**Service Layer:**
-
-- `src/lib/services/ValidationService.ts` - Unified validation pipeline
-- `src/lib/services/RepositoryService.ts` - File operations with safety
-- `src/lib/validation/schemas.ts` - Zod schemas with business rules
-
-**CLI Interface:**
-
-- `src/scripts/content-creator.ts` - Complete CLI implementation
-- `src/test/scripts/content-creator.test.ts` - Comprehensive test suite
-
-**Integration:**
-
-- Updated `package.json` with workflow scripts
-- Refactored `mermaid-validator.ts` using ValidationService
-- Documentation for dual-flow usage patterns
-
-#### **Modern Development Patterns Integration:**
-
-- **Settings Destructuring**: `const { validation: validationSettings } = SETTINGS.scripts;`
-- **Prettier Integration**: Use `writeFormattedFile()` for all output formatting
-- **TestSetup Pattern**: Implement test isolation with unique directories and config IDs
-- **Type Safety**: Import from `$types` alias for consistency
-- **Performance Optimization**: Default `enabled: false` in tests, selective `enabled: true`
-
 #### **Final Validations:**
 
-- ✅ `content-creator scaffold` delegates to existing scaffolding system
+- ✅ `content-creator scaffold` delegates to ContentScaffoldingGenerator class
 - ✅ `content-creator create/update` uses ContentCore validation + repository services
 - ✅ `content-creator validate` works on existing content files
 - ✅ Safety strategy prevents accidental overwrite of final content
 - ✅ `--dry-run` mode accurately simulates operations without file changes
-- ✅ All tests use TestSetup isolation pattern
+- ✅ All tests use optimized TestSetup isolation pattern
 - ✅ Workflow scripts execute foundation scripts in correct sequence
 - ✅ Modern formatting via `writeFormattedFile()` integration
 - ✅ Zero TypeScript errors with `pnpm run check`
+- ✅ Complete type system consolidation and consistency
+
+#### **Expected Output:**
+
+- Refactored `src/scripts/mermaid-validator.ts` using ValidationService
+- Updated `package.json` with workflow scripts
+- Complete documentation for dual-flow usage patterns
+- Architecture coherence validation report
+- Migration guide for legacy script integration
 
 ---
 
