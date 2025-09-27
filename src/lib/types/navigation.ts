@@ -451,8 +451,8 @@ export interface MenuChapter {
 	/** Chapter number within unit */
 	chapterNumber: string;
 
-	/** Link to chapter content (legacy HTML) */
-	chapterLink?: string;
+	/** Chapter URL for navigation (hash-based format) */
+	chapterUrl?: string;
 
 	/** Link to chapter data (JSON/TypeScript) */
 	chapterDataLink: string;

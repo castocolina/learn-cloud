@@ -251,6 +251,29 @@ export interface AppSettings {
 				security: string[];
 			};
 		};
+		/** Flat navigation generator configuration */
+		flatNav: {
+			/** Path configurations for flat navigation generation */
+			paths: {
+				/** Input file from content menu generator */
+				inputFile: string;
+				/** Output navigation map file */
+				outputFile: string;
+			};
+			/** Validation prefix for generating unique config IDs */
+			validationPrefix: string;
+			/** Navigation behavior settings */
+			navigation: {
+				/** Home page URL for navigation root */
+				homeUrl: string;
+				/** Allow navigation across unit boundaries */
+				crossUnitNavigation: boolean;
+				/** Skip units with no available content */
+				skipEmptyUnits: boolean;
+				/** Include debug information in output */
+				generateDebugInfo: boolean;
+			};
+		};
 	};
 
 	// Future settings can be grouped here (e.g., api, performance)

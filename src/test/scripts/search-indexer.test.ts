@@ -203,12 +203,19 @@ class TestSetup {
 	}
 
 	cleanup(): void {
+		// Restore original validation setting
+		(SETTINGS.scripts.validation.generated as { runAfterGeneration: boolean }).runAfterGeneration =
+			true;
+
 		if (existsSync(this.tempDir)) {
 			rmSync(this.tempDir, { recursive: true, force: true });
 		}
 	}
 
 	getConfig(enableValidation: boolean = false): SearchIndexConfig {
+		// Configure validation settings based on test requirements
+		this.configureValidation(enableValidation);
+
 		return {
 			contentPath: this.testContentDir,
 			outputPath: join(this.testOutputDir, "search-index.ts"),
@@ -219,6 +226,29 @@ class TestSetup {
 			minKeywordLength: SETTINGS.scripts.searchIndex.processing.minKeywordLength,
 			fieldBoosts: SETTINGS.scripts.searchIndex.fieldBoosts
 		};
+	}
+
+	/**
+	 * Configure validation settings based on test requirements
+	 */
+	protected configureValidation(enableValidation: boolean): void {
+		// Temporarily override validation setting for faster tests by default
+		// Only specific tests that need validation will enable it
+		(SETTINGS.scripts.validation.generated as { runAfterGeneration: boolean }).runAfterGeneration =
+			enableValidation;
+	}
+}
+
+/**
+ * Test setup class with validation enabled for integration tests
+ */
+class TestSetupWithValidation extends TestSetup {
+	constructor(testSuiteId: string = "validation") {
+		super(testSuiteId);
+	}
+
+	getConfig(): SearchIndexConfig {
+		return super.getConfig(true); // Enable validation
 	}
 }
 
@@ -580,35 +610,39 @@ describe("SearchIndexGenerator", () => {
  */
 describe("SearchIndexGenerator Integration", () => {
 	it("should work with real content structure", async () => {
-		const timestamp = Date.now();
-		const realConfig: SearchIndexConfig = {
-			contentPath: "src/data/book", // Real content path
-			outputPath: `tmp/integration-test-${timestamp}-search-index.ts`,
-			mode: SETTINGS.scripts.searchIndex.processing.mode,
-			enableNLP: SETTINGS.scripts.searchIndex.processing.enableNLP,
-			verboseLogging: false,
-			maxKeywords: SETTINGS.scripts.searchIndex.processing.maxKeywords,
-			minKeywordLength: SETTINGS.scripts.searchIndex.processing.minKeywordLength,
-			fieldBoosts: SETTINGS.scripts.searchIndex.fieldBoosts
-		};
-		const integrationConfigId = generateConfigId(
-			SETTINGS.scripts.searchIndex.validationPrefix,
-			"integration"
-		);
+		// Use validation setup for this integration test
+		const validationTestSetup = new TestSetupWithValidation("integration");
+		await validationTestSetup.setup();
 
-		// Only run if real content directory exists
-		if (existsSync(realConfig.contentPath)) {
-			const generator = new SearchIndexGenerator(realConfig);
-			const _result = await generator.generateSearchIndex(integrationConfigId);
+		try {
+			const timestamp = Date.now();
+			const realConfig: SearchIndexConfig = {
+				contentPath: "src/data/book", // Real content path
+				outputPath: `tmp/integration-test-${timestamp}-search-index.ts`,
+				mode: "production", // Enable validation for integration test
+				enableNLP: SETTINGS.scripts.searchIndex.processing.enableNLP,
+				verboseLogging: false,
+				maxKeywords: SETTINGS.scripts.searchIndex.processing.maxKeywords,
+				minKeywordLength: SETTINGS.scripts.searchIndex.processing.minKeywordLength,
+				fieldBoosts: SETTINGS.scripts.searchIndex.fieldBoosts
+			};
 
-			expect(existsSync(realConfig.outputPath)).toBe(true);
+			// Only run if real content directory exists
+			if (existsSync(realConfig.contentPath)) {
+				const generator = new SearchIndexGenerator(realConfig);
+				const _result = await generator.generateSearchIndex(validationTestSetup.configId);
 
-			// Cleanup
-			if (existsSync(realConfig.outputPath)) {
-				rmSync(realConfig.outputPath, { force: true });
+				expect(existsSync(realConfig.outputPath)).toBe(true);
+
+				// Cleanup
+				if (existsSync(realConfig.outputPath)) {
+					rmSync(realConfig.outputPath, { force: true });
+				}
 			}
+		} finally {
+			validationTestSetup.cleanup();
 		}
-	}, 10000);
+	}, 15000); // Extended timeout for validation
 });
 
 /**

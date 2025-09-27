@@ -1,4 +1,4 @@
-.PHONY: help setup install run build clean validate validate-bash check lint format test validate-content check-wip
+.PHONY: help setup install run build clean validate validate-bash check lint format test validate-content check-wip generate-flatnav
 
 # Load environment variables from .env file
 ifneq (,$(wildcard .env))
@@ -178,6 +178,11 @@ generate-content-menu: ## Generate content-menu.ts from CONTENT.md
 	@npx tsx src/scripts/content-menu-generator.ts
 	@echo "✅ Content generation complete!"
 
+generate-flatnav: ## Generate flat navigation structure from content-menu.ts
+	@echo "🗺️ Generating flat navigation structure..."
+	@npx tsx src/scripts/flatnav-generator.ts
+	@echo "✅ Flat navigation generation complete!"
+
 scaffold-content: ## Generate TypeScript content scaffolding (New TypeScript implementation)
 	@echo "🔄 Generating TypeScript content scaffolding..."
 	@npx tsx src/scripts/content-scaffolding.ts $(ARGS)
@@ -196,15 +201,15 @@ generate-search-index-prod: ## Generate search index in production mode (with va
 	@npx tsx src/scripts/search-indexer.ts --mode=production $(ARGS)
 	@echo "✅ Search index generation complete!"
 
-validate-all-scripts: validate-mermaid generate-content-menu generate-search-index-dev ## Run all foundation scripts validation (development mode)
+validate-all-scripts: validate-mermaid generate-content-menu generate-flatnav generate-search-index-dev ## Run all foundation scripts validation (development mode)
 	@echo "✅ All foundation scripts completed"
 
-validate-all-scripts-prod: validate-mermaid generate-content-menu generate-search-index-prod ## Run all foundation scripts validation (production mode)
+validate-all-scripts-prod: validate-mermaid generate-content-menu generate-flatnav generate-search-index-prod ## Run all foundation scripts validation (production mode)
 	@echo "✅ All foundation scripts completed (production)"
 
-generate-all-content: generate-content-menu scaffold-content generate-search-index-dev validate-generated-full ## Generate all content files and validate them (development mode)
+generate-all-content: generate-content-menu generate-flatnav scaffold-content generate-search-index-dev validate-generated-full ## Generate all content files and validate them (development mode)
 
-generate-all-content-prod: generate-content-menu scaffold-content generate-search-index-prod validate-generated-full ## Generate all content files and validate them (production mode)
+generate-all-content-prod: generate-content-menu generate-flatnav scaffold-content generate-search-index-prod validate-generated-full ## Generate all content files and validate them (production mode)
 	@echo "🎉 All content generation and validation completed successfully!"
 
 # Project-wide validation

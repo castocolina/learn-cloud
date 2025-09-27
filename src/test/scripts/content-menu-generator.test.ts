@@ -64,14 +64,49 @@ class TestSetup {
 			mkdirSync(this.testOutputDir, { recursive: true });
 		}
 
+		// Configure validation settings for tests (disabled by default for faster tests)
+		this.configureValidation();
+
 		// Write mock content file
 		writeFileSync(this.contentMdPath, SAMPLE_CONTENT, "utf-8");
 	}
 
+	/**
+	 * Configure validation settings based on test requirements
+	 */
+	protected configureValidation(): void {
+		// Disable validation by default for faster tests
+		// Only specific tests that need validation will enable it
+		(SETTINGS.scripts.validation.generated as { runAfterGeneration: boolean }).runAfterGeneration =
+			false;
+	}
+
 	cleanup(): void {
+		// Restore original validation setting
+		(SETTINGS.scripts.validation.generated as { runAfterGeneration: boolean }).runAfterGeneration =
+			true;
+
 		if (existsSync(this.tempDir)) {
 			rmSync(this.tempDir, { recursive: true, force: true });
 		}
+	}
+}
+
+/**
+ * Test setup class with validation enabled for integration tests
+ */
+class TestSetupWithValidation extends TestSetup {
+	constructor(testSuiteId: string = "validation") {
+		super(testSuiteId);
+	}
+
+	/**
+	 * Override to enable validation for this specific test setup
+	 */
+	protected configureValidation(): void {
+		// Enable validation for integration tests
+		(SETTINGS.scripts.validation.generated as { runAfterGeneration: boolean }).runAfterGeneration =
+			true;
 	}
 }
 
@@ -780,37 +815,26 @@ describe("MarkdownContentGenerator", () => {
  */
 describe("Full Validation Integration", () => {
 	it("should generate complete TypeScript module with validation", async () => {
-		// Create test data directory
-		const testDataDir = join(process.cwd(), "tmp", "validation-test-data");
-		const testContentPath = join(testDataDir, "test-content.md");
-		const testOutputPath = join(testDataDir, "output", "content-menu.ts");
-
-		mkdirSync(testDataDir, { recursive: true });
-		mkdirSync(join(testDataDir, "output"), { recursive: true });
-
-		// Write test content
-		writeFileSync(testContentPath, SAMPLE_CONTENT, "utf-8");
+		// Use validation setup for this integration test
+		const validationTestSetup = new TestSetupWithValidation("validation");
+		await validationTestSetup.setup();
 
 		try {
-			// Create generator WITH validation enabled
-			const relativeTestPath = join("tmp", "validation-test-data", "test-content.md");
-			const generator = new MarkdownContentGenerator(relativeTestPath) as any;
-			generator.outputPath = testOutputPath;
+			// Create generator WITH validation enabled (via TestSetupWithValidation)
+			const generator = new MarkdownContentGenerator(validationTestSetup.contentMdPath) as any;
+			generator.outputPath = validationTestSetup.outputPath;
 
 			const success = await generator.generate();
 
 			expect(success).toBe(true);
-			expect(existsSync(testOutputPath)).toBe(true);
+			expect(existsSync(validationTestSetup.outputPath)).toBe(true);
 
 			// Verify generated content
-			const generatedContent = readFileSync(testOutputPath, "utf-8");
+			const generatedContent = readFileSync(validationTestSetup.outputPath, "utf-8");
 			expect(generatedContent).toContain("export const contentMenu");
 			expect(generatedContent).toContain("MenuStructure");
 		} finally {
-			// Clean up
-			if (existsSync(testDataDir)) {
-				rmSync(testDataDir, { recursive: true, force: true });
-			}
+			validationTestSetup.cleanup();
 		}
 	}, 15000); // Extended timeout for validation test
 });

@@ -569,7 +569,7 @@ export class MarkdownContentGenerator {
 			emoji: parseResult.emoji || undefined,
 			type: contentType,
 			chapterNumber: chapterNum,
-			chapterLink: paths.htmlPath,
+			chapterUrl: paths.hashUrl,
 			chapterDataLink: paths.dataPath
 		};
 
@@ -625,7 +625,7 @@ export class MarkdownContentGenerator {
 			icon: "BookOpen", // Default icon for overview
 			type: "overview",
 			chapterNumber: "0.0", // Special chapter number for overview
-			chapterLink: paths.htmlPath,
+			chapterUrl: paths.hashUrl,
 			chapterDataLink: paths.dataPath
 		};
 

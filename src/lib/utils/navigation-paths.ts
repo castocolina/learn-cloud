@@ -153,6 +153,21 @@ export function generateNavigationPaths(config: UnifiedPathConfig): NavigationPa
 }
 
 /**
+ * Serialize navigation configuration to URL
+ *
+ * Creates consistent hash-based URLs from navigation configuration.
+ * This is the inverse of parseNavigationUrl() and provides the standard
+ * URL format used throughout the application.
+ *
+ * @param config - Navigation configuration
+ * @returns Hash-based URL string (#unit01/chapter01 or #unit01)
+ */
+export function serializeNavigationUrl(config: UnifiedPathConfig): string {
+	const paths = generateNavigationPaths(config);
+	return paths.hashUrl;
+}
+
+/**
  * Parse navigation URL back to configuration
  *
  * Supports multiple URL formats:

@@ -217,6 +217,19 @@ export const SETTINGS: AppSettings = {
 					"rbac"
 				]
 			}
+		},
+		flatNav: {
+			paths: {
+				inputFile: "src/data/generated/content-menu.ts", // Input from content menu generator
+				outputFile: "src/data/generated/flatnav.ts" // Output navigation map
+			},
+			validationPrefix: "flatnav", // Prefix for validation config IDs
+			navigation: {
+				homeUrl: "/", // Home page URL for navigation root
+				crossUnitNavigation: true, // Allow navigation across unit boundaries
+				skipEmptyUnits: true, // Skip units with no available content
+				generateDebugInfo: false // Include debug information in output
+			}
 		}
 	}
 };
