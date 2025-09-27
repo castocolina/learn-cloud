@@ -9,8 +9,9 @@ import { spawn, type ChildProcess } from "child_process";
 import { SETTINGS } from "$config/settings.js";
 import type { ValidationOptions, ValidationResult } from "$types";
 import fs from "fs";
-import { join, isAbsolute } from "path";
+import { join, isAbsolute, dirname, basename, extname, resolve, normalize } from "path";
 import crypto from "crypto";
+import { parseArgs } from "util";
 
 // Destructure validation configuration at module level for cleaner code
 const {
@@ -460,5 +461,227 @@ export async function cleanupValidationFiles(
 				console.warn(`Cleanup warning: ${error instanceof Error ? error.message : String(error)}`);
 			}
 		}
+	}
+}
+
+// ============================================================================
+// INPUT PARSING AND VALIDATION UTILITIES
+// ============================================================================
+
+/**
+ * Parse and validate CLI arguments for content scripts
+ */
+export interface ParsedScaffoldingArgs {
+	unit: string;
+	type: string;
+	id: string;
+	dryRun?: boolean;
+	forceOverwrite?: boolean;
+}
+
+/**
+ * Parse CLI arguments using Node.js parseArgs utility
+ */
+export function parseScaffoldingArgs(argv: string[] = process.argv): ParsedScaffoldingArgs {
+	try {
+		const { values } = parseArgs({
+			args: argv.slice(2),
+			options: {
+				unit: { type: "string" },
+				type: { type: "string" },
+				id: { type: "string" },
+				"dry-run": { type: "boolean", default: false },
+				"force-overwrite": { type: "boolean", default: false }
+			}
+		});
+
+		// Validate required arguments
+		if (!values.unit || !values.type || !values.id) {
+			throw new Error("Missing required arguments: --unit, --type, and --id are required");
+		}
+
+		return {
+			unit: values.unit,
+			type: values.type,
+			id: values.id,
+			dryRun: values["dry-run"],
+			forceOverwrite: values["force-overwrite"]
+		};
+	} catch (error) {
+		const message = error instanceof Error ? error.message : String(error);
+		throw new Error(`Failed to parse CLI arguments: ${message}`);
+	}
+}
+
+/**
+ * Validate unit name format
+ */
+export function validateUnitName(unit: string): { isValid: boolean; error?: string } {
+	if (!unit || typeof unit !== "string") {
+		return { isValid: false, error: "Unit name must be a non-empty string" };
+	}
+
+	// Check for valid unit name format (kebab-case recommended)
+	const validFormat = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+	if (!validFormat.test(unit)) {
+		return {
+			isValid: false,
+			error: "Unit name must be lowercase, alphanumeric, and use hyphens (e.g., 'python-backend')"
+		};
+	}
+
+	return { isValid: true };
+}
+
+/**
+ * Validate content ID format
+ */
+export function validateContentId(id: string): { isValid: boolean; error?: string } {
+	if (!id || typeof id !== "string") {
+		return { isValid: false, error: "Content ID must be a non-empty string" };
+	}
+
+	// Check for valid ID format (numbers, hyphens, underscores)
+	const validFormat = /^[a-zA-Z0-9]+([_-][a-zA-Z0-9]+)*$/;
+	if (!validFormat.test(id)) {
+		return {
+			isValid: false,
+			error:
+				"Content ID must be alphanumeric and can use hyphens or underscores (e.g., '1-1', 'final_exam')"
+		};
+	}
+
+	return { isValid: true };
+}
+
+/**
+ * Parse and validate file path components
+ */
+export function parseFilePath(filePath: string): {
+	isValid: boolean;
+	directory?: string;
+	filename?: string;
+	extension?: string;
+	error?: string;
+} {
+	if (!filePath || typeof filePath !== "string") {
+		return { isValid: false, error: "File path must be a non-empty string" };
+	}
+
+	try {
+		const directory = dirname(filePath);
+		const filename = basename(filePath, extname(filePath));
+		const extension = extname(filePath);
+
+		return {
+			isValid: true,
+			directory,
+			filename,
+			extension
+		};
+	} catch (error) {
+		return {
+			isValid: false,
+			error: `Invalid file path: ${error instanceof Error ? error.message : String(error)}`
+		};
+	}
+}
+
+/**
+ * Normalize and validate directory path
+ */
+export function validateDirectoryPath(dirPath: string): {
+	isValid: boolean;
+	normalizedPath?: string;
+	error?: string;
+} {
+	if (!dirPath || typeof dirPath !== "string") {
+		return { isValid: false, error: "Directory path must be a non-empty string" };
+	}
+
+	try {
+		const normalizedPath = normalize(resolve(dirPath));
+
+		// Check if path is within project directory for security
+		const projectRoot = process.cwd();
+		if (!normalizedPath.startsWith(projectRoot)) {
+			return {
+				isValid: false,
+				error: "Directory path must be within project root for security"
+			};
+		}
+
+		return {
+			isValid: true,
+			normalizedPath
+		};
+	} catch (error) {
+		return {
+			isValid: false,
+			error: `Invalid directory path: ${error instanceof Error ? error.message : String(error)}`
+		};
+	}
+}
+
+/**
+ * Parse configuration object with validation
+ */
+export function parseConfigurationObject<T>(
+	input: unknown,
+	validator: (obj: unknown) => obj is T
+): { isValid: boolean; config?: T; error?: string } {
+	try {
+		if (!input || typeof input !== "object") {
+			return { isValid: false, error: "Configuration must be an object" };
+		}
+
+		if (validator(input)) {
+			return { isValid: true, config: input };
+		} else {
+			return { isValid: false, error: "Configuration object failed validation" };
+		}
+	} catch (error) {
+		return {
+			isValid: false,
+			error: `Configuration parsing error: ${error instanceof Error ? error.message : String(error)}`
+		};
+	}
+}
+
+/**
+ * Sanitize string input for safe file operations
+ */
+export function sanitizeStringInput(input: string): string {
+	if (!input || typeof input !== "string") {
+		return "";
+	}
+
+	// Remove potentially dangerous characters and normalize
+	return input
+		.trim()
+		.replace(/[<>:"|?*]/g, "") // Remove Windows-unsafe characters
+		.replace(/\.\./g, "") // Remove parent directory references
+		.replace(/^[./]+/, "") // Remove leading dots and slashes
+		.substring(0, 255); // Limit length for filesystem compatibility
+}
+
+/**
+ * Parse JSON string with error handling
+ */
+export function parseJsonSafely<T = unknown>(
+	jsonString: string
+): {
+	isValid: boolean;
+	data?: T;
+	error?: string;
+} {
+	try {
+		const data = JSON.parse(jsonString) as T;
+		return { isValid: true, data };
+	} catch (error) {
+		return {
+			isValid: false,
+			error: `JSON parsing error: ${error instanceof Error ? error.message : String(error)}`
+		};
 	}
 }

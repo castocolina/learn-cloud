@@ -16,8 +16,9 @@ flowchart TB
         direction TB
 
         subgraph "Flow 1: Template Generation (Scaffolding)"
-            CLI -- "scaffold command" --> ScaffoldGen["ContentScaffoldingGenerator<br/>(Template Generation)"]
-            ScaffoldGen --> TemplateContent["Lorem Ipsum Templates<br/>Random Data"]
+            CLI -- "scaffold command" --> ScaffoldGen["ContentScaffoldingGenerator<br/>(CLI Coordination)"]
+            ScaffoldGen --> TemplateUtil["TemplateGenerator Utility<br/>(src/lib/utils/)"]
+            TemplateUtil --> TemplateContent["Lorem Ipsum Templates<br/>Random Data"]
         end
 
         subgraph "Flow 2: Real Content (Content Creator)"
@@ -38,6 +39,7 @@ flowchart TB
 
     %% Styling
     style ScaffoldGen fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    style TemplateUtil fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px
     style ContentCreator fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
     style CoreAPI fill:#fff3e0,stroke:#ff9800,stroke-width:3px
     style VS fill:#fffbe6,stroke:#ffc400,stroke-width:2px
@@ -47,9 +49,10 @@ flowchart TB
 **Key Architecture Principles:**
 
 - **Clear Separation of Concerns**:
-  - **Template Generation**: ContentScaffoldingGenerator creates lorem ipsum placeholders
+  - **Template Generation**: TemplateGenerator utility (pure, reusable, in src/lib/utils/) creates lorem ipsum content
+  - **CLI Coordination**: ContentScaffoldingGenerator coordinates TemplateGenerator → Core API
   - **Real Content Input**: Content Creator CLI accepts actual user content
-  - **Core API**: Unified ValidationService + RepositoryService for all content processing
+  - **Core API**: Content-agnostic ValidationService + RepositoryService for processing any content
 - **Single Processing Pipeline**: Both template and real content use identical Core API
 - **Unified Safety**: Single RepositoryService enforces safety strategy across all operations
 - **Modern Integration**: Leverages Prettier formatting, TestSetup isolation, and settings destructuring
@@ -68,13 +71,15 @@ This architecture implementation follows a **3-phase reengineering approach** th
 
 **Phase 2: Core API Integration & Complete Refactoring (Task 3F2)**
 
-- **Complete ContentScaffoldingGenerator Modernization**:
-  - Remove all standalone functions (parseCliArguments, executeDataDrivenMode, etc.)
-  - Refactor class to use Core API exclusively (ValidationService + RepositoryService)
-  - Keep only template generation logic, delegate all validation/I/O to Core API
+- **Create TemplateGenerator Utility & Modernize ContentScaffoldingGenerator**:
+  - **CREATE**: `src/lib/utils/template-generator.ts` - Pure template generation utility
+  - **MOVE**: All template logic (generateXContent functions, lorem ipsum, random data) → TemplateGenerator
+  - **SIMPLIFY**: ContentScaffoldingGenerator to CLI coordination only (TemplateGenerator + Core API)
+  - Remove standalone functions (parseCliArguments, executeDataDrivenMode, etc.)
+  - **CLEAR SEPARATION**: CLI coordination ≠ Template generation ≠ Core API processing
 - **content-creator CLI Implementation**:
   - Commander.js CLI with commands: scaffold, create, update, validate, list, delete
-  - scaffold command: Uses ContentScaffoldingGenerator (templates) → Core API
+  - scaffold command: Uses TemplateGenerator utility → Core API
   - create/update commands: Accepts real content (--inline/--file) → Core API
   - All commands converge on ValidationService + RepositoryService
 - **3-Tier Validation Requirements**:
@@ -99,7 +104,11 @@ This architecture implementation follows a **3-phase reengineering approach** th
   - Zero standalone functions in content generation scripts
   - All content operations flow through Core API
   - TestSetup optimization applied project-wide
-  - Documentation and migration guides
+- **User Documentation**:
+  - **`CONTENT-CREATOR-CLI-GUIDE.md`** - Comprehensive user guide for content-creator CLI
+  - **Primary focus**: Real content workflows (create, update, validate, list, delete)
+  - **Secondary section**: Scaffold workflows (appendix with less emphasis)
+  - Migration guides for developers
 
 ### 1.2 Content Creator CLI Command Flow
 
@@ -111,8 +120,9 @@ flowchart TB
 
     subgraph "Automation Commands"
         Parser -- "scaffold" --> ScaffoldCmd["Scaffold Command"]
-        ScaffoldCmd --> ExistingScript["Delegate to<br/>content-scaffolding.ts"]
-        ExistingScript --> BulkValidation["Bulk Content<br/>Validation"]
+        ScaffoldCmd --> ExistingScript["ContentScaffoldingGenerator<br/>(CLI Coordination)"]
+        ExistingScript --> TemplateGen["TemplateGenerator Utility<br/>(src/lib/utils/)"]
+        TemplateGen --> BulkValidation["Template Content<br/>→ Validation"]
     end
 
     subgraph "CRUD Commands"
@@ -145,6 +155,7 @@ flowchart TB
 
     %% Styling
     style ExistingScript fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    style TemplateGen fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px
     style VS fill:#fffbe6,stroke:#ffc400,stroke-width:2px
     style RS fill:#fce4ec,stroke:#e91e63,stroke-width:2px
     style ValidationOnly fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px
@@ -188,8 +199,40 @@ class TestSetupWithValidation extends TestSetup {
 This pattern is applied consistently across:
 
 - Existing optimized generators: `flatnav-generator`, `search-indexer`, `content-menu-generator`
+- **New TemplateGenerator utility**: `template-generator` tests (pure template logic, fastest execution)
 - New ContentCore services: `ValidationService`, `RepositoryService` tests
+- Simplified ContentScaffoldingGenerator tests (CLI coordination only)
 - content-creator CLI comprehensive test suite
+
+#### **TemplateGenerator Testing Strategy**
+
+**Optimized Testing for Template Generation:**
+
+```typescript
+// TemplateGenerator tests - fastest execution (no validation, no file I/O)
+describe("TemplateGenerator", () => {
+	test("generates lesson content with correct structure", () => {
+		const generator = new TemplateGenerator();
+		const content = generator.generateLessonContent(args);
+		expect(content.type).toBe("lesson");
+		expect(content.sections).toHaveLength(expectedSections);
+	});
+
+	// 96% of tests: Pure logic validation, no file operations
+	test("generates diverse quiz questions", () => {
+		const questions = generator.generateQuizContent(args);
+		expect(questions.quiz.questions).toHaveLength(10);
+	});
+});
+```
+
+**Testing Benefits:**
+
+- **Fastest Execution**: No file I/O, no validation, pure template logic testing
+- **Independent Testing**: Template generation tested separately from CLI and Core API
+- **Focused Testing**: Each `generateXContent()` method tested individually
+- **High Coverage**: All template variations and edge cases covered
+- **Reusability Testing**: Utility can be tested in different contexts
 
 #### **3-Tier Validation Requirements**
 

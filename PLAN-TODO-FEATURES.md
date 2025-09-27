@@ -604,17 +604,18 @@ You are responsible for implementing the content-creator CLI interface and compl
 
 #### **Phase 2 Implementation Scope**
 
-**1. Complete ContentScaffoldingGenerator Modernization:**
+**1. Create TemplateGenerator Utility & Modernize ContentScaffoldingGenerator:**
 
-- **Remove ALL standalone functions** from `src/scripts/content-scaffolding.ts`:
-  - ❌ Delete: `parseCliArguments()`, `executeDataDrivenMode()`, `generateFilePath()`, etc.
-  - ❌ Delete: All `generateXContent()` functions (lessons, quiz, exam, etc.)
-  - ❌ Delete: All validation and file I/O functions
-- **Refactor ContentScaffoldingGenerator class**:
-  - Use Core API exclusively (ValidationService + RepositoryService)
-  - Keep ONLY template generation logic (lorem ipsum, random data)
-  - Constructor receives Core API interface
-  - All validation/storage delegated to Core API
+- **Create** `src/lib/utils/template-generator.ts` - Pure template generation utility:
+  - ✅ **MOVE**: All `generateXContent()` functions (lessons, quiz, exam, etc.) → TemplateGenerator
+  - ✅ **MOVE**: Lorem ipsum logic, content structure generation → TemplateGenerator
+  - ✅ **PURE UTILITY**: No CLI, no file I/O, only template content generation
+- **Simplify ContentScaffoldingGenerator class**:
+  - ❌ **DELETE**: All standalone functions (`parseCliArguments()`, `executeDataDrivenMode()`, etc.)
+  - ❌ **DELETE**: All validation and file I/O functions
+  - ✅ **SIMPLIFY**: CLI coordination and TemplateGenerator → Core API delegation only
+  - Constructor receives TemplateGenerator + Core API as dependencies
+  - **CLEAR SEPARATION**: CLI coordination ≠ Template generation ≠ Core API processing
 
 **2. content-creator CLI Implementation:**
 
@@ -627,6 +628,7 @@ You are responsible for implementing the content-creator CLI interface and compl
     - `list/delete`: RepositoryService operations
   - Support global flags: `--dry-run`, `--force-overwrite`
   - **Both flows converge on ValidationService + RepositoryService**
+  - **ARCHITECTURE**: TemplateGenerator (pure utility) → Core API ← User Content (both content-agnostic)
 
 **3. 3-Tier Validation Integration:**
 
@@ -653,18 +655,25 @@ You are responsible for implementing the content-creator CLI interface and compl
 
 #### **Expected Output:**
 
+- **TemplateGenerator Utility**:
+  - `src/lib/utils/template-generator.ts` - Pure template generation utility (reusable)
+  - **CONTAINS**: All `generateXContent()` functions (lessons, quiz, exam, study guides, projects)
+  - **CONTAINS**: Lorem ipsum logic, content structure generation, random data
+  - **PURE UTILITY**: No CLI, no file I/O, no Core API dependencies
 - **Modernized ContentScaffoldingGenerator**:
-  - `src/scripts/content-scaffolding.ts` - Clean class-only implementation (zero standalone functions)
-  - Core API integration for all validation and file operations
-  - Pure template generation logic only
+  - `src/scripts/content-scaffolding.ts` - Simplified CLI coordination only
+  - **USES**: TemplateGenerator for content creation + Core API for processing
+  - **ARCHITECTURE**: CLI coordination → TemplateGenerator → Core API (clean separation)
 - **content-creator CLI**:
   - `src/scripts/content-creator.ts` - Complete CLI implementation with Commander.js
   - Unified Core API integration for both template and real content flows
   - Global flags and command routing
 - **Testing Infrastructure**:
-  - `src/test/scripts/content-creator.test.ts` - Comprehensive test suite with optimized patterns
+  - `src/test/lib/utils/template-generator.test.ts` - Independent template generation tests (fast, focused)
+  - `src/test/scripts/content-scaffolding.test.ts` - Simplified CLI coordination tests
+  - `src/test/scripts/content-creator.test.ts` - Comprehensive CLI test suite with TemplateGenerator integration
   - 3-tier validation integration in all test workflows
-  - TestSetup optimization applied consistently
+  - TestSetup optimization: TemplateGenerator tests run without validation (faster execution)
 - **Architecture Compliance**:
   - Complete type consolidation across all generator scripts
   - Zero legacy functions in content generation
@@ -758,14 +767,15 @@ flowchart TB
 
 **Core Architecture Compliance:**
 
-- ✅ Zero standalone functions in `src/scripts/content-scaffolding.ts` (class-only implementation)
-- ✅ ContentScaffoldingGenerator uses Core API exclusively (ValidationService + RepositoryService)
+- ✅ TemplateGenerator utility created in `src/lib/utils/` with pure template generation logic
+- ✅ ContentScaffoldingGenerator simplified to CLI coordination (uses TemplateGenerator + Core API)
+- ✅ Clean separation: CLI ≠ Template Generation ≠ Core API Processing
 - ✅ `content-creator scaffold` and `create/update` converge on identical Core API pipeline
 - ✅ All content operations flow through unified validation and storage services
 
 **CLI Implementation:**
 
-- ✅ `content-creator scaffold` delegates to ContentScaffoldingGenerator class
+- ✅ `content-creator scaffold` uses TemplateGenerator utility → Core API
 - ✅ `content-creator create/update` uses ContentCore validation + repository services
 - ✅ `content-creator validate` works on existing content files
 - ✅ Safety strategy prevents accidental overwrite of final content
@@ -789,7 +799,7 @@ flowchart TB
 
 - Refactored `src/scripts/mermaid-validator.ts` using ValidationService
 - Updated `package.json` with workflow scripts
-- Complete documentation for dual-flow usage patterns
+- **`CONTENT-CREATOR-CLI-GUIDE.md`** - User documentation for content-creator CLI API (primary real content workflows, scaffold as appendix)
 - Architecture coherence validation report
 - Migration guide for legacy script integration
 
@@ -950,19 +960,37 @@ Your evaluation should be guided by the following questions:
     - Are there any features or validation rules mentioned in the planning documents that were missed during implementation?
     - Identify any inconsistencies between what was planned and what was built.
 
+7.  **Build System & Automation Scripts Coherence:**
+    - **Makefile Audit**: List all Makefile targets and group by type (content, validation, build, testing, CI/CD)
+    - **package.json Scripts Audit**: List all npm/pnpm scripts and group by type (development, build, validation, workflow)
+    - **GitHub Workflows Audit**: Review all `.github/workflows/` files and group by purpose (CI, deployment, validation)
+    - **Naming Convention Analysis**: Do script names follow consistent patterns? Are there redundant or conflicting names?
+    - **Script Validity**: Are all referenced scripts/targets still valid? Do they execute successfully?
+    - **Grouping Scripts Analysis**: Do workflow scripts (e.g., `workflow:metadata`, `workflow:content`) correctly group and sequence their constituent commands?
+    - **Dependency Chain Validation**: Are script dependencies correctly defined and do they execute in proper order?
+
 ### Expected Output
 
 - A detailed **Coherence Audit Report** as a Markdown file (`AUDIT-REPORT-TASK-3G.md`).
+- **Script Inventory & Analysis Section** with detailed breakdown:
+  - Complete listing of all Makefile targets, package.json scripts, and GitHub workflows
+  - Grouping by type/purpose with consistency analysis
+  - Naming convention compliance assessment
+  - Redundancy and validity analysis
+  - Workflow script composition verification
 - The report must clearly list all findings, categorized by:
-  - **Critical:** Issues that break the data flow or prevent frontend components from using the data.
-  - **Warning:** Inconsistencies that could lead to future bugs or maintenance challenges.
-  - **Suggestion:** Opportunities for improvement or minor misalignments.
+  - **Critical:** Issues that break the data flow, prevent frontend usage, or break build system
+  - **Warning:** Inconsistencies that could lead to future bugs or maintenance challenges
+  - **Suggestion:** Opportunities for improvement, naming convention fixes, or minor misalignments
 - For each finding, provide a clear description, reference the relevant files/documents, and suggest an actionable recommendation for resolution.
 
 ### Final Validations
 
 - ✅ The audit has been performed against all specified directories and files.
 - ✅ All three core architectural documents have been used for cross-referencing.
+- ✅ **Complete script inventory** performed (Makefile, package.json, GitHub workflows).
+- ✅ **Build system coherence** verified (naming conventions, redundancies, validity).
+- ✅ **Workflow script composition** validated (correct grouping and sequencing).
 - ✅ The final audit report is clear, detailed, and provides actionable insights.
 - ✅ The consistency and **frontend-readiness** of the entire content foundation (types, content, scripts, generated data) has been thoroughly verified.
 

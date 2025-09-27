@@ -22,6 +22,7 @@
 		"generate-content-menu": "npx tsx src/scripts/content-menu-generator.ts",
 		"generate-flatnav": "npx tsx src/scripts/flatnav-generator.ts",
 		"scaffold-content": "tsx src/scripts/content-scaffolding.ts",
+		"content-creator": "tsx src/scripts/content-creator.ts",
 		"validate-mermaid": "npx tsx src/scripts/mermaid-validator.ts",
 		"generate-search-index": "npx tsx src/scripts/search-indexer.ts",
 		"generate-search-index:dev": "npx tsx src/scripts/search-indexer.ts --mode=development",
@@ -95,6 +96,7 @@
 		]
 	},
 	"dependencies": {
+		"commander": "^14.0.1",
 		"lucide-svelte": "^0.544.0",
 		"mermaid": "^11.11.0",
 		"shiki": "^3.12.2",
