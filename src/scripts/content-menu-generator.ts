@@ -60,7 +60,8 @@ import type {
 	ChapterType,
 	TechnologyUnit,
 	UnifiedPathConfig,
-	ContentDifficulty
+	ContentDifficulty,
+	ContentParseResult
 } from "$types";
 import { generateNavigationPaths } from "$lib/utils/navigation-paths.js";
 import { runGeneratedFileValidation } from "../lib/utils/validation-utils.js";
@@ -110,18 +111,7 @@ const CONTENT_ICONS = {
 } as const;
 
 // Parsing result interface for enhanced table structure
-interface ContentParseResult {
-	content_type: ChapterType | null;
-	chapter_num: string | null;
-	unit_num: string | null;
-	title: string | null;
-	icon_name: string | null;
-	emoji?: string | null;
-	estimated_time?: number | null;
-	difficulty?: string | null;
-	prerequisites?: string[] | null;
-	learning_objectives?: string[] | null;
-}
+// ContentParseResult now imported from centralized types
 
 // Technology unit mapping for icons based on keywords
 const TECHNOLOGY_UNIT_MAPPING: Record<string, TechnologyUnit> = {
@@ -146,6 +136,7 @@ export class MarkdownContentGenerator {
 	private readonly outputPath: string;
 	private readonly project: Project;
 	private readonly skipValidation: boolean;
+	private readonly commonConfig = SETTINGS.scripts.common;
 
 	constructor(inputFile?: string, options?: { skipValidation?: boolean }) {
 		this.projectRoot = process.cwd();
@@ -156,7 +147,7 @@ export class MarkdownContentGenerator {
 
 		// Initialize ts-morph project for TypeScript manipulation
 		this.project = new Project({
-			tsConfigFilePath: join(this.projectRoot, "tsconfig.json"),
+			tsConfigFilePath: join(this.projectRoot, this.commonConfig.configFiles.tsConfig),
 			skipAddingFilesFromTsConfig: true
 		});
 

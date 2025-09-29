@@ -13,6 +13,9 @@
  */
 
 import { writeFileSync } from "fs";
+import { join } from "path/posix";
+
+const prettierConfigPath = ".prettierrc"; // Path to Prettier config file
 
 /**
  * Write formatted file with Prettier integration
@@ -27,7 +30,7 @@ export async function writeFormattedFile(
 	options: { compress?: boolean } = {}
 ): Promise<void> {
 	const prettier = await import("prettier");
-	const config = await prettier.resolveConfig(process.cwd());
+	const config = await prettier.resolveConfig(join(process.cwd(), prettierConfigPath));
 
 	if (options.compress) {
 		// Production mode - compressed formatting for smaller bundle size

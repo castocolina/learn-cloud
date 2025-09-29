@@ -9,7 +9,13 @@
 		"skipLibCheck": true,
 		"sourceMap": true,
 		"strict": true,
-		"moduleResolution": "bundler"
+		"moduleResolution": "bundler",
+
+		// PERFORMANCE: Enable incremental compilation for faster development
+		// Speeds up `pnpm run dev`, `pnpm run check`, and CI/CD validations
+		// by reusing previous compilation results when files haven't changed
+		"incremental": true,
+		"tsBuildInfoFile": "./tmp/cache/.tsbuildinfo"
 	},
 	"exclude": ["src/book/", "tmp/config/"]
 	// Path aliases are handled by https://svelte.dev/docs/kit/configuration#alias

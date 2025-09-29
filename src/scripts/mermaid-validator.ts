@@ -48,25 +48,22 @@ import { parseArgs } from "util";
 import { SETTINGS } from "$config/settings.js";
 import type {
 	DiagramReference,
-	MermaidValidationResult,
-	FileProcessingResult,
-	MermaidValidationStats
+	EnhancedMermaidValidationStats,
+	EnhancedMermaidValidationResult,
+	FileProcessingResult
 } from "$types";
+import { ValidationService } from "$lib/services/ValidationService.js";
+// import { MermaidValidator as LibMermaidValidator } from "$lib/utils/mermaid-validator.js";
 
 /**
  * Enhanced validation statistics with error categorization
  */
-interface EnhancedMermaidValidationStats extends MermaidValidationStats {
-	commonErrors: Map<string, number>;
-	errorsByCategory: Map<string, number>;
-}
+// EnhancedMermaidValidationStats now imported from centralized types
 
 /**
  * Enhanced validation result with error categorization
  */
-interface EnhancedMermaidValidationResult extends MermaidValidationResult {
-	errorCategory?: string;
-}
+// EnhancedMermaidValidationResult now imported from centralized types
 
 /**
  * Class for managing parallel processing of files
@@ -110,6 +107,7 @@ class AsyncPool<T> {
  */
 class MermaidValidator {
 	private config = SETTINGS.scripts.validation.mermaid;
+	private validationService: ValidationService;
 
 	/**
 	 * Override verbose setting for this validation run
@@ -131,6 +129,14 @@ class MermaidValidator {
 				module: 1, // CommonJS
 				moduleResolution: 2 // Node
 			}
+		});
+
+		// Initialize ValidationService with Mermaid validation enabled
+		this.validationService = new ValidationService({
+			enableMermaidValidation: true,
+			enableBusinessRules: false,
+			enableTypeValidation: false,
+			skipValidationInTests: false
 		});
 
 		// Initialize async pool for parallel processing
@@ -494,12 +500,45 @@ class MermaidValidator {
 	}
 
 	/**
-	 * Validate a single diagram using mmdc CLI with enhanced error analysis
+	 * Validate a single diagram using ValidationService (modern approach)
+	 * Falls back to legacy mmdc CLI validation for enhanced error analysis
 	 */
 	private async validateDiagram(
 		reference: DiagramReference
 	): Promise<EnhancedMermaidValidationResult> {
 		const startTime = Date.now();
+
+		try {
+			// First try ValidationService for consistent validation
+			const validationResult = await this.validationService.validateMermaidContent(
+				`\`\`\`mermaid\n${reference.diagramContent}\n\`\`\``
+			);
+
+			if (validationResult.success) {
+				return {
+					reference,
+					isValid: true,
+					duration: Date.now() - startTime
+				};
+			}
+
+			// If ValidationService fails, use legacy validation for detailed error analysis
+			const legacyResult = await this.validateDiagramLegacy(reference, startTime);
+			return legacyResult;
+		} catch {
+			// Fallback to legacy validation
+			return this.validateDiagramLegacy(reference, startTime);
+		}
+	}
+
+	/**
+	 * Legacy diagram validation using direct mmdc CLI with enhanced error analysis
+	 */
+	private async validateDiagramLegacy(
+		reference: DiagramReference,
+		startTime?: number
+	): Promise<EnhancedMermaidValidationResult> {
+		const validationStartTime = startTime || Date.now();
 
 		try {
 			const tempFileName = `mermaid-validate-${process.pid}-${Date.now()}-${Math.random()}.mmd`;
@@ -525,7 +564,7 @@ class MermaidValidator {
 			const result: EnhancedMermaidValidationResult = {
 				reference,
 				isValid,
-				duration: Date.now() - startTime
+				duration: Date.now() - validationStartTime
 			};
 
 			if (!isValid) {
@@ -546,7 +585,7 @@ class MermaidValidator {
 				isValid: false,
 				errorMessage,
 				errorCategory: this.categorizeError(errorMessage),
-				duration: Date.now() - startTime
+				duration: Date.now() - validationStartTime
 			};
 
 			if (this.config.verbose) {

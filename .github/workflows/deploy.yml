@@ -50,6 +50,14 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Cache TypeScript build info
+        uses: actions/cache@v4
+        with:
+          path: tmp/cache
+          key: ${{ runner.os }}-ts-build-${{ hashFiles('**/*.ts', '**/*.svelte', 'tsconfig.json', 'src/lib/utils/validation-utils.ts', 'src/bash/check-wip.sh') }}
+          restore-keys: |
+            ${{ runner.os }}-ts-build-
+
       - name: Generate Production Content
         run: make generate-all-content-prod
 

@@ -49,8 +49,8 @@ export const SETTINGS: AppSettings = {
 				svelteKitTsConfig: ".svelte-kit/tsconfig.json" // SvelteKit TypeScript config path
 			},
 			commands: {
-				checkGenerated: ["pnpm", "run", "check:generated"], // Generated content check command
-				lint: ["pnpm", "run", "lint:fix", "--no-ignore"] // ESLint command
+				checkGenerated: ["npx", "svelte-check", "--tsconfig"], // Generated content check command
+				lint: ["pnpm", "eslint", "--fix", "--no-warn-ignored"] // ESLint command
 			},
 			typescript: {
 				extendsPath: ".svelte-kit/tsconfig.json" // Path to extend from (relative to project root)
@@ -63,51 +63,9 @@ export const SETTINGS: AppSettings = {
 			},
 			cleanup: {
 				autoCleanup: true, // Automatically clean temporary files
-				retainOnError: false, // Clean up even on error (change to true for debugging)
+				retainOnError: true, // Retain config files on validation errors for debugging
 				tempFilePrefix: "tsconfig", // Prefix for temporary config files
 				fileListName: "files.txt" // Name for file list temporary file
-			}
-		},
-		scaffolding: {
-			paths: {
-				inputFile: "CONTENT.md", // Input file for reading unit structure
-				outputFolder: "src/data/book" // Output folder for generated content files
-			},
-			validationPrefix: "scaffolding", // Prefix for validation config IDs
-			lessons: {
-				sections: 5, // Minimum 5 sections per lesson
-				codeBlocks: 1, // Minimum 1 code block per lesson
-				diagrams: 1 // Minimum 1 diagram per lesson
-			},
-			quizzes: {
-				questions: 10, // Minimum 10 questions per quiz
-				diverseTypes: true // Use diverse question types
-			},
-			exams: {
-				questions: 30, // Minimum 30 questions per exam
-				diverseTypes: true // Use diverse question types
-			},
-			studyGuides: {
-				flashcards: 5 // Minimum 5 flashcards per study guide
-			},
-			projects: {
-				sections: 5, // Minimum 5 sections per project
-				requirements: 5, // Minimum 5 requirements per project
-				deliverables: 3 // Minimum 3 deliverables per project
-			},
-			contentLengths: {
-				summary: 200,
-				paragraph: 500,
-				longParagraph: 800,
-				question: 80,
-				explanation: 300,
-				flashcardQuestion: 60,
-				flashcardAnswer: 400,
-				objective: 50,
-				requirement: 100,
-				deliverable: 80,
-				diagramTitle: 60,
-				diagramCaption: 150
 			}
 		},
 		contentMenu: {
@@ -229,6 +187,70 @@ export const SETTINGS: AppSettings = {
 				crossUnitNavigation: true, // Allow navigation across unit boundaries
 				skipEmptyUnits: true, // Skip units with no available content
 				generateDebugInfo: false // Include debug information in output
+			}
+		},
+		contentCreator: {
+			paths: {
+				inputFile: "src/data/generated/content-menu.ts", // Input file for reading unit structure
+				outputFolder: "src/data/book" // Output folder for content files
+			},
+			validationPrefix: "content-creator", // Prefix for validation config IDs
+			repository: {
+				backupDirectory: "tmp/backups" // Backup directory for content operations
+			}
+		},
+		common: {
+			configFiles: {
+				packageJson: "package.json", // Package.json path
+				tsConfig: "tsconfig.json" // TypeScript configuration file
+			},
+			extensions: {
+				typescript: ".ts", // TypeScript files
+				javascript: ".js", // JavaScript files
+				json: ".json", // JSON files
+				markdown: ".md" // Markdown files
+			}
+		},
+		scaffolding: {
+			paths: {
+				inputFile: "src/data/generated/content-menu.ts", // Input file for reading unit structure
+				outputFolder: "src/data/book" // Output folder for generated content files
+			},
+			validationPrefix: "scaffolding", // Prefix for validation config IDs
+			lessons: {
+				sections: 5, // Minimum 5 sections per lesson
+				codeBlocks: 1, // Minimum 1 code block per lesson
+				diagrams: 1 // Minimum 1 diagram per lesson
+			},
+			quizzes: {
+				questions: 10, // Minimum 10 questions per quiz
+				diverseTypes: true // Use diverse question types
+			},
+			exams: {
+				questions: 30, // Minimum 30 questions per exam
+				diverseTypes: true // Use diverse question types
+			},
+			studyGuides: {
+				flashcards: 5 // Minimum 5 flashcards per study guide
+			},
+			projects: {
+				sections: 5, // Minimum 5 sections per project
+				requirements: 5, // Minimum 5 requirements per project
+				deliverables: 3 // Minimum 3 deliverables per project
+			},
+			contentLengths: {
+				summary: 200,
+				paragraph: 500,
+				longParagraph: 800,
+				question: 80,
+				explanation: 300,
+				flashcardQuestion: 60,
+				flashcardAnswer: 400,
+				objective: 50,
+				requirement: 100,
+				deliverable: 80,
+				diagramTitle: 60,
+				diagramCaption: 150
 			}
 		}
 	}

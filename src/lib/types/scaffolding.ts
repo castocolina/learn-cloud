@@ -11,15 +11,17 @@ import type { ChapterType } from "$types";
  * Validated arguments interface after CLI parsing and validation
  */
 export interface ValidatedScaffoldingArgs {
-	unit: string;
-	type: ChapterType;
-	id: string;
+	unit?: UnitIdentification;
+	type?: ChapterType;
+	id?: string;
 }
 
 /**
  * Unit identification interface for flexible matching
  */
 export interface UnitIdentification {
+	type: "numeric" | "string";
+	value: number | string;
 	unitNumber?: number;
 	technologyUnit?: string;
 	isAmbiguous?: boolean;

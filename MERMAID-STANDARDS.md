@@ -12,11 +12,15 @@
 
 ---
 
-## MANDATORY SYNTAX RULES
+## MERMAID SYNTAX BEST PRACTICES
 
-### Rule 1: Double Quote All Text
+> **📋 Note on Validation**: These are **best practices for better user experience** rather than mandatory validation rules. The Content Creator validates Mermaid diagrams using **mmdc** (Mermaid CLI) for server-side validation - if it passes that validation, the diagram is functionally correct. **mmdc** provides ~95%+ accuracy compared to browser Mermaid.js rendering without requiring browser dependencies. These practices improve readability, mobile experience, and prevent common issues.
 
-**ALL text in nodes and links MUST be enclosed in double quotes.**
+### Best Practice 1: Double Quote All Text
+
+**Recommended: ALL text in nodes and links should be enclosed in double quotes.**
+
+**Why**: This prevents parsing errors when combining special characters, brackets, parentheses, or other symbols. Most Mermaid rendering failures occur when text contains mixed brackets or special characters without proper quoting.
 
 ```mermaid
 <!-- ✅ CORRECT: All text in double quotes -->
@@ -32,9 +36,11 @@ graph TD
     B -->|No| D[Error Message]
 ```
 
-### Rule 2: Prefer Raw Special Characters in Text
+### Best Practice 2: Prefer Raw Special Characters in Text
 
-**Prefer using raw special characters `<`, `>`, `&` in node and link text. Avoid HTML entities unless absolutely necessary.**
+**Recommended: Use raw special characters `<`, `>`, `&` in node and link text. Avoid HTML entities unless absolutely necessary.**
+
+**Why**: Raw special characters produce clearer, more readable diagrams and are supported by the latest Mermaid renderer. HTML entities (`&lt;`, `&gt;`, `&amp;`) are often inserted by AI agents unnecessarily - use them only if you encounter specific rendering issues.
 
 ```mermaid
 <!-- ✅ PREFERRED: Raw special characters -->
@@ -50,9 +56,11 @@ graph LR
 
 > **Note:** Raw special characters produce clearer, more readable diagrams and are supported by the latest Mermaid renderer. Use HTML entities only if you encounter rendering issues in specific environments.
 
-### Rule 3: Escape Special Characters
+### Best Practice 3: Escape Special Characters
 
-**Escape quotes and symbols within text using backslashes.**
+**Recommended: Escape quotes and symbols within text using backslashes.**
+
+**Why**: Proper escaping prevents parsing errors when including quotes within quoted text.
 
 ```mermaid
 <!-- ✅ CORRECT: Escaped quotes and symbols -->
@@ -64,9 +72,11 @@ graph TD
     A["Function: "getName()""] --> B["Return: "User Name""]
 ```
 
-### Rule 4: Consistent Node Shape Syntax
+### Best Practice 4: Consistent Node Shape Syntax
 
-**Use consistent bracket syntax for different node shapes.**
+**Recommended: Use consistent bracket syntax for different node shapes.**
+
+**Why**: Consistent syntax improves diagram readability and prevents parsing errors from mismatched brackets.
 
 ```mermaid
 <!-- ✅ CORRECT: Consistent bracket usage -->
@@ -84,9 +94,11 @@ graph TB
     C{Diamond Node}         <!-- Missing closing quote -->
 ```
 
-### Rule 5: Link Text Format
+### Best Practice 5: Link Text Format
 
-**All link text must be enclosed in double quotes.**
+**Recommended: All link text should be enclosed in double quotes.**
+
+**Why**: Consistent quoting of link text prevents parsing errors and improves diagram reliability.
 
 ```mermaid
 <!-- ✅ CORRECT: Proper link text syntax -->
@@ -231,7 +243,9 @@ Mermaid supports multiple diagram types, each optimized for different use cases:
 
 ### Layout Direction for Mobile Readability
 
-**STANDARD: Prefer `direction LR` (Left to Right) for better mobile experience.**
+**Best Practice: Prefer `graph LR` (Left to Right) for better mobile experience.**
+
+**Why**: Left-to-right orientation encourages a linear, horizontal flow that reflows into a more manageable, vertically-scrollable format on narrow mobile screens (≤390px). This prevents horizontal scrolling, which significantly degrades mobile user experience.
 
 ```mermaid
 <!-- ✅ PREFERRED: Left-to-right layout for mobile -->
@@ -247,9 +261,7 @@ graph TD
     C --> D["Return Result"]
 ```
 
-**Rationale**: Left-to-right orientation encourages a linear, horizontal flow that reflows into a more manageable, vertically-scrollable format on narrow mobile screens (≤390px). This prevents the need for horizontal scrolling, which degrades the mobile user experience significantly.
-
-**Exception**: Use `graph TD` (Top Down) only when vertical hierarchy is essential to the diagram's meaning, such as organizational charts or layered architecture diagrams where the vertical relationship is semantically important.
+**When to use `graph TD`**: Use Top Down layout only when vertical hierarchy is essential to the diagram's meaning, such as organizational charts or layered architecture diagrams where the vertical relationship is semantically important.
 
 ---
 
@@ -322,57 +334,39 @@ interface Props {
 
 ## COMPONENT DEBUG REQUIREMENTS
 
-**CRITICAL: All Mermaid components MUST include debug capabilities**
+**✅ IMPLEMENTED: Debug capabilities are fully implemented in `MermaidDiagram` component**
 
-### Mandatory Debug Features
+The `MermaidDiagram` component (`src/lib/components/demo/MermaidDiagram.svelte`) includes comprehensive debug functionality:
 
-1. **Debug Flag Support**: Components must accept a `debug` prop or check URL parameter `?debug=true`
-2. **Error Logging**: Log all rendering errors to console with full diagram source code
-3. **Fallback Content**: Display error message with diagram source when rendering fails
-4. **Testing Requirements**: Generate tests that validate both successful renders and error handling
+### Implemented Debug Features
 
-### Implementation Examples
+1. **✅ Debug Flag Support**: Accepts `debug` prop and checks URL parameter `?debug=true` and global settings
+2. **✅ Error Logging**: Logs all rendering errors to console with full diagram source and context
+3. **✅ Fallback Content**: Displays detailed error messages with diagram source and retry functionality
+4. **✅ Copy & Retry Actions**: Debug mode includes copy diagram source and retry rendering buttons
+5. **✅ Orphaned Element Cleanup**: Automatically cleans up DOM elements created during failed renders
 
-**Svelte Component Debug Implementation:**
+### Debug Usage Examples
 
-```typescript
-// MermaidDiagram.svelte
-<script lang="ts">
-  import { page } from '$app/stores';
-
-  interface Props {
-    diagram: string;
-    debug?: boolean;
-  }
-
-  let { diagram, debug = false }: Props = $props();
-
-  // Check URL parameter for debug mode
-  $: debugMode = debug || $page.url.searchParams.has('debug');
-
-  // Error handling with debug logging
-  function handleMermaidError(error: Error) {
-    if (debugMode) {
-      console.error('Mermaid render failed:', {
-        diagram,
-        error: error.message,
-        stack: error.stack
-      });
-    }
-    return `Error rendering diagram: ${error.message}`;
-  }
-</script>
-```
-
-**Debug Flag Usage:**
+**Enable debug mode:**
 
 ```svelte
-<!-- URL parameter approach -->
-<MermaidDiagram {diagram} debug={$page.url.searchParams.has("debug")} />
+<!-- URL parameter approach (automatically detected) -->
+Visit: /your-page?debug=true
 
 <!-- Direct prop approach -->
 <MermaidDiagram {diagram} debug={true} />
+
+<!-- Global setting (configured in SETTINGS.ui.mermaid.debug) -->
+<MermaidDiagram {diagram} />
 ```
+
+**Debug features include:**
+
+- Detailed error logging with diagram source
+- Fallback UI with retry and copy functionality
+- Automatic cleanup of failed render artifacts
+- Visual error state with collapsible debug details
 
 ---
 
@@ -418,41 +412,38 @@ interface Props {
 
 Mermaid diagrams with syntax errors can break entire page renders, causing silent failures or rendering exceptions that impact user experience. Automated validation prevents these issues by catching syntax errors before deployment, ensuring all diagrams follow the mandatory syntax rules defined in this document.
 
-### Recommended Technology: Node.js/TypeScript
+### Recommended Technology: mmdc (Mermaid CLI)
 
-**Rationale**: For SvelteKit/TypeScript projects, Node.js with TypeScript provides the optimal validation solution because:
+**Rationale**: For server-side validation in SvelteKit/TypeScript projects, mmdc provides the optimal solution because:
 
-- **Native TypeScript Support**: Direct parsing of `.ts` files without additional transpilation
-- **Ecosystem Integration**: Seamless integration with existing build tools and CI/CD pipelines
-- **Mermaid Library Access**: Direct access to Mermaid's JavaScript parser for accurate validation
-- **Consistency**: Uses the same runtime environment as the application itself
+- **No Browser Dependencies**: Works in Node.js/CLI environments without requiring DOM, Canvas, or other browser-specific APIs
+- **High Accuracy**: Provides ~95%+ accuracy compared to browser Mermaid.js rendering
+- **Standalone Executable**: Self-contained tool that doesn't require complex JavaScript environment setup
+- **Production Reliability**: Ensures diagrams validated by mmdc will render correctly in browser Mermaid.js
+- **CI/CD Integration**: Perfect for automated validation in build pipelines and pre-commit hooks
 
-### Mandatory Naming Convention
+### Recommended Naming Convention
 
-To enable automated detection, all Mermaid diagram variables MUST follow this naming pattern:
+For consistency with Content Creator validation, use these property names for Mermaid diagrams:
 
 ```typescript
-// ✅ VALID: Will be detected by validation script
+// ✅ RECOMMENDED: Standard property names
 export const flowchartExample = {
 	diagram: `graph LR...`
 };
 
-export const sequenceDiagramAuth = {
-	diagram: `sequenceDiagram...`
-};
-
-// ✅ VALID: Alternative property names
 export const paymentFlow = {
 	definition: `graph TD...`
 };
 
-// ❌ INVALID: Will be missed by validation
-export const myChart = {
-	mermaidCode: `graph LR...`
+export const systemArchitecture = {
+	diagramDefinition: `graph LR...`
 };
 ```
 
-**Required Property Names**: The validation script will search for objects containing properties named: `diagram`, `definition`, or `diagramDefinition`.
+**Supported Property Names**: `diagram`, `definition`, or `diagramDefinition`
+
+**Note**: These naming conventions help with consistency but are not strictly enforced. The Content Creator uses **mmdc** (Mermaid CLI) for server-side validation.
 
 ### Validation Script Implementation Steps
 
@@ -463,12 +454,12 @@ The recommended validation script should perform these operations:
 3. **TypeScript Parsing**: Use TypeScript compiler API to parse files into AST
 4. **Pattern Detection**: Identify exported objects with required property names (`diagram`, `definition`, `diagramDefinition`)
 5. **Diagram Extraction**: Extract string values from identified properties, handling template literals and concatenated strings
-6. **Mermaid Parser Validation**: Pass each diagram string directly to Mermaid's JavaScript parser
+6. **mmdc Validation**: Pass each diagram string to mmdc (Mermaid CLI) for server-side validation
 7. **Error Reporting**: For each validation failure, output:
    - **File path**: Relative path to the TypeScript file
    - **Variable name**: The exported variable/property containing the diagram
    - **Line number**: Where the diagram definition starts
-   - **Parser error message**: Raw error from Mermaid parser
+   - **Parser error message**: Raw error from mmdc
 
 **Example Output:**
 

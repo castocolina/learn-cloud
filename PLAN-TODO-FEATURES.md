@@ -19,7 +19,12 @@ graph TD
     T3E --> T3F1
     T3F1 --> T3F2["TASK 3F2: CLI Interface & Architecture Integration"]
     T3F2 --> T3F3["TASK 3F3: Legacy Integration & Workflow Orchestration"]
-    T3F3 --> T4["TASK 4: SPA Architecture"]
+    T3F3 --> T3G1["TASK 3G1: Core Infrastructure Audit"]
+    T3G1 --> T3G2["TASK 3G2: Type System Coherence"]
+    T3G2 --> T3G3["TASK 3G3: Data Flow & Pipeline"]
+    T3G3 --> T3G4["TASK 3G4: Code Quality & Architecture"]
+    T3G4 --> T3G5["TASK 3G5: Frontend Readiness"]
+    T3G5 --> T4["TASK 4: SPA Architecture"]
 
     T4 --> T5["TASK 5: Theme System"]
     T5 --> T6["TASK 6: shadcn-svelte UI"]
@@ -89,6 +94,11 @@ graph TD
     style T3F1 fill:#1976d2,stroke:#0d47a1,stroke-width:3px,color:#ffffff
     style T3F2 fill:#1976d2,stroke:#0d47a1,stroke-width:3px,color:#ffffff
     style T3F3 fill:#1976d2,stroke:#0d47a1,stroke-width:3px,color:#ffffff
+    style T3G1 fill:#1565c0,stroke:#0d47a1,stroke-width:2px,color:#ffffff
+    style T3G2 fill:#1976d2,stroke:#0d47a1,stroke-width:2px,color:#ffffff
+    style T3G3 fill:#2196f3,stroke:#0d47a1,stroke-width:2px,color:#ffffff
+    style T3G4 fill:#42a5f5,stroke:#0d47a1,stroke-width:2px,color:#ffffff
+    style T3G5 fill:#64b5f6,stroke:#0d47a1,stroke-width:2px,color:#000000
     style T4 fill:#42a5f5,stroke:#0d47a1,stroke-width:2px,color:#ffffff
     style T5 fill:#64b5f6,stroke:#0d47a1,stroke-width:2px,color:#000000
     style T6 fill:#90caf9,stroke:#0d47a1,stroke-width:2px,color:#000000
@@ -805,123 +815,40 @@ flowchart TB
 
 ---
 
-## 3-Tier Validation Standards (Project-Wide Requirements)
+## TASK 3G: Foundation Scripts Coherence & Frontend Readiness Audit (Atomic Division)
 
-### Mandatory Development Workflow
+### Strategic Overview
 
-**ALL development work in this project MUST follow the 3-tier validation pattern:**
+The Foundation Scripts Coherence & Frontend Readiness Audit has been divided into atomic subtasks to enable progressive issue resolution, early feedback loops, and reduced risk. Each subtask builds upon the previous one, ensuring infrastructure stability before proceeding to more complex assessments.
 
-#### **Tier 1: Fast WIP Validation (~5-15s)**
+### Dependency Chain & Validation Strategy
 
-```bash
-make check-wip
-```
+```mermaid
+graph TD
+    G1[TASK 3G1: Core Infrastructure] --> G2[TASK 3G2: Type System]
+    G2 --> G3[TASK 3G3: Data Flow & Pipeline]
+    G3 --> G4[TASK 3G4: Code Quality & Architecture]
+    G4 --> G5[TASK 3G5: Frontend Readiness]
 
-- **Purpose**: Validate only modified/untracked files
-- **When**: Before ANY code changes, MANDATORY for all workflows
-- **Scope**: Modified files only (git diff + git ls-files)
-- **Tools**: prettier, eslint, svelte-check (with node_modules exclusion)
+    G1 -.-> V1[3-Tier Validation]
+    G2 -.-> V2[3-Tier Validation]
+    G3 -.-> V3[3-Tier Validation]
+    G4 -.-> V4[3-Tier Validation]
 
-#### **Tier 2: Code Quality Validation (~30-45s)**
-
-```bash
-pnpm run format
-pnpm run lint
-```
-
-- **Purpose**: Complete project formatting and linting
-- **When**: Before commits and pull requests
-- **Scope**: Entire project codebase
-- **Tools**: prettier (format), eslint (lint)
-
-#### **Tier 3: Comprehensive Validation (~1-3m)**
-
-```bash
-pnpm run test
-pnpm run check
-```
-
-- **Purpose**: Full test suite and TypeScript validation
-- **When**: Integration tests and critical functionality changes ONLY
-- **Scope**: Complete project validation
-- **Tools**: vitest (tests), svelte-check + tsc (TypeScript)
-
-### TestSetup Optimization Requirements
-
-**ALL test suites MUST use the optimization pattern:**
-
-```typescript
-// Default: 96% of tests use this (fast execution)
-class TestSetup {
-	protected configureValidation(): void {
-		SETTINGS.scripts.validation.generated.runAfterGeneration = false;
-	}
-
-	cleanup(): void {
-		SETTINGS.scripts.validation.generated.runAfterGeneration = true;
-	}
-}
-
-// Specialized: 4% of tests use this (full validation)
-class TestSetupWithValidation extends TestSetup {
-	protected configureValidation(): void {
-		SETTINGS.scripts.validation.generated.runAfterGeneration = true;
-	}
-}
-```
-
-### Integration Examples
-
-**Development Workflow:**
-
-```bash
-# Start any development work
-make check-wip
-
-# Make changes...
-
-# Before commit
-make check-wip
-pnpm run format
-pnpm run lint
-
-# Before critical PR (integration tests only)
-make check-wip
-pnpm run format
-pnpm run lint
-pnpm run test
-pnpm run check
-```
-
-**Package.json Integration:**
-
-```json
-{
-	"workflow:dev": "make check-wip",
-	"workflow:commit": "make check-wip && pnpm run format && pnpm run lint",
-	"workflow:full": "make check-wip && pnpm run format && pnpm run lint && pnpm run test && pnpm run check"
-}
+    style G1 fill:#1976d2,stroke:#0d47a1,stroke-width:2px,color:#ffffff
+    style G2 fill:#2196f3,stroke:#0d47a1,stroke-width:2px,color:#ffffff
+    style G3 fill:#42a5f5,stroke:#0d47a1,stroke-width:2px,color:#ffffff
+    style G4 fill:#64b5f6,stroke:#0d47a1,stroke-width:2px,color:#000000
+    style G5 fill:#90caf9,stroke:#0d47a1,stroke-width:2px,color:#000000
 ```
 
 ---
 
-## TASK 3G: Foundation Scripts Coherence & Frontend Readiness Audit
+## TASK 3G1: Core Infrastructure Audit
 
 ### Agent Responsibility
 
-You are responsible for conducting a comprehensive audit of the foundational scripts and data structures to ensure system-wide coherence, consistency, and alignment with the project's architectural plans. This task serves as a critical quality assurance checkpoint after the implementation of the core content generation and management tools.
-
-Your goal is to act as a quality engineer, meticulously cross-referencing the implementation against the established standards and identifying any discrepancies or gaps, ensuring the final data is ready for frontend consumption.
-
-### Technical Documents to Review
-
-- `src/lib/types/` (The single source of truth for all data structures)
-- `src/data/book/` (The source content files)
-- `src/data/generated/` (The output of all generator scripts)
-- `src/scripts/` (The implementation of the generator scripts themselves)
-- `@PLAN-SEARCH-ARCHITECTURE.md` (The plan for the search system)
-- `@CONTENT-STANDARDS.md` (The rules for all content)
-- `@PLAN-CONTENT-GENERATION.md` (The architecture for the content creator CLI)
+You are responsible for auditing and standardizing the core infrastructure components: script execution dependencies, build system coherence, and naming conventions. This task establishes the foundation for all subsequent audit activities.
 
 ### Prerequisites
 
@@ -932,67 +859,260 @@ Your goal is to act as a quality engineer, meticulously cross-referencing the im
 - Task 3E: Flat Navigation Generator completed
 - Task 3F: Content-Creator CLI Architecture completed
 
-### Audit Checklist & Core Questions
+### Scope & Focus Areas
 
-Your evaluation should be guided by the following questions:
+1. **Script Execution Dependencies** - Standardize execution engines across foundation scripts (`tsx` vs others)
+2. **Build System Coherence** - Audit Makefile targets, package.json scripts, and GitHub workflows
+3. **Naming Convention Alignment** - Ensure consistent patterns for generators, validators, and workflows
+4. **Script Validity & Dependencies** - Verify all referenced scripts execute successfully and in proper order
 
-1.  **Type System Coherence:**
-    - Do all generated files in `src/data/generated/` (e.g., `content-menu.ts`, `search-index.ts`, `flatnav.ts`) correctly import and strictly implement the TypeScript interfaces defined in `src/lib/types/`?
-    - Are there any instances of `any`, type mismatches, or optional properties being handled incorrectly?
+### Technical Documents to Review
 
-2.  **Architectural Plan Alignment:**
-    - Does the implementation of `search-indexer.ts` (Task 3D) align with the "Proposed Automatic Indexing System" detailed in `@PLAN-SEARCH-ARCHITECTURE.md`?
-    - Does the `content-creator` CLI and its underlying services (Task 3F) correctly implement the dual-flow architecture and safety strategies defined in `@PLAN-CONTENT-GENERATION.md`?
-    - Do the content files in `src/data/book/` and the generator scripts adhere to the structures and rules specified in `@CONTENT-STANDARDS.md`?
-
-3.  **Data Flow Integrity (End-to-End):**
-    - When a new content file is added to `src/data/book/`, do the generator scripts (`generate-content-menu`, `generate-search-index`, `generate-flatnav`) correctly process it and update their respective outputs in `src/data/generated/`?
-
-4.  **Generated Data Compatibility & Frontend Readiness:**
-    - Are the generated data files (`content-menu.ts`, `search-index.ts`, `flatnav.ts`) compatibles entre sí? Do they share common identifiers and structures where necessary to allow for cross-referencing?
-    - Is the structure of the generated data suitable for direct consumption by the planned frontend components (e.g., Sidebar, Search UI, Next/Prev navigation)?
-    - Does the data provide all the necessary fields and relationships for the frontend to build a cohesive user experience without needing complex client-side transformations?
-
-5.  **Script Execution Flow:**
-    - Do the scripts that form a pipeline execute correctly in sequence? For example, does `flatnav-generator.ts` (Task 3E) successfully consume the output file generated by `content-menu-generator.ts` (Task 3A)?
-
-6.  **Gap Analysis:**
-    - Are there any features or validation rules mentioned in the planning documents that were missed during implementation?
-    - Identify any inconsistencies between what was planned and what was built.
-
-7.  **Build System & Automation Scripts Coherence:**
-    - **Makefile Audit**: List all Makefile targets and group by type (content, validation, build, testing, CI/CD)
-    - **package.json Scripts Audit**: List all npm/pnpm scripts and group by type (development, build, validation, workflow)
-    - **GitHub Workflows Audit**: Review all `.github/workflows/` files and group by purpose (CI, deployment, validation)
-    - **Naming Convention Analysis**: Do script names follow consistent patterns? Are there redundant or conflicting names?
-    - **Script Validity**: Are all referenced scripts/targets still valid? Do they execute successfully?
-    - **Grouping Scripts Analysis**: Do workflow scripts (e.g., `workflow:metadata`, `workflow:content`) correctly group and sequence their constituent commands?
-    - **Dependency Chain Validation**: Are script dependencies correctly defined and do they execute in proper order?
+- `src/scripts/` (All generator and validator scripts)
+- `Makefile` (Build system targets)
+- `package.json` (NPM scripts and workflow definitions)
+- `.github/workflows/` (CI/CD automation)
 
 ### Expected Output
 
-- A detailed **Coherence Audit Report** as a Markdown file (`AUDIT-REPORT-TASK-3G.md`).
-- **Script Inventory & Analysis Section** with detailed breakdown:
-  - Complete listing of all Makefile targets, package.json scripts, and GitHub workflows
-  - Grouping by type/purpose with consistency analysis
-  - Naming convention compliance assessment
-  - Redundancy and validity analysis
-  - Workflow script composition verification
-- The report must clearly list all findings, categorized by:
-  - **Critical:** Issues that break the data flow, prevent frontend usage, or break build system
-  - **Warning:** Inconsistencies that could lead to future bugs or maintenance challenges
-  - **Suggestion:** Opportunities for improvement, naming convention fixes, or minor misalignments
-- For each finding, provide a clear description, reference the relevant files/documents, and suggest an actionable recommendation for resolution.
+- **Infrastructure Audit Report** (`AUDIT-REPORT-TASK-3G1.md`)
+- **Standardization Fixes** (Script execution engine consistency)
+- **Build System Inventory** (Complete categorized listing)
+- **Naming Convention Alignment** (Corrections for consistent patterns)
 
-### Final Validations
+### Three-Tier Validation
 
-- ✅ The audit has been performed against all specified directories and files.
-- ✅ All three core architectural documents have been used for cross-referencing.
-- ✅ **Complete script inventory** performed (Makefile, package.json, GitHub workflows).
-- ✅ **Build system coherence** verified (naming conventions, redundancies, validity).
-- ✅ **Workflow script composition** validated (correct grouping and sequencing).
-- ✅ The final audit report is clear, detailed, and provides actionable insights.
-- ✅ The consistency and **frontend-readiness** of the entire content foundation (types, content, scripts, generated data) has been thoroughly verified.
+1. **Tier 1**: `make check-wip` - Fast validation of modified files
+2. **Tier 2**: `test` - Run test suites to ensure functionality integrity
+3. **Tier 3**: `format/lint/check` - Complete code quality validation
+
+### Success Criteria
+
+- ✅ All scripts use consistent execution engines
+- ✅ Build system targets follow naming conventions
+- ✅ Script dependencies execute in proper order
+- ✅ Complete inventory of automation scripts categorized by purpose
+
+---
+
+## TASK 3G2: Type System Coherence Validation
+
+### Agent Responsibility
+
+You are responsible for validating TypeScript interface compliance across all generated files and ensuring type safety throughout the foundation scripts ecosystem.
+
+### Prerequisites
+
+- TASK 3G1: Core Infrastructure Audit completed
+
+### Scope & Focus Areas
+
+1. **TypeScript Interface Compliance** - Verify generated files implement defined interfaces correctly
+2. **Type Safety Validation** - Eliminate `any` types and fix type mismatches
+3. **Generated Data Type Consistency** - Ensure cross-file type compatibility
+4. **Interface Coverage Assessment** - Identify missing or incomplete interface definitions
+
+### Technical Documents to Review
+
+- `src/lib/types/` (TypeScript interface definitions)
+- `src/data/generated/` (Generated files: content-menu.ts, search-index.ts, flatnav.ts)
+- `src/scripts/` (Type usage in generator scripts)
+
+### Expected Output
+
+- **Type Coherence Report** (`AUDIT-REPORT-TASK-3G2.md`)
+- **Interface Corrections** (Missing or incorrect type implementations)
+- **Type Safety Improvements** (`any` type elimination)
+
+### Three-Tier Validation
+
+1. **Tier 1**: `make check-wip` - Fast TypeScript validation of modified files
+2. **Tier 2**: `test` - Run type-related test suites
+3. **Tier 3**: `format/lint/check` - Complete TypeScript compilation validation
+
+### Success Criteria
+
+- ✅ All generated files strictly implement TypeScript interfaces
+- ✅ Zero `any` types in foundation scripts
+- ✅ Cross-file type compatibility verified
+- ✅ Complete interface coverage for all data structures
+
+---
+
+## TASK 3G3: Data Flow & Pipeline Integrity
+
+### Agent Responsibility
+
+You are responsible for testing end-to-end data flow through the script pipeline and ensuring generated data compatibility for cross-referencing and frontend consumption.
+
+### Prerequisites
+
+- TASK 3G1: Core Infrastructure Audit completed
+- TASK 3G2: Type System Coherence Validation completed
+
+### Scope & Focus Areas
+
+1. **End-to-End Pipeline Testing** - Verify complete data flow from source to generated files
+2. **Script Sequence Validation** - Ensure correct execution order and dependency consumption
+3. **Generated Data Compatibility** - Test cross-referencing between content-menu, search-index, and flatnav
+4. **Integration Testing** - Validate new content processing through entire pipeline
+
+### Technical Documents to Review
+
+- `src/data/book/` (Source content files)
+- `src/data/generated/` (Pipeline output files)
+- `@PLAN-SEARCH-ARCHITECTURE.md` (Search system implementation alignment)
+- `@CONTENT-STANDARDS.md` (Content processing standards)
+
+### Expected Output
+
+- **Pipeline Integrity Report** (`AUDIT-REPORT-TASK-3G3.md`)
+- **Integration Test Results** (End-to-end data flow validation)
+- **Data Compatibility Matrix** (Cross-referencing verification)
+- **Integration Fixes** (Pipeline flow corrections)
+
+### Three-Tier Validation
+
+1. **Tier 1**: `make check-wip` - Fast validation of modified integration code
+2. **Tier 2**: `test` - Run integration test suites
+3. **Tier 3**: `format/lint/check` - Complete validation of pipeline modifications
+
+### Success Criteria
+
+- ✅ Complete data flow from source to generated files working
+- ✅ Generated files share compatible identifiers for cross-referencing
+- ✅ New content processing through pipeline verified
+- ✅ Script execution sequence optimized and validated
+
+---
+
+## TASK 3G4: Code Quality & Architecture Optimization
+
+### Agent Responsibility
+
+You are responsible for resolving technical debt, eliminating code duplication, and optimizing architecture patterns across the foundation scripts ecosystem.
+
+### Prerequisites
+
+- TASK 3G1: Core Infrastructure Audit completed
+- TASK 3G2: Type System Coherence Validation completed
+- TASK 3G3: Data Flow & Pipeline Integrity completed
+
+### Scope & Focus Areas
+
+1. **Technical Debt Resolution** - Address the 6 identified tech debt areas from TASK 3G
+2. **Code Duplication Elimination** - Consolidate repeated utility functions and patterns
+3. **Test Utility Architecture** - Centralize test-specific utilities and patterns
+4. **Resource Loading Optimization** - Eliminate unnecessary package.json and tsconfig.json loading
+
+### Technical Documents to Review
+
+- `src/scripts/` (Foundation scripts for optimization opportunities)
+- `src/test/` (Test utility consolidation opportunities)
+- `src/lib/utils/` (Utility function centralization)
+
+### Tech Debt Focus Areas
+
+1. **Test Utility Architecture** - Centralize test-specific utility functions
+2. **Code Duplication Patterns** - Consolidate repeated utility functions and configuration patterns
+3. **Resource Loading Optimization** - Optimize package.json and tsconfig.json loading
+4. **Content Validation Gaps** - Complete Zod schema validation coverage
+5. **Content Identifier Conflicts** - Resolve ID collision issues
+6. **Utility Function Consolidation** - Centralize number padding and similar utilities
+
+### Expected Output
+
+- **Architecture Optimization Report** (`AUDIT-REPORT-TASK-3G4.md`)
+- **Consolidated Utility Libraries** (Centralized reusable functions)
+- **Test Architecture Improvements** (Unified test utility patterns)
+- **Resource Loading Optimizations** (Efficient configuration loading)
+
+### Three-Tier Validation
+
+1. **Tier 1**: `make check-wip` - Fast validation of refactored code
+2. **Tier 2**: `test` - Comprehensive test suite validation after refactoring
+3. **Tier 3**: `format/lint/check` - Complete quality validation of optimized code
+
+### Success Criteria
+
+- ✅ All technical debt areas resolved
+- ✅ Code duplication eliminated through utility consolidation
+- ✅ Test utilities centralized and reusable
+- ✅ Resource loading optimized for performance
+
+---
+
+## TASK 3G5: Frontend Readiness Assessment
+
+### Agent Responsibility
+
+You are responsible for conducting the final assessment of generated data structures for frontend component consumption readiness. This is a pure analysis task with no code modifications.
+
+### Prerequisites
+
+- TASK 3G1: Core Infrastructure Audit completed
+- TASK 3G2: Type System Coherence Validation completed
+- TASK 3G3: Data Flow & Pipeline Integrity completed
+- TASK 3G4: Code Quality & Architecture Optimization completed
+
+### Scope & Focus Areas
+
+1. **Frontend Data Structure Compatibility** - Assess generated data suitability for component consumption
+2. **Component Integration Readiness** - Evaluate data structures for Sidebar, Search UI, Navigation components
+3. **User Experience Data Completeness** - Verify all necessary fields for cohesive frontend experience
+4. **Client-Side Transformation Requirements** - Identify any complex transformations needed
+5. **Documentation Reality Validation** - Verify CONTENT-STANDARDS.md against current project implementation and assess continued relevance
+
+### Technical Documents to Review
+
+- `src/data/generated/` (Final optimized generated files)
+- `SVELTEKIT-GUIDE.md` (Frontend component architecture requirements)
+- `CONTENT-STANDARDS.md` (Current content creation standards - verify against implementation reality)
+- `CONTENT-CREATOR.md` (Content creation CLI workflows - validate integration with standards)
+- Task 4-8 specifications (Planned frontend components)
+
+### Expected Output
+
+- **Frontend Readiness Report** (`AUDIT-REPORT-TASK-3G5.md`)
+- **Component Integration Assessment** (Data structure compatibility matrix)
+- **Documentation Validation Report** (CONTENT-STANDARDS.md vs implementation reality analysis)
+- **Content Workflow Integration Analysis** (CONTENT-CREATOR.md alignment with current architecture)
+- **Recommendations for Frontend Development** (Data consumption patterns)
+- **Final Architecture Validation** (Complete foundation readiness confirmation)
+
+### Validation Requirements
+
+- **No Code Changes**: Pure assessment task
+- **Comprehensive Analysis**: All frontend requirements covered
+- **Clear Recommendations**: Actionable insights for frontend development
+
+### Success Criteria
+
+- ✅ Generated data structures suitable for direct frontend consumption
+- ✅ Component integration patterns clearly defined
+- ✅ User experience data completeness verified
+- ✅ CONTENT-STANDARDS.md validated against implementation reality
+- ✅ CONTENT-CREATOR.md integration with architecture confirmed
+- ✅ Documentation accuracy and relevance assessed
+- ✅ Foundation infrastructure confirmed ready for frontend development
+
+---
+
+## Overall Success Metrics
+
+### Timeline & Resource Optimization
+
+- **Total Duration**: 7-12 hours (vs. 15-20 hours for monolithic approach)
+- **Progressive Issue Resolution**: Each task fixes issues affecting subsequent tasks
+- **Early Feedback Loop**: Infrastructure problems resolved before data flow testing
+- **Reduced Risk**: Type system stabilized before major refactoring
+
+### Final Deliverables
+
+- **5 Focused Audit Reports** (3G1-3G5) with specific recommendations
+- **Optimized Foundation Infrastructure** ready for frontend development
+- **Comprehensive Technical Debt Resolution**
+- **Complete Frontend Readiness Confirmation**
 
 ---
 

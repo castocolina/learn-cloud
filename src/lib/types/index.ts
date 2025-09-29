@@ -32,11 +32,19 @@ export type {
 	FontSize,
 	AspectRatio,
 	Layout,
-	CardStyle
+	CardStyle,
+	SupportedFormat
 } from "./types.js";
 
 // Union type constants - For iteration and Object.values() replacement
-export { CONTENT_DIFFICULTIES, CHAPTER_TYPES, QUESTION_TYPES, CONTENT_TYPES } from "./types.js";
+export {
+	CONTENT_DIFFICULTIES,
+	CHAPTER_TYPES,
+	QUESTION_TYPES,
+	CONTENT_TYPES,
+	CONTENT_STATUSES,
+	SUPPORTED_FORMATS
+} from "./types.js";
 
 // Rich text exports - Structured content system
 export type {
@@ -337,6 +345,32 @@ export type {
 	ContentGenerationResult,
 	SafetyCheckResult
 } from "./scaffolding.js";
+
+// Scripts exports - Script-specific types and CLI interfaces
+export type {
+	ContentParseResult,
+	ScaffoldingArgs,
+	EnhancedMermaidValidationStats,
+	EnhancedMermaidValidationResult,
+	ServiceConfig,
+	ServerStruct,
+	CliOptions,
+	CliExecutionResult,
+	ScriptValidationConfig,
+	FileProcessingProgress,
+	ContentInventoryItem,
+	InventoryStats,
+	FormatOptions,
+	ExtendedCommandOptions,
+	ContentCreatorOptions,
+	FormatProcessorResult,
+	FormatProcessor
+} from "./scripts.js";
+
+/**
+ * Scripts type guards
+ */
+export { isContentParseResult, isScaffoldingArgs, isCliExecutionResult } from "./scripts.js";
 
 /**
  * Configuration type guards

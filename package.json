@@ -21,20 +21,29 @@
 		"validate:scripts": "prettier --write \"src/scripts/**/*.ts\" && eslint --fix \"src/scripts/**/*.ts\"",
 		"generate-content-menu": "npx tsx src/scripts/content-menu-generator.ts",
 		"generate-flatnav": "npx tsx src/scripts/flatnav-generator.ts",
-		"scaffold-content": "tsx src/scripts/content-scaffolding.ts",
+		"scaffold-content": "tsx src/scripts/scaffold-generator.ts scaffold",
 		"content-creator": "tsx src/scripts/content-creator.ts",
+		"content:create": "tsx src/scripts/content-creator.ts create",
+		"content:list": "tsx src/scripts/content-creator.ts list",
+		"content:update": "tsx src/scripts/content-creator.ts update",
+		"content:delete": "tsx src/scripts/content-creator.ts delete",
+		"content:validate": "tsx src/scripts/content-creator.ts validate",
+		"scaffold:generate": "tsx src/scripts/scaffold-generator.ts scaffold",
 		"validate-mermaid": "npx tsx src/scripts/mermaid-validator.ts",
-		"generate-search-index": "npx tsx src/scripts/search-indexer.ts",
-		"generate-search-index:dev": "npx tsx src/scripts/search-indexer.ts --mode=development",
-		"generate-search-index:prod": "npx tsx src/scripts/search-indexer.ts --mode=production",
-		"validate-content": "npm run validate-mermaid && npm run generate-content-menu && npm run generate-search-index:dev",
-		"validate-content:prod": "npm run validate-mermaid && npm run generate-content-menu && npm run generate-search-index:prod",
+		"generate-search-index": "npx tsx src/scripts/search-indexer.ts dev",
+		"generate-search-index-dev": "npx tsx src/scripts/search-indexer.ts dev",
+		"generate-search-index-prod": "npx tsx src/scripts/search-indexer.ts prod",
+		"validate-content": "npm run validate-mermaid && npm run generate-content-menu && npm run generate-search-index-dev",
+		"validate-content:prod": "npm run validate-mermaid && npm run generate-content-menu && npm run generate-search-index-prod",
 		"validate-generated": "prettier --write \"src/data/book/\" && eslint --fix \"src/data/book/\"",
 		"validate-menu-file": "prettier --write \"src/data/generated/content-menu.ts\" && eslint --fix \"src/data/generated/content-menu.ts\"",
 		"test": "vitest",
 		"test:run": "vitest run",
 		"test:unit": "vitest run",
-		"test:e2e": "playwright test"
+		"test:e2e": "playwright test",
+		"workflow:metadata": "make check-wip && pnpm run generate-content-menu && pnpm run scaffold:generate && pnpm run generate-flatnav && pnpm run generate-search-index && pnpm run format && pnpm run lint",
+		"workflow:content": "make check-wip && pnpm run generate-flatnav && pnpm run generate-search-index && pnpm run format && pnpm run lint",
+		"workflow:full-validation": "make check-wip && pnpm run format && pnpm run lint && pnpm run test && pnpm run check"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",
@@ -100,6 +109,7 @@
 		"lucide-svelte": "^0.544.0",
 		"mermaid": "^11.11.0",
 		"shiki": "^3.12.2",
-		"zod": "^4.1.11"
+		"zod": "^4.1.11",
+		"zod-to-json-schema": "^3.24.6"
 	}
 }

@@ -18,6 +18,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync } from "fs";
 import { join } from "path";
 import { FlatNavGenerator } from "../../scripts/flatnav-generator.js";
+import type { AppSettings } from "$types";
 import { generateConfigId } from "../../lib/utils/validation-utils.js";
 import { SETTINGS } from "$config/settings.js";
 
@@ -65,19 +66,44 @@ class TestSetup {
 	}
 
 	/**
-	 * Configure validation settings based on test requirements
+	 * Create generator with mockable settings
+	 */
+	createGenerator(): FlatNavGenerator {
+		const mockSettings: AppSettings = {
+			...SETTINGS,
+			scripts: {
+				...SETTINGS.scripts,
+				validation: {
+					...SETTINGS.scripts.validation,
+					generated: {
+						...SETTINGS.scripts.validation.generated,
+						runAfterGeneration: this.enableValidation
+					}
+				},
+				flatNav: {
+					...SETTINGS.scripts.flatNav,
+					paths: {
+						inputFile: this.inputPath,
+						outputFile: this.outputPath
+					}
+				}
+			}
+		};
+
+		return new FlatNavGenerator(undefined, undefined, mockSettings);
+	}
+
+	/**
+	 * Configure validation settings based on test requirements (legacy method for compatibility)
 	 */
 	protected configureValidation(): void {
-		// Temporarily override validation setting for faster tests by default
-		// Only specific tests that need validation will enable it
-		(SETTINGS.scripts.validation.generated as { runAfterGeneration: boolean }).runAfterGeneration =
-			this.enableValidation;
+		// This method is kept for backward compatibility but not used with dependency injection
+		// The validation is now controlled via createGenerator() method
 	}
 
 	cleanup(): void {
-		// Restore original validation setting
-		(SETTINGS.scripts.validation.generated as { runAfterGeneration: boolean }).runAfterGeneration =
-			true;
+		// No need to restore global SETTINGS when using dependency injection
+		// Each test uses its own mocked settings instance
 
 		if (existsSync(this.tempDir)) {
 			rmSync(this.tempDir, { recursive: true, force: true });
@@ -253,7 +279,7 @@ describe("FlatNavGenerator", () => {
 	beforeEach(async () => {
 		testSetup = new TestSetup();
 		await testSetup.setup();
-		generator = new FlatNavGenerator(testSetup.inputPath, testSetup.outputPath);
+		generator = testSetup.createGenerator();
 	});
 
 	afterEach(() => {
@@ -267,7 +293,27 @@ describe("FlatNavGenerator", () => {
 		}, 10000);
 
 		it("should handle missing input file gracefully", async () => {
-			const nonExistentGenerator = new FlatNavGenerator("non-existent.ts", testSetup.outputPath);
+			const mockSettings: AppSettings = {
+				...SETTINGS,
+				scripts: {
+					...SETTINGS.scripts,
+					validation: {
+						...SETTINGS.scripts.validation,
+						generated: {
+							...SETTINGS.scripts.validation.generated,
+							runAfterGeneration: false
+						}
+					},
+					flatNav: {
+						...SETTINGS.scripts.flatNav,
+						paths: {
+							inputFile: "non-existent.ts",
+							outputFile: testSetup.outputPath
+						}
+					}
+				}
+			};
+			const nonExistentGenerator = new FlatNavGenerator(undefined, undefined, mockSettings);
 			const success = await nonExistentGenerator.generate();
 			expect(success).toBe(false);
 		}, 10000);
@@ -278,10 +324,7 @@ describe("FlatNavGenerator", () => {
 			await validationTestSetup.setup();
 
 			try {
-				const validationGenerator = new FlatNavGenerator(
-					validationTestSetup.inputPath,
-					validationTestSetup.outputPath
-				);
+				const validationGenerator = validationTestSetup.createGenerator();
 
 				const malformedContent = `export const contentMenu = { invalid syntax }`;
 				writeFileSync(validationTestSetup.inputPath, malformedContent, "utf-8");
@@ -562,8 +605,24 @@ export const contentMenu: MenuStructure = {
 		}, 10000);
 
 		it("should handle custom input and output paths", () => {
-			// Test that the generator accepts custom paths
-			const customGenerator = new FlatNavGenerator("custom-input.ts", "custom-output.ts");
+			// Test that the generator accepts custom paths via settings
+			const mockSettings: AppSettings = {
+				ui: {
+					mermaid: { debug: false, modalPagePercent: 90 },
+					flipCard: { modalPagePercent: 90 },
+					breadcrumb: { showIcon: true },
+					sidebar: { collapsible: true, defaultCollapsed: false }
+				},
+				scripts: {
+					validation: { generated: { runAfterGeneration: false } },
+					flatNav: {
+						paths: { inputFile: "custom-input.ts", outputFile: "custom-output.ts" },
+						validationPrefix: flatNavSettings.validationPrefix,
+						navigation: flatNavSettings.navigation
+					}
+				}
+			} as AppSettings;
+			const customGenerator = new FlatNavGenerator(undefined, undefined, mockSettings);
 			expect(customGenerator).toBeDefined();
 		}, 10000);
 	});
@@ -670,10 +729,7 @@ export const contentMenu: MenuStructure = {
 		try {
 			writeFileSync(validationTestSetup.inputPath, complexContent, "utf-8");
 
-			const generator = new FlatNavGenerator(
-				validationTestSetup.inputPath,
-				validationTestSetup.outputPath
-			);
+			const generator = validationTestSetup.createGenerator();
 			const success = await generator.generate();
 
 			expect(success).toBe(true);

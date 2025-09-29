@@ -73,6 +73,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-
 
+      - name: Cache TypeScript build info
+        uses: actions/cache@v4
+        with:
+          path: tmp/cache
+          key: ${{ runner.os }}-ts-build-${{ hashFiles('**/*.ts', '**/*.svelte', 'tsconfig.json', 'src/lib/utils/validation-utils.ts', 'src/bash/check-wip.sh') }}
+          restore-keys: |
+            ${{ runner.os }}-ts-build-
+
       - name: Run SvelteKit Check
         if: matrix.validation == 'svelte-check'
         run: pnpm run check

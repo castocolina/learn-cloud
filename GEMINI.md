@@ -17,6 +17,7 @@ For complete agent implementation guidelines, project rules, and technical speci
   - **Tier 1 (~5-15s)**: `make check-wip` for modified/untracked files only
   - **Tier 2 (~30-45s)**: `pnpm run format` + `pnpm run lint` for complete project code quality
   - **Tier 3 (~1-3m)**: `pnpm run test` + `pnpm run check` for comprehensive testing and TypeScript validation
+- **Code Refactoring:** When refactoring existing code, you **must** preserve all existing comments and asset styles unless explicitly instructed otherwise by the user.
 
 ## Structure Overview
 

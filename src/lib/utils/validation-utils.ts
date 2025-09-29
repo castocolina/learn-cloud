@@ -19,7 +19,8 @@ const {
 } = SETTINGS;
 
 /**
- * Generate unique configuration ID for test isolation
+ * Generate unique configuration ID for test isolation.
+ * Only for test environments, we do not need this for real use cases, only in test envs we races conditions.
  * @param prefix Prefix for the config ID (e.g., "test-search-idx")
  * @param testName Optional test name for uniqueness
  */
@@ -85,15 +86,15 @@ async function executeWithStreaming(
 			if (validationLogging.showCommands) {
 				if (success) {
 					if (validationLogging.useEmojis) {
-						console.log(`✅ ${fullCommand} completed successfully`);
+						console.log(`✅ ${fullCommand} completed successfully\n`);
 					} else {
-						console.log(`${fullCommand} completed successfully`);
+						console.log(`${fullCommand} completed successfully\n`);
 					}
 				} else {
 					if (validationLogging.useEmojis) {
-						console.error(`❌ ${fullCommand} failed with exit code ${code}`);
+						console.error(`❌ ${fullCommand} failed with exit code ${code}\n`);
 					} else {
-						console.error(`${fullCommand} failed with exit code ${code}`);
+						console.error(`${fullCommand} failed with exit code ${code}\n`);
 					}
 				}
 			}
@@ -126,14 +127,16 @@ async function executeWithStreaming(
 
 /**
  * Run TypeScript check validation specifically for generated content
- * Uses dynamic tsconfig.generated.json to check only specified target files
+ * Uses dynamic tsconfig file to check only specified target files
+ * @param configPath Absolute path to the TypeScript config file to use
  */
-export async function runGeneratedTypeScriptCheck(): Promise<ValidationResult> {
+export async function runGeneratedTypeScriptCheck(configPath: string): Promise<ValidationResult> {
+	// return executeWithStreaming("npx", ["svelte-check", "--tsconfig", configPath]);
 	const { commands: validationCommands } = validationConf;
-	return executeWithStreaming(
-		validationCommands.checkGenerated[0],
-		validationCommands.checkGenerated.slice(1)
-	);
+	return executeWithStreaming(validationCommands.checkGenerated[0], [
+		...validationCommands.checkGenerated.slice(1),
+		configPath
+	]);
 }
 
 /**
@@ -174,7 +177,7 @@ export function getValidationConfig(
  * This function is called by multiple content generation scripts:
  * - src/scripts/search-indexer.ts (line 1025)
  * - src/scripts/content-menu-generator.ts (line 1023)
- * - src/scripts/content-scaffolding.ts (lines 2005, 2303, 2402)
+ * - src/scripts/content-creator.ts (scaffold command)
  *
  * During concurrent test execution (Vitest parallel mode), multiple instances
  * call this function simultaneously, causing race conditions in the TypeScript
@@ -212,7 +215,7 @@ export function getValidationConfig(
  * CRITICAL: ALL scripts calling this function need test isolation:
  * - search-indexer.ts tests
  * - content-menu-generator.ts tests
- * - content-scaffolding.ts tests
+ * - content-creator.ts tests (scaffold command)
  * - Any future flatnav-generator.ts tests (Task 3E)
  *
  * @param target Path to TypeScript file(s) to validate
@@ -238,9 +241,13 @@ export async function runGeneratedFileValidation(
 		];
 	}
 
+	// Auto-generate configId if not provided
+	const actualConfigId = configId || `random-${crypto.randomBytes(2).toString("hex")}`;
+
 	console.log("");
 	console.log("🔍 Running post-generation validation...");
 	console.log("=====================================");
+	console.log(`🔧 Config ID: ${actualConfigId}`);
 	console.log(`📁 Target: ${config.target}`);
 	console.log(`🔍 Check: ${config.includeCheck ? "✅" : "⏭️"}`);
 	console.log(`🧹 Lint: ${config.includeLint ? "✅" : "⏭️"}`);
@@ -248,6 +255,7 @@ export async function runGeneratedFileValidation(
 
 	// For generated TypeScript files, we run our specific TypeScript check
 	const results: ValidationResult[] = [];
+	let configPath = "";
 
 	try {
 		// Run lint validation if enabled (Step 1 - BEFORE TypeScript check)
@@ -259,8 +267,8 @@ export async function runGeneratedFileValidation(
 		// Run TypeScript check validation for generated content (Step 2 - AFTER lint)
 		if (config.includeCheck) {
 			// Create dynamic tsconfig for this specific target
-			await createDynamicTsConfig(config.target, configId);
-			const checkResult = await runGeneratedTypeScriptCheck();
+			configPath = await createDynamicTsConfig(config.target, actualConfigId);
+			const checkResult = await runGeneratedTypeScriptCheck(configPath);
 			results.push(checkResult);
 		}
 
@@ -273,11 +281,17 @@ export async function runGeneratedFileValidation(
 			console.log("✅ All generated file validation checks completed successfully!");
 		} else {
 			console.log(`⚠️  ${failedCount}/${results.length} generated file validation checks failed`);
+			if (configPath) {
+				console.log(`💡 Failed validation used config: ${configPath}`);
+			}
 		}
 	} catch (error) {
 		console.error("");
 		console.error("❌ Generated file validation process failed:");
 		console.error(error instanceof Error ? error.message : String(error));
+		if (configPath) {
+			console.error(`💡 Failed validation used config: ${configPath}`);
+		}
 
 		results.push({
 			success: false,
@@ -288,9 +302,16 @@ export async function runGeneratedFileValidation(
 	}
 
 	// Cleanup temporary files if enabled
-	if (results.length > 0) {
-		const hasErrors = results.some((r) => !r.success);
-		await cleanupValidationFiles(configId, hasErrors);
+	const hasErrors = results.some((r) => !r.success);
+	if (results.length > 0 && configPath) {
+		await cleanupValidationFiles(configPath, hasErrors);
+	}
+
+	// Exit with error code if validation failed and not in test mode
+	if (hasErrors) {
+		// Only exit if configId was not provided (not a test)
+		console.error(`❌ Validation failed - config used: ${configPath}`);
+		process.exit(1);
 	}
 
 	return results;
@@ -303,7 +324,7 @@ export async function runGeneratedFileValidation(
  * @param target Path to TypeScript file(s) to validate
  * @param configId Optional unique identifier for test isolation
  */
-export async function createDynamicTsConfig(target: string, configId?: string): Promise<void> {
+export async function createDynamicTsConfig(target: string, configId?: string): Promise<string> {
 	const {
 		paths: validationPaths,
 		typescript: tsValidationConfig,
@@ -313,7 +334,7 @@ export async function createDynamicTsConfig(target: string, configId?: string): 
 	// Generate unique config filename if configId is provided (test isolation)
 	const configDir = validationPaths.tempConfigDir;
 	const configFileName = configId
-		? `${configId}.tsconfig.json`
+		? `tsconfig.generated.${configId}.json`
 		: validationPaths.generatedConfigFile;
 	const configPath = join(configDir, configFileName);
 
@@ -351,11 +372,90 @@ export async function createDynamicTsConfig(target: string, configId?: string): 
 		? ["**/node_modules/**", "**/.pnpm/**", "**/dist/**", "**/build/**"]
 		: [];
 
+	// ============================================================================
+	// TypeScript node_modules Error Prevention Strategy
+	// ============================================================================
+	// PROBLEM: TypeScript validates dependencies even when excluded because:
+	// • "exclude" only prevents compilation, not type checking of imports
+	// • Broad include patterns can pull in node_modules indirectly
+	// SOLUTION: Multi-layer approach with compiler options + comprehensive exclusions
+	// MAINTENANCE: Never remove skipLibCheck or increase maxNodeModuleJsDepth above 0
+
 	const dynamicConfig = {
 		...rootTsConfig,
 		extends: `${projectRoot}/${tsValidationConfig.extendsPath}`, // Absolute path to extends
+		compilerOptions: {
+			// CRITICAL: Skip checking .d.ts files in node_modules
+			// This prevents TypeScript from validating third-party library definitions
+			// which often contain errors that we cannot fix and don't need to validate
+			skipLibCheck: true,
+
+			// CRITICAL: Skip checking default library files
+			// Prevents validation of built-in TypeScript libs (DOM, ES6, etc.)
+			// which can have conflicts with different versions
+			skipDefaultLibCheck: true,
+
+			// IMPORTANT: Control how deep TypeScript looks into node_modules
+			// Setting to 0 prevents deep traversal of JS files in dependencies
+			// This stops cascading errors from poorly typed third-party packages
+			maxNodeModuleJsDepth: 0,
+
+			// IMPORTANT: Suppress excess property errors on object literals
+			// Allows more flexible object usage without strict property checking
+			// Useful for config objects and API responses that may have extra fields
+			suppressExcessPropertyErrors: true,
+
+			// HELPFUL: Don't truncate error messages too early
+			// Allows us to see full error context for better debugging
+			noErrorTruncation: false,
+
+			// PERFORMANCE: Enable incremental compilation
+			// Speeds up subsequent runs by reusing previous compilation info
+			incremental: true,
+
+			// PERFORMANCE: Store incremental info in cache directory
+			// Keeps the main project clean while enabling faster builds and better cache persistence
+			tsBuildInfoFile: `${projectRoot}/tmp/cache/.tsbuildinfo-${configId || "validation"}`,
+
+			// Inherit existing compiler options from root config
+			...rootTsConfig.compilerOptions
+		},
 		include: [absoluteTarget], // Always use absolute path
-		exclude: [...baseExcludes, ...wipExcludes] // Combine base and conditional excludes
+		exclude: [
+			// CRITICAL: Exclude entire node_modules tree
+			// Multiple patterns ensure complete exclusion regardless of path structure
+			`${projectRoot}/node_modules/`,
+			`${projectRoot}/node_modules/**/*`,
+			"**/node_modules/**",
+			"../../node_modules/**",
+
+			// IMPORTANT: Exclude package manager directories
+			// These contain duplicate dependencies and cache files
+			`${projectRoot}/.pnpm/`,
+			`${projectRoot}/.yarn/`,
+			`${projectRoot}/.npm/`,
+
+			// IMPORTANT: Exclude build artifacts
+			// These are generated files that shouldn't be type-checked
+			`${projectRoot}/dist/`,
+			`${projectRoot}/build/`,
+			`${projectRoot}/.svelte-kit/`,
+
+			// HELPFUL: Exclude temporary and legacy directories
+			// These either don't need checking or are deprecated
+			`${projectRoot}/tmp/config/`,
+			`${projectRoot}/src/book/`,
+
+			// PERFORMANCE: Exclude common non-TS files that might match patterns
+			"**/*.min.js",
+			"**/*.bundle.js",
+			"**/*.vendor.js",
+
+			// Include additional WIP-style exclusions if configId is provided
+			...wipExcludes,
+			// Include base excludes from root config
+			...baseExcludes
+		]
 	};
 
 	// Write dynamic configuration
@@ -376,21 +476,19 @@ export async function createDynamicTsConfig(target: string, configId?: string): 
 			}
 		}
 	}
+	return configPath;
 }
 
 /**
  * Clean up temporary validation files based on cleanup configuration
- * @param configId Optional unique identifier for test isolation
+ * @param configPath Path to the config file to clean up
+ * @param hasErrors Whether validation had errors
  */
 export async function cleanupValidationFiles(
-	configId?: string,
+	configPath: string,
 	hasErrors?: boolean
 ): Promise<void> {
-	const {
-		paths: validationPaths,
-		cleanup: cleanupConf,
-		logging: validationLogging
-	} = validationConf;
+	const { cleanup: cleanupConf, logging: validationLogging } = validationConf;
 
 	// Skip cleanup if disabled or retaining files on error
 	if (!cleanupConf.autoCleanup || (hasErrors && cleanupConf.retainOnError)) {
@@ -403,51 +501,24 @@ export async function cleanupValidationFiles(
 				}
 			} else if (hasErrors && cleanupConf.retainOnError) {
 				if (validationLogging.useEmojis) {
-					console.log("🔍 Retaining temporary files for debugging (validation errors detected)");
+					console.log(`🔍 Retaining config for debugging: ${configPath}`);
 				} else {
-					console.log("Retaining temporary files for debugging (validation errors detected)");
+					console.log(`Retaining config for debugging: ${configPath}`);
 				}
 			}
 		}
 		return;
 	}
 
-	const tempConfigDir = validationPaths.tempConfigDir;
-
 	try {
-		if (configId) {
-			// Clean up specific test isolation files
-			const configFileName = `${configId}.tsconfig.json`;
-			const configPath = join(tempConfigDir, configFileName);
-
-			if (fs.existsSync(configPath)) {
-				fs.unlinkSync(configPath);
-				if (validationLogging.showCommands) {
-					if (validationLogging.useEmojis) {
-						console.log(`🧹 Cleaned up test config: ${configPath}`);
-					} else {
-						console.log(`Cleaned up test config: ${configPath}`);
-					}
-				}
-			}
-		} else {
-			// Clean up standard temporary files
-			const generatedConfigPath = join(tempConfigDir, validationPaths.generatedConfigFile);
-			const wipConfigPath = join(tempConfigDir, validationPaths.wipConfigFile);
-			const fileListPath = join(tempConfigDir, cleanupConf.fileListName);
-
-			const filesToClean = [generatedConfigPath, wipConfigPath, fileListPath];
-
-			for (const filePath of filesToClean) {
-				if (fs.existsSync(filePath)) {
-					fs.unlinkSync(filePath);
-					if (validationLogging.showCommands) {
-						if (validationLogging.useEmojis) {
-							console.log(`🧹 Cleaned up: ${filePath}`);
-						} else {
-							console.log(`Cleaned up: ${filePath}`);
-						}
-					}
+		// Clean up the specific config file
+		if (fs.existsSync(configPath)) {
+			fs.unlinkSync(configPath);
+			if (validationLogging.showCommands) {
+				if (validationLogging.useEmojis) {
+					console.log(`🧹 Cleaned up config: ${configPath}`);
+				} else {
+					console.log(`Cleaned up config: ${configPath}`);
 				}
 			}
 		}

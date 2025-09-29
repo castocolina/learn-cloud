@@ -16,6 +16,12 @@
 import { promises as fs, existsSync, statSync } from "fs";
 import { join, dirname, basename, extname } from "path";
 import type { SafetyCheckResult, ContentStatus, ScaffoldingStats } from "$types/scaffolding";
+import type {
+	WriteOptions,
+	RepositoryConfig,
+	FileOperationResult,
+	RepositoryTransaction
+} from "$types/scripts";
 
 /**
  * Repository operation modes
@@ -27,43 +33,7 @@ export type RepositoryMode = "safe" | "force" | "backup";
  */
 export type FileOperation = "create" | "update" | "delete" | "backup" | "restore";
 
-/**
- * Repository operation configuration
- */
-export interface RepositoryConfig {
-	mode: RepositoryMode;
-	createBackups: boolean;
-	validateBeforeWrite: boolean;
-	respectContentStatus: boolean;
-	backupDirectory: string;
-}
-
-/**
- * File operation result
- */
-export interface FileOperationResult {
-	success: boolean;
-	operation: FileOperation;
-	filePath: string;
-	backupPath?: string;
-	error?: string;
-	metadata?: {
-		originalSize?: number;
-		newSize?: number;
-		contentStatus?: ContentStatus;
-		timestamp?: string;
-	};
-}
-
-/**
- * Repository transaction for atomic operations
- */
-export interface RepositoryTransaction {
-	id: string;
-	operations: FileOperationResult[];
-	startTime: string;
-	status: "pending" | "committed" | "rolled_back";
-}
+// Using centralized interfaces from $types/scripts
 
 /**
  * RepositoryService class for safe content management
@@ -195,7 +165,7 @@ export class RepositoryService {
 	/**
 	 * Create a backup of a file
 	 */
-	async createBackup(filePath: string): Promise<string> {
+	async createBackups(filePath: string): Promise<string> {
 		const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
 		const fileName = basename(filePath, extname(filePath));
 		const fileExt = extname(filePath);
@@ -229,7 +199,14 @@ export class RepositoryService {
 			if (!safetyCheck.canProceed && !force) {
 				return {
 					success: false,
-					operation,
+					action:
+						operation === "create"
+							? "created"
+							: operation === "update"
+								? "updated"
+								: operation === "delete"
+									? "skipped"
+									: "skipped",
 					filePath,
 					error: safetyCheck.error || safetyCheck.warning || "Safety check failed"
 				};
@@ -239,7 +216,7 @@ export class RepositoryService {
 
 			// Create backup if file exists and backups are enabled
 			if (existsSync(filePath) && this.config.createBackups) {
-				backupPath = await this.createBackup(filePath);
+				backupPath = await this.createBackups(filePath);
 			}
 
 			// Ensure directory exists
@@ -252,30 +229,38 @@ export class RepositoryService {
 			}
 
 			// Get original file size for metadata
-			const originalSize = existsSync(filePath) ? statSync(filePath).size : 0;
+			const _originalSize = existsSync(filePath) ? statSync(filePath).size : 0;
 
 			// Write the file
 			await fs.writeFile(filePath, finalContent, "utf-8");
 
 			// Get new file size
-			const newSize = statSync(filePath).size;
+			const _newSize = statSync(filePath).size;
 
 			return {
 				success: true,
-				operation,
+				action:
+					operation === "create"
+						? "created"
+						: operation === "update"
+							? "updated"
+							: operation === "delete"
+								? "skipped"
+								: "skipped",
 				filePath,
-				backupPath,
-				metadata: {
-					originalSize,
-					newSize,
-					contentStatus: options?.contentStatus,
-					timestamp: new Date().toISOString()
-				}
+				backupPath
 			};
 		} catch (error) {
 			return {
 				success: false,
-				operation,
+				action:
+					operation === "create"
+						? "created"
+						: operation === "update"
+							? "updated"
+							: operation === "delete"
+								? "skipped"
+								: "skipped",
 				filePath,
 				error: `Write operation failed: ${error instanceof Error ? error.message : String(error)}`
 			};
@@ -328,7 +313,7 @@ export class RepositoryService {
 			if (!safetyCheck.canProceed && !force) {
 				return {
 					success: false,
-					operation: "delete",
+					action: "skipped",
 					filePath,
 					error: safetyCheck.error || safetyCheck.warning || "Safety check failed"
 				};
@@ -338,7 +323,7 @@ export class RepositoryService {
 
 			// Create backup before deletion
 			if (existsSync(filePath) && this.config.createBackups) {
-				backupPath = await this.createBackup(filePath);
+				backupPath = await this.createBackups(filePath);
 			}
 
 			// Delete the file
@@ -346,17 +331,14 @@ export class RepositoryService {
 
 			return {
 				success: true,
-				operation: "delete",
+				action: "skipped",
 				filePath,
-				backupPath,
-				metadata: {
-					timestamp: new Date().toISOString()
-				}
+				backupPath
 			};
 		} catch (error) {
 			return {
 				success: false,
-				operation: "delete",
+				action: "skipped",
 				filePath,
 				error: `Delete operation failed: ${error instanceof Error ? error.message : String(error)}`
 			};
@@ -372,8 +354,9 @@ export class RepositoryService {
 		const transaction: RepositoryTransaction = {
 			id: transactionId,
 			operations: [],
-			startTime: new Date().toISOString(),
-			status: "pending"
+			startTime: new Date(),
+			status: "pending",
+			results: []
 		};
 
 		this.activeTransactions.set(transactionId, transaction);
@@ -386,7 +369,8 @@ export class RepositoryService {
 	addToTransaction(transactionId: string, operation: FileOperationResult): void {
 		const transaction = this.activeTransactions.get(transactionId);
 		if (transaction && transaction.status === "pending") {
-			transaction.operations.push(operation);
+			transaction.results = transaction.results || [];
+			transaction.results.push(operation);
 		}
 	}
 
@@ -396,7 +380,8 @@ export class RepositoryService {
 	commitTransaction(transactionId: string): boolean {
 		const transaction = this.activeTransactions.get(transactionId);
 		if (transaction && transaction.status === "pending") {
-			transaction.status = "committed";
+			transaction.status = "completed";
+			transaction.endTime = new Date();
 			return true;
 		}
 		return false;
@@ -413,13 +398,14 @@ export class RepositoryService {
 
 		try {
 			// Reverse operations in reverse order
-			for (let i = transaction.operations.length - 1; i >= 0; i--) {
-				const operation = transaction.operations[i];
+			const results = transaction.results || [];
+			for (let i = results.length - 1; i >= 0; i--) {
+				const operation = results[i];
 
 				if (operation.success && operation.backupPath) {
 					// Restore from backup
 					await fs.copyFile(operation.backupPath, operation.filePath);
-				} else if (operation.operation === "create" && operation.success) {
+				} else if (operation.action === "created" && operation.success) {
 					// Remove created file
 					if (existsSync(operation.filePath)) {
 						await fs.unlink(operation.filePath);
@@ -428,6 +414,7 @@ export class RepositoryService {
 			}
 
 			transaction.status = "rolled_back";
+			transaction.endTime = new Date();
 			return true;
 		} catch (error) {
 			console.error(`Failed to rollback transaction ${transactionId}:`, error);
@@ -440,8 +427,8 @@ export class RepositoryService {
 	 */
 	generateStats(operations: FileOperationResult[]): ScaffoldingStats {
 		const successfulOps = operations.filter((op) => op.success);
-		const existingFiles = successfulOps.filter((op) => op.operation === "update").length;
-		const newFiles = successfulOps.filter((op) => op.operation === "create").length;
+		const existingFiles = successfulOps.filter((op) => op.action === "updated").length;
+		const newFiles = successfulOps.filter((op) => op.action === "created").length;
 		const errors = operations.filter((op) => !op.success).map((op) => op.error || "Unknown error");
 
 		return {
@@ -502,6 +489,123 @@ export class RepositoryService {
 	 */
 	getActiveTransactions(): RepositoryTransaction[] {
 		return Array.from(this.activeTransactions.values());
+	}
+
+	/**
+	 * Write content to file with validation and safety checks
+	 */
+	async writeContentFile(
+		filePath: string,
+		content: string,
+		options: WriteOptions
+	): Promise<FileOperationResult> {
+		try {
+			// Check safety before write
+			const safetyCheck = await this.checkSafetyBeforeWrite(filePath);
+
+			if (!safetyCheck.canProceed && options.mode === "safe") {
+				return {
+					success: false,
+					action: "created",
+					filePath,
+					error: safetyCheck.error || "Safety check failed"
+				};
+			}
+
+			// Create backup if needed
+			if (options.createBackup && existsSync(filePath)) {
+				await this.createBackups(filePath);
+			}
+
+			// Create directory if needed
+			const dir = dirname(filePath);
+			await this.ensureDirectoryExists(dir);
+
+			// Write content
+			await fs.writeFile(filePath, content, "utf-8");
+
+			return {
+				success: true,
+				action: existsSync(filePath) ? "updated" : "created",
+				filePath
+			};
+		} catch (error) {
+			return {
+				success: false,
+				action: "created",
+				filePath,
+				error: error instanceof Error ? error.message : String(error)
+			};
+		}
+	}
+
+	/**
+	 * Check safety before writing to a file
+	 */
+	async checkSafetyBeforeWrite(filePath: string): Promise<SafetyCheckResult> {
+		try {
+			// Check if file exists
+			if (!existsSync(filePath)) {
+				return {
+					canProceed: true,
+					requiresForce: false
+				};
+			}
+
+			// For now, implement a basic safety check
+			// In a real implementation, this would check content status
+			return {
+				canProceed: true,
+				requiresForce: false,
+				warning: "File exists and will be overwritten"
+			};
+		} catch (error) {
+			return {
+				canProceed: false,
+				requiresForce: false,
+				error: error instanceof Error ? error.message : String(error)
+			};
+		}
+	}
+
+	/**
+	 * Ensure directory exists, creating it recursively if needed
+	 */
+	private async ensureDirectoryExists(dirPath: string): Promise<void> {
+		if (!existsSync(dirPath)) {
+			await fs.mkdir(dirPath, { recursive: true });
+		}
+	}
+
+	/**
+	 * Write formatted content to file (convenience method for ContentScaffoldingGenerator)
+	 */
+	async writeFormattedContent(
+		filePath: string,
+		content: unknown,
+		options: { mode?: "safe" | "force"; createBackups?: boolean } = {}
+	): Promise<FileOperationResult> {
+		try {
+			// Convert content to formatted TypeScript string
+			const formattedContent = `export const content = ${JSON.stringify(content, null, 2)};`;
+
+			// Use existing writeContentFile method with proper options
+			const writeOptions: WriteOptions = {
+				mode: options.mode || this.config.mode,
+				createBackup: options.createBackups ?? this.config.createBackups,
+				validateContent: this.config.validateBeforeWrite,
+				respectContentStatus: this.config.respectContentStatus
+			};
+
+			return await this.writeContentFile(filePath, formattedContent, writeOptions);
+		} catch (error) {
+			return {
+				success: false,
+				action: "created",
+				filePath,
+				error: `Failed to format content: ${error instanceof Error ? error.message : String(error)}`
+			};
+		}
 	}
 }
 

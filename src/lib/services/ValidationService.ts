@@ -14,29 +14,10 @@
 
 import { z } from "zod";
 import type { ValidatedScaffoldingArgs } from "$types/scaffolding";
+import type { ValidationConfig, ValidationResult } from "$types/scripts";
+import { CONTENT_SCHEMAS } from "$lib/schemas/ContentSchemas.js";
 import { SETTINGS } from "../../config/settings.js";
-import { spawn } from "child_process";
-import { join } from "path";
-
-/**
- * Configuration interface for ValidationService
- */
-export interface ValidationConfig {
-	enableMermaidValidation: boolean;
-	enableBusinessRules: boolean;
-	enableTypeValidation: boolean;
-	skipValidationInTests: boolean;
-}
-
-/**
- * Validation result interface
- */
-export interface ValidationResult {
-	success: boolean;
-	errors: string[];
-	warnings: string[];
-	validatedData?: unknown;
-}
+import { MermaidValidator } from "$lib/utils/mermaid-validator.js";
 
 /**
  * Comprehensive ValidationService class
@@ -44,6 +25,7 @@ export interface ValidationResult {
 export class ValidationService {
 	private config: ValidationConfig;
 	private schemas: Map<string, z.ZodSchema> = new Map();
+	private mermaidValidator: MermaidValidator;
 
 	constructor(config?: Partial<ValidationConfig>) {
 		this.config = {
@@ -54,53 +36,27 @@ export class ValidationService {
 			...config
 		};
 
+		// Initialize MermaidValidator with appropriate configuration
+		this.mermaidValidator = new MermaidValidator({
+			verbose: false,
+			maxParallelFiles: 5,
+			validationTimeout: 30000,
+			enableErrorCategorization: true
+		});
+
 		this.initializeSchemas();
 	}
 
 	/**
-	 * Initialize Zod schemas for different content types
+	 * Initialize Zod schemas using centralized CONTENT_SCHEMAS
 	 */
 	private initializeSchemas(): void {
-		// Scaffolding arguments schema
-		const scaffoldingArgsSchema = z.object({
-			unit: z.string().min(1, "Unit name is required"),
-			type: z.enum(["lesson", "quiz", "exam", "study_guide", "project"] as const),
-			id: z.string().min(1, "ID is required")
-		});
-
-		// Content status schema
-		const contentStatusSchema = z.enum(["scaffold", "draft", "final"]);
-
-		// Safety check result schema
-		const safetyCheckSchema = z.object({
-			canProceed: z.boolean(),
-			requiresForce: z.boolean(),
-			warning: z.string().optional(),
-			error: z.string().optional(),
-			currentStatus: contentStatusSchema.optional()
-		});
-
-		// Content generation result schema
-		const contentGenerationSchema = z.object({
-			success: z.boolean(),
-			filePath: z.string().optional(),
-			stats: z
-				.object({
-					totalChapters: z.number().int().min(0),
-					existingFiles: z.number().int().min(0),
-					newFiles: z.number().int().min(0),
-					orphanFiles: z.array(z.string()),
-					errors: z.array(z.string())
-				})
-				.optional(),
-			errors: z.array(z.string()).optional()
-		});
-
-		// Register schemas
-		this.schemas.set("scaffoldingArgs", scaffoldingArgsSchema);
-		this.schemas.set("contentStatus", contentStatusSchema);
-		this.schemas.set("safetyCheck", safetyCheckSchema);
-		this.schemas.set("contentGeneration", contentGenerationSchema);
+		// Register centralized schemas
+		this.schemas.set("scaffoldingArgs", CONTENT_SCHEMAS.ScaffoldingArgs);
+		this.schemas.set("safetyCheck", CONTENT_SCHEMAS.SafetyCheckResult);
+		this.schemas.set("contentGeneration", CONTENT_SCHEMAS.ContentGenerationResult);
+		this.schemas.set("validationConfig", CONTENT_SCHEMAS.ValidationConfig);
+		this.schemas.set("repositoryConfig", CONTENT_SCHEMAS.RepositoryConfig);
 	}
 
 	/**
@@ -125,7 +81,7 @@ export class ValidationService {
 	}
 
 	/**
-	 * Validate Mermaid diagrams in content
+	 * Validate Mermaid diagrams in content using centralized MermaidValidator
 	 */
 	async validateMermaidContent(content: string): Promise<ValidationResult> {
 		if (!this.config.enableMermaidValidation) {
@@ -135,28 +91,35 @@ export class ValidationService {
 		try {
 			// Extract Mermaid diagrams from content
 			const mermaidRegex = /```mermaid\n([\s\S]*?)\n```/g;
-			const diagrams: string[] = [];
+			const diagrams: Array<{ content: string; id: string }> = [];
 			let match;
+			let diagramIndex = 1;
 
 			while ((match = mermaidRegex.exec(content)) !== null) {
-				diagrams.push(match[1]);
+				diagrams.push({
+					content: match[1],
+					id: `diagram-${diagramIndex++}`
+				});
 			}
 
 			if (diagrams.length === 0) {
 				return { success: true, errors: [], warnings: [] };
 			}
 
-			// Validate each diagram using mmdc CLI
+			// Use centralized MermaidValidator for batch validation
+			const validationResults = await this.mermaidValidator.validateDiagramBatch(diagrams);
+
 			const errors: string[] = [];
 			const warnings: string[] = [];
 
-			for (let i = 0; i < diagrams.length; i++) {
-				try {
-					await this.validateSingleMermaidDiagram(diagrams[i]);
-				} catch (error) {
-					errors.push(
-						`Mermaid diagram ${i + 1}: ${error instanceof Error ? error.message : String(error)}`
-					);
+			for (const result of validationResults) {
+				if (!result.isValid) {
+					const errorMsg = `Mermaid ${result.id}: ${result.errorMessage}`;
+					if (result.errorCategory) {
+						errors.push(`${errorMsg} (${result.errorCategory})`);
+					} else {
+						errors.push(errorMsg);
+					}
 				}
 			}
 
@@ -179,49 +142,7 @@ export class ValidationService {
 		}
 	}
 
-	/**
-	 * Validate a single Mermaid diagram using mmdc CLI
-	 */
-	private async validateSingleMermaidDiagram(diagramContent: string): Promise<void> {
-		return new Promise((resolve, reject) => {
-			const mmdcProcess = spawn(
-				"mmdc",
-				[
-					"--input",
-					"-", // Read from stdin
-					"--output",
-					"/dev/null", // Don't write output
-					"--puppeteerConfig",
-					join(process.cwd(), "src/config/puppeteer-config.json")
-				],
-				{
-					stdio: ["pipe", "pipe", "pipe"],
-					timeout: 10000 // 10 second timeout
-				}
-			);
-
-			let stderr = "";
-
-			mmdcProcess.stdin.write(diagramContent);
-			mmdcProcess.stdin.end();
-
-			mmdcProcess.stderr.on("data", (data) => {
-				stderr += data.toString();
-			});
-
-			mmdcProcess.on("close", (code) => {
-				if (code === 0) {
-					resolve();
-				} else {
-					reject(new Error(`Mermaid validation failed: ${stderr.trim() || "Unknown error"}`));
-				}
-			});
-
-			mmdcProcess.on("error", (error) => {
-				reject(new Error(`Failed to execute mmdc: ${error.message}`));
-			});
-		});
-	}
+	// validateSingleMermaidDiagram method removed - now using centralized MermaidValidator utility
 
 	/**
 	 * Validate business rules for content generation
@@ -275,13 +196,17 @@ export class ValidationService {
 			}
 
 			// Validate unit and ID format
-			if (!/^[\w-]+$/.test(args.unit)) {
-				errors.push(
-					"Unit name must contain only alphanumeric characters, hyphens, and underscores"
-				);
+			if (args.unit) {
+				const unitValue =
+					args.unit.type === "numeric" ? args.unit.value.toString() : args.unit.value;
+				if (typeof unitValue === "string" && !/^[\w-]+$/.test(unitValue)) {
+					errors.push(
+						"Unit name must contain only alphanumeric characters, hyphens, and underscores"
+					);
+				}
 			}
 
-			if (!/^[\w-]+$/.test(args.id)) {
+			if (args.id && !/^[\w-]+$/.test(args.id)) {
 				errors.push("ID must contain only alphanumeric characters, hyphens, and underscores");
 			}
 

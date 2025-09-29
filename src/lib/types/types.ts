@@ -10,8 +10,10 @@
 
 /**
  * Content lifecycle status tracking for content maturity management
+ * Complete lifecycle: expected → scaffold → draft → review → final
+ * Additional status: orphan (exists in filesystem but not in content-menu)
  */
-export type ContentStatus = "scaffold" | "draft" | "final";
+export type ContentStatus = "expected" | "scaffold" | "draft" | "review" | "final" | "orphan";
 
 /**
  * Content difficulty levels for educational content classification
@@ -212,6 +214,12 @@ export type Layout = "vertical" | "horizontal" | "grid";
 export type CardStyle = "modern" | "classic" | "minimal";
 
 /**
+ * Supported formats for CLI input/output operations
+ * Supports both unified --format and granular --input-format/--output-format flags
+ */
+export type SupportedFormat = "plain" | "json" | "yaml" | "yml";
+
+/**
  * Constant arrays for union types (needed for Object.values() replacement)
  */
 export const CONTENT_DIFFICULTIES: ContentDifficulty[] = [
@@ -245,3 +253,12 @@ export const CONTENT_TYPES: ContentType[] = [
 	"text",
 	"mixed"
 ];
+export const CONTENT_STATUSES: ContentStatus[] = [
+	"expected",
+	"scaffold",
+	"draft",
+	"review",
+	"final",
+	"orphan"
+];
+export const SUPPORTED_FORMATS: SupportedFormat[] = ["plain", "json", "yaml", "yml"];

@@ -274,6 +274,44 @@ export interface AppSettings {
 				generateDebugInfo: boolean;
 			};
 		};
+		/** Content creator configuration for CRUD operations */
+		contentCreator: {
+			/** Path configurations for content creation */
+			paths: {
+				/** Input file for reading unit structure */
+				inputFile: string;
+				/** Output folder for content files */
+				outputFolder: string;
+			};
+			/** Validation prefix for generating unique config IDs */
+			validationPrefix: string;
+			/** Repository service configuration */
+			repository: {
+				/** Backup directory for content operations */
+				backupDirectory: string;
+			};
+		};
+		/** Common file configurations used across multiple scripts */
+		common: {
+			/** Project configuration files */
+			configFiles: {
+				/** Package.json path */
+				packageJson: string;
+				/** TypeScript configuration file */
+				tsConfig: string;
+			};
+			/** File extension patterns */
+			extensions: {
+				/** TypeScript files */
+				typescript: string;
+				/** JavaScript files */
+				javascript: string;
+				/** JSON files */
+				json: string;
+				/** Markdown files */
+				markdown: string;
+			};
+		};
 	};
 
 	// Future settings can be grouped here (e.g., api, performance)

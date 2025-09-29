@@ -1,4 +1,4 @@
-.PHONY: help setup install run build clean validate validate-bash check lint format test validate-content check-wip generate-flatnav
+.PHONY: help setup install run build clean validate validate-bash check lint format test validate-content check-wip generate-flatnav generate-scaffold
 
 # Load environment variables from .env file
 ifneq (,$(wildcard .env))
@@ -183,22 +183,39 @@ generate-flatnav: ## Generate flat navigation structure from content-menu.ts
 	@npx tsx src/scripts/flatnav-generator.ts
 	@echo "✅ Flat navigation generation complete!"
 
-scaffold-content: ## Generate TypeScript content scaffolding (New TypeScript implementation)
-	@echo "🔄 Generating TypeScript content scaffolding..."
-	@npx tsx src/scripts/content-scaffolding.ts $(ARGS)
-	@echo "✅ TypeScript content scaffolding complete!"
+generate-scaffold: ## Generate content scaffolding using scaffold-generator.ts
+	@echo "🏗️ Generating content scaffolding..."
+	@npx tsx src/scripts/scaffold-generator.ts scaffold $(ARGS)
+	@echo "✅ Content scaffolding complete!"
 
-generate-search-index: ## Generate search index from content files using Lunr.js (default mode)
+# Content CRUD operations
+content-list: ## List content files with optional filters (usage: make content-list ARGS="--unit=1 --type=lesson")
+	@echo "📋 Listing content files..."
+	@npx tsx src/scripts/content-creator.ts list $(ARGS)
+
+content-validate: ## Validate content files with optional filters (usage: make content-validate ARGS="--unit=1")
+	@echo "🔍 Validating content files..."
+	@npx tsx src/scripts/content-creator.ts validate $(ARGS)
+
+content-create: ## Create new content file (usage: make content-create ARGS="--unit=1 --type=lesson --id=test --file=path.ts")
+	@echo "📝 Creating content file..."
+	@if [ -z "$(ARGS)" ]; then \
+		echo "❌ Please provide ARGS parameter: make content-create ARGS=\"--unit=1 --type=lesson --id=test --file=path.ts\""; \
+		exit 1; \
+	fi
+	@npx tsx src/scripts/content-creator.ts create $(ARGS)
+
+generate-search-index: ## Generate search index from content files using Lunr.js (development mode)
 	@echo "🔍 Generating search index from content files..."
-	@npx tsx src/scripts/search-indexer.ts $(ARGS)
+	@npx tsx src/scripts/search-indexer.ts dev $(ARGS)
 
 generate-search-index-dev: ## Generate search index in development mode (fast, no validation)
 	@echo "🔍 Generating search index in development mode..."
-	@npx tsx src/scripts/search-indexer.ts --mode=development $(ARGS)
+	@npx tsx src/scripts/search-indexer.ts dev $(ARGS)
 
 generate-search-index-prod: ## Generate search index in production mode (with validation)
 	@echo "🔍 Generating search index in production mode..."
-	@npx tsx src/scripts/search-indexer.ts --mode=production $(ARGS)
+	@npx tsx src/scripts/search-indexer.ts prod $(ARGS)
 	@echo "✅ Search index generation complete!"
 
 validate-all-scripts: validate-mermaid generate-content-menu generate-flatnav generate-search-index-dev ## Run all foundation scripts validation (development mode)
@@ -207,9 +224,9 @@ validate-all-scripts: validate-mermaid generate-content-menu generate-flatnav ge
 validate-all-scripts-prod: validate-mermaid generate-content-menu generate-flatnav generate-search-index-prod ## Run all foundation scripts validation (production mode)
 	@echo "✅ All foundation scripts completed (production)"
 
-generate-all-content: generate-content-menu generate-flatnav scaffold-content generate-search-index-dev validate-generated-full ## Generate all content files and validate them (development mode)
+generate-all-content: generate-content-menu generate-flatnav generate-scaffold generate-search-index-dev validate-generated-full ## Generate all content files and validate them (development mode)
 
-generate-all-content-prod: generate-content-menu generate-flatnav scaffold-content generate-search-index-prod validate-generated-full ## Generate all content files and validate them (production mode)
+generate-all-content-prod: generate-content-menu generate-flatnav generate-scaffold generate-search-index-prod validate-generated-full ## Generate all content files and validate them (production mode)
 	@echo "🎉 All content generation and validation completed successfully!"
 
 # Project-wide validation
@@ -234,19 +251,32 @@ validate-generated-full: ## Validate generated content TypeScript files with for
 	fi
 	@echo "✅ Content TypeScript validation complete!"
 
-validate-generated: ## Validate generated content files with format and lint only (no svelte-check)
+validate-generated: ## Validate all generated content files (src/data/book and src/data/generated)
 	@echo "🔍 Validating all generated content files..."
-	@echo "📁 Checking if src/data/book exists..."
-	@if [ -d "src/data/book" ]; then \
+	@echo "📁 Checking generated directories..."
+	@validated_something=false; \
+	if [ -d "src/data/book" ]; then \
 		echo "✅ Found src/data/book directory"; \
 		if $(MAKE) validate-script TARGETS="src/data/book/"; then \
-			echo "✅ All validations passed for generated content!"; \
+			echo "✅ src/data/book validation passed!"; \
+			validated_something=true; \
 		else \
-			echo "❌ Generated content validation failed!"; \
+			echo "❌ src/data/book validation failed!"; \
 			exit 1; \
 		fi; \
-	else \
-		echo "📁 No generated content files found in src/data/book/"; \
+	fi; \
+	if [ -d "src/data/generated" ]; then \
+		echo "✅ Found src/data/generated directory"; \
+		if $(MAKE) validate-script TARGETS="src/data/generated/"; then \
+			echo "✅ src/data/generated validation passed!"; \
+			validated_something=true; \
+		else \
+			echo "❌ src/data/generated validation failed!"; \
+			exit 1; \
+		fi; \
+	fi; \
+	if [ "$$validated_something" = "false" ]; then \
+		echo "📁 No generated content files found to validate"; \
 	fi
 	@echo "✅ Generated content validation complete!"
 
@@ -265,28 +295,6 @@ validate-menu-file: ## Validate generated content-menu.ts file with format and l
 	fi
 	@echo "✅ Content menu validation complete!"
 
-format-generated: ## Format generated content files with auto-fix
-	@echo "🎨 Formatting all generated content files..."
-	@echo "📁 Checking if src/data/book exists..."
-	@if [ -d "src/data/book" ]; then \
-		echo "✅ Found src/data/book directory"; \
-		$(MAKE) format-script TARGETS="src/data/book/"; \
-		echo "✅ All formatting completed for generated content!"; \
-	else \
-		echo "📁 No generated content files found in src/data/book/"; \
-	fi
-	@echo "✅ Generated content formatting complete!"
-
-format-menu-file: ## Format generated content-menu.ts file with auto-fix
-	@echo "🎨 Formatting generated content-menu.ts..."
-	@if [ -f "src/data/generated/content-menu.ts" ]; then \
-		echo "✅ Found content-menu.ts"; \
-		$(MAKE) format-script-single FILE="src/data/generated/content-menu.ts"; \
-		echo "✅ All formatting completed for content-menu.ts!"; \
-	else \
-		echo "📁 content-menu.ts not found in src/data/generated/"; \
-	fi
-	@echo "✅ Content menu formatting complete!"
 
 # CI/CD support
 ci-install: ## Install dependencies in CI environment

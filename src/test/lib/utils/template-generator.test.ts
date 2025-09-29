@@ -121,7 +121,10 @@ const createTestArgs = (
 	unit: string = "1",
 	id: string = "01_01"
 ): ValidatedScaffoldingArgs => ({
-	unit,
+	unit: {
+		type: "string" as const,
+		value: unit
+	},
 	type,
 	id
 });
