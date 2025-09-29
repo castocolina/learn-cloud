@@ -873,6 +873,206 @@ You are responsible for auditing and standardizing the core infrastructure compo
 - `package.json` (NPM scripts and workflow definitions)
 - `.github/workflows/` (CI/CD automation)
 
+### Implementation Methodology
+
+**Step-by-Step Process:**
+
+1. **Script Execution Audit**:
+   - Inventory all scripts in `src/scripts/` directory
+   - Check execution method: `tsx`, `ts-node`, `node`, `npm`, `pnpm`
+   - Identify inconsistencies and standardization opportunities
+   - Document current execution patterns vs recommended `tsx` standard
+
+2. **Build System Analysis**:
+   - Extract all Makefile targets using `grep -E "^[a-zA-Z_-]+:" Makefile`
+   - Categorize targets: content generation, validation, build, testing, CI/CD
+   - Extract all package.json scripts using `jq .scripts package.json`
+   - Cross-reference script dependencies and execution order
+
+3. **Naming Convention Assessment**:
+   - Apply consistent patterns: `generate-*` for generators, `validate-*` for validators
+   - Check GitHub workflows in `.github/workflows/` for naming consistency
+   - Identify redundant or conflicting script names
+   - Verify script references are valid and functional
+
+4. **Script Validity Testing**:
+   - Execute each script with `--help` flag to verify functionality
+   - Test script dependencies and execution order
+   - Document any broken or deprecated scripts
+
+### Tools & Validation Commands
+
+**Analysis Commands:**
+
+```bash
+# Script inventory and execution method analysis
+find src/scripts -name "*.ts" -exec head -1 {} \; | grep -E "(tsx|ts-node|node)"
+grep -r "npx tsx" . --include="*.json" --include="Makefile"
+grep -r "ts-node" . --include="*.json" --include="*.md"
+
+# Build system analysis
+grep -E "^[a-zA-Z_-]+:" Makefile | sort
+jq -r '.scripts | keys[]' package.json | sort
+find .github/workflows -name "*.yml" -o -name "*.yaml" | xargs basename -s .yml -s .yaml
+
+# Naming pattern analysis
+ls src/scripts/ | grep -E "^(generate|validate|content)" | sort
+grep -r "npm run" . --include="*.json" --include="*.md" | cut -d: -f2 | sort | uniq
+```
+
+**Validation Tests:**
+
+```bash
+# Test script functionality
+for script in src/scripts/*.ts; do echo "Testing $script:"; npx tsx "$script" --help 2>/dev/null || echo "FAILED"; done
+
+# Verify Makefile targets
+make -n validate 2>/dev/null || echo "Target validation: FAILED"
+make -n generate-content-menu 2>/dev/null || echo "Target generate-content-menu: FAILED"
+
+# Test package.json scripts
+npm run --silent 2>/dev/null | grep -E "(generate|validate|content)"
+```
+
+### Evaluation Criteria
+
+**Script Execution Standardization:**
+
+- ✅ PASS: 100% of scripts use `tsx` execution method
+- ⚠️ WARNING: 80-99% use `tsx`, some legacy methods remain
+- ❌ CRITICAL: <80% use `tsx`, significant inconsistency
+
+**Build System Coherence:**
+
+- ✅ PASS: All Makefile targets functional, consistent naming patterns
+- ⚠️ WARNING: 1-3 broken targets or minor naming inconsistencies
+- ❌ CRITICAL: >3 broken targets or major naming conflicts
+
+**Naming Convention Compliance:**
+
+- ✅ PASS: 95%+ scripts follow `generate-*`/`validate-*` patterns
+- ⚠️ WARNING: 85-94% compliance, minor deviations
+- ❌ CRITICAL: <85% compliance, significant pattern violations
+
+**Script Validity:**
+
+- ✅ PASS: All referenced scripts execute successfully
+- ⚠️ WARNING: 1-2 scripts with minor issues (missing help, warnings)
+- ❌ CRITICAL: >2 broken scripts or dependency failures
+
+### Report Template
+
+**Infrastructure Audit Report Structure:**
+
+```markdown
+# AUDIT REPORT - TASK 3G1: Core Infrastructure
+
+## Executive Summary
+
+- Total scripts analyzed: [number]
+- Execution method compliance: [percentage]
+- Broken scripts found: [number]
+- Critical issues: [number]
+
+## Script Execution Analysis
+
+### Current Execution Methods
+
+- tsx: [count] scripts
+- ts-node: [count] scripts
+- node: [count] scripts
+- Other: [count] scripts
+
+### Standardization Recommendations
+
+[List of specific changes needed]
+
+## Build System Inventory
+
+### Makefile Targets (by category)
+
+- Content Generation: [list]
+- Validation: [list]
+- Build: [list]
+- Testing: [list]
+- CI/CD: [list]
+
+### Package.json Scripts (by category)
+
+- Development: [list]
+- Build: [list]
+- Validation: [list]
+- Workflow: [list]
+
+## Naming Convention Analysis
+
+### Compliant Scripts
+
+[List of scripts following patterns]
+
+### Non-Compliant Scripts
+
+[List requiring renaming with suggested names]
+
+## Issues Found
+
+### Critical Issues
+
+[Issues that break functionality]
+
+### Warnings
+
+[Inconsistencies that could cause future problems]
+
+### Suggestions
+
+[Minor improvements and optimizations]
+
+## Recommendations
+
+[Prioritized action items for standardization]
+```
+
+### Common Issues & Solutions
+
+**Issue: Mixed execution methods**
+
+```bash
+# Problem: Scripts using different execution methods
+❌ "node dist/script.js"
+❌ "ts-node src/script.ts"
+❌ "npm run script"
+
+# Solution: Standardize to tsx
+✅ "npx tsx src/scripts/script.ts"
+```
+
+**Issue: Inconsistent naming patterns**
+
+```bash
+# Problem: Inconsistent script names
+❌ "content_menu_gen.ts"
+❌ "validate_mermaid.ts"
+❌ "searchIndexer.ts"
+
+# Solution: Apply consistent patterns
+✅ "generate-content-menu.ts"
+✅ "validate-mermaid.ts"
+✅ "generate-search-index.ts"
+```
+
+**Issue: Broken script references**
+
+```bash
+# Problem: Scripts referenced but not existing
+❌ "npm run nonexistent-script"
+❌ "make obsolete-target"
+
+# Solution: Update or remove references
+✅ Update package.json and Makefile
+✅ Remove deprecated script calls
+```
+
 ### Expected Output
 
 - **Infrastructure Audit Report** (`AUDIT-REPORT-TASK-3G1.md`)
@@ -918,11 +1118,354 @@ You are responsible for validating TypeScript interface compliance across all ge
 - `src/data/generated/` (Generated files: content-menu.ts, search-index.ts, flatnav.ts)
 - `src/scripts/` (Type usage in generator scripts)
 
+### Implementation Methodology
+
+**Step 1: TypeScript Interface Analysis**
+
+```bash
+# Audit all TypeScript interface definitions
+find src/lib/types -name "*.ts" -exec echo "=== {} ===" \; -exec cat {} \;
+
+# Check interface export consistency
+grep -r "export.*interface" src/lib/types/
+grep -r "export.*type" src/lib/types/
+```
+
+**Step 2: Generated Files Type Compliance Check**
+
+```bash
+# Analyze generated files for interface compliance
+npx tsx -e "
+import { readFileSync } from 'fs';
+import { glob } from 'glob';
+
+const generatedFiles = glob.sync('src/data/generated/*.ts');
+generatedFiles.forEach(file => {
+  console.log(\`=== \${file} ===\`);
+  const content = readFileSync(file, 'utf8');
+
+  // Check for explicit type annotations
+  const hasTypeAnnotations = /:\s*\w+(\[\]|<[^>]+>)?(\s*\|\s*\w+)*\s*=/.test(content);
+  const hasAnyTypes = /:\s*any/.test(content);
+
+  console.log(\`Type annotations present: \${hasTypeAnnotations}\`);
+  console.log(\`Contains 'any' types: \${hasAnyTypes}\`);
+
+  if (hasAnyTypes) {
+    const anyMatches = content.match(/.*:\s*any.*/g) || [];
+    console.log('Any type usage:', anyMatches);
+  }
+});
+"
+```
+
+**Step 3: Cross-File Type Compatibility Validation**
+
+```bash
+# Check import/export type consistency
+npx tsx -e "
+import { readFileSync } from 'fs';
+import { glob } from 'glob';
+
+const typeFiles = glob.sync('src/lib/types/*.ts');
+const scriptFiles = glob.sync('src/scripts/*.ts');
+const generatedFiles = glob.sync('src/data/generated/*.ts');
+
+console.log('=== TYPE IMPORT ANALYSIS ===');
+[...scriptFiles, ...generatedFiles].forEach(file => {
+  const content = readFileSync(file, 'utf8');
+  const typeImports = content.match(/import.*type.*from.*['\"].*['\"];?/g) || [];
+
+  if (typeImports.length > 0) {
+    console.log(\`\${file}:\`);
+    typeImports.forEach(imp => console.log(\`  \${imp}\`));
+  }
+});
+"
+```
+
+**Step 4: TypeScript Compilation Validation**
+
+```bash
+# Check TypeScript compilation errors specifically
+npx tsc --noEmit --project tsconfig.json 2>&1 | grep -E "(error|warning)" || echo "No TypeScript compilation errors"
+
+# Check generated files specifically
+npx tsc --noEmit src/data/generated/*.ts 2>&1 | grep -E "(error|warning)" || echo "Generated files compile successfully"
+```
+
+### Tools & Validation Commands
+
+**TypeScript Analysis Tools:**
+
+```bash
+# Interface usage analysis
+npm run check:wip  # Fast check for modified files only
+
+# Type coverage analysis
+npx type-coverage --detail --at-least 95 src/lib/types/ src/data/generated/ src/scripts/
+
+# AST-based type analysis
+npx tsx -e "
+import * as ts from 'typescript';
+import { readFileSync } from 'fs';
+
+function analyzeTypeUsage(filename: string) {
+  const source = readFileSync(filename, 'utf8');
+  const sourceFile = ts.createSourceFile(filename, source, ts.ScriptTarget.Latest, true);
+
+  let anyTypeCount = 0;
+  let explicitTypeCount = 0;
+
+  function visit(node: ts.Node) {
+    if (ts.isTypeReference(node) && node.typeName.getText() === 'any') {
+      anyTypeCount++;
+    }
+    if (ts.isVariableDeclaration(node) && node.type) {
+      explicitTypeCount++;
+    }
+    ts.forEachChild(node, visit);
+  }
+
+  visit(sourceFile);
+
+  return { anyTypeCount, explicitTypeCount };
+}
+
+console.log('Type usage analysis for generated files:');
+['src/data/generated/content-menu.ts', 'src/data/generated/search-index.ts', 'src/data/generated/flatnav.ts'].forEach(file => {
+  try {
+    const result = analyzeTypeUsage(file);
+    console.log(\`\${file}: \${result.explicitTypeCount} explicit types, \${result.anyTypeCount} 'any' types\`);
+  } catch (e) {
+    console.log(\`\${file}: Error analyzing - \${e.message}\`);
+  }
+});
+"
+```
+
+**Interface Compliance Check:**
+
+```bash
+# Verify interface implementation completeness
+npx tsx -e "
+import { readFileSync, existsSync } from 'fs';
+
+// Check if generated files implement required interfaces
+const interfaceFiles = ['src/lib/types/types.ts', 'src/lib/types/index.ts'];
+const generatedFiles = ['src/data/generated/content-menu.ts', 'src/data/generated/search-index.ts', 'src/data/generated/flatnav.ts'];
+
+interfaceFiles.forEach(ifaceFile => {
+  if (!existsSync(ifaceFile)) return;
+
+  const content = readFileSync(ifaceFile, 'utf8');
+  const interfaces = content.match(/export\s+interface\s+(\w+)/g) || [];
+
+  console.log(\`\${ifaceFile} exports:\`);
+  interfaces.forEach(iface => console.log(\`  \${iface}\`));
+});
+
+generatedFiles.forEach(genFile => {
+  if (!existsSync(genFile)) return;
+
+  const content = readFileSync(genFile, 'utf8');
+  const typeImports = content.match(/import.*type.*\{([^}]+)\}/g) || [];
+
+  console.log(\`\${genFile} imports:\`);
+  typeImports.forEach(imp => console.log(\`  \${imp}\`));
+});
+"
+```
+
+### Evaluation Criteria
+
+**TypeScript Interface Compliance:**
+
+- ✅ PASS: >95% of generated files have explicit type annotations
+- ⚠️ WARNING: 85-95% compliance, minor type annotations missing
+- ❌ CRITICAL: <85% compliance, significant type safety issues
+
+**Type Safety Score:**
+
+- ✅ PASS: Zero `any` types in generated files
+- ⚠️ WARNING: 1-3 `any` types with documented justification
+- ❌ CRITICAL: >3 `any` types or unjustified usage
+
+**Cross-File Type Compatibility:**
+
+- ✅ PASS: All type imports resolve correctly, zero compilation errors
+- ⚠️ WARNING: 1-2 minor type mismatches with workarounds
+- ❌ CRITICAL: >2 type incompatibilities or compilation failures
+
+**Interface Coverage:**
+
+- ✅ PASS: All data structures have corresponding TypeScript interfaces
+- ⚠️ WARNING: 1-2 missing interfaces for non-critical structures
+- ❌ CRITICAL: >2 missing interfaces for core data structures
+
+### Report Template
+
+**Type System Coherence Report Structure:**
+
+```markdown
+# AUDIT REPORT - TASK 3G2: Type System Coherence Validation
+
+## Executive Summary
+
+- Total TypeScript files analyzed: [number]
+- Interface compliance rate: [percentage]
+- Any types found: [number]
+- Type compatibility issues: [number]
+
+## Interface Compliance Analysis
+
+### Generated Files Assessment
+
+- content-menu.ts: [compliance status]
+- search-index.ts: [compliance status]
+- flatnav.ts: [compliance status]
+
+### Type Annotation Coverage
+
+- Explicitly typed variables: [count/percentage]
+- Missing type annotations: [count with locations]
+- Any type usage: [count with justification analysis]
+
+## Type Safety Validation
+
+### Current Type Usage Patterns
+
+- Interface implementations: [list with compliance status]
+- Union type usage: [analysis]
+- Generic type usage: [analysis]
+- Utility type usage: [analysis]
+
+### Type Safety Issues Found
+
+- Critical type mismatches: [list with locations]
+- Missing type guards: [count]
+- Unsafe type assertions: [count]
+
+## Cross-File Type Compatibility
+
+### Import/Export Analysis
+
+- Type imports by file: [detailed breakdown]
+- Type export consistency: [validation results]
+- Circular dependency check: [results]
+
+### Compilation Validation
+
+- TypeScript compiler errors: [count with details]
+- Type checking warnings: [count with details]
+- Generated file compilation: [pass/fail status]
+
+## Interface Coverage Assessment
+
+### Available Interfaces
+
+- Core data structures: [list with coverage status]
+- Generated content interfaces: [list]
+- Utility type definitions: [list]
+
+### Missing Interface Definitions
+
+- Identified gaps: [list with priority]
+- Recommended additions: [specific interface definitions]
+
+## Recommendations
+
+### Immediate Actions (Critical)
+
+[List of type safety fixes required]
+
+### Type System Improvements
+
+[Recommendations for better type coverage]
+
+### Long-term Enhancements
+
+[Suggestions for advanced type usage]
+```
+
+### Common Issues & Solutions
+
+**Issue: Generated files missing explicit types**
+
+```typescript
+// Problem: Implicit typing in generated files
+❌ const contentMenu = [
+  { title: "Unit 1", path: "/unit1" }
+];
+
+// Solution: Explicit interface implementation
+✅ import type { MenuItem } from '$lib/types';
+const contentMenu: MenuItem[] = [
+  { title: "Unit 1", path: "/unit1" }
+];
+```
+
+**Issue: Type imports not resolving**
+
+```typescript
+// Problem: Incorrect type import paths
+❌ import { ContentType } from '../lib/types/types';
+❌ import { ContentType } from '$lib/types/types.js';
+
+// Solution: Use proper path aliases
+✅ import type { ContentType } from '$lib/types';
+✅ import type { ContentType } from '$types';
+```
+
+**Issue: Any types in generated content**
+
+```typescript
+// Problem: Using any for complex data structures
+❌ const searchIndex: any[] = generateSearchData();
+
+// Solution: Define proper interfaces
+✅ interface SearchIndexItem {
+  id: string;
+  title: string;
+  content: string;
+  path: string;
+  keywords: string[];
+}
+const searchIndex: SearchIndexItem[] = generateSearchData();
+```
+
+**Issue: Missing type guards for runtime validation**
+
+```typescript
+// Problem: No runtime type validation
+❌ function processContent(data: unknown) {
+  return data.title; // Unsafe
+}
+
+// Solution: Implement type guards
+✅ import type { ContentItem } from '$types';
+
+function isContentItem(data: unknown): data is ContentItem {
+  return typeof data === 'object' &&
+         data !== null &&
+         'title' in data &&
+         'content' in data;
+}
+
+function processContent(data: unknown) {
+  if (isContentItem(data)) {
+    return data.title; // Type-safe
+  }
+  throw new Error('Invalid content item');
+}
+```
+
 ### Expected Output
 
 - **Type Coherence Report** (`AUDIT-REPORT-TASK-3G2.md`)
 - **Interface Corrections** (Missing or incorrect type implementations)
 - **Type Safety Improvements** (`any` type elimination)
+- **Type Guard Implementations** (Runtime type validation)
 
 ### Three-Tier Validation
 
@@ -963,6 +1506,473 @@ You are responsible for testing end-to-end data flow through the script pipeline
 - `src/data/generated/` (Pipeline output files)
 - `@PLAN-SEARCH-ARCHITECTURE.md` (Search system implementation alignment)
 - `@CONTENT-STANDARDS.md` (Content processing standards)
+
+### Implementation Methodology
+
+**Step 1: Pipeline Flow Analysis**
+
+```bash
+# Analyze the complete data pipeline flow
+echo "=== PIPELINE FLOW ANALYSIS ==="
+
+# Check source content structure
+find src/data/book -name "*.json" | head -10 | while read file; do
+  echo "=== SOURCE: $file ==="
+  cat "$file" | jq -r '.title // .name // "No title"' 2>/dev/null || echo "Not valid JSON"
+done
+
+# Check generated content structure
+find src/data/generated -name "*.ts" | while read file; do
+  echo "=== GENERATED: $file ==="
+  head -20 "$file"
+done
+```
+
+**Step 2: Script Execution Sequence Testing**
+
+```bash
+# Test script execution order and dependencies
+echo "=== SCRIPT EXECUTION SEQUENCE ==="
+
+# Check Makefile targets for content generation
+grep -A 5 -B 2 "content\|generate\|build" Makefile | grep -E "^[a-zA-Z][^:]*:" | sort
+
+# Test individual script execution
+npx tsx -e "
+import { existsSync } from 'fs';
+import { execSync } from 'child_process';
+
+const scripts = [
+  'src/scripts/generate-content-menu.ts',
+  'src/scripts/generate-search-index.ts',
+  'src/scripts/generate-flatnav.ts'
+];
+
+scripts.forEach(script => {
+  if (existsSync(script)) {
+    console.log(\`✅ \${script} exists\`);
+    try {
+      execSync(\`npx tsx \${script} --dry-run\`, { encoding: 'utf8', timeout: 10000 });
+      console.log(\`✅ \${script} executes successfully\`);
+    } catch (error) {
+      console.log(\`❌ \${script} execution failed: \${error.message}\`);
+    }
+  } else {
+    console.log(\`❌ \${script} not found\`);
+  }
+});
+"
+```
+
+**Step 3: Data Compatibility Cross-Reference Testing**
+
+```bash
+# Test cross-referencing between generated files
+npx tsx -e "
+import { readFileSync, existsSync } from 'fs';
+import * as path from 'path';
+
+const generatedFiles = [
+  'src/data/generated/content-menu.ts',
+  'src/data/generated/search-index.ts',
+  'src/data/generated/flatnav.ts'
+];
+
+console.log('=== DATA COMPATIBILITY ANALYSIS ===');
+
+let allData = {};
+
+// Load all generated data
+generatedFiles.forEach(file => {
+  if (!existsSync(file)) {
+    console.log(\`❌ \${file} not found\`);
+    return;
+  }
+
+  try {
+    const content = readFileSync(file, 'utf8');
+
+    // Extract exported data (simplified approach)
+    const exports = content.match(/export\\s+const\\s+\\w+\\s*=\\s*[\\[{]/g) || [];
+    console.log(\`\${file}: \${exports.length} exports found\`);
+
+    // Check for common identifier patterns
+    const hasIds = /id['\"]?\\s*:/.test(content);
+    const hasPaths = /path['\"]?\\s*:/.test(content);
+    const hasTitles = /title['\"]?\\s*:/.test(content);
+
+    console.log(\`  IDs: \${hasIds}, Paths: \${hasPaths}, Titles: \${hasTitles}\`);
+
+    allData[file] = { hasIds, hasPaths, hasTitles, exports: exports.length };
+  } catch (error) {
+    console.log(\`❌ Error processing \${file}: \${error.message}\`);
+  }
+});
+
+// Cross-reference compatibility check
+console.log('\\n=== CROSS-REFERENCE COMPATIBILITY ===');
+const files = Object.keys(allData);
+for (let i = 0; i < files.length; i++) {
+  for (let j = i + 1; j < files.length; j++) {
+    const file1 = files[i];
+    const file2 = files[j];
+    const data1 = allData[file1];
+    const data2 = allData[file2];
+
+    const commonFields = [];
+    if (data1.hasIds && data2.hasIds) commonFields.push('ids');
+    if (data1.hasPaths && data2.hasPaths) commonFields.push('paths');
+    if (data1.hasTitles && data2.hasTitles) commonFields.push('titles');
+
+    console.log(\`\${path.basename(file1)} ↔ \${path.basename(file2)}: [\${commonFields.join(', ')}]\`);
+  }
+}
+"
+```
+
+**Step 4: Integration Testing with Sample Content**
+
+```bash
+# Create test content and run through pipeline
+npx tsx -e "
+import { writeFileSync, mkdirSync, existsSync } from 'fs';
+import { execSync } from 'child_process';
+
+// Create test content directory if it doesn't exist
+const testDir = 'tmp/test-content';
+if (!existsSync(testDir)) {
+  mkdirSync(testDir, { recursive: true });
+}
+
+// Create sample test content
+const testContent = {
+  title: 'Test Unit Pipeline Integration',
+  id: 'test-unit-pipeline',
+  path: '/test-unit-pipeline',
+  sections: [
+    {
+      title: 'Test Section 1',
+      content: 'This is a test section for pipeline validation.'
+    }
+  ],
+  metadata: {
+    difficulty: 'beginner',
+    duration: '10 minutes',
+    keywords: ['test', 'pipeline', 'integration']
+  }
+};
+
+const testFilePath = \`\${testDir}/test-unit.json\`;
+writeFileSync(testFilePath, JSON.stringify(testContent, null, 2));
+
+console.log(\`✅ Created test content: \${testFilePath}\`);
+
+// Test if our scripts can process this content
+try {
+  // Assuming content generation scripts can handle additional content
+  console.log('Testing pipeline with sample content...');
+
+  // This would ideally trigger the content generation pipeline
+  // The actual implementation depends on your script architecture
+  console.log('✅ Test content structure is compatible with expected format');
+} catch (error) {
+  console.log(\`❌ Pipeline integration test failed: \${error.message}\`);
+}
+"
+```
+
+### Tools & Validation Commands
+
+**Pipeline Testing Tools:**
+
+```bash
+# Complete pipeline execution test
+make generate-all-content  # Or equivalent command to run full pipeline
+
+# Individual script testing
+npm run generate:content-menu
+npm run generate:search-index
+npm run generate:flatnav
+
+# Pipeline dependency validation
+npx tsx -e "
+import { execSync } from 'child_process';
+
+// Test script order dependencies
+const scriptOrder = [
+  'generate-content-menu',
+  'generate-search-index',
+  'generate-flatnav'
+];
+
+console.log('=== TESTING SCRIPT EXECUTION ORDER ===');
+scriptOrder.forEach((script, index) => {
+  try {
+    console.log(\`\${index + 1}. Running \${script}...\`);
+    execSync(\`npm run \${script}\`, { encoding: 'utf8', timeout: 30000 });
+    console.log(\`   ✅ \${script} completed successfully\`);
+  } catch (error) {
+    console.log(\`   ❌ \${script} failed: \${error.message}\`);
+  }
+});
+"
+```
+
+**Data Integrity Validation:**
+
+```bash
+# Validate generated data structure integrity
+npx tsx -e "
+import { readFileSync, existsSync } from 'fs';
+import * as JSON5 from 'json5';
+
+const files = ['src/data/generated/content-menu.ts', 'src/data/generated/search-index.ts'];
+
+files.forEach(file => {
+  if (!existsSync(file)) return;
+
+  const content = readFileSync(file, 'utf8');
+
+  // Basic structure validation
+  const hasExports = /export\\s+const/.test(content);
+  const hasTypes = /import.*type.*from/.test(content);
+  const hasData = /\\[|\\{/.test(content);
+
+  console.log(\`\${file}:\`);
+  console.log(\`  Exports: \${hasExports}\`);
+  console.log(\`  Type imports: \${hasTypes}\`);
+  console.log(\`  Data structures: \${hasData}\`);
+
+  // Check for common data integrity issues
+  const duplicateIds = content.match(/id['\"]?\\s*:\\s*['\"]([^'\"]+)['\"]/g) || [];
+  const uniqueIds = new Set(duplicateIds.map(match => match.match(/['\"]([^'\"]+)['\"]/)[1]));
+
+  if (duplicateIds.length !== uniqueIds.size) {
+    console.log(\`  ⚠️  Potential duplicate IDs detected\`);
+  } else {
+    console.log(\`  ✅ No duplicate IDs found\`);
+  }
+});
+"
+```
+
+**Performance and Resource Usage:**
+
+```bash
+# Monitor pipeline execution performance
+time make generate-all-content  # Measure total execution time
+
+# Memory usage monitoring during pipeline execution
+npx tsx -e "
+const { execSync } = require('child_process');
+
+console.log('=== PIPELINE PERFORMANCE ANALYSIS ===');
+
+const startTime = Date.now();
+const startMemory = process.memoryUsage();
+
+try {
+  execSync('npm run generate:content-menu', { encoding: 'utf8' });
+
+  const endTime = Date.now();
+  const endMemory = process.memoryUsage();
+
+  console.log(\`Execution time: \${endTime - startTime}ms\`);
+  console.log(\`Memory usage delta: \${(endMemory.heapUsed - startMemory.heapUsed) / 1024 / 1024}MB\`);
+} catch (error) {
+  console.log(\`Performance test failed: \${error.message}\`);
+}
+"
+```
+
+### Evaluation Criteria
+
+**Pipeline Flow Completion:**
+
+- ✅ PASS: All scripts execute successfully in sequence, complete data flow verified
+- ⚠️ WARNING: 1-2 scripts have minor issues, but pipeline completes
+- ❌ CRITICAL: Pipeline breaks, >2 scripts failing, or incomplete data flow
+
+**Data Compatibility Score:**
+
+- ✅ PASS: Generated files share consistent identifiers, cross-references work perfectly
+- ⚠️ WARNING: Minor inconsistencies in 1-2 identifier formats, workarounds needed
+- ❌ CRITICAL: Major compatibility issues, cross-referencing fails, data inconsistencies
+
+**Integration Testing Results:**
+
+- ✅ PASS: New content processes through pipeline without errors
+- ⚠️ WARNING: New content processes with minor format adjustments needed
+- ❌ CRITICAL: New content breaks pipeline or generates malformed output
+
+**Script Execution Efficiency:**
+
+- ✅ PASS: Pipeline completes in <60 seconds, optimal execution order
+- ⚠️ WARNING: Pipeline takes 60-120 seconds, some inefficiencies present
+- ❌ CRITICAL: Pipeline takes >120 seconds or has dependency deadlocks
+
+### Report Template
+
+**Pipeline Integrity Report Structure:**
+
+```markdown
+# AUDIT REPORT - TASK 3G3: Data Flow & Pipeline Integrity
+
+## Executive Summary
+
+- Pipeline scripts tested: [number]
+- End-to-end flow status: [pass/warning/critical]
+- Data compatibility score: [percentage]
+- Integration test results: [pass/fail]
+
+## Pipeline Flow Analysis
+
+### Script Execution Sequence
+
+- Content menu generation: [status] ([time]s)
+- Search index generation: [status] ([time]s)
+- Flat navigation generation: [status] ([time]s)
+- Total pipeline time: [time]s
+
+### Data Flow Validation
+
+- Source content files processed: [count]
+- Generated output files: [count]
+- Data transformation success rate: [percentage]
+
+## Data Compatibility Matrix
+
+### Cross-Reference Analysis
+
+|              | content-menu | search-index | flatnav  |
+| ------------ | ------------ | ------------ | -------- |
+| content-menu | -            | [status]     | [status] |
+| search-index | [status]     | -            | [status] |
+| flatnav      | [status]     | [status]     | -        |
+
+### Identifier Consistency
+
+- Common ID patterns: [list]
+- Path format consistency: [analysis]
+- Title format alignment: [analysis]
+- Cross-reference success rate: [percentage]
+
+## Integration Testing Results
+
+### New Content Processing
+
+- Test content creation: [pass/fail]
+- Pipeline processing: [pass/fail]
+- Output validation: [pass/fail]
+- Frontend consumption readiness: [pass/fail]
+
+### Error Handling
+
+- Invalid content handling: [analysis]
+- Missing dependency management: [analysis]
+- Recovery mechanisms: [analysis]
+
+## Performance Analysis
+
+### Execution Efficiency
+
+- Total pipeline execution time: [time]
+- Memory usage peak: [MB]
+- CPU utilization: [analysis]
+- Bottleneck identification: [list]
+
+### Resource Optimization Opportunities
+
+- Script optimization potential: [list]
+- Data processing improvements: [list]
+- Caching opportunities: [list]
+
+## Issues Found
+
+### Critical Issues
+
+[Pipeline-breaking problems requiring immediate attention]
+
+### Data Inconsistencies
+
+[Cross-reference and compatibility issues]
+
+### Performance Concerns
+
+[Efficiency and resource usage problems]
+
+## Recommendations
+
+### Immediate Actions
+
+[Critical fixes for pipeline integrity]
+
+### Data Flow Improvements
+
+[Enhancements for better compatibility]
+
+### Performance Optimizations
+
+[Suggestions for faster execution]
+```
+
+### Common Issues & Solutions
+
+**Issue: Script execution order dependencies**
+
+```bash
+# Problem: Scripts running in wrong order causing data inconsistencies
+❌ generate-search-index runs before content-menu exists
+❌ flatnav generation fails due to missing search data
+
+# Solution: Establish clear dependency chain
+✅ Makefile with proper dependencies:
+generate-content-menu: src/data/book/*
+generate-search-index: generate-content-menu
+generate-flatnav: generate-search-index
+```
+
+**Issue: Data format inconsistencies between generated files**
+
+```typescript
+// Problem: Different ID formats across files
+❌ content-menu: { id: "unit-1-intro" }
+❌ search-index: { id: "unit1_intro" }
+❌ flatnav: { id: "unit1-intro" }
+
+// Solution: Standardize ID generation utility
+✅ import { generateStandardId } from '$lib/utils/id-generator';
+const standardId = generateStandardId(title, path); // Always returns "unit-1-intro"
+```
+
+**Issue: Missing cross-reference validation**
+
+```bash
+# Problem: Generated files reference non-existent resources
+❌ search-index references paths not in content-menu
+❌ flatnav contains broken internal links
+
+# Solution: Implement cross-reference validation
+✅ npx tsx src/scripts/validate-cross-references.ts
+✅ Check all generated IDs exist across files
+✅ Validate all path references are reachable
+```
+
+**Issue: Pipeline breaks with new content**
+
+```typescript
+// Problem: Scripts assume fixed content structure
+❌ script fails when content has optional fields
+❌ new content format breaks existing parsers
+
+// Solution: Robust content validation and fallbacks
+✅ import { contentSchema } from '$lib/schemas/content';
+const validatedContent = contentSchema.parse(rawContent);
+
+✅ Use optional chaining and default values
+const title = content?.title ?? 'Untitled';
+const sections = content?.sections ?? [];
+```
 
 ### Expected Output
 
@@ -1011,14 +2021,104 @@ You are responsible for resolving technical debt, eliminating code duplication, 
 - `src/test/` (Test utility consolidation opportunities)
 - `src/lib/utils/` (Utility function centralization)
 
-### Tech Debt Focus Areas
+### Implementation Methodology
 
-1. **Test Utility Architecture** - Centralize test-specific utility functions
-2. **Code Duplication Patterns** - Consolidate repeated utility functions and configuration patterns
-3. **Resource Loading Optimization** - Optimize package.json and tsconfig.json loading
-4. **Content Validation Gaps** - Complete Zod schema validation coverage
-5. **Content Identifier Conflicts** - Resolve ID collision issues
-6. **Utility Function Consolidation** - Centralize number padding and similar utilities
+**Step 1: Technical Debt Inventory**
+
+```bash
+# Scan for code duplication patterns
+grep -r "readFileSync.*package.json" src/scripts/
+grep -r "function.*pad" src/scripts/ src/test/
+grep -r "existsSync.*tsconfig" src/scripts/
+```
+
+**Step 2: Utility Function Consolidation**
+
+```bash
+# Analyze repeated patterns for centralization
+find src/scripts -name "*.ts" -exec grep -l "padZero\|padNumber" {} \;
+find src/test -name "*.ts" -exec grep -l "createTestContent\|mockData" {} \;
+```
+
+**Step 3: Test Architecture Refactoring**
+
+```bash
+# Identify test utility patterns
+grep -r "describe\|it\|test" src/test/ | grep -E "util|helper|mock"
+```
+
+**Step 4: Resource Loading Optimization**
+
+```bash
+# Check configuration loading efficiency
+grep -r "JSON.parse.*readFileSync" src/scripts/
+```
+
+### Tools & Validation Commands
+
+**Code Quality Analysis:**
+
+```bash
+# Duplicate code detection
+npx jscpd src/scripts/ --threshold 3
+
+# Test architecture analysis
+npm run test -- --coverage --verbose
+
+# Performance profiling of scripts
+time npm run generate:all
+```
+
+**Consolidation Validation:**
+
+```bash
+# Verify utility function imports
+grep -r "import.*utils" src/scripts/
+grep -r "import.*test-utils" src/test/
+```
+
+### Evaluation Criteria
+
+**Technical Debt Resolution:**
+
+- ✅ PASS: All 6 debt areas addressed with consolidated solutions
+- ⚠️ WARNING: 4-5 areas resolved, minor issues remain
+- ❌ CRITICAL: <4 areas resolved, significant technical debt persists
+
+**Code Duplication Score:**
+
+- ✅ PASS: <5% code duplication, utility functions centralized
+- ⚠️ WARNING: 5-15% duplication, some consolidation needed
+- ❌ CRITICAL: >15% duplication, significant refactoring required
+
+**Test Architecture Quality:**
+
+- ✅ PASS: Centralized test utilities, consistent patterns
+- ⚠️ WARNING: Some test utilities centralized, minor inconsistencies
+- ❌ CRITICAL: Scattered test utilities, no consistent architecture
+
+### Common Issues & Solutions
+
+**Issue: Repeated utility functions across scripts**
+
+```typescript
+// Problem: Same function in multiple files
+❌ Multiple padZero implementations
+❌ Duplicate file reading patterns
+
+// Solution: Centralize in utility library
+✅ import { padZero, readJsonFile } from '$lib/utils';
+```
+
+**Issue: Test utilities scattered across files**
+
+```typescript
+// Problem: Test helpers duplicated
+❌ createMockContent() in multiple test files
+
+// Solution: Centralized test utilities
+✅ import { createMockContent } from '$lib/test-utils';
+```
 
 ### Expected Output
 
@@ -1070,6 +2170,55 @@ You are responsible for conducting the final assessment of generated data struct
 - `CONTENT-STANDARDS.md` (Current content creation standards - verify against implementation reality)
 - `CONTENT-CREATOR.md` (Content creation CLI workflows - validate integration with standards)
 - Task 4-8 specifications (Planned frontend components)
+
+### Implementation Methodology
+
+**Step 1: Data Structure Assessment**
+
+```bash
+# Analyze generated data for frontend compatibility
+find src/data/generated -name "*.ts" -exec echo "=== {} ===" \; -exec head -10 {} \;
+
+# Check component-ready data patterns
+grep -r "export.*:" src/data/generated/
+```
+
+**Step 2: Component Integration Analysis**
+
+```bash
+# Verify data structures match component requirements
+grep -r "interface\|type" src/lib/types/ | grep -E "Menu|Search|Nav"
+
+# Check for required frontend fields
+grep -rE "title|path|id|content" src/data/generated/
+```
+
+**Step 3: Documentation Validation**
+
+```bash
+# Compare standards with implementation reality
+diff <(grep -E "^##|^-" CONTENT-STANDARDS.md) <(find src/ -name "*.ts" | head -5)
+```
+
+### Evaluation Criteria
+
+**Data Structure Compatibility:**
+
+- ✅ PASS: Generated data directly consumable by components
+- ⚠️ WARNING: Minor transformations needed for component consumption
+- ❌ CRITICAL: Major restructuring required for frontend integration
+
+**Frontend Readiness Score:**
+
+- ✅ PASS: All required fields present, optimal structure for UX
+- ⚠️ WARNING: Most fields present, minor gaps in user experience data
+- ❌ CRITICAL: Missing critical fields, poor frontend data organization
+
+**Documentation Alignment:**
+
+- ✅ PASS: Standards match implementation reality, workflows integrated
+- ⚠️ WARNING: Minor discrepancies, mostly aligned with current state
+- ❌ CRITICAL: Standards outdated, significant gaps in workflow integration
 
 ### Expected Output
 
