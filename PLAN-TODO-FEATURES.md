@@ -2179,149 +2179,811 @@ const sections = content?.sections ?? [];
 
 ---
 
-## TASK 3G4: Code Quality & Architecture Optimization
+## TASK 3G4: ID & URL Normalization System
 
 ### Agent Responsibility
 
-You are responsible for resolving technical debt, eliminating code duplication, and optimizing architecture patterns across the foundation scripts ecosystem.
+You are responsible for implementing a unified ID and URL normalization system that resolves the critical cross-reference incompatibility issues identified in TASK 3G3. This system will provide 100% ID compatibility across all generated files (content-menu, flatnav, search-index) and establish descriptive, SEO-friendly URLs.
 
 ### Prerequisites
 
 - TASK 3G1: Core Infrastructure Audit completed
 - TASK 3G2: Type System Coherence Validation completed
-- TASK 3G3: Data Flow & Pipeline Integrity completed
+- **TASK 3G3: Data Flow & Pipeline Integrity completed** ← Critical findings drive this task
 
-### Scope & Focus Areas
+### Critical Issues from TASK 3G3 (Must Read)
 
-1. **Technical Debt Resolution** - Address the 6 identified tech debt areas from TASK 3G
-2. **Code Duplication Elimination** - Consolidate repeated utility functions and patterns
-3. **Test Utility Architecture** - Centralize test-specific utilities and patterns
-4. **Resource Loading Optimization** - Eliminate unnecessary package.json and tsconfig.json loading
+**Reference Document:** `AUDIT-REPORT-TASK-3G3.md`
+**Architecture Analysis:** `tmp/id-url-normalization-analysis.md`
 
-### Technical Documents to Review
+**Issue 1: ID Format Inconsistency (🔴 CRITICAL)**
 
-- `src/scripts/` (Foundation scripts for optimization opportunities)
-- `src/test/` (Test utility consolidation opportunities)
-- `src/lib/utils/` (Utility function centralization)
+- Content Menu/FlatNav: `"01_01"` (numeric format)
+- Search Index: `"01_09_lesson_observability"` (descriptive format)
+- **Result:** 0% cross-reference compatibility between search and navigation
 
-### Implementation Methodology
+**Issue 2: Duplicate IDs (🟡 WARNING)**
 
-**Step 1: Technical Debt Inventory**
+- 129 chapters but only 57 unique IDs
+- Multiple content types share same base ID:
+  ```typescript
+  // All use ID "01_01"
+  { id: "01_01", title: "1.1: Lesson", type: "lesson" }
+  { id: "01_01", title: "1.1: Study Guide", type: "study_guide" }
+  { id: "01_01", title: "1.1: Quiz", type: "quiz" }
+  ```
 
-```bash
-# Scan for code duplication patterns
-grep -r "readFileSync.*package.json" src/scripts/
-grep -r "function.*pad" src/scripts/ src/test/
-grep -r "existsSync.*tsconfig" src/scripts/
-```
+### Solution Architecture
 
-**Step 2: Utility Function Consolidation**
+#### 1. Letter-Based ID System with Type Suffixes
 
-```bash
-# Analyze repeated patterns for centralization
-find src/scripts -name "*.ts" -exec grep -l "padZero\|padNumber" {} \;
-find src/test -name "*.ts" -exec grep -l "createTestContent\|mockData" {} \;
-```
+**Strategy:** Use first letter of content type as suffix, fallback to 2+ letters on collision
 
-**Step 3: Test Architecture Refactoring**
-
-```bash
-# Identify test utility patterns
-grep -r "describe\|it\|test" src/test/ | grep -E "util|helper|mock"
-```
-
-**Step 4: Resource Loading Optimization**
-
-```bash
-# Check configuration loading efficiency
-grep -r "JSON.parse.*readFileSync" src/scripts/
-```
-
-### Tools & Validation Commands
-
-**Code Quality Analysis:**
-
-```bash
-# Duplicate code detection
-npx jscpd src/scripts/ --threshold 3
-
-# Test architecture analysis
-npm run test -- --coverage --verbose
-
-# Performance profiling of scripts
-time npm run generate:all
-```
-
-**Consolidation Validation:**
-
-```bash
-# Verify utility function imports
-grep -r "import.*utils" src/scripts/
-grep -r "import.*test-utils" src/test/
-```
-
-### Evaluation Criteria
-
-**Technical Debt Resolution:**
-
-- ✅ PASS: All 6 debt areas addressed with consolidated solutions
-- ⚠️ WARNING: 4-5 areas resolved, minor issues remain
-- ❌ CRITICAL: <4 areas resolved, significant technical debt persists
-
-**Code Duplication Score:**
-
-- ✅ PASS: <5% code duplication, utility functions centralized
-- ⚠️ WARNING: 5-15% duplication, some consolidation needed
-- ❌ CRITICAL: >15% duplication, significant refactoring required
-
-**Test Architecture Quality:**
-
-- ✅ PASS: Centralized test utilities, consistent patterns
-- ⚠️ WARNING: Some test utilities centralized, minor inconsistencies
-- ❌ CRITICAL: Scattered test utilities, no consistent architecture
-
-### Common Issues & Solutions
-
-**Issue: Repeated utility functions across scripts**
+**Type Suffix Mapping:**
 
 ```typescript
-// Problem: Same function in multiple files
-❌ Multiple padZero implementations
-❌ Duplicate file reading patterns
-
-// Solution: Centralize in utility library
-✅ import { padZero, readJsonFile } from '$lib/utils';
+const TYPE_SUFFIXES: Record<ChapterType, string> = {
+	overview: "O", // O - Overview
+	lesson: "L", // L - Lesson
+	study_guide: "SG", // SG - Study Guide (2 letters to avoid collision)
+	quiz: "Q", // Q - Quiz
+	exam: "E", // E - Exam
+	project: "P" // P - Project
+};
 ```
 
-**Issue: Test utilities scattered across files**
+**ID Format Examples:**
 
 ```typescript
-// Problem: Test helpers duplicated
-❌ createMockContent() in multiple test files
-
-// Solution: Centralized test utilities
-✅ import { createMockContent } from '$lib/test-utils';
+"01_01L"; // Unit 1, Chapter 1, Lesson
+"01_01SG"; // Unit 1, Chapter 1, Study Guide
+"01_01Q"; // Unit 1, Chapter 1, Quiz
+"01_00O"; // Unit 1, Overview (chapter 00)
+"01_99E"; // Unit 1, Exam (chapter 99)
 ```
 
-### Expected Output
+**Benefits:**
 
-- **Architecture Optimization Report** (`AUDIT-REPORT-TASK-3G4.md`)
-- **Consolidated Utility Libraries** (Centralized reusable functions)
-- **Test Architecture Improvements** (Unified test utility patterns)
-- **Resource Loading Optimizations** (Efficient configuration loading)
+- ✅ Compact: Only 1-2 extra characters
+- ✅ Human-readable: Type visible at a glance
+- ✅ Sortable: Maintains proper ordering
+- ✅ Unique: Each content piece gets unique identifier
+- ✅ Backward-compatible parsing: Easy to extract unit/chapter numbers
 
-### Three-Tier Validation
+#### 2. Descriptive URL System
 
-1. **Tier 1**: `make check-wip` - Fast validation of refactored code
-2. **Tier 2**: `test` - Comprehensive test suite validation after refactoring
-3. **Tier 3**: `format/lint/check` - Complete quality validation of optimized code
+**URL Format Pattern:**
+
+```
+{unit_padded}_{chapter_padded}_{type_name}_{title_slug}.html
+```
+
+**URL Examples:**
+
+```typescript
+"01_01_lesson_development_environment_tooling.html";
+"01_01_study_guide.html";
+"01_01_quiz.html";
+"01_00_overview_python_for_cloud_native.html";
+"01_99_exam_unit_1_final_exam.html";
+```
+
+**Benefits:**
+
+- ✅ SEO-friendly: Descriptive, readable URLs
+- ✅ Debuggable: URL clearly shows content type and topic
+- ✅ Bookmarkable: URLs are meaningful and persistent
+
+### Implementation Plan
+
+#### Phase 1: Core ID/URL Utilities (New File)
+
+**Create:** `src/lib/utils/content-identifiers.ts`
+
+**Exports:**
+
+```typescript
+// ============================================================================
+// ID OPERATIONS
+// ============================================================================
+
+/**
+ * Generate unique ID from content metadata
+ * @example generateContentId("1", "1", "lesson") → "01_01L"
+ */
+export function generateContentId(
+	unitNum: string,
+	chapterNum: string,
+	contentType: ChapterType
+): string;
+
+/**
+ * Parse ID back to components
+ * @example parseContentId("01_01L") → { unitNum: "1", chapterNum: "1", type: "lesson" }
+ */
+export function parseContentId(id: string): {
+	unitNum: string;
+	chapterNum: string;
+	contentType: ChapterType;
+	isValid: boolean;
+	error?: string;
+};
+
+/**
+ * Validate ID format
+ * @example validateContentId("01_01L") → { isValid: true }
+ */
+export function validateContentId(id: string): {
+	isValid: boolean;
+	errors: string[];
+};
+
+// ============================================================================
+// URL OPERATIONS
+// ============================================================================
+
+/**
+ * Generate descriptive URL from content metadata
+ * @example generateContentUrl("1", "1", "lesson", "Development Environment")
+ *   → "01_01_lesson_development_environment.html"
+ */
+export function generateContentUrl(
+	unitNum: string,
+	chapterNum: string,
+	contentType: ChapterType,
+	titleSlug: string
+): string;
+
+/**
+ * Parse URL back to components and ID
+ * @example parseContentUrl("01_01_lesson_dev_env.html")
+ *   → { id: "01_01L", unitNum: "1", chapterNum: "1", type: "lesson", ... }
+ */
+export function parseContentUrl(url: string): {
+	id: string;
+	unitNum: string;
+	chapterNum: string;
+	contentType: ChapterType;
+	titleSlug: string;
+	isValid: boolean;
+	error?: string;
+};
+
+// ============================================================================
+// FILE PATH OPERATIONS
+// ============================================================================
+
+/**
+ * Generate file path from content metadata
+ * @example generateFilePath("1", "1", "lesson", "dev-env")
+ *   → "book/unit01/01_01_lesson_dev_env.ts"
+ */
+export function generateFilePath(
+	unitNum: string,
+	chapterNum: string,
+	contentType: ChapterType,
+	titleSlug: string
+): string;
+
+/**
+ * Parse file path back to ID and components
+ * @example parseFilePath("book/unit01/01_01_lesson_dev_env.ts")
+ *   → { id: "01_01L", unitNum: "1", chapterNum: "1", type: "lesson", ... }
+ */
+export function parseFilePath(path: string): {
+	id: string;
+	unitNum: string;
+	chapterNum: string;
+	contentType: ChapterType;
+	titleSlug: string;
+	isValid: boolean;
+	error?: string;
+};
+```
+
+**Dependencies:**
+
+- **`$types`** - ChapterType and related types (ALWAYS use `$types` alias)
+- `src/lib/utils/navigation-paths.ts` - Existing slug generation (reuse)
+
+**🚨 CRITICAL: Type System Convention**
+
+```typescript
+// ✅ ALWAYS use $types alias with enumFirst import style
+import type { ChapterType, ParsedContentId } from "$types";
+
+// ❌ NEVER import directly from file path
+import type { ChapterType } from "$lib/types/types.js";
+```
+
+**New Type Definitions (Add to `src/lib/types/types.ts`):**
+
+```typescript
+// Content identifier parsing results
+export interface ParsedContentId {
+	unitNum: string;
+	chapterNum: string;
+	contentType: ChapterType;
+	isValid: boolean;
+	error?: string;
+}
+
+export interface ParsedContentUrl {
+	id: string;
+	unitNum: string;
+	chapterNum: string;
+	contentType: ChapterType;
+	titleSlug: string;
+	isValid: boolean;
+	error?: string;
+}
+
+export interface ParsedFilePath {
+	id: string;
+	unitNum: string;
+	chapterNum: string;
+	contentType: ChapterType;
+	titleSlug: string;
+	isValid: boolean;
+	error?: string;
+}
+
+// Content lookup results
+export interface ContentLookupResult {
+	menuEntry: MenuChapter | null;
+	flatNavEntry: FlatNavEntry | null;
+	searchEntry: SearchableItem | null;
+	filePath: string;
+	url: string;
+	contentUrl: string; // Descriptive URL
+	isFound: boolean;
+}
+
+// Validation results
+export interface ValidationResult {
+	isValid: boolean;
+	errors: string[];
+}
+```
+
+#### Phase 2: Cross-Reference Utilities (New File)
+
+**Create:** `src/lib/utils/content-lookup.ts`
+
+**Exports:**
+
+```typescript
+// ============================================================================
+// CROSS-REFERENCE OPERATIONS
+// ============================================================================
+
+/**
+ * Lookup content by ID across all data sources
+ * @example lookupContentById("01_01L") → {
+ *   menuEntry: MenuChapter,
+ *   flatNavEntry: FlatNavEntry,
+ *   searchEntry: SearchableItem,
+ *   filePath: string,
+ *   url: string
+ * }
+ */
+export function lookupContentById(id: string): {
+	menuEntry: MenuChapter | null;
+	flatNavEntry: FlatNavEntry | null;
+	searchEntry: SearchableItem | null;
+	filePath: string;
+	url: string;
+	isFound: boolean;
+};
+
+/**
+ * Lookup content by URL
+ * @example lookupContentByUrl("01_01_lesson_dev_env.html") → { id, ... }
+ */
+export function lookupContentByUrl(url: string): {
+	id: string;
+	menuEntry: MenuChapter | null;
+	flatNavEntry: FlatNavEntry | null;
+	searchEntry: SearchableItem | null;
+	filePath: string;
+	isFound: boolean;
+};
+
+/**
+ * Lookup content by file path
+ * @example lookupContentByFilePath("book/unit01/01_01L.ts") → { id, url, ... }
+ */
+export function lookupContentByFilePath(path: string): {
+	id: string;
+	url: string;
+	menuEntry: MenuChapter | null;
+	flatNavEntry: FlatNavEntry | null;
+	searchEntry: SearchableItem | null;
+	isFound: boolean;
+};
+```
+
+**Dependencies:**
+
+- `src/lib/utils/content-identifiers.ts` - ID/URL parsing
+- `src/data/generated/content-menu.ts` - Menu data
+- `src/data/generated/flatnav.ts` - Navigation data
+- `src/data/generated/search-index.ts` - Search data
+
+#### Phase 3: Generator Script Updates
+
+**Update Scripts:**
+
+1. **`src/scripts/generate-menu.ts`** (Line ~400-500 range)
+   - Replace ID generation: Use `generateContentId()`
+   - Generate URLs: Use `generateContentUrl()`
+   - Add both `id` and `contentUrl` fields to menu entries
+
+2. **`src/scripts/generate-search-index.ts`** (Line ~286: `extractContentFromFile`)
+   - Replace ID generation: Use `generateContentId()`
+   - Generate URLs: Use `generateContentUrl()`
+   - Update search index structure with unified IDs
+
+3. **`src/scripts/flatnav-generator.ts`** (Line ~200-300 range)
+   - Replace ID generation: Use `generateContentId()`
+   - Add `contentUrl` field alongside existing `url` (hash-based)
+
+**Migration Strategy:**
+
+- Import utilities: `import { generateContentId, generateContentUrl } from '$lib/utils/content-identifiers';`
+- Replace ID generation logic with utility calls
+- Store both ID and URL in generated structures
+- Maintain backward compatibility with parsing functions
+
+**🚨 CRITICAL: Content Management Scripts Integration**
+
+The following scripts also handle IDs and **MUST** be updated to use unified utilities:
+
+4. **`src/scripts/scaffold-generator.ts`** (Content scaffolding tool)
+   - Replace ID generation with `generateContentId()`
+   - Use `generateFilePath()` for file path generation
+   - Ensure generated files use consistent ID format
+
+5. **`src/scripts/manage-content.ts`** (Content management CLI)
+   - Replace ID parsing logic with `parseContentId()`, `parseFilePath()`
+   - Use `lookupContentById()` for content queries
+   - Update file path generation to use `generateFilePath()`
+
+**Why This Matters:**
+
+- **Scaffold Generator** creates new content files → IDs must match generator expectations
+- **Manage Content** queries and manipulates content → Must use same ID format
+- **Cross-System Consistency** → All systems (generators, CLI tools, UI) use identical ID logic
+
+**Example Integration:**
+
+```typescript
+// src/scripts/scaffold-generator.ts
+import { generateContentId, generateFilePath } from "$lib/utils/content-identifiers";
+import type { ChapterType } from "$types";
+
+export function scaffoldContent(unitNum: string, chapterNum: string, type: ChapterType) {
+	// ✅ Use unified ID generation
+	const id = generateContentId(unitNum, chapterNum, type);
+	const filePath = generateFilePath(unitNum, chapterNum, type, titleSlug);
+
+	// Generate file with consistent ID
+	const content = `
+export const metadata = {
+  id: "${id}",  // ✅ Matches menu/flatnav/search-index format
+  unitNum: "${unitNum}",
+  chapterNum: "${chapterNum}",
+  type: "${type}"
+};
+`;
+}
+
+// src/scripts/manage-content.ts
+import { parseFilePath, lookupContentById } from "$lib/utils/content-identifiers";
+import { lookupContentById as crossRefLookup } from "$lib/utils/content-lookup";
+
+export function queryContent(filePath: string) {
+	// ✅ Use unified parsing
+	const parsed = parseFilePath(filePath);
+	if (!parsed.isValid) {
+		throw new Error(`Invalid file path: ${filePath}`);
+	}
+
+	// ✅ Use unified lookup
+	const content = crossRefLookup(parsed.id);
+	if (!content.isFound) {
+		throw new Error(`Content not found: ${parsed.id}`);
+	}
+
+	return content;
+}
+```
+
+#### Phase 4: Navigation System Integration (Optional)
+
+**Update:** `src/lib/utils/navigation-paths.ts`
+
+**Changes:**
+
+- Integrate with `content-identifiers.ts` for ID generation
+- Add `id` field to `NavigationPaths` interface
+- Update `serializeNavigationUrl()` to use new URL format (or keep hash-based for navigation)
+- Update `parseNavigationUrl()` to parse new URL format
+- Add `getContentId()` utility function
+
+### Migration Impact Analysis
+
+**Generated Files Changes:**
+
+**content-menu.ts:**
+
+```typescript
+// BEFORE
+{
+  id: "01_01",  // ❌ Duplicate across types
+  title: "1.1: Development Environment",
+  type: "lesson",
+  chapterUrl: "#unit01/chapter01"
+}
+
+// AFTER
+{
+  id: "01_01L",  // ✅ Unique with type suffix
+  title: "1.1: Development Environment",
+  type: "lesson",
+  chapterUrl: "#unit01/chapter01",
+  contentUrl: "01_01_lesson_development_environment.html",  // ✅ New descriptive URL
+  filePath: "book/unit01/01_01_lesson_development_environment.ts"
+}
+```
+
+**flatnav.ts:**
+
+```typescript
+// BEFORE
+{
+  id: "01_01",  // ❌ Duplicate
+  url: "#unit01/chapter01",
+  chapterType: "lesson"
+}
+
+// AFTER
+{
+  id: "01_01L",  // ✅ Unique
+  url: "#unit01/chapter01",
+  contentUrl: "01_01_lesson_development_environment.html",  // ✅ Descriptive URL
+  chapterType: "lesson"
+}
+```
+
+**search-index.ts:**
+
+```typescript
+// BEFORE
+{
+  id: "01_09_lesson_observability",  // ❌ Inconsistent format
+  title: "09 lesson observability",
+  nav: { path: "#/demo/unit/unit01/lesson/01_09_lesson_observability" }
+}
+
+// AFTER
+{
+  id: "01_09L",  // ✅ Consistent format
+  title: "1.9: Observability",
+  contentUrl: "01_09_lesson_observability.html",  // ✅ Descriptive URL
+  nav: { path: "#unit01/chapter09" }  // ✅ Simplified navigation path
+}
+```
+
+**Cross-Reference Compatibility:**
+
+```typescript
+// ✅ 100% cross-reference compatibility
+const menuEntry = contentMenu.units[0].chapters[1]; // id: "01_01L"
+const flatEntry = flatNavigation.entries[1]; // id: "01_01L"
+const searchEntry = searchIndex[5]; // id: "01_01L"
+
+// All three now share the same ID format!
+(menuEntry.id === flatEntry.id) === searchEntry.id; // ✅ true
+```
+
+### Testing Strategy
+
+#### Unit Tests
+
+**Test File:** `src/test/lib/utils/content-identifiers.test.ts`
+
+**Test Cases:**
+
+1. ID generation for all content types
+2. ID parsing (valid and invalid formats)
+3. URL generation with various title slugs
+4. URL parsing with edge cases
+5. File path generation and parsing
+6. Type suffix collision detection
+7. Validation error handling
+
+#### Integration Tests
+
+**Test File:** `src/test/scripts/content-cross-reference.test.ts`
+
+**Test Cases:**
+
+1. Generate all three files (menu, flatnav, search) with new IDs
+2. Verify 100% ID compatibility across files
+3. Test lookup functions with real generated data
+4. Verify URL uniqueness across all content
+5. Test navigation from search results
+6. Test navigation from menu clicks
+
+#### Migration Validation
+
+**Test File:** `src/test/scripts/migration-validation.test.ts`
+
+**Test Cases:**
+
+1. Verify no duplicate IDs after migration
+2. Verify all IDs follow new format
+3. Verify all URLs are descriptive and valid
+4. Verify backward compatibility with old URL parsing
+5. Performance comparison (before/after)
+
+### Backward Compatibility & URL Resolution Strategy
+
+#### 1. Legacy URL Support (Hash-based Navigation)
+
+**Current hash URLs continue working:**
+
+```typescript
+// Hash-based URLs remain for SPA navigation
+"#unit01/chapter01"; // Still valid for navigation state
+```
+
+**Descriptive URLs for bookmarks/SEO:**
+
+```typescript
+// New descriptive URLs for external links and bookmarks
+"01_01_lesson_development_environment.html";
+```
+
+#### 2. Stale URL Handling (Content Reorganization)
+
+**Problem Scenario:**
+
+```typescript
+// User has bookmarked URL with valid ID prefix but outdated slug
+"01_01_lesson_old_title_that_changed.html"; // Title changed
+"02_05_lesson_some_content.html"; // Content moved from Unit 2 to Unit 3
+```
+
+**Resolution Strategy:**
+
+```typescript
+/**
+ * URL Resolution Algorithm:
+ * 1. Extract ID from URL (e.g., "01_01L")
+ * 2. Lookup content by ID (ID is stable, slug may change)
+ * 3. If ID found but slug mismatches → Redirect to current URL
+ * 4. If ID not found → Show 404 with suggestions
+ */
+
+export function resolveContentUrl(requestedUrl: string): {
+	status: "match" | "redirect" | "not_found";
+	currentUrl?: string; // If redirect needed
+	contentId?: string;
+	suggestions?: string[]; // If not found
+	error?: string;
+} {
+	const parsed = parseContentUrl(requestedUrl);
+
+	if (!parsed.isValid) {
+		return { status: "not_found", error: "Invalid URL format" };
+	}
+
+	// Lookup by ID (stable identifier)
+	const content = lookupContentById(parsed.id);
+
+	if (!content.isFound) {
+		// ID doesn't exist - content may have been deleted or moved
+		return {
+			status: "not_found",
+			contentId: parsed.id,
+			suggestions: findSimilarContent(parsed), // Fuzzy search
+			error: `Content with ID "${parsed.id}" not found`
+		};
+	}
+
+	// ID found - check if URL matches current state
+	if (content.contentUrl === requestedUrl) {
+		// Perfect match
+		return { status: "match", contentId: parsed.id };
+	}
+
+	// ID valid but slug changed - redirect to current URL
+	return {
+		status: "redirect",
+		currentUrl: content.contentUrl,
+		contentId: parsed.id
+	};
+}
+```
+
+**User Experience Flow:**
+
+```typescript
+// Case 1: URL matches current state
+resolveContentUrl("01_01_lesson_dev_env.html");
+// → { status: "match" } ✅ Show content
+
+// Case 2: ID valid but slug changed
+resolveContentUrl("01_01_lesson_old_title.html");
+// → { status: "redirect", currentUrl: "01_01_lesson_new_title.html" }
+// → Show banner: "Content has moved. Redirecting..." ⚠️
+
+// Case 3: ID not found (deleted/moved)
+resolveContentUrl("05_99_lesson_deleted.html");
+// → { status: "not_found", suggestions: ["05_01L", "05_02L"] }
+// → Show 404 with suggestions: "Did you mean...?" ❌
+```
+
+#### 3. Content Reorganization Tracking
+
+**Migration Metadata (Optional Enhancement):**
+
+```typescript
+// Add to content-menu.ts during reorganization
+export const contentMigrations: Record<string, string> = {
+	"02_05L": "03_05L", // Moved from Unit 2 to Unit 3
+	"01_03L": "01_04L" // Chapter renumbering
+};
+
+// Use in resolution
+export function resolveContentUrl(requestedUrl: string) {
+	const parsed = parseContentUrl(requestedUrl);
+	const migratedId = contentMigrations[parsed.id];
+
+	if (migratedId) {
+		const content = lookupContentById(migratedId);
+		return {
+			status: "redirect",
+			currentUrl: content.contentUrl,
+			contentId: migratedId,
+			message: `Content moved from ${parsed.id} to ${migratedId}`
+		};
+	}
+	// ... rest of resolution logic
+}
+```
+
+**Graceful Fallback:**
+
+```typescript
+// If parsing fails with new format, try legacy format
+function parseContentUrl(url: string): ParsedContentUrl {
+	try {
+		return parseNewFormat(url);
+	} catch {
+		return parseLegacyFormat(url); // Fallback to old parsing
+	}
+}
+```
+
+### Expected Deliverables
+
+#### New Files
+
+1. `src/lib/utils/content-identifiers.ts` - ID/URL generation and parsing utilities
+2. `src/lib/utils/content-lookup.ts` - Cross-reference and content resolution utilities
+3. `src/test/lib/utils/content-identifiers.test.ts` - Unit tests for ID/URL utilities
+4. `src/test/scripts/content-cross-reference.test.ts` - Integration tests for cross-referencing
+5. `src/test/scripts/migration-validation.test.ts` - Migration validation tests
+
+#### Updated Files (🚨 All Must Use Unified Utilities)
+
+**Type System:**
+
+1. `src/lib/types/types.ts` - Add new interfaces (ParsedContentId, ParsedContentUrl, ParsedFilePath, ContentLookupResult, ValidationResult)
+
+**Generator Scripts:** 2. `src/scripts/generate-menu.ts` - Use `generateContentId()` and `generateContentUrl()` 3. `src/scripts/generate-search-index.ts` - Use `generateContentId()` and `generateContentUrl()` 4. `src/scripts/flatnav-generator.ts` - Use `generateContentId()` and `generateContentUrl()`
+
+**Content Management Scripts:** 5. `src/scripts/scaffold-generator.ts` - Use `generateContentId()` and `generateFilePath()` 6. `src/scripts/manage-content.ts` - Use `parseContentId()`, `parseFilePath()`, and `lookupContentById()`
+
+**Navigation System (Optional):** 7. `src/lib/utils/navigation-paths.ts` - Integration with new ID system (if needed)
+
+**Documentation:** 8. `AUDIT-REPORT-TASK-3G3.md` - Already updated with TASK 3G4 forward reference ✅
+
+#### Generated Files (After Running Scripts)
+
+1. `src/data/generated/content-menu.ts` - With unique IDs and descriptive URLs
+2. `src/data/generated/flatnav.ts` - With unique IDs
+3. `src/data/generated/search-index.ts` - With unified IDs
+
+### Three-Tier Validation (🚨 MANDATORY ORDER)
+
+**CRITICAL: Always follow this exact validation sequence:**
+
+#### Development Cycle (After Each Code Change)
+
+```bash
+# Tier 1: Fast WIP Check (~5-15 seconds)
+make check-wip
+# Validates: Modified/untracked files only
+# Runs: Prettier, ESLint, TypeScript/Svelte check on changed files
+# Purpose: Catch syntax errors immediately during development
+
+# Tier 2: Unit & Integration Tests (~30-60 seconds)
+pnpm run test
+# Validates: All test suites pass
+# Runs: Vitest with all test files
+# Purpose: Verify business logic and integration correctness
+
+# Tier 3: Complete Project Validation (~1-3 minutes)
+pnpm run format  # Format all files
+pnpm run lint    # Lint entire codebase
+pnpm run check   # Full TypeScript + SvelteKit validation
+# Purpose: Ensure project-wide consistency and type safety
+```
+
+#### After Generator Script Updates
+
+```bash
+# Step 1: Validate script changes
+make check-wip
+
+# Step 2: Run tests to verify utilities
+pnpm run test
+
+# Step 3: Regenerate all content with new system
+make generate-all-content
+# Generates: content-menu.ts, flatnav.ts, search-index.ts with new IDs
+
+# Step 4: Validate generated files
+pnpm run format
+pnpm run lint
+pnpm run check
+
+# Step 5: Verify migration success
+grep -o '"id": "[^"]*"' src/data/generated/content-menu.ts | sort | uniq -d
+# Expected output: (empty) - no duplicate IDs
+```
+
+#### Pre-Commit Checklist
+
+- [ ] `make check-wip` passes ✅
+- [ ] `pnpm run test` passes ✅
+- [ ] `make generate-all-content` completes successfully ✅
+- [ ] `pnpm run format` completes ✅
+- [ ] `pnpm run lint` shows no errors ✅
+- [ ] `pnpm run check` shows no type errors ✅
+- [ ] No duplicate IDs in generated files ✅
+- [ ] All 129 chapters have unique IDs ✅
+
+### Success Metrics
+
+**Before Migration (Current State from TASK 3G3):**
+
+- ❌ ID uniqueness: 44% (57 unique / 129 total)
+- ❌ Cross-reference compatibility: 0% (search ↔ menu/flatnav)
+- ⚠️ URL descriptiveness: Medium (hash-based, limited info)
+
+**After Migration (Target State):**
+
+- ✅ ID uniqueness: 100% (129 unique / 129 total)
+- ✅ Cross-reference compatibility: 100% (all systems use same IDs)
+- ✅ URL descriptiveness: High (content type + title slug)
+- ✅ Lookup performance: O(1) with hash maps
+- ✅ Developer experience: Clear, debuggable identifiers
 
 ### Success Criteria
 
-- ✅ All technical debt areas resolved
-- ✅ Code duplication eliminated through utility consolidation
-- ✅ Test utilities centralized and reusable
-- ✅ Resource loading optimized for performance
+- ✅ All IDs follow letter-based suffix format (`"01_01L"`, `"01_01SG"`, etc.)
+- ✅ All URLs are descriptive and follow `unit_chapter_type_slug.html` format
+- ✅ 100% ID compatibility across content-menu, flatnav, and search-index
+- ✅ All serialization/deserialization functions implemented and tested
+- ✅ Lookup functions work correctly for ID ↔ URL ↔ FilePath conversions
+- ✅ All generator scripts use unified ID generation utilities
+- ✅ All tests pass (unit + integration + validation)
+- ✅ No duplicate IDs in any generated file
 
 ---
 
