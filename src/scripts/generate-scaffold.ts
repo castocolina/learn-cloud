@@ -890,7 +890,7 @@ export class ScaffoldCLI {
 		console.log(`🔄 Generating ${filesToGenerate.length} missing file(s)...`);
 
 		// Import ContentCore dynamically to avoid circular dependencies
-		const { ContentCore } = await import("./content-creator.js");
+		const { ContentCore } = await import("./manage-content.js");
 		const contentCore = new ContentCore();
 
 		for (const file of filesToGenerate) {

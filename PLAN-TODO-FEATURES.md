@@ -1095,6 +1095,189 @@ npm run --silent 2>/dev/null | grep -E "(generate|validate|content)"
 
 ---
 
+## TASK 3G1.1: Schema Generator Consolidation & Test Implementation
+
+### Agent Responsibility
+
+You are responsible for consolidating the duplicated schema generators into a single, robust JSON Schema generator that uses `src/lib/schemas/ContentSchemas.ts` as the single source of truth, with comprehensive test coverage and proper configuration integration.
+
+### Prerequisites
+
+- Task 3G1: Core Infrastructure Audit completed
+- Understanding of JSON Schema Draft 7 specification
+- Familiarity with Zod-to-JSON-Schema conversion
+
+### Technical Scope & Deliverables
+
+#### 1. Schema Generator Consolidation
+
+**Actions Required:**
+
+1. **DELETE**: `src/scripts/generate-content-schemas.ts` (simple, limited version)
+2. **RENAME**: `src/scripts/generate-json-schemas.ts` → `src/scripts/generate-schemas.ts`
+3. **ENHANCE**: Ensure it uses `CONTENT_SCHEMAS` object from `ContentSchemas.ts` as single source
+
+**Generator Requirements:**
+
+- ✅ **Source**: Must consume ALL schemas from `src/lib/schemas/ContentSchemas.ts`
+- ✅ **Format**: JSON Schema Draft 7 format (single `.json` file)
+- ✅ **Output**: `src/data/generated/schemas/content-schemas.json` (configurable via settings)
+- ✅ **No Parameters**: Fixed responsibility, auto-detects all available schemas
+- ✅ **CLI Interface**: Maintains Commander.js architecture from existing script
+
+#### 2. Settings Configuration Addition
+
+**Add to `src/config/settings.ts`:**
+
+```typescript
+schemas: {
+  paths: {
+    sourceFile: "src/lib/schemas/ContentSchemas.ts", // Schema definitions source
+    outputFile: "src/data/generated/schemas/content-schemas.json", // Single JSON output
+    indexFile: "schema-index.json" // Schema registry index file (optional)
+  },
+  generation: {
+    format: "json-schema-draft-7", // JSON Schema format version
+    includeDescriptions: true, // Include schema descriptions
+    resolveReferences: true, // Resolve $ref references
+    validateOutput: true // Validate generated schemas
+  },
+  validationPrefix: "schema-gen" // Prefix for validation config IDs
+}
+```
+
+#### 3. Expected Output Format (Single JSON File)
+
+**Generated File: `src/data/generated/schemas/content-schemas.json`**
+
+```json
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$id": "https://learn-cloud.example.com/schemas/content-schemas.json",
+	"title": "Cloud-Native Learning Platform Content Schemas",
+	"description": "Complete schema definitions for all content types (35+ schemas)",
+	"definitions": {
+		"ContentMetadata": {
+			"type": "object",
+			"properties": {
+				"title": { "type": "string", "minLength": 1, "maxLength": 200 },
+				"difficulty": { "type": "string", "enum": ["beginner", "intermediate", "advanced"] }
+			},
+			"required": ["title", "difficulty"]
+		},
+		"LessonContent": {
+			"type": "object",
+			"properties": {
+				"metadata": { "$ref": "#/definitions/ContentMetadata" },
+				"sections": { "type": "array" }
+			}
+		}
+	}
+}
+```
+
+#### 4. Test Implementation with TestSetup Pattern
+
+**Create**: `src/test/scripts/generate-schemas.test.ts`
+
+**Test Architecture following established patterns:**
+
+```typescript
+class TestSetup {
+	public tempDir: string;
+	public testOutputFile: string;
+	public readonly configId: string;
+
+	constructor(testSuiteId: string = "schema-gen") {
+		const timestamp = Date.now();
+		const uniqueId = `${testSuiteId}-${timestamp}`;
+		this.tempDir = join(process.cwd(), "tmp", `test-schema-gen-${uniqueId}`);
+		this.testOutputFile = join(this.tempDir, "content-schemas.json");
+		this.configId = generateConfigId("schema-generator", uniqueId);
+	}
+}
+```
+
+**Required Test Cases:**
+
+1. **Schema Detection**: Verify all 35+ schemas detected from ContentSchemas.ts
+2. **JSON Schema Format**: Validate JSON Schema Draft 7 compliance
+3. **Single File Output**: Test consolidated file generation
+4. **Configuration Integration**: Test SETTINGS.scripts.schemas usage
+5. **CLI Interface**: Command-line argument processing
+6. **Output Validation**: Generated schema is valid and parseable
+
+#### 5. Documentation Update
+
+**Update**: `MANAGE-CONTENT.md` (add schema section)
+
+````markdown
+## Generated JSON Schemas
+
+JSON schemas are automatically generated from TypeScript Zod definitions for external system integration.
+
+### Schema Generation
+
+- **Command**: `npx tsx src/scripts/generate-schemas.ts` (no parameters required)
+- **Source**: `src/lib/schemas/ContentSchemas.ts` (35+ Zod schema definitions)
+- **Output**: `src/data/generated/schemas/content-schemas.json` (single consolidated file)
+- **Format**: JSON Schema Draft 7 specification
+
+### Usage Examples
+
+```bash
+# Generate schemas
+npx tsx src/scripts/generate-schemas.ts
+make generate-schemas
+
+# External tool usage
+ajv validate -s content-schemas.json#/definitions/LessonContent -d lesson.json
+jq '.definitions | keys[]' content-schemas.json  # List all available types
+```
+````
+
+````
+
+#### 6. Build System Integration
+
+**Add to Makefile:**
+```makefile
+generate-schemas: ## Generate JSON schemas from Zod definitions
+	@echo "🏗️ Generating JSON schemas from Zod definitions..."
+	@npx tsx src/scripts/generate-schemas.ts
+	@echo "✅ Schema generation complete!"
+````
+
+**Add to package.json:**
+
+```json
+{
+	"scripts": {
+		"generate-schemas": "npx tsx src/scripts/generate-schemas.ts"
+	}
+}
+```
+
+### Success Criteria
+
+- ✅ Single schema generator using ContentSchemas.ts as source
+- ✅ Consolidated JSON Schema file with 35+ schema definitions
+- ✅ Configuration integrated via SETTINGS.scripts.schemas
+- ✅ Comprehensive test suite with TestSetup pattern
+- ✅ CLI-friendly single file output for external tool usage
+- ✅ Documentation updated with schema generation workflow
+- ✅ Build system integration functional
+- ✅ No parameters required - fixed responsibility pattern
+
+### Integration Points
+
+- **Task 3G1**: Provides foundation infrastructure standardization
+- **Task 3G2**: Can focus on type system coherence without schema duplication
+- **ContentSchemas.ts**: Single source of truth for all schema definitions
+- **External Tools**: Single JSON file for CLI validation and integration
+
+---
+
 ## TASK 3G2: Type System Coherence Validation
 
 ### Agent Responsibility

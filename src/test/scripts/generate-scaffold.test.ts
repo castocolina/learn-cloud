@@ -23,7 +23,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { writeFileSync, existsSync, mkdirSync, rmSync } from "fs";
 import { join } from "path";
-import { ScaffoldCLI, ScaffoldingLogic } from "../../scripts/scaffold-generator.js";
+import { ScaffoldCLI, ScaffoldingLogic } from "../../scripts/generate-scaffold.js";
 import { generateConfigId } from "../../lib/utils/validation-utils.js";
 import { SETTINGS } from "$config/settings.js";
 

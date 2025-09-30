@@ -16,9 +16,11 @@ This comprehensive guide covers the complete technical architecture, development
 1. **Execute complete validation cycle** after any changes:
 
    ```bash
-   pnpm run format   # Code formatting (mandatory first step)
-   pnpm run check    # SvelteKit validation
+   make check-wip    # Fast validation of modified files (mandatory first step)
+   pnpm run test     # Execute tests
+   pnpm run format   # Code formatting
    pnpm run lint     # Code quality
+   pnpm run check    # SvelteKit validation
    pnpm run dev      # Development server test
    ```
 
@@ -1186,9 +1188,9 @@ function navigateToNext() {
 ### Code Quality Standards
 
 - **Three-Tiered Validation Strategy**: Performance-optimized approach for efficient development workflow:
-  - **Tier 1 (Local WIP - Fast ~5-15s):** `make check-wip` or `pnpm run check:wip` - validates only modified/untracked files with prettier and eslint
-  - **Tier 2 (Code Quality - Moderate ~30-45s):** `pnpm run format` + `pnpm run lint` - complete project formatting and linting
-  - **Tier 3 (Comprehensive - Slower ~1-3m):** `pnpm run test` + `pnpm run check` - unit tests and complete TypeScript/SvelteKit validation
+  - **Tier 1 (Fast WIP Check ~5-15s):** `make check-wip` or `pnpm run check:wip` - validates only modified/untracked files with prettier and eslint
+  - **Tier 2 (Testing ~30-60s):** `pnpm run test` - execute unit tests and validation tests
+  - **Tier 3 (Comprehensive ~1-3m):** `pnpm run format` + `pnpm run lint` + `pnpm run check` - complete project formatting, linting, and TypeScript/SvelteKit validation
 - **Zero Tolerance Policy**:
   - **NO TypeScript errors** - All code must pass TypeScript validation
   - **NO TypeScript warnings** - Address all compiler warnings before completion

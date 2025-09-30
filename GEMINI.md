@@ -15,8 +15,8 @@ For complete agent implementation guidelines, project rules, and technical speci
 - Follow the same architectural patterns and quality standards
 - **Three-Tiered Validation Strategy**: Performance-optimized approach for efficient development:
   - **Tier 1 (~5-15s)**: `make check-wip` for modified/untracked files only
-  - **Tier 2 (~30-45s)**: `pnpm run format` + `pnpm run lint` for complete project code quality
-  - **Tier 3 (~1-3m)**: `pnpm run test` + `pnpm run check` for comprehensive testing and TypeScript validation
+  - **Tier 2 (~30-60s)**: `pnpm run test` for unit tests and validation tests
+  - **Tier 3 (~1-3m)**: `pnpm run format` + `pnpm run lint` + `pnpm run check` for complete project formatting, linting, and TypeScript validation
 - **Code Refactoring:** When refactoring existing code, you **must** preserve all existing comments and asset styles unless explicitly instructed otherwise by the user.
 
 ## Structure Overview

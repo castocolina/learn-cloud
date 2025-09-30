@@ -22,7 +22,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { writeFileSync, existsSync, mkdirSync, rmSync } from "fs";
 import { join } from "path";
-import { ContentCreatorCLI } from "../../scripts/content-creator.js";
+import { ContentCreatorCLI } from "../../scripts/manage-content.js";
 import { generateConfigId } from "../../lib/utils/validation-utils.js";
 import { SETTINGS } from "$config/settings.js";
 import type { AppSettings } from "$types";
@@ -43,7 +43,7 @@ class TestSetup {
 	constructor(testSuiteId: string = "crud-creator") {
 		const timestamp = Date.now();
 		const uniqueId = `${testSuiteId}-${timestamp}`;
-		this.tempDir = join(process.cwd(), "tmp", `script-test-content-creator-${uniqueId}`);
+		this.tempDir = join(process.cwd(), "tmp", `script-test-manage-content-${uniqueId}`);
 		this.testDataDir = join(this.tempDir, "data", "book");
 		this.configId = generateConfigId(SETTINGS.scripts.contentCreator.validationPrefix, testSuiteId);
 	}

@@ -7,7 +7,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { writeFileSync, mkdirSync, rmSync, existsSync } from "fs";
 import { join } from "path";
-import { SearchIndexCLI, SearchIndexGenerator } from "../../scripts/search-indexer.js";
+import { SearchIndexCLI, SearchIndexGenerator } from "../../scripts/generate-search-index.js";
 import { generateConfigId } from "../../lib/utils/validation-utils.js";
 import { SETTINGS } from "../../config/settings.js";
 

@@ -1,3 +1,5 @@
+#!/usr/bin/env tsx
+
 /**
  * Flat Navigation Generator Script
  *

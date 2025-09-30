@@ -173,9 +173,9 @@ dev-tools: ## Install additional development tools
 	@echo "✅ Development tools installed"
 
 # Content generation
-generate-content-menu: ## Generate content-menu.ts from CONTENT.md
+generate-menu: ## Generate content-menu.ts from CONTENT.md
 	@echo "🔄 Generating content-menu.ts from CONTENT.md..."
-	@npx tsx src/scripts/content-menu-generator.ts
+	@npx tsx src/scripts/generate-menu.ts
 	@echo "✅ Content generation complete!"
 
 generate-flatnav: ## Generate flat navigation structure from content-menu.ts
@@ -183,50 +183,48 @@ generate-flatnav: ## Generate flat navigation structure from content-menu.ts
 	@npx tsx src/scripts/flatnav-generator.ts
 	@echo "✅ Flat navigation generation complete!"
 
-generate-scaffold: ## Generate content scaffolding using scaffold-generator.ts
+generate-scaffold: ## Generate content scaffolding using generate-scaffold.ts
 	@echo "🏗️ Generating content scaffolding..."
-	@npx tsx src/scripts/scaffold-generator.ts scaffold $(ARGS)
+	@npx tsx src/scripts/generate-scaffold.ts scaffold $(ARGS)
 	@echo "✅ Content scaffolding complete!"
 
 # Content CRUD operations
-content-list: ## List content files with optional filters (usage: make content-list ARGS="--unit=1 --type=lesson")
+manage-content-list: ## List content files with optional filters (usage: make manage-content-list ARGS="--unit=1 --type=lesson")
 	@echo "📋 Listing content files..."
-	@npx tsx src/scripts/content-creator.ts list $(ARGS)
+	@npx tsx src/scripts/manage-content.ts list $(ARGS)
 
-content-validate: ## Validate content files with optional filters (usage: make content-validate ARGS="--unit=1")
+manage-content-validate: ## Validate content files with optional filters (usage: make manage-content-validate ARGS="--unit=1")
 	@echo "🔍 Validating content files..."
-	@npx tsx src/scripts/content-creator.ts validate $(ARGS)
+	@npx tsx src/scripts/manage-content.ts validate $(ARGS)
 
-content-create: ## Create new content file (usage: make content-create ARGS="--unit=1 --type=lesson --id=test --file=path.ts")
+manage-content-create: ## Create new content file (usage: make manage-content-create ARGS="--unit=1 --type=lesson --id=test --file=path.ts")
 	@echo "📝 Creating content file..."
 	@if [ -z "$(ARGS)" ]; then \
-		echo "❌ Please provide ARGS parameter: make content-create ARGS=\"--unit=1 --type=lesson --id=test --file=path.ts\""; \
+		echo "❌ Please provide ARGS parameter: make manage-content-create ARGS=\"--unit=1 --type=lesson --id=test --file=path.ts\""; \
 		exit 1; \
 	fi
-	@npx tsx src/scripts/content-creator.ts create $(ARGS)
+	@npx tsx src/scripts/manage-content.ts create $(ARGS)
 
-generate-search-index: ## Generate search index from content files using Lunr.js (development mode)
-	@echo "🔍 Generating search index from content files..."
-	@npx tsx src/scripts/search-indexer.ts dev $(ARGS)
+generate-search-index: generate-search-index-dev ## Generate search index (alias to dev mode)
 
 generate-search-index-dev: ## Generate search index in development mode (fast, no validation)
 	@echo "🔍 Generating search index in development mode..."
-	@npx tsx src/scripts/search-indexer.ts dev $(ARGS)
+	@npx tsx src/scripts/generate-search-index.ts dev $(ARGS)
 
 generate-search-index-prod: ## Generate search index in production mode (with validation)
 	@echo "🔍 Generating search index in production mode..."
-	@npx tsx src/scripts/search-indexer.ts prod $(ARGS)
+	@npx tsx src/scripts/generate-search-index.ts prod $(ARGS)
 	@echo "✅ Search index generation complete!"
 
-validate-all-scripts: validate-mermaid generate-content-menu generate-flatnav generate-search-index-dev ## Run all foundation scripts validation (development mode)
+validate-all-scripts: validate-mermaid generate-menu generate-flatnav generate-search-index-dev ## Run all foundation scripts validation (development mode)
 	@echo "✅ All foundation scripts completed"
 
-validate-all-scripts-prod: validate-mermaid generate-content-menu generate-flatnav generate-search-index-prod ## Run all foundation scripts validation (production mode)
+validate-all-scripts-prod: validate-mermaid generate-menu generate-flatnav generate-search-index-prod ## Run all foundation scripts validation (production mode)
 	@echo "✅ All foundation scripts completed (production)"
 
-generate-all-content: generate-content-menu generate-flatnav generate-scaffold generate-search-index-dev validate-generated-full ## Generate all content files and validate them (development mode)
+generate-all-content: generate-menu generate-flatnav generate-scaffold generate-search-index-dev validate-generated-full ## Generate all content files and validate them (development mode)
 
-generate-all-content-prod: generate-content-menu generate-flatnav generate-scaffold generate-search-index-prod validate-generated-full ## Generate all content files and validate them (production mode)
+generate-all-content-prod: generate-menu generate-flatnav generate-scaffold generate-search-index-prod validate-generated-full ## Generate all content files and validate them (production mode)
 	@echo "🎉 All content generation and validation completed successfully!"
 
 # Project-wide validation
@@ -236,20 +234,6 @@ validate-typescript: ## Run full SvelteKit TypeScript check (svelte-check for en
 	@echo "✅ Full TypeScript validation complete!"
 
 # Generated content validation
-
-validate-generated-full: ## Validate generated content TypeScript files with format, lint, and TypeScript check
-	@echo "🔍 Validating generated content TypeScript files..."
-	@if [ -d "src/data/book" ]; then \
-		echo "✅ Found src/data/book directory"; \
-		$(MAKE) validate-script TARGETS="src/data/book/"; \
-		echo "🔍 Running TypeScript syntax check..."; \
-		find src/data/book -name "*.ts" -exec npx tsc --noEmit {} + 2>/dev/null && \
-		echo "✅ All content files are syntactically valid" || \
-		echo "⚠️  Some content files have syntax issues"; \
-	else \
-		echo "📁 No generated content files found in src/data/book/"; \
-	fi
-	@echo "✅ Content TypeScript validation complete!"
 
 validate-generated: ## Validate all generated content files (src/data/book and src/data/generated)
 	@echo "🔍 Validating all generated content files..."
@@ -279,21 +263,6 @@ validate-generated: ## Validate all generated content files (src/data/book and s
 		echo "📁 No generated content files found to validate"; \
 	fi
 	@echo "✅ Generated content validation complete!"
-
-validate-menu-file: ## Validate generated content-menu.ts file with format and lint only (no svelte-check)
-	@echo "🔍 Validating generated content-menu.ts..."
-	@if [ -f "src/data/generated/content-menu.ts" ]; then \
-		echo "✅ Found content-menu.ts"; \
-		if $(MAKE) validate-script-single FILE="src/data/generated/content-menu.ts"; then \
-			echo "✅ All validations passed for content-menu.ts!"; \
-		else \
-			echo "❌ Content menu validation failed!"; \
-			exit 1; \
-		fi; \
-	else \
-		echo "📁 content-menu.ts not found in src/data/generated/"; \
-	fi
-	@echo "✅ Content menu validation complete!"
 
 
 # CI/CD support

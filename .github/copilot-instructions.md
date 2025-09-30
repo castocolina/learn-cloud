@@ -17,8 +17,8 @@ For all project rules, technical specifications, and coding standards, refer to 
 - **Data-Driven**: Consume TypeScript/JSON data from `$data/` structure (alias for `src/data/`)
 - **Three-Tiered Validation**: Performance-optimized validation for efficient development:
   - **Tier 1 (~5-15s)**: `make check-wip` or `pnpm run check:wip` (modified/untracked files only)
-  - **Tier 2 (~30-45s)**: `pnpm run format` + `pnpm run lint` (complete project code quality)
-  - **Tier 3 (~1-3m)**: `pnpm run test` + `pnpm run check` (tests + complete TypeScript validation)
+  - **Tier 2 (~30-60s)**: `pnpm run test` (unit tests and validation tests)
+  - **Tier 3 (~1-3m)**: `pnpm run format` + `pnpm run lint` + `pnpm run check` (complete project formatting, linting, and TypeScript validation)
 
 ## Critical Rules
 

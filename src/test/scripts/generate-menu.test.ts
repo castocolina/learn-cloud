@@ -23,7 +23,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync } from "fs";
 import { join } from "path";
-import { MarkdownContentGenerator } from "../../scripts/content-menu-generator.js";
+import { MarkdownContentGenerator } from "../../scripts/generate-menu.js";
 import { generateConfigId } from "../../lib/utils/validation-utils.js";
 import { SETTINGS } from "$config/settings.js";
 const { contentMenu: contentMenuSettings } = SETTINGS.scripts;
