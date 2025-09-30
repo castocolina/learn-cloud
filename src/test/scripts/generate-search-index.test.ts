@@ -8,7 +8,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { writeFileSync, mkdirSync, rmSync, existsSync } from "fs";
 import { join } from "path";
 import { SearchIndexCLI, SearchIndexGenerator } from "../../scripts/generate-search-index.js";
-import { generateConfigId } from "../../lib/utils/validation-utils.js";
+import { generateConfigId } from "../test-utils.js";
 import { SETTINGS } from "../../config/settings.js";
 
 // Mock process.argv for CLI testing

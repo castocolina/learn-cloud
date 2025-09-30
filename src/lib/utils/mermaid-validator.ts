@@ -26,8 +26,10 @@ import { Project, Node } from "ts-morph";
 import type {
 	DiagramReference,
 	EnhancedMermaidValidationResult,
-	EnhancedMermaidValidationStats
+	EnhancedMermaidValidationStats,
+	ErrorCategory
 } from "$types";
+import { ERROR_CATEGORIES } from "$types";
 
 // ============================================================================
 // TYPES AND INTERFACES
@@ -99,27 +101,6 @@ export interface BatchValidationResult {
 	success: boolean;
 	duration: number;
 }
-
-// ============================================================================
-// ERROR CATEGORIZATION
-// ============================================================================
-
-/**
- * Mermaid error categories for better debugging
- */
-export const ERROR_CATEGORIES = {
-	SYNTAX: "Syntax Error",
-	PARSE: "Parse Error",
-	SEMANTIC: "Semantic Error",
-	GRAPH: "Graph Structure Error",
-	NODE: "Node Definition Error",
-	EDGE: "Edge Definition Error",
-	STYLE: "Style Error",
-	CONFIG: "Configuration Error",
-	UNKNOWN: "Unknown Error"
-} as const;
-
-export type ErrorCategory = (typeof ERROR_CATEGORIES)[keyof typeof ERROR_CATEGORIES];
 
 // ============================================================================
 // MERMAID VALIDATOR UTILITY CLASS

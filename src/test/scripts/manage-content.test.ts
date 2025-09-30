@@ -23,7 +23,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { writeFileSync, existsSync, mkdirSync, rmSync } from "fs";
 import { join } from "path";
 import { ContentCreatorCLI } from "../../scripts/manage-content.js";
-import { generateConfigId } from "../../lib/utils/validation-utils.js";
+import { generateConfigId } from "../test-utils.js";
 import { SETTINGS } from "$config/settings.js";
 import type { AppSettings } from "$types";
 

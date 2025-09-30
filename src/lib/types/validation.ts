@@ -95,3 +95,26 @@ export interface MermaidValidationStats {
 	/** Total processing duration in milliseconds */
 	totalDuration: number;
 }
+
+/**
+ * Mermaid error categories for better debugging
+ *
+ * These categories help classify validation errors for improved
+ * error reporting and troubleshooting during diagram validation.
+ */
+export const ERROR_CATEGORIES = {
+	SYNTAX: "Syntax Error",
+	PARSE: "Parse Error",
+	SEMANTIC: "Semantic Error",
+	GRAPH: "Graph Structure Error",
+	NODE: "Node Definition Error",
+	EDGE: "Edge Definition Error",
+	STYLE: "Style Error",
+	CONFIG: "Configuration Error",
+	UNKNOWN: "Unknown Error"
+} as const;
+
+/**
+ * Type representing valid error categories
+ */
+export type ErrorCategory = (typeof ERROR_CATEGORIES)[keyof typeof ERROR_CATEGORIES];

@@ -334,8 +334,12 @@ export type {
 	DiagramReference,
 	MermaidValidationResult,
 	FileProcessingResult,
-	MermaidValidationStats
+	MermaidValidationStats,
+	ErrorCategory
 } from "./validation.js";
+
+// Validation constants
+export { ERROR_CATEGORIES } from "./validation.js";
 
 // Scaffolding exports - Content generation and scaffolding types
 export type {

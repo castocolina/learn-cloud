@@ -51,9 +51,10 @@ export interface ContentPathInfo {
 }
 
 /**
- * Interface for unified path configuration
+ * Interface for unified path configuration (legacy/future use)
+ * Different from navigation.ts UnifiedPathConfig which is for build-time path generation
  */
-export interface UnifiedPathConfig {
+export interface LegacyUnifiedPathConfig {
 	unit: string;
 	type: ChapterType;
 	id: string;
@@ -221,7 +222,7 @@ export function generateUnifiedPath(
 	unit: string,
 	type: ChapterType,
 	id: string
-): UnifiedPathConfig {
+): LegacyUnifiedPathConfig {
 	const contentPath = generateContentPath(unit, type, id);
 
 	// Route path for SvelteKit: /{unit}/{type}/{id}

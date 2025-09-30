@@ -18,7 +18,7 @@ import { readFileSync, existsSync, mkdirSync, rmSync } from "fs";
 import { join } from "path";
 import { JsonSchemaGenerator, JsonSchemaGeneratorCLI } from "../../scripts/generate-schemas.js";
 import { CONTENT_SCHEMAS } from "$lib/schemas/ContentSchemas.js";
-import { generateConfigId } from "../../lib/utils/validation-utils.js";
+import { generateConfigId } from "../test-utils.js";
 import { SETTINGS } from "$config/settings.js";
 
 const { schemas: schemasSettings } = SETTINGS.scripts;

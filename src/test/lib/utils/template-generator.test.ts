@@ -31,7 +31,7 @@ import {
 	generateProjectContent,
 	getContentGenerator
 } from "../../../lib/utils/template-generator.js";
-import { generateConfigId } from "../../../lib/utils/validation-utils.js";
+import { generateConfigId } from "../../test-utils.js";
 import { SETTINGS } from "$config/settings.js";
 import type {
 	ValidatedScaffoldingArgs,

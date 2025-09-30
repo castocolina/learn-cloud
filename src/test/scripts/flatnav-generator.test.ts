@@ -19,7 +19,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync } from "fs";
 import { join } from "path";
 import { FlatNavGenerator } from "../../scripts/flatnav-generator.js";
 import type { AppSettings } from "$types";
-import { generateConfigId } from "../../lib/utils/validation-utils.js";
+import { generateConfigId } from "../test-utils.js";
 import { SETTINGS } from "$config/settings.js";
 
 const { flatNav: flatNavSettings } = SETTINGS.scripts;

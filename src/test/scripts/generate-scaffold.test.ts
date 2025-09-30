@@ -24,7 +24,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { writeFileSync, existsSync, mkdirSync, rmSync } from "fs";
 import { join } from "path";
 import { ScaffoldCLI, ScaffoldingLogic } from "../../scripts/generate-scaffold.js";
-import { generateConfigId } from "../../lib/utils/validation-utils.js";
+import { generateConfigId } from "../test-utils.js";
 import { SETTINGS } from "$config/settings.js";
 
 // Mock process.argv for CLI testing

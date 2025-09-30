@@ -19,20 +19,6 @@ const {
 } = SETTINGS;
 
 /**
- * Generate unique configuration ID for test isolation.
- * Only for test environments, we do not need this for real use cases, only in test envs we races conditions.
- * @param prefix Prefix for the config ID (e.g., "test-search-idx")
- * @param testName Optional test name for uniqueness
- */
-export function generateConfigId(prefix: string, testName?: string): string {
-	const timestamp = Date.now().toString();
-	const pid = process.pid.toString();
-	const hashInput = `${testName || "default"}-${timestamp}-${pid}`;
-	const hash = crypto.createHash("md5").update(hashInput).digest("hex").substring(0, 8);
-	return `${prefix}-${hash}`;
-}
-
-/**
  * Execute a command with real-time streaming output
  */
 async function executeWithStreaming(

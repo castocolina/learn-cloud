@@ -19,18 +19,9 @@ import type {
 	StudyGuideContent,
 	ExamContent,
 	ProjectContent,
-	QuestionType
+	QuestionType,
+	AnyContent
 } from "$types";
-
-/**
- * Union type for all content types
- */
-export type AnyContent =
-	| LessonContent
-	| QuizContent
-	| StudyGuideContent
-	| ExamContent
-	| ProjectContent;
 
 /**
  * Valid chapter types array for validation

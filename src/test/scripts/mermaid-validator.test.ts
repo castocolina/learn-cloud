@@ -21,7 +21,7 @@ import { spawn } from "child_process";
 import { EventEmitter } from "events";
 import { join } from "path";
 import { MermaidValidator, parseCliArguments, printHelp } from "../../scripts/mermaid-validator.js";
-import { generateConfigId } from "../../lib/utils/validation-utils.js";
+import { generateConfigId } from "../test-utils.js";
 import { SETTINGS } from "$config/settings.js";
 import type { DiagramReference, MermaidValidationResult, FileProcessingResult } from "$types";
 
