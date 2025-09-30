@@ -11,3 +11,6 @@ src/book/
 
 # shadcn-svelte components (third-party, prevent formatting but allow validation)
 src/lib/components/ui/
+
+# Generated content schemas (prevent formatting but allow validation)
+src/data/generated/content-schemas.json

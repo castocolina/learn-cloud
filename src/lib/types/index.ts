@@ -33,7 +33,13 @@ export type {
 	AspectRatio,
 	Layout,
 	CardStyle,
-	SupportedFormat
+	SupportedFormat,
+	// Content identifier system types (TASK 3G4)
+	ParsedContentId,
+	ParsedContentUrl,
+	ParsedFilePath,
+	ContentLookupResult,
+	ValidationResult as ContentValidationResult
 } from "./types.js";
 
 // Union type constants - For iteration and Object.values() replacement

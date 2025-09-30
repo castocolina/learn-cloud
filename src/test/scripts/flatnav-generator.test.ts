@@ -6,7 +6,7 @@
  * - Sequential navigation mapping (respecting existing order)
  * - Bidirectional link establishment
  * - Cross-unit navigation handling
- * - URL generation using navigation-paths.ts
+ * - URL generation using content-identifiers.ts (single source of truth)
  * - TypeScript code generation with validation
  * - Performance optimization
  *
@@ -146,8 +146,8 @@ export const contentMenu: MenuStructure = {
 					icon: "BookOpen",
 					type: "overview",
 					chapterNumber: "0.0",
-					chapterLink: "book/unit/01/01_00_overview.html",
-					chapterDataLink: "book/unit01/01_00_overview.ts"
+					chapterUrl: "book/unit/01/01_00_overview.html",
+					filePath: "book/unit01/01_00_overview.ts"
 				},
 				{
 					id: "01_01",
@@ -155,8 +155,8 @@ export const contentMenu: MenuStructure = {
 					icon: "Code",
 					type: "lesson",
 					chapterNumber: "1.1",
-					chapterLink: "book/unit/01/01_01_lesson.html",
-					chapterDataLink: "book/unit01/01_01_lesson.ts",
+					chapterUrl: "book/unit/01/01_01_lesson.html",
+					filePath: "book/unit01/01_01_lesson.ts",
 					estimatedTime: 45
 				},
 				{
@@ -165,8 +165,8 @@ export const contentMenu: MenuStructure = {
 					icon: "BookOpen",
 					type: "study_guide",
 					chapterNumber: "1.1",
-					chapterLink: "book/unit/01/01_01_study.html",
-					chapterDataLink: "book/unit01/01_01_study.ts"
+					chapterUrl: "book/unit/01/01_01_study.html",
+					filePath: "book/unit01/01_01_study.ts"
 				},
 				{
 					id: "01_01_quiz",
@@ -174,8 +174,8 @@ export const contentMenu: MenuStructure = {
 					icon: "HelpCircle",
 					type: "quiz",
 					chapterNumber: "1.1",
-					chapterLink: "book/unit/01/01_01_quiz.html",
-					chapterDataLink: "book/unit01/01_01_quiz.ts"
+					chapterUrl: "book/unit/01/01_01_quiz.html",
+					filePath: "book/unit01/01_01_quiz.ts"
 				},
 				{
 					id: "01_02_exam",
@@ -183,8 +183,8 @@ export const contentMenu: MenuStructure = {
 					icon: "Target",
 					type: "exam",
 					chapterNumber: "1.2",
-					chapterLink: "book/unit/01/01_02_exam.html",
-					chapterDataLink: "book/unit01/01_02_exam.ts"
+					chapterUrl: "book/unit/01/01_02_exam.html",
+					filePath: "book/unit01/01_02_exam.ts"
 				}
 			]
 		},
@@ -203,8 +203,8 @@ export const contentMenu: MenuStructure = {
 					icon: "BookOpen",
 					type: "overview",
 					chapterNumber: "0.0",
-					chapterLink: "book/unit/02/02_00_overview.html",
-					chapterDataLink: "book/unit02/02_00_overview.ts"
+					chapterUrl: "book/unit/02/02_00_overview.html",
+					filePath: "book/unit02/02_00_overview.ts"
 				},
 				{
 					id: "02_01",
@@ -212,8 +212,8 @@ export const contentMenu: MenuStructure = {
 					icon: "Code",
 					type: "lesson",
 					chapterNumber: "2.1",
-					chapterLink: "book/unit/02/02_01_lesson.html",
-					chapterDataLink: "book/unit02/02_01_lesson.ts",
+					chapterUrl: "book/unit/02/02_01_lesson.html",
+					filePath: "book/unit02/02_01_lesson.ts",
 					estimatedTime: 60
 				},
 				{
@@ -222,8 +222,8 @@ export const contentMenu: MenuStructure = {
 					icon: "Rocket",
 					type: "project",
 					chapterNumber: "2.2",
-					chapterLink: "book/unit/02/02_02_project.html",
-					chapterDataLink: "book/unit02/02_02_project.ts",
+					chapterUrl: "book/unit/02/02_02_project.html",
+					filePath: "book/unit02/02_02_project.ts",
 					estimatedTime: 120
 				}
 			]
@@ -255,8 +255,8 @@ export const contentMenu: MenuStructure = {
 					icon: "BookOpen",
 					type: "overview",
 					chapterNumber: "0.0",
-					chapterLink: "test.html",
-					chapterDataLink: "test.ts"
+					chapterUrl: "test.html",
+					filePath: "test.ts"
 				},
 				{
 					id: "01_01",
@@ -264,8 +264,8 @@ export const contentMenu: MenuStructure = {
 					icon: "Code",
 					type: "lesson",
 					chapterNumber: "1.1",
-					chapterLink: "lesson.html",
-					chapterDataLink: "lesson.ts"
+					chapterUrl: "lesson.html",
+					filePath: "lesson.ts"
 				}
 			]
 		}
@@ -386,25 +386,25 @@ describe("FlatNavGenerator", () => {
 	});
 
 	describe("URL Generation", () => {
-		it("should generate hash-based URLs using navigation-paths utility", async () => {
+		it("should generate descriptive chapter URLs from content-identifiers", async () => {
 			const success = await generator.generate();
 			expect(success).toBe(true);
 
 			const outputContent = readFileSync(testSetup.outputPath, "utf-8");
 
-			// URLs should be generated using navigation-paths.ts
-			expect(outputContent).toContain('url: "#unit01"'); // Overview content
-			expect(outputContent).toContain('url: "#unit01/chapter01"'); // Chapter content
+			// URLs should use descriptive format from content-identifiers.ts
+			expect(outputContent).toContain("chapterUrl:"); // All entries should have chapterUrl
+			expect(outputContent).toMatch(/chapterUrl: ".*\.html"/); // HTML format
 		}, 10000);
 
-		it("should generate consistent URLs across all entries", async () => {
+		it("should generate consistent chapter URLs across all entries", async () => {
 			const success = await generator.generate();
 			expect(success).toBe(true);
 
 			const outputContent = readFileSync(testSetup.outputPath, "utf-8");
 
-			// All entries should have valid URLs
-			expect(outputContent).toMatch(/url: "#unit\d+/);
+			// All entries should have valid chapter URLs
+			expect(outputContent).toMatch(/chapterUrl: ".+\.html"/);
 		}, 10000);
 	});
 
@@ -484,7 +484,8 @@ describe("FlatNavGenerator", () => {
 			expect(outputContent).toContain("const flatNavEntries: FlatNavEntry[] = [");
 			expect(outputContent).toContain("id:");
 			expect(outputContent).toContain("title:");
-			expect(outputContent).toContain("url:");
+			expect(outputContent).toContain("chapterUrl:");
+			expect(outputContent).toContain("filePath:");
 			expect(outputContent).toContain("chapterType:");
 		}, 10000);
 	});
@@ -657,8 +658,8 @@ export const contentMenu: MenuStructure = {
 					icon: "BookOpen",
 					type: "overview",
 					chapterNumber: "0.0",
-					chapterLink: "overview.html",
-					chapterDataLink: "overview.ts"
+					chapterUrl: "overview.html",
+					filePath: "overview.ts"
 				},
 				{
 					id: "01_01",
@@ -666,8 +667,8 @@ export const contentMenu: MenuStructure = {
 					icon: "Code",
 					type: "lesson",
 					chapterNumber: "1.1",
-					chapterLink: "lesson1.html",
-					chapterDataLink: "lesson1.ts",
+					chapterUrl: "lesson1.html",
+					filePath: "lesson1.ts",
 					estimatedTime: 30
 				},
 				{
@@ -676,8 +677,8 @@ export const contentMenu: MenuStructure = {
 					icon: "BookOpen",
 					type: "study_guide",
 					chapterNumber: "1.1",
-					chapterLink: "study1.html",
-					chapterDataLink: "study1.ts"
+					chapterUrl: "study1.html",
+					filePath: "study1.ts"
 				},
 				{
 					id: "01_01_quiz",
@@ -685,8 +686,8 @@ export const contentMenu: MenuStructure = {
 					icon: "HelpCircle",
 					type: "quiz",
 					chapterNumber: "1.1",
-					chapterLink: "quiz1.html",
-					chapterDataLink: "quiz1.ts"
+					chapterUrl: "quiz1.html",
+					filePath: "quiz1.ts"
 				},
 				{
 					id: "01_02",
@@ -694,8 +695,8 @@ export const contentMenu: MenuStructure = {
 					icon: "Code",
 					type: "lesson",
 					chapterNumber: "1.2",
-					chapterLink: "lesson2.html",
-					chapterDataLink: "lesson2.ts",
+					chapterUrl: "lesson2.html",
+					filePath: "lesson2.ts",
 					estimatedTime: 45
 				},
 				{
@@ -704,8 +705,8 @@ export const contentMenu: MenuStructure = {
 					icon: "Rocket",
 					type: "project",
 					chapterNumber: "1.3",
-					chapterLink: "project.html",
-					chapterDataLink: "project.ts",
+					chapterUrl: "project.html",
+					filePath: "project.ts",
 					estimatedTime: 120
 				},
 				{
@@ -714,8 +715,8 @@ export const contentMenu: MenuStructure = {
 					icon: "Target",
 					type: "exam",
 					chapterNumber: "1.4",
-					chapterLink: "exam.html",
-					chapterDataLink: "exam.ts"
+					chapterUrl: "exam.html",
+					filePath: "exam.ts"
 				}
 			]
 		}

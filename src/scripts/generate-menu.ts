@@ -61,9 +61,11 @@ import type {
 	TechnologyUnit,
 	UnifiedPathConfig,
 	ContentDifficulty,
-	ContentParseResult
+	ContentParseResult,
+	NavigationPaths
 } from "$types";
-import { generateNavigationPaths } from "$lib/utils/navigation-paths.js";
+import { generateContentId, generateContentUrl } from "$lib/utils/content-identifiers.js";
+import { padNumber, generateSlug, extractChapterNumber } from "$lib/utils/string-utils.js";
 import { runGeneratedFileValidation } from "../lib/utils/validation-utils.js";
 import { SETTINGS } from "$config/settings.js";
 const { contentMenu: contentMenuSettings } = SETTINGS.scripts;
@@ -155,6 +157,92 @@ export class MarkdownContentGenerator {
 			console.log(`📍 Input: ${this.contentMdPath}`);
 			console.log(`📍 Output: ${this.outputPath}`);
 		}
+	}
+
+	/**
+	 * Generate consistent file naming based on content type and metadata
+	 */
+	private generateFileName(config: UnifiedPathConfig): string {
+		const { contentType, unitNum, chapterNum, titleSlug } = config;
+
+		const paddedUnit = padNumber(unitNum);
+
+		// Handle unit-level content (overview, exam)
+		if (contentType === "overview") {
+			const slug = titleSlug ? `_${generateSlug(titleSlug)}` : "";
+			return `${paddedUnit}_00_overview${slug}`;
+		}
+
+		if (contentType === "exam") {
+			const slug = titleSlug ? `_${generateSlug(titleSlug)}` : "_final_exam";
+			return `${paddedUnit}_99_exam${slug}`;
+		}
+
+		// Regular chapter content (lesson, study_guide, quiz, project)
+		const extractedChapter = chapterNum ? extractChapterNumber(chapterNum) : "1";
+		const paddedChapter = padNumber(extractedChapter);
+		const chapterPrefix = `${paddedUnit}_${paddedChapter}`;
+		const typeInfix = contentType === "lesson" ? "lesson" : contentType;
+		const slug = titleSlug ? `_${generateSlug(titleSlug)}` : "";
+
+		return `${chapterPrefix}_${typeInfix}${slug}`;
+	}
+
+	/**
+	 * Generate all navigation paths from configuration
+	 */
+	private generateNavigationPaths(config: UnifiedPathConfig): NavigationPaths {
+		const { contentType, unitNum, chapterNum, titleSlug: _titleSlug } = config;
+
+		const paddedUnit = padNumber(unitNum);
+		const extractedChapter = chapterNum ? extractChapterNumber(chapterNum) : "0";
+		const paddedChapter = padNumber(extractedChapter);
+		const fileName = this.generateFileName(config);
+
+		// Generate zero-padded ID for sorting and uniqueness
+		const id = chapterNum ? `${paddedUnit}_${paddedChapter}` : paddedUnit;
+
+		// Build paths for different contexts
+		const htmlPath = `book/unit/${paddedUnit}/${fileName}.html`;
+		const dataPath = `book/unit${paddedUnit}/${fileName}.ts`;
+		const importPath = `$data/${dataPath}`;
+
+		// Hash-based navigation for SPA behavior
+		const hashFragment = chapterNum
+			? `unit${paddedUnit}/chapter${paddedChapter}`
+			: `unit${paddedUnit}`;
+		const hashUrl = `#${hashFragment}`;
+
+		// SvelteKit route patterns
+		const routePath = chapterNum
+			? `/unit/${paddedUnit}/chapter/${paddedChapter}`
+			: `/unit/${paddedUnit}`;
+		const spaUrl = `/demo${hashUrl}`;
+
+		// Asset tracking and caching key
+		const assetKey = `${paddedUnit}_${paddedChapter}_${contentType}`;
+
+		// Display paths for UI components
+		const unitDisplay = `Unit ${unitNum}`;
+		const chapterDisplay = chapterNum ? ` › Chapter ${unitNum}.${chapterNum}` : "";
+		const typeDisplay = contentType === "lesson" ? "" : ` › ${contentType.replace("_", " ")}`;
+		const displayPath = `${unitDisplay}${chapterDisplay}${typeDisplay}`;
+
+		// Short name for compact displays
+		const shortName = chapterNum ? `${unitNum}.${chapterNum}` : `Unit ${unitNum}`;
+
+		return {
+			htmlPath,
+			dataPath,
+			hashUrl,
+			routePath,
+			spaUrl,
+			importPath,
+			assetKey,
+			id,
+			displayPath,
+			shortName
+		};
 	}
 
 	/**
@@ -273,7 +361,7 @@ export class MarkdownContentGenerator {
 			titleSlug
 		};
 
-		const paths = generateNavigationPaths(config);
+		const paths = this.generateNavigationPaths(config);
 
 		return {
 			htmlPath: paths.htmlPath,
@@ -547,21 +635,31 @@ export class MarkdownContentGenerator {
 			titleSlug: slugTitle
 		};
 
-		const paths = generateNavigationPaths(config);
+		const paths = this.generateNavigationPaths(config);
+
+		// Extract chapter number from chapterNum (e.g., "1" from "1.1")
+		const extractedChapter = chapterNum.includes(".") ? chapterNum.split(".")[1] : chapterNum;
+
+		// Generate unique ID with type suffix using unified ID system
+		const contentId = generateContentId(unitNum, extractedChapter, contentType);
+
+		// Generate descriptive URL for bookmarks/SEO
+		const titleSlug = title.replace(/^\d+\.\d+:\s*/, ""); // Remove chapter number prefix
+		const chapterUrl = generateContentUrl(unitNum, extractedChapter, contentType, titleSlug);
 
 		// Determine icon
 		const chapterIcon = parseResult.icon_name || this.getIconForContent(contentType, title);
 
 		// Create enhanced chapter object with all metadata
 		const chapter: MenuChapter = {
-			id: paths.id,
+			id: contentId, // Use unified ID with type suffix (e.g., "01_01L", "01_01SG")
 			title,
 			icon: chapterIcon,
 			emoji: parseResult.emoji || undefined,
 			type: contentType,
 			chapterNumber: chapterNum,
-			chapterUrl: paths.hashUrl,
-			chapterDataLink: paths.dataPath
+			chapterUrl, // Descriptive URL: {id}_{type}_{slug}.html
+			filePath: paths.dataPath // TypeScript source file path
 		};
 
 		// Add optional enhanced metadata if available
@@ -607,17 +705,23 @@ export class MarkdownContentGenerator {
 			titleSlug: unitTitleWithoutPrefix
 		};
 
-		const paths = generateNavigationPaths(config);
+		const paths = this.generateNavigationPaths(config);
 
-		// Create overview chapter with consistent ID format: {unit_padded}_00
+		// Generate unique ID with type suffix for overview
+		const contentId = generateContentId(unitNum, "0", "overview");
+
+		// Generate descriptive URL for overview
+		const chapterUrl = generateContentUrl(unitNum, "0", "overview", unitTitleWithoutPrefix);
+
+		// Create overview chapter with consistent ID format: {unit_padded}_00O
 		const overviewChapter: MenuChapter = {
-			id: paths.id, // Use the paths.id from navigation utility for consistency
+			id: contentId, // Use unified ID with type suffix (e.g., "01_00O")
 			title: overviewTitle,
 			icon: "BookOpen", // Default icon for overview
 			type: "overview",
 			chapterNumber: "0.0", // Special chapter number for overview
-			chapterUrl: paths.hashUrl,
-			chapterDataLink: paths.dataPath
+			chapterUrl, // Descriptive URL: {id}_{type}_{slug}.html
+			filePath: paths.dataPath // TypeScript source file path
 		};
 
 		console.log(`Created overview chapter with ID: ${overviewChapter.id}`);
@@ -787,8 +891,8 @@ export class MarkdownContentGenerator {
 				if (!chapter.icon) {
 					issues.push(`Chapter '${chapterTitle}' missing icon`);
 				}
-				if (!chapter.chapterDataLink) {
-					issues.push(`Chapter '${chapterTitle}' missing chapterDataLink`);
+				if (!chapter.filePath) {
+					issues.push(`Chapter '${chapterTitle}' missing filePath`);
 				}
 				if (!chapter.type) {
 					issues.push(`Chapter '${chapterTitle}' missing type field`);

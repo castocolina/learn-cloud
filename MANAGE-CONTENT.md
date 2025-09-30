@@ -144,7 +144,6 @@ content-creator [global-flags] <command> [command-options]
 **Output Options:**
 
 - **Formats**: `--format json|yaml|yml|plain` (output format)
-- **Security**: `--show-paths` (reveal file paths in list)
 - **Safety**: `--dry-run` (preview), `--force-overwrite` (bypass protection)
 
 ### Content Safety & Protection Strategy
@@ -713,28 +712,11 @@ npx tsx src/scripts/content-creator.ts list --unit=2 --type=lesson
 
 ### List Command Options
 
-| Option         | Description                       | Values                          | Example          |
-| -------------- | --------------------------------- | ------------------------------- | ---------------- |
-| `--unit`       | Filter by unit number             | 1-20                            | `--unit=3`       |
-| `--type`       | Filter by content type            | `lesson`, `quiz`, `study_guide` | `--type=quiz`    |
-| `--status`     | Filter by content status          | `expected`, `scaffold`, etc.    | `--status=final` |
-| `--show-paths` | Show file paths (default: hidden) | -                               | `--show-paths`   |
-
-### 6.5 Security Features
-
-**File paths hidden by default for security:**
-
-```bash
-# Paths hidden (default behavior)
-npx tsx src/scripts/content-creator.ts list
-```
-
-**Show paths when needed:**
-
-```bash
-# Paths visible when flag is used
-npx tsx src/scripts/content-creator.ts list --show-paths
-```
+| Option     | Description              | Values                          | Example          |
+| ---------- | ------------------------ | ------------------------------- | ---------------- |
+| `--unit`   | Filter by unit number    | 1-20                            | `--unit=3`       |
+| `--type`   | Filter by content type   | `lesson`, `quiz`, `study_guide` | `--type=quiz`    |
+| `--status` | Filter by content status | `expected`, `scaffold`, etc.    | `--status=final` |
 
 ---
 
@@ -1818,7 +1800,7 @@ npx tsx src/scripts/content-creator.ts validate \
 
 # Solutions:
 ✅ npx tsx src/scripts/content-creator.ts list --unit=1,2,3  # Check available units
-✅ npx tsx src/scripts/content-creator.ts list --show-paths  # See actual files
+✅ npx tsx src/scripts/content-creator.ts list                # See all content
 ✅ npx tsx src/scripts/content-creator.ts update --id=specific_id  # Use exact ID
 ```
 

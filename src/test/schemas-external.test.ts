@@ -261,10 +261,8 @@ describe("External Schema Validation with AJV", () => {
 		let compilableCount = 0;
 		for (const [name, schema] of Object.entries(definitions)) {
 			try {
-				const validate = ajv.compile(schema as Record<string, unknown>);
-				if (validate) {
-					compilableCount++;
-				}
+				ajv.compile(schema as Record<string, unknown>);
+				compilableCount++;
 			} catch (error) {
 				console.warn(`Schema ${name} failed to compile:`, error);
 			}

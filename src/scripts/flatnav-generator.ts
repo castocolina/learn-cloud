@@ -10,7 +10,7 @@
  * Features:
  * - Sequential mapping respecting existing content order from content-menu.ts
  * - Cross-unit navigation for seamless learning experience
- * - Hash-based URL generation using navigation-paths.ts utility
+ * - Descriptive URL format from content-identifiers.ts (single source of truth)
  * - Bidirectional previous/next references
  * - Optimized lookup tables for performance
  * - Integration with existing validation infrastructure
@@ -23,7 +23,6 @@
 
 import { writeFormattedFile } from "../lib/utils/prettier-writer.js";
 import { runGeneratedFileValidation } from "../lib/utils/validation-utils.js";
-import { serializeNavigationUrl } from "../lib/utils/navigation-paths.js";
 import { SETTINGS } from "$config/settings.js";
 import type {
 	MenuStructure,
@@ -31,7 +30,6 @@ import type {
 	MenuChapter,
 	FlatNavEntry,
 	FlatNavStructure,
-	UnifiedPathConfig,
 	AppSettings
 } from "$types";
 
@@ -166,7 +164,7 @@ export class FlatNavGenerator {
 
 	/**
 	 * Create a flat navigation entry from unit and chapter data
-	 * Uses navigation-paths.ts utility for consistent URL generation
+	 * Uses content-identifiers.ts for consistent ID/URL generation
 	 */
 	private createFlatNavEntry(
 		unit: MenuUnit,
@@ -174,21 +172,16 @@ export class FlatNavGenerator {
 		chapterIndex: number,
 		globalIndex: number
 	): FlatNavEntry {
-		// Create unified path config
-		const pathConfig: UnifiedPathConfig = {
-			contentType: chapter.type,
-			unitNum: unit.unitNumber.toString(),
-			chapterNum: chapter.type === "overview" ? undefined : chapter.chapterNumber,
-			titleSlug: chapter.title
-		};
-
-		// Generate URL using consistent serialization function
-		const url = serializeNavigationUrl(pathConfig);
+		// Get chapterUrl and filePath from menu chapter
+		// These are already generated in generate-menu.ts with proper format
+		const chapterUrl = chapter.chapterUrl;
+		const filePath = chapter.filePath;
 
 		return {
 			id: chapter.id,
 			title: chapter.title,
-			url,
+			chapterUrl, // Descriptive URL: {id}_{type}_{slug}.html
+			filePath, // TypeScript source file path
 			unitId: unit.id,
 			unitTitle: unit.title,
 			chapterType: chapter.type,
@@ -299,7 +292,8 @@ export class FlatNavGenerator {
 		const serializableEntries = flatNavStructure.entries.map((entry) => ({
 			id: entry.id,
 			title: entry.title,
-			url: entry.url,
+			chapterUrl: entry.chapterUrl,
+			filePath: entry.filePath,
 			unitId: entry.unitId,
 			unitTitle: entry.unitTitle,
 			chapterType: entry.chapterType,
@@ -322,7 +316,8 @@ export class FlatNavGenerator {
 				{
 					id: value.id,
 					title: value.title,
-					url: value.url,
+					chapterUrl: value.chapterUrl,
+					filePath: value.filePath,
 					unitId: value.unitId,
 					unitTitle: value.unitTitle,
 					chapterType: value.chapterType,

@@ -30,7 +30,6 @@ const { contentMenu: contentMenuSettings } = SETTINGS.scripts;
 
 // Simplified approach for testing - using any to avoid complex type redeclarations
 // Following user preference for pragmatic approach in utility scripts
-import { generateNavigationPaths } from "../../lib/utils/navigation-paths.js";
 import type { UnifiedPathConfig } from "$types";
 
 /**
@@ -457,7 +456,7 @@ describe("MarkdownContentGenerator", () => {
 				titleSlug: "Development Environment & Tooling"
 			};
 
-			const paths = generateNavigationPaths(config);
+			const paths = (generator as any).generateNavigationPaths(config);
 
 			expect(paths.htmlPath).toBe("book/unit/01/01_01_lesson_development_environment_tooling.html");
 			expect(paths.dataPath).toBe("book/unit01/01_01_lesson_development_environment_tooling.ts");
@@ -473,7 +472,7 @@ describe("MarkdownContentGenerator", () => {
 				titleSlug: "Python for Cloud-Native Backend Development"
 			};
 
-			const paths = generateNavigationPaths(config);
+			const paths = (generator as any).generateNavigationPaths(config);
 
 			expect(paths.htmlPath).toBe(
 				"book/unit/01/01_00_overview_python_for_cloud-native_backend_development.html"
@@ -494,7 +493,7 @@ describe("MarkdownContentGenerator", () => {
 				titleSlug: "Unit 1 Final Exam"
 			};
 
-			const paths = generateNavigationPaths(config);
+			const paths = (generator as any).generateNavigationPaths(config);
 
 			expect(paths.htmlPath).toBe("book/unit/01/01_99_exam_unit_1_final_exam.html");
 			expect(paths.dataPath).toBe("book/unit01/01_99_exam_unit_1_final_exam.ts");
@@ -511,7 +510,7 @@ describe("MarkdownContentGenerator", () => {
 				titleSlug: "Advanced Topic"
 			};
 
-			const paths = generateNavigationPaths(config);
+			const paths = (generator as any).generateNavigationPaths(config);
 
 			expect(paths.htmlPath).toBe("book/unit/01/01_10_lesson_advanced_topic.html");
 			expect(paths.id).toBe("01_10");
@@ -525,7 +524,7 @@ describe("MarkdownContentGenerator", () => {
 				titleSlug: "Advanced Course Material"
 			};
 
-			const paths = generateNavigationPaths(config);
+			const paths = (generator as any).generateNavigationPaths(config);
 
 			expect(paths.htmlPath).toBe("book/unit/12/12_05_lesson_advanced_course_material.html");
 			expect(paths.dataPath).toBe("book/unit12/12_05_lesson_advanced_course_material.ts");
@@ -609,7 +608,7 @@ describe("MarkdownContentGenerator", () => {
 			// Check that each unit has overview as first chapter
 			for (const unit of units) {
 				expect(unit.chapters[0].type).toBe("overview");
-				expect(unit.chapters[0].id).toMatch(/^\d{2}_00$/); // Should match {unit_padded}_00 format
+				expect(unit.chapters[0].id).toMatch(/^\d{2}_00O$/); // Should match {unit_padded}_00O format (O = overview suffix)
 				expect(unit.chapters[0].title).toContain("Overview");
 				expect(unit.chapters[0].title).toContain(`Unit ${unit.unitNumber}:`);
 				expect(unit.chapters[0].chapterNumber).toBe("0.0");
@@ -617,14 +616,14 @@ describe("MarkdownContentGenerator", () => {
 
 			// Verify specific format for Unit 1
 			const unit1 = units[0];
-			expect(unit1.chapters[0].id).toBe("01_00");
+			expect(unit1.chapters[0].id).toBe("01_00O");
 			expect(unit1.chapters[0].title).toBe(
 				"Unit 1: Overview - Python for Cloud-Native Backend Development"
 			);
 
 			// Verify specific format for Unit 2
 			const unit2 = units[1];
-			expect(unit2.chapters[0].id).toBe("02_00");
+			expect(unit2.chapters[0].id).toBe("02_00O");
 			expect(unit2.chapters[0].title).toBe(
 				"Unit 2: Overview - Go for Cloud-Native Backend Development"
 			);

@@ -44,6 +44,10 @@ import { ValidationService } from "../lib/services/ValidationService.js";
 import { RepositoryService } from "../lib/services/RepositoryService.js";
 import { ContentSafetyService } from "../lib/services/ContentSafetyService.js";
 import { parseJsonSafely } from "../lib/utils/validation-utils.js";
+import {
+	generateContentId
+	// parseContentId, parseFilePath reserved for future use in content queries
+} from "../lib/utils/content-identifiers.js";
 import { SETTINGS } from "$config/settings.js";
 import type {
 	CliExecutionResult,
@@ -56,7 +60,8 @@ import type {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	ContentCreatorOptions,
 	ContentStatus,
-	SupportedFormat
+	SupportedFormat,
+	ChapterType
 } from "$types";
 
 // ============================================================================
@@ -421,7 +426,6 @@ export class ContentCreatorCLI {
 			.option("-u, --unit <unit>", "Filter by unit (comma-separated)")
 			.option("-t, --type <type>", "Filter by content type (comma-separated)")
 			.option("--status <status>", "Filter by content status (comma-separated)")
-			.option("--show-paths", "Show file paths in output (default: hidden for security)")
 			.action(async (options, command) => {
 				const globalOptions = command.parent?.opts() || {};
 				const mergedOptions = { ...options, ...globalOptions };
@@ -914,7 +918,6 @@ export class ContentCreatorCLI {
 		status?: string;
 		format?: string;
 		outputFile?: boolean;
-		showPaths?: boolean;
 	}): Promise<CliExecutionResult> {
 		try {
 			console.log("📋 Content Listing");
@@ -947,15 +950,12 @@ export class ContentCreatorCLI {
 			// Output based on format and output preference
 			const outputFunction = () => {
 				if (options.format === "json") {
-					const itemsForOutput = options.showPaths
-						? filteredItems
-						: this.sanitizeItemsForOutput(filteredItems);
-					console.log(JSON.stringify(itemsForOutput, null, 2));
+					console.log(JSON.stringify(filteredItems, null, 2));
 				} else if (options.format === "csv") {
-					this.outputCsvFormat(filteredItems, options.showPaths || false);
+					this.outputCsvFormat(filteredItems);
 				} else {
 					// Default table format
-					this.outputTableFormat(filteredItems, inventory.stats, options.showPaths || false);
+					this.outputTableFormat(filteredItems, inventory.stats);
 				}
 			};
 
@@ -1097,11 +1097,7 @@ export class ContentCreatorCLI {
 	/**
 	 * Output content inventory in table format
 	 */
-	private outputTableFormat(
-		items: ContentInventoryItem[],
-		stats: InventoryStats,
-		showPaths: boolean = false
-	): void {
+	private outputTableFormat(items: ContentInventoryItem[], stats: InventoryStats): void {
 		if (items.length === 0) {
 			console.log("ℹ️  No content items found matching the criteria");
 			return;
@@ -1109,21 +1105,12 @@ export class ContentCreatorCLI {
 
 		// Table header
 		console.log("");
-		if (showPaths) {
-			console.log(
-				"Unit | Chapter | Type        | ID                     | Title                          | Status    | File | Path"
-			);
-			console.log(
-				"-----|---------|-------------|------------------------|--------------------------------|-----------|------|------------------------------"
-			);
-		} else {
-			console.log(
-				"Unit | Chapter | Type        | ID                     | Title                          | Status    | File"
-			);
-			console.log(
-				"-----|---------|-------------|------------------------|--------------------------------|-----------|------"
-			);
-		}
+		console.log(
+			"Unit | Chapter | Type        | ID                     | Title                          | Status    | File"
+		);
+		console.log(
+			"-----|---------|-------------|------------------------|--------------------------------|-----------|------"
+		);
 
 		// Table rows
 		for (const item of items) {
@@ -1135,14 +1122,7 @@ export class ContentCreatorCLI {
 			const status = this.getStatusDisplay(item.status).padEnd(9);
 			const fileIcon = item.fileExists ? "✅" : "❌";
 
-			if (showPaths) {
-				const path = this.truncateString(item.filePath, 30).padEnd(30);
-				console.log(
-					`${unit} | ${chapter} | ${type} | ${id} | ${title} | ${status} | ${fileIcon} | ${path}`
-				);
-			} else {
-				console.log(`${unit} | ${chapter} | ${type} | ${id} | ${title} | ${status} | ${fileIcon}`);
-			}
+			console.log(`${unit} | ${chapter} | ${type} | ${id} | ${title} | ${status} | ${fileIcon}`);
 		}
 
 		// Summary stats
@@ -1164,38 +1144,15 @@ export class ContentCreatorCLI {
 	}
 
 	/**
-	 * Sanitize inventory items for output by removing file paths
-	 */
-	private sanitizeItemsForOutput(
-		items: ContentInventoryItem[]
-	): Omit<ContentInventoryItem, "filePath">[] {
-		return items.map((item) => {
-			const { filePath, ...sanitizedItem } = item;
-			return sanitizedItem;
-		});
-	}
-
-	/**
 	 * Output content inventory in CSV format
 	 */
-	private outputCsvFormat(items: ContentInventoryItem[], showPaths: boolean = false): void {
-		if (showPaths) {
-			console.log("Unit,Chapter,Type,ID,Title,Status,FileExists,FilePath,EstimatedTime,Difficulty");
-			for (const item of items) {
-				const title = `"${item.title.replace(/"/g, '""')}"`;
-				const filePath = `"${item.filePath}"`;
-				console.log(
-					`${item.unit},${item.chapter},${item.type},${item.id},${title},${item.status},${item.fileExists},${filePath},${item.estimatedTime || ""},${item.difficulty || ""}`
-				);
-			}
-		} else {
-			console.log("Unit,Chapter,Type,ID,Title,Status,FileExists,EstimatedTime,Difficulty");
-			for (const item of items) {
-				const title = `"${item.title.replace(/"/g, '""')}"`;
-				console.log(
-					`${item.unit},${item.chapter},${item.type},${item.id},${title},${item.status},${item.fileExists},${item.estimatedTime || ""},${item.difficulty || ""}`
-				);
-			}
+	private outputCsvFormat(items: ContentInventoryItem[]): void {
+		console.log("Unit,Chapter,Type,ID,Title,Status,FileExists,EstimatedTime,Difficulty");
+		for (const item of items) {
+			const title = `"${item.title.replace(/"/g, '""')}"`;
+			console.log(
+				`${item.unit},${item.chapter},${item.type},${item.id},${title},${item.status},${item.fileExists},${item.estimatedTime || ""},${item.difficulty || ""}`
+			);
 		}
 	}
 
@@ -1613,11 +1570,16 @@ export class ContentCreatorCLI {
 	}
 
 	/**
-	 * Generate unique ID for content item
+	 * Generate unique ID for content item using unified ID system
+	 * Uses letter-based type suffixes for 100% uniqueness
 	 */
-	private generateUniqueId(unit: string, chapter: string, type: string, title: string): string {
-		const slug = this.createSlug(title);
-		return `${unit}_${chapter}_${type}_${slug}`;
+	private generateUniqueId(unit: string, chapter: string, type: string, _title: string): string {
+		// Convert unit and chapter to proper format
+		const unitNum = unit.padStart(2, "0");
+		const chapterNum = chapter.padStart(2, "0");
+
+		// Use unified ID generation with type suffix
+		return generateContentId(unitNum, chapterNum, type as ChapterType);
 	}
 
 	/**

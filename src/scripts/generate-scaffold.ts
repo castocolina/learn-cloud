@@ -296,8 +296,8 @@ export class ScaffoldingLogic {
 
 			// Process each chapter
 			for (const chapter of chaptersToProcess) {
-				// Generate file path from chapterDataLink
-				let relativePath = chapter.chapterDataLink;
+				// Generate file path from filePath
+				let relativePath = chapter.filePath;
 				if (relativePath.startsWith("book/")) {
 					relativePath = `src/data/${relativePath}`;
 				}

@@ -36,6 +36,11 @@ import { Project } from "ts-morph";
 import lunr from "lunr";
 import { writeFormattedFile } from "../lib/utils/prettier-writer.js";
 import { runGeneratedFileValidation } from "../lib/utils/validation-utils.js";
+import {
+	generateContentId,
+	parseFilePath
+	// generateContentUrl reserved for future use
+} from "../lib/utils/content-identifiers.js";
 import { SETTINGS } from "$config/settings.js";
 import type {
 	SearchIndexConfig,
@@ -273,18 +278,40 @@ class SearchIndexGenerator {
 
 	/**
 	 * Extract content from a single TypeScript file
+	 * Uses unified ID system for cross-reference compatibility
 	 */
 	private async extractContentFromFile(filePath: string): Promise<RawContentItem | null> {
 		// Implementation for file content extraction
 		// This is a simplified version - the full implementation would use ts-morph
 		// to parse TypeScript content files and extract structured data
 
-		// For now, return a basic structure to maintain functionality
 		const fileName = basename(filePath, ".ts");
 		const unitPath = dirname(relative(this.config.contentPath, filePath));
 
+		// Parse file path to extract ID using unified system
+		const parsed = parseFilePath(filePath);
+
+		// Use unified ID format or fallback to inferred ID
+		let contentId: string;
+		if (parsed.isValid) {
+			// Use unified ID with type suffix (e.g., "01_01L", "01_01SG")
+			contentId = parsed.id;
+		} else {
+			// Fallback: try to infer from file name
+			const contentType = this.inferTypeFromPath(filePath);
+			const match = fileName.match(/^(\d+)_(\d+)_/);
+			if (match) {
+				const unitNum = String(parseInt(match[1]));
+				const chapterNum = String(parseInt(match[2]));
+				contentId = generateContentId(unitNum, chapterNum, contentType);
+			} else {
+				// Last resort: use filename
+				contentId = fileName;
+			}
+		}
+
 		return {
-			id: fileName,
+			id: contentId,
 			title: fileName.replace(/^\d+_/, "").replace(/_/g, " "),
 			type: this.inferTypeFromPath(filePath),
 			sourceFile: filePath,

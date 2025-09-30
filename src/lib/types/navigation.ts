@@ -198,8 +198,11 @@ export interface FlatNavEntry {
 	/** Display title */
 	title: string;
 
-	/** URL for navigation (hash-based routing) */
-	url: string;
+	/** Chapter URL for navigation - format: {id}_{type}_{slug}.html (e.g., 01_01_lesson_dev_env.html) */
+	chapterUrl: string;
+
+	/** File path to TypeScript data source - format: book/unit{XX}/{id}_{type}_{slug}.ts */
+	filePath: string;
 
 	/** Unit identifier this entry belongs to */
 	unitId: string;
@@ -451,11 +454,11 @@ export interface MenuChapter {
 	/** Chapter number within unit */
 	chapterNumber: string;
 
-	/** Chapter URL for navigation (hash-based format) */
-	chapterUrl?: string;
+	/** Chapter URL for navigation - format: {id}_{type}_{slug}.html (e.g., 01_01_lesson_dev_env.html) */
+	chapterUrl: string;
 
-	/** Link to chapter data (JSON/TypeScript) */
-	chapterDataLink: string;
+	/** File path to TypeScript data source - format: book/unit{XX}/{id}_{type}_{slug}.ts */
+	filePath: string;
 
 	/** Estimated completion time in minutes */
 	estimatedTime?: number;

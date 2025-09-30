@@ -262,3 +262,63 @@ export const CONTENT_STATUSES: ContentStatus[] = [
 	"orphan"
 ];
 export const SUPPORTED_FORMATS: SupportedFormat[] = ["plain", "json", "yaml", "yml"];
+
+// ============================================================================
+// CONTENT IDENTIFIER SYSTEM (TASK 3G4)
+// ============================================================================
+
+/**
+ * Content identifier parsing results
+ * Used by content-identifiers.ts utility functions
+ */
+export interface ParsedContentId {
+	unitNum: string;
+	chapterNum: string;
+	contentType: ChapterType;
+	isValid: boolean;
+	error?: string;
+}
+
+export interface ParsedContentUrl {
+	id: string;
+	unitNum: string;
+	chapterNum: string;
+	contentType: ChapterType;
+	titleSlug: string;
+	isValid: boolean;
+	error?: string;
+}
+
+export interface ParsedFilePath {
+	id: string;
+	unitNum: string;
+	chapterNum: string;
+	contentType: ChapterType;
+	titleSlug: string;
+	isValid: boolean;
+	error?: string;
+}
+
+/**
+ * Content lookup results for cross-reference operations
+ * Used by content-lookup.ts utility functions
+ *
+ * Note: MenuChapter, FlatNavEntry, SearchableItem are defined in navigation.ts and search.ts
+ * They are imported separately to avoid circular dependencies
+ */
+export interface ContentLookupResult {
+	menuEntry: unknown | null; // MenuChapter from navigation.ts
+	flatNavEntry: unknown | null; // FlatNavEntry from navigation.ts
+	searchEntry: unknown | null; // SearchableItem from search.ts
+	filePath: string;
+	chapterUrl: string; // Descriptive URL: {id}_{type}_{slug}.html
+	isFound: boolean;
+}
+
+/**
+ * Validation results for ID/URL validation
+ */
+export interface ValidationResult {
+	isValid: boolean;
+	errors: string[];
+}
