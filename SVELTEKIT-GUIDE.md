@@ -1295,6 +1295,159 @@ await writeFormattedFile(path, content, { compress: true });
 await writeFormattedFile(path, content);
 ```
 
+### Configuration Management
+
+**🚨 CRITICAL RULE: No Hardcoded Configurations in Development**
+
+All configuration values **MUST** be defined in `src/config/settings.ts`. This ensures:
+
+- **Consistency**: Single source of truth for all configuration values
+- **Maintainability**: Easy to update configurations without searching through code
+- **Testability**: Configurations can be overridden in tests
+- **Documentation**: All settings documented in one place
+- **Type Safety**: TypeScript interfaces ensure correct usage
+
+**Configuration Architecture**:
+
+```typescript
+// src/config/settings.ts
+export const SETTINGS: AppSettings = {
+	ui: {
+		// UI component configurations
+		mermaid: {
+			debug: true,
+			modalPagePercent: 90
+		},
+		flipCard: {
+			modalPagePercent: 90
+		},
+		sidebar: {
+			collapsible: true,
+			defaultCollapsed: false
+		}
+	},
+	scripts: {
+		// Script and tooling configurations
+		validation: {
+			generated: {
+				runAfterGeneration: true,
+				includeCheck: true,
+				includeLint: true
+			}
+		},
+		schemas: {
+			paths: {
+				sourceFile: "src/lib/schemas/ContentSchemas.ts",
+				outputFile: "src/data/generated/content-schemas.json"
+			},
+			generation: {
+				target: "draft-7",
+				validateOutput: true
+			}
+		}
+	}
+};
+```
+
+**✅ CORRECT: Using SETTINGS**
+
+```typescript
+// Component using UI settings
+import { SETTINGS } from "$config/settings";
+
+const { mermaid: mermaidSettings } = SETTINGS.ui;
+const modalSize = mermaidSettings.modalPagePercent; // ✅ From settings.ts
+
+// Script using configuration
+import { SETTINGS } from "$config/settings";
+
+const { schemas: schemasSettings } = SETTINGS.scripts;
+const outputPath = schemasSettings.paths.outputFile; // ✅ From settings.ts
+```
+
+**❌ INCORRECT: Hardcoded Values**
+
+```typescript
+// ❌ WRONG: Hardcoded modal size in component
+const modalSize = 90; // Should be SETTINGS.ui.mermaid.modalPagePercent
+
+// ❌ WRONG: Hardcoded path in script
+const outputPath = "src/data/generated/content-schemas.json"; // Should be SETTINGS.scripts.schemas.paths.outputFile
+
+// ❌ WRONG: Magic numbers in logic
+if (files.length > 4) {
+	// Should be SETTINGS.scripts.validation.mermaid.maxParallelFiles
+}
+```
+
+**Creating New Configuration Categories**:
+
+When adding new features that require configuration, create appropriate subcategories:
+
+```typescript
+// Example: Adding API configuration
+export const SETTINGS: AppSettings = {
+	ui: {
+		/* existing UI configs */
+	},
+	scripts: {
+		/* existing script configs */
+	},
+	api: {
+		// New category for API configurations
+		baseUrl: "https://api.example.com",
+		timeout: 5000,
+		retries: 3
+	},
+	database: {
+		// New category for database configurations
+		connectionPool: {
+			min: 2,
+			max: 10
+		}
+	}
+};
+```
+
+**Type Safety**: All settings must have corresponding TypeScript interfaces:
+
+```typescript
+// src/lib/types/config.ts (centralized type system)
+export interface AppSettings {
+	ui: UISettings;
+	scripts: ScriptsSettings;
+	api?: APISettings; // Optional new categories
+	database?: DatabaseSettings;
+}
+
+export interface UISettings {
+	mermaid: MermaidUISettings;
+	flipCard: FlipCardSettings;
+	sidebar: SidebarSettings;
+}
+
+export interface ScriptsSettings {
+	validation: ValidationSettings;
+	schemas: SchemasSettings;
+	/* ... other script settings ... */
+}
+```
+
+**When to Use settings.ts**:
+
+| Configuration Type         | Use settings.ts? | Example                                     |
+| -------------------------- | ---------------- | ------------------------------------------- |
+| UI component defaults      | ✅ Yes           | Modal sizes, animation durations            |
+| File paths                 | ✅ Yes           | Input/output paths for scripts              |
+| Build/generation options   | ✅ Yes           | Schema target format, validation flags      |
+| Performance tuning         | ✅ Yes           | Max parallel files, timeout values          |
+| Feature flags              | ✅ Yes           | Enable/disable features                     |
+| Magic numbers              | ✅ Yes           | Any numeric constant with business logic    |
+| Content-specific data      | ❌ No            | Actual content belongs in `src/data/`       |
+| Component internal state   | ❌ No            | Transient state managed by Svelte runes     |
+| User preferences (runtime) | ❌ No            | Store in localStorage/cookies, not settings |
+| Secrets/credentials        | ❌ No            | Use `.env` files (never commit secrets!)    |
+
 ### Settings Configuration Patterns
 
 **Modern Destructuring Pattern**: Extract specific settings sections for cleaner code:
@@ -1411,6 +1564,98 @@ const timestamp = Date.now();
 const randomId = Math.random().toString(36).substring(7);
 const uniqueId = `${testSuiteId}-${timestamp}-${randomId}`;
 ```
+
+**🚨 CRITICAL RULE: NO HARDCODED PATHS IN TESTS**
+
+All test files **MUST** use TestSetup pattern with temporary directories. Never use hardcoded paths to production files.
+
+```typescript
+// ❌ INCORRECT: Hardcoded path to production file
+describe("Schema Tests", () => {
+	const schemaPath = "src/data/generated/content-schemas.json"; // ❌ WRONG!
+
+	beforeAll(() => {
+		// Reads from production directory
+		const schema = readFileSync(schemaPath, "utf-8");
+	});
+});
+
+// ✅ CORRECT: TestSetup with temporary directory
+describe("Schema Tests", () => {
+	let testSetup: TestSetup;
+
+	beforeAll(async () => {
+		testSetup = new TestSetup("schema-validation");
+		testSetup.setup();
+
+		// Generate test schema in isolated directory
+		await generateTestSchema(testSetup.schemaPath);
+		const schema = readFileSync(testSetup.schemaPath, "utf-8");
+	});
+
+	afterAll(() => {
+		testSetup.cleanup(); // Always cleanup
+	});
+});
+```
+
+**Why This Matters**:
+
+- **Test Isolation**: Tests don't interfere with production files
+- **Parallel Execution**: Multiple tests can run safely in parallel
+- **CI/CD Safety**: Tests work in clean environments without pre-existing files
+- **Cleanup**: Temporary files are automatically removed after tests
+
+**🧹 MANDATORY: Cleanup Temporary Directories**
+
+All TestSetup implementations **MUST** include proper cleanup in `afterAll()` or `afterEach()` hooks:
+
+```typescript
+describe("Test Suite", () => {
+	let testSetup: TestSetup;
+
+	beforeAll(async () => {
+		testSetup = new TestSetup("suite-id");
+		await testSetup.setup();
+	});
+
+	// ✅ CRITICAL: Always cleanup temporary resources
+	afterAll(() => {
+		testSetup.cleanup(); // Removes tmp/test-suite-id-* directories
+	});
+
+	// Alternative for per-test cleanup
+	afterEach(() => {
+		testSetup.cleanup(); // Use if each test needs fresh state
+	});
+});
+```
+
+**Cleanup Implementation Pattern**:
+
+```typescript
+class TestSetup {
+	cleanup(): void {
+		// Remove temporary directory and all contents
+		if (existsSync(this.tempDir)) {
+			rmSync(this.tempDir, {
+				recursive: true, // Remove all nested files/folders
+				force: true // Ignore errors if already deleted
+			});
+		}
+
+		// Additional cleanup (config files, database connections, etc.)
+		// ... cleanup other resources
+	}
+}
+```
+
+**Why Cleanup Matters**:
+
+- **Disk Space**: Prevents accumulation of temporary files
+- **Test Reliability**: Ensures clean state between test runs
+- **CI/CD Performance**: Keeps build environments clean
+- **Local Development**: Prevents tmp/ directory bloat (use `make clean` to remove all)
 
 ### Type Safety & Import Patterns
 
@@ -1570,6 +1815,121 @@ async function validateContent(content: ContentObject): Promise<ValidationResult
 
 	return { success: errors.length === 0, errors };
 }
+```
+
+### Dependency Evaluation & Installation Process
+
+**🚨 MANDATORY: Research Before Installing Dependencies**
+
+Before installing any npm package or external library, agents **MUST** perform due diligence research to avoid compatibility issues and technical debt.
+
+**Step-by-Step Evaluation Process:**
+
+**1. Version Compatibility Research:**
+
+```bash
+# Check current project dependencies
+cat package.json | grep "dependency-name"
+
+# Research latest stable version
+npm info package-name version
+npm info package-name versions --json | tail -10
+
+# Check peer dependencies for compatibility
+npm info package-name peerDependencies
+```
+
+**2. Community Support & Maintenance:**
+
+- **Weekly Downloads**: Minimum 10k+ weekly downloads (verify on npmjs.com)
+- **Last Published**: Updated within last 6 months
+- **GitHub Activity**: Active issues/PRs, responsive maintainers
+- **TypeScript Support**: Native TypeScript or high-quality @types package
+
+**3. Alternative Research:**
+
+```bash
+# Use WebSearch to find alternatives
+WebSearch: "alternative to [package-name] 2025 typescript"
+WebSearch: "[technology] best libraries 2025"
+WebSearch: "[package-name] vs [alternative] comparison"
+```
+
+**4. Framework Compatibility:**
+
+- **Zod**: Verify library supports Zod v4.x (not just v3.x)
+- **SvelteKit/Svelte 5**: Check for Svelte 5 runes compatibility
+- **Tailwind v4**: Ensure CSS framework compatibility
+- **Node.js**: Verify compatibility with project's Node version
+
+**5. Native Solutions First (Critical Priority):**
+
+- Always check if the framework provides native functionality
+- Example: Zod v4 has native `z.toJSONSchema()` - no need for external converter
+- Built-in solutions guarantee compatibility and better long-term maintenance
+
+**Decision Matrix:**
+
+| Criterion                    | Weight       | Minimum Threshold                 | Notes                           |
+| ---------------------------- | ------------ | --------------------------------- | ------------------------------- |
+| Native Alternative Available | **BLOCKER**  | Use native if exists              | External library not needed     |
+| Version Compatibility        | **Critical** | Must match project major versions | Breaking changes cause failures |
+| Weekly Downloads             | High         | 10k+ weekly                       | Indicates active usage          |
+| Last Update                  | High         | Within 6 months                   | Maintained project              |
+| TypeScript Support           | High         | Native or @types                  | Type safety required            |
+| Framework Support            | **Critical** | Explicit compatibility            | Must work with our stack        |
+| Security                     | **Critical** | No known vulnerabilities          | Run `npm audit`                 |
+
+**Real-World Example - Zod to JSON Schema:**
+
+```typescript
+// ❌ INCORRECT EVALUATION: zod-to-json-schema
+// Investigation revealed:
+// - Peer dependency: zod@^3.24.1 (incompatible with our Zod v4.1.11)
+// - Result: Broken conversion, oversimplified schemas losing validation constraints
+// - Wasted development time debugging compatibility issues
+
+// ✅ CORRECT EVALUATION: Zod v4 native z.toJSONSchema()
+// Research found:
+// - Built-in to Zod v4 (no external dependency needed)
+// - Full compatibility guaranteed (same library)
+// - Better maintenance (maintained by Zod team)
+// - Comprehensive documentation in Zod docs
+// - Zero additional bundle size
+```
+
+**Documentation Requirements:**
+
+When adding a dependency, document the evaluation in commit message or PR:
+
+```markdown
+## Dependency Addition: [package-name]
+
+**Evaluation Summary:**
+
+- Native alternative: [Yes/No - explain why not used]
+- Version compatibility: [Verified against package.json]
+- Community support: [X downloads/week, last update YYYY-MM-DD]
+- Alternatives considered: [list with reasons for rejection]
+- Framework compatibility: [SvelteKit/Svelte 5/etc verified]
+
+**Decision Rationale:**
+[Why this package was chosen over alternatives]
+```
+
+**Anti-Pattern to Avoid:**
+
+```bash
+# ❌ WRONG: Installing without research
+pnpm add some-library
+# (Later discovers incompatibility, wasted time debugging)
+
+# ✅ CORRECT: Research first, then install
+# 1. Check framework native solutions
+# 2. Verify version compatibility
+# 3. Compare alternatives
+# 4. Document decision
+pnpm add verified-library
 ```
 
 ### Integration Guidelines

@@ -32,6 +32,7 @@
 		"generate-search-index": "npm run generate-search-index-dev",
 		"generate-search-index-dev": "npx tsx src/scripts/generate-search-index.ts dev",
 		"generate-search-index-prod": "npx tsx src/scripts/generate-search-index.ts prod",
+		"generate-schemas": "npx tsx src/scripts/generate-schemas.ts",
 		"validate-content": "npm run validate-mermaid && npm run generate-menu && npm run generate-search-index-dev",
 		"validate-content:prod": "npm run validate-mermaid && npm run generate-menu && npm run generate-search-index-prod",
 		"validate-generated": "prettier --write \"src/data/book/\" && eslint --fix \"src/data/book/\"",
@@ -60,6 +61,9 @@
 		"@types/node": "^22",
 		"@typescript-eslint/eslint-plugin": "^8.44.1",
 		"@typescript-eslint/parser": "^8.44.1",
+		"ajv": "^8.17.1",
+		"ajv-cli": "^5.0.0",
+		"ajv-formats": "^3.0.1",
 		"bits-ui": "^2.9.9",
 		"clsx": "^2.1.1",
 		"eslint": "^9.22.0",
@@ -107,7 +111,6 @@
 		"lucide-svelte": "^0.544.0",
 		"mermaid": "^11.11.0",
 		"shiki": "^3.12.2",
-		"zod": "^4.1.11",
-		"zod-to-json-schema": "^3.24.6"
+		"zod": "^4.1.11"
 	}
 }

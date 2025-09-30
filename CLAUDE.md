@@ -157,6 +157,36 @@ import { demoContent } from "src/data/demo/content";
 - **Iterative Development:** Follow the hierarchical workflow: Unit Overview → Topic → Study Aids → Quiz
 - **Quality Assurance:** Ensure all generated content is pedagogically sound and builds upon previous concepts
 
+### Configuration Management
+
+**🚨 MANDATORY: No Hardcoded Configurations**
+
+All configurations **MUST** be defined in `src/config/settings.ts`:
+
+- **UI Components**: Use `SETTINGS.ui.componentName`
+- **Scripts**: Use `SETTINGS.scripts.scriptName`
+- **New Categories**: Create subcategories as needed (e.g., `.api`, `.database`)
+
+**Example:** ❌ Hardcoded modal size in component → ✅ `SETTINGS.ui.mermaid.modalPagePercent`
+
+> **📋 Configuration Structure:** See [SVELTEKIT-GUIDE.md - Configuration Management](SVELTEKIT-GUIDE.md#configuration-management) for complete settings architecture and examples.
+
+### Dependency Evaluation & Installation Process
+
+**🚨 MANDATORY: Research Before Installing Dependencies**
+
+Before installing any npm package, agents **MUST** perform due diligence:
+
+1. **Native Solutions First**: Check if framework provides built-in functionality
+2. **Version Compatibility**: Verify peer dependencies match project versions
+3. **Community Support**: Minimum 10k+ weekly downloads, active maintenance
+4. **Alternative Research**: Use WebSearch to compare options
+5. **Document Decision**: Note evaluation rationale in commits/PRs
+
+**Example:** ❌ `zod-to-json-schema` (incompatible with Zod v4) → ✅ Use Zod v4 native `z.toJSONSchema()`
+
+> **📋 Complete Evaluation Process:** See [SVELTEKIT-GUIDE.md - Dependency Evaluation](SVELTEKIT-GUIDE.md#dependency-evaluation--installation-process) for detailed decision matrix and research procedures.
+
 ### Development Tooling & Scripts
 
 **Build/Utility Scripts (Not Application Code):**
@@ -235,10 +265,13 @@ import { demoContent } from "src/data/demo/content";
 
 - File organization standards (scripts execute from root)
 - Code architecture requirements (modular CSS, shadcn-svelte components, centralized state management)
-- Validation procedures (always run `pnpm run format`, `pnpm run check`, and `pnpm run lint` after SvelteKit changes)
+- Configuration management (all configs in settings.ts, no hardcoded values)
+- Validation procedures (always run `make check-wip`, `pnpm run format`, `pnpm run lint`, and `pnpm run check` after SvelteKit changes)
 - Mobile-first development mandates
 - Security requirements (secure by default, no exposed secrets)
 - Issue documentation co-location (inline comments in affected components)
+- Test isolation requirements (TestSetup pattern, temporary directories, cleanup procedures)
+- Dependency evaluation process (research alternatives, version compatibility, community support)
 
 ---
 

@@ -252,6 +252,22 @@ export const SETTINGS: AppSettings = {
 				diagramTitle: 60,
 				diagramCaption: 150
 			}
+		},
+		schemas: {
+			paths: {
+				sourceFile: "src/lib/schemas/ContentSchemas.ts", // Schema definitions source
+				outputFile: "src/data/generated/content-schemas.json" // Single consolidated JSON Schema
+			},
+			generation: {
+				target: "draft-7", // Zod native target: "draft-2020-12" | "draft-7" | "draft-4" | "openapi-3.0"
+				schemaId: "https://learn-cloud.example.com/schemas/content-schemas.json", // Schema $id URI
+				title: "Cloud-Native Learning Platform Content Schemas", // Schema title
+				io: "output", // Zod IO mode: "input" | "output"
+				unrepresentable: "any", // How to handle unrepresentable types: "throw" | "any"
+				cycles: "ref", // How to handle circular references: "ref" | "throw"
+				validateOutput: true // Validate generated schemas
+			},
+			validationPrefix: "schema-gen" // Prefix for validation config IDs
 		}
 	}
 };

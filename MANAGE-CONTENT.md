@@ -1362,7 +1362,262 @@ npx tsx src/scripts/content-creator.ts update \
   --force-overwrite
 ```
 
-## 14. WORKING WITH TEMPORARY FILES
+## 14. GENERATED JSON SCHEMAS
+
+### Schema Generation
+
+JSON schemas are automatically generated from TypeScript Zod definitions using **Zod v4 native conversion** (`z.toJSONSchema()`).
+
+**Architecture:**
+
+- **Conversion Method**: Zod v4 native `z.toJSONSchema()` (no external libraries)
+- **Source**: `src/lib/schemas/ContentSchemas.ts` (39+ Zod schema definitions)
+- **Output**: `src/data/generated/content-schemas.json` (single consolidated file)
+- **Format**: JSON Schema Draft 7 specification
+- **Validation Preservation**: All Zod constraints preserved (minLength, maxLength, required, enum, etc.)
+
+**Generation Commands:**
+
+```bash
+# Generate schemas
+npx tsx src/scripts/generate-schemas.ts
+make generate-schemas
+pnpm run generate-schemas
+
+# List available schemas
+npx tsx src/scripts/generate-schemas.ts list
+
+# Dry-run mode
+npx tsx src/scripts/generate-schemas.ts --dry-run --verbose
+```
+
+### External Validation Tools
+
+The generated JSON Schema can be used with standard validation tools for content validation:
+
+#### Using AJV (Recommended)
+
+**Installation:**
+
+```bash
+# Already installed as dev dependency
+pnpm add -D ajv-cli ajv-formats
+```
+
+**Basic Validation:**
+
+```bash
+# Validate content file against schema
+ajv validate \
+  -s src/data/generated/content-schemas.json \
+  -d src/data/book/unit01/01_01_lesson.ts \
+  --spec=draft7
+
+# Validate the schema itself (meta-validation)
+ajv compile -s src/data/generated/content-schemas.json
+```
+
+**Advanced Validation:**
+
+```bash
+# Validate with specific definition
+ajv validate \
+  -s src/data/generated/content-schemas.json \
+  -r "#/definitions/LessonContent" \
+  -d lesson-data.json
+
+# Validate multiple files
+ajv validate \
+  -s src/data/generated/content-schemas.json \
+  -d "src/data/book/**/*.ts"
+```
+
+#### Using jsonschema (Alternative)
+
+```bash
+# Install globally
+npm install -g jsonschema
+
+# Validate content
+jsonschema -i lesson.json src/data/generated/content-schemas.json
+```
+
+### Development Workflow
+
+**1. Generate Schemas After Changes:**
+
+```bash
+# Make changes to ContentSchemas.ts
+# Then regenerate schemas
+make generate-schemas
+```
+
+**2. Validate Content Before Commit:**
+
+```bash
+# Validate all content files
+ajv validate \
+  -s src/data/generated/content-schemas.json \
+  -d "src/data/book/unit01/*.ts"
+```
+
+**3. CI/CD Integration:**
+
+```bash
+# Add to CI/CD pipeline
+ajv validate \
+  -s src/data/generated/content-schemas.json \
+  -d "src/data/book/**/*.ts" \
+  --all-errors
+```
+
+### Content Creator Integration
+
+**Validate After Creation:**
+
+```bash
+# Create content
+npx tsx src/scripts/manage-content.ts create --id=new_lesson --data='...'
+
+# Validate immediately with AJV
+ajv validate \
+  -s src/data/generated/content-schemas.json \
+  -r "#/definitions/LessonContent" \
+  -d path/to/new_lesson.ts
+```
+
+**Automated Validation Workflow:**
+
+```bash
+#!/bin/bash
+# create-and-validate.sh
+
+# Create content
+npx tsx src/scripts/manage-content.ts create "$@"
+
+# Extract file path from result
+FILE_PATH=$(npx tsx src/scripts/manage-content.ts show --id="$1" --format=json | jq -r '.filePath')
+
+# Validate with AJV
+if [ -f "$FILE_PATH" ]; then
+  ajv validate \
+    -s src/data/generated/content-schemas.json \
+    -d "$FILE_PATH" \
+    --all-errors
+fi
+```
+
+### Schema Testing
+
+Run schema validation tests to verify external tool compatibility:
+
+```bash
+# Run schema validation tests
+pnpm run test src/test/schemas-external.test.ts
+
+# Run all schema-related tests
+pnpm run test src/test/scripts/generate-schemas.test.ts src/test/schemas-external.test.ts
+```
+
+### Usage Examples
+
+**Example 1: Validate Content Metadata**
+
+```bash
+# Create sample metadata file
+cat > metadata.json << 'EOF'
+{
+  "title": "Docker Introduction",
+  "summary": "Learn Docker containerization fundamentals",
+  "keywords": ["docker", "containers", "devops"],
+  "difficulty": "beginner",
+  "learningObjectives": ["Understand Docker", "Create containers"]
+}
+EOF
+
+# Validate against ContentMetadata schema
+ajv validate \
+  -s src/data/generated/content-schemas.json \
+  -r "#/definitions/ContentMetadata" \
+  -d metadata.json
+```
+
+**Example 2: Validate Complete Lesson**
+
+```bash
+# Validate lesson content
+ajv validate \
+  -s src/data/generated/content-schemas.json \
+  -r "#/definitions/LessonContent" \
+  -d src/data/book/unit01/01_01_lesson.ts \
+  --all-errors --verbose
+```
+
+**Example 3: List Available Schemas**
+
+```bash
+# Show all available schema definitions
+jq '.definitions | keys[]' src/data/generated/content-schemas.json
+
+# Count schemas
+jq '.definitions | keys | length' src/data/generated/content-schemas.json
+```
+
+### Troubleshooting
+
+**Schema validation fails:**
+
+```bash
+# Check if schema is valid
+ajv compile -s src/data/generated/content-schemas.json
+
+# Regenerate schemas using Zod v4 native conversion
+make generate-schemas
+```
+
+**Content validation errors:**
+
+```bash
+# Use verbose mode to see detailed errors
+ajv validate \
+  -s src/data/generated/content-schemas.json \
+  -d content.ts \
+  --all-errors --verbose
+
+# Check specific definition
+npx tsx src/scripts/generate-schemas.ts list | grep "SchemaName"
+```
+
+### Configuration Details
+
+The schema generation is configured in `src/config/settings.ts`:
+
+```typescript
+schemas: {
+  generation: {
+    target: "draft-7",         // JSON Schema version
+    io: "output",              // Zod IO mode
+    unrepresentable: "any",    // Handle edge cases
+    cycles: "ref"              // Resolve circular refs
+  }
+}
+```
+
+**Supported Validation Constraints:**
+
+- ✅ String lengths (`minLength`, `maxLength`)
+- ✅ Numeric ranges (`minimum`, `maximum`)
+- ✅ Array constraints (`minItems`, `maxItems`)
+- ✅ Required fields (`required: []`)
+- ✅ Enums and constants (`enum`)
+- ✅ Object properties with full nesting
+- ✅ Format validators (`uri`, `email`, `uuid`, etc.)
+- ✅ Additional properties control (`additionalProperties`)
+- ✅ Type unions and discriminated unions
+
+---
+
+## 15. WORKING WITH TEMPORARY FILES
 
 ### Using tmp/content-creator Directory
 
@@ -1410,7 +1665,7 @@ tmp/content-creator/
 
 ---
 
-## 14. COMMON WORKFLOWS
+## 16. COMMON WORKFLOWS
 
 ### 11.1 Creating a Complete Unit
 
@@ -1502,7 +1757,7 @@ npx tsx src/scripts/content-creator.ts validate
 
 ---
 
-## 15. TROUBLESHOOTING
+## 17. TROUBLESHOOTING
 
 ### Common Issues and Solutions
 
@@ -1642,7 +1897,7 @@ cp tmp/content-creator/important_file.ts tmp/content-creator/important_file_back
 
 ---
 
-## 16. ADVANCED USAGE
+## 18. ADVANCED USAGE
 
 ### Batch Operations
 

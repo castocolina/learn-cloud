@@ -312,6 +312,35 @@ export interface AppSettings {
 				markdown: string;
 			};
 		};
+		/** JSON Schema generation configuration */
+		schemas: {
+			/** Path configurations for schema generation */
+			paths: {
+				/** Source file containing Zod schema definitions */
+				sourceFile: string;
+				/** Output file for consolidated JSON schemas */
+				outputFile: string;
+			};
+			/** Schema generation options (Zod v4 native conversion) */
+			generation: {
+				/** Zod native target: "draft-2020-12" | "draft-7" | "draft-4" | "openapi-3.0" */
+				target: "draft-2020-12" | "draft-7" | "draft-4" | "openapi-3.0";
+				/** Schema $id URI */
+				schemaId: string;
+				/** Schema title */
+				title: string;
+				/** Zod IO mode: "input" | "output" */
+				io: "input" | "output";
+				/** How to handle unrepresentable types: "throw" | "any" */
+				unrepresentable: "throw" | "any";
+				/** How to handle circular references: "ref" | "throw" */
+				cycles: "ref" | "throw";
+				/** Validate generated schemas */
+				validateOutput: boolean;
+			};
+			/** Validation prefix for generating unique config IDs */
+			validationPrefix: string;
+		};
 	};
 
 	// Future settings can be grouped here (e.g., api, performance)

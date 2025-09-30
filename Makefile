@@ -216,6 +216,11 @@ generate-search-index-prod: ## Generate search index in production mode (with va
 	@npx tsx src/scripts/generate-search-index.ts prod $(ARGS)
 	@echo "✅ Search index generation complete!"
 
+generate-schemas: ## Generate JSON schemas from Zod definitions
+	@echo "🏗️ Generating JSON schemas from Zod definitions..."
+	@npx tsx src/scripts/generate-schemas.ts
+	@echo "✅ Schema generation complete!"
+
 validate-all-scripts: validate-mermaid generate-menu generate-flatnav generate-search-index-dev ## Run all foundation scripts validation (development mode)
 	@echo "✅ All foundation scripts completed"
 
