@@ -121,24 +121,11 @@ src/lib/components/content/
 - **Type Safety:** Full TypeScript coverage with interface inheritance
 - **Code Generation:** ts-morph for TypeScript AST manipulation (see [Code Block Escaping Strategy](SVELTEKIT-GUIDE.md#code-block-escaping-strategy-for-data-generation))
 
-### Data Structure in src/data/book/
+### Content Data Structure
 
-Content data is stored as TypeScript files exporting properly typed objects, enabling type checking and better developer experience. Use the `$data` path alias for cleaner imports (`$data` → `src/data/`):
+> **📋 Technical Implementation:** For technical details on content storage, CLI usage, and file management, see [MANAGE-CONTENT.md](MANAGE-CONTENT.md).
 
-```
-src/data/book/
-├── unit1/
-│   ├── 0_unit_python_for_cloud_native_backend_development.ts
-│   ├── 1_1_chapter_development_environment_tooling.ts
-│   ├── 1_2_chapter_containerization_basics.ts
-│   ├── 1_1_study_guide_1_1.ts
-│   ├── 1_1_quiz_1_1.ts
-│   ├── 1_1_exam_python_for_cloud_native_backend_development.ts
-│   └── ...
-├── unit2/
-├── content-menu.ts (navigation structure - source of truth)
-└── ...
-```
+Content data is stored as TypeScript files exporting properly typed objects, enabling type checking and better developer experience. Content creators use the CLI to manage content without needing to know the underlying file structure.
 
 ### Content Types and Formats
 
@@ -626,19 +613,18 @@ The enhanced generator now produces complete `src/data/generated/content-menu.ts
 #### Component Integration Workflow
 
 ```typescript
-// 1. Import content and renderer using $data alias
-import { demoLesson } from '$data/demo/content';
+// Example: Components import and render content
 import LessonRenderer from '$lib/components/content/LessonRenderer.svelte';
 
-// 2. Use in SvelteKit route
-<LessonRenderer content={demoLesson} />
+// Content is loaded automatically via dynamic imports
+<LessonRenderer content={currentLesson} />
 ```
 
-**Path Alias Benefits:**
+**Content Management Benefits:**
 
-- **Cleaner Imports**: `$data/demo/content` vs `src/data/demo/content`
-- **Refactoring Safety**: Changes to directory structure only require alias update
-- **Consistency**: Matches other project aliases (`$lib`, `$types`, `$ui`, `$config`)
+- **Abstraction**: Content creators don't need to know technical implementation details
+- **Type Safety**: All content validated at compile time
+- **Automation**: CLI handles file organization and navigation updates automatically
 
 #### TypeScript Development Benefits
 
@@ -703,9 +689,11 @@ When creating lesson content that includes Mermaid diagram blocks, the following
 
 #### Current State
 
-- **Legacy Directory**: `src/book/` contains 183+ HTML files
-- **Status**: Marked for future removal, available for content reference
-- **Migration Strategy**: Extract content to JSON format progressively
+> **📋 Technical Details:** For migration strategy and technical implementation, see [MANAGE-CONTENT.md](MANAGE-CONTENT.md).
+
+- **Legacy Content**: 183+ HTML files exist for content reference
+- **Status**: Being migrated to TypeScript format progressively
+- **Migration Strategy**: Use CLI tools to extract and convert content
 
 #### Migration Guidelines
 

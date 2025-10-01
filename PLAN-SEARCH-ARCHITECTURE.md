@@ -1143,3 +1143,350 @@ The hybrid approach transforms what could be a development bottleneck (mandatory
 ---
 
 > **📝 Status**: The current system is functional and documented above. The proposed system represents a significant architectural improvement that should be considered for implementation based on project growth and maintenance requirements. **The development workflow strategy is crucial for adoption success.**
+
+---
+
+# Unified Navigation System Architecture
+
+## Overview
+
+All navigation events must update **ALL** navigation components simultaneously to maintain consistency across the application. This unified approach ensures that sidebar highlighting, breadcrumb updates, sequential navigation links, URL hash changes, and progress tracking work in perfect harmony.
+
+## Core Navigation Handler
+
+The `navigateToContent()` function in `src/lib/utils/navigation.ts` serves as the **single source of truth** for all navigation operations.
+
+```typescript
+// src/lib/utils/navigation.ts
+import { navigationStore } from "$lib/stores/navigation";
+import { breadcrumbStore } from "$lib/stores/breadcrumb";
+import { progressStore, visitChapter } from "$lib/stores/progress";
+import { contentMenu } from "$data/generated/content-menu";
+import { flatNav } from "$data/generated/flatnav";
+import type { NavigationEvent, FlatNavEntry } from "$types";
+
+/**
+ * Unified navigation handler that updates all navigation components
+ * @param event - Navigation event with type, target, source, and data
+ */
+export function navigateToContent(event: NavigationEvent): void {
+	const { target, source, data } = event;
+	const targetUrl = typeof target === "string" ? target : target.path;
+	const chapterId = data?.chapterId ?? extractChapterIdFromUrl(targetUrl);
+
+	// 1. Update URL hash (triggers hashchange event)
+	window.location.hash = targetUrl;
+
+	// 2. Update navigation store (sidebar, breadcrumb listen to this)
+	navigationStore.update((state) => ({
+		...state,
+		currentId: chapterId,
+		currentPath: targetUrl,
+		source
+	}));
+
+	// 3. Update breadcrumb trail
+	const breadcrumbs = generateBreadcrumb(chapterId);
+	breadcrumbStore.set(breadcrumbs);
+
+	// 4. Update sequential navigation (previous/next)
+	const currentEntry = flatNav.entries.find((e) => e.id === chapterId);
+	if (currentEntry) {
+		navigationStore.update((state) => ({
+			...state,
+			previousEntry: currentEntry.previousEntry,
+			nextEntry: currentEntry.nextEntry
+		}));
+	}
+
+	// 5. Track visit in progress
+	if (data?.unitId && chapterId) {
+		visitChapter(data.unitId, chapterId);
+	}
+
+	// 6. Load content (handled by route component)
+	dispatchEvent(new CustomEvent("content-load", { detail: { chapterId, url: targetUrl } }));
+}
+
+/**
+ * Generate breadcrumb trail from chapter ID
+ */
+function generateBreadcrumb(chapterId: string): BreadcrumbItem[] {
+	const unitId = chapterId.slice(0, 2);
+	const unit = contentMenu.units.find((u) => u.id === `unit${unitId}`);
+	const chapter = unit?.chapters.find((c) => c.id === chapterId);
+
+	return [
+		{ id: "home", label: "Inicio", url: "#/", icon: "Home", isClickable: true },
+		{
+			id: unit?.id ?? "",
+			label: unit?.title ?? "",
+			url: `#/unit${unitId}`,
+			icon: "BookOpen",
+			isClickable: true
+		},
+		{
+			id: chapterId,
+			label: chapter?.title ?? "",
+			url: `#/${chapter?.chapterUrl}`,
+			isActive: true,
+			isClickable: false
+		}
+	];
+}
+
+/**
+ * Extract chapter ID from URL hash
+ */
+function extractChapterIdFromUrl(url: string): string {
+	const match = url.match(/(\d{2}_\d{2}[A-Z])/);
+	return match ? match[1] : "";
+}
+```
+
+## Navigation Event Sources
+
+Navigation can originate from multiple sources, all using the same `navigateToContent()` handler:
+
+1. **Sidebar** - User clicks on chapter in sidebar
+2. **Search** - User selects search result
+3. **Breadcrumb** - User clicks breadcrumb link
+4. **Sequential** - User clicks Previous/Next buttons
+5. **Direct** - User enters URL or uses browser back/forward
+
+## Component Integration
+
+### Sidebar Component
+
+```svelte
+<script lang="ts">
+	import { navigationStore } from "$lib/stores/navigation";
+	import { navigateToContent } from "$lib/utils/navigation";
+
+	const currentId = $derived($navigationStore.currentId);
+
+	function handleNavigate(chapter: MenuChapter) {
+		navigateToContent({
+			type: "navigate",
+			target: chapter.chapterUrl,
+			source: "sidebar",
+			data: { unitId: chapter.id.slice(0, 2), chapterId: chapter.id },
+			timestamp: new Date()
+		});
+	}
+
+	// Highlight active chapter
+	function isActive(chapterId: string): boolean {
+		return currentId === chapterId;
+	}
+</script>
+
+<SidebarMenuItem class={isActive(chapter.id) ? "bg-accent" : ""}>
+	<button onclick={() => handleNavigate(chapter)}>
+		{chapter.title}
+	</button>
+</SidebarMenuItem>
+```
+
+### Breadcrumb Component
+
+```svelte
+<script lang="ts">
+	import { breadcrumbStore } from "$lib/stores/breadcrumb";
+	import { navigateToContent } from "$lib/utils/navigation";
+
+	const breadcrumbs = $derived($breadcrumbStore);
+
+	function handleBreadcrumbClick(crumb: BreadcrumbItem) {
+		if (!crumb.isClickable) return;
+
+		navigateToContent({
+			type: "navigate",
+			target: crumb.url,
+			source: "breadcrumb",
+			data: { chapterId: crumb.id },
+			timestamp: new Date()
+		});
+	}
+</script>
+
+<Breadcrumb>
+	{#each breadcrumbs as crumb}
+		<BreadcrumbItem>
+			{#if crumb.isClickable}
+				<button onclick={() => handleBreadcrumbClick(crumb)}>
+					{crumb.label}
+				</button>
+			{:else}
+				<span>{crumb.label}</span>
+			{/if}
+		</BreadcrumbItem>
+	{/each}
+</Breadcrumb>
+```
+
+### Sequential Navigation Component
+
+```svelte
+<script lang="ts">
+	import { navigationStore } from "$lib/stores/navigation";
+	import { navigateToContent } from "$lib/utils/navigation";
+
+	const previousEntry = $derived($navigationStore.previousEntry);
+	const nextEntry = $derived($navigationStore.nextEntry);
+
+	function goToPrevious() {
+		if (!previousEntry) return;
+		navigateToContent({
+			type: "navigate",
+			target: previousEntry.chapterUrl,
+			source: "sequential",
+			data: { unitId: previousEntry.unitId, chapterId: previousEntry.id },
+			timestamp: new Date()
+		});
+	}
+
+	function goToNext() {
+		if (!nextEntry) return;
+		navigateToContent({
+			type: "navigate",
+			target: nextEntry.chapterUrl,
+			source: "sequential",
+			data: { unitId: nextEntry.unitId, chapterId: nextEntry.id },
+			timestamp: new Date()
+		});
+	}
+</script>
+
+<div class="navigation-controls">
+	<button onclick={goToPrevious} disabled={!previousEntry}>
+		← {previousEntry?.title ?? "Anterior"}
+	</button>
+	<button onclick={goToNext} disabled={!nextEntry}>
+		{nextEntry?.title ?? "Siguiente"} →
+	</button>
+</div>
+```
+
+### Search Results Component
+
+```svelte
+<script lang="ts">
+	import { navigateToContent } from "$lib/utils/navigation";
+	import { closeDialog } from "$lib/stores/dialog";
+
+	function handleResultClick(item: SearchIndexItem) {
+		navigateToContent({
+			type: "navigate",
+			target: item.chapterUrl,
+			source: "search",
+			data: {
+				unitId: item.unitId,
+				chapterId: item.id,
+				searchQuery: query
+			},
+			timestamp: new Date()
+		});
+		closeDialog();
+	}
+</script>
+
+<button onclick={() => handleResultClick(result.metadata)}>
+	{result.metadata.title}
+</button>
+```
+
+## Direct URL Navigation & Browser History
+
+Handle direct URL access and browser back/forward buttons:
+
+```typescript
+// src/routes/+layout.svelte
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import { navigateToContent } from '$lib/utils/navigation';
+
+  onMount(() => {
+    // Handle initial URL
+    handleHashChange();
+
+    // Listen for hash changes
+    window.addEventListener('hashchange', handleHashChange);
+
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
+  });
+
+  function handleHashChange() {
+    const hash = window.location.hash.slice(1); // Remove #
+    if (!hash || hash === '/') return;
+
+    navigateToContent({
+      type: 'navigate',
+      target: hash,
+      source: 'direct',
+      data: { chapterId: extractChapterIdFromUrl(hash) },
+      timestamp: new Date()
+    });
+  }
+</script>
+```
+
+## Navigation Flow Diagram
+
+```mermaid
+graph TD
+    A[User Action] --> B{Navigation Source}
+    B -->|Sidebar| C[navigateToContent]
+    B -->|Search| C
+    B -->|Breadcrumb| C
+    B -->|Sequential| C
+    B -->|Direct URL| C
+
+    C --> D[Update URL Hash]
+    C --> E[Update Navigation Store]
+    C --> F[Update Breadcrumb Store]
+    C --> G[Update Sequential Nav]
+    C --> H[Track Progress]
+    C --> I[Load Content]
+
+    D --> J[Sidebar Highlights]
+    E --> J
+    E --> K[Breadcrumb Updates]
+    F --> K
+    E --> L[Prev/Next Buttons]
+    G --> L
+    H --> M[Progress Store]
+    I --> N[Content Area]
+
+    J --> O[Unified UI State]
+    K --> O
+    L --> O
+    M --> O
+    N --> O
+```
+
+## Benefits of Unified Navigation
+
+1. **Consistency**: All components stay in sync automatically
+2. **Maintainability**: Single function to update for all navigation logic
+3. **Testability**: One function to test instead of multiple navigation paths
+4. **Progress Tracking**: Automatic visit tracking for all navigation events
+5. **History Support**: Browser back/forward buttons work correctly
+6. **Deep Linking**: Direct URL access works for all content
+
+## Implementation Checklist
+
+- [ ] Create unified `navigateToContent()` handler in `src/lib/utils/navigation.ts`
+- [ ] Create navigation store in `src/lib/stores/navigation.ts`
+- [ ] Create breadcrumb store in `src/lib/stores/breadcrumb.ts`
+- [ ] Update sidebar to use navigation store and handler
+- [ ] Update breadcrumb to use breadcrumb store and handler
+- [ ] Update sequential nav to use navigation store and handler
+- [ ] Update search results to use navigation handler
+- [ ] Implement hash change listener in root layout
+- [ ] Add navigation event tracking for analytics
+- [ ] Test all navigation sources (sidebar, search, breadcrumb, sequential, direct)
+- [ ] Ensure browser back/forward works correctly
+- [ ] Verify all components update simultaneously on navigation

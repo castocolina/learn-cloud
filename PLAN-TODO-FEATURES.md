@@ -33,20 +33,24 @@ graph TD
     T7 --> T8A["TASK 8A: Sidebar"]
     T8A --> T8B["TASK 8B: Sticky Header"]
     T8B --> T8C["TASK 8C: Breadcrumb"]
-    T8C --> T8D["TASK 8D: Search"]
-    T8D --> T8E["TASK 8E: IconGrid"]
-    T8E --> T8F["TASK 8F: Theme Switcher"]
-    T8F --> T8G["TASK 8G: Progress"]
-    T8G --> T8H["TASK 8H: Dialog"]
-    T8H --> T8I["TASK 8I: General Navigation"]
-    T8A --> T8I
-    T8B --> T8I
-    T8C --> T8I
-    T8I --> T8J["TASK 8J: Quiz/Exam Navigation"]
-    T8J --> T8K["TASK 8K: Flipcard/Flashcard"]
-    T8K --> T8L["TASK 8L: Code Block"]
-    T8L --> T8M["TASK 8M: Diagram"]
-    T8M --> T8N["TASK 8N: Popover"]
+    T8C --> T8D["TASK 8D: IconGrid"]
+    T8D --> T8E["TASK 8E: Dialog"]
+    T8D --> T8F["TASK 8F: Code Block"]
+    T8E --> T8G["TASK 8G: Diagram"]
+    T8D --> T8G
+    T8E --> T8H["TASK 8H: Flipcard"]
+    T8H --> T8I["TASK 8I: Quiz/Exam Navigation"]
+    T8I --> T8J["TASK 8J: Popover"]
+    T8J --> T8K["TASK 8K: Progress"]
+    T8J --> T8L["TASK 8L: General Navigation"]
+    T8A --> T8L
+    T8B --> T8L
+    T8C --> T8L
+    T8L --> T8M["TASK 8M: Search"]
+    T8E --> T8M
+    T8A --> T8M
+    T8C --> T8M
+    T8M --> T8N["TASK 8N: Theme Switcher"]
 
     T8N --> T8X["TASK 8X: Component Integration & Scaffold Verification"]
     T8X --> T9["TASK 9: Content Migration"]
@@ -3119,9 +3123,8 @@ You are responsible for designing and implementing SPA architecture with single 
 ### Technical Documents to Review
 
 - `src/lib/types/` (unified TypeScript foundation)
-- `src/scripts/content-menu-generator.ts` (content structure)
-- `SVELTEKIT-GUIDE.md` (technical architecture)
-- `SVELTEKIT-GUIDE.md` (SvelteKit patterns)
+- `src/data/generated/content-menu.ts` (content structure)
+- `SVELTEKIT-GUIDE.md` (technical architecture, SvelteKit patterns)
 
 ### Prerequisites
 
@@ -3173,8 +3176,7 @@ You are responsible for implementing robust theme system with CSS custom propert
 
 ### Technical Documents to Review
 
-- `SVELTEKIT-GUIDE.md` (CSS architecture standards)
-- `SVELTEKIT-GUIDE.md` (theme patterns and Tailwind CSS v4 centralized architecture - CRITICAL)
+- `SVELTEKIT-GUIDE.md` (CSS architecture standards, theme patterns and Tailwind CSS v4 centralized architecture - CRITICAL)
 - `src/routes/+layout.svelte` (layout architecture)
 
 ### Prerequisites
@@ -3222,7 +3224,7 @@ You are responsible for implementing robust theme system with CSS custom propert
    ```css
    @layer base {
    	:root {
-   		/* Global Z-Index Hierarchy (from RECURRING-ISSUES.md) */
+   		/* Global Z-Index Hierarchy (from SVELTEKIT-GUIDE.md) */
    		--z-base: 1; /* Base content layer */
    		--z-dropdown: 10; /* Dropdown menus, select options */
    		--z-sticky: 50; /* Sticky headers, navigation */
@@ -3276,7 +3278,7 @@ You are responsible for implementing robust theme system with CSS custom propert
    }
    ```
 
-   **Critical Z-Index Rules (Prevents RECURRING-ISSUES.md violations):**
+   **Critical Z-Index Rules (from SVELTEKIT-GUIDE.md):**
    - ✅ **ALWAYS** use CSS custom properties (`var(--z-*)`) - NEVER hardcoded values
    - ✅ **AVOID** `transform`, `opacity < 1`, `filter` on navigation items (creates stacking contexts)
    - ✅ **USE** `margin` instead of `transform` for visual positioning when possible
@@ -3356,8 +3358,7 @@ You are responsible for implementing core UI components using shadcn-svelte with
 
 - `src/lib/stores/theme.ts` (theme system)
 - `src/app.css` (centralized CSS architecture)
-- `SVELTEKIT-GUIDE.md` (component requirements)
-- `SVELTEKIT-GUIDE.md` (component patterns, Svelte 5 runes syntax, union-first patterns - CRITICAL)
+- `SVELTEKIT-GUIDE.md` (component requirements, component patterns, Svelte 5 runes syntax, union-first patterns - CRITICAL)
 
 ### Prerequisites
 
@@ -3730,15 +3731,15 @@ You are responsible for creating a reusable Svelte component that can render the
 
 ### Agent Responsibility
 
-You are responsible for developing a responsive sidebar navigation component using shadcn-svelte components with proper TypeScript interfaces, ensuring mobile-first design and theme integration following SVELTEKIT-GUIDE.md architecture patterns.
+You are responsible for developing a responsive sidebar navigation component using shadcn-svelte Sidebar with proper TypeScript interfaces, ensuring mobile-first design and integration with `src/data/generated/content-menu.ts` following SVELTEKIT-GUIDE.md architecture patterns.
 
 ### Technical Documents to Review
 
-- `SVELTEKIT-GUIDE.md` (Svelte 5 runes syntax, union-first patterns, centralized CSS - CRITICAL)
-- `src/lib/types/navigation.ts` (navigation structure from Task 2)
-- `src/lib/components/ui/` (shadcn-svelte components from Task 6)
-- `src/app.css` (centralized CSS architecture from Task 5)
-- `SVELTEKIT-GUIDE.md` (mobile-first responsive design)
+- `SVELTEKIT-GUIDE.md` (Svelte 5 runes syntax, shadcn-svelte integration)
+- `src/data/generated/content-menu.ts` (navigation structure with 2,076 lines of menu data)
+- `src/lib/components/demo/DemoSidebar.svelte` (visual reference for style replication)
+- `src/lib/components/ui/sidebar` (shadcn-svelte Sidebar components)
+- `src/lib/utils/navigation.ts` (unified navigation handler)
 
 ### Prerequisites
 
@@ -3746,155 +3747,54 @@ You are responsible for developing a responsive sidebar navigation component usi
 
 ### Implementation Details
 
-**Critical Architecture Requirements (from SVELTEKIT-GUIDE.md):**
+**Critical Requirements:**
 
-1. **Svelte 5 Runes Syntax ONLY**:
+1. **Use shadcn-svelte Sidebar**: Install and configure shadcn-svelte Sidebar component
+2. **Text Wrapping Fix**: Ensure long titles wrap correctly (not truncate) - this was an issue in other projects with shadcn sidebar
+3. **Visual Style**: Replicate DemoSidebar.svelte appearance (hierarchy, spacing, hover effects)
+4. **Data Integration**: Consume `src/data/generated/content-menu.ts` for navigation structure
+5. **Unified Navigation**: Use `navigateToContent()` from utils/navigation.ts for consistent routing
 
-   ```svelte
-   <script lang="ts">
-   	import type { NavigationItem } from "$data/types.js";
-
-   	interface Props {
-   		items: NavigationItem[];
-   		isOpen?: boolean;
-   		onItemClick?: (item: NavigationItem) => void;
-   	}
-
-   	let isCollapsed = $state(false);
-   	let { items, isOpen = true, onItemClick }: Props = $props();
-
-   	// Reactive sidebar state
-   	let sidebarClasses = $derived(`sidebar ${isCollapsed ? "collapsed" : "expanded"}`);
-   </script>
-   ```
-
-2. **Union-First Navigation Structure**:
-
-   ```typescript
-   // Use navigation unions from types.ts
-   import { NavigationSection, ComponentState } from "$data/types.js";
-
-   interface NavigationItem {
-   	id: string;
-   	title: string;
-   	section: NavigationSection; // Union constraint
-   	state: ComponentState; // Union constraint
-   	icon?: string;
-   	children?: NavigationItem[];
-   }
-   ```
-
-3. **Centralized CSS Architecture** (all styles in `src/app.css`):
-
-   ```css
-   @layer components {
-   	.sidebar {
-   		@apply fixed top-0 left-0 h-full border-r bg-background transition-transform;
-   	}
-
-   	.sidebar.collapsed {
-   		@apply -translate-x-full;
-   	}
-
-   	@media (min-width: theme(breakpoint.md)) {
-   		.sidebar.collapsed {
-   			@apply w-16 translate-x-0;
-   		}
-   	}
-   }
-   ```
-
-### Component Specifications
-
-- **Component**: `src/lib/components/navigation/Sidebar.svelte`
-- **Props Interface**: TypeScript interface with union constraints for navigation items, active states, and callbacks
-- **Responsive Design**: Mobile-first with collapsible behavior (≤390px)
-- **Theme Integration**: Light/dark mode support with proper contrast following centralized CSS
-- **Accessibility**: Keyboard navigation and screen reader support
-
-### Critical Testing Suite for Refactor Protection
-
-**Test Specifications:**
-
-- **Test File**: `src/test/components/navigation/Sidebar.test.ts`
-- **Framework**: Vitest + @testing-library/svelte
-- **Coverage Requirements**:
-  - ✅ Component rendering with Svelte 5 runes
-  - ✅ Responsive behavior at breakpoints (≤390px, ≥768px)
-  - ✅ Theme switching functionality
-  - ✅ Navigation item interaction with union validation
-  - ✅ Accessibility compliance (keyboard navigation, ARIA attributes)
-  - ✅ Union-first pattern validation
-  - ✅ Props interface compliance
-
-**Refactor Protection Tests:**
+**Component Structure:**
 
 ```typescript
-// Example test structure
-import { render, fireEvent } from "@testing-library/svelte";
-import { NavigationSection, ComponentState } from "$data/types.js";
-import Sidebar from "$lib/components/navigation/Sidebar.svelte";
-
-describe("Sidebar Component", () => {
-	test("renders with union-based navigation items", () => {
-		const items = [
-			{
-				id: "lessons",
-				title: "Lessons",
-				section: NavigationSection.CONTENT,
-				state: ComponentState.ACTIVE
-			}
-		];
-
-		const { getByText } = render(Sidebar, { items });
-		expect(getByText("Lessons")).toBeInTheDocument();
-	});
-
-	test("maintains responsiveness during refactor", () => {
-		// Test mobile and desktop behavior
-	});
-});
+// Use collapsible units with chapters
+interface MenuStructure {
+	units: MenuUnit[];
+	// Total: 10 units, 129 chapters from content-menu.ts
+}
 ```
+
+**Key Features:**
+
+- Collapsible/expandable units (shadcn Collapsible component)
+- Active chapter highlighting
+- Mobile auto-collapse on navigation
+- Touch targets ≥44px for accessibility
+- Text wrapping for long titles (critical fix)
+
+### Subtask: Sidebar Testing Suite
+
+- **Test File**: `src/test/components/navigation/MainSidebar.test.ts`
+- **Coverage**: Rendering, collapsible behavior, navigation integration, text wrapping, mobile behavior
+- **Refactor Protection**: Ensures generated data integration and unified navigation work correctly
 
 ### Expected Output
 
-- `src/lib/components/navigation/Sidebar.svelte` (with Svelte 5 runes)
-- `src/test/components/navigation/Sidebar.test.ts` (comprehensive test suite)
-- `src/app.css` (sidebar styles in `@layer components`)
-- TypeScript interfaces with union constraints for sidebar props
-- Responsive CSS styles following centralized architecture
+- `src/lib/components/navigation/MainSidebar.svelte` (shadcn-svelte based)
+- `src/test/components/navigation/MainSidebar.test.ts`
+- Text wrapping CSS fix for long titles
+- Integration with content-menu.ts and navigation.ts
 
 ### Final Validations
 
-- ✅ Component renders correctly with Svelte 5 runes syntax
-- ✅ Mobile responsive behavior (≤390px tested)
-- ✅ Theme switching functional with centralized CSS
-- ✅ TypeScript compilation without errors using union constraints
-- ✅ All tests pass and protect against regressions
-- ✅ No `@apply` usage in component `<style>` blocks
-- ✅ Union type-first patterns implemented throughout
-- ✅ Accessibility compliance verified
-
-### Verification Notes
-
-- **SVELTEKIT-GUIDE Updates**: Check for changes in component architecture or CSS patterns
-- **shadcn-svelte Updates**: Verify compatibility with navigation components
-- **Navigation Structure**: Review types.ts for navigation union updates
-
-### Documentation to Update
-
-- Sidebar component specifications with Svelte 5 runes examples
-- Test suite documentation and refactor protection patterns
-- Navigation interface usage with union constraints
-- Responsive design patterns following centralized CSS approach
-
-**Final Validations:**
-
-- ✅ SVELTEKIT-GUIDE.md compliance verified
-- ✅ Mobile-first design (≤390px tested)
-- ✅ Theme switching functional
-- ✅ Test suite passes with 100% coverage
-- ✅ TypeScript compilation without errors
+- ✅ shadcn-svelte Sidebar integrated (not custom implementation)
+- ✅ Text wrapping works (no truncation for long titles)
+- ✅ DemoSidebar visual style replicated
+- ✅ content-menu.ts data consumed correctly
+- ✅ Unified navigation (all components update on navigate)
+- ✅ Mobile-first behavior (≤390px tested, auto-collapse)
+- ✅ Three-tier validation: `make check-wip` → `pnpm run test` → `pnpm run format/lint/check`
 
 ---
 
@@ -3906,9 +3806,8 @@ You are responsible for developing a sticky header component with proper z-index
 
 ### Technical Documents to Review
 
-- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and component standards)
-- `RECURRING-ISSUES.md` (z-index hierarchy violations prevention)
-- `SVELTEKIT-GUIDE.md` (sticky positioning and responsive design)
+- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax, z-index hierarchy)
+- `src/lib/components/ui/` (shadcn-svelte components)
 
 ### Prerequisites
 
@@ -3939,9 +3838,9 @@ You are responsible for developing a sticky header component with proper z-index
 
 - ✅ SVELTEKIT-GUIDE.md compliance verified
 - ✅ Z-index hierarchy respected (no hardcoded values)
-- ✅ Mobile-first responsive design
+- ✅ Mobile-first responsive design (≤390px tested)
 - ✅ Test suite passes with z-index validation
-- ✅ No recurring issues introduced
+- ✅ Three-tier validation: `make check-wip` → `pnpm run test` → `pnpm run format/lint/check`
 
 ---
 
@@ -3989,64 +3888,15 @@ You are responsible for developing a dynamic breadcrumb navigation component wit
 - ✅ Mobile truncation functional (≤390px)
 - ✅ Test suite covers all navigation scenarios
 - ✅ Dynamic generation accurate
+- ✅ Three-tier validation: `make check-wip` → `pnpm run test` → `pnpm run format/lint/check`
 
 ---
 
-## TASK 8D: Search Component Development
+## TASK 8D: IconGrid Component Development (Base Reusable Component)
 
 ### Agent Responsibility
 
-You are responsible for developing comprehensive search functionality with SearchBox and SearchModal components using Lunr.js integration and following SVELTEKIT-GUIDE.md patterns.
-
-### Technical Documents to Review
-
-- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and component standards)
-- `src/scripts/search-indexer.ts` (search foundation from TASK 3D)
-- `PLAN-SEARCH-ARCHITECTURE.md` (search specifications)
-- `SVELTEKIT-GUIDE.md` (enhanced search implementation)
-
-### Prerequisites
-
-- Task 8C: Breadcrumb Component completed
-- Task 3D: Search Index Generator Script completed
-
-### Implementation Details
-
-- **Components**: `src/lib/components/search/SearchBox.svelte`, `SearchModal.svelte`
-- **Lunr.js Integration**: Use generated search index from TASK 3D script
-- **Real-time Search**: Debounced search with instant results
-- **Mobile-First**: Optimized search experience for mobile devices
-- **Keyboard Navigation**: Arrow keys, Enter, Escape support
-
-### Subtask: Search Testing Suite
-
-- **Test File**: `src/test/components/search/Search.test.ts`
-- **Coverage**: Search functionality, Lunr.js integration, keyboard navigation, mobile behavior
-- **Refactor Protection**: Ensures search accuracy during content changes
-
-### Expected Output
-
-- `src/lib/components/search/SearchBox.svelte`
-- `src/lib/components/search/SearchModal.svelte`
-- `src/test/components/search/Search.test.ts`
-- Lunr.js search integration
-- Keyboard navigation support
-
-### Final Validations
-
-- ✅ SVELTEKIT-GUIDE.md compliance verified
-- ✅ Lunr.js integration functional
-- ✅ Mobile-first search experience
-- ✅ Test suite covers search accuracy
-- ✅ Keyboard navigation working
-
----
-
-## TASK 8E: IconGrid Component Development
-
-### Agent Responsibility
-
-You are responsible for developing a responsive IconGrid component with flipcard-inspired design using shadcn-svelte components and following SVELTEKIT-GUIDE.md standards.
+You are responsible for developing a reusable IconGrid base component with standardized styles (hover effects, borders, cursor) that will be used by Dialog, CodeBlock, Diagram, and other components, using shadcn-svelte components and following SVELTEKIT-GUIDE.md standards.
 
 ### Technical Documents to Review
 
@@ -4056,40 +3906,805 @@ You are responsible for developing a responsive IconGrid component with flipcard
 
 ### Prerequisites
 
-- Task 8D: Search Component completed
+- Task 8C: Breadcrumb Component completed
 
 ### Implementation Details
 
+**Base Component Purpose:**
+
+This is a **reusable foundation component** that provides standardized icon presentation used across multiple components:
+
+- Dialog buttons and controls (8E)
+- Code block action buttons (8F)
+- Diagram zoom controls (8G)
+- Other UI elements requiring consistent icon styling
+
+**Standardized Styles to Implement:**
+
+1. **Hover Effects**: Consistent hover states (background color change, subtle scale)
+2. **Border Styles**: Uniform border radius, thickness, and colors
+3. **Cursor**: Pointer cursor for interactive elements
+4. **Focus States**: Keyboard navigation focus rings
+5. **Active States**: Click/touch feedback
+6. **Disabled States**: Visual indication when not interactive
+
+**Component Features:**
+
 - **Component**: `src/lib/components/shared/IconGrid.svelte`
-- **Flipcard Design**: Interactive card flipping with front/back content
 - **Grid Layout**: CSS Grid with responsive breakpoints
-- **Mobile-First**: Touch-friendly interactions for mobile devices
-- **TypeScript Interface**: Proper props interface for grid items
+- **Mobile-First**: Touch-friendly interactions (≥44px touch targets)
+- **TypeScript Interface**: Proper props interface for icon items
+- **Accessibility**: ARIA labels, keyboard navigation support
 
 ### Subtask: IconGrid Testing Suite
 
 - **Test File**: `src/test/components/shared/IconGrid.test.ts`
-- **Coverage**: Grid layout, flipcard interactions, responsiveness, touch events
-- **Refactor Protection**: Ensures grid behavior consistency during layout changes
+- **Coverage**: Grid layout, hover/active/disabled states, responsiveness, touch events, accessibility
+- **Refactor Protection**: Ensures consistent styling across all consuming components
 
 ### Expected Output
 
-- `src/lib/components/shared/IconGrid.svelte`
+- `src/lib/components/shared/IconGrid.svelte` (base reusable component)
 - `src/test/components/shared/IconGrid.test.ts`
 - CSS Grid responsive layout
-- Flipcard interaction logic
+- Standardized style system (hover, borders, cursor states)
+- Documentation for component usage
 
 ### Final Validations
 
 - ✅ SVELTEKIT-GUIDE.md compliance verified
-- ✅ Flipcard interactions working on mobile
+- ✅ Standardized styles consistent (no repetition in consuming components)
+- ✅ Touch targets ≥44px for mobile accessibility
 - ✅ CSS Grid responsive layout functional
-- ✅ Test suite covers touch interactions
+- ✅ Test suite covers all interaction states
 - ✅ TypeScript interfaces complete
+- ✅ Three-tier validation: `make check-wip` → `pnpm run test` → `pnpm run format/lint/check`
 
 ---
 
-## TASK 8F: Theme Switcher Component Development
+## TASK 8E: Dialog Component Development (Shared Component)
+
+### Agent Responsibility
+
+You are responsible for developing a reusable shadcn-svelte Dialog component that will be shared across Search (8M), Flipcards (8H), Diagrams (8G), and Code Blocks (8F), with proper z-index hierarchy, accessibility, and mobile-first design following SVELTEKIT-GUIDE.md patterns.
+
+### Technical Documents to Review
+
+- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax, z-index hierarchy, stacking context prevention)
+- `src/lib/components/ui/` (shadcn-svelte Dialog components)
+
+### Prerequisites
+
+- Task 8D: IconGrid Component completed
+
+### Implementation Details
+
+**Reusable Dialog Manager Component:**
+
+Create `src/lib/components/ui/dialog/DialogManager.svelte` that can be used by multiple components:
+
+```typescript
+// Store for global dialog state
+interface DialogConfig {
+	title: string;
+	content: ComponentType;
+	props?: Record<string, unknown>;
+	size?: "sm" | "md" | "lg" | "xl" | "full";
+}
+
+export function openDialog(config: DialogConfig): void {
+	dialogStore.set({ ...config, isOpen: true });
+}
+```
+
+**Key Requirements:**
+
+- **Component**: Enhanced shadcn-svelte Dialog integration with Svelte 5 runes
+- **Z-Index Hierarchy**: Use `var(--z-modal)` from global hierarchy
+- **Mobile-First**: Full-screen modals on mobile (≤390px), centered on desktop
+- **Accessibility**: Focus management, escape key handling, screen reader support
+- **Portal Rendering**: Proper DOM portal for modal content
+- **Size Variants**: Support sm, md, lg, xl, and full-screen modes
+- **Icon Integration**: Use IconGrid (8D) for consistent button styling
+
+### Use Cases
+
+This dialog will be consumed by:
+
+1. **Search Component (8M)**: Display search results in lg mode
+2. **Flipcard Component (8H)**: Study mode flashcards in md mode
+3. **Diagram Component (8G)**: Full-screen diagram viewer in full mode
+4. **Code Block Component (8F)**: Expanded code view (optional)
+
+### Subtask: Dialog Testing Suite
+
+- **Test File**: `src/test/components/ui/Dialog.test.ts`
+- **Coverage**: Modal behavior, z-index hierarchy, accessibility, mobile display, size variants
+- **Refactor Protection**: Prevents stacking context violations and accessibility regressions
+
+### Expected Output
+
+- `src/lib/components/ui/dialog/DialogManager.svelte`
+- `src/lib/stores/dialog.ts` (global dialog state)
+- `src/test/components/ui/Dialog.test.ts`
+- Z-index hierarchy compliance
+- Mobile-first modal patterns
+
+### Final Validations
+
+- ✅ SVELTEKIT-GUIDE.md compliance verified
+- ✅ Z-index hierarchy respected (no stacking context issues)
+- ✅ Mobile-first modal behavior (full-screen on ≤390px)
+- ✅ Test suite covers accessibility (keyboard, ARIA, focus trap)
+- ✅ Svelte 5 runes syntax ($state, $derived, $props)
+- ✅ IconGrid integration for buttons
+- ✅ Three-tier validation: `make check-wip` → `pnpm run test` → `pnpm run format/lint/check`
+
+---
+
+## TASK 8F: Code Block Component Development
+
+### Agent Responsibility
+
+You are responsible for developing an enhanced code block component with syntax highlighting, copy functionality, **optional Dialog expansion (like Diagram)**, and mobile-responsive horizontal scroll using IconGrid (8D) for action buttons, following SVELTEKIT-GUIDE.md patterns.
+
+### Technical Documents to Review
+
+- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and component standards)
+- `src/lib/components/ui/` (shadcn-svelte components)
+- `MERMAID-STANDARDS.md` (for reference on code block syntax handling)
+
+### Prerequisites
+
+- Task 8D: IconGrid Component completed
+- Task 8E: Dialog Component completed
+
+### Implementation Details
+
+- **Component**: Enhanced `src/lib/components/shared/CodeBlock.svelte`
+- **Syntax Highlighting**: Integration with syntax highlighter (Shiki/Prism)
+- **Copy Functionality**: Copy-to-clipboard with visual feedback using IconGrid buttons
+- **Dialog Expansion**: Optional full-screen code view using Dialog (8E) - similar to Diagram component
+- **Mobile Optimization**: Horizontal scroll with proper touch handling
+- **Language Support**: 200+ programming languages
+- **IconGrid Integration**: Use IconGrid (8D) for copy button, expand button with consistent styling
+
+**New Feature - Dialog Expansion:**
+
+```typescript
+// Expand code block to full-screen dialog (like Diagram 8G)
+function handleExpandCode() {
+	openDialog("Code View", CodeBlockFullView, {
+		props: { code, language },
+		size: "full"
+	});
+}
+```
+
+### Subtask: Code Block Testing Suite
+
+- **Test File**: `src/test/components/shared/CodeBlock.test.ts`
+- **Coverage**: Syntax highlighting, copy functionality, dialog expansion, mobile scroll, language detection
+- **Refactor Protection**: Ensures code rendering consistency and button functionality
+
+### Expected Output
+
+- Enhanced `src/lib/components/shared/CodeBlock.svelte`
+- `src/lib/components/shared/CodeBlockFullView.svelte` (for dialog)
+- `src/test/components/shared/CodeBlock.test.ts`
+- Syntax highlighting integration
+- Copy-to-clipboard functionality
+- Dialog expansion feature
+- IconGrid button integration
+
+### Final Validations
+
+- ✅ SVELTEKIT-GUIDE.md compliance verified
+- ✅ Syntax highlighting working for all supported languages
+- ✅ Copy functionality with visual feedback
+- ✅ Dialog expansion working (full-screen view)
+- ✅ IconGrid integration for consistent button styling
+- ✅ Mobile horizontal scroll functional
+- ✅ Test suite covers all features
+- ✅ Three-tier validation: `make check-wip` → `pnpm run test` → `pnpm run format/lint/check`
+
+---
+
+## TASK 8G: Diagram Component Development
+
+### Agent Responsibility
+
+You are responsible for enhancing MermaidDiagram component with error handling, **GitHub-style zoom controls**, modal expansion using Dialog (8E), and validation integration using IconGrid (8D) for controls, following SVELTEKIT-GUIDE.md patterns.
+
+### Technical Documents to Review
+
+- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and error handling)
+- `MERMAID-STANDARDS.md` (diagram standards, validation, and error reporting)
+- `src/scripts/mermaid-validator.ts` (validation integration from TASK 3C)
+
+### Prerequisites
+
+- Task 8D: IconGrid Component completed
+- Task 8E: Dialog Component completed
+
+### Implementation Details
+
+- **Component**: Enhanced `src/lib/components/shared/MermaidDiagram.svelte`
+- **Error Handling**: Integration with mermaid-validator.ts for precise error reporting
+- **Validation Integration**: Real-time validation feedback using TASK 3C script
+- **Mobile Optimization**: Responsive diagram sizing and interaction
+- **IconGrid Integration**: Use IconGrid (8D) for zoom control buttons
+
+### Subtask: Diagram Modal Dialog Integration with GitHub-Style Zoom Controls
+
+- **Component**: `src/lib/components/shared/MermaidDiagramModal.svelte` or enhanced `MermaidDiagram.svelte`
+- **Purpose**: Diagram viewer with zoom controls and full-screen expansion
+- **Integration**: Use Dialog from Task 8E (openDialog) for full-screen mode
+- **GitHub-Style Zoom Controls** (using IconGrid 8D):
+  - Zoom In button (+)
+  - Zoom Out button (-)
+  - Reset Zoom button (100%)
+  - Fullscreen button (expand to dialog)
+  - Zoom level display (e.g., "75%", "100%", "150%")
+  - Zoom limits: 50% minimum, 200% maximum
+- **Z-Index**: Use `var(--z-modal)` from global hierarchy
+- **Mobile Optimization**: Touch-friendly controls (≥44px touch targets)
+- **Error Display**: Enhanced error reporting in modal view
+
+### Subtask: Diagram Testing Suite
+
+- **Test File**: `src/test/components/shared/MermaidDiagram.test.ts`
+- **Coverage**: Diagram rendering, error handling, modal expansion, validation integration, zoom/pan controls
+- **Refactor Protection**: Prevents Mermaid rendering failures and ensures error handling consistency
+
+### Expected Output
+
+- Enhanced `src/lib/components/shared/MermaidDiagram.svelte`
+- `src/lib/components/shared/MermaidDiagramModal.svelte`
+- `src/test/components/shared/MermaidDiagram.test.ts`
+- Validator script integration
+- Modal expansion functionality with zoom/pan controls
+- IconGrid integration for zoom buttons
+
+### Final Validations
+
+- ✅ SVELTEKIT-GUIDE.md compliance verified
+- ✅ Error handling with precise reporting
+- ✅ Modal expansion with zoom/pan controls working on mobile
+- ✅ GitHub-style zoom controls functional (zoom in/out/reset/fullscreen)
+- ✅ IconGrid integration for consistent button styling
+- ✅ Test suite covers rendering scenarios and modal behavior
+- ✅ Validation integration functional
+- ✅ Three-tier validation: `make check-wip` → `pnpm run test` → `pnpm run format/lint/check`
+
+---
+
+## TASK 8H: Flipcard/Flashcard Component Development
+
+### Agent Responsibility
+
+You are responsible for developing interactive flipcard components for study guides with modal expansion using Dialog (8E), touch gestures, and mobile-first interactions following SVELTEKIT-GUIDE.md patterns.
+
+### Technical Documents to Review
+
+- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and component standards)
+- `src/lib/components/ui/` (shadcn-svelte components)
+
+### Prerequisites
+
+- Task 8E: Dialog Component completed
+
+### Implementation Details
+
+- **Component**: `src/lib/components/content/Flipcard.svelte`
+- **Flip Animation**: CSS-based 3D flip animation for card interactions
+- **Modal Integration**: Use Dialog (8E) for full-screen study mode
+- **Touch Gestures**: Swipe gestures for mobile card flipping
+- **Keyboard Support**: Arrow keys for navigation, Space for flip
+- **Progress Tracking**: Integration with progress store
+
+### Subtask: Flipcard Testing Suite
+
+- **Test File**: `src/test/components/content/Flipcard.test.ts`
+- **Coverage**: Flip animations, touch gestures, keyboard navigation, modal integration, progress tracking
+- **Refactor Protection**: Ensures flipcard interactions work correctly across devices
+
+### Expected Output
+
+- `src/lib/components/content/Flipcard.svelte`
+- `src/test/components/content/Flipcard.test.ts`
+- CSS flip animations
+- Touch gesture handlers
+- Dialog modal integration
+
+### Final Validations
+
+- ✅ SVELTEKIT-GUIDE.md compliance verified
+- ✅ Flip animations smooth on all devices
+- ✅ Dialog integration for study mode working
+- ✅ Touch gestures functional (≤390px tested)
+- ✅ Keyboard navigation working
+- ✅ Progress tracking integrated
+- ✅ Three-tier validation: `make check-wip` → `pnpm run test` → `pnpm run format/lint/check`
+
+---
+
+## TASK 8I: Quiz/Exam Navigation Component Development
+
+### Agent Responsibility
+
+You are responsible for developing quiz and exam navigation components with question tracking, progress indicators, and mobile-optimized controls following SVELTEKIT-GUIDE.md patterns.
+
+### Technical Documents to Review
+
+- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and state management)
+- `src/lib/types/` (quiz and exam types)
+
+### Prerequisites
+
+- Task 8H: Flipcard Component completed
+
+### Implementation Details
+
+- **Component**: `src/lib/components/content/QuizNavigation.svelte`
+- **Question Tracking**: Current question, answered questions, remaining questions
+- **Progress Indicator**: Visual progress bar for quiz completion
+- **Navigation Controls**: Previous/Next question, Jump to question, Submit quiz
+- **Mobile Optimization**: Touch-friendly buttons (≥44px)
+- **State Management**: Quiz state with Svelte stores
+
+### Subtask: Quiz Navigation Testing Suite
+
+- **Test File**: `src/test/components/content/QuizNavigation.test.ts`
+- **Coverage**: Question navigation, progress tracking, state management, mobile controls
+- **Refactor Protection**: Ensures quiz flow consistency during component changes
+
+### Expected Output
+
+- `src/lib/components/content/QuizNavigation.svelte`
+- `src/test/components/content/QuizNavigation.test.ts`
+- Quiz state management
+- Progress tracking logic
+
+### Final Validations
+
+- ✅ SVELTEKIT-GUIDE.md compliance verified
+- ✅ Question navigation working correctly
+- ✅ Progress indicator accurate
+- ✅ Mobile controls functional (≤390px tested)
+- ✅ State management consistent
+- ✅ Three-tier validation: `make check-wip` → `pnpm run test` → `pnpm run format/lint/check`
+
+---
+
+## TASK 8J: Popover Component Development
+
+### Agent Responsibility
+
+You are responsible for developing popover components using shadcn-svelte Popover with proper positioning, z-index hierarchy (applying lessons from Dialog 8E), and integration with Progress reset button, following SVELTEKIT-GUIDE.md standards.
+
+### Technical Documents to Review
+
+- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax, z-index hierarchy, popover specifications)
+- `src/lib/components/ui/` (shadcn-svelte Popover components)
+- Review Dialog (8E) implementation for z-index and background issue solutions
+
+### Prerequisites
+
+- Task 8I: Quiz/Exam Navigation Component completed
+
+### Implementation Details
+
+- **Component**: Enhanced shadcn-svelte Popover integration
+- **Z-Index Hierarchy**: Use `var(--z-popover)` from global hierarchy
+- **Positioning**: Proper positioning with collision detection
+- **Mobile-First**: Touch-friendly interactions
+- **Dialog Lessons Applied**: Review and apply solutions from Dialog (8E) for background and stacking context issues
+- **Progress Integration**: Popover for reset confirmation button in Progress component (8K)
+
+**Critical: Apply Dialog Solutions:**
+
+When developing Popover, review Dialog (8E) implementation for:
+
+1. Z-index hierarchy (no hardcoded values)
+2. Stacking context prevention (avoid transform, opacity < 1, filter)
+3. Background overlay handling
+4. Focus trap and accessibility
+
+### Subtask: Popover Testing Suite
+
+- **Test File**: `src/test/components/ui/Popover.test.ts`
+- **Coverage**: Positioning, z-index hierarchy, collision detection, mobile interactions, accessibility
+- **Refactor Protection**: Prevents z-index violations and positioning issues
+
+### Expected Output
+
+- Enhanced shadcn-svelte Popover usage
+- `src/test/components/ui/Popover.test.ts`
+- Z-index hierarchy compliance
+- Progress reset button integration
+
+### Final Validations
+
+- ✅ SVELTEKIT-GUIDE.md compliance verified
+- ✅ Z-index hierarchy respected (lessons from Dialog applied)
+- ✅ Positioning with collision detection working
+- ✅ Mobile-first interactions functional
+- ✅ No background/stacking context issues (Dialog solutions applied)
+- ✅ Progress reset button integration working
+- ✅ Three-tier validation: `make check-wip` → `pnpm run test` → `pnpm run format/lint/check`
+
+---
+
+## TASK 8K: Enhanced Progress Tracking System
+
+### Agent Responsibility
+
+You are responsible for building a comprehensive progress tracking system with derived stores, learning analytics, visual dashboard, time tracking, export/import functionality, and **passive integration with navigation system (8L)**, following SVELTEKIT-GUIDE.md standards.
+
+### Technical Documents to Review
+
+- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and derived state patterns)
+- `src/lib/stores/progress.ts` (existing demo progress store - analyze what's already implemented)
+- `src/data/generated/content-menu.ts` (for per-unit progress calculation)
+- `AUDIT-REPORT-TASK-3G5.md` (Progress Tracking State Management recommendations)
+- `src/types/types.ts` (progress status unions)
+
+### Prerequisites
+
+- Task 8J: Popover Component completed
+
+### Implementation Details
+
+**Current Implementation Analysis:**
+
+Existing in `src/lib/stores/progress.ts`:
+
+- ✅ Base progressStore with localStorage persistence
+- ✅ Basic tracking: visitedUnits, completedLessons, lastVisited
+- ✅ Functions: visitUnit(), completeLesson(), resetProgress()
+
+**Missing Features to Implement:**
+
+1. **Derived Stores** for auto-calculated progress (globalProgress, unitProgress)
+2. **Learning Streak** tracking (consecutive study days)
+3. **Time Tracking** (minutes spent per chapter, total time)
+4. **Dashboard Component** with visual progress indicators
+5. **Export/Import** functionality (JSON backup/restore)
+6. **Progress Analytics** (completion rate, study patterns)
+7. **Achievement System** (milestones, badges)
+8. **Popover Integration**: Reset button with confirmation popover (8J)
+
+**Enhanced Store Structure:**
+
+```typescript
+// Extend existing ProgressState
+interface EnhancedProgressState {
+	// Existing fields (keep)
+	visitedUnits: Set<string>;
+	completedLessons: Set<string>;
+	lastVisited: { unitId?: string; lessonId?: string; timestamp: number } | null;
+
+	// New fields
+	timeSpentPerChapter: Map<string, number>; // minutes
+	learningStreak: number; // consecutive days
+	lastStudyDate: Date | null;
+	achievements: Set<string>;
+	totalTimeSpent: number; // minutes
+}
+
+// Derived stores for reactive calculations
+export const globalProgress = derived(progressStore, ($progress) => {
+	return Math.round(($progress.completedLessons.size / 129) * 100);
+});
+
+export const unitProgress = derived(progressStore, ($progress) => {
+	// Calculate per-unit progress from content-menu.ts
+});
+```
+
+**Dashboard Component:**
+
+Create `src/lib/components/progress/ProgressDashboard.svelte`:
+
+- Global progress card (percentage, completed/total)
+- Learning streak indicator (🔥 consecutive days)
+- Total time spent (hours)
+- Next milestone tracker
+- Per-unit progress breakdown (all 10 units from content-menu.ts)
+- Export/Import controls
+- Reset button with Popover (8J) confirmation
+
+**Passive Navigation Integration:**
+
+Progress tracking has a **passive relationship** with the navigation system:
+
+- Navigation (8L) coordinates content entry/exit events
+- Progress listens and tracks automatically (visitChapter called by Navigation)
+- No active control over navigation flow
+- Receives notifications when user enters/exits content
+
+### Subtask: Enhanced Progress Testing Suite
+
+- **Test File**: `src/test/stores/progress.test.ts` (enhanced)
+- **Coverage**:
+  - Derived stores reactivity (globalProgress, unitProgress updates)
+  - Learning streak calculation (same day, consecutive, gap reset)
+  - Time tracking accuracy (using fake timers)
+  - Export/import data preservation
+  - localStorage persistence
+  - Progress calculation correctness
+  - Popover integration for reset button
+- **Refactor Protection**: Ensures progress accuracy during content structure changes
+
+### Expected Output
+
+- Enhanced `src/lib/stores/progress.ts` with derived stores
+- `src/lib/components/progress/ProgressDashboard.svelte`
+- `src/test/stores/progress.test.ts` (comprehensive coverage ≥95%)
+- Export/import functions (JSON format)
+- Learning streak logic with daily tracking
+- Popover reset button integration
+
+### Final Validations
+
+- ✅ Derived stores update reactively
+- ✅ Learning streak calculates correctly across days
+- ✅ Time tracking accurate (tested with vi.useFakeTimers())
+- ✅ Export/import preserves all data (Sets, Maps, Dates)
+- ✅ localStorage persistence works correctly
+- ✅ Dashboard mobile-responsive (≤390px)
+- ✅ Popover reset button working
+- ✅ Passive navigation integration (receives events from 8L)
+- ✅ Three-tier validation: `make check-wip` → `pnpm run test` → `pnpm run format/lint/check`
+
+---
+
+## TASK 8L: General Navigation Component Development (Unified Navigation Coordinator)
+
+### Agent Responsibility
+
+You are responsible for developing a **unified navigation system that coordinates and integrates** Sidebar (8A), Header (8B), Breadcrumb (8C), and Popover (8J) components with consistent routing, state management, and **orchestrating navigation events for all components including Progress (8K)**, following SVELTEKIT-GUIDE.md patterns.
+
+### Technical Documents to Review
+
+- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and union-based routing)
+- `PLAN-SEARCH-ARCHITECTURE.md` (Unified Navigation System Architecture section)
+- Previous Tasks 8A, 8B, 8C, 8J (Sidebar, Header, Breadcrumb, Popover implementations)
+- `src/lib/types/navigation.ts` (navigation and routing structure)
+
+### Prerequisites
+
+- Task 8A: Sidebar Component completed
+- Task 8B: Sticky Header Component completed
+- Task 8C: Breadcrumb Component completed
+- Task 8J: Popover Component completed
+
+### Implementation Details
+
+**Role: Unified Navigation Coordinator**
+
+This component is the **central orchestrator** of all navigation in the application:
+
+1. **Unified Handler**: Implements `navigateToContent()` as documented in PLAN-SEARCH-ARCHITECTURE.md
+2. **Multi-Component Updates**: Updates ALL navigation components simultaneously:
+   - Sidebar (8A) - highlight active chapter
+   - Breadcrumb (8C) - update trail
+   - Sequential nav - update previous/next links
+   - Content area - load new content
+   - URL hash - update browser location
+   - Progress (8K) - track visit (passive notification)
+
+**Critical: Content Entry/Exit Events**
+
+When navigation occurs, this component MUST:
+
+- Notify Progress (8K) when user enters content (`visitChapter()`)
+- Notify Progress (8K) when user exits content (cleanup)
+- Update all UI components atomically (no partial states)
+
+**Navigation Sources to Handle:**
+
+1. **Sidebar clicks** (8A)
+2. **Search results** (8M)
+3. **Breadcrumb clicks** (8C)
+4. **Sequential navigation** (previous/next buttons)
+5. **Direct URL access** (browser address bar, deep links)
+6. **Browser back/forward** (history navigation)
+
+**Implementation Pattern:**
+
+```typescript
+// src/lib/utils/navigation.ts
+export function navigateToContent(event: NavigationEvent): void {
+	const { target, source, data } = event;
+
+	// 1. Update URL hash
+	window.location.hash = targetUrl;
+
+	// 2. Update navigation store (Sidebar, Breadcrumb listen)
+	navigationStore.update((state) => ({
+		...state,
+		currentId: chapterId,
+		currentPath: targetUrl,
+		source
+	}));
+
+	// 3. Update breadcrumb trail
+	breadcrumbStore.set(generateBreadcrumb(chapterId));
+
+	// 4. Update sequential navigation (previous/next)
+	updateSequentialNav(chapterId);
+
+	// 5. Track visit in Progress (PASSIVE NOTIFICATION)
+	if (data?.unitId && chapterId) {
+		visitChapter(data.unitId, chapterId);
+	}
+
+	// 6. Load content (handled by route component)
+	dispatchEvent(new CustomEvent("content-load", { detail: { chapterId, url: targetUrl } }));
+}
+```
+
+### Subtask: Navigation Testing Suite
+
+- **Test File**: `src/test/components/navigation/Navigation.test.ts`
+- **Coverage**: Unified handler, multi-component updates, routing consistency, hash handling, progress notifications
+- **Refactor Protection**: Ensures navigation consistency across all components during changes
+
+### Expected Output
+
+- `src/lib/utils/navigation.ts` (unified navigation handler)
+- `src/lib/stores/navigation.ts` (navigation state store)
+- `src/lib/stores/breadcrumb.ts` (breadcrumb state store)
+- `src/test/components/navigation/Navigation.test.ts`
+- Hash change listener in root layout
+- Documentation of navigation event flow
+
+### Final Validations
+
+- ✅ SVELTEKIT-GUIDE.md compliance verified
+- ✅ Unified handler updates ALL components simultaneously
+- ✅ All navigation sources handled (sidebar, search, breadcrumb, sequential, direct, back/forward)
+- ✅ Progress receives entry/exit notifications correctly
+- ✅ Browser back/forward working correctly
+- ✅ Deep linking and direct URL access working
+- ✅ No partial navigation states (atomic updates)
+- ✅ Hash-based routing consistent
+- ✅ Three-tier validation: `make check-wip` → `pnpm run test` → `pnpm run format/lint/check`
+
+---
+
+## TASK 8M: Search Component Development
+
+### Agent Responsibility
+
+You are responsible for developing comprehensive search functionality using the pre-built Lunr.js index from `src/data/generated/search-index.ts` with Dialog (8E) for results display, and **integration with multiple navigation components (Sidebar 8A, Breadcrumb 8C, Navigation 8L)** for coordinated updates, following SVELTEKIT-GUIDE.md patterns.
+
+### Technical Documents to Review
+
+- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and component standards)
+- `src/data/generated/search-index.ts` (pre-built Lunr.js index with 5,579 lines, 129 searchable items)
+- `src/lib/stores/dialog.ts` (from Task 8E - for results display)
+- `PLAN-SEARCH-ARCHITECTURE.md` (search specifications and unified navigation)
+- `src/lib/utils/navigation.ts` (unified navigation handler from 8L)
+
+### Prerequisites
+
+- Task 8A: Sidebar Component completed
+- Task 8C: Breadcrumb Component completed
+- Task 8E: Dialog Component completed
+- Task 8L: General Navigation Component completed
+
+### Implementation Details
+
+**Pre-built Search Index:**
+
+The search index is already generated with complete metadata:
+
+- 129 searchable items
+- Pre-built Lunr.js index (lunrIndexData export)
+- Complete metadata (searchIndexMetadata with titles, descriptions, tags, etc.)
+
+**Component Structure:**
+
+1. `SearchBox.svelte` - Input component with debounced search
+2. `SearchResults.svelte` - Results component for Dialog display
+3. Use Dialog from Task 8E (openDialog, closeDialog)
+
+**Key Features:**
+
+- Load pre-built Lunr index on mount: `lunr.Index.load(lunrIndexData)`
+- Display results grouped by content type (lesson, quiz, study_guide, etc.)
+- **Navigate using Navigation (8L)**: Use `navigateToContent()` to coordinate all component updates
+- Keyboard shortcuts (Ctrl/Cmd+K to focus, Escape to close)
+- Mobile-optimized results display (≤390px)
+
+**Multi-Component Navigation Integration:**
+
+When user clicks a search result, the navigation MUST update:
+
+1. **Dialog (8E)**: Close search results modal
+2. **Sidebar (8A)**: Highlight selected chapter, expand unit
+3. **Breadcrumb (8C)**: Update trail to reflect new location
+4. **Navigation (8L)**: Coordinate all updates via `navigateToContent()`
+5. **Content Area**: Load selected content
+6. **URL Hash**: Update to new location
+7. **Progress (8K)**: Track visit (via Navigation 8L)
+
+**Search Integration:**
+
+```typescript
+// Load pre-built index
+import { searchIndexMetadata, lunrIndexData } from "$data/generated/search-index";
+import { navigateToContent } from "$lib/utils/navigation";
+import { closeDialog } from "$lib/stores/dialog";
+import lunr from "lunr";
+
+const searchIndex = lunr.Index.load(lunrIndexData);
+const results = searchIndex.search(query);
+
+// Enrich with metadata
+const enrichedResults = results.map((result) => {
+	const metadata = searchIndexMetadata.items.find((item) => item.id === result.ref);
+	return { ...result, metadata };
+});
+
+// Display in Dialog
+openDialog("Resultados de Búsqueda", SearchResults, {
+	props: { query, results: enrichedResults },
+	size: "lg"
+});
+
+// On result click: Coordinate navigation
+function handleResultClick(item: SearchIndexItem) {
+	navigateToContent({
+		type: "navigate",
+		target: item.chapterUrl,
+		source: "search",
+		data: { unitId: item.unitId, chapterId: item.id, searchQuery: query },
+		timestamp: new Date()
+	});
+	closeDialog(); // Close search modal
+}
+```
+
+### Subtask: Search Testing Suite
+
+- **Test File**: `src/test/components/search/Search.test.ts`
+- **Coverage**:
+  - SearchBox rendering and interaction
+  - Pre-built index loading
+  - Search query execution and results
+  - Dialog integration (openDialog called correctly)
+  - **Navigation integration** (navigateToContent called, all components updated)
+  - Keyboard shortcuts (Ctrl+K, Escape)
+  - Mobile display (≤390px)
+- **Refactor Protection**: Ensures search accuracy and multi-component navigation coordination
+
+### Expected Output
+
+- `src/lib/components/search/SearchBox.svelte`
+- `src/lib/components/search/SearchResults.svelte`
+- `src/test/components/search/Search.test.ts`
+- Keyboard navigation support (Ctrl+K shortcut)
+- Dialog integration for results display
+- Navigation (8L) integration for coordinated updates
+
+### Final Validations
+
+- ✅ Pre-built Lunr.js index loads correctly from search-index.ts
+- ✅ Results display in Dialog (8E)
+- ✅ **Navigation integrates with unified system (8L)**: Sidebar, Breadcrumb, Content ALL update on result click
+- ✅ Keyboard shortcuts functional (Ctrl+K, Escape)
+- ✅ Mobile-first search experience (≤390px)
+- ✅ Results grouped by content type
+- ✅ All components update atomically (no partial states)
+- ✅ Three-tier validation: `make check-wip` → `pnpm run test` → `pnpm run format/lint/check`
+
+---
+
+## TASK 8N: Theme Switcher Component Development
 
 ### Agent Responsibility
 
@@ -4103,7 +4718,7 @@ You are responsible for developing a theme switcher component with light/dark mo
 
 ### Prerequisites
 
-- Task 8E: IconGrid Component completed
+- Task 8M: Search Component completed
 
 ### Implementation Details
 
@@ -4131,434 +4746,10 @@ You are responsible for developing a theme switcher component with light/dark mo
 - ✅ SVELTEKIT-GUIDE.md compliance verified
 - ✅ System preference detection working
 - ✅ Theme persistence functional
+- ✅ Smooth transitions on theme change
 - ✅ Test suite covers all theme scenarios
 - ✅ Accessibility standards met
-
----
-
-## TASK 8G: Progress Component Development
-
-### Agent Responsibility
-
-You are responsible for developing progress tracking components with visual indicators, unit completion tracking, and mobile-optimized display following SVELTEKIT-GUIDE.md standards.
-
-### Technical Documents to Review
-
-- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and derived state)
-- `src/types/types.ts` (progress status unions)
-- `SVELTEKIT-GUIDE.md` (progress tracking system)
-
-### Prerequisites
-
-- Task 8F: Theme Switcher Component completed
-
-### Implementation Details
-
-- **Components**: `src/lib/components/progress/ProgressBar.svelte`, `ProgressRing.svelte`
-- **Visual Indicators**: Progress bars, rings, and percentage displays
-- **Union Integration**: Use ProgressStatus union for type safety
-- **Mobile Optimization**: Touch-friendly progress visualization
-- **Real-time Updates**: Dynamic progress calculation from content completion
-
-### Subtask: Progress Testing Suite
-
-- **Test File**: `src/test/components/progress/Progress.test.ts`
-- **Coverage**: Progress calculation, visual updates, union integration, mobile display
-- **Refactor Protection**: Ensures progress accuracy during content structure changes
-
-### Expected Output
-
-- `src/lib/components/progress/ProgressBar.svelte`
-- `src/lib/components/progress/ProgressRing.svelte`
-- `src/test/components/progress/Progress.test.ts`
-- Progress calculation logic
-- Mobile-optimized visualizations
-
-### Final Validations
-
-- ✅ SVELTEKIT-GUIDE.md compliance verified
-- ✅ Progress calculation accurate
-- ✅ Mobile-optimized display
-- ✅ Test suite validates progress logic
-- ✅ Union integration working
-
----
-
-## TASK 8H: Dialog Component Development
-
-### Agent Responsibility
-
-You are responsible for developing modal dialog components using shadcn-svelte Dialog with proper z-index hierarchy, accessibility, and mobile-first design following SVELTEKIT-GUIDE.md patterns.
-
-### Technical Documents to Review
-
-- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and component standards)
-- `RECURRING-ISSUES.md` (stacking context issues prevention)
-- `src/lib/components/ui/` (shadcn-svelte Dialog components)
-- `SVELTEKIT-GUIDE.md` (modal system specifications)
-
-### Prerequisites
-
-- Task 8G: Progress Component completed
-
-### Implementation Details
-
-- **Component**: Enhanced shadcn-svelte Dialog integration
-- **Z-Index Hierarchy**: Use `var(--z-modal)` from global hierarchy
-- **Mobile-First**: Full-screen modals on mobile, centered on desktop
-- **Accessibility**: Focus management, escape key handling, screen reader support
-- **Portal Rendering**: Proper DOM portal for modal content
-
-### Subtask: Dialog Testing Suite
-
-- **Test File**: `src/test/components/ui/Dialog.test.ts`
-- **Coverage**: Modal behavior, z-index hierarchy, accessibility, mobile display
-- **Refactor Protection**: Prevents stacking context violations and accessibility regressions
-
-### Expected Output
-
-- Enhanced shadcn-svelte Dialog usage
-- `src/test/components/ui/Dialog.test.ts`
-- Z-index hierarchy compliance
-- Mobile-first modal patterns
-
-### Final Validations
-
-- ✅ SVELTEKIT-GUIDE.md compliance verified
-- ✅ Z-index hierarchy respected
-- ✅ Mobile-first modal behavior
-- ✅ Test suite covers accessibility
-- ✅ No stacking context issues
-
----
-
-## TASK 8I: General Navigation Component Development
-
-### Agent Responsibility
-
-You are responsible for developing a unified navigation system that integrates sidebar, header, and breadcrumb components with consistent routing and state management following SVELTEKIT-GUIDE.md patterns.
-
-### Technical Documents to Review
-
-- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and union-based routing)
-- Previous Tasks 8A-8C (Sidebar, Header, Breadcrumb implementations)
-- `src/types/navigation.ts` (navigation and routing structure)
-
-### Prerequisites
-
-- Task 8H: Dialog Component completed
-- Task 8A: Sidebar Component completed
-- Task 8B: Sticky Header Component completed
-- Task 8C: Breadcrumb Component completed
-
-### Implementation Details
-
-- **Component**: `src/lib/components/navigation/Navigation.svelte`
-- **Unified State**: Centralized navigation state management
-- **Route Integration**: Hash-based routing with navigation components
-- **Consistent Behavior**: Synchronized active states across all navigation components
-- **Mobile Coordination**: Coordinated mobile behavior between sidebar and header
-
-### Subtask: General Navigation Testing Suite
-
-- **Test File**: `src/test/components/navigation/Navigation.test.ts`
-- **Coverage**: Component integration, routing behavior, state synchronization, mobile coordination
-- **Refactor Protection**: Ensures navigation consistency during routing changes
-
-### Expected Output
-
-- `src/lib/components/navigation/Navigation.svelte`
-- `src/test/components/navigation/Navigation.test.ts`
-- Unified navigation state management
-- Component integration patterns
-
-### Technical Debt
-
-- **File**: `src/lib/stores/navigation.ts` (line 167)
-- **Issue**: Using deprecated `page` store from `$app/stores`, needs migration to SvelteKit 2.0+ modern state API
-- **Priority**: Medium (Future compatibility)
-- **Effort**: 2-3 hours
-- **Impact**: Potential warnings, performance suboptimal vs new APIs
-
-### Final Validations
-
-- ✅ SVELTEKIT-GUIDE.md compliance verified
-- ✅ Component integration working
-- ✅ Navigation state synchronized
-- ✅ Test suite covers integration scenarios
-- ✅ Mobile coordination functional
-- ❌ SvelteKit deprecated API migration (navigation store)
-
----
-
-## TASK 8J: Quiz/Exam Navigation Component Development
-
-### Agent Responsibility
-
-You are responsible for developing specialized navigation components for quiz and exam interfaces with progress tracking, question navigation, and mobile-optimized controls following SVELTEKIT-GUIDE.md standards.
-
-### Technical Documents to Review
-
-- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and conditional rendering)
-- `src/types/types.ts` (quiz and exam)
-- `CONTENT-STANDARDS.md` (quiz and exam structure requirements)
-
-### Prerequisites
-
-- Task 8I: General Navigation Component completed
-
-### Implementation Details
-
-- **Components**: `src/lib/components/quiz/QuizNavigation.svelte`, `ExamNavigation.svelte`
-- **Question Navigation**: Previous/Next question controls with progress indicators
-- **Progress Tracking**: Visual progress through quiz/exam with question status
-- **Mobile Controls**: Touch-friendly navigation buttons for mobile devices
-- **State Management**: Question completion tracking with union-based status
-
-### Subtask: Quiz/Exam Navigation Testing Suite
-
-- **Test File**: `src/test/components/quiz/QuizNavigation.test.ts`
-- **Coverage**: Question navigation, progress tracking, mobile controls, state management
-- **Refactor Protection**: Ensures quiz navigation consistency during question structure changes
-
-### Expected Output
-
-- `src/lib/components/quiz/QuizNavigation.svelte`
-- `src/lib/components/quiz/ExamNavigation.svelte`
-- `src/test/components/quiz/QuizNavigation.test.ts`
-- Question progress tracking logic
-- Mobile-optimized controls
-
-### Final Validations
-
-- ✅ SVELTEKIT-GUIDE.md compliance verified
-- ✅ Question navigation working
-- ✅ Progress tracking accurate
-- ✅ Test suite covers quiz scenarios
-- ✅ Mobile controls functional
-
----
-
-## TASK 8K: Flipcard/Flashcard Component Development
-
-### Agent Responsibility
-
-You are responsible for developing interactive flipcard/flashcard components for study guides with smooth animations, touch gestures, and mobile-first design following SVELTEKIT-GUIDE.md patterns.
-
-### Technical Documents to Review
-
-- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and animation patterns)
-- `src/types/enums.ts` (ChapterType.STUDY_GUIDE)
-- `SVELTEKIT-GUIDE.md` (interactive component specifications)
-
-### Prerequisites
-
-- Task 8J: Quiz/Exam Navigation completed
-
-### Implementation Details
-
-- **Component**: `src/lib/components/study/Flashcard.svelte`
-- **Flip Animation**: CSS-based card flipping with front/back content
-- **Touch Gestures**: Swipe gestures for mobile flashcard navigation
-- **Study Mode**: Sequential flashcard display with progress tracking
-- **Content Integration**: Support for text, images, and code snippets
-
-### Subtask: Flashcard Modal Dialog Integration
-
-- **Component**: `src/lib/components/study/FlashcardModal.svelte`
-- **Purpose**: Full-screen modal for expanded flashcard study on mobile
-- **Integration**: Click-to-expand functionality using shadcn-svelte Dialog
-- **Mobile Optimization**: Enhanced readability and touch interactions in modal
-- **Z-Index**: Use `var(--z-modal)` from global hierarchy
-
-### Subtask: Flashcard Testing Suite
-
-- **Test File**: `src/test/components/study/Flashcard.test.ts`
-- **Coverage**: Flip animations, touch gestures, content display, progress tracking, modal expansion
-- **Refactor Protection**: Ensures flashcard behavior consistency during content changes
-
-### Expected Output
-
-- `src/lib/components/study/Flashcard.svelte`
-- `src/lib/components/study/FlashcardModal.svelte`
-- `src/test/components/study/Flashcard.test.ts`
-- CSS flip animations
-- Touch gesture handling
-- Modal expansion functionality
-
-### Final Validations
-
-- ✅ SVELTEKIT-GUIDE.md compliance verified
-- ✅ Flip animations smooth on mobile
-- ✅ Touch gestures working
-- ✅ Modal expansion functional on mobile
-- ✅ Test suite covers touch interactions and modal behavior
-- ✅ Content integration functional
-
----
-
-## TASK 8L: Code Block Component Development
-
-### Agent Responsibility
-
-You are responsible for developing enhanced code block components with Shiki syntax highlighting, copy functionality, and mobile-optimized display following SVELTEKIT-GUIDE.md standards.
-
-### Technical Documents to Review
-
-- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and component standards)
-- `SVELTEKIT-GUIDE.md` (code highlighting specifications)
-- `src/lib/components/ui/` (shadcn-svelte components)
-
-### Prerequisites
-
-- Task 8K: Flipcard/Flashcard Component completed
-
-### Implementation Details
-
-- **Component**: `src/lib/components/shared/CodeBlock.svelte`
-- **Shiki Integration**: Syntax highlighting with theme support
-- **Copy Functionality**: Click-to-copy code with visual feedback
-- **Mobile Optimization**: Horizontal scrolling and zoom support
-- **Language Detection**: Automatic language detection and highlighting
-- **Theme Integration**: Code highlighting theme sync with app theme
-
-### Subtask: Code Block Modal Dialog Integration
-
-- **Component**: `src/lib/components/shared/CodeBlockModal.svelte`
-- **Purpose**: Full-screen modal for expanded code viewing on mobile
-- **Integration**: Click-to-expand functionality using shadcn-svelte Dialog
-- **Enhanced Features**: Larger text, better scrolling, line numbers, enhanced copy functionality
-- **Z-Index**: Use `var(--z-modal)` from global hierarchy
-- **Mobile Optimization**: Improved code readability and navigation on small screens
-
-### Subtask: Code Block Testing Suite
-
-- **Test File**: `src/test/components/shared/CodeBlock.test.ts`
-- **Coverage**: Syntax highlighting, copy functionality, mobile scrolling, theme integration, modal expansion
-- **Refactor Protection**: Ensures code display consistency during theme and content changes
-
-### Expected Output
-
-- `src/lib/components/shared/CodeBlock.svelte`
-- `src/lib/components/shared/CodeBlockModal.svelte`
-- `src/test/components/shared/CodeBlock.test.ts`
-- Shiki syntax highlighting integration
-- Copy-to-clipboard functionality
-- Modal expansion functionality
-
-### Final Validations
-
-- ✅ SVELTEKIT-GUIDE.md compliance verified
-- ✅ Shiki syntax highlighting working
-- ✅ Copy functionality with feedback
-- ✅ Modal expansion with enhanced mobile experience
-- ✅ Test suite covers mobile scrolling and modal behavior
-- ✅ Theme integration functional
-
----
-
-## TASK 8M: Diagram Component Development
-
-**Agent Responsibility:**
-You are responsible for enhancing MermaidDiagram component with error handling, modal expansion, and validation integration using scripts from TASK 3C following SVELTEKIT-GUIDE.md patterns.
-
-**Technical Documents to Review:**
-
-- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and error handling)
-- `src/scripts/mermaid-validator.ts` (validation integration from TASK 3C)
-- `MERMAID-STANDARDS.md` (diagram standards and error reporting)
-- `RECURRING-ISSUES.md` (Mermaid rendering issues prevention)
-
-**Prerequisites:**
-
-- Task 8L: Code Block Component completed
-- Task 3C: Mermaid Validator Script completed
-
-**Implementation Details:**
-
-- **Component**: Enhanced `src/lib/components/shared/MermaidDiagram.svelte`
-- **Error Handling**: Integration with mermaid-validator.ts for precise error reporting
-- **Validation Integration**: Real-time validation feedback using TASK 3C script
-- **Mobile Optimization**: Responsive diagram sizing and interaction
-
-**Subtask: Diagram Modal Dialog Integration**
-
-- **Component**: `src/lib/components/shared/MermaidDiagramModal.svelte`
-- **Purpose**: Full-screen modal for expanded diagram viewing on mobile
-- **Integration**: Click-to-expand functionality using shadcn-svelte Dialog
-- **Enhanced Features**: Zoom controls, pan gestures, larger diagram display
-- **Z-Index**: Use `var(--z-modal)` from global hierarchy
-- **Mobile Optimization**: Touch-friendly diagram navigation and interaction
-- **Error Display**: Enhanced error reporting in modal view
-
-**Subtask: Diagram Testing Suite**
-
-- **Test File**: `src/test/components/shared/MermaidDiagram.test.ts`
-- **Coverage**: Diagram rendering, error handling, modal expansion, validation integration, zoom/pan controls
-- **Refactor Protection**: Prevents Mermaid rendering failures and ensures error handling consistency
-
-**Expected Output:**
-
-- Enhanced `src/lib/components/shared/MermaidDiagram.svelte`
-- `src/lib/components/shared/MermaidDiagramModal.svelte`
-- `src/test/components/shared/MermaidDiagram.test.ts`
-- Validator script integration
-- Modal expansion functionality with zoom/pan controls
-
-**Final Validations:**
-
-- ✅ SVELTEKIT-GUIDE.md compliance verified
-- ✅ Error handling with precise reporting
-- ✅ Modal expansion with zoom/pan controls working on mobile
-- ✅ Test suite covers rendering scenarios and modal behavior
-- ✅ Validation integration functional
-
----
-
-## TASK 8N: Popover Component Development
-
-**Agent Responsibility:**
-You are responsible for developing popover components using shadcn-svelte Popover with proper positioning, z-index hierarchy, and mobile-first interactions following SVELTEKIT-GUIDE.md standards.
-
-**Technical Documents to Review:**
-
-- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and component standards)
-- `RECURRING-ISSUES.md` (z-index hierarchy violations prevention)
-- `src/lib/components/ui/` (shadcn-svelte Popover components)
-- `SVELTEKIT-GUIDE.md` (popover system specifications)
-
-**Prerequisites:**
-
-- Task 8M: Diagram Component completed
-
-**Implementation Details:**
-
-- **Component**: Enhanced shadcn-svelte Popover integration
-- **Z-Index Hierarchy**: Use `var(--z-popover)` from global hierarchy
-- **Smart Positioning**: Auto-positioning to avoid viewport edges
-- **Mobile-First**: Touch-friendly triggers and dismissal
-- **Accessibility**: Focus management and keyboard navigation
-
-**Subtask: Popover Testing Suite**
-
-- **Test File**: `src/test/components/ui/Popover.test.ts`
-- **Coverage**: Positioning logic, z-index hierarchy, mobile interactions, accessibility
-- **Refactor Protection**: Prevents positioning issues and z-index violations
-
-**Expected Output:**
-
-- Enhanced shadcn-svelte Popover usage patterns
-- `src/test/components/ui/Popover.test.ts`
-- Smart positioning logic
-- Mobile interaction patterns
-
-**Final Validations:**
-
-- ✅ SVELTEKIT-GUIDE.md compliance verified
-- ✅ Z-index hierarchy respected
-- ✅ Smart positioning working
-- ✅ Test suite covers mobile interactions
-- ✅ Accessibility standards met
+- ✅ Three-tier validation: `make check-wip` → `pnpm run test` → `pnpm run format/lint/check`
 
 ---
 
