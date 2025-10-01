@@ -14,6 +14,52 @@ import type { AppSettings } from "$types";
 // Export a single, constant object with all settings.
 export const SETTINGS: AppSettings = {
 	ui: {
+		/**
+		 * Layout Configuration - Flexbox + Grid Hybrid Architecture
+		 *
+		 * Responsive layout system using CSS variables with rem units for scalability.
+		 * Compatible with shadcn/ui Sidebar components and patterns.
+		 */
+		layout: {
+			/**
+			 * Sidebar Width Configuration (responsive rem units)
+			 *
+			 * Common proportions at 1280px viewport:
+			 * - "16rem" (256px): 20/80 split ✅ RECOMMENDED (shadcn default)
+			 * - "20rem" (320px): 25/75 split (extensive navigation)
+			 * - "12rem" (192px): 15/85 split (content-focused)
+			 *
+			 * Acceptable range: "12rem" to "24rem" (192px to 384px)
+			 */
+			sidebarWidth: "16rem", // Desktop expanded: 256px (~20% at 1280px)
+			sidebarWidthMobile: "18rem", // Mobile expanded: 288px
+			sidebarWidthIcon: "3rem", // Collapsed state: 48px
+
+			/**
+			 * Header and Footer Heights
+			 *
+			 * Standard heights for sticky header and floating navigation.
+			 * Acceptable range: "3rem" to "5rem" (48px to 80px)
+			 */
+			headerHeight: "4rem", // 64px - standard header height
+			footerHeight: "4rem", // 64px - floating navigation height
+
+			/**
+			 * Responsive Breakpoints (Tailwind CSS defaults)
+			 *
+			 * These match Tailwind's responsive design system:
+			 * - mobile (sm): 640px - small devices
+			 * - tablet (md): 768px - medium devices
+			 * - desktop (lg): 1024px - large screens
+			 * - wide (xl): 1280px - extra large screens
+			 */
+			breakpoints: {
+				mobile: "640px", // sm breakpoint
+				tablet: "768px", // md breakpoint
+				desktop: "1024px", // lg breakpoint
+				wide: "1280px" // xl breakpoint
+			}
+		},
 		mermaid: {
 			debug: true, // Enabled for development - provides detailed error logging
 			modalPagePercent: 90 // Default modal viewport percentage
@@ -26,7 +72,101 @@ export const SETTINGS: AppSettings = {
 		},
 		sidebar: {
 			collapsible: true, // Enable sidebar collapse functionality
-			defaultCollapsed: false // Sidebar expanded by default
+			defaultCollapsed: false, // Sidebar expanded by default
+			/**
+			 * Collapse Mode for shadcn/ui Sidebar integration
+			 *
+			 * - "icon": Collapses to icon-only view (uses sidebarWidthIcon)
+			 * - "offcanvas": Slides off-screen completely (mobile-friendly)
+			 * - "none": Non-collapsible sidebar (always visible)
+			 */
+			collapsibleMode: "icon" as "icon" | "offcanvas" | "none"
+		},
+		stores: {
+			spaNavigation: {
+				cacheSize: 50, // Maximum number of loaded content items to cache
+				loadingTimeout: 5000, // Timeout in ms for content loading operations
+				enableAnalytics: true // Track navigation events for analytics
+			}
+		},
+		/**
+		 * Content Layout Configuration
+		 *
+		 * Controls how content articles are displayed for optimal readability.
+		 * Based on typography research showing 60-80 character lines are ideal.
+		 *
+		 * LAYOUT MODES:
+		 * ┌─────────────────────────────────────────────────────────────┐
+		 * │ "centered" (RECOMMENDED - Industry Standard)                │
+		 * │ Content centered with auto margins                          │
+		 * │ Used by: GitHub Docs, MDN, Tailwind, Next.js, Medium       │
+		 * │                                                              │
+		 * │        ┌──────────────────────┐                            │
+		 * │        │   Content Area       │                            │
+		 * │        │   (max-width)        │                            │
+		 * │        └──────────────────────┘                            │
+		 * │                                                              │
+		 * ├─────────────────────────────────────────────────────────────┤
+		 * │ "left" (Left-Aligned Alternative)                           │
+		 * │ Content left-aligned with max-width                         │
+		 * │                                                              │
+		 * │  ┌──────────────────────┐                                  │
+		 * │  │   Content Area       │                                  │
+		 * │  │   (max-width)        │                                  │
+		 * │  └──────────────────────┘                                  │
+		 * │                                                              │
+		 * ├─────────────────────────────────────────────────────────────┤
+		 * │ "full" (Full Width)                                         │
+		 * │ Content spans entire viewport (minus sidebar)               │
+		 * │ Use for: dashboards, wide tables, data visualizations       │
+		 * │                                                              │
+		 * │  ┌──────────────────────────────────────────────────────┐  │
+		 * │  │   Content Area (100% width)                          │  │
+		 * │  └──────────────────────────────────────────────────────┘  │
+		 * └─────────────────────────────────────────────────────────────┘
+		 *
+		 * MAX WIDTH OPTIONS (Character Count Guide):
+		 * - "prose": 65ch (~65 chars) ✅ OPTIMAL for academic/technical reading
+		 * - "3xl": 48rem (~750px, ~60-70 chars) - Compact, mobile-friendly
+		 * - "4xl": 56rem (~900px, ~70-80 chars) ✅ RECOMMENDED - Balanced
+		 * - "5xl": 64rem (~1000px, ~80-90 chars) - Wider, more content
+		 * - "6xl": 72rem (~1150px, ~90-100 chars) - Wide format
+		 * - "full": 100% - No constraint (use with "full" layout mode)
+		 *
+		 * PADDING OPTIONS (Whitespace Control):
+		 * - "4": 1rem (16px) - Minimal spacing
+		 * - "6": 1.5rem (24px) - Compact
+		 * - "8": 2rem (32px) ✅ RECOMMENDED - Balanced breathing room
+		 * - "12": 3rem (48px) - Spacious, premium feel
+		 * - "16": 4rem (64px) - Generous whitespace, luxury
+		 */
+		content: {
+			/**
+			 * Layout mode for content presentation
+			 *
+			 * Options: "centered" | "left" | "full"
+			 * @default "centered" - Industry standard (GitHub, MDN, Tailwind)
+			 */
+			layoutMode: "centered" as const,
+
+			/**
+			 * Maximum content width for readability
+			 *
+			 * Options: "prose" | "3xl" | "4xl" | "5xl" | "6xl" | "full"
+			 * @default "4xl" - 56rem (~900px) - Optimal 70-80 character lines
+			 *
+			 * Scientific Basis: Studies show 60-80 characters per line maximize
+			 * reading comprehension and reduce eye fatigue.
+			 */
+			maxWidth: "4xl" as const,
+
+			/**
+			 * Content padding (horizontal and vertical spacing)
+			 *
+			 * Options: "4" | "6" | "8" | "12" | "16"
+			 * @default "8" - 2rem (32px) - Balanced whitespace
+			 */
+			padding: "8" as const
 		}
 	},
 	scripts: {

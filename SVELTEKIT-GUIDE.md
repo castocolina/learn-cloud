@@ -257,6 +257,248 @@ src/styles/
 - **Solution**: Always use shadcn-svelte Dialog components with proper z-index hierarchy
 - **Avoid**: `transform`, `opacity < 1`, `filter`, or `position: relative` with z-index on navigation items
 
+---
+
+### Flexbox + Grid Hybrid Layout Architecture
+
+**🎯 CRITICAL**: This project uses a hybrid layout approach combining CSS Grid for main structure with Flexbox for component flexibility, fully compatible with shadcn/ui Sidebar patterns.
+
+#### Layout Philosophy
+
+**Why Hybrid Approach:**
+
+- **CSS Grid**: Ideal for main layout structure (sidebar + content area)
+- **Flexbox**: Perfect for internal component layouts (sidebar navigation, header elements)
+- **shadcn/ui Compatible**: Uses CSS variables that work seamlessly with shadcn components
+
+#### Configurable Layout Proportions
+
+**Configuration Location:** `src/config/settings.ts` → `SETTINGS.ui.layout`
+
+```typescript
+// Example configuration
+layout: {
+  sidebarWidth: "16rem",        // Desktop: 256px (~20% at 1280px) - RECOMMENDED
+  sidebarWidthMobile: "18rem",  // Mobile: 288px
+  sidebarWidthIcon: "3rem",     // Collapsed: 48px
+  headerHeight: "4rem",         // Sticky header: 64px
+  footerHeight: "4rem",         // Navigation footer: 64px
+}
+```
+
+**Common Proportions** (at 1280px viewport):
+
+| Proportion | Sidebar Width   | Content Area | Use Case                            |
+| ---------- | --------------- | ------------ | ----------------------------------- |
+| **20/80**  | `16rem` (256px) | ~80%         | ✅ **Recommended** (shadcn default) |
+| **25/75**  | `20rem` (320px) | ~75%         | Extensive navigation menus          |
+| **15/85**  | `12rem` (192px) | ~85%         | Content-focused layouts             |
+| **Icon**   | `3rem` (48px)   | ~97%         | Collapsed sidebar mode              |
+
+**Acceptable Ranges:**
+
+- `sidebarWidth`: `"12rem"` to `"24rem"` (192px to 384px)
+- `sidebarWidthMobile`: `"16rem"` to `"20rem"` (256px to 320px)
+- `sidebarWidthIcon`: `"3rem"` to `"4rem"` (48px to 64px)
+- `headerHeight/footerHeight`: `"3rem"` to `"5rem"` (48px to 80px)
+
+#### CSS Variable System
+
+**Global Variables** (defined in `src/app.css`):
+
+```css
+:root {
+	/* Layout dimensions - Configurable via settings.ts */
+	--sidebar-width: 16rem; /* Desktop expanded */
+	--sidebar-width-mobile: 18rem; /* Mobile expanded */
+	--sidebar-width-icon: 3rem; /* Collapsed state */
+	--header-height: 4rem; /* Sticky header */
+	--footer-height: 4rem; /* Floating navigation */
+}
+```
+
+**Dynamic Override** (in `+layout.svelte`):
+
+```typescript
+// Import settings
+import { SETTINGS } from "$config/settings.js";
+const { layout: layoutConfig } = SETTINGS.ui;
+
+// Create CSS variable object
+const layoutVars = {
+  "--sidebar-width": layoutConfig.sidebarWidth,
+  "--sidebar-width-mobile": layoutConfig.sidebarWidthMobile,
+  "--sidebar-width-icon": layoutConfig.sidebarWidthIcon,
+  // ... etc
+};
+
+// Apply to root layout element
+<div class="app-layout" style={Object.entries(layoutVars)
+  .map(([key, value]) => `${key}: ${value}`)
+  .join("; ")}>
+```
+
+#### Layout Implementation Pattern
+
+**Main Grid Structure:**
+
+```css
+.app-layout {
+	display: grid;
+	grid-template-columns: var(--sidebar-width) 1fr; /* CSS variable, not pixels */
+	height: 100vh;
+	overflow: hidden;
+}
+```
+
+**Sidebar Component:**
+
+```css
+.sidebar-container {
+	width: var(--sidebar-width);
+	background: hsl(var(--sidebar));
+	border-right: 1px solid hsl(var(--sidebar-border));
+	overflow-y: auto;
+}
+```
+
+**Content Area with Flexbox:**
+
+```css
+.main-container {
+	display: flex;
+	flex-direction: column;
+	width: calc(100vw - var(--sidebar-width)); /* Responsive calculation */
+}
+
+.content-area {
+	flex: 1;
+	overflow-y: auto;
+	height: calc(100vh - var(--header-height) - var(--footer-height));
+}
+```
+
+#### Responsive Breakpoints
+
+**Aligned with Tailwind CSS** (configurable in `settings.ts`):
+
+```css
+/* Mobile: ≤640px (sm) - Hide sidebar or offcanvas */
+@media (max-width: 640px) {
+	.app-layout {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* Tablet: 641px-1023px (md) - Mobile sidebar width */
+@media (min-width: 641px) and (max-width: 1023px) {
+	.app-layout {
+		grid-template-columns: var(--sidebar-width-mobile) 1fr;
+	}
+}
+
+/* Desktop: ≥1024px (lg) - Default sidebar width */
+/* Default values apply */
+
+/* Wide: ≥1280px (xl) - Increased padding */
+@media (min-width: 1280px) {
+	.header-placeholder,
+	.nav-placeholder {
+		padding: 0 3rem;
+	}
+}
+```
+
+#### Collapsed Sidebar State
+
+**Data Attribute Pattern** (for TASK 8A shadcn/ui integration):
+
+```css
+.app-layout[data-sidebar-collapsed="true"] {
+	grid-template-columns: var(--sidebar-width-icon) 1fr;
+}
+
+.app-layout[data-sidebar-collapsed="true"] .sidebar-container {
+	width: var(--sidebar-width-icon);
+}
+
+.app-layout[data-sidebar-collapsed="true"] .main-container {
+	width: calc(100vw - var(--sidebar-width-icon));
+}
+```
+
+#### shadcn/ui Sidebar Integration (TASK 8A)
+
+**Component Installation:**
+
+```bash
+pnpm dlx shadcn-svelte@latest add sidebar
+```
+
+**Integration Pattern:**
+
+```svelte
+<script lang="ts">
+	import { Sidebar } from "$lib/components/ui/sidebar";
+	import { SETTINGS } from "$config/settings.js";
+
+	const { layout, sidebar } = SETTINGS.ui;
+</script>
+
+<Sidebar.Provider
+	style="--sidebar-width: {layout.sidebarWidth}; --sidebar-width-mobile: {layout.sidebarWidthMobile};"
+	collapsible={sidebar.collapsible ? sidebar.collapsibleMode : "none"}
+>
+	<Sidebar.Root>
+		<!-- Navigation content -->
+	</Sidebar.Root>
+	<Sidebar.Inset>
+		<!-- Main content area -->
+	</Sidebar.Inset>
+</Sidebar.Provider>
+```
+
+**⚠️ CRITICAL BUG FIX** (for TASK 8A):
+
+shadcn/ui has a known Tailwind syntax issue. When implementing, replace:
+
+- `w-(--sidebar-width)` → `w-[var(--sidebar-width)]`
+- `w-(--sidebar-width-icon)` → `w-[var(--sidebar-width-icon)]`
+
+#### Benefits of This Architecture
+
+1. **Configuration-Driven**: Change proportions without touching code
+2. **Type-Safe**: TypeScript interfaces ensure valid configuration values
+3. **Responsive**: Rem units scale naturally across devices
+4. **shadcn/ui Ready**: Full compatibility with shadcn Sidebar patterns
+5. **Developer-Friendly**: Clear documentation of acceptable values
+6. **Performance**: CSS variables for dynamic updates without re-renders
+7. **Future-Proof**: Easy to add new layout modes or proportions
+
+#### Testing Layout Changes
+
+**To change sidebar proportion:**
+
+1. Edit `src/config/settings.ts`:
+
+   ```typescript
+   layout: {
+     sidebarWidth: "20rem", // Change from 16rem to 20rem (25/75 split)
+     // ... other settings
+   }
+   ```
+
+2. Restart dev server (hot reload will apply changes):
+
+   ```bash
+   pnpm run dev
+   ```
+
+3. Verify responsive behavior at different breakpoints:
+   - Mobile: ≤640px (sidebar hidden/offcanvas)
+   - Tablet: 768px (mobile width applied)
+   - Desktop: 1024px+ (desktop width applied)
+
 #### File Structure Deep Dive
 
 ```

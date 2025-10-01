@@ -10,12 +10,93 @@
  */
 
 /**
+ * Content Layout Mode
+ *
+ * - "centered": Content centered with auto margins (industry standard)
+ * - "left": Content left-aligned with max-width
+ * - "full": Full-width content spanning viewport
+ */
+export type ContentLayoutMode = "centered" | "left" | "full";
+
+/**
+ * Content Maximum Width
+ *
+ * Tailwind max-width utilities mapped to readable sizes:
+ * - "prose": 65ch (~65 characters) - optimal readability
+ * - "3xl": 48rem (~750px) - compact
+ * - "4xl": 56rem (~900px) - balanced (recommended)
+ * - "5xl": 64rem (~1000px) - wider
+ * - "6xl": 72rem (~1150px) - widest with constraint
+ * - "full": 100% - no constraint
+ */
+export type ContentMaxWidth = "prose" | "3xl" | "4xl" | "5xl" | "6xl" | "full";
+
+/**
+ * Content Padding
+ *
+ * Tailwind spacing scale (rem units):
+ * - "4": 1rem (16px)
+ * - "6": 1.5rem (24px)
+ * - "8": 2rem (32px) - recommended
+ * - "12": 3rem (48px)
+ * - "16": 4rem (64px)
+ */
+export type ContentPadding = "4" | "6" | "8" | "12" | "16";
+
+/**
  * Main application settings interface defining the complete configuration structure.
  * This interface groups all application parameters by functional domain.
  */
 export interface AppSettings {
 	/** User interface configuration */
 	ui: {
+		/**
+		 * Layout Configuration - Flexbox + Grid Hybrid Architecture
+		 *
+		 * Responsive layout system using CSS variables with rem units for scalability.
+		 * Compatible with shadcn/ui Sidebar components and patterns.
+		 */
+		layout: {
+			/**
+			 * Sidebar width in expanded state (desktop)
+			 * Acceptable range: "12rem" to "24rem" (192px to 384px)
+			 * Common values: "12rem" (15/85), "16rem" (20/80 - recommended), "20rem" (25/75)
+			 */
+			sidebarWidth: string;
+			/**
+			 * Sidebar width in expanded state (mobile)
+			 * Acceptable range: "16rem" to "20rem" (256px to 320px)
+			 */
+			sidebarWidthMobile: string;
+			/**
+			 * Sidebar width in collapsed/icon mode
+			 * Acceptable range: "3rem" to "4rem" (48px to 64px)
+			 */
+			sidebarWidthIcon: string;
+			/**
+			 * Sticky header height
+			 * Acceptable range: "3rem" to "5rem" (48px to 80px)
+			 */
+			headerHeight: string;
+			/**
+			 * Floating navigation footer height
+			 * Acceptable range: "3rem" to "5rem" (48px to 80px)
+			 */
+			footerHeight: string;
+			/**
+			 * Responsive breakpoints matching Tailwind CSS defaults
+			 */
+			breakpoints: {
+				/** Small devices (sm) - 640px */
+				mobile: string;
+				/** Medium devices (md) - 768px */
+				tablet: string;
+				/** Large screens (lg) - 1024px */
+				desktop: string;
+				/** Extra large screens (xl) - 1280px */
+				wide: string;
+			};
+		};
 		/** Mermaid diagram rendering and modal configuration */
 		mermaid: {
 			/** Enable debug mode for detailed error logging */
@@ -41,6 +122,68 @@ export interface AppSettings {
 			collapsible: boolean;
 			/** Default collapsed state (default: false) */
 			defaultCollapsed: boolean;
+			/**
+			 * Collapse mode for shadcn/ui Sidebar integration
+			 * - "icon": Collapses to icon-only view
+			 * - "offcanvas": Slides off-screen completely
+			 * - "none": Non-collapsible sidebar
+			 */
+			collapsibleMode: "icon" | "offcanvas" | "none";
+		};
+		/** Store configuration for reactive state management */
+		stores: {
+			/** SPA navigation store configuration */
+			spaNavigation: {
+				/** Maximum number of loaded content items to cache */
+				cacheSize: number;
+				/** Timeout in milliseconds for content loading operations */
+				loadingTimeout: number;
+				/** Enable navigation event tracking for analytics */
+				enableAnalytics: boolean;
+			};
+		};
+		/**
+		 * Content Layout Configuration
+		 *
+		 * Controls the layout and typography presentation of content articles.
+		 * Based on readability research showing optimal 60-80 character line length.
+		 *
+		 * Layout Modes:
+		 * - "centered": Content centered with max-width (industry standard - GitHub, MDN, Tailwind)
+		 * - "left": Content left-aligned with max-width, no auto margins
+		 * - "full": Full-width content, spans entire viewport minus sidebar
+		 *
+		 * Max Width Options (approximate character counts at 16px font):
+		 * - "prose": 65ch (~65 chars) - optimal readability, academic papers
+		 * - "3xl": 48rem (~750px) - compact, mobile-friendly
+		 * - "4xl": 56rem (~900px) - balanced readability (recommended)
+		 * - "5xl": 64rem (~1000px) - wider content, more screen usage
+		 * - "6xl": 72rem (~1150px) - wide format, data-heavy content
+		 * - "full": 100% - no max-width constraint
+		 *
+		 * Padding Options (rem units):
+		 * - "4": 1rem (16px) - minimal spacing
+		 * - "6": 1.5rem (24px) - compact
+		 * - "8": 2rem (32px) - balanced (recommended)
+		 * - "12": 3rem (48px) - spacious
+		 * - "16": 4rem (64px) - generous whitespace
+		 */
+		content: {
+			/**
+			 * Content layout mode
+			 * @default "centered"
+			 */
+			layoutMode: ContentLayoutMode;
+			/**
+			 * Maximum content width
+			 * @default "4xl"
+			 */
+			maxWidth: ContentMaxWidth;
+			/**
+			 * Content padding (horizontal and vertical)
+			 * @default "8"
+			 */
+			padding: ContentPadding;
 		};
 		// Future UI settings can be grouped here
 	};

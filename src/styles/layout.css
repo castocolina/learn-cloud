@@ -1,0 +1,209 @@
+/**
+ * Layout Architecture - SPA Root Layout Styles
+ *
+ * Flexbox + Grid Hybrid Layout with Natural Document Flow
+ * Compatible with shadcn/ui Sidebar patterns using CSS variables
+ * Layout proportions fully configurable via settings.ts (SETTINGS.ui.layout)
+ *
+ * ARCHITECTURE PATTERN: Natural Scroll + Sticky Elements
+ * - Natural document flow (no viewport-locked containers)
+ * - Sticky sidebar (always visible on desktop)
+ * - Sticky header (navigation always accessible)
+ * - Floating footer (position: fixed over content)
+ *
+ * CSS VARIABLES (defined in app.css, overridable via inline styles):
+ * - --sidebar-width: Desktop sidebar width (default: 16rem)
+ * - --sidebar-width-mobile: Mobile sidebar width (default: 18rem)
+ * - --sidebar-width-icon: Collapsed sidebar width (default: 3rem)
+ * - --header-height: Sticky header height (default: 4rem)
+ * - --footer-height: Floating navigation height (default: 4rem)
+ */
+
+@layer components {
+	/* =====================================================
+	   APP LAYOUT - Grid Container with Natural Flow
+	   ===================================================== */
+
+	.app-layout {
+		display: grid;
+		grid-template-columns: var(--sidebar-width) 1fr;
+		min-height: 100vh; /* Minimum viewport height, can grow */
+		background: hsl(var(--background));
+		/* NO overflow: hidden - allows natural scroll */
+		/* NO height: 100vh - allows content to flow naturally */
+	}
+
+	/* =====================================================
+	   SIDEBAR - Sticky with Independent Scroll
+	   ===================================================== */
+
+	.sidebar-placeholder {
+		position: sticky;
+		top: 0;
+		height: 100vh;
+		background: hsl(var(--sidebar, 60 9.1% 97.8%));
+		border-right: 1px solid hsl(var(--sidebar-border, 220 13% 91%));
+		overflow-y: auto;
+		padding: 1rem;
+		width: var(--sidebar-width);
+		z-index: var(--z-sidebar);
+	}
+
+	/* =====================================================
+	   MAIN CONTAINER - Flexible Content Area
+	   ===================================================== */
+
+	.main-container {
+		display: flex;
+		flex-direction: column;
+		min-height: 100vh;
+		width: calc(100vw - var(--sidebar-width));
+		/* NO overflow: hidden - natural scroll */
+	}
+
+	/* =====================================================
+	   HEADER - Sticky Navigation
+	   ===================================================== */
+
+	.header-placeholder {
+		position: sticky;
+		top: 0;
+		z-index: var(--z-header);
+		background: hsl(var(--background));
+		border-bottom: 1px solid hsl(var(--border));
+		height: var(--header-height);
+		padding: 0 2rem;
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	/* =====================================================
+	   CONTENT AREA - Natural Document Flow
+	   ===================================================== */
+
+	.content-area {
+		flex: 1;
+		min-height: 100vh;
+		padding-bottom: calc(var(--footer-height) + 2rem); /* Space for floating footer */
+		/* NO height calculation - natural flow */
+		/* NO overflow-y - uses browser scroll */
+	}
+
+	/* =====================================================
+	   PLACEHOLDER CONTENT STYLING
+	   ===================================================== */
+
+	.placeholder-content {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		color: hsl(var(--muted-foreground));
+		font-size: 0.875rem;
+	}
+
+	.sidebar-placeholder .placeholder-content {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.25rem;
+	}
+
+	.placeholder-content h2 {
+		margin: 0;
+		font-size: 1rem;
+		font-weight: 600;
+		color: hsl(var(--foreground));
+	}
+
+	.placeholder-content small {
+		font-size: 0.75rem;
+		opacity: 0.7;
+	}
+
+	/* =====================================================
+	   RESPONSIVE DESIGN - Mobile-First
+	   ===================================================== */
+
+	/* Mobile: Hide sidebar, full-width content */
+	@media (max-width: 640px) {
+		.app-layout {
+			grid-template-columns: 1fr;
+		}
+
+		.sidebar-placeholder {
+			display: none; /* Will be offcanvas in TASK 8A */
+		}
+
+		.main-container {
+			width: 100vw;
+		}
+
+		.header-placeholder {
+			padding: 0 1rem;
+		}
+
+		.placeholder-content {
+			font-size: 0.75rem;
+			gap: 0.25rem;
+		}
+	}
+
+	/* Tablet: Use mobile sidebar width */
+	@media (min-width: 641px) and (max-width: 1023px) {
+		.app-layout {
+			grid-template-columns: var(--sidebar-width-mobile) 1fr;
+		}
+
+		.sidebar-placeholder {
+			width: var(--sidebar-width-mobile);
+		}
+
+		.main-container {
+			width: calc(100vw - var(--sidebar-width-mobile));
+		}
+	}
+
+	/* Wide screens: Increase header padding */
+	@media (min-width: 1280px) {
+		.header-placeholder {
+			padding: 0 3rem;
+		}
+	}
+
+	/* =====================================================
+	   COLLAPSED STATE SUPPORT (TASK 8A)
+	   ===================================================== */
+
+	.app-layout[data-sidebar-collapsed="true"] {
+		grid-template-columns: var(--sidebar-width-icon) 1fr;
+	}
+
+	.app-layout[data-sidebar-collapsed="true"] .sidebar-placeholder {
+		width: var(--sidebar-width-icon);
+	}
+
+	.app-layout[data-sidebar-collapsed="true"] .main-container {
+		width: calc(100vw - var(--sidebar-width-icon));
+	}
+
+	/* =====================================================
+	   CUSTOM SCROLLBAR (Sidebar Only)
+	   ===================================================== */
+
+	.sidebar-placeholder::-webkit-scrollbar {
+		width: 8px;
+	}
+
+	.sidebar-placeholder::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	.sidebar-placeholder::-webkit-scrollbar-thumb {
+		background: hsl(var(--muted-foreground) / 0.3);
+		border-radius: 4px;
+	}
+
+	.sidebar-placeholder::-webkit-scrollbar-thumb:hover {
+		background: hsl(var(--muted-foreground) / 0.5);
+	}
+}

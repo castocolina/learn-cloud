@@ -639,3 +639,41 @@ export interface ParsedNavigation {
 	/** Error message if parsing failed */
 	error?: string;
 }
+
+/**
+ * SPA Navigation State for hash-based routing system
+ *
+ * Lightweight state management for SPA navigation with analytics tracking.
+ * Used by stores/spaNavigation.ts for centralized navigation coordination.
+ *
+ * Architecture:
+ * - ID-based tracking (not index-based) for stability
+ * - Uses FlatNavEntry for rich navigation metadata
+ * - Source tracking for analytics and debugging
+ * - Error handling built-in for robust UX
+ *
+ * @see stores/spaNavigation.ts - Store implementation
+ * @see utils/spaNavigation.ts - Navigation coordinator
+ */
+export interface SPANavigationState {
+	/** Current chapter ID (e.g., "01_01L") */
+	currentId: string | null;
+
+	/** Current chapter URL for bookmarking (e.g., "01_01_lesson_dev.html") */
+	currentChapterUrl: string | null;
+
+	/** Previous chapter for sequential navigation */
+	previousEntry: FlatNavEntry | null;
+
+	/** Next chapter for sequential navigation */
+	nextEntry: FlatNavEntry | null;
+
+	/** Source of current navigation (for analytics/tracking) */
+	source: "menu" | "sidebar" | "search" | "breadcrumb" | "sequential" | "direct";
+
+	/** Loading state for UI feedback */
+	isLoading: boolean;
+
+	/** Error state for error handling */
+	error: string | null;
+}

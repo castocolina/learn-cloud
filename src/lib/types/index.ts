@@ -92,7 +92,8 @@ export type {
 	ShortAnswerQuestion,
 	DragAndDropQuestion,
 	Flashcard,
-	ContentValidation
+	ContentValidation,
+	ContentRendererProps
 } from "./content.js";
 
 // Navigation exports - Unified navigation architecture
@@ -112,7 +113,8 @@ export type {
 	NavigationEvent,
 	UnifiedPathConfig,
 	NavigationPaths,
-	ParsedNavigation
+	ParsedNavigation,
+	SPANavigationState
 } from "./navigation.js";
 
 // Search exports - Enhanced search with navigation integration and index generation
@@ -179,7 +181,7 @@ export type {
 } from "./learning.js";
 
 // Configuration exports - Application settings and validation
-export type { AppSettings } from "./config.js";
+export type { AppSettings, ContentLayoutMode, ContentMaxWidth, ContentPadding } from "./config.js";
 
 /**
  * Common type utilities for the application

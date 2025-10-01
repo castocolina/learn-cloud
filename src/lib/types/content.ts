@@ -453,3 +453,23 @@ export interface ContentValidation {
 	suggestions: string[];
 	contentType?: ChapterType;
 }
+
+/**
+ * Content Renderer Props Interface
+ *
+ * Standardized props interface for all content renderer components.
+ * Used by type-specific renderers (Overview, Lesson, StudyGuide, Quiz, Exam, Project).
+ *
+ * Architecture:
+ * - Type-safe union type (AnyContent) ensures correct content structure
+ * - Renderers use discriminated union to handle specific content types
+ * - Consistent props across all renderer components
+ *
+ * @see components/renderers/LessonRenderer.svelte
+ * @see components/renderers/QuizRenderer.svelte
+ * @see types/index.ts - AnyContent union type definition
+ */
+export interface ContentRendererProps {
+	/** Content object to render (type-safe union of all content types) */
+	content: BaseContent;
+}

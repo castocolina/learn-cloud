@@ -2,6 +2,9 @@
 
 @import "tw-animate-css";
 
+@plugin "@tailwindcss/typography";
+
+@import "./styles/layout.css";
 @import "./styles/components.css";
 
 @custom-variant dark (&:is(.dark *));
@@ -20,6 +23,14 @@
 	--z-popover: 300;
 	--z-toast: 400;
 	--z-debug: 9999;
+
+	/* Layout dimensions - Configurable via settings.ts (SETTINGS.ui.layout) */
+	/* These values provide the default configuration and can be dynamically overridden */
+	--sidebar-width: 16rem; /* Desktop expanded: 256px (~20% at 1280px) - shadcn default */
+	--sidebar-width-mobile: 18rem; /* Mobile expanded: 288px */
+	--sidebar-width-icon: 3rem; /* Collapsed state: 48px */
+	--header-height: 4rem; /* Sticky header: 64px */
+	--footer-height: 4rem; /* Floating navigation: 64px */
 
 	/* Theme colors - Slate palette with excellent contrast */
 	--background: 0 0% 100%;

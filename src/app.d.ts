@@ -8,6 +8,19 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 	}
+
+	// Vite environment variables for import.meta.env
+	interface ImportMetaEnv {
+		readonly DEV: boolean;
+		readonly PROD: boolean;
+		readonly SSR: boolean;
+		readonly MODE: string;
+		readonly BASE_URL: string;
+	}
+
+	interface ImportMeta {
+		readonly env: ImportMetaEnv;
+	}
 }
 
 export {};

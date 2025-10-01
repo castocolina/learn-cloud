@@ -3166,6 +3166,55 @@ You are responsible for designing and implementing SPA architecture with single 
 - Content loading architecture
 - Renderer component specifications
 
+### 🎯 COMPLETED: Flexbox + Grid Hybrid Layout with Configurable Proportions
+
+**Status:** ✅ Layout architecture migrated from fixed pixels to CSS variables
+
+**Implementation Summary:**
+
+1. **Configuration System** (`src/config/settings.ts`):
+   - Added `SETTINGS.ui.layout` with configurable dimensions
+   - Sidebar widths: desktop (`16rem`), mobile (`18rem`), icon (`3rem`)
+   - Header/footer heights: configurable via settings
+   - Responsive breakpoints aligned with Tailwind CSS
+
+2. **CSS Variable System** (`src/app.css`):
+   - Global CSS variables: `--sidebar-width`, `--sidebar-width-mobile`, `--sidebar-width-icon`
+   - Layout dimensions: `--header-height`, `--footer-height`
+   - Dynamic override capability via inline styles
+
+3. **Layout Implementation** (`src/routes/+layout.svelte`):
+   - Grid layout using CSS variables instead of fixed pixels
+   - Responsive breakpoints: mobile (≤640px), tablet (768px), desktop (≥1024px)
+   - Collapsed state support: `data-sidebar-collapsed="true"` attribute pattern
+   - shadcn/ui Sidebar compatibility ready
+
+4. **Common Proportions** (at 1280px viewport):
+   - **20/80 split**: `16rem` sidebar (256px) - **RECOMMENDED** (shadcn default)
+   - **25/75 split**: `20rem` sidebar (320px) - extensive navigation
+   - **15/85 split**: `12rem` sidebar (192px) - content-focused
+   - **Icon mode**: `3rem` sidebar (48px) - collapsed state
+
+5. **Documentation Updated**:
+   - `SVELTEKIT-GUIDE.md`: Complete section on Flexbox + Grid Hybrid Architecture
+   - Includes configuration guide, implementation patterns, and shadcn/ui integration
+   - Critical bug fix documented for TASK 8A: Tailwind syntax `w-[var(--sidebar-width)]`
+
+**Benefits:**
+
+- ✅ Configuration-driven (change settings.ts, no code changes needed)
+- ✅ Type-safe with TypeScript interfaces
+- ✅ Responsive with rem units
+- ✅ shadcn/ui Sidebar fully compatible
+- ✅ Performance optimized (CSS variables, no re-renders)
+
+**Next Steps for TASK 8A:**
+
+- Install shadcn-svelte Sidebar components
+- Integrate with existing CSS variable system
+- Implement collapsible functionality with configured modes
+- Apply Tailwind syntax bug fix
+
 ---
 
 ## TASK 5: Theme System Implementation
@@ -3173,6 +3222,8 @@ You are responsible for designing and implementing SPA architecture with single 
 ### Agent Responsibility
 
 You are responsible for implementing robust theme system with CSS custom properties, localStorage persistence, and complete integration with shadcn-svelte, eliminating hardcoded styles and following Tailwind CSS v4 centralized architecture standards.
+
+You must also create a theme validation mechanism to ensure compliance with architecture standards. and think harder about all of this as foundation for future theming needs.
 
 ### Technical Documents to Review
 
@@ -3354,6 +3405,8 @@ You are responsible for implementing robust theme system with CSS custom propert
 
 You are responsible for implementing core UI components using shadcn-svelte with TypeScript interfaces and theme system integration, establishing production-ready component library following SVELTEKIT-GUIDE.md component architecture patterns.
 
+You must ensure all components use Svelte 5 runes syntax, union type-first TypeScript patterns, and centralized CSS architecture. You must think harder about component selection and integration patterns, prioritizing shadcn-svelte components and extending them rather than replacing them.
+
 ### Technical Documents to Review
 
 - `src/lib/stores/theme.ts` (theme system)
@@ -3454,7 +3507,7 @@ pnpm dlx shadcn-svelte@latest add separator
 
 ### Agent Responsibility
 
-You are responsible for creating type-specific renderers for each ChapterType with differentiated headers, icons, and styling using shadcn-svelte components and TypeScript interfaces for type-safe content display across Python, Go, Rust, Cloud Databases, and GraphQL content.
+You are responsible for creating type-specific renderers for each ChapterType with differentiated headers, icons, and styling using shadcn-svelte.
 
 ### Technical Documents to Review
 
@@ -3733,6 +3786,12 @@ You are responsible for creating a reusable Svelte component that can render the
 
 You are responsible for developing a responsive sidebar navigation component using shadcn-svelte Sidebar with proper TypeScript interfaces, ensuring mobile-first design and integration with `src/data/generated/content-menu.ts` following SVELTEKIT-GUIDE.md architecture patterns.
 
+You must also implement a comprehensive testing suite to validate functionality, responsiveness, and integration with the unified navigation system.
+
+You must prioritize emojis as icons for collapsible sections and text wrapping for long titles (a critical fix).
+
+You must think harder about the integration with the existing navigation data and unified navigation handler to ensure consistency across the application.
+
 ### Technical Documents to Review
 
 - `SVELTEKIT-GUIDE.md` (Svelte 5 runes syntax, shadcn-svelte integration)
@@ -3796,6 +3855,57 @@ interface MenuStructure {
 - ✅ Mobile-first behavior (≤390px tested, auto-collapse)
 - ✅ Three-tier validation: `make check-wip` → `pnpm run test` → `pnpm run format/lint/check`
 
+### TASK 4 Integration Points (Added by SPA Architecture Implementation)
+
+**Navigation System:**
+
+- **Store**: Import `navigationStore` from `$lib/stores/spaNavigation`
+  - Access `currentId` to highlight active chapter
+  - Listen to store updates for reactive highlighting
+- **Navigation Function**: Use `navigateToContent()` from `$lib/utils/spaNavigation`
+  - Call on chapter click with `chapterUrl` from content-menu entry
+  - Pass `source: "sidebar"` for analytics tracking
+
+**Example Integration:**
+
+```typescript
+import { navigationStore } from "$lib/stores/spaNavigation";
+import { navigateToContent } from "$lib/utils/spaNavigation";
+import { contentMenu } from "$data/generated/content-menu";
+
+const currentId = $derived($navigationStore.currentId);
+
+function handleChapterClick(chapter: MenuChapter) {
+	navigateToContent({
+		type: "navigate",
+		target: chapter.chapterUrl,
+		source: "sidebar",
+		data: { chapterId: chapter.id, unitId: chapter.unitId },
+		timestamp: new Date()
+	});
+}
+```
+
+**Layout System (Flexbox + Grid Hybrid with Configurable Proportions):**
+
+- **CSS Variables**: The layout system uses CSS variables for all dimensions
+  - `--sidebar-width`: Desktop expanded width (default: `16rem` / 256px)
+  - `--sidebar-width-mobile`: Mobile expanded width (default: `18rem` / 288px)
+  - `--sidebar-width-icon`: Collapsed state width (default: `3rem` / 48px)
+- **Configuration**: All dimensions configured in `SETTINGS.ui.layout` (src/config/settings.ts)
+- **shadcn/ui Integration**: CSS variable naming matches shadcn/ui Sidebar requirements
+- **Collapsed State**: Use `data-sidebar-collapsed="true"` attribute on `.app-layout` to trigger collapsed state
+- **Critical Bug Fix**: When integrating shadcn-svelte Sidebar, replace `w-(--sidebar-width)` with `w-[var(--sidebar-width)]` (Tailwind syntax bug)
+
+**Common Layout Proportions** (at 1280px viewport):
+
+- **20/80 split**: `16rem` (256px) - **RECOMMENDED** (current default)
+- **25/75 split**: `20rem` (320px) - for extensive navigation
+- **15/85 split**: `12rem` (192px) - for content-focused layout
+- **Icon mode**: `3rem` (48px) - collapsed state
+
+**Implementation Note:** The layout architecture is fully prepared for shadcn-svelte Sidebar integration. See `SVELTEKIT-GUIDE.md` section "Flexbox + Grid Hybrid Layout Architecture" for comprehensive documentation on the layout system, responsive breakpoints, and shadcn/ui integration patterns.
+
 ---
 
 ## TASK 8B: Sticky Header Component Development
@@ -3803,6 +3913,8 @@ interface MenuStructure {
 ### Agent Responsibility
 
 You are responsible for developing a sticky header component with proper z-index hierarchy, search integration, and responsive behavior following SVELTEKIT-GUIDE.md standards.
+
+You must must think hard before implementing to ensure z-index hierarchy is respected, mobile-first design is prioritized, and integration with the search component is seamless.
 
 ### Technical Documents to Review
 
@@ -3842,6 +3954,24 @@ You are responsible for developing a sticky header component with proper z-index
 - ✅ Test suite passes with z-index validation
 - ✅ Three-tier validation: `make check-wip` → `pnpm run test` → `pnpm run format/lint/check`
 
+### TASK 4 Integration Points (Added by SPA Architecture Implementation)
+
+**Breadcrumb Display:**
+
+- **Store**: Import `breadcrumbStore` from `$lib/stores/breadcrumb`
+  - Automatically updated by unified navigation system
+  - Contains reactive breadcrumb trail (Home → Unit → Chapter)
+- **No Manual Updates**: Breadcrumbs auto-update via `navigateToContent()`
+
+**Example Integration:**
+
+```typescript
+import { breadcrumbStore } from "$lib/stores/breadcrumb";
+
+const breadcrumbs = $derived($breadcrumbStore);
+// Renders: Home > Unit 1: Python > Lesson: Development Environment
+```
+
 ---
 
 ## TASK 8C: Breadcrumb Component Development
@@ -3849,6 +3979,8 @@ You are responsible for developing a sticky header component with proper z-index
 ### Agent Responsibility
 
 You are responsible for developing a dynamic breadcrumb navigation component with TypeScript interfaces and mobile-optimized display following SVELTEKIT-GUIDE.md patterns.
+
+You must follow the whole navigation system architecture to ensure consistency and reliability. You must think harder about the dynamic generation of breadcrumbs, mobile truncation, and integration with the unified navigation system.
 
 ### Technical Documents to Review
 
@@ -3890,6 +4022,39 @@ You are responsible for developing a dynamic breadcrumb navigation component wit
 - ✅ Dynamic generation accurate
 - ✅ Three-tier validation: `make check-wip` → `pnpm run test` → `pnpm run format/lint/check`
 
+### TASK 4 Integration Points (Added by SPA Architecture Implementation)
+
+**Breadcrumb Rendering:**
+
+- **Store**: Import `breadcrumbStore` from `$lib/stores/breadcrumb`
+  - Array of `BreadcrumbItem` objects with id, label, url, icon, isClickable, isActive
+  - Automatically updated by `navigateToContent()` in unified navigation system
+- **Navigation**: Use `navigateToContent()` for breadcrumb clicks
+  - Extract `chapterUrl` from breadcrumb URL (remove `#/` prefix)
+  - Pass `source: "breadcrumb"` for analytics
+
+**Example Integration:**
+
+```typescript
+import { breadcrumbStore } from "$lib/stores/breadcrumb";
+import { navigateToContent } from "$lib/utils/spaNavigation";
+
+const breadcrumbs = $derived($breadcrumbStore);
+
+function handleBreadcrumbClick(item: BreadcrumbItem) {
+	if (!item.isClickable) return;
+
+	const chapterUrl = item.url.replace(/^#\//, "");
+	navigateToContent({
+		type: "navigate",
+		target: chapterUrl,
+		source: "breadcrumb",
+		data: { chapterId: item.id },
+		timestamp: new Date()
+	});
+}
+```
+
 ---
 
 ## TASK 8D: IconGrid Component Development (Base Reusable Component)
@@ -3897,6 +4062,12 @@ You are responsible for developing a dynamic breadcrumb navigation component wit
 ### Agent Responsibility
 
 You are responsible for developing a reusable IconGrid base component with standardized styles (hover effects, borders, cursor) that will be used by Dialog, CodeBlock, Diagram, and other components, using shadcn-svelte components and following SVELTEKIT-GUIDE.md standards.
+
+You must think hard to provide to user options about how to display icons in a grid layout with consistent styling. You must ensure mobile-first design and touch-friendly interactions (≥44px touch targets). You must respond the questions and present plan about how to implement the component.
+
+- What is the best approach to create a reusable IconGrid component that can be easily integrated into multiple other components?
+- How can you handle multiple icons with different actions and states (hover, active, disabled) in a consistent manner?
+- Is it possible to provide options such as icon names, sizes, different functions to call on click, etc.? Can you support global CSS classes for consistent styling, control the location of icons in the grid, number of columns, and their position relative to the parent component?
 
 ### Technical Documents to Review
 
@@ -3967,6 +4138,8 @@ This is a **reusable foundation component** that provides standardized icon pres
 ### Agent Responsibility
 
 You are responsible for developing a reusable shadcn-svelte Dialog component that will be shared across Search (8M), Flipcards (8H), Diagrams (8G), and Code Blocks (8F), with proper z-index hierarchy, accessibility, and mobile-first design following SVELTEKIT-GUIDE.md patterns.
+
+You must think harder about the z-index hierarchy to prevent stacking context violations and the background overlay issues. You must ensure the dialog is mobile-first (full-screen on ≤390px) and accessible (focus management, escape key handling). You must also integrate IconGrid (8D) for consistent button styling. The default close button must be in the top-right corner with proper touch target size (≥44px), cursor pointer, hover effects, and focus states.
 
 ### Technical Documents to Review
 
@@ -4048,6 +4221,8 @@ This dialog will be consumed by:
 
 You are responsible for developing an enhanced code block component with syntax highlighting, copy functionality, **optional Dialog expansion (like Diagram)**, and mobile-responsive horizontal scroll using IconGrid (8D) for action buttons, following SVELTEKIT-GUIDE.md patterns.
 
+You must think harder about the integration of syntax highlighting libraries (Shiki/Prism) to support 200+ languages, right now I seem problems with the highlighting. You must ensure the copy-to-clipboard functionality provides visual feedback using IconGrid buttons. You must also implement optional full-screen code view using Dialog (8E) similar to Diagram component. Mobile optimization with horizontal scroll and proper touch handling is critical.
+
 ### Technical Documents to Review
 
 - `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and component standards)
@@ -4115,6 +4290,8 @@ function handleExpandCode() {
 ### Agent Responsibility
 
 You are responsible for enhancing MermaidDiagram component with error handling, **GitHub-style zoom controls**, modal expansion using Dialog (8E), and validation integration using IconGrid (8D) for controls, following SVELTEKIT-GUIDE.md patterns.
+
+You must think harder about the zoom controls are intuitive and mobile-friendly (≥44px touch targets). You must also implement modal expansion for full-screen diagram viewing using Dialog (8E). Integration with IconGrid (8D) for zoom buttons is essential for consistent styling.
 
 ### Technical Documents to Review
 
@@ -4185,6 +4362,8 @@ You are responsible for enhancing MermaidDiagram component with error handling, 
 
 You are responsible for developing interactive flipcard components for study guides with modal expansion using Dialog (8E), touch gestures, and mobile-first interactions following SVELTEKIT-GUIDE.md patterns.
 
+You must think harder about the flip animation to ensure smooth performance across devices. You must also implement modal expansion for full-screen study mode using Dialog (8E). Touch gestures for flipping cards on mobile and keyboard navigation for desktop are essential. Integration with progress tracking is also required.
+
 ### Technical Documents to Review
 
 - `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and component standards)
@@ -4235,6 +4414,8 @@ You are responsible for developing interactive flipcard components for study gui
 
 You are responsible for developing quiz and exam navigation components with question tracking, progress indicators, and mobile-optimized controls following SVELTEKIT-GUIDE.md patterns.
 
+You must think harder about the question navigation flow to ensure users can easily move between questions. You must also implement a visual progress indicator to show quiz completion status. Mobile optimization with touch-friendly buttons (≥44px) is critical. Integration with quiz state management using Svelte stores is also required.
+
 ### Technical Documents to Review
 
 - `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and state management)
@@ -4282,6 +4463,8 @@ You are responsible for developing quiz and exam navigation components with ques
 ### Agent Responsibility
 
 You are responsible for developing popover components using shadcn-svelte Popover with proper positioning, z-index hierarchy (applying lessons from Dialog 8E), and integration with Progress reset button, following SVELTEKIT-GUIDE.md standards.
+
+As with Dialog (8E), you must think harder about the z-index hierarchy to prevent stacking context violations and background overlay issues. You must ensure proper positioning with collision detection and mobile-first design with touch-friendly interactions (≥44px touch targets). You must also integrate the popover for the reset confirmation button in the Progress component (8K).
 
 ### Technical Documents to Review
 
@@ -4466,6 +4649,10 @@ Progress tracking has a **passive relationship** with the navigation system:
 
 You are responsible for developing a **unified navigation system that coordinates and integrates** Sidebar (8A), Header (8B), Breadcrumb (8C), and Popover (8J) components with consistent routing, state management, and **orchestrating navigation events for all components including Progress (8K)**, following SVELTEKIT-GUIDE.md patterns.
 
+You must think harder about the unified navigation handler to ensure all components update simultaneously and consistently. You must also ensure that navigation events trigger appropriate progress tracking notifications (entry/exit) without direct control over navigation flow. Handling multiple navigation sources (sidebar clicks, search results, breadcrumb clicks, sequential navigation, direct URL access, browser back/forward) is critical for a seamless user experience.
+
+You must provide both, visual buttons (previous/next) and keyboard shortcuts (ArrowLeft/ArrowRight) for sequential navigation. You must ensure deep linking and direct URL access work correctly with hash-based routing. You must also provide page swipe gestures for mobile devices (≤390px) to navigate between chapters. You must show a tooltip/popover on hover/focus for previous/next buttons with chapter titles or show current chapter title. You must ensure no partial navigation states occur (atomic updates) and that all components reflect the current state accurately.
+
 ### Technical Documents to Review
 
 - `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and union-based routing)
@@ -4573,6 +4760,65 @@ export function navigateToContent(event: NavigationEvent): void {
 - ✅ Hash-based routing consistent
 - ✅ Three-tier validation: `make check-wip` → `pnpm run test` → `pnpm run format/lint/check`
 
+### TASK 4 Integration Status (Completed by SPA Architecture Implementation)
+
+**✅ IMPLEMENTATION COMPLETE - TASK 8L FOUNDATION READY**
+
+TASK 4 has implemented the complete unified navigation system as documented in PLAN-SEARCH-ARCHITECTURE.md:
+
+**Implemented Components:**
+
+1. **`src/lib/utils/spaNavigation.ts`** - Unified navigation coordinator
+   - `navigateToContent()` - Central handler for all navigation sources
+   - `navigateToPrevious()` / `navigateToNext()` - Sequential navigation helpers
+   - Atomic updates for all navigation components
+   - Breadcrumb generation from content-menu
+   - Ready for TASK 8K progress tracking integration (visitChapter commented with TODO)
+
+2. **`src/lib/stores/spaNavigation.ts`** - Navigation state management
+   - `navigationStore` - Current chapter, previous/next entries, source tracking
+   - Derived stores: `currentId`, `hasPrevious`, `hasNext`, `isNavigating`, `navigationError`
+
+3. **`src/lib/stores/breadcrumb.ts`** - Breadcrumb state
+   - Automatically updated by `navigateToContent()`
+
+4. **`src/lib/utils/hashRouter.ts`** - Hash-based routing utilities
+   - `parseHash()` - Parse URLs to content lookup
+   - `navigateToChapter()` - Update hash
+   - `getCurrentHash()` / `isValidHash()` - Hash utilities
+
+5. **`src/lib/components/ContentRouter.svelte`** - Content loading and rendering
+   - Hash change listener for back/forward navigation
+   - Type-based renderer selection
+   - Integration with navigation stores
+
+**TASK 8L Requirements Already Met:**
+
+- ✅ Unified `navigateToContent()` handler implemented
+- ✅ Multi-component atomic updates (sidebar, breadcrumb, sequential nav, URL hash)
+- ✅ Navigation sources supported: direct, sidebar, breadcrumb, sequential, search
+- ✅ Browser back/forward via hashchange listener
+- ✅ Sequential navigation (previous/next) with helper functions
+- ✅ Progress tracking hook ready (TODO comment for TASK 8K integration)
+
+**Integration for TASK 8L Components:**
+
+```typescript
+// Sequential Navigation Buttons (Previous/Next)
+import { navigationStore } from "$lib/stores/spaNavigation";
+import { navigateToPrevious, navigateToNext } from "$lib/utils/spaNavigation";
+
+const navState = $derived($navigationStore);
+
+// Use derived stores for button state
+const hasPrev = $derived(navState.previousEntry !== null);
+const hasNext = $derived(navState.nextEntry !== null);
+
+// Navigation handlers
+<button onclick={navigateToPrevious} disabled={!hasPrev}>← Previous</button>
+<button onclick={navigateToNext} disabled={!hasNext}>Next →</button>
+```
+
 ---
 
 ## TASK 8M: Search Component Development
@@ -4580,6 +4826,10 @@ export function navigateToContent(event: NavigationEvent): void {
 ### Agent Responsibility
 
 You are responsible for developing comprehensive search functionality using the pre-built Lunr.js index from `src/data/generated/search-index.ts` with Dialog (8E) for results display, and **integration with multiple navigation components (Sidebar 8A, Breadcrumb 8C, Navigation 8L)** for coordinated updates, following SVELTEKIT-GUIDE.md patterns.
+
+You must think harder about the multi-component navigation integration to ensure that when a user clicks a search result, all relevant components update simultaneously and consistently. You must also ensure that the search experience is mobile-optimized (≤390px) with a focus on usability and accessibility (keyboard shortcuts, focus management). You must implement debounced search input to optimize performance and display results grouped by content type (lesson, quiz, study_guide, etc.). Integration with Dialog (8E) for displaying results is essential.
+
+Before implement you must review the pre-built Lunr.js index structure to ensure it contains all necessary metadata for enriching search results (titles, descriptions, tags, URLs), checks the current src/data/book and ensure they match expected formats. You must also ensure that the search component integrates seamlessly with the unified navigation system (8L) to coordinate updates across Sidebar (8A), Breadcrumb (8C), and Progress (8K) when navigating to selected content.
 
 ### Technical Documents to Review
 
@@ -4709,6 +4959,8 @@ function handleResultClick(item: SearchIndexItem) {
 ### Agent Responsibility
 
 You are responsible for developing a theme switcher component with light/dark mode toggle, system preference detection, and persistent storage following SVELTEKIT-GUIDE.md patterns.
+
+You must think harder about the theme switching mechanism to ensure smooth transitions and accessibility compliance. You must also implement automatic detection of system theme preferences and save user preferences in localStorage for persistence across sessions. The component should be mobile-optimized (≤390px) with touch-friendly interactions (≥44px touch targets). Present options for dropdown or toggle switch UI (Possible IconGrid integration). Integration with the global theme store is essential for consistent theming across the application.
 
 ### Technical Documents to Review
 
@@ -5036,6 +5288,10 @@ You are responsible for implementing comprehensive testing strategy, validation 
 **Agent Responsibility:**
 You are responsible for integrating all system components, optimizing performance, and preparing for production deployment with comprehensive documentation and deployment readiness certification.
 
+You must think harder about the final integration to ensure all components work seamlessly together, performance is optimized, and the application is fully prepared for production deployment. You must also ensure that all documentation is complete and accurate, covering architecture, deployment instructions, and user guides. Mobile-first validation must be confirmed, and any remaining issues must be resolved before certification.
+
+You must think harder and thoroughly review and research the codebase to identify any unused code, files, functions, interfaces, types, CSS classes, assets, and other resources. Remove all unused elements to ensure a clean and maintainable codebase before production deployment.
+
 **Technical Documents to Review:**
 
 - All outputs from previous tasks
@@ -5062,6 +5318,7 @@ You are responsible for integrating all system components, optimizing performanc
 - Integration test results
 - Complete documentation set
 - Deployment readiness certification
+- Delete old content folders (src/book, src/data/demo and demo routes and components)
 
 **Final Validations:**
 
