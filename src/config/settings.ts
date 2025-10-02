@@ -15,6 +15,129 @@ import type { AppSettings } from "$types";
 export const SETTINGS: AppSettings = {
 	ui: {
 		/**
+		 * Theme System Configuration
+		 *
+		 * Centralized theme configuration including color palettes, modes, and validation.
+		 * Provides robust dark mode support with localStorage persistence and system preference detection.
+		 *
+		 * Color Palettes (shadcn-svelte compatible):
+		 * - "slate": Blue-gray tones (current/default) - professional, technical feel
+		 * - "gray": Pure gray tones - neutral, balanced
+		 * - "zinc": Cool gray tones - modern, clean
+		 * - "neutral": Warm gray tones - softer, warmer
+		 * - "stone": Warm brown-gray tones - organic, earthy
+		 *
+		 * Reference: https://ui.shadcn.com/themes
+		 */
+		theme: {
+			/**
+			 * Default theme mode on first load
+			 * @default "system" - Follows OS preference automatically
+			 */
+			defaultMode: "system" as const,
+
+			/**
+			 * localStorage key for persisting user's theme preference
+			 * @default "theme"
+			 */
+			storageKey: "theme",
+
+			/**
+			 * Selected color palette for the application
+			 * Changes require updating CSS variables in src/app.css
+			 * @default "slate"
+			 */
+			colorPalette: "slate" as const,
+
+			/**
+			 * Border radius in rem units
+			 * @default 0.625 (10px at 16px base font size)
+			 */
+			radius: 0.625,
+
+			/**
+			 * Theme validation configuration
+			 */
+			validation: {
+				/**
+				 * Enable theme validation during development/build
+				 * @default true
+				 */
+				enabled: true,
+
+				/**
+				 * Strict mode: Prevent anti-patterns
+				 * - Hardcoded z-index values (must use var(--z-*))
+				 * - @apply in component <style> blocks (Tailwind v4 incompatible)
+				 * @default true
+				 */
+				strictMode: true,
+
+				/**
+				 * Check WCAG AA color contrast compliance
+				 * - Normal text: 4.5:1 minimum
+				 * - Large text: 3:1 minimum
+				 * @default true
+				 */
+				checkColorContrast: true,
+
+				/**
+				 * Verify stacking context violations
+				 * - Detect transform/opacity on navigation elements
+				 * - Prevent z-index conflicts
+				 * @default true
+				 */
+				checkStackingContext: true,
+
+				/**
+				 * Check for inline styles (style="...") in component templates
+				 * - HIGH SEVERITY: Violates modular CSS architecture
+				 * - Use Tailwind utility classes or app.css instead
+				 * @default true
+				 */
+				checkInlineStyles: true,
+
+				/**
+				 * Check for <style> blocks in components
+				 * - WARNING: Suggests modular CSS architecture violation
+				 * - Becomes ERROR in strict mode
+				 * - Exceptions allowed via severityRules
+				 * @default true
+				 */
+				checkComponentStyleBlocks: true,
+
+				/**
+				 * Path-based severity rules for downgrading errors in legacy/demo code
+				 * to informational level while maintaining strict validation for production.
+				 *
+				 * Patterns use String.includes() matching for flexibility.
+				 */
+				severityRules: [
+					{
+						pattern: "src/lib/components/search/SearchModal.svelte",
+						severity: "info" as const,
+						description: "Legacy SearchModal component (to be refactored)"
+					},
+					{
+						pattern: "src/book/",
+						severity: "info" as const,
+						description: "Legacy HTML content (reference only, not production code)"
+					},
+					{
+						pattern: "demo",
+						severity: "info" as const,
+						description: "Demo components (not production code)"
+					},
+					{
+						pattern: "src/routes/demo/",
+						severity: "warning" as const,
+						description: "Demo route pages (may be adopted but require review)"
+					}
+				]
+			}
+		},
+
+		/**
 		 * Layout Configuration - Flexbox + Grid Hybrid Architecture
 		 *
 		 * Responsive layout system using CSS variables with rem units for scalability.

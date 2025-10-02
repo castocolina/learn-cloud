@@ -29,6 +29,7 @@
 		"manage-content:validate": "tsx src/scripts/manage-content.ts validate",
 		"scaffold:generate": "tsx src/scripts/generate-scaffold.ts scaffold",
 		"validate-mermaid": "npx tsx src/scripts/mermaid-validator.ts",
+		"validate-theme": "npx tsx src/scripts/validate-theme.ts",
 		"generate-search-index": "npm run generate-search-index-dev",
 		"generate-search-index-dev": "npx tsx src/scripts/generate-search-index.ts dev",
 		"generate-search-index-prod": "npx tsx src/scripts/generate-search-index.ts prod",

@@ -51,6 +51,52 @@ export interface AppSettings {
 	/** User interface configuration */
 	ui: {
 		/**
+		 * Theme System Configuration
+		 *
+		 * Centralized theme configuration including color palettes, modes, and validation.
+		 * Provides robust dark mode support with localStorage persistence.
+		 */
+		theme: {
+			/** Default theme mode on first load (before user selection) */
+			defaultMode: "light" | "dark" | "system";
+			/** localStorage key for persisting user's theme preference */
+			storageKey: string;
+			/** Selected color palette for the application (shadcn-svelte compatible) */
+			colorPalette: "slate" | "gray" | "zinc" | "neutral" | "stone";
+			/** Border radius in rem units (e.g., 0.625 = 10px) */
+			radius: number;
+			/** Theme validation configuration */
+			validation: {
+				/** Enable theme validation during development/build */
+				enabled: boolean;
+				/** Strict mode: Prevent hardcoded z-index, @apply in components */
+				strictMode: boolean;
+				/** Check WCAG color contrast compliance (AA level) */
+				checkColorContrast: boolean;
+				/** Verify stacking context violations (transform/opacity on navigation) */
+				checkStackingContext: boolean;
+				/** Check for inline styles (style="...") in component templates - HIGH SEVERITY */
+				checkInlineStyles: boolean;
+				/** Check for <style> blocks in components (modular CSS architecture) - WARNING */
+				checkComponentStyleBlocks: boolean;
+				/**
+				 * Path-based severity rules for downgrading errors in legacy/demo code
+				 * to informational level while maintaining strict validation for production.
+				 */
+				severityRules: Array<{
+					pattern: string;
+					severity: "info" | "warning";
+					description: string;
+				}>;
+				/**
+				 * Optional: Paths to completely ignore during validation
+				 * (Use for third-party code or deprecated files)
+				 * Note: Built-in severity classification handles demo/legacy code automatically
+				 */
+				ignorePaths?: string[];
+			};
+		};
+		/**
 		 * Layout Configuration - Flexbox + Grid Hybrid Architecture
 		 *
 		 * Responsive layout system using CSS variables with rem units for scalability.

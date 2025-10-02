@@ -1,4 +1,4 @@
-.PHONY: help setup install run build clean validate validate-bash check lint format test validate-content check-wip generate-flatnav generate-scaffold
+.PHONY: help setup install run build clean validate validate-bash check lint format test validate-content check-wip generate-flatnav generate-scaffold validate-theme
 
 # Load environment variables from .env file
 ifneq (,$(wildcard .env))
@@ -84,6 +84,44 @@ validate-mermaid: ## Validate Mermaid diagrams in TypeScript files (usage: make 
 		pnpm run validate-mermaid $(ARGS); \
 	fi
 	@echo "✅ Mermaid validation completed"
+
+validate-theme: ## Validate theme system architecture and compliance (usage: make validate-theme [ARGS="--path src/lib"])
+	@echo "🎨 Validating theme system..."
+	@npx tsx src/scripts/validate-theme.ts $(ARGS)
+	@echo "✅ Theme validation completed"
+
+validate-theme-strict: ## Run theme validation in strict mode (warnings → errors)
+	@echo "🎨 Validating theme system (STRICT MODE)..."
+	@npx tsx src/scripts/validate-theme.ts --strict
+	@echo "✅ Theme validation completed"
+
+validate-theme-path: ## Validate specific directory (usage: make validate-theme-path PATH=src/lib/components/search)
+	@echo "🎨 Validating theme system for path: $(PATH)..."
+	@if [ -z "$(PATH)" ]; then \
+		echo "❌ Please provide PATH parameter: make validate-theme-path PATH=src/lib/components/search"; \
+		exit 1; \
+	fi
+	@npx tsx src/scripts/validate-theme.ts --path "$(PATH)"
+	@echo "✅ Theme validation completed for $(PATH)"
+
+validate-theme-file: ## Validate specific file (usage: make validate-theme-file FILE=src/lib/components/search/SearchModal.svelte)
+	@echo "🎨 Validating theme system for file: $(FILE)..."
+	@if [ -z "$(FILE)" ]; then \
+		echo "❌ Please provide FILE parameter: make validate-theme-file FILE=SearchModal.svelte"; \
+		exit 1; \
+	fi
+	@npx tsx src/scripts/validate-theme.ts --file "$(FILE)"
+	@echo "✅ Theme validation completed for $(FILE)"
+
+validate-quality: ## Run Tier 2 quality checks (theme validation + unit tests)
+	@echo "🔍 Running Tier 2 quality checks..."
+	@echo "📋 Step 1: Theme validation"
+	@$(MAKE) validate-theme
+	@echo ""
+	@echo "🧪 Step 2: Unit tests"
+	@pnpm run test
+	@echo ""
+	@echo "✅ All Tier 2 quality checks passed!"
 
 validate-script: ## Validate specific TypeScript files/directories (usage: make validate-script TARGETS="path1 path2")
 	@echo "🔍 Validating TypeScript files/directories: $(TARGETS)"

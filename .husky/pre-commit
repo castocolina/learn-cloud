@@ -2,3 +2,6 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 pnpm lint-staged
+
+# Theme validation (scans modified/untracked .svelte and .css files)
+npx tsx src/scripts/validate-theme.ts --wip || exit 1

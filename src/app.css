@@ -1,3 +1,39 @@
+/**
+ * Application Global Styles
+ *
+ * THEME SYSTEM ARCHITECTURE:
+ * - Color Palette: Slate (blue-gray tones for professional/technical feel)
+ * - Mode Support: Light, Dark, and System preference detection
+ * - Framework: shadcn-svelte compatible semantic variables
+ * - Tailwind Version: v4 (no @apply in component <style> blocks)
+ *
+ * THEME CONFIGURATION:
+ * - Managed via: src/config/settings.ts (SETTINGS.ui.theme)
+ * - Validation: src/scripts/validate-theme.ts
+ * - Store: src/lib/stores/theme.ts (localStorage persistence, FOUC prevention)
+ *
+ * COLOR PALETTE OPTIONS (shadcn-svelte):
+ * - slate (current): Blue-gray tones - professional, technical
+ * - gray: Pure gray tones - neutral, balanced
+ * - zinc: Cool gray tones - modern, clean
+ * - neutral: Warm gray tones - softer, warmer
+ * - stone: Warm brown-gray tones - organic, earthy
+ *
+ * SEMANTIC VARIABLES (required by shadcn-svelte):
+ * All semantic color variables follow HSL format (hue saturation lightness)
+ * Example: --primary: 215 28% 17% → hsl(215, 28%, 17%)
+ *
+ * CRITICAL ARCHITECTURE RULES:
+ * ✅ USE: Tailwind utilities in component classes
+ * ✅ USE: CSS custom properties for z-index (var(--z-*))
+ * ✅ USE: Semantic variables for colors (--primary, --background, etc.)
+ * ❌ NEVER: @apply in component <style> blocks (Tailwind v4 incompatible)
+ * ❌ NEVER: Hardcoded z-index values in components
+ * ❌ NEVER: Hardcoded color values (use semantic variables)
+ *
+ * Reference: https://ui.shadcn.com/themes
+ */
+
 @import "tailwindcss";
 
 @import "tw-animate-css";
@@ -9,10 +45,20 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/**
+ * Light Theme (Default)
+ *
+ * Base theme using Slate palette with excellent contrast ratios.
+ * All values are in HSL format for Tailwind v4 compatibility.
+ */
 :root {
+	/* Border Radius (configurable via SETTINGS.ui.theme.radius) */
 	--radius: 0.625rem;
 
-	/* Z-index hierarchy - Global standards */
+	/* ========================================================================
+	   Z-INDEX HIERARCHY - Global Layer Standards
+	   ======================================================================== */
+	/* CRITICAL: Always use var(--z-*) - NEVER hardcode z-index values */
 	--z-base: 1;
 	--z-dropdown: 10;
 	--z-sticky: 50;
@@ -32,41 +78,68 @@
 	--header-height: 4rem; /* Sticky header: 64px */
 	--footer-height: 4rem; /* Floating navigation: 64px */
 
-	/* Theme colors - Slate palette with excellent contrast */
-	--background: 0 0% 100%;
-	--foreground: 215 28% 17%;
-	--card: 0 0% 100%;
-	--card-foreground: 215 28% 17%;
-	--popover: 0 0% 100%;
-	--popover-foreground: 215 28% 17%;
-	--primary: 215 28% 17%;
-	--primary-foreground: 210 40% 98%;
-	--secondary: 210 40% 96%;
-	--secondary-foreground: 215 28% 17%;
-	--muted: 210 40% 96%;
-	--muted-foreground: 215 16% 47%;
-	--accent: 210 40% 96%;
-	--accent-foreground: 215 28% 17%;
-	--destructive: 0 84.2% 60.2%;
-	--border: 214 32% 91%;
-	--input: 214 32% 91%;
-	--ring: 215 28% 17%;
+	/* ========================================================================
+	   SEMANTIC COLOR VARIABLES - Slate Palette (Light Mode)
+	   ======================================================================== */
+	/* Required by shadcn-svelte components. Format: HSL (no hsl() wrapper) */
+
+	/* Base colors */
+	--background: 0 0% 100%; /* Pure white background */
+	--foreground: 215 28% 17%; /* slate-800: Primary text color */
+
+	/* Card components */
+	--card: 0 0% 100%; /* Card background (white) */
+	--card-foreground: 215 28% 17%; /* slate-800: Card text */
+
+	/* Popover/dropdown components */
+	--popover: 0 0% 100%; /* Popover background */
+	--popover-foreground: 215 28% 17%; /* slate-800: Popover text */
+
+	/* Primary action colors */
+	--primary: 215 28% 17%; /* slate-800: Primary buttons, links */
+	--primary-foreground: 210 40% 98%; /* slate-50: Text on primary */
+
+	/* Secondary action colors */
+	--secondary: 210 40% 96%; /* slate-100: Secondary buttons */
+	--secondary-foreground: 215 28% 17%; /* slate-800: Text on secondary */
+
+	/* Muted/disabled states */
+	--muted: 210 40% 96%; /* slate-100: Muted backgrounds */
+	--muted-foreground: 215 16% 47%; /* slate-500: Muted text */
+
+	/* Accent/highlight colors */
+	--accent: 210 40% 96%; /* slate-100: Accent backgrounds */
+	--accent-foreground: 215 28% 17%; /* slate-800: Text on accent */
+
+	/* Destructive/error states */
+	--destructive: 0 84.2% 60.2%; /* Red for errors/warnings */
+
+	/* Borders and inputs */
+	--border: 214 32% 91%; /* slate-200: Default borders */
+	--input: 214 32% 91%; /* slate-200: Input borders */
+	--ring: 215 28% 17%; /* slate-800: Focus rings */
+
+	/* Chart colors (data visualization) */
 	--chart-1: 12 76% 61%;
 	--chart-2: 173 58% 39%;
 	--chart-3: 197 37% 24%;
 	--chart-4: 43 74% 66%;
 	--chart-5: 27 87% 67%;
-	/* Sidebar with better contrast */
-	--sidebar: 210 40% 98%;
-	--sidebar-foreground: 215 28% 17%;
-	--sidebar-primary: 215 28% 17%;
-	--sidebar-primary-foreground: 210 40% 98%;
-	--sidebar-accent: 210 40% 96%;
-	--sidebar-accent-foreground: 215 28% 17%;
-	--sidebar-border: 214 32% 91%;
-	--sidebar-ring: 215 28% 17%;
 
-	/* Quiz-specific slate palette */
+	/* Sidebar navigation (shadcn-svelte sidebar component) */
+	--sidebar: 210 40% 98%; /* slate-50: Sidebar background */
+	--sidebar-foreground: 215 28% 17%; /* slate-800: Sidebar text */
+	--sidebar-primary: 215 28% 17%; /* slate-800: Active items */
+	--sidebar-primary-foreground: 210 40% 98%; /* slate-50: Text on active */
+	--sidebar-accent: 210 40% 96%; /* slate-100: Hover states */
+	--sidebar-accent-foreground: 215 28% 17%; /* slate-800: Hover text */
+	--sidebar-border: 214 32% 91%; /* slate-200: Sidebar borders */
+	--sidebar-ring: 215 28% 17%; /* slate-800: Focus in sidebar */
+
+	/* ========================================================================
+	   UTILITY COLOR SCALE - Slate Palette (for custom components)
+	   ======================================================================== */
+	/* Complete slate scale for components that need direct palette access */
 	--slate-50: 210 40% 98%;
 	--slate-100: 210 40% 96%;
 	--slate-200: 214 32% 91%;
@@ -80,41 +153,76 @@
 	--slate-950: 229 84% 5%;
 }
 
+/**
+ * Dark Theme
+ *
+ * Dark mode overrides using inverted Slate palette.
+ * Applied when .dark class is present on <html> element.
+ * Automatically managed by theme store (src/lib/stores/theme.ts).
+ */
 .dark {
-	--background: 222 84% 5%;
-	--foreground: 210 40% 98%;
-	--card: 222 84% 5%;
-	--card-foreground: 210 40% 98%;
-	--popover: 222 84% 5%;
-	--popover-foreground: 210 40% 98%;
-	--primary: 210 40% 98%;
-	--primary-foreground: 222 84% 5%;
-	--secondary: 215 28% 17%;
-	--secondary-foreground: 210 40% 98%;
-	--muted: 215 28% 17%;
-	--muted-foreground: 215 20% 65%;
-	--accent: 215 28% 17%;
-	--accent-foreground: 210 40% 98%;
-	--destructive: 0 62.8% 30.6%;
-	--border: 215 28% 17%;
-	--input: 215 28% 17%;
-	--ring: 215 20% 65%;
+	/* ========================================================================
+	   SEMANTIC COLOR VARIABLES - Slate Palette (Dark Mode)
+	   ======================================================================== */
+	/* Dark mode inversions with maintained contrast ratios */
+
+	/* Base colors (inverted) */
+	--background: 222 84% 5%; /* slate-950: Dark background */
+	--foreground: 210 40% 98%; /* slate-50: Light text */
+
+	/* Card components */
+	--card: 222 84% 5%; /* slate-950: Dark card background */
+	--card-foreground: 210 40% 98%; /* slate-50: Light card text */
+
+	/* Popover/dropdown components */
+	--popover: 222 84% 5%; /* slate-950: Dark popover */
+	--popover-foreground: 210 40% 98%; /* slate-50: Light popover text */
+
+	/* Primary action colors (inverted) */
+	--primary: 210 40% 98%; /* slate-50: Light primary (inverted) */
+	--primary-foreground: 222 84% 5%; /* slate-950: Dark text on primary */
+
+	/* Secondary action colors */
+	--secondary: 215 28% 17%; /* slate-800: Secondary backgrounds */
+	--secondary-foreground: 210 40% 98%; /* slate-50: Text on secondary */
+
+	/* Muted/disabled states */
+	--muted: 215 28% 17%; /* slate-800: Muted backgrounds */
+	--muted-foreground: 215 20% 65%; /* slate-400: Muted text */
+
+	/* Accent/highlight colors */
+	--accent: 215 28% 17%; /* slate-800: Accent backgrounds */
+	--accent-foreground: 210 40% 98%; /* slate-50: Text on accent */
+
+	/* Destructive/error states (adjusted for dark) */
+	--destructive: 0 62.8% 30.6%; /* Darker red for dark mode */
+
+	/* Borders and inputs */
+	--border: 215 28% 17%; /* slate-800: Dark borders */
+	--input: 215 28% 17%; /* slate-800: Input borders */
+	--ring: 215 20% 65%; /* slate-400: Focus rings (lighter for visibility) */
+
+	/* Chart colors (adjusted for dark mode) */
 	--chart-1: 220 70% 50%;
 	--chart-2: 160 60% 45%;
 	--chart-3: 30 80% 55%;
 	--chart-4: 280 65% 60%;
 	--chart-5: 340 75% 55%;
-	/* Dark sidebar with slate theme */
-	--sidebar: 215 28% 17%;
-	--sidebar-foreground: 210 40% 98%;
-	--sidebar-primary: 210 40% 60%;
-	--sidebar-primary-foreground: 210 40% 98%;
-	--sidebar-accent: 222 84% 5%;
-	--sidebar-accent-foreground: 210 40% 98%;
-	--sidebar-border: 215 28% 17%;
-	--sidebar-ring: 215 20% 65%;
 
-	/* Quiz-specific dark slate palette */
+	/* Sidebar navigation (dark mode) */
+	--sidebar: 215 28% 17%; /* slate-800: Dark sidebar */
+	--sidebar-foreground: 210 40% 98%; /* slate-50: Light sidebar text */
+	--sidebar-primary: 210 40% 60%; /* slate-400: Active items (medium contrast) */
+	--sidebar-primary-foreground: 210 40% 98%; /* slate-50: Text on active */
+	--sidebar-accent: 222 84% 5%; /* slate-950: Hover states */
+	--sidebar-accent-foreground: 210 40% 98%; /* slate-50: Hover text */
+	--sidebar-border: 215 28% 17%; /* slate-800: Sidebar borders */
+	--sidebar-ring: 215 20% 65%; /* slate-400: Focus in sidebar */
+
+	/* ========================================================================
+	   UTILITY COLOR SCALE - Slate Palette (Dark Mode - Inverted)
+	   ======================================================================== */
+	/* Inverted slate scale for dark mode custom components */
 	--slate-50: 222 84% 5%;
 	--slate-100: 215 28% 17%;
 	--slate-200: 215 25% 27%;

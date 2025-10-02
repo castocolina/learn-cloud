@@ -183,6 +183,19 @@ export type {
 // Configuration exports - Application settings and validation
 export type { AppSettings, ContentLayoutMode, ContentMaxWidth, ContentPadding } from "./config.js";
 
+// Theme exports - Theme system configuration and state
+export type {
+	ThemeMode as ThemeModeExtended,
+	ColorPalette,
+	PathSeverityRule,
+	ThemeValidationConfig,
+	ThemeConfig,
+	ThemeState
+} from "./theme.js";
+
+// Theme type guards
+export { isThemeMode, isColorPalette, isThemeConfig } from "./theme.js";
+
 /**
  * Common type utilities for the application
  */

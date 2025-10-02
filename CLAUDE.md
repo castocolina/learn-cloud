@@ -286,7 +286,7 @@ Before installing any npm package, agents **MUST** perform due diligence:
 - **shadcn-svelte PRIORITY:** Always check component library first before building custom components
 - **THREE-TIERED VALIDATION STRATEGY:** Always use the performance-optimized three-tiered approach for code validation:
   - **Tier 1 (Fast WIP Check ~5-15s):** `make check-wip` or `pnpm run check:wip` - validates only modified/untracked files
-  - **Tier 2 (Testing ~30-60s):** `pnpm run test` - execute unit tests and validation tests
+  - **Tier 2 (Quality Checks ~30-90s):** `make validate-quality` - theme validation + unit tests
   - **Tier 3 (Comprehensive ~1-3m):** `pnpm run format` + `pnpm run lint` + `pnpm run check` - complete project formatting, linting, and TypeScript/SvelteKit validation
 - **ZERO TOLERANCE POLICY:** NO TypeScript errors, NO warnings, NO unused variables (unless user-requested or ShadCN components), NO deprecated components
 - **AUTOMATED VALIDATION:** ESLint and Prettier handle code formatting and quality automatically

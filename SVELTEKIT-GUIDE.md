@@ -1426,12 +1426,19 @@ function navigateToNext() {
 - **shadcn-svelte Priority**: Check component library before building custom components
 - **Mobile-First Development**: Always design and test mobile experience first
 - **CSS Architecture**: Follow modular CSS patterns defined in this guide
+- **Theme System Compliance**: When creating new components, ensure compliance with theme architecture:
+  - ✅ Use CSS custom properties from `src/app.css` (semantic variables like `--primary`, `--background`)
+  - ✅ Use z-index hierarchy via CSS variables (`var(--z-modal)`, `var(--z-dropdown)`, etc.)
+  - ❌ NEVER use hardcoded z-index values
+  - ❌ NEVER use `@apply` in component `<style>` blocks (Tailwind v4 incompatible)
+  - ⚠️ Avoid properties that create stacking contexts on navigation elements (`transform`, `opacity`, `filter`)
+  - 🔍 Run `make validate-theme` or `make validate-quality` to verify compliance
 
 ### Code Quality Standards
 
 - **Three-Tiered Validation Strategy**: Performance-optimized approach for efficient development workflow:
   - **Tier 1 (Fast WIP Check ~5-15s):** `make check-wip` or `pnpm run check:wip` - validates only modified/untracked files with prettier and eslint
-  - **Tier 2 (Testing ~30-60s):** `pnpm run test` - execute unit tests and validation tests
+  - **Tier 2 (Quality Checks ~30-90s):** `make validate-quality` - theme architecture validation + unit tests (validates theme system compliance, z-index hierarchy, stacking contexts, and CSS architecture)
   - **Tier 3 (Comprehensive ~1-3m):** `pnpm run format` + `pnpm run lint` + `pnpm run check` - complete project formatting, linting, and TypeScript/SvelteKit validation
 - **Zero Tolerance Policy**:
   - **NO TypeScript errors** - All code must pass TypeScript validation
