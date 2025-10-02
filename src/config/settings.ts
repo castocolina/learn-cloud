@@ -119,6 +119,11 @@ export const SETTINGS: AppSettings = {
 						description: "Legacy SearchModal component (to be refactored)"
 					},
 					{
+						pattern: "src/lib/components/ui/",
+						severity: "info" as const,
+						description: "ShadCN UI components (external library code)"
+					},
+					{
 						pattern: "src/book/",
 						severity: "info" as const,
 						description: "Legacy HTML content (reference only, not production code)"

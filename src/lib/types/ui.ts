@@ -1,0 +1,140 @@
+/**
+ * UI Component Types
+ *
+ * Centralized type definitions for wrapper components (Task 6 and beyond).
+ * Following the global directive: ALL types reside in $types.
+ *
+ * Pattern: Union types as single source of truth for all string values.
+ *
+ * Related:
+ * - SVELTEKIT-GUIDE.md (Union Type-First Architecture)
+ * - docs/WRAPPER-PATTERN-GUIDE.md (Wrapper component patterns)
+ * - Task 6: shadcn-svelte UI Components
+ */
+
+import type { Snippet } from "svelte";
+
+// =====================================================
+// BUTTON WRAPPER TYPES
+// =====================================================
+
+/**
+ * Button variant union type
+ * Re-exported from shadcn-svelte for centralized access
+ */
+import type {
+	ButtonVariant as ShadcnButtonVariant,
+	ButtonSize as ShadcnButtonSize
+} from "$lib/components/ui/button/index.js";
+
+export type ButtonVariant = ShadcnButtonVariant;
+export type ButtonSize = ShadcnButtonSize;
+
+/**
+ * Button wrapper component props
+ */
+export interface ButtonProps {
+	/** Button visual variant (union type constraint) */
+	variant?: ButtonVariant;
+	/** Button size preset (union type constraint) */
+	size?: ButtonSize;
+	/** Additional CSS classes */
+	class?: string;
+	/** Disabled state */
+	disabled?: boolean;
+	/** Button type attribute */
+	type?: "button" | "submit" | "reset";
+	/** Optional href for link-style buttons */
+	href?: string;
+	/** Button content (Svelte 5 snippet pattern) */
+	children: Snippet;
+}
+
+// =====================================================
+// DIALOG WRAPPER TYPES
+// =====================================================
+
+/**
+ * Dialog size variants
+ * Defines responsive modal sizes for different use cases
+ */
+export type DialogSize = "sm" | "md" | "lg" | "xl" | "full";
+
+/**
+ * Dialog wrapper component props
+ *
+ * Extends shadcn-svelte Dialog with:
+ * - Size presets with responsive behavior
+ * - SETTINGS integration for default configuration
+ * - Mobile-first responsive patterns
+ */
+export interface DialogProps {
+	/** Dialog open state (bindable) */
+	open?: boolean;
+	/** Dialog size variant */
+	size?: DialogSize;
+	/** Dialog title */
+	title?: string;
+	/** Dialog description */
+	description?: string;
+	/** Show close button (default: true) */
+	showCloseButton?: boolean;
+	/** Additional CSS classes for content */
+	class?: string;
+	/** Dialog content (Svelte 5 snippet pattern) */
+	children: Snippet;
+}
+
+// =====================================================
+// PROGRESS WRAPPER TYPES
+// =====================================================
+
+/**
+ * Progress bar size variants
+ * Pattern: Responsive sizing for different use cases
+ * - sm: Quiz question progress (compact)
+ * - md: Standard progress indicators
+ * - lg: Unit completion tracking (prominent)
+ */
+export type ProgressSize = "sm" | "md" | "lg";
+
+/**
+ * Progress wrapper component props
+ *
+ * Extends shadcn-svelte Progress with:
+ * - Percentage display option
+ * - Theme-aware styling
+ * - Validation for value/max ranges
+ */
+export interface ProgressProps {
+	/** Current progress value (0 to max) */
+	value?: number;
+	/** Maximum progress value (default: 100) */
+	max?: number;
+	/** Show percentage text (default: false) */
+	showPercentage?: boolean;
+	/** Additional CSS classes */
+	class?: string;
+	/** Progress bar height variant */
+	size?: ProgressSize;
+}
+
+// =====================================================
+// FUTURE TASK 7-8X WRAPPER TYPES
+// =====================================================
+
+/**
+ * Placeholder for future wrapper types from Tasks 7-8X
+ *
+ * Tasks should add their wrapper types here following the same patterns:
+ * - Union types for string values
+ * - Interface for component props
+ * - Snippet type for children
+ * - SETTINGS integration where applicable
+ *
+ * Examples (to be implemented by respective tasks):
+ * - export type CodeBlockLanguage = "typescript" | "javascript" | ...;
+ * - export interface CodeBlockProps { ... }
+ * - export type MermaidDiagramType = "flowchart" | "sequence" | ...;
+ * - export interface MermaidDiagramProps { ... }
+ */

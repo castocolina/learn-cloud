@@ -2479,3 +2479,72 @@
 		padding: 0 3rem;
 	}
 }
+
+/* =====================================================
+   SHARED WRAPPER COMPONENTS (TASK 6)
+   ===================================================== */
+
+/**
+ * Dialog wrapper component styles
+ *
+ * These styles support the Dialog wrapper component from Task 6,
+ * demonstrating the centralized CSS architecture pattern.
+ *
+ * Key patterns:
+ * - All styles in @layer components (Tailwind v4 compatible)
+ * - Uses semantic color variables (--foreground, --muted, etc.)
+ * - Z-index hierarchy via CSS custom properties (no hardcoded values)
+ * - Mobile-first responsive design
+ *
+ * Related files:
+ * - src/lib/components/shared/Dialog.svelte
+ * - docs/WRAPPER-PATTERN-GUIDE.md
+ */
+
+.dialog-body {
+	padding: 1rem 0;
+}
+
+/**
+ * Progress wrapper component styles
+ *
+ * Supports the Progress wrapper component with percentage display.
+ *
+ * Key features:
+ * - Theme-aware colors (adapts to light/dark mode)
+ * - Mobile-first responsive typography
+ * - Flexible layout with optional percentage text
+ *
+ * Related files:
+ * - src/lib/components/shared/Progress.svelte
+ * - docs/WRAPPER-PATTERN-GUIDE.md
+ */
+
+.progress-wrapper {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.progress-container {
+	width: 100%;
+}
+
+.progress-percentage {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.percentage-text {
+	font-size: 0.875rem;
+	font-weight: 500;
+	color: hsl(var(--foreground));
+}
+
+/* Mobile-first responsive adjustments for progress components */
+@media (max-width: 390px) {
+	.percentage-text {
+		font-size: 0.75rem;
+	}
+}

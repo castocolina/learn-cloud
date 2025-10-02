@@ -3513,6 +3513,8 @@ You are responsible for creating type-specific renderers for each ChapterType wi
 
 - `src/lib/types/types.ts` (ChapterType union types - enhanced from TASK 2)
 - `src/lib/components/ui/` (shadcn components from Task 6)
+- `src/lib/components/shared/` (wrapper patterns from Task 6)
+- `docs/WRAPPER-PATTERN-GUIDE.md` (wrapper component patterns from Task 6)
 - `src/lib/stores/theme.ts` (theme integration)
 - `CONTENT-STANDARDS.md` (content structure)
 - `SVELTEKIT-GUIDE.md` (union type-first TypeScript patterns, Svelte 5 runes, centralized CSS - CRITICAL)
@@ -3520,6 +3522,10 @@ You are responsible for creating type-specific renderers for each ChapterType wi
 ### Prerequisites
 
 - Task 6: shadcn-svelte UI Components completed
+  - ✅ Wrapper pattern established (Button, Dialog, Progress examples)
+  - ✅ src/lib/components/shared/ structure created
+  - ✅ docs/WRAPPER-PATTERN-GUIDE.md available for reference
+  - ✅ Follow wrapper patterns for any new renderer-specific wrappers needed
 
 ### Context
 
@@ -3795,6 +3801,8 @@ You must think harder about the integration with the existing navigation data an
 ### Technical Documents to Review
 
 - `SVELTEKIT-GUIDE.md` (Svelte 5 runes syntax, shadcn-svelte integration)
+- `docs/WRAPPER-PATTERN-GUIDE.md` (wrapper component patterns from Task 6)
+- `src/lib/components/shared/` (reference wrapper patterns from Task 6)
 - `src/data/generated/content-menu.ts` (navigation structure with 2,076 lines of menu data)
 - `src/lib/components/demo/DemoSidebar.svelte` (visual reference for style replication)
 - `src/lib/components/ui/sidebar` (shadcn-svelte Sidebar components)
@@ -3802,6 +3810,7 @@ You must think harder about the integration with the existing navigation data an
 
 ### Prerequisites
 
+- Task 6: shadcn-svelte UI Components completed (wrapper patterns established)
 - Task 7: Content Renderers completed
 
 ### Implementation Details
@@ -4137,17 +4146,20 @@ This is a **reusable foundation component** that provides standardized icon pres
 
 ### Agent Responsibility
 
-You are responsible for developing a reusable shadcn-svelte Dialog component that will be shared across Search (8M), Flipcards (8H), Diagrams (8G), and Code Blocks (8F), with proper z-index hierarchy, accessibility, and mobile-first design following SVELTEKIT-GUIDE.md patterns.
+You are responsible for developing a reusable DialogManager component that EXTENDS the Dialog wrapper pattern from Task 6 (see `src/lib/components/shared/Dialog.svelte`) to create a global dialog system shared across Search (8M), Flipcards (8H), Diagrams (8G), and Code Blocks (8F).
 
 You must think harder about the z-index hierarchy to prevent stacking context violations and the background overlay issues. You must ensure the dialog is mobile-first (full-screen on ≤390px) and accessible (focus management, escape key handling). You must also integrate IconGrid (8D) for consistent button styling. The default close button must be in the top-right corner with proper touch target size (≥44px), cursor pointer, hover effects, and focus states.
 
 ### Technical Documents to Review
 
+- `src/lib/components/shared/Dialog.svelte` (base wrapper pattern from Task 6 - CRITICAL FOUNDATION)
+- `docs/WRAPPER-PATTERN-GUIDE.md` (Dialog wrapper pattern documentation from Task 6)
 - `SVELTEKIT-GUIDE.md` (Svelte 5 syntax, z-index hierarchy, stacking context prevention)
 - `src/lib/components/ui/` (shadcn-svelte Dialog components)
 
 ### Prerequisites
 
+- Task 6: shadcn-svelte UI Components completed (Dialog wrapper foundation)
 - Task 8D: IconGrid Component completed
 
 ### Implementation Details
@@ -4226,13 +4238,26 @@ You must think harder about the integration of syntax highlighting libraries (Sh
 ### Technical Documents to Review
 
 - `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and component standards)
+- `docs/WRAPPER-PATTERN-GUIDE.md` (wrapper component patterns from Task 6)
+- `src/lib/components/shared/` (reference wrapper patterns from Task 6)
 - `src/lib/components/ui/` (shadcn-svelte components)
 - `MERMAID-STANDARDS.md` (for reference on code block syntax handling)
 
 ### Prerequisites
 
+- Task 6: shadcn-svelte UI Components completed (wrapper patterns established)
 - Task 8D: IconGrid Component completed
 - Task 8E: Dialog Component completed
+
+### Task 6 Foundations
+
+This task builds on the wrapper component patterns established in Task 6:
+
+- ✅ Wrapper pattern available: `src/lib/components/shared/` (Button, Dialog, Progress)
+- ✅ Pattern documentation: `docs/WRAPPER-PATTERN-GUIDE.md`
+- ✅ Follow the same Svelte 5 runes + union types pattern for new wrappers
+- ✅ Reference Dialog wrapper (src/lib/components/shared/Dialog.svelte) for modal integration
+- ✅ Use centralized CSS architecture (src/app.css @layer components)
 
 ### Implementation Details
 
@@ -4296,13 +4321,26 @@ You must think harder about the zoom controls are intuitive and mobile-friendly 
 ### Technical Documents to Review
 
 - `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and error handling)
+- `docs/WRAPPER-PATTERN-GUIDE.md` (wrapper component patterns from Task 6)
+- `src/lib/components/shared/` (reference wrapper patterns from Task 6)
 - `MERMAID-STANDARDS.md` (diagram standards, validation, and error reporting)
 - `src/scripts/mermaid-validator.ts` (validation integration from TASK 3C)
 
 ### Prerequisites
 
+- Task 6: shadcn-svelte UI Components completed (wrapper patterns established)
 - Task 8D: IconGrid Component completed
 - Task 8E: Dialog Component completed
+
+### Task 6 Foundations
+
+This task builds on the wrapper component patterns established in Task 6:
+
+- ✅ Wrapper pattern available: `src/lib/components/shared/` (Button, Dialog, Progress)
+- ✅ Pattern documentation: `docs/WRAPPER-PATTERN-GUIDE.md`
+- ✅ Follow the same Svelte 5 runes + union types pattern for new wrappers
+- ✅ Reference Dialog wrapper (src/lib/components/shared/Dialog.svelte) for modal integration
+- ✅ Use centralized CSS architecture (src/app.css @layer components)
 
 ### Implementation Details
 
@@ -5013,6 +5051,8 @@ You are responsible for integrating all developed UI components (Tasks 8A-8N) in
 **Technical Documents to Review:**
 
 - `SVELTEKIT-GUIDE.md` (Svelte 5 integration patterns, centralized CSS, union-first architecture - CRITICAL)
+- `docs/WRAPPER-PATTERN-GUIDE.md` (wrapper component patterns from Task 6 - foundational reference)
+- `src/lib/components/shared/` (Task 6 wrapper implementations)
 - All Task 8A-8N implementations (component outputs)
 - `src/app.css` (centralized component styles)
 - `src/lib/types/` (unified type system for component integration)
@@ -5020,6 +5060,7 @@ You are responsible for integrating all developed UI components (Tasks 8A-8N) in
 
 **Prerequisites:**
 
+- Task 6: shadcn-svelte UI Components completed (wrapper patterns established)
 - Task 8N: Popover Component completed
 - All Tasks 8A-8N: All UI components completed
 
@@ -5117,6 +5158,16 @@ const scaffoldSections: ScaffoldSection[] = [
 - ✅ No CSS class name conflicts between components
 - ✅ All components follow union-first patterns consistently
 - ✅ TypeScript compilation without errors across all components
+
+**Task 6 Wrapper Architecture Verification**:
+
+- ✅ All wrapper components follow Task 6 pattern (Button, Dialog, Progress)
+- ✅ Wrapper pattern documentation complete (docs/WRAPPER-PATTERN-GUIDE.md)
+- ✅ No deprecated Svelte 4 syntax in any wrapper
+- ✅ All wrappers use union-first TypeScript patterns
+- ✅ SETTINGS integration consistent across wrappers
+- ✅ Centralized CSS architecture (src/app.css @layer components)
+- ✅ No @apply usage in component <style> blocks (Tailwind v4 compliance)
 
 **Theme System Verification**:
 
@@ -5216,7 +5267,7 @@ You are responsible for migrating content structure to `src/data/book/` with con
 - `src/data/book/` structure complete
 - Migrated content files
 - Updated content menu
-- Content validation reports
+- Content validation reports (docs/)
 
 **Final Validations:**
 
@@ -5314,7 +5365,7 @@ You must think harder and thoroughly review and research the codebase to identif
 **Expected Output:**
 
 - Production-ready application
-- Performance optimization report
+- Performance optimization report (docs/)
 - Integration test results
 - Complete documentation set
 - Deployment readiness certification

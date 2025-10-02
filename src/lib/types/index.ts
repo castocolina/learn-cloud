@@ -397,6 +397,17 @@ export type {
  */
 export { isContentParseResult, isScaffoldingArgs, isCliExecutionResult } from "./scripts.js";
 
+// UI wrapper exports - Wrapper component types (Task 6)
+export type {
+	ButtonVariant,
+	ButtonSize,
+	ButtonProps,
+	DialogSize,
+	DialogProps,
+	ProgressSize,
+	ProgressProps
+} from "./ui.js";
+
 /**
  * Configuration type guards
  */
