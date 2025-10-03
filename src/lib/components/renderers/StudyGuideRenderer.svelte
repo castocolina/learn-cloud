@@ -1,48 +1,68 @@
 <script lang="ts">
 	/**
-	 * Study Guide Renderer Component
+	 * Study Guide Renderer Component (Task 7)
 	 *
 	 * Displays study guide content with:
-	 * - Study guide title and summary
-	 * - Flashcards (to be implemented in TASK 7)
-	 * - Key concepts
-	 * - Configurable layout based on SETTINGS.ui.content
+	 * - Type-specific header with green gradient and study guide icon (📋)
+	 * - Flashcard integration (placeholder for Task 8H)
+	 * - Related lessons display
 	 *
-	 * TODO (TASK 7):
-	 * - Integrate Flipcard component (TASK 8H)
-	 * - Add modal expansion (TASK 8E)
-	 * - Add progress tracking
-	 * - Add study session management
+	 * Architecture:
+	 * - Svelte 5 runes syntax
+	 * - Union type-first patterns
+	 * - ContentHeader shared component
 	 *
 	 * @component StudyGuideRenderer
 	 */
 
-	import type { ContentRendererProps } from "$types";
+	import type { StudyGuideContent } from "$types";
 	import { SETTINGS } from "$config/settings.js";
+	import ContentHeader from "$lib/components/shared/ContentHeader.svelte";
 
-	let { content }: ContentRendererProps = $props();
+	interface Props {
+		content: StudyGuideContent;
+	}
 
-	// Extract content layout configuration
+	let { content }: Props = $props();
+
 	const { layoutMode, maxWidth, padding } = SETTINGS.ui.content;
+	const isStudyGuideContent = $derived(content.type === "study_guide");
 </script>
 
-<div class="content-renderer">
-	<article
-		class="renderer-article"
-		data-layout={layoutMode}
-		data-max-width={maxWidth}
-		data-padding={padding}
-	>
-		<header class="renderer-header">
-			<h1>{content.title}</h1>
-			{#if content.summary}
-				<p class="text-slate-600 dark:text-slate-400">{content.summary}</p>
-			{/if}
-		</header>
-		<div class="renderer-content">
-			<div class="renderer-placeholder">
-				<p class="renderer-placeholder-text">TODO: TASK 7 - Implement Study Guide rendering</p>
+{#if isStudyGuideContent}
+	<div class="content-renderer">
+		<article
+			class="renderer-article"
+			data-layout={layoutMode}
+			data-max-width={maxWidth}
+			data-padding={padding}
+		>
+			<ContentHeader title={content.title} chapterType="study_guide" summary={content.summary} />
+
+			<div class="renderer-content">
+				<!-- Study Guide Content Placeholder -->
+				<div class="renderer-placeholder">
+					<p class="renderer-placeholder-text">
+						📋 <strong>Task 8H:</strong> Flashcard integration coming soon
+					</p>
+					{#if content.relatedLessons && content.relatedLessons.length > 0}
+						<div class="related-lessons">
+							<h3>Related Lessons:</h3>
+							<ul>
+								{#each content.relatedLessons as lesson, index (index)}
+									<li>{lesson}</li>
+								{/each}
+							</ul>
+						</div>
+					{/if}
+				</div>
 			</div>
+		</article>
+	</div>
+{:else}
+	<div class="content-renderer">
+		<div class="renderer-error">
+			<p>Error: Invalid content type. Expected "study_guide" but received "{content.type}".</p>
 		</div>
-	</article>
-</div>
+	</div>
+{/if}

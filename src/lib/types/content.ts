@@ -207,6 +207,17 @@ export interface ImageBlock {
 }
 
 /**
+ * Video track for captions/subtitles (accessibility)
+ */
+export interface VideoTrack {
+	src: string;
+	kind: "captions" | "subtitles" | "descriptions" | "chapters" | "metadata";
+	srclang: string;
+	label: string;
+	default?: boolean;
+}
+
+/**
  * Video block for multimedia content
  */
 export interface VideoBlock {
@@ -216,6 +227,7 @@ export interface VideoBlock {
 	caption?: string;
 	controls?: boolean;
 	autoplay?: boolean;
+	tracks?: VideoTrack[];
 	id?: string;
 }
 
@@ -472,4 +484,33 @@ export interface ContentValidation {
 export interface ContentRendererProps {
 	/** Content object to render (type-safe union of all content types) */
 	content: BaseContent;
+}
+
+/**
+ * Rich Text Viewer Props Interface (Task 7)
+ *
+ * Generic renderer for ContentBlock union types with type-safe delegation
+ * to specialized components.
+ *
+ * Supported Block Types:
+ * - ParagraphBlock: Rich text paragraphs with inline formatting
+ * - CodeBlock: Syntax-highlighted code (placeholder for Task 8F)
+ * - DiagramBlock: Mermaid diagrams (placeholder for Task 8G)
+ * - CalloutBlock: Highlighted information boxes
+ * - ImageBlock: Images with captions
+ * - VideoBlock: Video embeds with controls
+ * - InteractiveBlock: Embedded interactive components
+ *
+ * Architecture:
+ * - Uses type guards for safe block type discrimination
+ * - Centralized CSS in src/styles/components.css
+ *
+ * @see components/renderers/RichTextViewer.svelte
+ * @see ContentBlock union type definition (lines 139-146)
+ */
+export interface RichTextViewerProps {
+	/** Array of content blocks to render */
+	blocks: ContentBlock[];
+	/** Optional CSS class for custom styling */
+	class?: string;
 }

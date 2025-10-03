@@ -1,50 +1,68 @@
 <script lang="ts">
 	/**
-	 * Exam Renderer Component
+	 * Exam Renderer Component (Task 7)
 	 *
 	 * Displays exam content with:
-	 * - Exam title and instructions
-	 * - Questions (to be implemented in TASK 7)
-	 * - Timer and navigation (to be implemented in TASK 8I)
-	 * - Configurable layout based on SETTINGS.ui.content
+	 * - Type-specific header with red gradient and exam icon (🎯)
+	 * - Exam system integration (placeholder for Task 8I)
 	 *
-	 * TODO (TASK 7 & 8I):
-	 * - Add exam questions rendering
-	 * - Integrate exam navigation (TASK 8I)
-	 * - Add timer with time limits
-	 * - Add progress tracking
-	 * - Add scoring and results
-	 * - Add exam submission
+	 * Architecture:
+	 * - Svelte 5 runes syntax
+	 * - Union type-first patterns
+	 * - ContentHeader shared component
 	 *
 	 * @component ExamRenderer
 	 */
 
-	import type { ContentRendererProps } from "$types";
+	import type { ExamContent } from "$types";
 	import { SETTINGS } from "$config/settings.js";
+	import ContentHeader from "$lib/components/shared/ContentHeader.svelte";
 
-	let { content }: ContentRendererProps = $props();
+	interface Props {
+		content: ExamContent;
+	}
 
-	// Extract content layout configuration
+	let { content }: Props = $props();
+
 	const { layoutMode, maxWidth, padding } = SETTINGS.ui.content;
+	const isExamContent = $derived(content.type === "exam");
 </script>
 
-<div class="content-renderer">
-	<article
-		class="renderer-article"
-		data-layout={layoutMode}
-		data-max-width={maxWidth}
-		data-padding={padding}
-	>
-		<header class="renderer-header">
-			<h1>{content.title}</h1>
-			{#if content.summary}
-				<p class="text-slate-600 dark:text-slate-400">{content.summary}</p>
-			{/if}
-		</header>
-		<div class="renderer-content">
-			<div class="renderer-placeholder">
-				<p class="renderer-placeholder-text">TODO: TASK 7 - Implement Exam rendering</p>
+{#if isExamContent}
+	<div class="content-renderer">
+		<article
+			class="renderer-article"
+			data-layout={layoutMode}
+			data-max-width={maxWidth}
+			data-padding={padding}
+		>
+			<ContentHeader
+				title={content.title}
+				chapterType="exam"
+				estimatedTime={content.duration}
+				prerequisites={content.prerequisites}
+				summary={content.summary}
+			/>
+
+			<div class="renderer-content">
+				<div class="renderer-placeholder">
+					<p class="renderer-placeholder-text">
+						🎯 <strong>Task 8I:</strong> Exam system integration coming soon
+					</p>
+					{#if content.exam}
+						<p class="renderer-placeholder-text">
+							Duration: {content.duration} min | Passing Score: {content.exam.passingScore}% |
+							Questions: {content.exam.questions.length}
+						</p>
+					{/if}
+				</div>
 			</div>
+		</article>
+	</div>
+{:else}
+	<div class="content-renderer">
+		<div class="renderer-error">
+			<p>Error: Invalid content type. Expected "exam" but received "{content.type}".</p>
 		</div>
-	</article>
-</div>
+	</div>
+{/if}

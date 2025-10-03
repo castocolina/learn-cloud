@@ -74,6 +74,7 @@ export type {
 	CalloutBlock,
 	ImageBlock,
 	VideoBlock,
+	VideoTrack,
 	InteractiveBlock,
 	LessonContent,
 	QuizContent,
@@ -93,7 +94,8 @@ export type {
 	DragAndDropQuestion,
 	Flashcard,
 	ContentValidation,
-	ContentRendererProps
+	ContentRendererProps,
+	RichTextViewerProps
 } from "./content.js";
 
 // Navigation exports - Unified navigation architecture
@@ -397,7 +399,7 @@ export type {
  */
 export { isContentParseResult, isScaffoldingArgs, isCliExecutionResult } from "./scripts.js";
 
-// UI wrapper exports - Wrapper component types (Task 6)
+// UI wrapper exports - Wrapper component types (Task 6, Task 7)
 export type {
 	ButtonVariant,
 	ButtonSize,
@@ -405,7 +407,8 @@ export type {
 	DialogSize,
 	DialogProps,
 	ProgressSize,
-	ProgressProps
+	ProgressProps,
+	ContentHeaderProps
 } from "./ui.js";
 
 /**

@@ -31,7 +31,15 @@
 	import { loadChapterContent, preloadAdjacent } from "$lib/utils/contentLoader.js";
 	import { navigateToContent } from "$lib/utils/spaNavigation.js";
 	import { parseHash } from "$lib/utils/hashRouter.js";
-	import type { AnyContent, FlatNavEntry } from "$types";
+	import type {
+		AnyContent,
+		FlatNavEntry,
+		LessonContent,
+		StudyGuideContent,
+		QuizContent,
+		ExamContent,
+		ProjectContent
+	} from "$types";
 
 	// Renderer imports
 	import OverviewRenderer from "./renderers/OverviewRenderer.svelte";
@@ -144,15 +152,15 @@
 		{#if currentEntry.chapterType === "overview"}
 			<OverviewRenderer content={currentContent} />
 		{:else if currentEntry.chapterType === "lesson"}
-			<LessonRenderer content={currentContent} />
+			<LessonRenderer content={currentContent as LessonContent} />
 		{:else if currentEntry.chapterType === "study_guide"}
-			<StudyGuideRenderer content={currentContent} />
+			<StudyGuideRenderer content={currentContent as StudyGuideContent} />
 		{:else if currentEntry.chapterType === "quiz"}
-			<QuizRenderer content={currentContent} />
+			<QuizRenderer content={currentContent as QuizContent} />
 		{:else if currentEntry.chapterType === "exam"}
-			<ExamRenderer content={currentContent} />
+			<ExamRenderer content={currentContent as ExamContent} />
 		{:else if currentEntry.chapterType === "project"}
-			<ProjectRenderer content={currentContent} />
+			<ProjectRenderer content={currentContent as ProjectContent} />
 		{:else}
 			<div class="error-state">
 				<h2>Unknown Content Type</h2>

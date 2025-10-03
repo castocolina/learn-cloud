@@ -99,6 +99,8 @@ else
 	echo_info "ESLint check is disabled, skipping linting step"
 fi
 
+npx tsx src/scripts/validate-theme.ts --wip --quiet || echo_warning "Theme validation encountered issues"
+
 # Run Svelte Check if enabled and TypeScript files are present
 if [ "$ENABLE_SVELTE_CHECK" = true ]; then
 	echo_step "3" "Running Svelte TypeScript check..."

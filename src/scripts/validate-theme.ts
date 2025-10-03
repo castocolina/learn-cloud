@@ -58,6 +58,7 @@ interface CliOptions {
 	wip?: boolean;
 	strict?: boolean;
 	severityRules?: boolean;
+	quiet?: boolean;
 }
 
 const program = new Command();
@@ -69,6 +70,7 @@ program
 	.option("--file <filename>", "Validate specific file (.svelte or .css)")
 	.option("--wip", "Validate only work-in-progress files (git modified/untracked)", false)
 	.option("--strict", "Strict mode (warnings become errors)", false)
+	.option("--quiet", "Minimal output (errors/warnings + summary only)", false)
 	.option("--no-severity-rules", "Disable severity classification", true)
 	.parse(process.argv);
 
@@ -210,11 +212,22 @@ interface ValidationReport {
 	info: ValidationIssue[];
 	summary: {
 		filesScanned: number;
+		filesWithIssues: number;
 		errorsFound: number;
 		warningsFound: number;
 		infoFound: number;
 	};
 }
+
+// ============================================================================
+// FILE TRACKING
+// ============================================================================
+
+/**
+ * Global set to track all files scanned during validation
+ * (reset before each validation run in main())
+ */
+let scannedFiles: Set<string> = new Set();
 
 // ============================================================================
 // TIMING UTILITIES
@@ -348,6 +361,8 @@ function* getFilesToValidate(pattern: RegExp): Generator<string> {
 		const wipFiles = getWipFilesFromGit();
 		for (const file of wipFiles) {
 			if (pattern.test(file)) {
+				const relativePath = relative(PROJECT_ROOT, file);
+				scannedFiles.add(relativePath);
 				yield file;
 			}
 		}
@@ -358,6 +373,8 @@ function* getFilesToValidate(pattern: RegExp): Generator<string> {
 	if (cliOptions.file) {
 		const targetFile = resolve(PROJECT_ROOT, cliOptions.file);
 		if (pattern.test(targetFile)) {
+			const relativePath = relative(PROJECT_ROOT, targetFile);
+			scannedFiles.add(relativePath);
 			yield targetFile;
 		}
 		return;
@@ -392,6 +409,7 @@ function* walkFiles(dir: string, pattern: RegExp): Generator<string> {
 			if (entry.isDirectory()) {
 				yield* walkFiles(fullPath, pattern);
 			} else if (pattern.test(entry.name)) {
+				scannedFiles.add(relativePath);
 				yield fullPath;
 			}
 		}
@@ -415,7 +433,7 @@ function readFileLines(filePath: string): string[] {
 // Check for @apply in component <style> blocks (Tailwind v4 incompatible)
 // ============================================================================
 
-function validateNoApplyInComponents(): ValidationIssue[] {
+function validateNoApplyInComponents(quiet = false): ValidationIssue[] {
 	const startTime = performance.now();
 	const issues: ValidationIssue[] = [];
 
@@ -464,11 +482,13 @@ function validateNoApplyInComponents(): ValidationIssue[] {
 	}
 
 	const elapsed = performance.now() - startTime;
-	console.log(
+	const message =
 		issues.length === 0
-			? `  ✅ No @apply usage in component <style> blocks (${formatTime(elapsed)})`
-			: `  ❌ Found ${issues.length} @apply violations (${formatTime(elapsed)})`
-	);
+			? quiet
+				? `  ✅ No @apply usage`
+				: `  ✅ No @apply usage in component <style> blocks (${formatTime(elapsed)})`
+			: `  ❌ Found ${issues.length} @apply violations (${formatTime(elapsed)})`;
+	console.log(message);
 
 	return issues;
 }
@@ -478,7 +498,7 @@ function validateNoApplyInComponents(): ValidationIssue[] {
 // Verify CSS variables are properly defined in :root and .dark
 // ============================================================================
 
-function validateThemeConsistency(): ValidationIssue[] {
+function validateThemeConsistency(quiet = false): ValidationIssue[] {
 	const startTime = performance.now();
 	const issues: ValidationIssue[] = [];
 
@@ -580,11 +600,14 @@ function validateThemeConsistency(): ValidationIssue[] {
 	}
 
 	const elapsed = performance.now() - startTime;
-	console.log(
-		issues.filter((i) => i.severity === "error").length === 0
-			? `  ✅ Theme variables properly defined (${formatTime(elapsed)})`
-			: `  ❌ Found ${issues.filter((i) => i.severity === "error").length} theme consistency issues (${formatTime(elapsed)})`
-	);
+	const errorCount = issues.filter((i) => i.severity === "error").length;
+	const message =
+		errorCount === 0
+			? quiet
+				? `  ✅ Theme variables properly defined`
+				: `  ✅ Theme variables properly defined (${formatTime(elapsed)})`
+			: `  ❌ Found ${errorCount} theme consistency issues (${formatTime(elapsed)})`;
+	console.log(message);
 
 	return issues;
 }
@@ -594,7 +617,7 @@ function validateThemeConsistency(): ValidationIssue[] {
 // Verify no hardcoded z-index values (must use var(--z-*))
 // ============================================================================
 
-function validateZIndexHierarchy(): ValidationIssue[] {
+function validateZIndexHierarchy(quiet = false): ValidationIssue[] {
 	const issues: ValidationIssue[] = [];
 
 	if (!SETTINGS.ui.theme.validation.strictMode) {
@@ -700,11 +723,13 @@ function validateZIndexHierarchy(): ValidationIssue[] {
 	}
 
 	const elapsed = performance.now() - startTime;
-	console.log(
+	const message =
 		issues.length === 0
-			? `  ✅ Z-index hierarchy properly implemented (${formatTime(elapsed)})`
-			: `  ❌ Found ${issues.length} z-index violations (${formatTime(elapsed)})`
-	);
+			? quiet
+				? `  ✅ Z-index hierarchy properly implemented`
+				: `  ✅ Z-index hierarchy properly implemented (${formatTime(elapsed)})`
+			: `  ❌ Found ${issues.length} z-index violations (${formatTime(elapsed)})`;
+	console.log(message);
 
 	return issues;
 }
@@ -714,7 +739,7 @@ function validateZIndexHierarchy(): ValidationIssue[] {
 // Check for transform/opacity properties on navigation elements
 // ============================================================================
 
-function validateStackingContext(): ValidationIssue[] {
+function validateStackingContext(quiet = false): ValidationIssue[] {
 	const issues: ValidationIssue[] = [];
 
 	if (!SETTINGS.ui.theme.validation.checkStackingContext) {
@@ -769,11 +794,13 @@ function validateStackingContext(): ValidationIssue[] {
 	}
 
 	const elapsed = performance.now() - startTime;
-	console.log(
+	const message =
 		issues.length === 0
-			? `  ✅ No stacking context violations detected (${formatTime(elapsed)})`
-			: `  ⚠️  Found ${issues.length} potential stacking context issues (${formatTime(elapsed)})`
-	);
+			? quiet
+				? `  ✅ No stacking context violations detected`
+				: `  ✅ No stacking context violations detected (${formatTime(elapsed)})`
+			: `  ⚠️  Found ${issues.length} potential stacking context issues (${formatTime(elapsed)})`;
+	console.log(message);
 
 	return issues;
 }
@@ -783,7 +810,7 @@ function validateStackingContext(): ValidationIssue[] {
 // Ensure slate palette is consistently applied
 // ============================================================================
 
-function validateColorPalette(): ValidationIssue[] {
+function validateColorPalette(quiet = false): ValidationIssue[] {
 	const issues: ValidationIssue[] = [];
 
 	console.log("\n🔍 Validation 5: Validating color palette consistency...");
@@ -796,7 +823,10 @@ function validateColorPalette(): ValidationIssue[] {
 	// We just verify that the configuration matches what's documented
 
 	const elapsed = performance.now() - startTime;
-	console.log(`  ✅ Color palette configuration verified (${formatTime(elapsed)})`);
+	const message = quiet
+		? `  ✅ Color palette configuration verified`
+		: `  ✅ Color palette configuration verified (${formatTime(elapsed)})`;
+	console.log(message);
 
 	return issues;
 }
@@ -806,7 +836,7 @@ function validateColorPalette(): ValidationIssue[] {
 // Check for inline styles (style="...") in component templates - HIGH SEVERITY
 // ============================================================================
 
-function validateInlineStyles(): ValidationIssue[] {
+function validateInlineStyles(quiet = false): ValidationIssue[] {
 	const issues: ValidationIssue[] = [];
 
 	if (!SETTINGS.ui.theme.validation.checkInlineStyles) {
@@ -866,11 +896,13 @@ function validateInlineStyles(): ValidationIssue[] {
 	}
 
 	const elapsed = performance.now() - startTime;
-	console.log(
+	const message =
 		issues.length === 0
-			? `  ✅ No inline styles detected (${formatTime(elapsed)})`
-			: `  ❌ Found ${issues.length} inline style violations (${formatTime(elapsed)})`
-	);
+			? quiet
+				? `  ✅ No inline styles detected`
+				: `  ✅ No inline styles detected (${formatTime(elapsed)})`
+			: `  ❌ Found ${issues.length} inline style violations (${formatTime(elapsed)})`;
+	console.log(message);
 
 	return issues;
 }
@@ -880,7 +912,7 @@ function validateInlineStyles(): ValidationIssue[] {
 // Warn about <style> blocks in components (modular CSS architecture)
 // ============================================================================
 
-function validateComponentStyleBlocks(): ValidationIssue[] {
+function validateComponentStyleBlocks(quiet = false): ValidationIssue[] {
 	const issues: ValidationIssue[] = [];
 
 	if (!SETTINGS.ui.theme.validation.checkComponentStyleBlocks) {
@@ -935,11 +967,13 @@ function validateComponentStyleBlocks(): ValidationIssue[] {
 	}
 
 	const elapsed = performance.now() - startTime;
-	console.log(
+	const message =
 		issues.length === 0
-			? `  ✅ No <style> blocks detected (${formatTime(elapsed)})`
-			: `  ⚠️  Found ${issues.length} components with <style> blocks (${formatTime(elapsed)})`
-	);
+			? quiet
+				? `  ✅ No <style> blocks detected`
+				: `  ✅ No <style> blocks detected (${formatTime(elapsed)})`
+			: `  ⚠️  Found ${issues.length} components with <style> blocks (${formatTime(elapsed)})`;
+	console.log(message);
 
 	return issues;
 }
@@ -953,8 +987,11 @@ function generateReport(issues: ValidationIssue[]): ValidationReport {
 	const warnings = issues.filter((i) => i.severity === "warning");
 	const info = issues.filter((i) => i.severity === "info");
 
-	// Count unique files scanned
-	const filesScanned = new Set(issues.map((i) => i.file)).size;
+	// Count files scanned from global Set
+	const filesScanned = scannedFiles.size;
+
+	// Count unique files with issues
+	const filesWithIssues = new Set(issues.map((i) => i.file)).size;
 
 	return {
 		passed: errors.length === 0,
@@ -963,6 +1000,7 @@ function generateReport(issues: ValidationIssue[]): ValidationReport {
 		info,
 		summary: {
 			filesScanned,
+			filesWithIssues,
 			errorsFound: errors.length,
 			warningsFound: warnings.length,
 			infoFound: info.length
@@ -970,7 +1008,7 @@ function generateReport(issues: ValidationIssue[]): ValidationReport {
 	};
 }
 
-function printReport(report: ValidationReport): void {
+function printReport(report: ValidationReport, quiet = false): void {
 	console.log("\n" + "=".repeat(80));
 	console.log("THEME VALIDATION REPORT");
 	console.log("=".repeat(80));
@@ -997,8 +1035,8 @@ function printReport(report: ValidationReport): void {
 		});
 	}
 
-	// Print info (legacy/demo code issues)
-	if (report.info.length > 0) {
+	// Print info (legacy/demo code issues) - SKIP in quiet mode
+	if (!quiet && report.info.length > 0) {
 		console.log("\nℹ️  INFORMATIONAL (Legacy/Demo Code):\n");
 		report.info.forEach((issue) => {
 			console.log(`  ${issue.code} - ${issue.file}:${issue.line > 0 ? issue.line : "global"}`);
@@ -1014,23 +1052,26 @@ function printReport(report: ValidationReport): void {
 	console.log("\n" + "=".repeat(80));
 	console.log("SUMMARY");
 	console.log("=".repeat(80));
-	console.log(`Files scanned: ${report.summary.filesScanned || "N/A"}`);
+	console.log(`Files scanned: ${report.summary.filesScanned}`);
+	console.log(`Files with issues: ${report.summary.filesWithIssues}`);
 	console.log(`Errors found: ${report.summary.errorsFound}`);
 	console.log(`Warnings found: ${report.summary.warningsFound}`);
 	console.log(`Info found: ${report.summary.infoFound}`);
 
-	// Configuration summary
-	console.log("\n" + "=".repeat(80));
-	console.log("THEME CONFIGURATION");
-	console.log("=".repeat(80));
-	console.log(`Color Palette: ${SETTINGS.ui.theme.colorPalette}`);
-	console.log(`Default Mode: ${SETTINGS.ui.theme.defaultMode}`);
-	console.log(`Border Radius: ${SETTINGS.ui.theme.radius}rem`);
-	console.log(`Strict Mode: ${SETTINGS.ui.theme.validation.strictMode ? "✅" : "❌"}`);
-	console.log(`Contrast Check: ${SETTINGS.ui.theme.validation.checkColorContrast ? "✅" : "❌"}`);
-	console.log(
-		`Stacking Context Check: ${SETTINGS.ui.theme.validation.checkStackingContext ? "✅" : "❌"}`
-	);
+	// Configuration summary - SKIP in quiet mode
+	if (!quiet) {
+		console.log("\n" + "=".repeat(80));
+		console.log("THEME CONFIGURATION");
+		console.log("=".repeat(80));
+		console.log(`Color Palette: ${SETTINGS.ui.theme.colorPalette}`);
+		console.log(`Default Mode: ${SETTINGS.ui.theme.defaultMode}`);
+		console.log(`Border Radius: ${SETTINGS.ui.theme.radius}rem`);
+		console.log(`Strict Mode: ${SETTINGS.ui.theme.validation.strictMode ? "✅" : "❌"}`);
+		console.log(`Contrast Check: ${SETTINGS.ui.theme.validation.checkColorContrast ? "✅" : "❌"}`);
+		console.log(
+			`Stacking Context Check: ${SETTINGS.ui.theme.validation.checkStackingContext ? "✅" : "❌"}`
+		);
+	}
 
 	if (report.passed) {
 		console.log("\n✅ All theme validation checks passed!");
@@ -1045,6 +1086,8 @@ function printReport(report: ValidationReport): void {
 // ============================================================================
 
 async function main(): Promise<void> {
+	const totalStartTime = performance.now();
+
 	console.log("🎨 Theme System Validation");
 	console.log("=".repeat(80));
 	console.log(`Project: ${PROJECT_ROOT}`);
@@ -1087,20 +1130,27 @@ async function main(): Promise<void> {
 		process.exit(0);
 	}
 
+	// Reset scanned files tracking
+	scannedFiles = new Set();
+
 	// Run all validations
 	const allIssues: ValidationIssue[] = [
-		...validateNoApplyInComponents(),
-		...validateThemeConsistency(),
-		...validateZIndexHierarchy(),
-		...validateStackingContext(),
-		...validateColorPalette(),
-		...validateInlineStyles(),
-		...validateComponentStyleBlocks()
+		...validateNoApplyInComponents(cliOptions.quiet),
+		...validateThemeConsistency(cliOptions.quiet),
+		...validateZIndexHierarchy(cliOptions.quiet),
+		...validateStackingContext(cliOptions.quiet),
+		...validateColorPalette(cliOptions.quiet),
+		...validateInlineStyles(cliOptions.quiet),
+		...validateComponentStyleBlocks(cliOptions.quiet)
 	];
 
 	// Generate and print report
 	const report = generateReport(allIssues);
-	printReport(report);
+	printReport(report, cliOptions.quiet);
+
+	// Print total validation time
+	const totalElapsed = performance.now() - totalStartTime;
+	console.log(`⏱️  Total validation time: ${formatTime(totalElapsed)}\n`);
 
 	// Exit with appropriate code
 	process.exit(report.passed ? 0 : 1);

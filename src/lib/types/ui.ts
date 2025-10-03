@@ -120,11 +120,50 @@ export interface ProgressProps {
 }
 
 // =====================================================
-// FUTURE TASK 7-8X WRAPPER TYPES
+// CONTENT HEADER WRAPPER TYPES (TASK 7)
+// =====================================================
+
+import type { ChapterType, ContentDifficulty, TechnologyUnit } from "./types.js";
+
+/**
+ * Content Header wrapper component props
+ *
+ * Provides differentiated headers for each ChapterType with:
+ * - Type-specific icons and color gradients
+ * - Unit-specific accent borders
+ * - Metadata badges (difficulty, estimated time)
+ * - Prerequisites and learning objectives
+ * - Mobile-first responsive design
+ *
+ * Related:
+ * - src/lib/components/shared/ContentHeader.svelte
+ * - src/styles/components.css (header styles)
+ */
+export interface ContentHeaderProps {
+	/** Content title */
+	title: string;
+	/** Chapter type for icon and color selection */
+	chapterType: ChapterType;
+	/** Optional unit name for accent color */
+	unitName?: TechnologyUnit;
+	/** Optional estimated time in minutes */
+	estimatedTime?: number;
+	/** Optional difficulty level */
+	difficulty?: ContentDifficulty;
+	/** Optional prerequisites list */
+	prerequisites?: string[];
+	/** Optional learning objectives list */
+	learningObjectives?: string[];
+	/** Optional summary text */
+	summary?: string;
+}
+
+// =====================================================
+// FUTURE TASK 8X WRAPPER TYPES
 // =====================================================
 
 /**
- * Placeholder for future wrapper types from Tasks 7-8X
+ * Placeholder for future wrapper types from Tasks 8X
  *
  * Tasks should add their wrapper types here following the same patterns:
  * - Union types for string values

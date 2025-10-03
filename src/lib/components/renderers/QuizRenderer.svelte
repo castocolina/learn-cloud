@@ -1,49 +1,62 @@
 <script lang="ts">
 	/**
-	 * Quiz Renderer Component
+	 * Quiz Renderer Component (Task 7)
 	 *
 	 * Displays quiz content with:
-	 * - Quiz title and instructions
-	 * - Questions (to be implemented in TASK 7)
-	 * - Navigation controls (to be implemented in TASK 8I)
-	 * - Configurable layout based on SETTINGS.ui.content
+	 * - Type-specific header with orange gradient and quiz icon (❓)
+	 * - Quiz integration (existing demo quiz functionality)
 	 *
-	 * TODO (TASK 7 & 8I):
-	 * - Add question rendering
-	 * - Integrate quiz navigation (TASK 8I)
-	 * - Add timer and progress tracking
-	 * - Add scoring and feedback
-	 * - Add results display
+	 * Architecture:
+	 * - Svelte 5 runes syntax
+	 * - Union type-first patterns
+	 * - ContentHeader shared component
 	 *
 	 * @component QuizRenderer
 	 */
 
-	import type { ContentRendererProps } from "$types";
+	import type { QuizContent } from "$types";
 	import { SETTINGS } from "$config/settings.js";
+	import ContentHeader from "$lib/components/shared/ContentHeader.svelte";
 
-	let { content }: ContentRendererProps = $props();
+	interface Props {
+		content: QuizContent;
+	}
 
-	// Extract content layout configuration
+	let { content }: Props = $props();
+
 	const { layoutMode, maxWidth, padding } = SETTINGS.ui.content;
+	const isQuizContent = $derived(content.type === "quiz");
 </script>
 
-<div class="content-renderer">
-	<article
-		class="renderer-article"
-		data-layout={layoutMode}
-		data-max-width={maxWidth}
-		data-padding={padding}
-	>
-		<header class="renderer-header">
-			<h1>{content.title}</h1>
-			{#if content.summary}
-				<p class="text-slate-600 dark:text-slate-400">{content.summary}</p>
-			{/if}
-		</header>
-		<div class="renderer-content">
-			<div class="renderer-placeholder">
-				<p class="renderer-placeholder-text">TODO: TASK 7 - Implement Quiz rendering</p>
+{#if isQuizContent}
+	<div class="content-renderer">
+		<article
+			class="renderer-article"
+			data-layout={layoutMode}
+			data-max-width={maxWidth}
+			data-padding={padding}
+		>
+			<ContentHeader title={content.title} chapterType="quiz" summary={content.summary} />
+
+			<div class="renderer-content">
+				<div class="renderer-placeholder">
+					<p class="renderer-placeholder-text">
+						❓ <strong>Task 8I:</strong> Quiz system integration coming soon
+					</p>
+					{#if content.quiz}
+						<p class="renderer-placeholder-text">
+							Passing Score: {content.quiz.passingScore}% | Questions: {content.quiz.questions
+								.length}
+						</p>
+					{/if}
+				</div>
 			</div>
+		</article>
+	</div>
+{:else}
+	<div class="content-renderer">
+		<div class="renderer-error">
+			<p>Error: Invalid content type. Expected "quiz" but received "{content.type}".</p>
 		</div>
-	</article>
-</div>
+	</div>
+{/if}
