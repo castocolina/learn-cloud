@@ -159,6 +159,36 @@ export interface ContentHeaderProps {
 }
 
 // =====================================================
+// RICH PARAGRAPH WRAPPER TYPES (TASK 7B - Refactored)
+// =====================================================
+
+import type { RichParagraph } from "./rich-text.js";
+
+/**
+ * Rich Paragraph component props
+ *
+ * Secure renderer for RichTextNode[] arrays (union-based architecture).
+ * Provides safe rendering of formatted text with:
+ * - Type-safe discriminated unions (TextNode, LinkNode, HeadingNode)
+ * - Dynamic heading levels (h1-h6)
+ * - Array-based formatting (no combinatorial explosion)
+ * - Secure link handling with auto-detection
+ * - Accessibility support
+ *
+ * Related:
+ * - src/lib/components/renderers/RichParagraph.svelte
+ * - src/lib/types/rich-text.ts (RichTextNode union)
+ * - src/lib/components/renderers/FormattedText.svelte
+ * - src/lib/components/renderers/ExternalLink.svelte
+ */
+export interface RichParagraphProps {
+	/** Array of rich text nodes to render */
+	nodes: RichParagraph;
+	/** Optional CSS class for custom styling */
+	class?: string;
+}
+
+// =====================================================
 // FUTURE TASK 8X WRAPPER TYPES
 // =====================================================
 

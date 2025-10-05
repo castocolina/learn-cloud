@@ -1,51 +1,45 @@
 /**
- * Rich Text Data Structures for Secure Content Display
+ * Rich Text Data Structures for Secure Content Display (TASK 7B Refactored)
  *
- * This module provides a structured system for rich text content representation,
- * replacing simple string properties and preventing raw HTML injection.
+ * Union-based architecture with separated concerns:
+ * - Formatting (styles array) vs Semantics (heading) vs Navigation (link)
+ * - Base interface for shared properties
+ * - Type-safe discriminated unions prevent invalid combinations
+ * - Array of styles eliminates if/else combinatoria
  *
- * The system enables secure content rendering without {@html} usage while
- * maintaining formatting flexibility and type safety.
- *
- * Implementation as defined in TASK 2B: Define Rich Text Data Structures
+ * Benefits:
+ * - TypeScript prevents heading+link combinations at compile time
+ * - Clean component implementation without nested conditionals
+ * - Extensible for future node types (Image, Code, etc.)
  */
 
 /**
- * Core rich text fragment interface with formatting properties
- *
- * Represents a single formatted text segment with optional styling attributes.
- * All formatting is applied through TypeScript properties rather than HTML markup.
+ * Text formatting styles as union type
+ * Applied as array to avoid combinatorial explosion in components
  */
-export interface RichTextFragment {
-	/** The text content of this fragment */
-	text: string;
+export type TextStyle = "bold" | "italic" | "code" | "strikethrough";
 
-	/** Bold text formatting */
-	bold?: boolean;
+/**
+ * Link target types
+ */
+export type LinkTarget = "_blank" | "_self" | "_parent" | "_top";
 
-	/** Italic text formatting */
-	italic?: boolean;
+/**
+ * Base interface for all rich text nodes
+ * Contains shared properties across all node types
+ */
+export interface BaseRichTextNode {
+	/** Text content of the node */
+	content: string;
 
-	/** Strikethrough text formatting */
-	strikethrough?: boolean;
-
-	/** Inline code formatting */
-	code?: boolean;
+	/** Array of text formatting styles */
+	styles?: TextStyle[];
 
 	/** Text color (CSS color value) */
 	color?: string;
 
 	/** Background highlight color (CSS color value) */
 	highlight?: string;
-
-	/** Heading level for semantic structure */
-	headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
-
-	/** Link URL for hyperlinks */
-	href?: string;
-
-	/** Link target attribute */
-	target?: "_blank" | "_self" | "_parent" | "_top";
 
 	/** Additional CSS classes for custom styling */
 	className?: string;
@@ -55,13 +49,67 @@ export interface RichTextFragment {
 }
 
 /**
- * Rich paragraph type representing an array of formatted text fragments
- *
- * A paragraph is composed of multiple fragments that can have different
- * formatting applied. This allows for complex inline formatting while
- * maintaining security and type safety.
+ * Text Node - Plain or formatted text
  */
-export type RichParagraph = RichTextFragment[];
+export interface TextNode extends BaseRichTextNode {
+	type: "text";
+}
+
+/**
+ * Link Node - Hyperlink with automatic external/internal detection
+ */
+export interface LinkNode extends BaseRichTextNode {
+	type: "link";
+	/** Link URL (external or internal path) */
+	href: string;
+	/** Link target attribute (auto-detected if not specified) */
+	target?: LinkTarget;
+}
+
+/**
+ * Heading Node - Semantic heading with level
+ */
+export interface HeadingNode extends BaseRichTextNode {
+	type: "heading";
+	/** Heading level (h1-h6) */
+	level: 1 | 2 | 3 | 4 | 5 | 6;
+}
+
+/**
+ * Rich Text Node - Discriminated union of all node types
+ * TypeScript enforces type safety and prevents invalid combinations
+ */
+export type RichTextNode = TextNode | LinkNode | HeadingNode;
+
+/**
+ * Rich Paragraph - Array of rich text nodes
+ * Replaces old RichTextFragment[] approach
+ */
+export type RichParagraph = RichTextNode[];
+
+// ============================================================================
+// DEPRECATED - Legacy Types (for backward compatibility)
+// ============================================================================
+
+/**
+ * @deprecated Use RichTextNode union instead
+ * Legacy interface kept for backward compatibility during migration
+ * Will be removed in future version
+ */
+export interface RichTextFragment {
+	text: string;
+	bold?: boolean;
+	italic?: boolean;
+	strikethrough?: boolean;
+	code?: boolean;
+	color?: string;
+	highlight?: string;
+	headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
+	href?: string;
+	target?: "_blank" | "_self" | "_parent" | "_top";
+	className?: string;
+	ariaLabel?: string;
+}
 
 /**
  * Rich text section for larger content blocks

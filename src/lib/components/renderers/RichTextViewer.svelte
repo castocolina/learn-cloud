@@ -24,9 +24,9 @@
 	 *
 	 * @component RichTextViewer
 	 */
-	/* eslint-disable svelte/no-at-html-tags */
 
 	import type { ContentBlock, RichTextViewerProps } from "$types";
+	import RichParagraph from "./RichParagraph.svelte";
 
 	let { blocks, class: className }: RichTextViewerProps = $props();
 
@@ -86,36 +86,13 @@
 	): block is Extract<ContentBlock, { type: "interactive" }> {
 		return block.type === "interactive";
 	}
-
-	/**
-	 * Render rich text spans within a paragraph
-	 * Handles inline formatting: bold, italic, code, links
-	 */
-	function renderRichText(
-		content: { text: string; bold?: boolean; italic?: boolean; code?: boolean; link?: string }[]
-	): string {
-		return content
-			.map((span) => {
-				let text = span.text;
-				if (span.bold) text = `<strong>${text}</strong>`;
-				if (span.italic) text = `<em>${text}</em>`;
-				if (span.code) text = `<code>${text}</code>`;
-				if (span.link)
-					text = `<a href="${span.link}" target="_blank" rel="noopener noreferrer">${text}</a>`;
-				return text;
-			})
-			.join("");
-	}
 </script>
 
 <div class="rich-text-viewer {className || ''}">
 	{#each blocks as block, index (block.id || `block-${index}`)}
 		{#if isParagraphBlock(block)}
-			<!-- Paragraph Block: Rich text with inline formatting -->
-			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-			<p class="rich-paragraph">
-				{@html renderRichText(block.content)}
-			</p>
+			<!-- Paragraph Block: Rich text with inline formatting (Task 7B - Secure rendering without {@html}) -->
+			<RichParagraph nodes={block.content} />
 		{:else if isCodeBlock(block)}
 			<!-- Code Block: Placeholder for Task 8F (CodeBlock component) -->
 			<div class="content-block content-block-code">
@@ -165,10 +142,8 @@
 						<h4 class="content-block-title">{block.title}</h4>
 					</div>
 				{/if}
-				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-				<p class="callout-content">
-					{@html renderRichText(block.content)}
-				</p>
+				<!-- Task 7B - Secure rendering without {@html} -->
+				<RichParagraph nodes={block.content} class="callout-content" />
 			</div>
 		{:else if isImageBlock(block)}
 			<!-- Image Block: Images with captions -->

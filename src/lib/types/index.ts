@@ -52,14 +52,24 @@ export {
 	SUPPORTED_FORMATS
 } from "./types.js";
 
-// Rich text exports - Structured content system
+// Rich text exports - Structured content system (TASK 7B: Union-based architecture)
 export type {
-	RichTextFragment,
+	// New union-based types
+	TextStyle,
+	LinkTarget,
+	BaseRichTextNode,
+	TextNode,
+	LinkNode,
+	HeadingNode,
+	RichTextNode,
 	RichParagraph,
+	// Document structure
 	RichTextSection,
 	RichTextDocument,
 	SimpleRichText,
-	RichTextValidation
+	RichTextValidation,
+	// Deprecated (backward compatibility)
+	RichTextFragment
 } from "./rich-text.js";
 
 // Content exports - All content-related interfaces
@@ -399,7 +409,7 @@ export type {
  */
 export { isContentParseResult, isScaffoldingArgs, isCliExecutionResult } from "./scripts.js";
 
-// UI wrapper exports - Wrapper component types (Task 6, Task 7)
+// UI wrapper exports - Wrapper component types (Task 6, Task 7, Task 7B)
 export type {
 	ButtonVariant,
 	ButtonSize,
@@ -408,7 +418,8 @@ export type {
 	DialogProps,
 	ProgressSize,
 	ProgressProps,
-	ContentHeaderProps
+	ContentHeaderProps,
+	RichParagraphProps
 } from "./ui.js";
 
 /**

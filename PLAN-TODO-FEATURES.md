@@ -3810,6 +3810,8 @@ You must think harder about the integration with the existing navigation data an
 
 ### Prerequisites
 
+From `PLAN-TODO-FEATURES.md`:
+
 - Task 6: shadcn-svelte UI Components completed (wrapper patterns established)
 - Task 7: Content Renderers completed
 
@@ -3932,6 +3934,8 @@ You must must think hard before implementing to ensure z-index hierarchy is resp
 
 ### Prerequisites
 
+From `PLAN-TODO-FEATURES.md`:
+
 - Task 8A: Sidebar Component completed
 
 ### Implementation Details
@@ -3998,6 +4002,8 @@ You must follow the whole navigation system architecture to ensure consistency a
 - `SVELTEKIT-GUIDE.md` (hierarchical navigation system)
 
 ### Prerequisites
+
+From `PLAN-TODO-FEATURES.md`:
 
 - Task 8B: Sticky Header Component completed
 
@@ -4086,6 +4092,8 @@ You must think hard to provide to user options about how to display icons in a g
 
 ### Prerequisites
 
+From `PLAN-TODO-FEATURES.md`:
+
 - Task 8C: Breadcrumb Component completed
 
 ### Implementation Details
@@ -4158,6 +4166,8 @@ You must think harder about the z-index hierarchy to prevent stacking context vi
 - `src/lib/components/ui/` (shadcn-svelte Dialog components)
 
 ### Prerequisites
+
+From `PLAN-TODO-FEATURES.md`:
 
 - Task 6: shadcn-svelte UI Components completed (Dialog wrapper foundation)
 - Task 8D: IconGrid Component completed
@@ -4245,6 +4255,8 @@ You must think harder about the integration of syntax highlighting libraries (Sh
 
 ### Prerequisites
 
+From `PLAN-TODO-FEATURES.md`:
+
 - Task 6: shadcn-svelte UI Components completed (wrapper patterns established)
 - Task 8D: IconGrid Component completed
 - Task 8E: Dialog Component completed
@@ -4328,6 +4340,8 @@ You must think harder about the zoom controls are intuitive and mobile-friendly 
 
 ### Prerequisites
 
+From `PLAN-TODO-FEATURES.md`:
+
 - Task 6: shadcn-svelte UI Components completed (wrapper patterns established)
 - Task 8D: IconGrid Component completed
 - Task 8E: Dialog Component completed
@@ -4409,6 +4423,8 @@ You must think harder about the flip animation to ensure smooth performance acro
 
 ### Prerequisites
 
+From `PLAN-TODO-FEATURES.md`:
+
 - Task 8E: Dialog Component completed
 
 ### Implementation Details
@@ -4461,6 +4477,8 @@ You must think harder about the question navigation flow to ensure users can eas
 
 ### Prerequisites
 
+From `PLAN-TODO-FEATURES.md`:
+
 - Task 8H: Flipcard Component completed
 
 ### Implementation Details
@@ -4511,6 +4529,8 @@ As with Dialog (8E), you must think harder about the z-index hierarchy to preven
 - Review Dialog (8E) implementation for z-index and background issue solutions
 
 ### Prerequisites
+
+From `PLAN-TODO-FEATURES.md`:
 
 - Task 8I: Quiz/Exam Navigation Component completed
 
@@ -4572,6 +4592,8 @@ You are responsible for building a comprehensive progress tracking system with d
 - `src/types/types.ts` (progress status unions)
 
 ### Prerequisites
+
+From `PLAN-TODO-FEATURES.md`:
 
 - Task 8J: Popover Component completed
 
@@ -4699,6 +4721,8 @@ You must provide both, visual buttons (previous/next) and keyboard shortcuts (Ar
 - `src/lib/types/navigation.ts` (navigation and routing structure)
 
 ### Prerequisites
+
+From `PLAN-TODO-FEATURES.md`:
 
 - Task 8A: Sidebar Component completed
 - Task 8B: Sticky Header Component completed
@@ -4879,6 +4903,8 @@ Before implement you must review the pre-built Lunr.js index structure to ensure
 
 ### Prerequisites
 
+From `PLAN-TODO-FEATURES.md`:
+
 - Task 8A: Sidebar Component completed
 - Task 8C: Breadcrumb Component completed
 - Task 8E: Dialog Component completed
@@ -5007,6 +5033,8 @@ You must think harder about the theme switching mechanism to ensure smooth trans
 - `SVELTEKIT-GUIDE.md` (theme system specifications)
 
 ### Prerequisites
+
+From `PLAN-TODO-FEATURES.md`:
 
 - Task 8M: Search Component completed
 

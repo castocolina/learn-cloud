@@ -802,4 +802,135 @@
 			@apply px-2 py-1.5 text-xs;
 		}
 	}
+
+	/* =====================================================
+	 * RICH PARAGRAPH STYLES (TASK 7B)
+	 * ===================================================== */
+
+	/**
+	 * Rich Paragraph Component
+	 * Secure text rendering without {@html} - XSS-safe by design
+	 */
+	.rich-paragraph {
+		@apply mb-4 text-base leading-relaxed text-gray-700 dark:text-gray-300;
+	}
+
+	/* Callout variant - when used inside callouts */
+	.rich-paragraph.callout-content {
+		@apply mb-0;
+	}
+
+	/**
+	 * Rich Fragment - Individual text spans with formatting
+	 */
+	.rich-fragment {
+		@apply inline;
+	}
+
+	/* Fragment inline code styling */
+	.rich-fragment code,
+	.rich-paragraph code {
+		@apply rounded bg-gray-100 px-1.5 py-0.5 font-mono text-sm dark:bg-gray-800;
+		@apply text-gray-800 dark:text-gray-200;
+	}
+
+	/* Fragment link styling */
+	.rich-fragment a,
+	.rich-paragraph a {
+		@apply text-blue-600 underline transition-colors hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300;
+	}
+
+	/* Fragment emphasis (bold, italic) */
+	.rich-fragment strong,
+	.rich-paragraph strong {
+		@apply font-semibold text-gray-900 dark:text-gray-100;
+	}
+
+	.rich-fragment em,
+	.rich-paragraph em {
+		@apply italic;
+	}
+
+	/* Fragment strikethrough */
+	.rich-fragment s,
+	.rich-paragraph s {
+		@apply line-through opacity-75;
+	}
+
+	/* Heading levels inside rich paragraphs */
+	.rich-fragment h1,
+	.rich-paragraph h1 {
+		@apply mb-4 text-3xl font-bold text-gray-900 dark:text-gray-100;
+	}
+
+	.rich-fragment h2,
+	.rich-paragraph h2 {
+		@apply mb-3 text-2xl font-bold text-gray-900 dark:text-gray-100;
+	}
+
+	.rich-fragment h3,
+	.rich-paragraph h3 {
+		@apply mb-2 text-xl font-semibold text-gray-900 dark:text-gray-100;
+	}
+
+	.rich-fragment h4,
+	.rich-paragraph h4 {
+		@apply mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100;
+	}
+
+	.rich-fragment h5,
+	.rich-paragraph h5 {
+		@apply mb-2 text-base font-semibold text-gray-900 dark:text-gray-100;
+	}
+
+	.rich-fragment h6,
+	.rich-paragraph h6 {
+		@apply mb-2 text-sm font-semibold text-gray-900 dark:text-gray-100;
+	}
+
+	/* Mobile optimization */
+	@media (max-width: 640px) {
+		.rich-paragraph {
+			@apply text-sm;
+		}
+
+		.rich-fragment code,
+		.rich-paragraph code {
+			@apply text-xs;
+		}
+	}
+
+	/* =====================================================
+	 * EXTERNAL LINK STYLES (TASK 7B)
+	 * ===================================================== */
+
+	/**
+	 * Rich Link - Base link styling
+	 */
+	.rich-link {
+		@apply inline-flex items-center gap-1 text-blue-600 underline transition-colors hover:text-blue-800;
+		@apply dark:text-blue-400 dark:hover:text-blue-300;
+	}
+
+	/**
+	 * External Link Variant - With icon
+	 */
+	.rich-link-external {
+		@apply cursor-pointer;
+	}
+
+	/**
+	 * External Link Icon
+	 */
+	.rich-link-icon {
+		@apply inline-block transition-transform hover:translate-x-0.5 hover:-translate-y-0.5;
+		@apply opacity-70;
+	}
+
+	/* Mobile optimization */
+	@media (max-width: 640px) {
+		.rich-link-icon {
+			@apply h-3 w-3;
+		}
+	}
 }

@@ -19,7 +19,87 @@ import { z } from "zod";
  * Base content validation schemas
  */
 
-// Rich text schemas
+// ============================================================================
+// RICH TEXT SCHEMAS (TASK 7B: Union-based architecture)
+// ============================================================================
+
+/**
+ * Text formatting styles schema
+ */
+export const TextStyleSchema = z.enum(["bold", "italic", "code", "strikethrough"]);
+
+/**
+ * Link target types schema
+ */
+export const LinkTargetSchema = z.enum(["_blank", "_self", "_parent", "_top"]);
+
+/**
+ * Base rich text node schema - shared properties
+ */
+export const BaseRichTextNodeSchema = z.object({
+	content: z.string().min(1, "Content cannot be empty"),
+	styles: z.array(TextStyleSchema).optional(),
+	color: z.string().optional(),
+	highlight: z.string().optional(),
+	className: z.string().optional(),
+	ariaLabel: z.string().optional()
+});
+
+/**
+ * Text node schema - plain or formatted text
+ */
+export const TextNodeSchema = BaseRichTextNodeSchema.extend({
+	type: z.literal("text")
+});
+
+/**
+ * Link node schema - hyperlinks with auto-detection
+ */
+export const LinkNodeSchema = BaseRichTextNodeSchema.extend({
+	type: z.literal("link"),
+	href: z.string().min(1, "Link href is required"),
+	target: LinkTargetSchema.optional()
+});
+
+/**
+ * Heading node schema - semantic headings
+ */
+export const HeadingNodeSchema = BaseRichTextNodeSchema.extend({
+	type: z.literal("heading"),
+	level: z.union([
+		z.literal(1),
+		z.literal(2),
+		z.literal(3),
+		z.literal(4),
+		z.literal(5),
+		z.literal(6)
+	])
+});
+
+/**
+ * Rich text node schema - discriminated union
+ */
+export const RichTextNodeSchema = z.discriminatedUnion("type", [
+	TextNodeSchema,
+	LinkNodeSchema,
+	HeadingNodeSchema
+]);
+
+/**
+ * Rich paragraph schema - array of rich text nodes
+ */
+export const RichParagraphSchema = z
+	.array(RichTextNodeSchema)
+	.min(1, "Paragraph must contain at least one node");
+
+// ============================================================================
+// DEPRECATED - Legacy Schemas (for backward compatibility)
+// ============================================================================
+
+/**
+ * @deprecated Use RichTextNodeSchema instead
+ * Legacy schema kept for backward compatibility during migration
+ */
 export const RichTextFragmentSchema = z.object({
 	text: z.string().min(1, "Text content cannot be empty"),
 	bold: z.boolean().optional(),
@@ -32,10 +112,6 @@ export const RichTextFragmentSchema = z.object({
 		})
 		.optional()
 });
-
-export const RichParagraphSchema = z
-	.array(RichTextFragmentSchema)
-	.min(1, "Paragraph must contain at least one text fragment");
 
 export const RichTextSectionSchema = z.object({
 	title: z.string().min(1, "Section title is required"),
@@ -506,11 +582,20 @@ export const RepositoryConfigSchema = z.object({
  * Schema registry for easy access
  */
 export const CONTENT_SCHEMAS = {
-	// Base schemas
-	RichTextFragment: RichTextFragmentSchema,
+	// Base schemas (TASK 7B: Union-based)
+	TextStyle: TextStyleSchema,
+	LinkTarget: LinkTargetSchema,
+	BaseRichTextNode: BaseRichTextNodeSchema,
+	TextNode: TextNodeSchema,
+	LinkNode: LinkNodeSchema,
+	HeadingNode: HeadingNodeSchema,
+	RichTextNode: RichTextNodeSchema,
 	RichParagraph: RichParagraphSchema,
 	RichTextSection: RichTextSectionSchema,
 	RichTextDocument: RichTextDocumentSchema,
+	// Deprecated
+	RichTextFragment: RichTextFragmentSchema,
+	// Other base schemas
 	ContentMetadata: ContentMetadataSchema,
 	BaseContent: BaseContentSchema,
 

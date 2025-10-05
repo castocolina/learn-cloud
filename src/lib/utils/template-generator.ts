@@ -585,7 +585,12 @@ function generateContentSection(
 	// Always start with introductory paragraph
 	content.push({
 		type: "paragraph",
-		content: [{ text: extractLoremText(CONFIG.contentLengths.paragraph) }]
+		content: [
+			{
+				type: "text",
+				content: extractLoremText(CONFIG.contentLengths.paragraph)
+			}
+		]
 	});
 
 	// Add code block if required
@@ -593,7 +598,12 @@ function generateContentSection(
 		content.push(generateCodeBlock());
 		content.push({
 			type: "paragraph",
-			content: [{ text: extractLoremText(CONFIG.contentLengths.paragraph) }]
+			content: [
+				{
+					type: "text",
+					content: extractLoremText(CONFIG.contentLengths.paragraph)
+				}
+			]
 		});
 	}
 
@@ -614,7 +624,12 @@ function generateContentSection(
 		content.push(generateDiagram(availableTypes));
 		content.push({
 			type: "paragraph",
-			content: [{ text: extractLoremText(CONFIG.contentLengths.paragraph) }]
+			content: [
+				{
+					type: "text",
+					content: extractLoremText(CONFIG.contentLengths.paragraph)
+				}
+			]
 		});
 	}
 
@@ -623,13 +638,23 @@ function generateContentSection(
 		type: "callout",
 		calloutType: "info",
 		title: "Key Concept",
-		content: [{ text: extractLoremText(CONFIG.contentLengths.explanation) }]
+		content: [
+			{
+				type: "text",
+				content: extractLoremText(CONFIG.contentLengths.explanation)
+			}
+		]
 	});
 
 	// Add concluding paragraph
 	content.push({
 		type: "paragraph",
-		content: [{ text: extractLoremText(CONFIG.contentLengths.paragraph) }]
+		content: [
+			{
+				type: "text",
+				content: extractLoremText(CONFIG.contentLengths.paragraph)
+			}
+		]
 	});
 
 	return {
@@ -957,7 +982,9 @@ export class TemplateGenerator {
 					"Final assessment testing comprehensive understanding of cloud-native technologies, Docker containerization, Kubernetes orchestration, microservices architecture, and modern deployment practices.",
 				instructions: [
 					{
-						text: "Read each question carefully and select the best answer. You have 90 minutes to complete all questions."
+						type: "text",
+						content:
+							"Read each question carefully and select the best answer. You have 90 minutes to complete all questions."
 					}
 				],
 				passingScore: 75,
