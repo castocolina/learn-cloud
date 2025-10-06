@@ -19,6 +19,7 @@ import type {
 } from "./types.js";
 import type {
 	RichParagraph,
+	RichTextFragment,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	RichTextSection,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -138,6 +139,7 @@ export interface ContentSection {
  */
 export type ContentBlock =
 	| ParagraphBlock
+	| ListBlock
 	| CodeBlock
 	| DiagramBlock
 	| CalloutBlock
@@ -147,12 +149,23 @@ export type ContentBlock =
 
 /**
  * Rich text paragraph block
+ * Supports both legacy RichTextFragment[] and new RichParagraph formats
  */
 export interface ParagraphBlock {
 	type: "paragraph";
-	content: RichParagraph;
+	content: RichTextFragment[] | RichParagraph;
 	id?: string;
 	className?: string;
+}
+
+/**
+ * List block for ordered and unordered lists
+ */
+export interface ListBlock {
+	type: "list";
+	ordered: boolean;
+	items: string[];
+	id?: string;
 }
 
 /**
@@ -184,12 +197,13 @@ export interface DiagramBlock {
 
 /**
  * Callout block for highlighted information
+ * Supports both legacy RichTextFragment[] and new RichParagraph formats
  */
 export interface CalloutBlock {
 	type: "callout";
-	calloutType: "info" | "warning" | "error" | "success" | "tip";
+	calloutType: "info" | "warning" | "danger" | "success" | "tip";
 	title?: string;
-	content: RichParagraph;
+	content: RichTextFragment[] | RichParagraph;
 	id?: string;
 }
 
@@ -248,6 +262,20 @@ export interface InteractiveBlock {
  */
 export interface LessonContent extends BaseContent {
 	type: "lesson";
+	sections: ContentSection[];
+	prerequisites?: string[];
+	estimatedTime?: number;
+	learningObjectives?: string[];
+	difficulty?: ContentDifficulty;
+	technologyUnit?: TechnologyUnit;
+}
+
+/**
+ * Overview content interface
+ * Used for book overview and unit overview pages
+ */
+export interface OverviewContent extends BaseContent {
+	type: "overview";
 	sections: ContentSection[];
 	prerequisites?: string[];
 	estimatedTime?: number;

@@ -451,10 +451,23 @@ export interface AppSettings {
 			};
 			/** Validation prefix for generating unique config IDs */
 			validationPrefix: string;
+			/** Book Overview Entry Configuration */
+			bookOverview: {
+				/** Unique identifier for book overview entry */
+				id: string;
+				/** Display title for book overview */
+				title: string;
+				/** Chapter URL for navigation */
+				chapterUrl: string;
+				/** TypeScript data file path */
+				filePath: string;
+				/** Unit title for display context */
+				unitTitle: string;
+				/** Navigation source for analytics */
+				defaultSource: "menu" | "sidebar" | "search" | "breadcrumb" | "sequential" | "direct";
+			};
 			/** Navigation behavior settings */
 			navigation: {
-				/** Home page URL for navigation root */
-				homeUrl: string;
 				/** Allow navigation across unit boundaries */
 				crossUnitNavigation: boolean;
 				/** Skip units with no available content */

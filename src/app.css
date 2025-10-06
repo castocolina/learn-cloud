@@ -42,6 +42,7 @@
 
 @import "./styles/layout.css";
 @import "./styles/components.css";
+@import "./styles/navigation.css";
 
 @custom-variant dark (&:is(.dark *));
 

@@ -450,8 +450,15 @@ export const SETTINGS: AppSettings = {
 				outputFile: "src/data/generated/flatnav.ts" // Output navigation map
 			},
 			validationPrefix: "flatnav", // Prefix for validation config IDs
+			bookOverview: {
+				id: "00_BOOK", // Unique identifier for book overview entry
+				title: "Welcome to Mastering Cloud-Native Technologies", // Display title
+				chapterUrl: "overview.html", // Chapter URL for navigation
+				filePath: "book/overview.ts", // TypeScript data file path
+				unitTitle: "Book Overview", // Unit title for display context
+				defaultSource: "direct" as const // Navigation source for analytics
+			},
 			navigation: {
-				homeUrl: "/", // Home page URL for navigation root
 				crossUnitNavigation: true, // Allow navigation across unit boundaries
 				skipEmptyUnits: true, // Skip units with no available content
 				generateDebugInfo: false // Include debug information in output

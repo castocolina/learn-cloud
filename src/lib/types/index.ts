@@ -79,6 +79,7 @@ export type {
 	ContentSection,
 	ContentBlock,
 	ParagraphBlock,
+	ListBlock,
 	CodeBlock,
 	DiagramBlock,
 	CalloutBlock,
@@ -87,6 +88,7 @@ export type {
 	VideoTrack,
 	InteractiveBlock,
 	LessonContent,
+	OverviewContent,
 	QuizContent,
 	StudyGuideContent,
 	ExamContent,
@@ -215,6 +217,7 @@ export { isThemeMode, isColorPalette, isThemeConfig } from "./theme.js";
 // Import types for utility type definitions
 import type {
 	LessonContent,
+	OverviewContent,
 	QuizContent,
 	StudyGuideContent,
 	ExamContent,
@@ -236,6 +239,7 @@ import type { SearchableItem } from "./search.js";
  */
 export type AnyContent =
 	| LessonContent
+	| OverviewContent
 	| QuizContent
 	| StudyGuideContent
 	| ExamContent
@@ -256,6 +260,7 @@ export type AnyQuestion =
  * Content type discriminator utility
  */
 export type ContentTypeMap = {
+	overview: OverviewContent;
 	lesson: LessonContent;
 	quiz: QuizContent;
 	study_guide: StudyGuideContent;

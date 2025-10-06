@@ -46,10 +46,14 @@ import { searchIndex } from "$data/generated/search-index";
  * }
  */
 export function lookupContentById(id: string): ContentLookupResult {
+	console.log("[content-lookup] lookupContentById called:", { id });
+
 	// Parse ID to extract components
 	const parsed = parseContentId(id);
+	console.log("[content-lookup] parseContentId result:", parsed);
 
 	if (!parsed.isValid) {
+		console.log("[content-lookup] ID is invalid, returning empty result");
 		return createEmptyResult();
 	}
 
@@ -58,13 +62,19 @@ export function lookupContentById(id: string): ContentLookupResult {
 	const flatNavEntry = findInFlatNav(id);
 	const searchEntry = findInSearchIndex(id);
 
+	console.log("[content-lookup] Data source lookup results:", {
+		menuEntry: menuEntry ? `Found: ${menuEntry.title}` : "null",
+		flatNavEntry: flatNavEntry ? `Found: ${flatNavEntry.title}` : "null",
+		searchEntry: searchEntry ? `Found: ${searchEntry.title}` : "null"
+	});
+
 	// If found in any source, construct full result
 	if (menuEntry || flatNavEntry || searchEntry) {
 		// Get chapterUrl and filePath from available entries
 		const chapterUrl = menuEntry?.chapterUrl || flatNavEntry?.chapterUrl || "";
 		const filePath = menuEntry?.filePath || flatNavEntry?.filePath || "";
 
-		return {
+		const result = {
 			menuEntry,
 			flatNavEntry,
 			searchEntry,
@@ -72,8 +82,15 @@ export function lookupContentById(id: string): ContentLookupResult {
 			chapterUrl,
 			isFound: true
 		};
+		console.log("[content-lookup] Content found, returning result:", {
+			isFound: true,
+			chapterUrl,
+			filePath
+		});
+		return result;
 	}
 
+	console.log("[content-lookup] Content not found in any source");
 	return createEmptyResult();
 }
 
@@ -96,25 +113,36 @@ export function lookupContentById(id: string): ContentLookupResult {
  * lookupContentByUrl("#unit01/chapter01");
  */
 export function lookupContentByUrl(url: string): ContentLookupResult {
+	console.log("[content-lookup] lookupContentByUrl called:", { url });
+
 	// Try parsing as descriptive URL
 	const parsed = parseContentUrl(url);
+	console.log("[content-lookup] parseContentUrl result:", parsed);
 
 	if (parsed.isValid && parsed.id) {
-		return lookupContentById(parsed.id);
+		console.log("[content-lookup] URL parsed successfully, looking up by ID:", parsed.id);
+		const result = lookupContentById(parsed.id);
+		console.log("[content-lookup] lookupContentById result:", result);
+		return result;
 	}
 
 	// Try matching chapterUrl in flat navigation
+	console.log("[content-lookup] Trying direct chapterUrl match in flatNav");
 	const flatNavEntry = flatNavigation.entries.find((entry) => entry.chapterUrl === url);
 	if (flatNavEntry) {
+		console.log("[content-lookup] Found in flatNav by chapterUrl:", flatNavEntry.id);
 		return lookupContentById(flatNavEntry.id);
 	}
 
 	// Try matching chapterUrl in menu
+	console.log("[content-lookup] Trying direct chapterUrl match in menu");
 	const menuEntry = findMenuEntryByUrl(url);
 	if (menuEntry) {
+		console.log("[content-lookup] Found in menu by chapterUrl:", menuEntry.id);
 		return lookupContentById(menuEntry.id);
 	}
 
+	console.log("[content-lookup] No match found for URL:", url);
 	return createEmptyResult();
 }
 

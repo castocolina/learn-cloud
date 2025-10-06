@@ -57,7 +57,7 @@
 		display: flex;
 		flex-direction: column;
 		min-height: 100vh;
-		width: calc(100vw - var(--sidebar-width));
+		/* Grid 1fr automatically calculates correct width */
 		/* NO overflow: hidden - natural scroll */
 	}
 
@@ -158,9 +158,7 @@
 			width: var(--sidebar-width-mobile);
 		}
 
-		.main-container {
-			width: calc(100vw - var(--sidebar-width-mobile));
-		}
+		/* Grid 1fr automatically calculates correct width */
 	}
 
 	/* Wide screens: Increase header padding */
@@ -182,9 +180,7 @@
 		width: var(--sidebar-width-icon);
 	}
 
-	.app-layout[data-sidebar-collapsed="true"] .main-container {
-		width: calc(100vw - var(--sidebar-width-icon));
-	}
+	/* Grid 1fr automatically calculates correct width */
 
 	/* =====================================================
 	   CUSTOM SCROLLBAR (Sidebar Only)

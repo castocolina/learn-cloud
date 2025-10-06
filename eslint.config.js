@@ -125,5 +125,14 @@ export default defineConfig(
 		rules: {
 			"import/extensions": "off" // Disable for SvelteKit store files that use $app imports
 		}
+	},
+	{
+		// Reducir severidad para archivos que importan desde node_modules/svelte
+		// Svelte 5 en node_modules causa errores de parsing en import/namespace
+		// Convertir a warning hasta que eslint-plugin-import soporte Svelte 5 completamente
+		files: ["src/lib/components/ui/**/*.svelte.ts", "src/lib/components/ui/**/*.ts"],
+		rules: {
+			"import/namespace": "warn" // Parse errors from Svelte 5 internal files
+		}
 	}
 );

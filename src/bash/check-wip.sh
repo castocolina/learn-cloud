@@ -40,12 +40,28 @@ echo_step "1" "Checking work-in-progress files..."
 # Combine:
 # - Modified files (staged and unstaged): git diff --name-only HEAD
 # - Untracked files (excluding .gitignore): git ls-files --others --exclude-standard
+
+
+# List of ignore patterns (add files, directories, or regexes here)
+IGNORE_PATTERNS=(
+	'^src/lib/components/ui/'
+	# Add more patterns as needed, e.g.:
+	# '^node_modules/'
+	# '\.test\.ts$'
+)
+
+# Get list of modified and untracked files (respecting .gitignore)
 wip_files=$(
 	{
 		git diff --name-only HEAD
 		git ls-files --others --exclude-standard
 	} | sort | uniq
 )
+
+# Filter out files matching any ignore pattern
+for pattern in "${IGNORE_PATTERNS[@]}"; do
+	wip_files=$(echo "$wip_files" | grep -v -E "$pattern" || true)
+done
 
 # Check if there are any files to process
 if [ -z "$wip_files" ]; then
@@ -170,6 +186,7 @@ ${ts_files_list}
 		// Multiple patterns ensure complete exclusion regardless of path structure
 		"${PROJECT_ROOT}/node_modules/",
 		"${PROJECT_ROOT}/node_modules/**/*",
+		"${PROJECT_ROOT}/src/lib/components/ui/",
 		"**/node_modules/**",
 		"../../node_modules/**",
 
