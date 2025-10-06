@@ -34,6 +34,12 @@
 		border-bottom: 1px solid hsl(var(--sidebar-border, 220 13% 91%));
 		background: hsl(var(--sidebar-accent, 60 4.8% 95.9%));
 		flex-shrink: 0;
+		transition: all 0.2s ease;
+	}
+
+	/* Icon Mode: Compact header with circular progress */
+	:global([data-state="collapsed"]) .main-sidebar-header {
+		padding: 0.75rem 0.5rem;
 	}
 
 	.sidebar-header-content {
@@ -74,36 +80,86 @@
 	.sidebar-unit-item {
 		display: flex;
 		flex-direction: column;
+		margin-bottom: 0.25rem; /* Spacing between units */
+	}
+
+	/* Zebra stripes for visual separation (slate theme colors) - more visible */
+	.sidebar-unit-item:nth-child(odd) > .sidebar-unit-header {
+		background: hsl(var(--sidebar-accent, 60 4.8% 95.9%) / 0.35);
+	}
+
+	.sidebar-unit-item:nth-child(even) > .sidebar-unit-header {
+		background: hsl(var(--sidebar-accent, 60 4.8% 95.9%) / 0.15);
 	}
 
 	.sidebar-unit-header {
 		display: flex;
-		align-items: center;
+		align-items: flex-start; /* Allow multi-line text wrapping */
 		gap: 0.75rem;
-		padding: 1rem;
+		padding: 0.875rem 1rem;
+		min-height: 4rem; /* Increased for 3+ lines of text */
+		max-height: none; /* No limit */
 		width: 100%;
-		background: transparent;
 		border: none;
 		border-radius: 8px;
 		cursor: pointer;
 		text-align: left;
 		transition: all 0.2s ease;
 		color: hsl(var(--sidebar-foreground, 222.2 84% 4.9%));
+		/* More visible border for separation */
+		border-bottom: 1px solid hsl(var(--sidebar-border, 220 13% 91%) / 0.5);
 	}
 
-	.sidebar-unit-header:hover {
-		background: hsl(var(--sidebar-accent, 60 4.8% 95.9%) / 0.5);
+	/* Icon Mode: Center emoji, hide text, force width */
+	:global([data-state="collapsed"]) .sidebar-unit-header {
+		justify-content: center;
+		align-items: center; /* Center vertically in icon mode */
+		padding: 0.75rem;
+		min-height: 3rem; /* Smaller in icon mode */
+	}
+
+	/* Force collapsed sidebar width */
+	:global([data-state="collapsed"][data-sidebar="sidebar"]) {
+		width: 3.6rem !important;
+		min-width: 3.6rem !important;
+	}
+
+	:global([data-state="collapsed"]) .sidebar-unit-info,
+	:global([data-state="collapsed"]) .sidebar-unit-toggle {
+		display: none;
+	}
+
+	/* Hover states - darken zebra background without !important */
+	.sidebar-unit-item:nth-child(odd) .sidebar-unit-header:hover {
+		background: hsl(var(--sidebar-accent, 60 4.8% 95.9%) / 0.75);
+		transform: translateX(2px);
+	}
+
+	.sidebar-unit-item:nth-child(even) .sidebar-unit-header:hover {
+		background: hsl(var(--sidebar-accent, 60 4.8% 95.9%) / 0.55);
 		transform: translateX(2px);
 	}
 
 	.sidebar-unit-header--expanded {
-		background: hsl(var(--sidebar-accent, 60 4.8% 95.9%));
+		background: hsl(var(--sidebar-accent, 60 4.8% 95.9%)) !important;
+		border-bottom-width: 2px; /* Thicker border when expanded */
+		border-bottom-color: hsl(var(--sidebar-border, 220 13% 91%));
 	}
 
 	.sidebar-unit-icon {
 		font-size: 1.5rem;
 		flex-shrink: 0;
 		line-height: 1;
+		/* Smooth transition for icon mode size change */
+		transition: font-size 0.2s ease;
+		/* Align icon with first line of text */
+		margin-top: 0.125rem;
+	}
+
+	/* Icon Mode: Make emojis larger and centered */
+	:global([data-state="collapsed"]) .sidebar-unit-icon {
+		font-size: 1.75rem;
+		margin-top: 0; /* Center in icon mode */
 	}
 
 	.sidebar-unit-info {
@@ -143,6 +199,8 @@
 		color: hsl(var(--muted-foreground, 215.4 16.3% 46.9%));
 		display: flex;
 		align-items: center;
+		/* Align with first line of text */
+		margin-top: 0.125rem;
 	}
 
 	/* ===== CHAPTERS LIST ===== */
@@ -197,6 +255,11 @@
 		flex-shrink: 0;
 		line-height: 1.3;
 		margin-top: 0.125rem; /* Align with first line of text */
+	}
+
+	/* Icon Mode: Hide chapter list when sidebar collapsed */
+	:global([data-state="collapsed"]) .sidebar-chapters-list {
+		display: none;
 	}
 
 	.sidebar-chapter-title {
@@ -276,8 +339,10 @@
 
 	/* ===== MOBILE RESPONSIVENESS ===== */
 	@media (max-width: 768px) {
+		/* Maintain desktop padding for readable text */
 		.sidebar-unit-header {
-			padding: 0.75rem;
+			padding: 0.875rem 1rem; /* Same as desktop */
+			min-height: 4rem; /* Same as desktop for long titles */
 		}
 
 		.sidebar-unit-meta {
@@ -295,6 +360,17 @@
 			margin-left: 1.5rem;
 			padding-left: 0.5rem;
 		}
+	}
+
+	/* ===== MOBILE-SPECIFIC FIXES ===== */
+	/* Fix: Mobile sidebar background transparency (slate theme) */
+	/* More specific selector to override Sheet background */
+	:global([data-mobile="true"][data-sidebar="sidebar"]) {
+		background-color: hsl(var(--sidebar, 60 9.1% 97.8%)) !important;
+	}
+
+	:global(.dark [data-mobile="true"][data-sidebar="sidebar"]) {
+		background-color: hsl(var(--sidebar, 222.2 84% 4.9%)) !important;
 	}
 
 	/* ===== DARK MODE SUPPORT ===== */

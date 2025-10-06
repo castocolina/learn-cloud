@@ -16,6 +16,8 @@
 <script lang="ts">
 	import { ChevronRight, ChevronDown } from "lucide-svelte";
 	import * as Sidebar from "$lib/components/ui/sidebar";
+	import * as Tooltip from "$lib/components/ui/tooltip";
+	import { useSidebar } from "$lib/components/ui/sidebar/context.svelte.js";
 	import { navigationStore } from "$lib/stores/spaNavigation.js";
 	import { navigateToContent } from "$lib/utils/spaNavigation.js";
 	import { contentMenu } from "$data/generated/content-menu.js";
@@ -43,6 +45,15 @@
 
 	// Track expanded unit (accordion behavior - only one unit open at a time)
 	let expandedUnitId = $state<string | null>(null);
+
+	// Sidebar state for adaptive header
+	const sidebarContext = useSidebar();
+	const isCollapsed = $derived(sidebarContext.state === "collapsed");
+
+	// Progress tracking (placeholder - will be enhanced in future tasks)
+	const currentChapterIndex = $state(1); // TODO: Calculate from navigationStore
+	const totalChapters = contentMenu.metadata.totalChapters;
+	const progressPercentage = $derived((currentChapterIndex / totalChapters) * 100);
 
 	/**
 	 * Handle unit header click - toggle expansion (accordion)
@@ -87,14 +98,53 @@
 
 <Sidebar.Root {collapsible} class="main-sidebar {className || ''}">
 	<Sidebar.Content class="main-sidebar-content">
-		<!-- Progress & Stats Section -->
+		<!-- Progress & Stats Section (Adaptive) -->
 		<Sidebar.Header class="main-sidebar-header">
-			<div class="sidebar-header-content">
-				<h2 class="sidebar-title">Navigation</h2>
-				<p class="sidebar-description">
-					{contentMenu.metadata.totalUnits} units • {contentMenu.metadata.totalChapters} chapters
-				</p>
-			</div>
+			{#if isCollapsed}
+				<!-- Collapsed Mode: Circular progress indicator -->
+				<div class="flex justify-center">
+					<div class="relative h-12 w-12">
+						<!-- SVG circular progress (slate theme colors) -->
+						<svg class="h-full w-full -rotate-90" viewBox="0 0 36 36">
+							<!-- Background circle -->
+							<circle
+								cx="18"
+								cy="18"
+								r="15.5"
+								fill="none"
+								stroke="hsl(var(--muted, 215.4 16.3% 46.9%))"
+								stroke-width="2"
+								opacity="0.2"
+							/>
+							<!-- Progress circle -->
+							<circle
+								cx="18"
+								cy="18"
+								r="15.5"
+								fill="none"
+								stroke="hsl(var(--primary, 222.2 47.4% 11.2%))"
+								stroke-width="2.5"
+								stroke-dasharray="{progressPercentage} 100"
+								stroke-linecap="round"
+								class="transition-all duration-300"
+							/>
+						</svg>
+						<!-- Center text: current chapter number -->
+						<div class="absolute inset-0 flex items-center justify-center">
+							<span class="text-xs font-bold text-foreground">{currentChapterIndex}</span>
+						</div>
+					</div>
+				</div>
+			{:else}
+				<!-- Expanded Mode: Normal header with stats -->
+				<div class="sidebar-header-content">
+					<h2 class="sidebar-title">Navigation</h2>
+					<p class="sidebar-description">
+						{contentMenu.metadata.totalUnits} units • {contentMenu.metadata.totalChapters} chapters
+					</p>
+					<!-- TODO: Add linear progress bar here in future task -->
+				</div>
+			{/if}
 		</Sidebar.Header>
 
 		<!-- Units Navigation -->
@@ -103,42 +153,55 @@
 				<Sidebar.Menu class="sidebar-units-menu">
 					{#each contentMenu.units as unit (unit.id)}
 						<Sidebar.MenuItem class="sidebar-unit-item">
-							<!-- Unit Header Button -->
-							<Sidebar.MenuButton
-								onclick={() => handleUnitClick(unit)}
-								class="sidebar-unit-header {expandedUnitId === unit.id
-									? 'sidebar-unit-header--expanded'
-									: ''}"
-							>
-								<!-- Unit Icon (Emoji) -->
-								<span class="sidebar-unit-icon" aria-hidden="true">
-									{unit.emoji || unit.icon || "📦"}
-								</span>
-
-								<!-- Unit Info -->
-								<div class="sidebar-unit-info">
-									<span class="sidebar-unit-title">{unit.title}</span>
-									<div class="sidebar-unit-meta">
-										<span class="sidebar-unit-count">
-											{unit.chapters.length} chapters
+							<!-- Unit Header Button with Tooltip for Icon Mode -->
+							<Tooltip.Root>
+								<Tooltip.Trigger>
+									<Sidebar.MenuButton
+										onclick={() => handleUnitClick(unit)}
+										class="sidebar-unit-header !h-auto !min-h-16 !items-start {expandedUnitId ===
+										unit.id
+											? 'sidebar-unit-header--expanded'
+											: ''}"
+									>
+										<!-- Unit Icon (Emoji) - Always visible, prominent in icon mode -->
+										<span class="sidebar-unit-icon" aria-hidden="true">
+											{unit.emoji || unit.icon || "📦"}
 										</span>
-										{#if unit.estimatedHours}
-											<span class="sidebar-unit-duration">
-												{unit.estimatedHours}h
-											</span>
-										{/if}
-									</div>
-								</div>
 
-								<!-- Expansion Toggle -->
-								<div class="sidebar-unit-toggle">
-									{#if expandedUnitId === unit.id}
-										<ChevronDown size={16} />
-									{:else}
-										<ChevronRight size={16} />
-									{/if}
-								</div>
-							</Sidebar.MenuButton>
+										<!-- Unit Info - Hidden in icon mode via CSS -->
+										<div class="sidebar-unit-info">
+											<span class="sidebar-unit-title">{unit.title}</span>
+											<div class="sidebar-unit-meta">
+												<span class="sidebar-unit-count">
+													{unit.chapters.length} chapters
+												</span>
+												{#if unit.estimatedHours}
+													<span class="sidebar-unit-duration">
+														{unit.estimatedHours}h
+													</span>
+												{/if}
+											</div>
+										</div>
+
+										<!-- Expansion Toggle - Hidden in icon mode via CSS -->
+										<div class="sidebar-unit-toggle">
+											{#if expandedUnitId === unit.id}
+												<ChevronDown size={16} />
+											{:else}
+												<ChevronRight size={16} />
+											{/if}
+										</div>
+									</Sidebar.MenuButton>
+								</Tooltip.Trigger>
+
+								<!-- Tooltip Content - Solid background with slate theme colors -->
+								<Tooltip.Content
+									side="right"
+									class="border border-slate-700 bg-slate-900 font-semibold text-slate-50 shadow-xl"
+								>
+									{unit.title}
+								</Tooltip.Content>
+							</Tooltip.Root>
 
 							<!-- Chapters List (Collapsible) -->
 							{#if expandedUnitId === unit.id}
