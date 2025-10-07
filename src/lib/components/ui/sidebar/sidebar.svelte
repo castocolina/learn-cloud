@@ -34,12 +34,15 @@
 		{@render children?.()}
 	</div>
 {:else if sidebar.isMobile}
-	<Sheet.Root bind:open={sidebar.openMobile} {...restProps}>
+	<Sheet.Root
+		bind:open={() => sidebar.openMobile, (v) => sidebar.setOpenMobile(v)}
+		{...restProps}
+	>
 		<Sheet.Content
 			data-sidebar="sidebar"
 			data-slot="sidebar"
 			data-mobile="true"
-			class="!bg-sidebar text-sidebar-foreground w-(--sidebar-width) p-0 [&>button]:hidden"
+			class="bg-sidebar text-sidebar-foreground w-(--sidebar-width) p-0 [&>button]:hidden"
 			style="--sidebar-width: {SIDEBAR_WIDTH_MOBILE};"
 			{side}
 		>
