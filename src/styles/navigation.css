@@ -338,12 +338,37 @@
 		color: hsl(var(--muted-foreground, 215.4 16.3% 46.9%));
 	}
 
-	.sidebar-unit-toggle {
+	/* Chevron Toggle Button - Interactive expansion/collapse control */
+	.sidebar-unit-toggle-button {
 		flex-shrink: 0;
-		color: hsl(var(--muted-foreground, 215.4 16.3% 46.9%));
 		display: flex;
 		align-items: center;
+		justify-content: center;
+		color: hsl(var(--muted-foreground, 215.4 16.3% 46.9%));
+		background: transparent;
+		border: none;
+		padding: 0.5rem;
 		margin-top: 0.125rem; /* Align with first line of text */
+		border-radius: 0.375rem;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		min-width: 44px; /* Touch-friendly hit area */
+		min-height: 44px;
+	}
+
+	.sidebar-unit-toggle-button:hover {
+		background: hsl(var(--sidebar-accent, 60 4.8% 95.9%));
+		color: hsl(var(--sidebar-foreground, 222.2 84% 4.9%));
+		transform: scale(1.1);
+	}
+
+	.sidebar-unit-toggle-button:active {
+		transform: scale(0.9);
+	}
+
+	/* Icon mode: hide toggle button */
+	[data-state="collapsed"] .sidebar-unit-toggle-button {
+		display: none;
 	}
 
 	/* ===== CHAPTERS LIST ===== */
@@ -506,6 +531,8 @@
 	@media (max-width: 768px) {
 		.sidebar-unit-header {
 			padding: 0.75rem;
+			/* Reduce min-height for mobile to save space while keeping flexible */
+			min-height: 3rem; /* 48px - still allows 1-3+ line titles */
 		}
 
 		.sidebar-unit-meta {
@@ -516,12 +543,29 @@
 
 		.sidebar-chapter-button {
 			padding: 0.5rem;
-			/* Natural flexbox height - grows with content */
+			/* Reduce min-height for mobile to save space while keeping flexible */
+			min-height: 2.5rem; /* 40px - still allows multi-line wrapping */
 		}
 
 		.sidebar-chapters-list {
 			margin-left: 1.5rem;
 			padding-left: 0.5rem;
+			/* Reduce gap between chapters for mobile */
+			gap: 0.25rem; /* 4px - down from 6px */
+			padding-top: 0.375rem; /* Down from 0.5rem */
+			padding-bottom: 0.375rem; /* Down from 0.5rem */
+		}
+
+		/* Mobile Spacing Optimization - Reduce vertical gaps */
+		.sidebar-unit-item:not(:last-child) {
+			/* Reduce space between units for mobile */
+			padding-bottom: 0.375rem; /* 6px - down from 12px */
+			margin-bottom: 0.375rem; /* 6px - down from 12px */
+		}
+
+		.sidebar-chapter-item:not(:last-child) {
+			/* Reduce space between chapters for mobile */
+			margin-bottom: 0.125rem; /* 2px - down from 4px */
 		}
 	}
 
@@ -574,5 +618,11 @@
 	/* Dark mode mobile trigger */
 	:global(.dark) .mobile-trigger:hover {
 		background: hsl(var(--accent, 217.2 32.6% 17.5%));
+	}
+
+	/* Dark mode chevron toggle button */
+	:global(.dark) .sidebar-unit-toggle-button:hover {
+		background: hsl(var(--sidebar-accent, 217.2 32.6% 17.5%));
+		color: hsl(var(--sidebar-foreground, 210 40% 98%));
 	}
 }

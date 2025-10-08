@@ -69,12 +69,19 @@
 	const showFooterTooltip = $derived(!sidebar.isMobile && sidebar.state === "collapsed");
 
 	/**
-	 * Handle unit header click - toggle expansion (accordion)
+	 * Handle chevron click - ONLY toggle accordion expansion
+	 * Does NOT navigate or close sidebar (allows exploring without navigation)
 	 */
-	function handleUnitClick(unit: MenuUnit): void {
+	function handleUnitToggle(unitId: string, event: MouseEvent): void {
+		event.stopPropagation(); // Prevent triggering navigation on parent
 		// Accordion behavior: clicking same unit collapses it, clicking different unit expands it
-		expandedUnitId = expandedUnitId === unit.id ? null : unit.id;
+		expandedUnitId = expandedUnitId === unitId ? null : unitId;
+	}
 
+	/**
+	 * Handle unit title/emoji click - Navigate to overview and close mobile sidebar
+	 */
+	function handleUnitNavigate(unit: MenuUnit): void {
 		// Navigate to unit overview if available
 		const overviewChapter = unit.chapters.find((ch) => ch.type === "overview");
 		if (overviewChapter) {
@@ -218,7 +225,7 @@
 							<Tooltip.Root>
 								<Tooltip.Trigger>
 									<Sidebar.MenuButton
-										onclick={() => handleUnitClick(unit)}
+										onclick={() => handleUnitNavigate(unit)}
 										class="sidebar-unit-header !h-auto !min-h-14 !items-start !p-4 {expandedUnitId ===
 										unit.id
 											? 'sidebar-unit-header--expanded'
@@ -244,14 +251,19 @@
 											</div>
 										</div>
 
-										<!-- Expansion Toggle - Hidden in icon mode via CSS -->
-										<div class="sidebar-unit-toggle">
+										<!-- Expansion Toggle Button - Hidden in icon mode via CSS -->
+										<button
+											type="button"
+											class="sidebar-unit-toggle-button"
+											onclick={(e) => handleUnitToggle(unit.id, e)}
+											aria-label="{expandedUnitId === unit.id ? 'Collapse' : 'Expand'} unit"
+										>
 											{#if expandedUnitId === unit.id}
 												<ChevronDown size={16} />
 											{:else}
 												<ChevronRight size={16} />
 											{/if}
-										</div>
+										</button>
 									</Sidebar.MenuButton>
 								</Tooltip.Trigger>
 
