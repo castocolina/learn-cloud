@@ -120,6 +120,20 @@ import { Card } from "$lib/components/ui/card"; // Unused import
 - **✅ Component-specific issues**: Document in custom wrapper components or this architecture guide
 - **⚠️ Updates**: When updating shadcn-svelte components, any custom documentation would be lost
 
+**Tailwind Important Modifier (`!`) for shadcn-svelte Customization**:
+
+When customizing shadcn-svelte components, use the `!` prefix to override default styles. The browser uses **CSS specificity** to decide which styles to apply - when two classes have the same specificity (like `.gap-2` vs `.gap-1`), the browser applies the **last one in the compiled CSS**. shadcn-svelte may inject its styles after ours, causing its classes to "win". The `!` prefix adds `!important` to the CSS, giving it **maximum specificity** - it always wins regardless of order.
+
+**Usage Example**:
+
+```svelte
+<!-- Wrapper component: MainSidebar.svelte -->
+<Sidebar.Menu class="!gap-2">  <!-- Overrides shadcn default gap-1 -->
+<Sidebar.MenuButton class="!p-4 !min-h-14 !h-auto">  <!-- Overrides p-2, h-8 -->
+```
+
+**Where to apply**: ✅ Wrapper components only | ❌ Never in `src/lib/components/ui/` (third-party files)
+
 **Icons**: `lucide-svelte`
 
 - **Usage**: Import specific icons as Svelte components

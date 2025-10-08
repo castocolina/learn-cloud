@@ -101,7 +101,7 @@
 		<!-- Units Navigation -->
 		<Sidebar.Group class="sidebar-units-group">
 			<Sidebar.GroupContent>
-				<Sidebar.Menu class="sidebar-units-menu">
+				<Sidebar.Menu class="sidebar-units-menu !gap-2">
 					{#each contentMenu.units as unit (unit.id)}
 						<Sidebar.MenuItem class="sidebar-unit-item">
 							<!-- Unit Header Button with Tooltip for Icon Mode -->
@@ -109,7 +109,8 @@
 								<Tooltip.Trigger>
 									<Sidebar.MenuButton
 										onclick={() => handleUnitClick(unit)}
-										class="sidebar-unit-header {expandedUnitId === unit.id
+										class="sidebar-unit-header !h-auto !min-h-14 !items-start !p-4 {expandedUnitId ===
+										unit.id
 											? 'sidebar-unit-header--expanded'
 											: ''}"
 									>
@@ -152,14 +153,14 @@
 
 							<!-- Chapters List (Collapsible) -->
 							{#if expandedUnitId === unit.id}
-								<Sidebar.MenuSub class="sidebar-chapters-list">
+								<Sidebar.MenuSub class="sidebar-chapters-list !gap-1.5">
 									{#each unit.chapters as chapter (chapter.id)}
 										{@const isActive = isChapterActive(chapter.id)}
 
 										<Sidebar.MenuSubItem class="sidebar-chapter-item">
 											<Sidebar.MenuSubButton
 												onclick={() => handleChapterClick(chapter, unit)}
-												class="sidebar-chapter-button {isActive
+												class="sidebar-chapter-button !h-auto !min-h-12 !items-start !p-3.5 {isActive
 													? 'sidebar-chapter-button--active'
 													: ''}"
 											>
