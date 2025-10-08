@@ -48,7 +48,9 @@
 	<!-- Main content area with natural scroll -->
 	<main class="flex flex-1 flex-col">
 		<!-- TASK 8B + 8C: Sticky Header with Breadcrumb (placeholder) -->
-		<header class="sticky top-0 z-10 flex h-16 items-center gap-2 border-b bg-background px-4">
+		<header
+			class="sticky top-0 z-10 flex h-16 items-center gap-2 border-b bg-white px-4 dark:bg-slate-950"
+		>
 			<!-- Sidebar toggle trigger (hamburger icon) -->
 			<Sidebar.Trigger />
 
