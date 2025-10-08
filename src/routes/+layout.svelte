@@ -51,8 +51,8 @@
 		<header
 			class="sticky top-0 z-10 flex h-16 items-center gap-2 border-b bg-white px-4 dark:bg-slate-950"
 		>
-			<!-- Sidebar toggle trigger (hamburger icon) -->
-			<Sidebar.Trigger />
+			<!-- Mobile trigger (hamburger menu) - visible only on mobile (<768px) -->
+			<Sidebar.Trigger class="mobile-trigger md:hidden" />
 
 			<div class="flex-1">
 				<span class="text-sm text-muted-foreground">Header + Breadcrumb (TASK 8B+8C)</span>

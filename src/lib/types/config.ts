@@ -177,6 +177,8 @@ export interface AppSettings {
 			collapsibleMode: "icon" | "offcanvas" | "none";
 			/** Header section configuration */
 			header: {
+				/** Icon name from lucide-svelte (e.g., "BookOpen") or emoji */
+				icon: string;
 				/** Title text displayed in sidebar header */
 				title: string;
 				/** Description text displayed in sidebar header */

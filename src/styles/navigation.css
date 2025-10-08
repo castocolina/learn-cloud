@@ -55,16 +55,76 @@
 
 	/* ===== SIDEBAR HEADER ===== */
 	.main-sidebar-header {
-		padding: 1.5rem;
+		padding: 1rem;
 		border-bottom: 1px solid hsl(var(--sidebar-border, 220 13% 91%));
 		background: hsl(var(--sidebar-accent, 60 4.8% 95.9%));
 		flex-shrink: 0;
-	}
-
-	.sidebar-header-content {
 		display: flex;
 		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	/* Collapsed mode: center content, reduce padding */
+	[data-state="collapsed"] .main-sidebar-header {
+		padding: 0.75rem;
+		align-items: center;
 		gap: 0.5rem;
+	}
+
+	/* Header Title Row: Icon + Title + Trigger */
+	.sidebar-header-row {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		width: 100%;
+	}
+
+	/* Collapsed mode: center icon only */
+	[data-state="collapsed"] .sidebar-header-row {
+		justify-content: center;
+	}
+
+	/* Header Icon - Clickeable button to toggle sidebar */
+	.sidebar-header-icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: hsl(var(--sidebar-primary, 222.2 84% 4.9%));
+		flex-shrink: 0;
+		background: transparent;
+		border: none;
+		padding: 0.5rem;
+		border-radius: 0.375rem;
+		cursor: pointer;
+		transition: all 0.2s ease;
+	}
+
+	.sidebar-header-icon:hover {
+		background: hsl(var(--sidebar-accent, 60 4.8% 95.9%));
+		transform: scale(1.05);
+	}
+
+	.sidebar-header-icon:active {
+		transform: scale(0.95);
+	}
+
+	/* Collapsed mode: larger hit area */
+	[data-state="collapsed"] .sidebar-header-icon {
+		padding: 0.75rem;
+	}
+
+	/* Title + Trigger Group */
+	.sidebar-header-title-group {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		flex: 1;
+		gap: 0.5rem;
+	}
+
+	/* Collapsed mode: hide title group */
+	[data-state="collapsed"] .sidebar-header-title-group {
+		display: none;
 	}
 
 	.sidebar-title {
@@ -75,11 +135,88 @@
 		line-height: 1.2;
 	}
 
+	/* Header Trigger Button - Desktop collapse/expand */
+	.sidebar-header-trigger {
+		flex-shrink: 0;
+		cursor: pointer !important;
+		transition: all 0.2s ease;
+	}
+
+	.sidebar-header-trigger:hover {
+		background: hsl(var(--sidebar-accent, 60 4.8% 95.9%)) !important;
+		transform: scale(1.05);
+	}
+
+	.sidebar-header-trigger:active {
+		transform: scale(0.95);
+	}
+
+	/* Mobile Close Button - X icon in sidebar header */
+	.sidebar-header-close {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: hsl(var(--sidebar-foreground, 222.2 84% 4.9%));
+		background: transparent;
+		border: none;
+		padding: 0.5rem;
+		border-radius: 0.375rem;
+		cursor: pointer;
+		flex-shrink: 0;
+		transition: all 0.2s ease;
+	}
+
+	.sidebar-header-close:hover {
+		background: hsl(var(--sidebar-accent, 60 4.8% 95.9%));
+		transform: scale(1.05);
+	}
+
+	.sidebar-header-close:active {
+		transform: scale(0.95);
+	}
+
+	/* Progress Row: Icon + Stats */
+	.sidebar-progress-row {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		width: 100%;
+	}
+
+	/* Collapsed mode: center progress icon */
+	[data-state="collapsed"] .sidebar-progress-row {
+		justify-content: center;
+	}
+
+	/* Progress Icon - Has tooltip on hover */
+	.sidebar-progress-icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: hsl(var(--muted-foreground, 215.4 16.3% 46.9%));
+		flex-shrink: 0;
+		padding: 0.25rem;
+		border-radius: 0.25rem;
+		cursor: help;
+		transition: all 0.2s ease;
+	}
+
+	.sidebar-progress-icon:hover {
+		background: hsl(var(--sidebar-accent, 60 4.8% 95.9%) / 0.5);
+		color: hsl(var(--sidebar-foreground, 222.2 84% 4.9%));
+	}
+
 	.sidebar-description {
 		font-size: 0.875rem;
 		color: hsl(var(--muted-foreground, 215.4 16.3% 46.9%));
 		margin: 0;
 		line-height: 1.4;
+		flex: 1;
+	}
+
+	/* Collapsed mode: hide description text */
+	[data-state="collapsed"] .sidebar-description {
+		display: none;
 	}
 
 	/* ===== UNITS GROUP ===== */
@@ -388,6 +525,24 @@
 		}
 	}
 
+	/* ===== MOBILE TRIGGER (HEADER STICKY) ===== */
+	/* Hamburger menu button in sticky header - mobile only */
+	.mobile-trigger {
+		cursor: pointer !important;
+		transition: all 0.2s ease;
+		min-width: 44px; /* Touch-friendly hit area */
+		min-height: 44px;
+	}
+
+	.mobile-trigger:hover {
+		background: hsl(var(--accent, 60 4.8% 95.9%)) !important;
+		transform: scale(1.05);
+	}
+
+	.mobile-trigger:active {
+		transform: scale(0.95);
+	}
+
 	/* ===== DARK MODE SUPPORT ===== */
 	:global(.dark) .main-sidebar {
 		background: hsl(var(--sidebar, 222.2 84% 4.9%));
@@ -405,5 +560,10 @@
 
 	:global(.dark) .sidebar-chapter-button:hover {
 		background: hsl(var(--sidebar-accent, 217.2 32.6% 17.5%) / 0.5);
+	}
+
+	/* Dark mode mobile trigger */
+	:global(.dark) .mobile-trigger:hover {
+		background: hsl(var(--accent, 217.2 32.6% 17.5%)) !important;
 	}
 }

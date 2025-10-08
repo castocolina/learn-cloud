@@ -215,6 +215,7 @@ export const SETTINGS: AppSettings = {
 			 * Displays navigation title and chapter count in sidebar header
 			 */
 			header: {
+				icon: "BookOpen", // Lucide icon name (e.g., "BookOpen") or emoji (e.g., "📚")
 				title: "Navigation", // Header title text
 				description: "{units} units • {chapters} chapters" // Template with placeholders
 			},

@@ -14,7 +14,7 @@
 	Integration: Task 4 SPA Navigation System
 -->
 <script lang="ts">
-	import { ChevronRight, ChevronDown } from "lucide-svelte";
+	import { ChevronRight, ChevronDown, BookOpen, CircleDot, X } from "lucide-svelte";
 	import * as Sidebar from "$lib/components/ui/sidebar";
 	import * as Tooltip from "$lib/components/ui/tooltip";
 	import { useSidebar } from "$lib/components/ui/sidebar/context.svelte.js";
@@ -111,10 +111,64 @@
 
 <Sidebar.Root {collapsible} class="main-sidebar {className || ''}">
 	<Sidebar.Content class="main-sidebar-content">
-		<!-- Progress & Stats Section -->
+		<!-- Navigation Header with Integrated Trigger -->
 		<Sidebar.Header class="main-sidebar-header">
-			<div class="sidebar-header-content">
-				<h2 class="sidebar-title">{SETTINGS.ui.sidebar.header.title}</h2>
+			<!-- Header Title Row: Icon + Title + Trigger/Close -->
+			<div class="sidebar-header-row">
+				<!-- Icon with Tooltip (always visible, clickeable to toggle sidebar) -->
+				<Tooltip.Root>
+					<Tooltip.Trigger>
+						<button
+							type="button"
+							class="sidebar-header-icon"
+							onclick={() => sidebar.toggle()}
+							aria-label="Toggle sidebar"
+						>
+							<BookOpen class="size-5" />
+						</button>
+					</Tooltip.Trigger>
+					<Tooltip.Content side="right">
+						{SETTINGS.ui.sidebar.header.title}
+					</Tooltip.Content>
+				</Tooltip.Root>
+
+				<!-- Title + Trigger (desktop) / Title + X (mobile) -->
+				<div class="sidebar-header-title-group">
+					<h2 class="sidebar-title">{SETTINGS.ui.sidebar.header.title}</h2>
+
+					{#if sidebar.isMobile}
+						<!-- Mobile: X close button -->
+						<button
+							type="button"
+							class="sidebar-header-close"
+							onclick={() => sidebar.toggle()}
+							aria-label="Close sidebar"
+						>
+							<X class="size-5" />
+						</button>
+					{:else}
+						<!-- Desktop: Collapse trigger -->
+						<Sidebar.Trigger class="sidebar-header-trigger" />
+					{/if}
+				</div>
+			</div>
+
+			<!-- Progress Row: Icon + Stats -->
+			<div class="sidebar-progress-row">
+				<!-- Progress Icon with Tooltip -->
+				<Tooltip.Root>
+					<Tooltip.Trigger>
+						<div class="sidebar-progress-icon">
+							<CircleDot class="size-4" />
+						</div>
+					</Tooltip.Trigger>
+					<Tooltip.Content side="right">
+						Progress: {contentMenu.metadata.totalUnits} units • {contentMenu.metadata.totalChapters}
+						chapters
+					</Tooltip.Content>
+				</Tooltip.Root>
+
+				<!-- Progress Text (hidden in collapsed mode via CSS) -->
 				<p class="sidebar-description">
 					{SETTINGS.ui.sidebar.header.description
 						.replace("{units}", String(contentMenu.metadata.totalUnits))
