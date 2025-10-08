@@ -27,6 +27,14 @@
 	   No manual grid needed - shadcn manages responsive layout
 	   ===================================================== */
 
+	/* Main content area - Flexbox shrink fix */
+	.main-content {
+		/* CRITICAL: min-width: 0 allows flexbox children to shrink correctly */
+		/* Without this, flex items maintain their content's intrinsic width */
+		min-width: 0;
+		width: 100%;
+	}
+
 	/* Content area padding (no longer needed with Provider but kept for reference) */
 	/* Provider automatically calculates content area width based on sidebar state */
 }

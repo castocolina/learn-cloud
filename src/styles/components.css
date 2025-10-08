@@ -2375,6 +2375,25 @@
 	}
 }
 
+/* Responsive Max-Width: Prevent horizontal scroll on smaller viewports */
+@media (max-width: 1024px) {
+	/* Large max-widths (4xl, 5xl, 6xl) → 100% on tablets and mobile */
+	.renderer-article[data-max-width="4xl"],
+	.renderer-article[data-max-width="5xl"],
+	.renderer-article[data-max-width="6xl"] {
+		max-width: 100% !important;
+	}
+
+	/* Smaller max-widths (prose, 3xl) → Use min() to adapt */
+	.renderer-article[data-max-width="prose"] {
+		max-width: min(65ch, 100%);
+	}
+
+	.renderer-article[data-max-width="3xl"] {
+		max-width: min(48rem, 100%);
+	}
+}
+
 /* =====================================================
    FLOATING FOOTER - Sequential Navigation (Configurable)
    ===================================================== */
