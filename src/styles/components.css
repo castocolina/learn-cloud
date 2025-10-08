@@ -1,4 +1,36 @@
 /**
+ * Component Styles - Modular CSS Architecture
+ *
+ * Custom Svelte component styles following Tailwind v4 + SvelteKit standards.
+ * All component styles MUST use @layer components for proper layering.
+ *
+ * ⚠️ CRITICAL: THEME SYSTEM COMPLIANCE (SVELTEKIT-GUIDE.md)
+ *
+ * 🚨 MANDATORY: NEVER use hardcoded colors - ALWAYS use semantic CSS variables
+ *
+ * ✅ CORRECT usage:
+ *    background: hsl(var(--primary));
+ *    color: hsl(var(--foreground));
+ *    border: 1px solid hsl(var(--border));
+ *    box-shadow: 0 1px 3px 0 hsl(var(--foreground) / 0.1);
+ *
+ * ❌ WRONG - Hardcoded colors:
+ *    background: #ffffff;                           ❌ Use hsl(var(--background))
+ *    color: rgb(0, 0, 0);                          ❌ Use hsl(var(--foreground))
+ *    border: 1px solid #e5e7eb;                    ❌ Use hsl(var(--border))
+ *    box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);      ❌ Use hsl(var(--foreground) / 0.1)
+ *
+ * 📋 Available semantic variables (see src/app.css for complete definitions):
+ *    --primary, --primary-foreground      Primary actions
+ *    --background, --foreground           Base colors
+ *    --border, --input, --ring            Form elements
+ *    --muted, --accent, --destructive     UI states
+ *    --sidebar, --sidebar-*               Sidebar navigation
+ *
+ * Reference: SVELTEKIT-GUIDE.md - CSS Architecture Standards
+ */
+
+/**
  * Demo Flip Card Component Styles
  * Following centralized CSS architecture with demo-flipcard- prefixed classes
  * Mobile-first responsive design with 3D animations
@@ -3186,4 +3218,31 @@
 	.technology-badge {
 		@apply px-2 py-1 text-xs;
 	}
+}
+
+/**
+ * Tooltip Styles - Portal-Compatible
+ *
+ * Direct CSS for tooltip components to ensure proper styling in Portals.
+ * Tooltips use bits-ui Portal which renders outside normal DOM tree,
+ * causing Tailwind classes to not apply correctly in some cases.
+ *
+ * THEME COMPLIANCE: Uses semantic CSS variables from src/app.css
+ * - NO hardcoded colors (follows SVELTEKIT-GUIDE.md standards)
+ */
+[data-slot="tooltip-content"] {
+	background: hsl(var(--primary));
+	color: hsl(var(--primary-foreground));
+	border: 1px solid hsl(var(--border));
+	box-shadow: 0 1px 3px 0 hsl(var(--foreground) / 0.1);
+}
+
+/* Tooltip Arrow - matches tooltip background */
+[data-slot="tooltip-content"] > div {
+	background: hsl(var(--primary));
+}
+
+/* Dark mode adjustments */
+:global(.dark) [data-slot="tooltip-content"] {
+	box-shadow: 0 1px 3px 0 hsl(var(--foreground) / 0.3);
 }

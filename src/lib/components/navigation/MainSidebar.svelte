@@ -17,6 +17,7 @@
 	import { ChevronRight, ChevronDown } from "lucide-svelte";
 	import * as Sidebar from "$lib/components/ui/sidebar";
 	import * as Tooltip from "$lib/components/ui/tooltip";
+	import { useSidebar } from "$lib/components/ui/sidebar/context.svelte.js";
 	import { navigationStore } from "$lib/stores/spaNavigation.js";
 	import { navigateToContent } from "$lib/utils/spaNavigation.js";
 	import { contentMenu } from "$data/generated/content-menu.js";
@@ -39,11 +40,33 @@
 
 	let { collapsible = SETTINGS.ui.sidebar.collapsibleMode, class: className }: Props = $props();
 
+	// Get sidebar context to detect collapsed state
+	const sidebar = useSidebar();
+
 	// Derive current ID from navigation store for active highlighting
 	const currentId = $derived($navigationStore.currentId);
 
 	// Track expanded unit (accordion behavior - only one unit open at a time)
 	let expandedUnitId = $state<string | null>(null);
+
+	/**
+	 * Truncate text to max 15 characters (12 + "..." if longer)
+	 * Used for footer text in desktop collapsed mode only
+	 */
+	function truncateText(text: string, maxLength: number = 15): string {
+		if (text.length <= maxLength) return text;
+		return text.substring(0, maxLength - 3) + "...";
+	}
+
+	// Footer text with truncation only in desktop collapsed mode
+	const footerText = $derived(
+		!sidebar.isMobile && sidebar.state === "collapsed"
+			? truncateText(contentMenu.metadata.title)
+			: contentMenu.metadata.title
+	);
+
+	// Show tooltip only in desktop collapsed mode
+	const showFooterTooltip = $derived(!sidebar.isMobile && sidebar.state === "collapsed");
 
 	/**
 	 * Handle unit header click - toggle expansion (accordion)
@@ -91,9 +114,11 @@
 		<!-- Progress & Stats Section -->
 		<Sidebar.Header class="main-sidebar-header">
 			<div class="sidebar-header-content">
-				<h2 class="sidebar-title">Navigation</h2>
+				<h2 class="sidebar-title">{SETTINGS.ui.sidebar.header.title}</h2>
 				<p class="sidebar-description">
-					{contentMenu.metadata.totalUnits} units • {contentMenu.metadata.totalChapters} chapters
+					{SETTINGS.ui.sidebar.header.description
+						.replace("{units}", String(contentMenu.metadata.totalUnits))
+						.replace("{chapters}", String(contentMenu.metadata.totalChapters))}
 				</p>
 			</div>
 		</Sidebar.Header>
@@ -187,12 +212,25 @@
 		<!-- Footer with metadata -->
 		<Sidebar.Footer class="main-sidebar-footer">
 			<div class="sidebar-footer-content">
-				<p class="sidebar-footer-text">
-					{contentMenu.metadata.title}
-				</p>
-				{#if contentMenu.metadata.version}
-					<p class="sidebar-footer-version">v{contentMenu.metadata.version}</p>
+				{#if showFooterTooltip}
+					<!-- Desktop collapsed mode: Show truncated text with tooltip -->
+					<Tooltip.Root>
+						<Tooltip.Trigger>
+							<p class="sidebar-footer-text">
+								{footerText}
+							</p>
+						</Tooltip.Trigger>
+						<Tooltip.Content side="right" class="max-w-xs">
+							{contentMenu.metadata.title}
+						</Tooltip.Content>
+					</Tooltip.Root>
+				{:else}
+					<!-- Mobile or desktop expanded: Show full text -->
+					<p class="sidebar-footer-text">
+						{footerText}
+					</p>
 				{/if}
+				<p class="sidebar-footer-version">v{SETTINGS.ui.sidebar.footer.version}</p>
 			</div>
 		</Sidebar.Footer>
 	</Sidebar.Content>

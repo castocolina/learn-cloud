@@ -2,11 +2,35 @@
  * Navigation Component Styles - Modular CSS Architecture
  *
  * Centralized styles for MainSidebar component following Tailwind v4 patterns.
- * All component styles MUST use @layer components for proper layering.
  *
- * CRITICAL: Text wrapping fix for long chapter titles included.
+ * ⚠️ CRITICAL: Do NOT use :global() in external CSS files
+ * - :global() is ONLY for <style> blocks in Svelte components
+ * - This file is already global (imported via app.css)
+ * - Using :global() here causes selectors to not compile correctly
  *
- * Architecture: SVELTEKIT-GUIDE.md - CSS Architecture Standards
+ * ✅ CORRECT:  [data-state="collapsed"] .sidebar-unit-icon { }
+ * ❌ WRONG:    :global([data-state="collapsed"]) .sidebar-unit-icon { }
+ *
+ * ⚠️ CRITICAL: THEME SYSTEM COMPLIANCE
+ *
+ * 🚨 MANDATORY: NEVER use hardcoded colors - ALWAYS use semantic CSS variables
+ *
+ * ✅ CORRECT usage:
+ *    background: hsl(var(--sidebar));
+ *    border: 1px solid hsl(var(--sidebar-border));
+ *    color: hsl(var(--sidebar-foreground));
+ *    box-shadow: 0 1px 3px 0 hsl(var(--foreground) / 0.1);
+ *
+ * ❌ WRONG - Hardcoded colors:
+ *    background: #f8f9fa;                          ❌ Use hsl(var(--sidebar))
+ *    border: 1px solid #e5e7eb;                    ❌ Use hsl(var(--sidebar-border))
+ *    box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);      ❌ Use hsl(var(--foreground) / 0.1)
+ *
+ * 📋 Sidebar variables (see src/app.css for complete definitions):
+ *    --sidebar, --sidebar-foreground, --sidebar-border
+ *    --sidebar-primary, --sidebar-accent, --sidebar-ring
+ *
+ * Reference: SVELTEKIT-GUIDE.md - CSS Architecture Standards
  */
 
 @layer components {
@@ -109,15 +133,15 @@
 	}
 
 	/* Icon Mode: Center emoji, hide text */
-	:global([data-state="collapsed"]) .sidebar-unit-header {
+	[data-state="collapsed"] .sidebar-unit-header {
 		justify-content: center;
 		align-items: center; /* Center vertically in icon mode */
 		padding: 0.75rem;
 		min-height: 3rem; /* Compact height in collapsed mode */
 	}
 
-	:global([data-state="collapsed"]) .sidebar-unit-info,
-	:global([data-state="collapsed"]) .sidebar-unit-toggle {
+	[data-state="collapsed"] .sidebar-unit-info,
+	[data-state="collapsed"] .sidebar-unit-toggle {
 		display: none;
 	}
 
@@ -140,7 +164,7 @@
 	}
 
 	/* Icon Mode: Make emojis larger and centered */
-	:global([data-state="collapsed"]) .sidebar-unit-icon {
+	[data-state="collapsed"] .sidebar-unit-icon {
 		font-size: 1.75rem;
 		margin-top: 0; /* Reset margin for perfect centering */
 	}
@@ -254,7 +278,7 @@
 	}
 
 	/* Icon Mode: Hide chapter list when sidebar collapsed */
-	:global([data-state="collapsed"]) .sidebar-chapters-list {
+	[data-state="collapsed"] .sidebar-chapters-list {
 		display: none;
 	}
 
@@ -302,6 +326,10 @@
 		color: hsl(var(--muted-foreground, 215.4 16.3% 46.9%));
 		margin: 0;
 		line-height: 1.3;
+		/* Text wrapping for long footer text */
+		white-space: normal;
+		word-wrap: break-word;
+		overflow-wrap: break-word;
 	}
 
 	.sidebar-footer-version {
@@ -309,6 +337,10 @@
 		color: hsl(var(--muted-foreground, 215.4 16.3% 46.9%));
 		margin: 0;
 		font-weight: 600;
+		/* Text wrapping for version text */
+		white-space: normal;
+		word-wrap: break-word;
+		overflow-wrap: break-word;
 	}
 
 	/* ===== SCROLLBAR STYLING ===== */

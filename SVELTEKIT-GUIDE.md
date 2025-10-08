@@ -226,6 +226,36 @@ src/styles/
 - ❌ **NEVER** use `<style>` blocks in Svelte components with `@apply` (Tailwind v4 incompatible)
 - ❌ **NEVER** use inline styles in Svelte component templates
 
+**:global() Scoping Rules (CRITICAL)**:
+
+- ✅ **ONLY USE** `:global()` in Svelte component `<style>` blocks to escape scoping
+- ❌ **NEVER USE** `:global()` in external CSS files (`src/styles/*.css`, `src/app.css`)
+- **Reason**: External CSS files are already global when imported via `app.css`
+- **Problem**: `:global()` in external CSS may not compile correctly, causing selectors to fail silently
+
+**Example:**
+
+```css
+/* ✅ CORRECT in external CSS files (src/styles/*.css) */
+[data-state="collapsed"] .sidebar-unit-icon {
+	font-size: 1.75rem;
+}
+
+/* ❌ INCORRECT in external CSS files - selectors won't apply */
+:global([data-state="collapsed"]) .sidebar-unit-icon {
+	font-size: 1.75rem;
+}
+```
+
+```svelte
+<!-- ✅ CORRECT in Svelte component <style> blocks -->
+<style>
+	:global([data-state="collapsed"]) .my-component {
+		/* Escapes Svelte's CSS scoping */
+	}
+</style>
+```
+
 **SvelteKit-Specific Benefits**:
 
 - ✅ Single CSS bundle with optimal build performance

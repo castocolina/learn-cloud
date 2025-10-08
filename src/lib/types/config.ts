@@ -175,6 +175,18 @@ export interface AppSettings {
 			 * - "none": Non-collapsible sidebar
 			 */
 			collapsibleMode: "icon" | "offcanvas" | "none";
+			/** Header section configuration */
+			header: {
+				/** Title text displayed in sidebar header */
+				title: string;
+				/** Description text displayed in sidebar header */
+				description: string;
+			};
+			/** Footer section configuration */
+			footer: {
+				/** Version text displayed in sidebar footer */
+				version: string;
+			};
 		};
 		/** Store configuration for reactive state management */
 		stores: {

@@ -161,7 +161,7 @@ export const SETTINGS: AppSettings = {
 			 */
 			sidebarWidth: "16rem", // Desktop expanded: 256px (~20% at 1280px)
 			sidebarWidthMobile: "18rem", // Mobile expanded: 288px
-			sidebarWidthIcon: "3rem", // Collapsed state: 48px
+			sidebarWidthIcon: "4rem", // Collapsed state: 64px (increased for full emoji visibility)
 
 			/**
 			 * Header and Footer Heights
@@ -208,7 +208,24 @@ export const SETTINGS: AppSettings = {
 			 * - "offcanvas": Slides off-screen completely (mobile-friendly)
 			 * - "none": Non-collapsible sidebar (always visible)
 			 */
-			collapsibleMode: "icon" as "icon" | "offcanvas" | "none"
+			collapsibleMode: "icon" as "icon" | "offcanvas" | "none",
+			/**
+			 * Sidebar Header Configuration
+			 *
+			 * Displays navigation title and chapter count in sidebar header
+			 */
+			header: {
+				title: "Navigation", // Header title text
+				description: "{units} units • {chapters} chapters" // Template with placeholders
+			},
+			/**
+			 * Sidebar Footer Configuration
+			 *
+			 * Displays book title and version in sidebar footer
+			 */
+			footer: {
+				version: "1.0.0" // Version number (displayed as "v{version}")
+			}
 		},
 		stores: {
 			spaNavigation: {
