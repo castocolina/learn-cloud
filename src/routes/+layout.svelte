@@ -27,6 +27,7 @@
 	import { SETTINGS } from "$config/settings.js";
 	import * as Sidebar from "$lib/components/ui/sidebar";
 	import MainSidebar from "$lib/components/navigation/MainSidebar.svelte";
+	import MobileTrigger from "$lib/components/navigation/MobileTrigger.svelte";
 
 	let { children } = $props();
 </script>
@@ -52,7 +53,7 @@
 			class="sticky top-0 z-10 flex h-16 items-center gap-2 border-b bg-white px-4 dark:bg-slate-950"
 		>
 			<!-- Mobile trigger (hamburger menu) - visible only on mobile (<768px) -->
-			<Sidebar.Trigger class="mobile-trigger md:hidden" />
+			<MobileTrigger class="md:hidden" />
 
 			<div class="flex-1">
 				<span class="text-sm text-muted-foreground">Header + Breadcrumb (TASK 8B+8C)</span>

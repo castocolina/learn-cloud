@@ -85,6 +85,11 @@
 				data: { unitId: unit.id, chapterId: overviewChapter.id },
 				timestamp: new Date()
 			});
+
+			// Auto-close sidebar on mobile after navigation
+			if (sidebar.isMobile) {
+				sidebar.setOpenMobile(false);
+			}
 		}
 	}
 
@@ -99,6 +104,11 @@
 			data: { unitId: unit.id, chapterId: chapter.id },
 			timestamp: new Date()
 		});
+
+		// Auto-close sidebar on mobile after navigation
+		if (sidebar.isMobile) {
+			sidebar.setOpenMobile(false);
+		}
 	}
 
 	/**
@@ -115,22 +125,35 @@
 		<Sidebar.Header class="main-sidebar-header">
 			<!-- Header Title Row: Icon + Title + Trigger/Close -->
 			<div class="sidebar-header-row">
-				<!-- Icon with Tooltip (always visible, clickeable to toggle sidebar) -->
-				<Tooltip.Root>
-					<Tooltip.Trigger>
-						<button
-							type="button"
-							class="sidebar-header-icon"
-							onclick={() => sidebar.toggle()}
-							aria-label="Toggle sidebar"
-						>
-							<BookOpen class="size-5" />
-						</button>
-					</Tooltip.Trigger>
-					<Tooltip.Content side="right">
-						{SETTINGS.ui.sidebar.header.title}
-					</Tooltip.Content>
-				</Tooltip.Root>
+				<!-- Icon (clickeable to toggle sidebar) - tooltip only on desktop -->
+				{#if sidebar.isMobile}
+					<!-- Mobile: Direct button without tooltip (prevents double-click issue) -->
+					<button
+						type="button"
+						class="sidebar-header-icon"
+						onclick={() => sidebar.toggle()}
+						aria-label="Toggle sidebar"
+					>
+						<BookOpen class="size-5" />
+					</button>
+				{:else}
+					<!-- Desktop: Button with tooltip -->
+					<Tooltip.Root>
+						<Tooltip.Trigger>
+							<button
+								type="button"
+								class="sidebar-header-icon"
+								onclick={() => sidebar.toggle()}
+								aria-label="Toggle sidebar"
+							>
+								<BookOpen class="size-5" />
+							</button>
+						</Tooltip.Trigger>
+						<Tooltip.Content side="right">
+							{SETTINGS.ui.sidebar.header.title}
+						</Tooltip.Content>
+					</Tooltip.Root>
+				{/if}
 
 				<!-- Title + Trigger (desktop) / Title + X (mobile) -->
 				<div class="sidebar-header-title-group">
@@ -155,18 +178,26 @@
 
 			<!-- Progress Row: Icon + Stats -->
 			<div class="sidebar-progress-row">
-				<!-- Progress Icon with Tooltip -->
-				<Tooltip.Root>
-					<Tooltip.Trigger>
-						<div class="sidebar-progress-icon">
-							<CircleDot class="size-4" />
-						</div>
-					</Tooltip.Trigger>
-					<Tooltip.Content side="right">
-						Progress: {contentMenu.metadata.totalUnits} units • {contentMenu.metadata.totalChapters}
-						chapters
-					</Tooltip.Content>
-				</Tooltip.Root>
+				<!-- Progress Icon - tooltip only on desktop -->
+				{#if sidebar.isMobile}
+					<!-- Mobile: Direct icon without tooltip -->
+					<div class="sidebar-progress-icon" aria-label="Progress indicator">
+						<CircleDot class="size-4" />
+					</div>
+				{:else}
+					<!-- Desktop: Icon with tooltip -->
+					<Tooltip.Root>
+						<Tooltip.Trigger>
+							<div class="sidebar-progress-icon">
+								<CircleDot class="size-4" />
+							</div>
+						</Tooltip.Trigger>
+						<Tooltip.Content side="right">
+							Progress: {contentMenu.metadata.totalUnits} units •
+							{contentMenu.metadata.totalChapters} chapters
+						</Tooltip.Content>
+					</Tooltip.Root>
+				{/if}
 
 				<!-- Progress Text (hidden in collapsed mode via CSS) -->
 				<p class="sidebar-description">
