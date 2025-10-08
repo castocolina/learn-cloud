@@ -77,6 +77,22 @@
 		flex-direction: column;
 	}
 
+	/* Zebra stripes for units - visible alternating backgrounds */
+	.sidebar-unit-item:nth-child(odd) .sidebar-unit-header {
+		background: hsl(var(--sidebar-accent, 60 4.8% 95.9%) / 0.8);
+	}
+
+	.sidebar-unit-item:nth-child(even) .sidebar-unit-header {
+		background: hsl(var(--sidebar-accent, 60 4.8% 95.9%) / 0.4);
+	}
+
+	/* Separator borders between units - prominent */
+	.sidebar-unit-item:not(:last-child) {
+		border-bottom: 2px solid hsl(var(--sidebar-border, 220 13% 91%));
+		padding-bottom: 0.75rem;
+		margin-bottom: 0.75rem;
+	}
+
 	.sidebar-unit-header {
 		display: flex;
 		align-items: flex-start; /* Allow multi-line wrapping */
@@ -186,6 +202,21 @@
 		display: flex;
 	}
 
+	/* Zebra stripes for chapters - visible alternating backgrounds */
+	.sidebar-chapter-item:nth-child(odd) .sidebar-chapter-button {
+		background: hsl(var(--sidebar-accent, 60 4.8% 95.9%) / 0.6);
+	}
+
+	.sidebar-chapter-item:nth-child(even) .sidebar-chapter-button {
+		background: hsl(var(--sidebar-accent, 60 4.8% 95.9%) / 0.3);
+	}
+
+	/* Separator borders between chapters - visible */
+	.sidebar-chapter-item:not(:last-child) {
+		border-bottom: 1px solid hsl(var(--sidebar-border, 220 13% 91%));
+		margin-bottom: 0.25rem;
+	}
+
 	.sidebar-chapter-button {
 		display: flex;
 		align-items: flex-start; /* Changed from center to support multi-line titles */
@@ -236,7 +267,7 @@
 		/* CRITICAL FIX: Text wrapping for long titles */
 		white-space: normal;
 		word-wrap: break-word;
-		overflow-wrap: break-word;
+		overflow-wrap: anywhere; /* More aggressive wrapping */
 		hyphens: auto;
 	}
 

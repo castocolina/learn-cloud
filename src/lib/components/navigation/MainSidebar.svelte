@@ -170,25 +170,8 @@
 												</span>
 
 												<!-- Chapter Title (with text wrapping) -->
-												<span class="sidebar-chapter-title">
+												<span class="sidebar-chapter-title !overflow-visible !whitespace-normal">
 													{chapter.title}
-												</span>
-
-												<!-- Chapter Type Badge -->
-												<span class="sidebar-chapter-type" aria-label={chapter.type}>
-													{#if chapter.type === "lesson"}
-														📖
-													{:else if chapter.type === "quiz"}
-														❓
-													{:else if chapter.type === "study_guide"}
-														📚
-													{:else if chapter.type === "overview"}
-														👁️
-													{:else if chapter.type === "exam"}
-														📝
-													{:else if chapter.type === "project"}
-														🚀
-													{/if}
 												</span>
 											</Sidebar.MenuSubButton>
 										</Sidebar.MenuSubItem>
