@@ -1445,7 +1445,45 @@ function navigateToNext() {
   - Home view: Site title only
   - Unit view: Unit name with home link
   - Chapter view: Unit name and chapter name
-- **Cursor Indicators**: All interactive elements must have `cursor-pointer` styling
+
+**Interactive Element Requirements** (🚨 **MANDATORY**):
+
+All interactive elements (buttons, links, clickable areas) **MUST** provide clear visual feedback to users:
+
+1. **Cursor Indication**:
+   - ✅ `cursor-pointer` class on all clickable elements
+   - ✅ Apply to: buttons, links, cards, list items, icons
+   - ❌ Never leave interactive elements with default cursor
+
+2. **Hover State Feedback** (choose at least one):
+   - ✅ Background color change: `hover:bg-accent`, `hover:bg-gray-100`
+   - ✅ Scale transformation: `hover:scale-105`, `hover:scale-110`
+   - ✅ Border changes: `hover:border-primary`, `hover:ring-2`
+   - ✅ Color changes: `hover:text-primary`, `hover:text-foreground`
+   - ✅ Shadow effects: `hover:shadow-md`, `hover:shadow-lg`
+
+3. **Transition Smoothness**:
+   - ✅ Add `transition-all`, `transition-colors`, or `transition-transform`
+   - ✅ Recommended duration: default (150ms) or `duration-200`
+
+4. **Examples**:
+
+   ```svelte
+   <!-- Button with scale and background -->
+   <Button class="cursor-pointer transition-all hover:scale-110 hover:bg-accent">
+
+   <!-- Link with color change -->
+   <a href="#" class="cursor-pointer transition-colors hover:text-primary">
+
+   <!-- Card with shadow effect -->
+   <div class="cursor-pointer transition-shadow hover:shadow-md">
+   ```
+
+5. **Why This Matters**:
+   - **User Experience**: Clear feedback confirms interactivity
+   - **Accessibility**: Helps users with motor impairments identify clickable areas
+   - **Consistency**: Unified interaction patterns across the application
+   - **Professionalism**: Polished, production-ready feel
 
 **Quiz System**:
 

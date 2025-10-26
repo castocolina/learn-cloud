@@ -71,13 +71,24 @@
 
 <DropdownMenu.Root>
 	<DropdownMenu.Trigger>
-		<Button variant="ghost" size="sm" class="h-8 w-8 px-0 {className}" aria-label="Toggle theme">
+		<Button
+			variant="ghost"
+			size="sm"
+			class="h-8 w-8 cursor-pointer px-0 transition-all hover:scale-110 hover:bg-accent {className}"
+			aria-label="Toggle theme"
+		>
 			{@const IconComponent = currentIcon()}
 			<IconComponent class="h-4 w-4" />
 			<span class="sr-only">Toggle theme</span>
 		</Button>
 	</DropdownMenu.Trigger>
-	<DropdownMenu.Content align="end" class="w-40">
+	<DropdownMenu.Content
+		side="bottom"
+		align="end"
+		avoidCollisions={true}
+		collisionPadding={8}
+		class="w-40"
+	>
 		<DropdownMenu.Label class="text-xs font-medium text-muted-foreground">Theme</DropdownMenu.Label>
 		<DropdownMenu.Separator />
 		<DropdownMenu.Item class="cursor-pointer" onclick={() => handleThemeChange("light")}>

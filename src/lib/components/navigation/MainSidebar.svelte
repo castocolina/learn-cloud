@@ -79,9 +79,12 @@
 	}
 
 	/**
-	 * Handle unit title/emoji click - Navigate to overview and close mobile sidebar
+	 * Handle unit title/emoji click - Toggle expansion, navigate to overview, and close mobile sidebar
 	 */
 	function handleUnitNavigate(unit: MenuUnit): void {
+		// Toggle expansion (accordion behavior)
+		expandedUnitId = expandedUnitId === unit.id ? null : unit.id;
+
 		// Navigate to unit overview if available
 		const overviewChapter = unit.chapters.find((ch) => ch.type === "overview");
 		if (overviewChapter) {

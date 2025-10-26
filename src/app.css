@@ -152,6 +152,30 @@
 	--slate-800: 215 28% 17%;
 	--slate-900: 222 84% 5%;
 	--slate-950: 229 84% 5%;
+
+	/* ========================================================================
+	   CONTENT HEADER TYPE DIFFERENTIATION - Light Mode
+	   ======================================================================== */
+	/* Color variables for content type identification (overview, lesson, quiz, etc.) */
+	/* These maintain visual distinction between different content types */
+
+	--header-overview-bg: 210 40% 96%; /* Slate/neutral tones */
+	--header-overview-border: 210 40% 60%;
+
+	--header-lesson-bg: 207 90% 95%; /* Blue gradient - originally #1976d2 */
+	--header-lesson-border: 207 90% 42%;
+
+	--header-study-guide-bg: 142 76% 95%; /* Green gradient - originally #388e3c */
+	--header-study-guide-border: 142 76% 36%;
+
+	--header-quiz-bg: 38 100% 95%; /* Orange gradient - originally #f57c00 */
+	--header-quiz-border: 38 100% 48%;
+
+	--header-exam-bg: 0 74% 95%; /* Red gradient - originally #c62828 */
+	--header-exam-border: 0 74% 39%;
+
+	--header-project-bg: 291 64% 95%; /* Purple gradient - originally #7b1fa2 */
+	--header-project-border: 291 64% 49%;
 }
 
 /**
@@ -219,6 +243,29 @@
 	--sidebar-accent-foreground: 210 40% 98%; /* slate-50: Hover text */
 	--sidebar-border: 215 28% 17%; /* slate-800: Sidebar borders */
 	--sidebar-ring: 215 20% 65%; /* slate-400: Focus in sidebar */
+
+	/* ========================================================================
+	   CONTENT HEADER TYPE DIFFERENTIATION - Dark Mode
+	   ======================================================================== */
+	/* Dark mode counterparts maintaining color identity with adjusted contrast */
+
+	--header-overview-bg: 210 40% 15%; /* Slate/neutral tones - darker */
+	--header-overview-border: 210 40% 50%;
+
+	--header-lesson-bg: 207 90% 15%; /* Blue gradient - maintains #1976d2 identity */
+	--header-lesson-border: 207 90% 55%;
+
+	--header-study-guide-bg: 142 76% 15%; /* Green gradient - maintains #388e3c identity */
+	--header-study-guide-border: 142 76% 50%;
+
+	--header-quiz-bg: 38 100% 20%; /* Orange gradient - maintains #f57c00 identity */
+	--header-quiz-border: 38 100% 60%;
+
+	--header-exam-bg: 0 74% 20%; /* Red gradient - maintains #c62828 identity */
+	--header-exam-border: 0 74% 55%;
+
+	--header-project-bg: 291 64% 20%; /* Purple gradient - maintains #7b1fa2 identity */
+	--header-project-border: 291 64% 60%;
 
 	/* ========================================================================
 	   UTILITY COLOR SCALE - Slate Palette (Dark Mode - Inverted)

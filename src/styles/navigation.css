@@ -44,6 +44,43 @@
 		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 	}
 
+	/* ========================================================================
+	   CRITICAL FIX: Mobile Sidebar Z-Index
+	   ======================================================================== */
+	/*
+	 * PROBLEM: Mobile offcanvas sidebar appears BEHIND sticky header
+	 * CAUSE: shadcn-svelte Sheet component has hardcoded z-50 (z-index: 50)
+	 *        which is less than header's z-index: 100 (var(--z-header))
+	 * SOLUTION: Override Sheet z-index for mobile sidebar to use proper hierarchy
+	 *
+	 * Z-Index Hierarchy (Mobile Sidebar Open):
+	 * - Sidebar Content: 201 (--z-overlay + 1) - topmost layer
+	 * - Sidebar Overlay: 200 (--z-overlay) - darkens background
+	 * - Header: 100 (--z-header) - below overlay when sidebar open
+	 * - Sidebar Desktop: auto (normal flow)
+	 *
+	 * Technical Note:
+	 * - shadcn Sheet renders via Portal with data-slot="sheet-content"
+	 * - Mobile sidebar adds data-mobile="true" to Sheet.Content
+	 * - Overlay uses data-slot="sheet-overlay"
+	 * - Must override Tailwind z-50 class with !important
+	 *
+	 * Rationale:
+	 * When mobile sidebar is open, it should take visual priority over everything
+	 * including the sticky header. The overlay darkens the entire screen (header included)
+	 * and the sidebar content appears on top.
+	 */
+
+	/* Sheet overlay for mobile sidebar - above header */
+	[data-slot="sheet-overlay"] {
+		z-index: var(--z-overlay) !important; /* 200 - above header (100) */
+	}
+
+	/* Sheet content when used as mobile sidebar - above overlay */
+	[data-slot="sidebar"][data-mobile="true"] {
+		z-index: calc(var(--z-overlay) + 1) !important; /* 201 - above overlay (200) */
+	}
+
 	.main-sidebar-content {
 		display: flex;
 		flex-direction: column;
@@ -624,5 +661,209 @@
 	:global(.dark) .sidebar-unit-toggle-button:hover {
 		background: hsl(var(--sidebar-accent, 217.2 32.6% 17.5%));
 		color: hsl(var(--sidebar-foreground, 210 40% 98%));
+	}
+
+	/* =====================================================
+	   STICKY HEADER - Solid Background Fix
+	   ===================================================== */
+
+	/**
+	 * CRITICAL FIX: Sticky header MUST have solid opaque background
+	 *
+	 * Issue: Tailwind bg-background class may have specificity conflicts
+	 * Solution: Direct CSS rule using semantic variables (theme-compatible)
+	 *
+	 * THEME COMPATIBILITY:
+	 * - Light mode: hsl(var(--background)) = hsl(0 0% 100%) = white
+	 * - Dark mode: hsl(var(--background)) = hsl(222 84% 5%) = dark slate
+	 * - Custom themes: Automatically uses theme's --background value
+	 *
+	 * REGRESSION PREVENTION: DO NOT remove this rule or add transparency/blur
+	 */
+	header[style*="--z-header"] {
+		background-color: hsl(var(--background)) !important;
+		backdrop-filter: none !important;
+		opacity: 1 !important;
+	}
+
+	/* Fallback: Ensure no transparency on ANY sticky header */
+	header.sticky {
+		background-color: hsl(var(--background)) !important;
+		backdrop-filter: none !important;
+	}
+
+	/* ========================================================================
+	   TOOLTIP Z-INDEX FIX (shadcn-svelte override)
+	   ======================================================================== */
+	/**
+	 * CRITICAL: shadcn tooltip-content has hardcoded z-50 (z-index: 50)
+	 * This causes tooltips to appear BEHIND the sticky header (z-index: 100)
+	 *
+	 * Override with proper z-index hierarchy using CSS custom properties
+	 * Tooltips must be above header (100) and sidebar (90/200)
+	 *
+	 * Z-Index Hierarchy:
+	 * - Tooltips: 300 (--z-popover) - above all navigation elements
+	 * - Header: 100 (--z-header)
+	 * - Sidebar Mobile: 200 (--z-overlay)
+	 */
+	[data-slot="tooltip-content"] {
+		z-index: var(--z-popover) !important; /* 300 - above all navigation */
+	}
+
+	/* Tooltip arrow also needs correct z-index */
+	[data-slot="tooltip-content"] > div {
+		z-index: var(--z-popover) !important;
+	}
+
+	/* ========================================================================
+	   DROPDOWN MENU FIX (shadcn-svelte override)
+	   ======================================================================== */
+	/**
+	 * REGRESSION FIX: Dropdown Menu Transparency & Layout Shift Issues
+	 *
+	 * PROBLEMS (Recurring Pattern):
+	 * 1. TRANSPARENCY: Background not opaque, making options unreadable
+	 * 2. LAYOUT SHIFT: Dropdown pushes content down instead of overlaying
+	 *
+	 * ROOT CAUSES:
+	 * - shadcn-svelte DropdownMenu has hardcoded z-50 (z-index: 50)
+	 * - Background transparency issue despite bg-popover class
+	 * - Potential Portal rendering or positioning conflicts
+	 *
+	 * SOLUTION:
+	 * - Override z-index to var(--z-popover) (300) - above header (100)
+	 * - Enforce solid background with theme-aware variables
+	 * - Ensure absolute positioning for proper overlay behavior
+	 *
+	 * Z-Index Hierarchy:
+	 * - Dropdown Menu: 300 (--z-popover) - above header and navigation
+	 * - Header: 100 (--z-header)
+	 * - Tooltips: 300 (--z-popover)
+	 *
+	 * REGRESSION PREVENTION:
+	 * This transparency issue is a recurring pattern in Portal-rendered components.
+	 * Always verify solid backgrounds and proper z-index hierarchy for overlays.
+	 */
+	[data-slot="dropdown-menu-content"] {
+		/* Fix z-index: Override shadcn's z-50 with proper hierarchy */
+		z-index: var(--z-popover) !important; /* 300 - above all navigation */
+
+		/* Fix transparency: Enforce solid, theme-aware background */
+		background-color: hsl(var(--popover)) !important;
+
+		/* Ensure text is visible with proper foreground color */
+		color: hsl(var(--popover-foreground)) !important;
+
+		/* Note: Position is managed by Radix UI Portal (position: fixed by default) */
+		/* This allows proper collision detection and viewport boundary handling */
+		/* DO NOT override position - it breaks Radix UI's positioning system */
+	}
+
+	/**
+	 * =================================================================
+	 * BREADCRUMB RESPONSIVE SYSTEM
+	 * =================================================================
+	 *
+	 * Intelligent breadcrumb navigation with priority-based layout:
+	 * - Priority 1 (HIGH): Current Chapter - maintains visibility longest
+	 * - Priority 2 (MEDIUM): Unit Title - compresses moderately
+	 * - Priority 3 (LOW): Home Link - compresses first
+	 *
+	 * RESPONSIVE BEHAVIOR:
+	 * - Uses flex-shrink values to control compression order
+	 * - Applies max-width constraints per breakpoint
+	 * - Text truncation with ellipsis for overflow
+	 * - Tooltips (title attribute) show full text on hover
+	 *
+	 * INTERACTIVE FEEDBACK:
+	 * - Complies with Interactive Element Requirements
+	 * - cursor-pointer on all clickable items
+	 * - Multiple hover states (bg, color, underline)
+	 * - Smooth transitions (150ms)
+	 *
+	 * INTEGRATION:
+	 * - Works with StickyHeader breadcrumb navigation
+	 * - Coordinated with SearchBox flexible sizing
+	 * - Mobile-first responsive design
+	 */
+
+	/* Base breadcrumb item flex behavior */
+	.breadcrumb-item {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		min-width: 0; /* Critical for text truncation in flex containers */
+	}
+
+	/* Priority-based flex-shrink (defines compression order) */
+	.breadcrumb-item[data-priority="high"] {
+		flex-shrink: 1; /* Chapter - maintains space longest */
+		min-width: 120px; /* Guarantees minimum legibility */
+	}
+
+	.breadcrumb-item[data-priority="medium"] {
+		flex-shrink: 2; /* Unit - compresses moderately */
+		min-width: 80px;
+	}
+
+	.breadcrumb-item[data-priority="low"] {
+		flex-shrink: 3; /* Home - compresses first */
+		min-width: 60px;
+	}
+
+	/* Breadcrumb link/text base styles */
+	.breadcrumb-link,
+	.breadcrumb-text {
+		display: block;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		max-width: 100%;
+	}
+
+	/* Responsive max-widths per breakpoint */
+	/* Tablet: 768px+ - Single-line truncation */
+	@media (min-width: 768px) and (max-width: 1023px) {
+		.breadcrumb-item[data-priority="high"] .breadcrumb-link,
+		.breadcrumb-item[data-priority="high"] .breadcrumb-text {
+			max-width: 200px; /* Chapter title on tablet */
+		}
+
+		.breadcrumb-item[data-priority="medium"] .breadcrumb-link,
+		.breadcrumb-item[data-priority="medium"] .breadcrumb-text {
+			max-width: 150px; /* Unit title on tablet */
+		}
+
+		.breadcrumb-item[data-priority="low"] .breadcrumb-link,
+		.breadcrumb-item[data-priority="low"] .breadcrumb-text {
+			max-width: 80px; /* Home link on tablet */
+		}
+	}
+
+	/* Desktop: 1024px+ - Generous widths, allows 2-line wrap */
+	@media (min-width: 1024px) {
+		.breadcrumb-item[data-priority="high"] .breadcrumb-link,
+		.breadcrumb-item[data-priority="high"] .breadcrumb-text {
+			max-width: 400px; /* Chapter title - generous space */
+		}
+
+		.breadcrumb-item[data-priority="medium"] .breadcrumb-link,
+		.breadcrumb-item[data-priority="medium"] .breadcrumb-text {
+			max-width: 300px; /* Unit title - more space */
+		}
+
+		.breadcrumb-item[data-priority="low"] .breadcrumb-link,
+		.breadcrumb-item[data-priority="low"] .breadcrumb-text {
+			max-width: 150px; /* Home link - readable */
+		}
+	}
+
+	/* Wide Desktop: 1280px+ - No limits, natural wrap */
+	@media (min-width: 1280px) {
+		.breadcrumb-link,
+		.breadcrumb-text {
+			max-width: none; /* No truncation - wrap naturally if needed */
+		}
 	}
 }

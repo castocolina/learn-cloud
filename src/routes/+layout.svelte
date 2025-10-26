@@ -27,7 +27,7 @@
 	import { SETTINGS } from "$config/settings.js";
 	import * as Sidebar from "$lib/components/ui/sidebar";
 	import MainSidebar from "$lib/components/navigation/MainSidebar.svelte";
-	import MobileTrigger from "$lib/components/navigation/MobileTrigger.svelte";
+	import StickyHeader from "$lib/components/navigation/StickyHeader.svelte";
 
 	let { children } = $props();
 </script>
@@ -48,17 +48,8 @@
 
 	<!-- Main content area with natural scroll -->
 	<main class="main-content flex flex-1 flex-col">
-		<!-- TASK 8B + 8C: Sticky Header with Breadcrumb (placeholder) -->
-		<header
-			class="sticky top-0 z-10 flex h-16 items-center gap-2 border-b bg-white px-4 dark:bg-slate-950"
-		>
-			<!-- Mobile trigger (hamburger menu) - visible only on mobile (<768px) -->
-			<MobileTrigger class="md:hidden" />
-
-			<div class="flex-1">
-				<span class="text-sm text-muted-foreground">Header + Breadcrumb (TASK 8B+8C)</span>
-			</div>
-		</header>
+		<!-- TASK 8B: Sticky Header with Breadcrumb and Search -->
+		<StickyHeader />
 
 		<!-- Content area: renders ContentRouter and all route content -->
 		<div class="flex-1">

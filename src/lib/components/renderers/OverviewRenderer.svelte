@@ -46,7 +46,7 @@
 					<h2 class="mb-4 text-2xl font-bold">Prerequisites</h2>
 					<ul class="list-inside list-disc space-y-2">
 						{#each content.prerequisites as prereq, index (index)}
-							<li class="text-gray-700 dark:text-gray-300">{prereq}</li>
+							<li class="text-foreground">{prereq}</li>
 						{/each}
 					</ul>
 				</div>
@@ -58,7 +58,7 @@
 					<h2 class="mb-4 text-2xl font-bold">Learning Objectives</h2>
 					<ul class="list-inside list-disc space-y-2">
 						{#each content.learningObjectives as objective, index (index)}
-							<li class="text-gray-700 dark:text-gray-300">{objective}</li>
+							<li class="text-foreground">{objective}</li>
 						{/each}
 					</ul>
 				</div>
@@ -67,11 +67,11 @@
 			<!-- Render Sections -->
 			{#each sections as section, sectionIndex (sectionIndex)}
 				<section class="content-section mb-10">
-					<h2 class="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">{section.title}</h2>
+					<h2 class="mb-6 text-2xl font-bold text-foreground">{section.title}</h2>
 
 					{#each section.content as block, blockIndex (blockIndex)}
 						{#if block.type === "paragraph"}
-							<p class="mb-4 leading-relaxed text-gray-700 dark:text-gray-300">
+							<p class="mb-4 leading-relaxed text-foreground">
 								{#each block.content as textPart, textIndex (textIndex)}
 									{@const text = "text" in textPart ? textPart.text : textPart.content}
 									{@const isBold =
@@ -89,13 +89,13 @@
 							{#if block.ordered}
 								<ol class="mb-4 list-inside list-decimal space-y-2">
 									{#each block.items as item, itemIndex (itemIndex)}
-										<li class="text-gray-700 dark:text-gray-300">{item}</li>
+										<li class="text-foreground">{item}</li>
 									{/each}
 								</ol>
 							{:else}
 								<ul class="mb-4 list-inside list-disc space-y-2">
 									{#each block.items as item, itemIndex (itemIndex)}
-										<li class="text-gray-700 dark:text-gray-300">{item}</li>
+										<li class="text-foreground">{item}</li>
 									{/each}
 								</ul>
 							{/if}
@@ -124,11 +124,11 @@
 								{#if block.title}
 									<h3 class="mb-2 text-lg font-semibold">{block.title}</h3>
 								{/if}
-								<div class="mermaid-diagram rounded-lg border bg-white p-4 dark:bg-gray-800">
+								<div class="mermaid-diagram rounded-lg border bg-card p-4">
 									<pre class="text-xs"><code>{block.definition}</code></pre>
 								</div>
 								{#if block.caption}
-									<p class="mt-2 text-sm text-gray-600 italic dark:text-gray-400">
+									<p class="mt-2 text-sm text-muted-foreground italic">
 										{block.caption}
 									</p>
 								{/if}

@@ -1,17 +1,32 @@
 import { browser } from "$app/environment";
 import { writable, derived } from "svelte/store";
+import { SETTINGS } from "$config/settings";
 
 export type Theme = "light" | "dark" | "system";
 
-// Get initial theme from localStorage or default to 'system'
-function getInitialTheme(): Theme {
-	if (!browser) return "system";
+// Theme system version - increment when changing defaults to clear old localStorage
+const THEME_VERSION = "v2-light-default";
+const VERSION_KEY = "theme-version";
 
-	const stored = localStorage.getItem("theme");
+// Get initial theme from localStorage or default to configured theme
+function getInitialTheme(): Theme {
+	if (!browser) return SETTINGS.ui.theme.defaultMode;
+
+	// Check if theme system version changed (e.g., default changed from "system" to "light")
+	const storedVersion = localStorage.getItem(VERSION_KEY);
+	if (storedVersion !== THEME_VERSION) {
+		// Clear old theme preference to force new default
+		localStorage.removeItem(SETTINGS.ui.theme.storageKey);
+		localStorage.setItem(VERSION_KEY, THEME_VERSION);
+		return SETTINGS.ui.theme.defaultMode;
+	}
+
+	// Use stored preference if version matches
+	const stored = localStorage.getItem(SETTINGS.ui.theme.storageKey);
 	if (stored && ["light", "dark", "system"].includes(stored)) {
 		return stored as Theme;
 	}
-	return "system";
+	return SETTINGS.ui.theme.defaultMode;
 }
 
 // Get the actual theme to apply (resolves 'system' to 'light' or 'dark')
@@ -68,7 +83,7 @@ function initializeTheme() {
 		const resolved = getResolvedTheme(theme);
 		resolvedThemeStore.set(resolved);
 		if (browser) {
-			localStorage.setItem("theme", theme);
+			localStorage.setItem(SETTINGS.ui.theme.storageKey, theme);
 			applyTheme(resolved);
 		}
 	});

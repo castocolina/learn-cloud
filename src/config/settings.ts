@@ -32,9 +32,9 @@ export const SETTINGS: AppSettings = {
 		theme: {
 			/**
 			 * Default theme mode on first load
-			 * @default "system" - Follows OS preference automatically
+			 * @default "light" - Force light theme (dark theme under development)
 			 */
-			defaultMode: "system" as const,
+			defaultMode: "light" as const,
 
 			/**
 			 * localStorage key for persisting user's theme preference

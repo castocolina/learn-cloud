@@ -5016,6 +5016,22 @@ function handleResultClick(item: SearchIndexItem) {
 - ✅ All components update atomically (no partial states)
 - ✅ Three-tier validation: `make check-wip` → `pnpm run test` → `pnpm run format/lint/check`
 
+### Deferred Features (Post-MVP)
+
+**SearchModal Functionality (Currently Placeholder)**
+
+- **Current State**: Mobile search shows icon placeholder (disabled button) in StickyHeader
+- **Planned**: Full-screen SearchModal for mobile viewports (≤768px)
+- **Implementation**:
+  - Modal opens on mobile search icon click
+  - Full-screen overlay with SearchBox component
+  - Proper z-index hierarchy (above header/sidebar)
+  - Touch-optimized interaction patterns
+- **Dependencies**: Dialog component (8E) pattern can be adapted
+- **Priority**: Medium - enhances mobile search UX but not blocking
+- **Status**: Deferred to post-initial implementation
+- **File**: `src/lib/components/navigation/StickyHeader.svelte:134-142` (placeholder button)
+
 ---
 
 ## TASK 8N: Theme Switcher Component Development
@@ -5068,6 +5084,17 @@ From `PLAN-TODO-FEATURES.md`:
 - ✅ Test suite covers all theme scenarios
 - ✅ Accessibility standards met
 - ✅ Three-tier validation: `make check-wip` → `pnpm run test` → `pnpm run format/lint/check`
+
+### Known Issues & Future Improvements
+
+**Issue: Scroll Hidden While Dropdown Active**
+
+- **Description**: When ThemeToggle dropdown is open, page scroll is hidden/disabled
+- **Impact**: Minor UX inconvenience - users cannot scroll background content while dropdown is active
+- **Priority**: Low - cosmetic issue, does not affect functionality
+- **Status**: Deferred to future enhancement
+- **Technical Notes**: This is standard dropdown Portal behavior (Radix UI overlay), but may need custom scroll handling for better UX
+- **Related**: DropdownMenu Portal rendering, body scroll-lock behavior
 
 ---
 
