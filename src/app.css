@@ -36,6 +36,9 @@
 
 @import "tailwindcss";
 
+/* shadcn-svelte opacity overrides - MUST come before other imports */
+@import "./styles/shadcn-overrides.css";
+
 @import "tw-animate-css";
 
 @plugin "@tailwindcss/typography";

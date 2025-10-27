@@ -15,6 +15,7 @@
  * 5. Color Variable Validation - All theme colors properly defined
  * 6. Inline Styles Validation - No inline styles (style="...") in components
  * 7. Component Style Blocks - Warn about <style> blocks (modular CSS architecture)
+ * 8. Shadcn Transparency - No glassmorphism anti-patterns (opacity modifiers, backdrop-blur)
  *
  * USAGE:
  *   npx tsx src/scripts/validate-theme.ts [options]
@@ -95,6 +96,7 @@ interface ValidationConfig {
 		stackingContext: RegExp[];
 		inlineStyle: RegExp;
 		styleBlock: RegExp;
+		shadcnTransparency: RegExp[];
 	};
 	zIndexVariables: string[];
 	requiredSemanticVars: string[];
@@ -125,7 +127,14 @@ const CONFIG: ValidationConfig = {
 		// Detect inline styles in component templates (HIGH SEVERITY)
 		inlineStyle: /style\s*=\s*["'][^"']+["']/gi,
 		// Detect <style> block opening tag
-		styleBlock: /<style[^>]*>/gi
+		styleBlock: /<style[^>]*>/gi,
+		// Detect shadcn transparency anti-patterns
+		shadcnTransparency: [
+			// bg-background/95, bg-popover/90, etc (opacity modifiers)
+			/bg-(background|popover|card|sidebar-background)\/\d{1,2}(?!00)\b/g,
+			// backdrop-blur-md, backdrop-blur-sm, etc
+			/backdrop-blur-\w+/g
+		]
 	},
 	zIndexVariables: [
 		"--z-base",
@@ -978,6 +987,82 @@ function validateComponentStyleBlocks(quiet = false): ValidationIssue[] {
 	return issues;
 }
 
+/**
+ * Validation 8: Check for shadcn transparency anti-patterns
+ *
+ * CRITICAL FIX: Prevent transparency issues in shadcn-svelte components
+ *
+ * Detects glassmorphism anti-patterns that cause readability issues:
+ * - bg-background/95, bg-popover/90 (opacity modifiers)
+ * - backdrop-blur-md, backdrop-blur-sm (blur effects)
+ *
+ * EXCLUDED: shadcn-overrides.css (where overrides are centralized)
+ *
+ * @param quiet - Minimal console output
+ * @returns Array of validation issues
+ */
+function validateShadcnTransparency(quiet = false): ValidationIssue[] {
+	const issues: ValidationIssue[] = [];
+
+	console.log("\n🔍 Validation 8: Checking for shadcn transparency anti-patterns...");
+	const startTime = performance.now();
+
+	for (const filePath of getFilesToValidate(CONFIG.patterns.svelteFiles)) {
+		const content = readFileSync(filePath, "utf-8");
+		const relativePath = relative(PROJECT_ROOT, filePath);
+
+		// Skip shadcn-overrides.css (where overrides are allowed)
+		if (relativePath.includes("shadcn-overrides.css")) {
+			continue;
+		}
+
+		for (const pattern of CONFIG.patterns.shadcnTransparency) {
+			const matches = content.matchAll(pattern);
+
+			for (const match of matches) {
+				// Find line number
+				const beforeMatch = content.slice(0, match.index);
+				const lineNumber = beforeMatch.split("\n").length;
+
+				const originalSeverity = "error" as const;
+				let severity: "error" | "warning" | "info" =
+					cliOptions.severityRules !== false
+						? classifySeverity(relativePath, originalSeverity)
+						: originalSeverity;
+
+				// In strict mode, upgrade warnings to errors (unless already downgraded to info)
+				if (cliOptions.strict && severity === "warning") {
+					severity = "error";
+				}
+
+				issues.push({
+					file: relativePath,
+					line: lineNumber,
+					message: `Shadcn transparency anti-pattern detected: '${match[0]}'. Use shadcn-overrides.css for opacity fixes instead.`,
+					severity,
+					code: "THEME-011",
+					...(severity !== originalSeverity && {
+						context: SETTINGS.ui.theme.validation.severityRules.find((r) =>
+							relativePath.includes(r.pattern)
+						)?.description
+					})
+				});
+			}
+		}
+	}
+
+	const elapsed = performance.now() - startTime;
+	const message =
+		issues.length === 0
+			? quiet
+				? `  ✅ No shadcn transparency anti-patterns detected`
+				: `  ✅ No shadcn transparency anti-patterns detected (${formatTime(elapsed)})`
+			: `  ❌ Found ${issues.length} shadcn transparency violations (${formatTime(elapsed)})`;
+	console.log(message);
+
+	return issues;
+}
+
 // ============================================================================
 // REPORT GENERATION
 // ============================================================================
@@ -1141,7 +1226,8 @@ async function main(): Promise<void> {
 		...validateStackingContext(cliOptions.quiet),
 		...validateColorPalette(cliOptions.quiet),
 		...validateInlineStyles(cliOptions.quiet),
-		...validateComponentStyleBlocks(cliOptions.quiet)
+		...validateComponentStyleBlocks(cliOptions.quiet),
+		...validateShadcnTransparency(cliOptions.quiet)
 	];
 
 	// Generate and print report

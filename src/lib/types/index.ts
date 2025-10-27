@@ -128,7 +128,11 @@ export type {
 	UnifiedPathConfig,
 	NavigationPaths,
 	ParsedNavigation,
-	SPANavigationState
+	SPANavigationState,
+	// Breadcrumb abbreviation system (Strategy A - Mobile Progressive Disclosure)
+	AbbreviationConfig,
+	AdjacentChapters,
+	UnitOverviewLink
 } from "./navigation.js";
 
 // Search exports - Enhanced search with navigation integration and index generation

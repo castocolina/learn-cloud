@@ -5,9 +5,9 @@
 	and theme controls. Follows mobile-first responsive design principles.
 
 	RESPONSIVE BEHAVIOR:
-	- Mobile (<768px): Current chapter title, search icon placeholder, theme toggle
-	- Tablet (768-1023px): Home → Unit breadcrumb, inline search (320px)
-	- Desktop (≥1024px): Full breadcrumb trail, inline search (400-480px)
+	- Mobile (<768px): Abbreviated chapter title + Sheet, search icon placeholder, theme toggle
+	- Tablet (768-1023px): Abbreviated chapter title, inline search (320px)
+	- Desktop (≥1024px): Abbreviated chapter title, inline search (400-480px)
 
 	FEATURES:
 	- Breadcrumb integration from breadcrumbStore
@@ -32,8 +32,11 @@
 	import ThemeToggle from "$lib/components/ThemeToggle.svelte";
 	import MobileTrigger from "$lib/components/navigation/MobileTrigger.svelte";
 	import * as Tooltip from "$lib/components/ui/tooltip";
-	import { ChevronRight, Search } from "lucide-svelte";
+	import { Search } from "lucide-svelte";
 	import type { BreadcrumbItem } from "$types";
+	import BreadcrumbSheet from "$lib/components/navigation/BreadcrumbSheet.svelte";
+	import { abbreviateChapterTitle } from "$lib/utils/breadcrumbAbbreviator";
+	import { getAdjacentChapters, getUnitOverview } from "$lib/utils/navigationHelpers";
 
 	interface Props {
 		/**
@@ -48,27 +51,36 @@
 	const breadcrumbs = $derived($breadcrumbStore);
 
 	/**
-	 * Mobile breadcrumb: Show only the current chapter (last breadcrumb item)
-	 * Provides context without cluttering the mobile header
+	 * Current chapter: Show only the current chapter (last breadcrumb item)
+	 * Used for both mobile and desktop to avoid cluttering the header
+	 * Full hierarchy is available via BreadcrumbSheet on mobile
 	 */
-	const mobileBreadcrumb = $derived<BreadcrumbItem | null>(
+	const currentChapter = $derived<BreadcrumbItem | null>(
 		breadcrumbs.length > 0 ? breadcrumbs[breadcrumbs.length - 1] : null
 	);
 
 	/**
-	 * Desktop breadcrumb: Show full trail
-	 * Provides complete navigation context
+	 * Abbreviated title: Smart abbreviation for display (mobile + desktop)
 	 */
-	const desktopBreadcrumb = $derived<BreadcrumbItem[]>(breadcrumbs);
+	const abbreviatedTitle = $derived<string>(
+		currentChapter ? abbreviateChapterTitle(currentChapter) : ""
+	);
 
 	/**
-	 * Navigate to breadcrumb URL
+	 * Quick navigation: Get previous/next chapters and unit overview
 	 */
-	function handleBreadcrumbClick(url: string): void {
-		if (url) {
-			window.location.hash = url;
-		}
-	}
+	const quickNav = $derived(() => {
+		if (!currentChapter) return { prev: undefined, next: undefined, unit: undefined };
+
+		const { previousChapter, nextChapter } = getAdjacentChapters(currentChapter.id);
+		const unitOverviewData = getUnitOverview(breadcrumbs);
+
+		return {
+			prev: previousChapter,
+			next: nextChapter,
+			unit: unitOverviewData
+		};
+	});
 </script>
 
 <!--
@@ -85,78 +97,37 @@
 	<!-- Mobile Trigger (Hamburger) - Visible only on mobile <768px -->
 	<MobileTrigger class="md:hidden" />
 
-	<!-- Mobile Breadcrumb: Current chapter only (<768px) -->
-	{#if mobileBreadcrumb}
+	<!-- Mobile Breadcrumb: Abbreviated title + Sheet (<768px) -->
+	{#if currentChapter}
 		<div class="flex min-w-0 flex-1 items-center md:hidden">
-			<Tooltip.Root>
-				<Tooltip.Trigger>
-					<button
-						type="button"
-						onclick={() => handleBreadcrumbClick(mobileBreadcrumb.url)}
-						class="min-w-0 cursor-pointer truncate rounded-md px-2 py-1 text-sm font-semibold text-foreground transition-all hover:bg-accent hover:text-primary"
-						aria-label="Current chapter: {mobileBreadcrumb.label}"
-					>
-						{mobileBreadcrumb.label}
-					</button>
-				</Tooltip.Trigger>
-				<Tooltip.Content side="bottom" class="max-w-xs">
-					<p>{mobileBreadcrumb.label}</p>
-				</Tooltip.Content>
-			</Tooltip.Root>
+			<BreadcrumbSheet
+				{abbreviatedTitle}
+				{breadcrumbs}
+				previousChapter={quickNav().prev}
+				nextChapter={quickNav().next}
+				unitOverview={quickNav().unit}
+			/>
 		</div>
 	{/if}
 
-	<!-- Desktop Breadcrumb: Full trail (≥768px) -->
-	<nav class="hidden min-w-[200px] flex-1 flex-shrink-1 md:flex" aria-label="Breadcrumb">
-		<ol class="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-sm lg:flex-nowrap">
-			{#each desktopBreadcrumb as crumb, index (crumb.id)}
-				<li
-					class="breadcrumb-item flex min-w-0 items-center gap-2"
-					data-priority={index === desktopBreadcrumb.length - 1
-						? "high"
-						: index === desktopBreadcrumb.length - 2
-							? "medium"
-							: "low"}
-				>
-					{#if index > 0}
-						<ChevronRight class="h-4 w-4 flex-shrink-0 text-muted-foreground" aria-hidden="true" />
-					{/if}
-
-					{#if crumb.isClickable}
-						<Tooltip.Root>
-							<Tooltip.Trigger>
-								<button
-									type="button"
-									onclick={() => handleBreadcrumbClick(crumb.url)}
-									class="breadcrumb-link cursor-pointer truncate rounded-md px-2 py-1 text-sm font-medium text-foreground transition-all hover:bg-accent hover:text-primary hover:underline hover:decoration-2 hover:underline-offset-4"
-									aria-current={crumb.isActive ? "page" : undefined}
-								>
-									{crumb.label}
-								</button>
-							</Tooltip.Trigger>
-							<Tooltip.Content side="bottom" class="max-w-xs">
-								<p>{crumb.label}</p>
-							</Tooltip.Content>
-						</Tooltip.Root>
-					{:else}
-						<Tooltip.Root>
-							<Tooltip.Trigger>
-								<span
-									class="breadcrumb-text truncate rounded-md bg-accent/50 px-2 py-1 text-sm font-semibold text-primary"
-									aria-current="page"
-								>
-									{crumb.label}
-								</span>
-							</Tooltip.Trigger>
-							<Tooltip.Content side="bottom" class="max-w-xs">
-								<p>{crumb.label}</p>
-							</Tooltip.Content>
-						</Tooltip.Root>
-					{/if}
-				</li>
-			{/each}
-		</ol>
-	</nav>
+	<!-- Desktop Breadcrumb: Current chapter only (≥768px) -->
+	{#if currentChapter}
+		<nav class="hidden min-w-[200px] flex-1 flex-shrink-1 md:flex" aria-label="Breadcrumb">
+			<Tooltip.Root>
+				<Tooltip.Trigger>
+					<span
+						class="truncate rounded-md bg-accent/50 px-2 py-1 text-sm font-semibold text-primary"
+						aria-current="page"
+					>
+						{abbreviatedTitle}
+					</span>
+				</Tooltip.Trigger>
+				<Tooltip.Content side="bottom" class="max-w-xs">
+					<p>{currentChapter.label}</p>
+				</Tooltip.Content>
+			</Tooltip.Root>
+		</nav>
+	{/if}
 
 	<!-- Search: Adaptive display -->
 	<div class="flex flex-shrink-[3]">

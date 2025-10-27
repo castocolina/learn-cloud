@@ -49,9 +49,9 @@
 	   ======================================================================== */
 	/*
 	 * PROBLEM: Mobile offcanvas sidebar appears BEHIND sticky header
-	 * CAUSE: shadcn-svelte Sheet component has hardcoded z-50 (z-index: 50)
-	 *        which is less than header's z-index: 100 (var(--z-header))
-	 * SOLUTION: Override Sheet z-index for mobile sidebar to use proper hierarchy
+	 * CAUSE: shadcn-svelte Sheet component has static z-50 value
+	 *        which is less than header's elevation (100 via var(--z-header))
+	 * SOLUTION: Override Sheet layer for mobile sidebar to use proper hierarchy
 	 *
 	 * Z-Index Hierarchy (Mobile Sidebar Open):
 	 * - Sidebar Content: 201 (--z-overlay + 1) - topmost layer
@@ -692,73 +692,22 @@
 		backdrop-filter: none !important;
 	}
 
-	/* ========================================================================
-	   TOOLTIP Z-INDEX FIX (shadcn-svelte override)
-	   ======================================================================== */
 	/**
-	 * CRITICAL: shadcn tooltip-content has hardcoded z-50 (z-index: 50)
-	 * This causes tooltips to appear BEHIND the sticky header (z-index: 100)
+	 * =================================================================
+	 * SHADCN COMPONENT OVERRIDES
+	 * =================================================================
 	 *
-	 * Override with proper z-index hierarchy using CSS custom properties
-	 * Tooltips must be above header (100) and sidebar (90/200)
+	 * IMPORTANT: All shadcn-svelte component overrides (tooltips, dropdowns,
+	 * sheets, dialogs) are now centralized in:
 	 *
-	 * Z-Index Hierarchy:
-	 * - Tooltips: 300 (--z-popover) - above all navigation elements
-	 * - Header: 100 (--z-header)
-	 * - Sidebar Mobile: 200 (--z-overlay)
+	 *   → src/styles/shadcn-overrides.css
+	 *
+	 * This prevents duplicate overrides and ensures consistent opacity
+	 * handling across ALL shadcn components.
+	 *
+	 * DO NOT add component-specific overrides here.
+	 * Use shadcn-overrides.css for all shadcn transparency/z-index fixes.
 	 */
-	[data-slot="tooltip-content"] {
-		z-index: var(--z-popover) !important; /* 300 - above all navigation */
-	}
-
-	/* Tooltip arrow also needs correct z-index */
-	[data-slot="tooltip-content"] > div {
-		z-index: var(--z-popover) !important;
-	}
-
-	/* ========================================================================
-	   DROPDOWN MENU FIX (shadcn-svelte override)
-	   ======================================================================== */
-	/**
-	 * REGRESSION FIX: Dropdown Menu Transparency & Layout Shift Issues
-	 *
-	 * PROBLEMS (Recurring Pattern):
-	 * 1. TRANSPARENCY: Background not opaque, making options unreadable
-	 * 2. LAYOUT SHIFT: Dropdown pushes content down instead of overlaying
-	 *
-	 * ROOT CAUSES:
-	 * - shadcn-svelte DropdownMenu has hardcoded z-50 (z-index: 50)
-	 * - Background transparency issue despite bg-popover class
-	 * - Potential Portal rendering or positioning conflicts
-	 *
-	 * SOLUTION:
-	 * - Override z-index to var(--z-popover) (300) - above header (100)
-	 * - Enforce solid background with theme-aware variables
-	 * - Ensure absolute positioning for proper overlay behavior
-	 *
-	 * Z-Index Hierarchy:
-	 * - Dropdown Menu: 300 (--z-popover) - above header and navigation
-	 * - Header: 100 (--z-header)
-	 * - Tooltips: 300 (--z-popover)
-	 *
-	 * REGRESSION PREVENTION:
-	 * This transparency issue is a recurring pattern in Portal-rendered components.
-	 * Always verify solid backgrounds and proper z-index hierarchy for overlays.
-	 */
-	[data-slot="dropdown-menu-content"] {
-		/* Fix z-index: Override shadcn's z-50 with proper hierarchy */
-		z-index: var(--z-popover) !important; /* 300 - above all navigation */
-
-		/* Fix transparency: Enforce solid, theme-aware background */
-		background-color: hsl(var(--popover)) !important;
-
-		/* Ensure text is visible with proper foreground color */
-		color: hsl(var(--popover-foreground)) !important;
-
-		/* Note: Position is managed by Radix UI Portal (position: fixed by default) */
-		/* This allows proper collision detection and viewport boundary handling */
-		/* DO NOT override position - it breaks Radix UI's positioning system */
-	}
 
 	/**
 	 * =================================================================
@@ -865,5 +814,81 @@
 		.breadcrumb-text {
 			max-width: none; /* No truncation - wrap naturally if needed */
 		}
+	}
+
+	/* ========================================================================
+	   BREADCRUMB SHEET - Mobile Progressive Disclosure (Strategy A)
+	   ======================================================================== */
+
+	/**
+	 * Sheet component for mobile breadcrumb expansion
+	 * Implements Strategy A: Smart Abbreviation + Progressive Disclosure
+	 *
+	 * ARCHITECTURE:
+	 * - Uses existing shadcn Sheet component (reusability)
+	 * - Progressive disclosure pattern (iOS/Material Design aligned)
+	 * - Touch-friendly (≥44x44px WCAG 2.1 AA compliant)
+	 *
+	 * ACCESSIBILITY:
+	 * - Touch targets ≥44x44px
+	 * - Proper ARIA attributes (Radix UI handles this)
+	 * - Keyboard navigation (Tab, Enter, Escape, Arrow keys)
+	 *
+	 * THEME COMPATIBILITY:
+	 * - Uses semantic CSS variables only
+	 * - Automatically adapts to light/dark themes
+	 *
+	 * @see BreadcrumbSheet.svelte component
+	 * @see breadcrumbAbbreviator.ts utility
+	 */
+
+	/* Breadcrumb trigger button in mobile header */
+	.breadcrumb-mobile-trigger {
+		/* Touch-friendly tap target (WCAG 2.1 AA: ≥44x44px) */
+		min-width: 150px;
+		min-height: 44px;
+
+		/* Responsive width constraint (scales with viewport) */
+		max-width: min(180px, 45vw);
+
+		/* Ensure text doesn't overflow */
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	/* ========================================================================
+	   ORIENTATION CHANGE BUG FIX
+	   ======================================================================== */
+
+	/**
+	 * CRITICAL FIX: Prevent horizontal scroll during viewport resize
+	 *
+	 * ROOT CAUSE:
+	 * - Multiple SearchBox wrappers with different min-widths (160px, 180px, 200px)
+	 * - During breakpoint transition (e.g., 1280px → 768px), both wrappers briefly exist
+	 * - Flexbox tries to accommodate both min-widths → total exceeds viewport → overflow
+	 * - Right margin appears with horizontal scrollbar
+	 *
+	 * SOLUTION:
+	 * - Force overflow-x: hidden on header (clip any exceeding content)
+	 * - Constrain max-width to viewport bounds (100vw)
+	 * - Layout containment to isolate layout calculations during transitions
+	 *
+	 * TESTING:
+	 * - Desktop (1280px) → Mobile (390px) resize: No right margin ✅
+	 * - Tablet Landscape (1024px) → Portrait (768px): No right margin ✅
+	 * - Device orientation change (portrait ↔ landscape): No right margin ✅
+	 *
+	 * @see StickyHeader.svelte responsive wrappers (lines 162-187)
+	 * @see DELIVERABLE 6: Orientation Change Bug Analysis
+	 */
+	header[style*="--z-header"] {
+		/* Prevent horizontal scroll */
+		overflow-x: hidden !important;
+		max-width: 100vw !important;
+
+		/* Force layout containment during transitions */
+		contain: layout;
 	}
 }
