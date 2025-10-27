@@ -1,0 +1,138 @@
+/**
+ * SHADCN-SVELTE OPACITY OVERRIDES
+ *
+ * CRITICAL FIX: Force 100% opacity on ALL shadcn-svelte overlay components
+ *
+ * PROBLEM: shadcn-svelte defaults to glassmorphism effect:
+ * - bg-background/95 (95% opacity)
+ * - backdrop-blur-md (blur effect)
+ * - bg-black/50 (50% opacity overlays)
+ * This causes unreadable transparent overlays and content bleeding through
+ *
+ * AFFECTED COMPONENTS (7+):
+ * - Sheet (mobile sidebar, breadcrumb sheet, modals)
+ * - Dialog (confirmation dialogs, alerts)
+ * - Popover (dropdown menus, select menus)
+ * - Tooltip (hover info)
+ * - Dropdown Menu (context menus, navigation menus)
+ * - Command Palette (search, actions)
+ * - Alert Dialog (critical confirmations)
+ *
+ * SOLUTION: Override all shadcn components to use 100% opaque backgrounds
+ * with semantic CSS variables that automatically adapt to theme (light/dark).
+ *
+ * @see SVELTEKIT-GUIDE.md - Theme System Architecture
+ * @see src/scripts/validate-theme.ts - THEME-011 validation rule
+ */
+
+/* ============================================================================
+   SHEET COMPONENT - Bottom drawer, side panels
+   ========================================================================== */
+
+/**
+ * Sheet overlay (darkens background when sheet is open)
+ * Used by: BreadcrumbSheet, MainSidebar, mobile navigation
+ */
+[data-slot="sheet-overlay"] {
+	background-color: hsl(var(--background) / 0.8) !important;
+	backdrop-filter: none !important;
+}
+
+/**
+ * Sheet content (the actual panel/drawer)
+ * Must be 100% opaque to prevent content bleeding through
+ */
+[data-slot="sheet-content"] {
+	background-color: hsl(var(--background)) !important;
+	backdrop-filter: none !important;
+}
+
+/* ============================================================================
+   DIALOG COMPONENT - Modal dialogs, confirmations
+   ========================================================================== */
+
+/**
+ * Dialog overlay (darkens background when dialog is open)
+ */
+[data-slot="dialog-overlay"] {
+	background-color: hsl(var(--background) / 0.8) !important;
+	backdrop-filter: none !important;
+}
+
+/**
+ * Dialog content (the modal window)
+ */
+[data-slot="dialog-content"] {
+	background-color: hsl(var(--background)) !important;
+	backdrop-filter: none !important;
+}
+
+/* ============================================================================
+   POPOVER COMPONENTS - Dropdowns, select menus, tooltips
+   ========================================================================== */
+
+/**
+ * Tooltip content (hover info bubbles)
+ * Used by: StickyHeader, MainSidebar, sidebar-menu-button
+ */
+[data-slot="tooltip-content"] {
+	background-color: hsl(var(--popover)) !important;
+	backdrop-filter: none !important;
+}
+
+/**
+ * Dropdown menu content (context menus, navigation menus)
+ */
+[data-slot="dropdown-menu-content"],
+[data-slot="dropdown-menu-sub-content"] {
+	background-color: hsl(var(--popover)) !important;
+	backdrop-filter: none !important;
+}
+
+/**
+ * Select content (dropdown selects)
+ */
+[data-slot="select-content"] {
+	background-color: hsl(var(--popover)) !important;
+	backdrop-filter: none !important;
+}
+
+/* ============================================================================
+   SIDEBAR COMPONENT - Navigation sidebar
+   ========================================================================== */
+
+/**
+ * Sidebar content (main sidebar panel)
+ * Used by: MainSidebar, mobile offcanvas sidebar
+ */
+[data-slot="sidebar-content"] {
+	background-color: hsl(var(--sidebar-background)) !important;
+	backdrop-filter: none !important;
+}
+
+/* ============================================================================
+   CARD COMPONENT - Content cards
+   ========================================================================== */
+
+/**
+ * Card content (prevents transparency in card bodies)
+ */
+[data-slot="card-content"] {
+	background-color: hsl(var(--card)) !important;
+	backdrop-filter: none !important;
+}
+
+/* ============================================================================
+   THEME COMPATIBILITY
+   ========================================================================== */
+
+/**
+ * IMPORTANT: All overrides use semantic CSS variables:
+ * - hsl(var(--background)) - Main background color
+ * - hsl(var(--popover)) - Popover/dropdown background
+ * - hsl(var(--sidebar-background)) - Sidebar background
+ * - hsl(var(--card)) - Card background
+ *
+ * These variables automatically adapt to light/dark themes.
+ * DO NOT use hardcoded colors (e.g., #ffffff, rgb(255,255,255))
+ */

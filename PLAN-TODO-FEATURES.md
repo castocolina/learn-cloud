@@ -3931,6 +3931,7 @@ You must must think hard before implementing to ensure z-index hierarchy is resp
 
 - `SVELTEKIT-GUIDE.md` (Svelte 5 syntax, z-index hierarchy)
 - `src/lib/components/ui/` (shadcn-svelte components)
+- `BREADCRUMB-SHEET-REQUIREMENT.md` (Mobile breadcrumb + Sheet transparency fixes)
 
 ### Prerequisites
 

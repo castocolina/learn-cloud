@@ -323,6 +323,9 @@ export interface BreadcrumbItem {
 	/** Optional icon identifier from BreadcrumbIcon types */
 	icon?: BreadcrumbIcon;
 
+	/** Optional emoji for visual display (used in mobile breadcrumb sheet) */
+	emoji?: string;
+
 	/** Whether this breadcrumb item is currently active */
 	isActive?: boolean;
 
@@ -676,4 +679,66 @@ export interface SPANavigationState {
 
 	/** Error state for error handling */
 	error: string | null;
+}
+
+// ============================================================================
+// BREADCRUMB ABBREVIATION SYSTEM (Strategy A - Mobile Progressive Disclosure)
+// ============================================================================
+
+/**
+ * Configuration for breadcrumb title abbreviation algorithm
+ *
+ * Used by breadcrumbAbbreviator utility to intelligently shorten
+ * chapter titles for mobile display while preserving key information.
+ *
+ * @example
+ * Input: "1.6: Building a RESTful API with FastAPI"
+ * Output (maxLength 22): "1.6: RESTful API"
+ */
+export interface AbbreviationConfig {
+	/** Maximum character length for abbreviated title */
+	maxLength: number;
+
+	/** Whether to preserve chapter number (e.g., "1.6:") */
+	keepChapterNumber: boolean;
+
+	/** Whether to preserve articles (a, the) - default: false for space saving */
+	preserveArticles?: boolean;
+}
+
+/**
+ * Adjacent chapters for quick navigation (prev/next)
+ *
+ * Used by BreadcrumbSheet component to provide sequential navigation
+ * within the educational content flow.
+ *
+ * @see BreadcrumbSheet component
+ * @see navigationHelpers utility
+ */
+export interface AdjacentChapters {
+	/** Previous chapter in sequence (null if first chapter) */
+	previousChapter?: {
+		id: string;
+		title: string;
+		url: string;
+	};
+
+	/** Next chapter in sequence (null if last chapter) */
+	nextChapter?: {
+		id: string;
+		title: string;
+		url: string;
+	};
+}
+
+/**
+ * Unit overview link for quick navigation to unit landing page
+ *
+ * Used by BreadcrumbSheet component to navigate to unit overview
+ * from any chapter within that unit.
+ */
+export interface UnitOverviewLink {
+	id: string;
+	title: string;
+	url: string;
 }
