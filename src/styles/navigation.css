@@ -188,29 +188,10 @@
 		transform: scale(0.95);
 	}
 
-	/* Mobile Close Button - X icon in sidebar header */
-	.sidebar-header-close {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		color: hsl(var(--sidebar-foreground, 222.2 84% 4.9%));
-		background: transparent;
-		border: none;
-		padding: 0.5rem;
-		border-radius: 0.375rem;
-		cursor: pointer;
-		flex-shrink: 0;
-		transition: all 0.2s ease;
-	}
-
-	.sidebar-header-close:hover {
-		background: hsl(var(--sidebar-accent, 60 4.8% 95.9%));
-		transform: scale(1.05);
-	}
-
-	.sidebar-header-close:active {
-		transform: scale(0.95);
-	}
+	/* Mobile Close Button - X icon in sidebar header
+	   NOTE: Styling now handled by IconButton component (src/lib/components/shared/IconButton.svelte)
+	   IconButton provides variant system (default, primary, destructive, ghost) with consistent styling.
+	   The .sidebar-header-close class is only used as a selector, all visual styles come from IconButton. */
 
 	/* Progress Row: Icon + Stats */
 	.sidebar-progress-row {

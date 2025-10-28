@@ -23,6 +23,7 @@
 	import { contentMenu } from "$data/generated/content-menu.js";
 	import { SETTINGS } from "$config/settings.js";
 	import type { MenuUnit, MenuChapter } from "$types";
+	import IconButton from "$lib/components/shared/IconButton.svelte";
 
 	// Props interface
 	interface Props {
@@ -72,8 +73,8 @@
 	 * Handle chevron click - ONLY toggle accordion expansion
 	 * Does NOT navigate or close sidebar (allows exploring without navigation)
 	 */
-	function handleUnitToggle(unitId: string, event: MouseEvent): void {
-		event.stopPropagation(); // Prevent triggering navigation on parent
+	function handleUnitToggle(unitId: string, event?: MouseEvent): void {
+		event?.stopPropagation(); // Prevent triggering navigation on parent (if mouse event)
 		// Accordion behavior: clicking same unit collapses it, clicking different unit expands it
 		expandedUnitId = expandedUnitId === unitId ? null : unitId;
 	}
@@ -137,27 +138,25 @@
 			<div class="sidebar-header-row">
 				<!-- Icon (clickeable to toggle sidebar) - tooltip only on desktop -->
 				{#if sidebar.isMobile}
-					<!-- Mobile: Direct button without tooltip (prevents double-click issue) -->
-					<button
-						type="button"
+					<!-- Mobile: Book icon button (IconButton for consistent interactivity) -->
+					<IconButton
+						icon={BookOpen}
+						label="Toggle sidebar"
+						onClick={() => sidebar.toggle()}
+						size={20}
+						variant="ghost"
 						class="sidebar-header-icon"
-						onclick={() => sidebar.toggle()}
-						aria-label="Toggle sidebar"
-					>
-						<BookOpen class="size-5" />
-					</button>
+					/>
 				{:else}
 					<!-- Desktop: Button with tooltip -->
 					<Tooltip.Root>
-						<Tooltip.Trigger>
-							<button
-								type="button"
-								class="sidebar-header-icon"
-								onclick={() => sidebar.toggle()}
-								aria-label="Toggle sidebar"
-							>
-								<BookOpen class="size-5" />
-							</button>
+						<Tooltip.Trigger
+							type="button"
+							class="sidebar-header-icon"
+							onclick={() => sidebar.toggle()}
+							aria-label="Toggle sidebar"
+						>
+							<BookOpen class="size-5" />
 						</Tooltip.Trigger>
 						<Tooltip.Content side="right">
 							{SETTINGS.ui.sidebar.header.title}
@@ -170,15 +169,14 @@
 					<h2 class="sidebar-title">{SETTINGS.ui.sidebar.header.title}</h2>
 
 					{#if sidebar.isMobile}
-						<!-- Mobile: X close button -->
-						<button
-							type="button"
+						<!-- Mobile: X close button (IconButton with default robust styling) -->
+						<IconButton
+							icon={X}
+							label="Close sidebar"
+							onClick={() => sidebar.toggle()}
+							size={20}
 							class="sidebar-header-close"
-							onclick={() => sidebar.toggle()}
-							aria-label="Close sidebar"
-						>
-							<X class="size-5" />
-						</button>
+						/>
 					{:else}
 						<!-- Desktop: Collapse trigger -->
 						<Sidebar.Trigger class="sidebar-header-trigger" />
@@ -197,10 +195,8 @@
 				{:else}
 					<!-- Desktop: Icon with tooltip -->
 					<Tooltip.Root>
-						<Tooltip.Trigger>
-							<div class="sidebar-progress-icon">
-								<CircleDot class="size-4" />
-							</div>
+						<Tooltip.Trigger class="sidebar-progress-icon" aria-label="Progress indicator">
+							<CircleDot class="size-4" />
 						</Tooltip.Trigger>
 						<Tooltip.Content side="right">
 							Progress: {contentMenu.metadata.totalUnits} units •
@@ -254,19 +250,17 @@
 											</div>
 										</div>
 
-										<!-- Expansion Toggle Button - Hidden in icon mode via CSS -->
-										<button
-											type="button"
+										<!-- Expansion Toggle Button - IconButton for consistent interactivity -->
+										{@const chevronIcon = expandedUnitId === unit.id ? ChevronDown : ChevronRight}
+										{@const chevronLabel = `${expandedUnitId === unit.id ? "Collapse" : "Expand"} unit`}
+										<IconButton
+											icon={chevronIcon}
+											label={chevronLabel}
+											onClick={(e) => handleUnitToggle(unit.id, e)}
+											size={16}
+											variant="ghost"
 											class="sidebar-unit-toggle-button"
-											onclick={(e) => handleUnitToggle(unit.id, e)}
-											aria-label="{expandedUnitId === unit.id ? 'Collapse' : 'Expand'} unit"
-										>
-											{#if expandedUnitId === unit.id}
-												<ChevronDown size={16} />
-											{:else}
-												<ChevronRight size={16} />
-											{/if}
-										</button>
+										/>
 									</Sidebar.MenuButton>
 								</Tooltip.Trigger>
 

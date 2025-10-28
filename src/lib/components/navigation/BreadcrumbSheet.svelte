@@ -24,8 +24,9 @@
 -->
 <script lang="ts">
 	import * as Sheet from "$lib/components/ui/sheet";
-	import { ChevronDown, ChevronUp } from "lucide-svelte";
+	import { ChevronDown, ChevronUp, X } from "lucide-svelte";
 	import type { BreadcrumbItem } from "$types";
+	import IconButton from "$lib/components/shared/IconButton.svelte";
 
 	interface Props {
 		/** Unit emoji (always visible) */
@@ -110,18 +111,22 @@
 		<!-- Chapter: Always visible, truncates with ellipsis (priority #1) -->
 		<span class="min-w-0 flex-1 truncate text-left">{chapterTitle}</span>
 
-		<!-- Chevron icon: Always visible, indicates sheet state -->
-		{#if open}
-			<ChevronUp class="h-4 w-4 flex-shrink-0 transition-transform duration-200" />
-		{:else}
-			<ChevronDown class="h-4 w-4 flex-shrink-0 transition-transform duration-200" />
-		{/if}
+		<!-- Chevron icon: IconButton for consistent interactivity -->
+		{@const chevronIcon = open ? ChevronUp : ChevronDown}
+		{@const chevronLabel = open ? "Collapse navigation" : "Expand navigation"}
+		<IconButton
+			icon={chevronIcon}
+			label={chevronLabel}
+			size={16}
+			variant="ghost"
+			class="flex-shrink-0"
+		/>
 	</Sheet.Trigger>
 
 	<!-- Sheet Content (slides from bottom) -->
 	<Sheet.Content
 		side="bottom"
-		class="h-auto max-h-[90vh] overflow-y-auto px-4 md:mx-auto md:max-w-2xl"
+		class="h-auto max-h-[90vh] overflow-y-auto px-4 md:mx-auto md:max-w-2xl [&>button]:hidden"
 	>
 		<Sheet.Header>
 			<Sheet.Title class="text-lg font-semibold">📍 You are here</Sheet.Title>
@@ -129,6 +134,16 @@
 				Full navigation path and quick links
 			</Sheet.Description>
 		</Sheet.Header>
+
+		<!-- Custom close button using IconButton -->
+		<IconButton
+			icon={X}
+			label="Close navigation"
+			size={20}
+			onClick={() => (open = false)}
+			class="absolute top-4 right-4"
+			data-testid="breadcrumb-sheet-close"
+		/>
 
 		<!-- Full Breadcrumb Hierarchy -->
 		<nav aria-label="Full breadcrumb navigation" class="mt-2">

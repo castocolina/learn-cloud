@@ -203,6 +203,49 @@ export interface AppSettings {
 			};
 		};
 		/**
+		 * IconGrid Configuration (Task 8D)
+		 *
+		 * Centralized settings for the IconGrid shared component.
+		 * IconGrid provides standardized icon presentation with consistent styling
+		 * (hover effects, borders, cursor, focus states) used across Dialog, CodeBlock,
+		 * Diagram, and other components.
+		 */
+		iconGrid: {
+			/**
+			 * Default icon size (CSS unit or pixels)
+			 * @default "20px"
+			 */
+			defaultIconSize: string;
+			/**
+			 * Default gap between icons (CSS gap property)
+			 * @default "0.5rem"
+			 */
+			defaultGap: string;
+			/**
+			 * Enable shadcn-svelte Tooltip component by default
+			 * When false, uses native title attribute
+			 * @default true
+			 */
+			showTooltips: boolean;
+			/**
+			 * Minimum touch target size (WCAG 2.1 AA requirement)
+			 * Ensures icons are touch-friendly on mobile devices
+			 * @default "44px"
+			 */
+			minTouchTarget: string;
+			/**
+			 * Transition duration for hover/active animations
+			 * @default "0.2s"
+			 */
+			transitionDuration: string;
+			/**
+			 * Success state display duration in milliseconds
+			 * How long success state (e.g., "Copied!") persists before reset
+			 * @default 2000
+			 */
+			successStateDuration: number;
+		};
+		/**
 		 * Content Layout Configuration
 		 *
 		 * Controls the layout and typography presentation of content articles.

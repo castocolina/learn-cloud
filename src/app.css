@@ -115,6 +115,19 @@
 
 	/* Destructive/error states */
 	--destructive: 0 84.2% 60.2%; /* Red for errors/warnings */
+	--destructive-foreground: 0 0% 100%; /* White text on destructive */
+
+	/* Success states */
+	--success: 142 76% 36%; /* Green for success/confirmation */
+	--success-foreground: 0 0% 100%; /* White text on success */
+
+	/* Warning states */
+	--warning: 38 92% 50%; /* Orange/amber for warnings */
+	--warning-foreground: 0 0% 100%; /* White text on warning */
+
+	/* Info states */
+	--info: 199 89% 48%; /* Blue for informational messages */
+	--info-foreground: 0 0% 100%; /* White text on info */
 
 	/* Borders and inputs */
 	--border: 214 32% 91%; /* slate-200: Default borders */
@@ -222,6 +235,19 @@
 
 	/* Destructive/error states (adjusted for dark) */
 	--destructive: 0 62.8% 30.6%; /* Darker red for dark mode */
+	--destructive-foreground: 210 40% 98%; /* Light text on destructive */
+
+	/* Success states (adjusted for dark) */
+	--success: 142 85% 50%; /* Brighter green for dark mode visibility */
+	--success-foreground: 222 84% 5%; /* Dark text on success */
+
+	/* Warning states (adjusted for dark) */
+	--warning: 38 100% 60%; /* Brighter orange for dark mode */
+	--warning-foreground: 222 84% 5%; /* Dark text on warning */
+
+	/* Info states (adjusted for dark) */
+	--info: 199 100% 60%; /* Brighter blue for dark mode */
+	--info-foreground: 222 84% 5%; /* Dark text on info */
 
 	/* Borders and inputs */
 	--border: 215 28% 17%; /* slate-800: Dark borders */

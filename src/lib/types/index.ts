@@ -427,6 +427,20 @@ export type {
 	RichParagraphProps
 } from "./ui.js";
 
+// IconGrid exports - Shared icon grid component types (Task 8D)
+export type {
+	IconGridPositioning,
+	IconGridAlignment,
+	IconVariant,
+	IconState,
+	IconItem,
+	IconGridPosition,
+	IconGridProps
+} from "./icon-grid.js";
+
+// IconButton exports - Shared icon button component types (Task 8D - DRY architecture)
+export type { IconButtonProps } from "./icon-button.js";
+
 /**
  * Configuration type guards
  */
