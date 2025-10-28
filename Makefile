@@ -17,6 +17,10 @@ setup: ## Setup the development environment
 install: ## Install dependencies
 	pnpm install
 
+make upt-shadcn-ui: ## Update shadcn/ui components
+	@echo "🔄 Updating shadcn/ui components..."
+	@bash ./src/bash/update-shadcn-ui.sh
+
 run: ## Start development server
 	@./src/bash/run.sh
 

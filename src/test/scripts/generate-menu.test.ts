@@ -255,37 +255,41 @@ describe("MarkdownContentGenerator", () => {
 
 		it("should extract both icon and emoji from markdown line", () => {
 			const testLine = "## Unit 1: Test Unit [icon: Box] [emoji: 🐍]";
-			const result = generator.extractIconAndEmojiFromLine(testLine);
+			const result = generator.extractIconEmojiAndShortName(testLine);
 
 			expect(result.iconName).toBe("Box");
 			expect(result.emoji).toBe("🐍");
+			expect(result.shortName).toBeNull();
 			expect(result.cleanedLine).toBe("## Unit 1: Test Unit");
 		});
 
 		it("should handle emoji only", () => {
 			const testLine = "- **1.1: Test Content** [emoji: ⚙️]";
-			const result = generator.extractIconAndEmojiFromLine(testLine);
+			const result = generator.extractIconEmojiAndShortName(testLine);
 
 			expect(result.iconName).toBeNull();
 			expect(result.emoji).toBe("⚙️");
+			expect(result.shortName).toBeNull();
 			expect(result.cleanedLine).toBe("- **1.1: Test Content**");
 		});
 
 		it("should handle lines without icons or emojis", () => {
 			const testLine = "- **1.1: Test Content**";
-			const result = generator.extractIconAndEmojiFromLine(testLine);
+			const result = generator.extractIconEmojiAndShortName(testLine);
 
 			expect(result.iconName).toBeNull();
 			expect(result.emoji).toBeNull();
+			expect(result.shortName).toBeNull();
 			expect(result.cleanedLine).toBe(testLine);
 		});
 
 		it("should handle malformed icon/emoji syntax", () => {
 			const testLine = "- **1.1: Test Content** [icon:] [emoji:]";
-			const result = generator.extractIconAndEmojiFromLine(testLine);
+			const result = generator.extractIconEmojiAndShortName(testLine);
 
 			expect(result.iconName).toBeNull();
 			expect(result.emoji).toBeNull();
+			expect(result.shortName).toBeNull();
 			expect(result.cleanedLine).toBe(testLine);
 		});
 	});

@@ -4,7 +4,7 @@ A comprehensive guide to modern cloud-native development covering Python and Go 
 
 ---
 
-## Unit 1: Python for Cloud-Native Backend Development [icon: Box] [emoji: 🐍]
+## Unit 1: Python for Cloud-Native Backend Development [icon: Box] [emoji: 🐍] [shortName: Python]
 
 | Chapter  | Content                                        | Icon        | Emoji | Time | Complexity   | Prerequisites    | Learning Objectives                                                                                                    |
 | -------- | ---------------------------------------------- | ----------- | ----- | ---- | ------------ | ---------------- | ---------------------------------------------------------------------------------------------------------------------- |
@@ -38,7 +38,7 @@ A comprehensive guide to modern cloud-native development covering Python and Go 
 | **1.10** | **Project: Building a Microservice in Python** | Rocket      | 🚀    | 240  | advanced     | To Be Determined | Build complete microservice, Integrate all learned concepts, Deploy production-ready solution                          |
 | **1.11** | **Unit 1 Final Exam**                          | Target      | 🎯    | 60   | intermediate | To Be Determined | Comprehensive assessment of Unit 1 content                                                                             |
 
-## Unit 2: Go for Cloud-Native Backend Development [icon: Cpu] [emoji: 🔧]
+## Unit 2: Go for Cloud-Native Backend Development [icon: Cpu] [emoji: 🦫] [shortName: Golang]
 
 | Chapter  | Content                                    | Icon        | Emoji | Time | Complexity   | Prerequisites    | Learning Objectives                                                                                                                        |
 | -------- | ------------------------------------------ | ----------- | ----- | ---- | ------------ | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -72,7 +72,7 @@ A comprehensive guide to modern cloud-native development covering Python and Go 
 | **2.10** | **Project: Building a Microservice in Go** | Rocket      | 🚀    | 250  | advanced     | To Be Determined | Build complete Go microservice, Apply concurrent patterns, Deploy high-performance solution                                                |
 | **2.11** | **Unit 2 Final Exam**                      | Target      | 🎯    | 60   | intermediate | To Be Determined | Comprehensive Go development assessment                                                                                                    |
 
-## Unit 3: DevOps, IaC, and CI/CD [icon: Settings] [emoji: ⚙️]
+## Unit 3: DevOps, IaC, and CI/CD [icon: Settings] [emoji: ⚙️] [shortName: DevOps]
 
 | Chapter | Content                                    | Icon       | Emoji | Time | Complexity   | Prerequisites    | Learning Objectives                                                                                                                |
 | ------- | ------------------------------------------ | ---------- | ----- | ---- | ------------ | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
@@ -90,7 +90,7 @@ A comprehensive guide to modern cloud-native development covering Python and Go 
 | 3.4     | Quiz                                       | HelpCircle | ❓    | 20   | advanced     | To Be Determined | Evaluate continuous delivery expertise                                                                                             |
 | **3.5** | **Unit 3 Final Exam**                      | Target     | 🎯    | 60   | intermediate | To Be Determined | Comprehensive DevOps and CI/CD assessment                                                                                          |
 
-## Unit 4: Secrets and Configuration Management [icon: Lock] [emoji: 🔐]
+## Unit 4: Secrets and Configuration Management [icon: Lock] [emoji: 🔐] [shortName: Secrets]
 
 | Chapter | Content               | Icon       | Emoji | Time | Complexity   | Prerequisites    | Learning Objectives                                                                                       |
 | ------- | --------------------- | ---------- | ----- | ---- | ------------ | ---------------- | --------------------------------------------------------------------------------------------------------- |
@@ -102,7 +102,7 @@ A comprehensive guide to modern cloud-native development covering Python and Go 
 | 4.2     | Quiz                  | HelpCircle | ❓    | 20   | advanced     | To Be Determined | Assess Vault configuration and integration skills                                                         |
 | **4.3** | **Unit 4 Final Exam** | Target     | 🎯    | 60   | intermediate | To Be Determined | Comprehensive assessment of secrets and configuration management                                          |
 
-## Unit 5: DevSecOps [icon: ShieldCheck] [emoji: 🛡️]
+## Unit 5: DevSecOps [icon: ShieldCheck] [emoji: 🛡️] [shortName: DevSecOps]
 
 | Chapter | Content                                 | Icon          | Emoji | Time | Complexity   | Prerequisites    | Learning Objectives                                                                                            |
 | ------- | --------------------------------------- | ------------- | ----- | ---- | ------------ | ---------------- | -------------------------------------------------------------------------------------------------------------- |
@@ -120,7 +120,7 @@ A comprehensive guide to modern cloud-native development covering Python and Go 
 | 5.4     | Quiz                                    | HelpCircle    | ❓    | 20   | advanced     | To Be Determined | Evaluate vulnerability management expertise                                                                    |
 | **5.5** | **Unit 5 Final Exam**                   | Target        | 🎯    | 60   | intermediate | To Be Determined | Comprehensive DevSecOps assessment                                                                             |
 
-## Unit 6: Automation [icon: Bot] [emoji: 🤖]
+## Unit 6: Automation [icon: Bot] [emoji: 🤖] [shortName: Automation]
 
 | Chapter | Content                                   | Icon       | Emoji | Time | Complexity   | Prerequisites    | Learning Objectives                                                                                        |
 | ------- | ----------------------------------------- | ---------- | ----- | ---- | ------------ | ---------------- | ---------------------------------------------------------------------------------------------------------- |
@@ -129,7 +129,7 @@ A comprehensive guide to modern cloud-native development covering Python and Go 
 | 6.1     | Quiz                                      | HelpCircle | ❓    | 20   | intermediate | To Be Determined | Test RenovateBot configuration and automation skills                                                       |
 | **6.2** | **Unit 6 Final Exam**                     | Target     | 🎯    | 45   | intermediate | To Be Determined | Comprehensive automation assessment                                                                        |
 
-## Unit 7: The Serverless Ecosystem on AWS [icon: Zap] [emoji: ☁️]
+## Unit 7: The Serverless Ecosystem on AWS [icon: Zap] [emoji: ☁️] [shortName: Serverless]
 
 | Chapter | Content                               | Icon           | Emoji | Time | Complexity   | Prerequisites    | Learning Objectives                                                                                                   |
 | ------- | ------------------------------------- | -------------- | ----- | ---- | ------------ | ---------------- | --------------------------------------------------------------------------------------------------------------------- |
@@ -150,7 +150,7 @@ A comprehensive guide to modern cloud-native development covering Python and Go 
 | 7.5     | Quiz                                  | HelpCircle     | ❓    | 20   | advanced     | To Be Determined | Test certification readiness                                                                                          |
 | **7.6** | **Unit 7 Final Exam**                 | Target         | 🎯    | 75   | intermediate | To Be Determined | Comprehensive serverless ecosystem assessment                                                                         |
 
-## Unit 8: Systems Integration and Security [icon: Shield] [emoji: 🔗]
+## Unit 8: Systems Integration and Security [icon: Shield] [emoji: 🔗] [shortName: Integration]
 
 | Chapter | Content                                           | Icon       | Emoji | Time | Complexity | Prerequisites    | Learning Objectives                                                                                                                     |
 | ------- | ------------------------------------------------- | ---------- | ----- | ---- | ---------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
@@ -162,7 +162,7 @@ A comprehensive guide to modern cloud-native development covering Python and Go 
 | 8.2     | Quiz                                              | HelpCircle | ❓    | 25   | advanced   | To Be Determined | Assess CI/CD security implementation expertise                                                                                          |
 | **8.3** | **Unit 8 Final Exam**                             | Target     | 🎯    | 70   | advanced   | To Be Determined | Comprehensive systems integration and security assessment                                                                               |
 
-## Unit 9: Capstone Projects [icon: GraduationCap] [emoji: 🎓]
+## Unit 9: Capstone Projects [icon: GraduationCap] [emoji: 🎓] [shortName: Capstone]
 
 | Chapter | Content                                              | Icon   | Emoji | Time | Complexity | Prerequisites    | Learning Objectives                                                                                                                            |
 | ------- | ---------------------------------------------------- | ------ | ----- | ---- | ---------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |

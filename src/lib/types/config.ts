@@ -175,6 +175,20 @@ export interface AppSettings {
 			 * - "none": Non-collapsible sidebar
 			 */
 			collapsibleMode: "icon" | "offcanvas" | "none";
+			/** Header section configuration */
+			header: {
+				/** Icon name from lucide-svelte (e.g., "BookOpen") or emoji */
+				icon: string;
+				/** Title text displayed in sidebar header */
+				title: string;
+				/** Description text displayed in sidebar header */
+				description: string;
+			};
+			/** Footer section configuration */
+			footer: {
+				/** Version text displayed in sidebar footer */
+				version: string;
+			};
 		};
 		/** Store configuration for reactive state management */
 		stores: {
@@ -451,10 +465,23 @@ export interface AppSettings {
 			};
 			/** Validation prefix for generating unique config IDs */
 			validationPrefix: string;
+			/** Book Overview Entry Configuration */
+			bookOverview: {
+				/** Unique identifier for book overview entry */
+				id: string;
+				/** Display title for book overview */
+				title: string;
+				/** Chapter URL for navigation */
+				chapterUrl: string;
+				/** TypeScript data file path */
+				filePath: string;
+				/** Unit title for display context */
+				unitTitle: string;
+				/** Navigation source for analytics */
+				defaultSource: "menu" | "sidebar" | "search" | "breadcrumb" | "sequential" | "direct";
+			};
 			/** Navigation behavior settings */
 			navigation: {
-				/** Home page URL for navigation root */
-				homeUrl: string;
 				/** Allow navigation across unit boundaries */
 				crossUnitNavigation: boolean;
 				/** Skip units with no available content */

@@ -60,6 +60,11 @@ mkdir -p src/styles
 echo_step "Installing additional dependencies..."
 pnpm install lucide-svelte shiki mermaid
 
+echo_step "Installing Playwright for E2E testing..."
+pnpm add -D @playwright/test
+# Install Playwright browsers (chromium, firefox, webkit)
+pnpm exec playwright install --with-deps chromium
+
 echo_step "Configuring Prettier for double quotes..."
 # Check if jq is available
 if ! command -v jq &> /dev/null; then

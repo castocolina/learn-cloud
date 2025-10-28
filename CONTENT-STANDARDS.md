@@ -517,7 +517,7 @@ The `CONTENT.md` file has been redesigned to provide all necessary data for gene
 Each unit now uses a comprehensive Markdown table format:
 
 ```markdown
-## Unit X: Unit Title [icon: IconName]
+## Unit X: Unit Title [icon: IconName] [emoji: 🔧] [shortName: ShortName]
 
 | Chapter | Content          | Icon       | Emoji | Time | Complexity | Prerequisites    | Learning Objectives                                     |
 | ------- | ---------------- | ---------- | ----- | ---- | ---------- | ---------------- | ------------------------------------------------------- |
@@ -546,6 +546,54 @@ Each unit now uses a comprehensive Markdown table format:
 - `Quiz` entries are automatically detected as quiz type
 - `Project:` prefix indicates project type
 - `Final Exam` indicates exam type
+
+#### Unit Header Metadata
+
+**shortName Field:**
+
+The `shortName` field provides a compact display name for units, optimized for mobile breadcrumb navigation where space is limited.
+
+**Syntax:**
+
+```markdown
+## Unit X: Full Unit Title [icon: IconName] [emoji: 🔧] [shortName: ShortName]
+```
+
+**Extraction Rules:**
+
+1. **Explicit Declaration**: Use `[shortName: X]` in unit header (recommended)
+2. **Auto-Extraction**: If not declared, the parser automatically extracts from title:
+   - Remove "Unit X: " prefix
+   - Extract text before " for " delimiter (e.g., "Python for X" → "Python")
+   - Extract text before " - " delimiter (e.g., "Topic - X" → "Topic")
+   - Use first significant word if no delimiter found
+3. **Fallback**: "Unit {number}" if extraction fails
+
+**Requirements:**
+
+- **Length**: 1-15 characters (recommended: 1-2 words)
+- **Content**: Technology name, topic keyword, or unit identifier
+- **Uniqueness**: Should be unique across all units for clarity
+- **Capitalization**: Use proper case (e.g., "Python", "Golang", not "python")
+
+**Examples:**
+
+```markdown
+## Unit 1: Python for Cloud-Native Backend Development [icon: Box] [emoji: 🐍] [shortName: Python]
+
+## Unit 2: Go for Cloud-Native Backend Development [icon: Cpu] [emoji: 🦫] [shortName: Golang]
+
+## Unit 3: DevOps, IaC, and CI/CD [icon: Settings] [emoji: ⚙️] [shortName: DevOps]
+
+## Unit 7: The Serverless Ecosystem on AWS [icon: Zap] [emoji: ☁️] [shortName: Serverless]
+```
+
+**Usage Context:**
+
+- Mobile breadcrumb displays (≤390px viewports)
+- Compact navigation interfaces
+- Progress indicators with limited space
+- Adaptive UI components that adjust based on screen size
 
 #### Enhanced Data Mapping
 

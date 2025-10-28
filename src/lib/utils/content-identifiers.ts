@@ -16,6 +16,7 @@
  * - Descriptive URLs with content type and title slug
  * - 100% cross-reference compatibility between menu/flatnav/search
  * - Backward-compatible parsing for legacy formats
+ * - Special handling for book overview (not bound to unit/chapter)
  *
  * USAGE:
  * - Content Menu Generator: generateContentId() for unique identifiers
@@ -36,6 +37,7 @@
 
 import type { ChapterType } from "$types";
 import { padNumber, generateSlug } from "./string-utils.js";
+import { SETTINGS } from "$config/settings.js";
 
 // ============================================================================
 // TYPE DEFINITIONS
@@ -141,6 +143,7 @@ export function generateContentId(
  * @example
  * parseContentId("01_01L")  → { unitNum: "1", chapterNum: "1", contentType: "lesson", isValid: true }
  * parseContentId("01_01SG") → { unitNum: "1", chapterNum: "1", contentType: "study_guide", isValid: true }
+ * parseContentId("00_BOOK") → { unitNum: "0", chapterNum: "0", contentType: "overview", isValid: true }
  * parseContentId("invalid") → { isValid: false, error: "..." }
  */
 export function parseContentId(id: string): {
@@ -151,6 +154,16 @@ export function parseContentId(id: string): {
 	error?: string;
 } {
 	try {
+		// SPECIAL CASE: Book overview (00_BOOK)
+		if (id === SETTINGS.scripts.flatNav.bookOverview.id) {
+			return {
+				unitNum: "0",
+				chapterNum: "0",
+				contentType: "overview",
+				isValid: true
+			};
+		}
+
 		const extracted = extractTypeSuffix(id);
 
 		if (!extracted) {
@@ -224,6 +237,11 @@ export function validateContentId(id: string): {
 	if (!parsed.isValid) {
 		errors.push(parsed.error || "Invalid ID format");
 		return { isValid: false, errors };
+	}
+
+	// SPECIAL CASE: Book overview (00_BOOK) is always valid
+	if (id === SETTINGS.scripts.flatNav.bookOverview.id) {
+		return { isValid: true, errors: [] };
 	}
 
 	// Additional validation for unit and chapter numbers
@@ -309,6 +327,8 @@ export function generateContentUrl(
  *   → { id: "01_01L", unitNum: "1", chapterNum: "1", contentType: "lesson", ... }
  * parseContentUrl("01_01_study_guide.html")
  *   → { id: "01_01SG", unitNum: "1", chapterNum: "1", contentType: "study_guide", ... }
+ * parseContentUrl("overview.html")
+ *   → { id: "00_BOOK", unitNum: "0", chapterNum: "0", contentType: "overview", ... }
  */
 export function parseContentUrl(url: string): {
 	id: string;
@@ -323,7 +343,19 @@ export function parseContentUrl(url: string): {
 		// Remove .html extension
 		const cleanUrl = url.replace(/\.html$/, "");
 
-		// Pattern: XX_XX_type_slug or XX_XX_type
+		// SPECIAL CASE: Book overview (not bound to unit/chapter)
+		if (cleanUrl === "overview") {
+			return {
+				id: SETTINGS.scripts.flatNav.bookOverview.id,
+				unitNum: "0",
+				chapterNum: "0",
+				contentType: "overview",
+				titleSlug: "",
+				isValid: true
+			};
+		}
+
+		// REGULAR CONTENT: Pattern XX_XX_type_slug or XX_XX_type
 		// Handle both study_guide (with underscore) and other types
 		const match = cleanUrl.match(
 			/^(\d+)_(\d+)_(lesson|study_guide|quiz|overview|exam|project)(?:_(.+))?$/
@@ -337,7 +369,7 @@ export function parseContentUrl(url: string): {
 				contentType: "lesson",
 				titleSlug: "",
 				isValid: false,
-				error: `Invalid URL format: ${url}. Expected format: XX_XX_type_slug.html`
+				error: `Invalid URL format: ${url}. Expected format: XX_XX_type_slug.html or overview.html`
 			};
 		}
 

@@ -53,8 +53,15 @@ export async function loadChapterContent(
 	filePath: string,
 	chapterId: string
 ): Promise<AnyContent | null> {
+	console.log("[contentLoader] Loading chapter content:", {
+		chapterId,
+		filePath,
+		cached: contentCache.has(chapterId)
+	});
+
 	// Check cache first
 	if (contentCache.has(chapterId)) {
+		console.log("[contentLoader] Content loaded from cache:", chapterId);
 		return contentCache.get(chapterId)!;
 	}
 
@@ -62,24 +69,46 @@ export async function loadChapterContent(
 		// Dynamic import: "book/unit01/01_01_lesson_dev.ts"
 		// Vite requires relative path from this file
 		const modulePath = `../../data/${filePath}`;
+		console.log("[contentLoader] Attempting dynamic import:", modulePath);
 
 		const contentModule = await import(/* @vite-ignore */ modulePath);
+		console.log("[contentLoader] Module imported successfully:", {
+			hasDefault: !!contentModule.default,
+			hasContent: !!contentModule.content,
+			moduleKeys: Object.keys(contentModule)
+		});
 
-		// Handle both default export and named exports
-		const content = contentModule.default || contentModule;
+		// Handle both default export and named 'content' export
+		const content = contentModule.default || contentModule.content || contentModule;
 
 		// Validate content has required properties
 		if (!content || typeof content !== "object") {
-			console.error(`Invalid content structure in ${filePath}`);
+			console.error("[contentLoader] Invalid content structure:", {
+				filePath,
+				content,
+				type: typeof content
+			});
 			return null;
 		}
+
+		console.log("[contentLoader] Content loaded successfully:", {
+			chapterId,
+			type: content.type,
+			title: content.title,
+			hasSections: !!content.sections
+		});
 
 		// Cache result for future requests
 		contentCache.set(chapterId, content);
 
 		return content;
 	} catch (error) {
-		console.error(`Failed to load content: ${filePath}`, error);
+		console.error("[contentLoader] Failed to load content:", {
+			filePath,
+			chapterId,
+			error: error instanceof Error ? error.message : String(error),
+			errorStack: error instanceof Error ? error.stack : undefined
+		});
 		return null;
 	}
 }

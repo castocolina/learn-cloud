@@ -162,7 +162,7 @@ export interface ContentHeaderProps {
 // RICH PARAGRAPH WRAPPER TYPES (TASK 7B - Refactored)
 // =====================================================
 
-import type { RichParagraph } from "./rich-text.js";
+import type { RichParagraph, RichTextFragment } from "./rich-text.js";
 
 /**
  * Rich Paragraph component props
@@ -182,8 +182,8 @@ import type { RichParagraph } from "./rich-text.js";
  * - src/lib/components/renderers/ExternalLink.svelte
  */
 export interface RichParagraphProps {
-	/** Array of rich text nodes to render */
-	nodes: RichParagraph;
+	/** Array of rich text nodes to render (supports both legacy and new formats) */
+	nodes: RichParagraph | RichTextFragment[];
 	/** Optional CSS class for custom styling */
 	class?: string;
 }

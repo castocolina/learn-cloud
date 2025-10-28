@@ -71,19 +71,40 @@ export function navigateToContent(event: NavigationEvent): void {
 	const { target, source } = event;
 	const chapterUrl = typeof target === "string" ? target : target.path || "";
 
+	console.log("[spaNavigation] navigateToContent called:", {
+		chapterUrl,
+		source,
+		target: typeof target === "string" ? target : target
+	});
+
 	// Parse chapterUrl to get ID and components
 	const parsed = parseContentUrl(chapterUrl);
+	console.log("[spaNavigation] URL parse result:", parsed);
+
 	if (!parsed.isValid || !parsed.id) {
-		console.error("Invalid navigation target:", chapterUrl, parsed.error);
+		console.error("[spaNavigation] Invalid navigation target:", {
+			chapterUrl,
+			error: parsed.error,
+			parsed
+		});
 		navigationStore.update((state) => ({
 			...state,
-			error: `Invalid navigation: ${parsed.error || "Unknown error"}`
+			currentId: null,
+			currentChapterUrl: null,
+			error: parsed.error || "Invalid navigation URL",
+			isLoading: false
 		}));
 		return;
 	}
 
 	const chapterId = parsed.id;
 	const { unitNum } = parsed;
+
+	console.log("[spaNavigation] Navigation successful:", {
+		chapterId,
+		unitNum,
+		chapterUrl
+	});
 
 	// 1. Update URL hash (triggers hashchange event)
 	window.location.hash = `/${chapterUrl}`;

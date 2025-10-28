@@ -11,6 +11,7 @@ export const contentMenu: MenuStructure = {
 		{
 			id: "unit_1",
 			title: "Unit 1: Python for Cloud-Native Backend Development",
+			shortName: "Python",
 			description: "Python for Cloud-Native Backend Development",
 			icon: "Box",
 			emoji: "🐍",
@@ -487,9 +488,10 @@ export const contentMenu: MenuStructure = {
 		{
 			id: "unit_2",
 			title: "Unit 2: Go for Cloud-Native Backend Development",
+			shortName: "Golang",
 			description: "Go for Cloud-Native Backend Development",
 			icon: "Cpu",
-			emoji: "🔧",
+			emoji: "🦫",
 			technologyUnit: "go",
 			unitNumber: 2,
 			chapters: [
@@ -963,6 +965,7 @@ export const contentMenu: MenuStructure = {
 		{
 			id: "unit_3",
 			title: "Unit 3: DevOps, IaC, and CI/CD",
+			shortName: "DevOps",
 			description: "DevOps, IaC, and CI/CD",
 			icon: "Settings",
 			emoji: "⚙️",
@@ -1185,6 +1188,7 @@ export const contentMenu: MenuStructure = {
 		{
 			id: "unit_4",
 			title: "Unit 4: Secrets and Configuration Management",
+			shortName: "Secrets",
 			description: "Secrets and Configuration Management",
 			icon: "Lock",
 			emoji: "🔐",
@@ -1313,6 +1317,7 @@ export const contentMenu: MenuStructure = {
 		{
 			id: "unit_5",
 			title: "Unit 5: DevSecOps",
+			shortName: "DevSecOps",
 			description: "DevSecOps",
 			icon: "ShieldCheck",
 			emoji: "🛡️",
@@ -1535,6 +1540,7 @@ export const contentMenu: MenuStructure = {
 		{
 			id: "unit_6",
 			title: "Unit 6: Automation",
+			shortName: "Automation",
 			description: "Automation",
 			icon: "Bot",
 			emoji: "🤖",
@@ -1616,6 +1622,7 @@ export const contentMenu: MenuStructure = {
 		{
 			id: "unit_7",
 			title: "Unit 7: The Serverless Ecosystem on AWS",
+			shortName: "Serverless",
 			description: "The Serverless Ecosystem on AWS",
 			icon: "Zap",
 			emoji: "☁️",
@@ -1885,6 +1892,7 @@ export const contentMenu: MenuStructure = {
 		{
 			id: "unit_8",
 			title: "Unit 8: Systems Integration and Security",
+			shortName: "Integration",
 			description: "Systems Integration and Security",
 			icon: "Shield",
 			emoji: "🔗",
@@ -2015,6 +2023,7 @@ export const contentMenu: MenuStructure = {
 		{
 			id: "unit_9",
 			title: "Unit 9: Capstone Projects",
+			shortName: "Capstone",
 			description: "Capstone Projects",
 			icon: "GraduationCap",
 			emoji: "🎓",

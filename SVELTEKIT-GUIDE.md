@@ -120,6 +120,20 @@ import { Card } from "$lib/components/ui/card"; // Unused import
 - **✅ Component-specific issues**: Document in custom wrapper components or this architecture guide
 - **⚠️ Updates**: When updating shadcn-svelte components, any custom documentation would be lost
 
+**Tailwind Important Modifier (`!`) for shadcn-svelte Customization**:
+
+When customizing shadcn-svelte components, use the `!` prefix to override default styles. The browser uses **CSS specificity** to decide which styles to apply - when two classes have the same specificity (like `.gap-2` vs `.gap-1`), the browser applies the **last one in the compiled CSS**. shadcn-svelte may inject its styles after ours, causing its classes to "win". The `!` prefix adds `!important` to the CSS, giving it **maximum specificity** - it always wins regardless of order.
+
+**Usage Example**:
+
+```svelte
+<!-- Wrapper component: MainSidebar.svelte -->
+<Sidebar.Menu class="!gap-2">  <!-- Overrides shadcn default gap-1 -->
+<Sidebar.MenuButton class="!p-4 !min-h-14 !h-auto">  <!-- Overrides p-2, h-8 -->
+```
+
+**Where to apply**: ✅ Wrapper components only | ❌ Never in `src/lib/components/ui/` (third-party files)
+
 **Icons**: `lucide-svelte`
 
 - **Usage**: Import specific icons as Svelte components
@@ -211,6 +225,36 @@ src/styles/
 - ❌ **NEVER** put custom component styles directly in `src/app.css`
 - ❌ **NEVER** use `<style>` blocks in Svelte components with `@apply` (Tailwind v4 incompatible)
 - ❌ **NEVER** use inline styles in Svelte component templates
+
+**:global() Scoping Rules (CRITICAL)**:
+
+- ✅ **ONLY USE** `:global()` in Svelte component `<style>` blocks to escape scoping
+- ❌ **NEVER USE** `:global()` in external CSS files (`src/styles/*.css`, `src/app.css`)
+- **Reason**: External CSS files are already global when imported via `app.css`
+- **Problem**: `:global()` in external CSS may not compile correctly, causing selectors to fail silently
+
+**Example:**
+
+```css
+/* ✅ CORRECT in external CSS files (src/styles/*.css) */
+[data-state="collapsed"] .sidebar-unit-icon {
+	font-size: 1.75rem;
+}
+
+/* ❌ INCORRECT in external CSS files - selectors won't apply */
+:global([data-state="collapsed"]) .sidebar-unit-icon {
+	font-size: 1.75rem;
+}
+```
+
+```svelte
+<!-- ✅ CORRECT in Svelte component <style> blocks -->
+<style>
+	:global([data-state="collapsed"]) .my-component {
+		/* Escapes Svelte's CSS scoping */
+	}
+</style>
+```
 
 **SvelteKit-Specific Benefits**:
 
@@ -1401,7 +1445,45 @@ function navigateToNext() {
   - Home view: Site title only
   - Unit view: Unit name with home link
   - Chapter view: Unit name and chapter name
-- **Cursor Indicators**: All interactive elements must have `cursor-pointer` styling
+
+**Interactive Element Requirements** (🚨 **MANDATORY**):
+
+All interactive elements (buttons, links, clickable areas) **MUST** provide clear visual feedback to users:
+
+1. **Cursor Indication**:
+   - ✅ `cursor-pointer` class on all clickable elements
+   - ✅ Apply to: buttons, links, cards, list items, icons
+   - ❌ Never leave interactive elements with default cursor
+
+2. **Hover State Feedback** (choose at least one):
+   - ✅ Background color change: `hover:bg-accent`, `hover:bg-gray-100`
+   - ✅ Scale transformation: `hover:scale-105`, `hover:scale-110`
+   - ✅ Border changes: `hover:border-primary`, `hover:ring-2`
+   - ✅ Color changes: `hover:text-primary`, `hover:text-foreground`
+   - ✅ Shadow effects: `hover:shadow-md`, `hover:shadow-lg`
+
+3. **Transition Smoothness**:
+   - ✅ Add `transition-all`, `transition-colors`, or `transition-transform`
+   - ✅ Recommended duration: default (150ms) or `duration-200`
+
+4. **Examples**:
+
+   ```svelte
+   <!-- Button with scale and background -->
+   <Button class="cursor-pointer transition-all hover:scale-110 hover:bg-accent">
+
+   <!-- Link with color change -->
+   <a href="#" class="cursor-pointer transition-colors hover:text-primary">
+
+   <!-- Card with shadow effect -->
+   <div class="cursor-pointer transition-shadow hover:shadow-md">
+   ```
+
+5. **Why This Matters**:
+   - **User Experience**: Clear feedback confirms interactivity
+   - **Accessibility**: Helps users with motor impairments identify clickable areas
+   - **Consistency**: Unified interaction patterns across the application
+   - **Professionalism**: Polished, production-ready feel
 
 **Quiz System**:
 

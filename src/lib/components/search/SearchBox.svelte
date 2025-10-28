@@ -203,9 +203,9 @@
 	<div class="relative">
 		<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
 			{#if isLoading}
-				<LoaderIcon class="h-4 w-4 animate-spin text-gray-400" />
+				<LoaderIcon class="h-4 w-4 animate-spin text-muted-foreground" />
 			{:else}
-				<SearchIcon class="h-4 w-4 text-gray-400" />
+				<SearchIcon class="h-4 w-4 text-muted-foreground" />
 			{/if}
 		</div>
 
@@ -214,7 +214,7 @@
 			type="text"
 			value={query}
 			{placeholder}
-			class="block w-full rounded-lg border border-gray-300 bg-white py-2 pr-10 pl-10 transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+			class="block w-full rounded-lg border border-input bg-card py-2 pr-10 pl-10 text-foreground transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
 			oninput={handleInput}
 			onkeydown={handleKeydown}
 			onfocus={handleFocus}
@@ -229,7 +229,7 @@
 		{#if query}
 			<button
 				type="button"
-				class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+				class="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground"
 				onclick={clearSearch}
 				aria-label="Clear search"
 			>
@@ -241,39 +241,40 @@
 	<!-- Search Results Dropdown -->
 	{#if showResults}
 		<div
-			class="absolute z-[110] mt-1 max-h-96 w-full overflow-auto rounded-lg border border-gray-200 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800"
+			class="absolute mt-1 max-h-96 w-full overflow-auto rounded-lg border bg-card shadow-lg"
+			style:z-index="var(--z-dropdown)"
 			role="listbox"
 		>
 			{#if query.length < searchConfig.minQueryLength}
 				<!-- Query too short -->
-				<div class="p-4 text-center text-gray-500 dark:text-gray-400">
+				<div class="p-4 text-center text-muted-foreground">
 					<div class="mb-2 text-lg">{emptyState.icon}</div>
 					<div class="font-medium">{emptyState.title}</div>
 					<div class="mt-1 text-sm">{emptyState.description}</div>
 				</div>
 			{:else if isLoading}
 				<!-- Loading state -->
-				<div class="p-4 text-center text-gray-500 dark:text-gray-400">
+				<div class="p-4 text-center text-muted-foreground">
 					<LoaderIcon class="mx-auto mb-2 h-6 w-6 animate-spin" />
 					<div>Searching...</div>
 				</div>
 			{:else if searchResults.length === 0}
 				<!-- No results -->
-				<div class="p-4 text-center text-gray-500 dark:text-gray-400">
+				<div class="p-4 text-center text-muted-foreground">
 					<div class="mb-2 text-lg">{emptyState.icon}</div>
 					<div class="font-medium">{emptyState.title}</div>
 					<div class="mt-1 text-sm">{emptyState.description}</div>
 
 					{#if suggestions.length > 0}
 						<div class="mt-3">
-							<div class="mb-2 text-xs font-medium text-gray-600 dark:text-gray-300">
+							<div class="mb-2 text-xs font-medium text-muted-foreground">
 								Try these suggestions:
 							</div>
 							<div class="flex flex-wrap justify-center gap-1">
 								{#each suggestions as suggestion}
 									<button
 										type="button"
-										class="rounded bg-gray-100 px-2 py-1 text-xs transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
+										class="rounded bg-muted px-2 py-1 text-xs transition-colors hover:bg-accent"
 										onclick={() => applySuggestion(suggestion)}
 									>
 										{suggestion}
@@ -291,9 +292,9 @@
 					<button
 						type="button"
 						id="search-result-{index}"
-						class="w-full border-b border-gray-100 px-4 py-3 text-left last:border-b-0 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:bg-gray-700 {activeIndex ===
+						class="w-full border-b px-4 py-3 text-left last:border-b-0 hover:bg-muted focus:bg-muted focus:outline-none {activeIndex ===
 						index
-							? 'bg-gray-50 dark:bg-gray-700'
+							? 'bg-muted'
 							: ''}"
 						onclick={() => selectResult(result)}
 						role="option"
@@ -311,7 +312,7 @@
 							<div class="min-w-0 flex-1">
 								<!-- Title and Badge -->
 								<div class="mb-1 flex items-center gap-2">
-									<h3 class="truncate font-medium text-gray-900 dark:text-white">
+									<h3 class="truncate font-medium text-foreground">
 										{@html displayTitle}
 									</h3>
 									<span
@@ -322,13 +323,13 @@
 								</div>
 
 								<!-- Description -->
-								<p class="line-clamp-2 text-sm text-gray-600 dark:text-gray-300">
+								<p class="line-clamp-2 text-sm text-muted-foreground">
 									{@html displayDescription}
 								</p>
 
 								<!-- Content Preview -->
 								{#if displayContent && template.showContent}
-									<p class="mt-1 line-clamp-1 text-xs text-gray-500 dark:text-gray-400">
+									<p class="mt-1 line-clamp-1 text-xs text-muted-foreground">
 										{@html displayContent}
 									</p>
 								{/if}
@@ -338,13 +339,13 @@
 									<div class="mt-2 flex flex-wrap gap-1">
 										{#each result.tags.slice(0, 3) as tag}
 											<span
-												class="inline-flex items-center rounded bg-gray-100 px-1.5 py-0.5 text-xs text-gray-700 dark:bg-gray-600 dark:text-gray-300"
+												class="inline-flex items-center rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground"
 											>
 												{tag}
 											</span>
 										{/each}
 										{#if result.tags.length > 3}
-											<span class="text-xs text-gray-400">
+											<span class="text-xs text-muted-foreground">
 												+{result.tags.length - 3} more
 											</span>
 										{/if}
@@ -354,7 +355,7 @@
 
 							<!-- Score (for debugging) -->
 							{#if import.meta.env.DEV}
-								<div class="flex-shrink-0 text-xs text-gray-400">
+								<div class="flex-shrink-0 text-xs text-muted-foreground">
 									{result.score}
 								</div>
 							{/if}
@@ -364,9 +365,7 @@
 
 				<!-- Show more results indicator -->
 				{#if searchResults.length === searchConfig.maxResults}
-					<div
-						class="border-t border-gray-100 px-4 py-2 text-center text-xs text-gray-500 dark:border-gray-700 dark:text-gray-400"
-					>
+					<div class="border-t px-4 py-2 text-center text-xs text-muted-foreground">
 						Showing first {searchConfig.maxResults} results
 					</div>
 				{/if}
@@ -374,22 +373,20 @@
 
 			<!-- Search Suggestions (when no results but have suggestions) -->
 			{#if searchResults.length === 0 && suggestions.length > 0 && query.length >= searchConfig.minQueryLength}
-				<div class="border-t border-gray-100 dark:border-gray-700">
-					<div
-						class="bg-gray-50 px-4 py-2 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300"
-					>
+				<div class="border-t">
+					<div class="bg-muted px-4 py-2 text-xs font-medium text-muted-foreground">
 						Search suggestions:
 					</div>
 					{#each suggestions as suggestion, index}
 						<button
 							type="button"
-							class="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 focus:bg-gray-50 focus:outline-none dark:hover:bg-gray-700 dark:focus:bg-gray-700 {activeIndex ===
+							class="w-full px-4 py-2 text-left text-sm hover:bg-muted focus:bg-muted focus:outline-none {activeIndex ===
 							searchResults.length + index
-								? 'bg-gray-50 dark:bg-gray-700'
+								? 'bg-muted'
 								: ''}"
 							onclick={() => applySuggestion(suggestion)}
 						>
-							<SearchIcon class="mr-2 inline h-3 w-3 text-gray-400" />
+							<SearchIcon class="mr-2 inline h-3 w-3 text-muted-foreground" />
 							{suggestion}
 						</button>
 					{/each}
@@ -426,19 +423,11 @@
 	}
 
 	.overflow-auto::-webkit-scrollbar-thumb {
-		background-color: rgba(156, 163, 175, 0.5);
+		background-color: hsl(var(--muted-foreground) / 0.3);
 		border-radius: 3px;
 	}
 
-	.dark .overflow-auto::-webkit-scrollbar-thumb {
-		background-color: rgba(75, 85, 99, 0.5);
-	}
-
 	.overflow-auto::-webkit-scrollbar-thumb:hover {
-		background-color: rgba(156, 163, 175, 0.8);
-	}
-
-	.dark .overflow-auto::-webkit-scrollbar-thumb:hover {
-		background-color: rgba(75, 85, 99, 0.8);
+		background-color: hsl(var(--muted-foreground) / 0.5);
 	}
 </style>

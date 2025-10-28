@@ -30,6 +30,7 @@ export default defineConfig({
 		coverage: {
 			provider: "v8",
 			reporter: ["text", "json", "html"],
+			reportsDirectory: "tmp/test/unit/coverage",
 			exclude: ["node_modules/", "tmp/", "src/test/", "*.config.*"]
 		},
 
@@ -37,7 +38,13 @@ export default defineConfig({
 		include: ["src/test/**/*.{test,spec}.{js,ts}"],
 
 		// Exclude patterns
-		exclude: ["node_modules/", "dist/", ".svelte-kit/", "tmp/"],
+		exclude: [
+			"node_modules/",
+			"dist/",
+			".svelte-kit/",
+			"tmp/",
+			"src/test/e2e/**" // Exclude E2E tests (run with Playwright, not Vitest)
+		],
 
 		// Global setup/teardown
 		globalSetup: [],

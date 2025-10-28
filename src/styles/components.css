@@ -1,4 +1,36 @@
 /**
+ * Component Styles - Modular CSS Architecture
+ *
+ * Custom Svelte component styles following Tailwind v4 + SvelteKit standards.
+ * All component styles MUST use @layer components for proper layering.
+ *
+ * ⚠️ CRITICAL: THEME SYSTEM COMPLIANCE (SVELTEKIT-GUIDE.md)
+ *
+ * 🚨 MANDATORY: NEVER use hardcoded colors - ALWAYS use semantic CSS variables
+ *
+ * ✅ CORRECT usage:
+ *    background: hsl(var(--primary));
+ *    color: hsl(var(--foreground));
+ *    border: 1px solid hsl(var(--border));
+ *    box-shadow: 0 1px 3px 0 hsl(var(--foreground) / 0.1);
+ *
+ * ❌ WRONG - Hardcoded colors:
+ *    background: #ffffff;                           ❌ Use hsl(var(--background))
+ *    color: rgb(0, 0, 0);                          ❌ Use hsl(var(--foreground))
+ *    border: 1px solid #e5e7eb;                    ❌ Use hsl(var(--border))
+ *    box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);      ❌ Use hsl(var(--foreground) / 0.1)
+ *
+ * 📋 Available semantic variables (see src/app.css for complete definitions):
+ *    --primary, --primary-foreground      Primary actions
+ *    --background, --foreground           Base colors
+ *    --border, --input, --ring            Form elements
+ *    --muted, --accent, --destructive     UI states
+ *    --sidebar, --sidebar-*               Sidebar navigation
+ *
+ * Reference: SVELTEKIT-GUIDE.md - CSS Architecture Standards
+ */
+
+/**
  * Demo Flip Card Component Styles
  * Following centralized CSS architecture with demo-flipcard- prefixed classes
  * Mobile-first responsive design with 3D animations
@@ -2343,6 +2375,25 @@
 	}
 }
 
+/* Responsive Max-Width: Prevent horizontal scroll on smaller viewports */
+@media (max-width: 1024px) {
+	/* Large max-widths (4xl, 5xl, 6xl) → 100% on tablets and mobile */
+	.renderer-article[data-max-width="4xl"],
+	.renderer-article[data-max-width="5xl"],
+	.renderer-article[data-max-width="6xl"] {
+		max-width: 100% !important;
+	}
+
+	/* Smaller max-widths (prose, 3xl) → Use min() to adapt */
+	.renderer-article[data-max-width="prose"] {
+		max-width: min(65ch, 100%);
+	}
+
+	.renderer-article[data-max-width="3xl"] {
+		max-width: min(48rem, 100%);
+	}
+}
+
 /* =====================================================
    FLOATING FOOTER - Sequential Navigation (Configurable)
    ===================================================== */
@@ -2585,43 +2636,33 @@
 
 /* Type-Specific Gradient Backgrounds */
 .content-header-overview {
-	background: linear-gradient(135deg, hsl(210 40% 96%) 0%, hsl(var(--card)) 100%);
-	border-left-color: hsl(210 40% 60%);
+	background: linear-gradient(135deg, hsl(var(--header-overview-bg)) 0%, hsl(var(--card)) 100%);
+	border-left-color: hsl(var(--header-overview-border));
 }
 
 .content-header-lesson {
-	background: linear-gradient(135deg, hsl(207 90% 95%) 0%, hsl(var(--card)) 100%);
-	border-left-color: #1976d2; /* Blue gradient */
+	background: linear-gradient(135deg, hsl(var(--header-lesson-bg)) 0%, hsl(var(--card)) 100%);
+	border-left-color: hsl(var(--header-lesson-border)); /* Blue - maintains #1976d2 identity */
 }
 
 .content-header-study-guide {
-	background: linear-gradient(135deg, hsl(142 76% 95%) 0%, hsl(var(--card)) 100%);
-	border-left-color: #388e3c; /* Green gradient */
+	background: linear-gradient(135deg, hsl(var(--header-study-guide-bg)) 0%, hsl(var(--card)) 100%);
+	border-left-color: hsl(var(--header-study-guide-border)); /* Green - maintains #388e3c identity */
 }
 
 .content-header-quiz {
-	background: linear-gradient(135deg, hsl(38 100% 95%) 0%, hsl(var(--card)) 100%);
-	border-left-color: #f57c00; /* Orange gradient */
+	background: linear-gradient(135deg, hsl(var(--header-quiz-bg)) 0%, hsl(var(--card)) 100%);
+	border-left-color: hsl(var(--header-quiz-border)); /* Orange - maintains #f57c00 identity */
 }
 
 .content-header-exam {
-	background: linear-gradient(135deg, hsl(0 74% 95%) 0%, hsl(var(--card)) 100%);
-	border-left-color: #c62828; /* Red gradient */
+	background: linear-gradient(135deg, hsl(var(--header-exam-bg)) 0%, hsl(var(--card)) 100%);
+	border-left-color: hsl(var(--header-exam-border)); /* Red - maintains #c62828 identity */
 }
 
 .content-header-project {
-	background: linear-gradient(135deg, hsl(291 64% 95%) 0%, hsl(var(--card)) 100%);
-	border-left-color: #7b1fa2; /* Purple gradient */
-}
-
-/* Dark Mode Overrides */
-.dark .content-header-overview,
-.dark .content-header-lesson,
-.dark .content-header-study-guide,
-.dark .content-header-quiz,
-.dark .content-header-exam,
-.dark .content-header-project {
-	background: linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--card)) 100%);
+	background: linear-gradient(135deg, hsl(var(--header-project-bg)) 0%, hsl(var(--card)) 100%);
+	border-left-color: hsl(var(--header-project-border)); /* Purple - maintains #7b1fa2 identity */
 }
 
 /* Unit-Specific Accent Borders */
@@ -3187,3 +3228,17 @@
 		@apply px-2 py-1 text-xs;
 	}
 }
+
+/**
+ * Tooltip Styles - MOVED TO shadcn-overrides.css
+ *
+ * All tooltip styling is now centralized in src/styles/shadcn-overrides.css
+ * to avoid CSS cascade conflicts and maintain proper override hierarchy.
+ *
+ * RATIONALE:
+ * - shadcn-overrides.css loads AFTER components.css (see app.css imports)
+ * - Centralizes all shadcn component overrides in one location
+ * - Prevents conflicting rules between multiple CSS files
+ *
+ * See: src/styles/shadcn-overrides.css lines 160-187 for tooltip styles
+ */

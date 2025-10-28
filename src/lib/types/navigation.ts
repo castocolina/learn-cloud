@@ -204,8 +204,8 @@ export interface FlatNavEntry {
 	/** File path to TypeScript data source - format: book/unit{XX}/{id}_{type}_{slug}.ts */
 	filePath: string;
 
-	/** Unit identifier this entry belongs to */
-	unitId: string;
+	/** Unit identifier this entry belongs to (null for book overview) */
+	unitId: string | null;
 
 	/** Unit title for context */
 	unitTitle: string;
@@ -225,8 +225,8 @@ export interface FlatNavEntry {
 	/** Reference to next entry in sequence */
 	nextEntry?: FlatNavEntry | null;
 
-	/** Technology unit for styling */
-	technologyUnit?: TechnologyUnit;
+	/** Technology unit for styling (null for book overview) */
+	technologyUnit?: TechnologyUnit | null;
 
 	/** Progress status */
 	progress?: ProgressStatus;
@@ -323,6 +323,9 @@ export interface BreadcrumbItem {
 	/** Optional icon identifier from BreadcrumbIcon types */
 	icon?: BreadcrumbIcon;
 
+	/** Optional emoji for visual identification */
+	emoji?: string;
+
 	/** Whether this breadcrumb item is currently active */
 	isActive?: boolean;
 
@@ -400,6 +403,9 @@ export interface MenuUnit {
 
 	/** Unit title */
 	title: string;
+
+	/** Short display name for compact UI (e.g., breadcrumbs on mobile) */
+	shortName: string;
 
 	/** Unit description */
 	description: string;

@@ -4138,6 +4138,41 @@ This is a **reusable foundation component** that provides standardized icon pres
 - Standardized style system (hover, borders, cursor states)
 - Documentation for component usage
 
+### Testing Requirements
+
+**Unit Tests (Vitest)**:
+
+- ✅ Component rendering with various prop combinations (grid columns, icon configurations)
+- ✅ State management and reactivity (Svelte 5 runes: $state, $derived, $props)
+- ✅ Event handlers and callbacks (click, hover, keyboard events)
+- ✅ Edge cases and error conditions (empty icons, invalid configurations)
+- ✅ TypeScript interface compliance (IconItem interface validation)
+- ✅ Accessibility attributes (ARIA labels, roles, keyboard navigation)
+- ✅ Grid layout rendering (responsive breakpoints, touch targets ≥44px)
+- ✅ Icon state transitions (hover, active, disabled, focus)
+- ✅ Test coverage ≥90% for component logic
+- ✅ Test file: `src/test/components/shared/IconGrid.test.ts`
+
+**End-to-End Tests (Playwright)**:
+
+- ✅ User interaction flows (click interactions, icon actions)
+- ✅ Mobile viewport testing (≤390px) - touch interactions ≥44px, responsive grid layout
+- ✅ Desktop viewport testing (≥1024px) - hover states, keyboard shortcuts
+- ✅ Keyboard navigation (Tab, Enter, Space, Arrow keys for grid navigation)
+- ✅ Focus management and tab order (sequential focus through icon grid)
+- ✅ Integration with consuming components (Dialog, CodeBlock, Diagram buttons)
+- ✅ Visual regression checks (icon state changes, hover effects, disabled states)
+- ✅ Performance benchmarks (render time < 50ms, interaction latency < 100ms)
+- ✅ Test file: `src/test/e2e/icon-grid.spec.ts`
+
+**Reference Component(s)**:
+
+- **Location**: `src/lib/components/demo/badges/DifficultyBadge.svelte`, `src/lib/components/demo/badges/ContentTypeBadge.svelte`
+- **Usage**: Study implementation patterns for icon/badge rendering, styling approaches (hover effects, borders), state management, and consistent visual design
+- **⚠️ CRITICAL**: DO NOT modify original reference files in `src/lib/components/demo/badges/`
+- **⚠️ CRITICAL**: DO NOT import reference components directly into production code
+- **Implementation Strategy**: Copy relevant styling patterns (hover effects, border styles, cursor states) and adapt for IconGrid grid layout requirements
+
 ### Final Validations
 
 - ✅ SVELTEKIT-GUIDE.md compliance verified
@@ -4225,6 +4260,42 @@ This dialog will be consumed by:
 - Z-index hierarchy compliance
 - Mobile-first modal patterns
 
+### Testing Requirements
+
+**Unit Tests (Vitest)**:
+
+- ✅ Component rendering with various size variants (sm, md, lg, xl, full)
+- ✅ State management and reactivity (Svelte 5 runes: $state, $derived, $props)
+- ✅ Dialog store functionality (openDialog, closeDialog, state updates)
+- ✅ Event handlers and callbacks (close button, escape key, overlay click)
+- ✅ Edge cases and error conditions (invalid content, missing props)
+- ✅ TypeScript interface compliance (DialogConfig interface validation)
+- ✅ Accessibility attributes (ARIA labels, dialog role, focus trap)
+- ✅ Z-index hierarchy (var(--z-modal) CSS variable compliance)
+- ✅ Portal rendering behavior (proper DOM placement)
+- ✅ Test coverage ≥90% for component logic
+- ✅ Test file: `src/test/components/ui/Dialog.test.ts`
+
+**End-to-End Tests (Playwright)**:
+
+- ✅ User interaction flows (open dialog, close via button/escape/overlay)
+- ✅ Mobile viewport testing (≤390px) - full-screen modal, touch interactions ≥44px
+- ✅ Desktop viewport testing (≥1024px) - centered modal, size variants
+- ✅ Keyboard navigation (Tab through focusable elements, Escape to close)
+- ✅ Focus management and tab order (focus trap within modal, return focus on close)
+- ✅ Integration with consuming components (Search, Flipcard, Diagram, CodeBlock)
+- ✅ Visual regression checks (overlay opacity, size transitions, backdrop blur)
+- ✅ Performance benchmarks (open/close animation < 300ms, render time < 100ms)
+- ✅ Test file: `src/test/e2e/dialog.spec.ts`
+
+**Reference Component(s)**:
+
+- **Location**: `src/lib/components/demo/DiagramViewer.svelte`, `src/lib/components/demo/FlipCardShowcase.svelte`
+- **Usage**: Study modal/dialog implementation patterns, z-index hierarchy management, focus trap logic, backdrop overlay styling, and size variant handling
+- **⚠️ CRITICAL**: DO NOT modify original reference files in `src/lib/components/demo/`
+- **⚠️ CRITICAL**: DO NOT import reference components directly into production code
+- **Implementation Strategy**: Copy modal patterns (z-index positioning, focus management, escape key handling, overlay interactions) and adapt for DialogManager global state system
+
 ### Final Validations
 
 - ✅ SVELTEKIT-GUIDE.md compliance verified
@@ -4308,6 +4379,42 @@ function handleExpandCode() {
 - Copy-to-clipboard functionality
 - Dialog expansion feature
 - IconGrid button integration
+
+### Testing Requirements
+
+**Unit Tests (Vitest)**:
+
+- ✅ Component rendering with various languages (JavaScript, Python, Go, Rust, etc.)
+- ✅ State management and reactivity (Svelte 5 runes: $state, $derived, $props)
+- ✅ Syntax highlighting library integration (Shiki/Prism rendering)
+- ✅ Copy-to-clipboard functionality (button click, clipboard API, visual feedback)
+- ✅ Event handlers and callbacks (copy button, expand button, scroll events)
+- ✅ Edge cases and error conditions (invalid language, empty code, malformed syntax)
+- ✅ TypeScript interface compliance (CodeBlock props interface validation)
+- ✅ Accessibility attributes (ARIA labels, code role, keyboard navigation)
+- ✅ IconGrid integration for action buttons (copy, expand)
+- ✅ Test coverage ≥90% for component logic
+- ✅ Test file: `src/test/components/shared/CodeBlock.test.ts`
+
+**End-to-End Tests (Playwright)**:
+
+- ✅ User interaction flows (copy button click, expand to dialog, scroll long code)
+- ✅ Mobile viewport testing (≤390px) - horizontal scroll, touch targets ≥44px
+- ✅ Desktop viewport testing (≥1024px) - hover states, copy feedback
+- ✅ Keyboard navigation (Tab to buttons, Enter to activate)
+- ✅ Focus management and tab order (sequential focus through action buttons)
+- ✅ Integration with Dialog component (expand to full-screen view)
+- ✅ Visual regression checks (syntax highlighting colors, line numbers, scroll behavior)
+- ✅ Performance benchmarks (render time < 200ms for 1000+ lines, scroll latency < 50ms)
+- ✅ Test file: `src/test/e2e/code-block.spec.ts`
+
+**Reference Component(s)**:
+
+- **Location**: `src/lib/components/demo/ui/CodeBlock.svelte`, `src/lib/components/demo/CodeExamplesShowcase.svelte`
+- **Usage**: Study syntax highlighting implementation, copy-to-clipboard patterns, mobile scroll optimization, language detection logic, and action button layouts
+- **⚠️ CRITICAL**: DO NOT modify original reference files in `src/lib/components/demo/ui/`
+- **⚠️ CRITICAL**: DO NOT import reference components directly into production code
+- **Implementation Strategy**: Copy syntax highlighting configuration, clipboard API patterns, horizontal scroll handling, and IconGrid button layouts; adapt for Dialog expansion feature
 
 ### Final Validations
 
@@ -4395,6 +4502,43 @@ This task builds on the wrapper component patterns established in Task 6:
 - Modal expansion functionality with zoom/pan controls
 - IconGrid integration for zoom buttons
 
+### Testing Requirements
+
+**Unit Tests (Vitest)**:
+
+- ✅ Component rendering with various diagram types (flowchart, sequence, class, state, etc.)
+- ✅ State management and reactivity (Svelte 5 runes: $state, $derived, $props)
+- ✅ Mermaid rendering engine integration (diagram parsing, SVG generation)
+- ✅ Error handling and validation (invalid syntax, parsing errors, validator integration)
+- ✅ Zoom control logic (zoom in, zoom out, reset, fullscreen, zoom limits 50%-200%)
+- ✅ Event handlers and callbacks (zoom buttons, expand button, pan gestures)
+- ✅ Edge cases and error conditions (empty diagram, malformed syntax, unsupported types)
+- ✅ TypeScript interface compliance (MermaidDiagram props interface validation)
+- ✅ Accessibility attributes (ARIA labels, figure role, keyboard navigation)
+- ✅ IconGrid integration for zoom control buttons
+- ✅ Test coverage ≥90% for component logic
+- ✅ Test file: `src/test/components/shared/MermaidDiagram.test.ts`
+
+**End-to-End Tests (Playwright)**:
+
+- ✅ User interaction flows (zoom in/out/reset, expand to dialog, pan diagram)
+- ✅ Mobile viewport testing (≤390px) - touch zoom controls ≥44px, pinch-to-zoom gestures
+- ✅ Desktop viewport testing (≥1024px) - mouse wheel zoom, hover states on controls
+- ✅ Keyboard navigation (Tab to zoom buttons, Enter to activate, +/- keys for zoom)
+- ✅ Focus management and tab order (sequential focus through zoom controls)
+- ✅ Integration with Dialog component (expand to full-screen modal view)
+- ✅ Visual regression checks (zoom levels, diagram quality at different scales, error states)
+- ✅ Performance benchmarks (render time < 500ms for complex diagrams, zoom latency < 100ms)
+- ✅ Test file: `src/test/e2e/mermaid-diagram.spec.ts`
+
+**Reference Component(s)**:
+
+- **Location**: `src/lib/components/demo/MermaidDiagram.svelte`, `src/lib/components/demo/DiagramViewer.svelte`, `src/lib/components/demo/MermaidShowcase.svelte`
+- **Usage**: Study Mermaid rendering implementation, zoom control patterns, error handling logic, modal expansion integration, and pan/zoom gesture handling
+- **⚠️ CRITICAL**: DO NOT modify original reference files in `src/lib/components/demo/`
+- **⚠️ CRITICAL**: DO NOT import reference components directly into production code
+- **Implementation Strategy**: Copy Mermaid initialization code, zoom control logic, error reporting patterns, and IconGrid button layouts; adapt for validator integration and GitHub-style zoom UI
+
 ### Final Validations
 
 - ✅ SVELTEKIT-GUIDE.md compliance verified
@@ -4450,6 +4594,41 @@ From `PLAN-TODO-FEATURES.md`:
 - Touch gesture handlers
 - Dialog modal integration
 
+### Testing Requirements
+
+**Unit Tests (Vitest)**:
+
+- ✅ Component rendering with front/back content (various content types)
+- ✅ State management and reactivity (Svelte 5 runes: $state, $derived, $props)
+- ✅ Flip animation logic (CSS 3D transforms, flip state transitions)
+- ✅ Event handlers and callbacks (click to flip, keyboard space to flip, swipe gestures)
+- ✅ Edge cases and error conditions (empty content, invalid card data, animation interruptions)
+- ✅ TypeScript interface compliance (Flipcard props interface validation)
+- ✅ Accessibility attributes (ARIA labels, button role for flip trigger, focus states)
+- ✅ Progress tracking integration (card viewed state, mastery level)
+- ✅ Test coverage ≥90% for component logic
+- ✅ Test file: `src/test/components/content/Flipcard.test.ts`
+
+**End-to-End Tests (Playwright)**:
+
+- ✅ User interaction flows (click to flip, keyboard space to flip, swipe on mobile)
+- ✅ Mobile viewport testing (≤390px) - touch gestures for flip, swipe left/right navigation
+- ✅ Desktop viewport testing (≥1024px) - hover states, keyboard arrow keys navigation
+- ✅ Keyboard navigation (Space to flip, Arrow keys for next/previous card, Tab to focus)
+- ✅ Focus management and tab order (focus on flip button, keyboard accessibility)
+- ✅ Integration with Dialog component (expand to full-screen study mode)
+- ✅ Visual regression checks (flip animation smoothness, card face transitions, 3D perspective)
+- ✅ Performance benchmarks (flip animation < 300ms, gesture response < 100ms)
+- ✅ Test file: `src/test/e2e/flipcard.spec.ts`
+
+**Reference Component(s)**:
+
+- **Location**: `src/lib/components/demo/FlipCard.svelte`, `src/lib/components/demo/FlipCardShowcase.svelte`
+- **Usage**: Study CSS 3D flip animation implementation, touch gesture handlers (swipe detection), keyboard navigation patterns, and modal study mode integration
+- **⚠️ CRITICAL**: DO NOT modify original reference files in `src/lib/components/demo/`
+- **⚠️ CRITICAL**: DO NOT import reference components directly into production code
+- **Implementation Strategy**: Copy CSS 3D transform flip animation, touch event handlers, keyboard navigation logic, and Dialog integration patterns; adapt for progress tracking and multi-card navigation
+
 ### Final Validations
 
 - ✅ SVELTEKIT-GUIDE.md compliance verified
@@ -4502,6 +4681,42 @@ From `PLAN-TODO-FEATURES.md`:
 - `src/test/components/content/QuizNavigation.test.ts`
 - Quiz state management
 - Progress tracking logic
+
+### Testing Requirements
+
+**Unit Tests (Vitest)**:
+
+- ✅ Component rendering with various quiz states (not started, in progress, completed)
+- ✅ State management and reactivity (Svelte 5 runes: $state, $derived, $props)
+- ✅ Quiz store functionality (current question, answered questions, quiz completion)
+- ✅ Navigation logic (next/previous question, jump to question, submit quiz)
+- ✅ Progress calculation (percentage complete, questions remaining, timer integration)
+- ✅ Event handlers and callbacks (navigation buttons, question selection, submit)
+- ✅ Edge cases and error conditions (first/last question boundaries, incomplete answers, timeout)
+- ✅ TypeScript interface compliance (QuizNavigation props interface validation)
+- ✅ Accessibility attributes (ARIA labels, navigation roles, keyboard shortcuts)
+- ✅ Test coverage ≥90% for component logic
+- ✅ Test file: `src/test/components/content/QuizNavigation.test.ts`
+
+**End-to-End Tests (Playwright)**:
+
+- ✅ User interaction flows (navigate questions, answer, submit quiz, review results)
+- ✅ Mobile viewport testing (≤390px) - touch-friendly navigation buttons ≥44px
+- ✅ Desktop viewport testing (≥1024px) - keyboard shortcuts, hover states
+- ✅ Keyboard navigation (Arrow keys for questions, Enter to submit, Tab through controls)
+- ✅ Focus management and tab order (sequential focus through navigation controls)
+- ✅ Integration with question rendering (coordinated state updates)
+- ✅ Visual regression checks (progress bar updates, button states, question transitions)
+- ✅ Performance benchmarks (navigation latency < 100ms, state update < 50ms)
+- ✅ Test file: `src/test/e2e/quiz-navigation.spec.ts`
+
+**Reference Component(s)**:
+
+- **Location**: `src/lib/components/demo/quiz/QuizRenderer.svelte`, `src/lib/components/demo/quiz/QuestionRenderer.svelte`, `src/lib/components/demo/quiz/ProgressIndicator.svelte`, `src/lib/components/demo/quiz/ResultsDisplay.svelte`, `src/lib/components/demo/quiz/Timer.svelte`
+- **Usage**: Study quiz state management patterns, navigation control implementations, progress tracking logic, question flow coordination, and timer integration
+- **⚠️ CRITICAL**: DO NOT modify original reference files in `src/lib/components/demo/quiz/`
+- **⚠️ CRITICAL**: DO NOT import reference components directly into production code
+- **Implementation Strategy**: Copy quiz store patterns, navigation logic (next/previous/jump), progress calculation algorithms, and keyboard shortcut handlers; adapt for production quiz requirements
 
 ### Final Validations
 
@@ -4564,6 +4779,41 @@ When developing Popover, review Dialog (8E) implementation for:
 - `src/test/components/ui/Popover.test.ts`
 - Z-index hierarchy compliance
 - Progress reset button integration
+
+### Testing Requirements
+
+**Unit Tests (Vitest)**:
+
+- ✅ Component rendering with various content types (text, buttons, forms)
+- ✅ State management and reactivity (Svelte 5 runes: $state, $derived, $props)
+- ✅ Positioning logic (top, bottom, left, right, collision detection)
+- ✅ Event handlers and callbacks (open, close, outside click, escape key)
+- ✅ Edge cases and error conditions (viewport boundaries, trigger element missing, nested popovers)
+- ✅ TypeScript interface compliance (Popover props interface validation)
+- ✅ Accessibility attributes (ARIA labels, popover role, focus return)
+- ✅ Z-index hierarchy (var(--z-popover) CSS variable compliance, no stacking context violations)
+- ✅ Test coverage ≥90% for component logic
+- ✅ Test file: `src/test/components/ui/Popover.test.ts`
+
+**End-to-End Tests (Playwright)**:
+
+- ✅ User interaction flows (open popover, close via button/outside click/escape)
+- ✅ Mobile viewport testing (≤390px) - touch interactions, positioning adjustments
+- ✅ Desktop viewport testing (≥1024px) - hover triggers, keyboard interactions
+- ✅ Keyboard navigation (Tab to trigger, Enter to open, Escape to close)
+- ✅ Focus management and tab order (focus trap within popover, return focus on close)
+- ✅ Integration with Progress component (reset button confirmation workflow)
+- ✅ Visual regression checks (positioning at viewport edges, collision detection behavior)
+- ✅ Performance benchmarks (open/close animation < 200ms, render time < 50ms)
+- ✅ Test file: `src/test/e2e/popover.spec.ts`
+
+**Reference Component(s)**:
+
+- **Location**: `src/lib/components/demo/StickyHeader.svelte`
+- **Usage**: Study positioning patterns, z-index management, and viewport-aware positioning logic
+- **⚠️ CRITICAL**: DO NOT modify original reference files in `src/lib/components/demo/`
+- **⚠️ CRITICAL**: DO NOT import reference components directly into production code
+- **Implementation Strategy**: Copy positioning calculation logic, z-index CSS variable usage (var(--z-popover)), collision detection patterns; adapt for shadcn-svelte Popover API and Dialog (8E) stacking context lessons
 
 ### Final Validations
 
@@ -4689,6 +4939,42 @@ Progress tracking has a **passive relationship** with the navigation system:
 - Learning streak logic with daily tracking
 - Popover reset button integration
 
+### Testing Requirements
+
+**Unit Tests (Vitest)**:
+
+- ✅ Progress store state management (visitUnit, completeLesson, resetProgress)
+- ✅ Derived stores reactivity (globalProgress, unitProgress auto-calculation)
+- ✅ Learning streak calculation (same day visit, consecutive days, gap reset logic)
+- ✅ Time tracking accuracy (fake timers for chapter duration, total time)
+- ✅ Export/import functions (JSON serialization, data preservation for Sets/Maps/Dates)
+- ✅ Edge cases and error conditions (invalid import data, localStorage quota, corrupted data)
+- ✅ TypeScript interface compliance (ProgressState interface validation)
+- ✅ localStorage persistence (save/load, migration, cleanup)
+- ✅ Achievement system (milestone triggers, badge unlocking)
+- ✅ Test coverage ≥95% for store logic
+- ✅ Test file: `src/test/stores/progress.test.ts`
+
+**End-to-End Tests (Playwright)**:
+
+- ✅ User interaction flows (visit chapters, complete lessons, view dashboard, reset progress)
+- ✅ Mobile viewport testing (≤390px) - dashboard cards responsive, touch-friendly buttons ≥44px
+- ✅ Desktop viewport testing (≥1024px) - grid layout, hover states, export/import controls
+- ✅ Progress persistence (reload page, verify progress retained from localStorage)
+- ✅ Integration with Popover component (reset confirmation workflow)
+- ✅ Integration with Navigation system (passive event notifications from 8L)
+- ✅ Visual regression checks (progress bar animations, streak indicators, dashboard cards)
+- ✅ Performance benchmarks (dashboard render < 200ms, store update < 50ms)
+- ✅ Test file: `src/test/e2e/progress-dashboard.spec.ts`
+
+**Reference Component(s)**:
+
+- **Location**: `src/lib/components/demo/ui/ProgressBar.svelte`, `src/lib/components/demo/quiz/ProgressIndicator.svelte`
+- **Usage**: Study progress visualization patterns, percentage calculation logic, animation transitions, and visual indicator designs
+- **⚠️ CRITICAL**: DO NOT modify original reference files in `src/lib/components/demo/ui/` or `src/lib/components/demo/quiz/`
+- **⚠️ CRITICAL**: DO NOT import reference components directly into production code
+- **Implementation Strategy**: Copy progress bar rendering logic, percentage calculation formulas, CSS animation patterns; adapt for dashboard with derived stores, learning streak tracking, and export/import functionality
+
 ### Final Validations
 
 - ✅ Derived stores update reactively
@@ -4809,6 +5095,44 @@ export function navigateToContent(event: NavigationEvent): void {
 - `src/test/components/navigation/Navigation.test.ts`
 - Hash change listener in root layout
 - Documentation of navigation event flow
+
+### Testing Requirements
+
+**Unit Tests (Vitest)**:
+
+- ✅ navigateToContent() function (atomic state updates, all components notified)
+- ✅ Navigation store state management (currentId, source tracking, previous/next entries)
+- ✅ Breadcrumb store generation (trail calculation from content-menu structure)
+- ✅ Sequential navigation helpers (navigateToPrevious, navigateToNext, boundary conditions)
+- ✅ Hash routing utilities (parseHash, navigateToChapter, isValidHash)
+- ✅ Event handlers and callbacks (content-load events, progress notifications)
+- ✅ Edge cases and error conditions (invalid IDs, circular navigation, missing content)
+- ✅ TypeScript interface compliance (NavigationEvent, NavigationState interface validation)
+- ✅ Multi-source coordination (sidebar, search, breadcrumb, sequential, direct, back/forward)
+- ✅ Test coverage ≥90% for navigation logic
+- ✅ Test file: `src/test/components/navigation/Navigation.test.ts`
+
+**End-to-End Tests (Playwright)**:
+
+- ✅ User interaction flows (sidebar navigation, previous/next buttons, breadcrumb clicks, search navigation)
+- ✅ Mobile viewport testing (≤390px) - swipe gestures, touch navigation buttons ≥44px
+- ✅ Desktop viewport testing (≥1024px) - keyboard shortcuts (ArrowLeft/Right), hover states
+- ✅ Keyboard navigation (Arrow keys for sequential navigation, Tab through controls)
+- ✅ Focus management and tab order (focus retention on navigation)
+- ✅ Integration across all components (atomic updates: sidebar highlight + breadcrumb update + content load + URL hash + progress tracking)
+- ✅ Browser back/forward navigation (hash change listener, state restoration)
+- ✅ Deep linking and direct URL access (hash parsing, content loading from URL)
+- ✅ Visual regression checks (no partial states, smooth transitions, component synchronization)
+- ✅ Performance benchmarks (navigation latency < 100ms, multi-component update < 50ms)
+- ✅ Test file: `src/test/e2e/unified-navigation.spec.ts`
+
+**Reference Component(s)**:
+
+- **Location**: `src/lib/components/demo/DemoSidebar.svelte`, `src/lib/components/demo/FloatingNav.svelte`, `src/lib/components/demo/StickyHeader.svelte`
+- **Usage**: Study navigation coordination patterns, state synchronization logic, event handling for multiple sources, and sequential navigation (previous/next) implementations
+- **⚠️ CRITICAL**: DO NOT modify original reference files in `src/lib/components/demo/`
+- **⚠️ CRITICAL**: DO NOT import reference components directly into production code
+- **Implementation Strategy**: Copy navigation event coordination, state store patterns, hash routing logic, and sequential navigation helpers; adapt for unified navigateToContent() handler with atomic multi-component updates
 
 ### Final Validations
 
@@ -5005,6 +5329,45 @@ function handleResultClick(item: SearchIndexItem) {
 - Dialog integration for results display
 - Navigation (8L) integration for coordinated updates
 
+### Testing Requirements
+
+**Unit Tests (Vitest)**:
+
+- ✅ SearchBox component rendering (input field, search icon, clear button)
+- ✅ State management and reactivity (Svelte 5 runes: $state, $derived, $props)
+- ✅ Pre-built Lunr.js index loading (lunr.Index.load from search-index.ts)
+- ✅ Search query execution (index.search, result scoring, relevance ranking)
+- ✅ Debounced input handling (search trigger delay, performance optimization)
+- ✅ Result enrichment (metadata mapping, content type grouping)
+- ✅ Event handlers and callbacks (search trigger, result click, keyboard shortcuts)
+- ✅ Edge cases and error conditions (empty query, no results, malformed index, special characters)
+- ✅ TypeScript interface compliance (SearchResult, SearchIndexItem interface validation)
+- ✅ Accessibility attributes (ARIA labels, search role, combobox semantics)
+- ✅ Integration with Dialog component (openDialog/closeDialog coordination)
+- ✅ Integration with Navigation system (navigateToContent on result click)
+- ✅ Test coverage ≥90% for search logic
+- ✅ Test file: `src/test/components/search/Search.test.ts`
+
+**End-to-End Tests (Playwright)**:
+
+- ✅ User interaction flows (type query, view results, click result, navigate to content)
+- ✅ Mobile viewport testing (≤390px) - full-screen modal, touch interactions, virtual keyboard handling
+- ✅ Desktop viewport testing (≥1024px) - keyboard shortcuts (Ctrl/Cmd+K), hover states, result previews
+- ✅ Keyboard navigation (Tab through results, Enter to select, Escape to close, Arrow keys for navigation)
+- ✅ Focus management and tab order (focus search input on open, trap within modal, return on close)
+- ✅ Integration with unified navigation (atomic updates: Dialog close + Sidebar highlight + Breadcrumb update + Content load + URL hash + Progress tracking)
+- ✅ Visual regression checks (result highlighting, grouped content types, loading states)
+- ✅ Performance benchmarks (search latency < 100ms for 129 items, debounce delay 300ms, result render < 200ms)
+- ✅ Test file: `src/test/e2e/search.spec.ts`
+
+**Reference Component(s)**:
+
+- **Location**: `src/lib/components/search/SearchBox.svelte`, `src/lib/components/search/SearchResults.svelte`, `src/lib/components/search/SearchModal.svelte`, `src/lib/components/search/SearchFilters.svelte`
+- **Usage**: Study existing search implementation patterns, Lunr.js index integration, debounced input handling, result grouping by content type, Dialog modal integration, and keyboard shortcut handling
+- **⚠️ CRITICAL**: These are EXISTING production components - DO NOT create new ones
+- **⚠️ CRITICAL**: ENHANCE and extend these components for Dialog (8E) and Navigation (8L) integration
+- **Implementation Strategy**: Review existing SearchBox/SearchResults implementation, add Dialog integration for results display, implement navigateToContent() for multi-component navigation coordination, enhance keyboard shortcuts (Ctrl/Cmd+K), optimize mobile experience
+
 ### Final Validations
 
 - ✅ Pre-built Lunr.js index loads correctly from search-index.ts
@@ -5015,6 +5378,22 @@ function handleResultClick(item: SearchIndexItem) {
 - ✅ Results grouped by content type
 - ✅ All components update atomically (no partial states)
 - ✅ Three-tier validation: `make check-wip` → `pnpm run test` → `pnpm run format/lint/check`
+
+### Deferred Features (Post-MVP)
+
+**SearchModal Functionality (Currently Placeholder)**
+
+- **Current State**: Mobile search shows icon placeholder (disabled button) in StickyHeader
+- **Planned**: Full-screen SearchModal for mobile viewports (≤768px)
+- **Implementation**:
+  - Modal opens on mobile search icon click
+  - Full-screen overlay with SearchBox component
+  - Proper z-index hierarchy (above header/sidebar)
+  - Touch-optimized interaction patterns
+- **Dependencies**: Dialog component (8E) pattern can be adapted
+- **Priority**: Medium - enhances mobile search UX but not blocking
+- **Status**: Deferred to post-initial implementation
+- **File**: `src/lib/components/navigation/StickyHeader.svelte:134-142` (placeholder button)
 
 ---
 
@@ -5059,6 +5438,41 @@ From `PLAN-TODO-FEATURES.md`:
 - Theme store integration
 - localStorage persistence logic
 
+### Testing Requirements
+
+**Unit Tests (Vitest)**:
+
+- ✅ Component rendering with theme options (light, dark, system)
+- ✅ State management and reactivity (Svelte 5 runes: $state, $derived, $props)
+- ✅ Theme store integration (theme state updates, store subscription)
+- ✅ System preference detection (prefers-color-scheme media query, auto-detection)
+- ✅ localStorage persistence (save theme choice, load on mount, handle quota errors)
+- ✅ Event handlers and callbacks (theme selection, toggle switch, dropdown selection)
+- ✅ Edge cases and error conditions (invalid theme value, localStorage unavailable, SSR compatibility)
+- ✅ TypeScript interface compliance (ThemeOption interface validation)
+- ✅ Accessibility attributes (ARIA labels, button role, keyboard navigation)
+- ✅ CSS transition handling (smooth theme switch, FOUC prevention)
+- ✅ Test coverage ≥90% for theme logic
+- ✅ Test file: `src/test/components/ui/ThemeSwitcher.test.ts`
+
+**End-to-End Tests (Playwright)**:
+
+- ✅ User interaction flows (toggle theme, select from dropdown, persist across page reload)
+- ✅ Mobile viewport testing (≤390px) - touch-friendly toggle ≥44px, dropdown interaction
+- ✅ Desktop viewport testing (≥1024px) - hover states, keyboard shortcuts
+- ✅ Keyboard navigation (Tab to switcher, Enter/Space to toggle, Arrow keys for dropdown)
+- ✅ Focus management and tab order (focus on theme button, dropdown keyboard navigation)
+- ✅ System preference detection (mock prefers-color-scheme, verify auto theme selection)
+- ✅ Visual regression checks (theme transitions, color scheme consistency, icon states)
+- ✅ Performance benchmarks (theme switch latency < 100ms, CSS transition duration 200ms)
+- ✅ Test file: `src/test/e2e/theme-switcher.spec.ts`
+
+**Reference Component(s)**:
+
+- **Location**: None (implement from scratch)
+- **Usage**: N/A - No demo components available
+- **Implementation Strategy**: Build using shadcn-svelte Dropdown or Toggle components, integrate with theme store from `src/lib/stores/theme.ts`, implement localStorage persistence, add system preference detection using `window.matchMedia('(prefers-color-scheme: dark)')`, ensure smooth CSS transitions
+
 ### Final Validations
 
 - ✅ SVELTEKIT-GUIDE.md compliance verified
@@ -5068,6 +5482,17 @@ From `PLAN-TODO-FEATURES.md`:
 - ✅ Test suite covers all theme scenarios
 - ✅ Accessibility standards met
 - ✅ Three-tier validation: `make check-wip` → `pnpm run test` → `pnpm run format/lint/check`
+
+### Known Issues & Future Improvements
+
+**Issue: Scroll Hidden While Dropdown Active**
+
+- **Description**: When ThemeToggle dropdown is open, page scroll is hidden/disabled
+- **Impact**: Minor UX inconvenience - users cannot scroll background content while dropdown is active
+- **Priority**: Low - cosmetic issue, does not affect functionality
+- **Status**: Deferred to future enhancement
+- **Technical Notes**: This is standard dropdown Portal behavior (Radix UI overlay), but may need custom scroll handling for better UX
+- **Related**: DropdownMenu Portal rendering, body scroll-lock behavior
 
 ---
 

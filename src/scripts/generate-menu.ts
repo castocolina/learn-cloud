@@ -296,18 +296,21 @@ export class MarkdownContentGenerator {
 	}
 
 	/**
-	 * Extract icon and emoji metadata from markdown line
+	 * Extract icon, emoji, and shortName metadata from markdown line
 	 */
-	private extractIconAndEmojiFromLine(line: string): {
+	private extractIconEmojiAndShortName(line: string): {
 		cleanedLine: string;
 		iconName: string | null;
 		emoji: string | null;
+		shortName: string | null;
 	} {
 		const iconPattern = /\[icon:\s*(\w+)\s*\]/;
 		const emojiPattern = /\[emoji:\s*([^\]]+)\s*\]/;
+		const shortNamePattern = /\[shortName:\s*([^\]]+)\s*\]/;
 
 		const iconMatch = iconPattern.exec(line);
 		const emojiMatch = emojiPattern.exec(line);
+		const shortNameMatch = shortNamePattern.exec(line);
 
 		let cleanedLine = line;
 		if (iconMatch) {
@@ -316,11 +319,15 @@ export class MarkdownContentGenerator {
 		if (emojiMatch) {
 			cleanedLine = cleanedLine.replace(emojiPattern, "").trim();
 		}
+		if (shortNameMatch) {
+			cleanedLine = cleanedLine.replace(shortNamePattern, "").trim();
+		}
 
 		return {
 			cleanedLine,
 			iconName: iconMatch ? iconMatch[1] : null,
-			emoji: emojiMatch ? emojiMatch[1] : null
+			emoji: emojiMatch ? emojiMatch[1] : null,
+			shortName: shortNameMatch ? shortNameMatch[1].trim() : null
 		};
 	}
 
@@ -328,8 +335,40 @@ export class MarkdownContentGenerator {
 	 * Extract icon metadata from markdown line (legacy compatibility)
 	 */
 	private extractIconFromLine(line: string): { cleanedLine: string; iconName: string | null } {
-		const result = this.extractIconAndEmojiFromLine(line);
+		const result = this.extractIconEmojiAndShortName(line);
 		return { cleanedLine: result.cleanedLine, iconName: result.iconName };
+	}
+
+	/**
+	 * Extract short name from unit title using extraction rules
+	 * @param title Full unit title (e.g., "Unit 1: Python for Cloud-Native Backend Development")
+	 * @param unitNum Unit number for fallback
+	 * @returns Extracted short name
+	 */
+	private extractShortNameFromTitle(title: string, unitNum: string): string {
+		// Remove "Unit X: " prefix
+		const withoutPrefix = title.replace(/^Unit \d+:\s*/, "");
+
+		// Strategy 1: Extract text before " for " delimiter
+		if (withoutPrefix.includes(" for ")) {
+			const beforeFor = withoutPrefix.split(" for ")[0].trim();
+			return beforeFor || `Unit ${unitNum}`;
+		}
+
+		// Strategy 2: Extract text before " - " delimiter
+		if (withoutPrefix.includes(" - ")) {
+			const beforeDash = withoutPrefix.split(" - ")[0].trim();
+			return beforeDash || `Unit ${unitNum}`;
+		}
+
+		// Strategy 3: Use first significant word (skip articles)
+		const words = withoutPrefix.split(/\s+/);
+		const articles = ["the", "a", "an"];
+		const firstSignificant = words.find(
+			(word) => word.length > 0 && !articles.includes(word.toLowerCase())
+		);
+
+		return firstSignificant || `Unit ${unitNum}`;
 	}
 
 	/**
@@ -759,8 +798,9 @@ export class MarkdownContentGenerator {
 				const unitNum = unitMatch[1];
 				const unitTitleRaw = unitMatch[2].trim();
 
-				// Extract icon and emoji from unit line
-				const { cleanedLine, iconName, emoji } = this.extractIconAndEmojiFromLine(trimmedLine);
+				// Extract icon, emoji, and shortName from unit line
+				const { cleanedLine, iconName, emoji, shortName } =
+					this.extractIconEmojiAndShortName(trimmedLine);
 				const unitTitle = iconName
 					? cleanedLine.match(unitPattern)?.[2]?.trim() || unitTitleRaw
 					: unitTitleRaw;
@@ -770,9 +810,14 @@ export class MarkdownContentGenerator {
 				const unitIcon = iconName || this.getIconForContent("lesson", unitTitle);
 				const technologyUnit = this.getTechnologyUnit(unitTitle);
 
+				// Generate shortName: use explicit value or auto-extract
+				const unitShortName = shortName || this.extractShortNameFromTitle(fullUnitTitle, unitNum);
+				console.log(`Unit ${unitNum} shortName: ${unitShortName}`);
+
 				currentUnit = {
 					id: `unit_${unitNum}`,
 					title: fullUnitTitle,
+					shortName: unitShortName,
 					description: unitTitle,
 					icon: unitIcon,
 					emoji: emoji || undefined,
@@ -868,7 +913,7 @@ export class MarkdownContentGenerator {
 			const unitTitle = unit.title || `Unit ${unitIdx + 1}`;
 
 			// Check required unit fields
-			const requiredFields: (keyof MenuUnit)[] = ["title", "icon", "technologyUnit"];
+			const requiredFields: (keyof MenuUnit)[] = ["title", "shortName", "icon", "technologyUnit"];
 			for (const field of requiredFields) {
 				if (!unit[field]) {
 					issues.push(`Unit '${unitTitle}' missing ${field}`);

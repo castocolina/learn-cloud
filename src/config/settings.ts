@@ -32,9 +32,9 @@ export const SETTINGS: AppSettings = {
 		theme: {
 			/**
 			 * Default theme mode on first load
-			 * @default "system" - Follows OS preference automatically
+			 * @default "light" - Force light theme (dark theme under development)
 			 */
-			defaultMode: "system" as const,
+			defaultMode: "light" as const,
 
 			/**
 			 * localStorage key for persisting user's theme preference
@@ -161,7 +161,7 @@ export const SETTINGS: AppSettings = {
 			 */
 			sidebarWidth: "16rem", // Desktop expanded: 256px (~20% at 1280px)
 			sidebarWidthMobile: "18rem", // Mobile expanded: 288px
-			sidebarWidthIcon: "3rem", // Collapsed state: 48px
+			sidebarWidthIcon: "4rem", // Collapsed state: 64px (increased for full emoji visibility)
 
 			/**
 			 * Header and Footer Heights
@@ -208,7 +208,25 @@ export const SETTINGS: AppSettings = {
 			 * - "offcanvas": Slides off-screen completely (mobile-friendly)
 			 * - "none": Non-collapsible sidebar (always visible)
 			 */
-			collapsibleMode: "icon" as "icon" | "offcanvas" | "none"
+			collapsibleMode: "icon" as "icon" | "offcanvas" | "none",
+			/**
+			 * Sidebar Header Configuration
+			 *
+			 * Displays navigation title and chapter count in sidebar header
+			 */
+			header: {
+				icon: "BookOpen", // Lucide icon name (e.g., "BookOpen") or emoji (e.g., "📚")
+				title: "Navigation", // Header title text
+				description: "{units} units • {chapters} chapters" // Template with placeholders
+			},
+			/**
+			 * Sidebar Footer Configuration
+			 *
+			 * Displays book title and version in sidebar footer
+			 */
+			footer: {
+				version: "1.0.0" // Version number (displayed as "v{version}")
+			}
 		},
 		stores: {
 			spaNavigation: {
@@ -450,8 +468,15 @@ export const SETTINGS: AppSettings = {
 				outputFile: "src/data/generated/flatnav.ts" // Output navigation map
 			},
 			validationPrefix: "flatnav", // Prefix for validation config IDs
+			bookOverview: {
+				id: "00_BOOK", // Unique identifier for book overview entry
+				title: "Welcome to Mastering Cloud-Native Technologies", // Display title
+				chapterUrl: "overview.html", // Chapter URL for navigation
+				filePath: "book/overview.ts", // TypeScript data file path
+				unitTitle: "Book Overview", // Unit title for display context
+				defaultSource: "direct" as const // Navigation source for analytics
+			},
 			navigation: {
-				homeUrl: "/", // Home page URL for navigation root
 				crossUnitNavigation: true, // Allow navigation across unit boundaries
 				skipEmptyUnits: true, // Skip units with no available content
 				generateDebugInfo: false // Include debug information in output

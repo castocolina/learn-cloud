@@ -1,0 +1,337 @@
+/**
+ * shadcn-svelte Component Overrides
+ *
+ * CRITICAL TRANSPARENCY ANTI-PATTERN:
+ * ===================================
+ * NEVER use semi-transparent backgrounds (bg-background/95, bg-background/80)
+ * or backdrop-blur effects on content layers. This creates a "washed out"
+ * appearance where content becomes difficult to read in both light and dark themes.
+ *
+ * CORRECT PATTERN:
+ * ✅ Overlays: Use rgba(0, 0, 0, 0.6) for universal contrast
+ * ✅ Content: Use hsl(var(--background)) for 100% opaque backgrounds
+ * ✅ No glassmorphism effects on content layers
+ *
+ * INCORRECT PATTERNS TO AVOID:
+ * ❌ bg-background/95 backdrop-blur-md (glassmorphism on content)
+ * ❌ hsl(var(--background) / 0.8) (theme-aware semi-transparency)
+ * ❌ Any transparency on Sheet/Dialog/Popover/Dropdown content panels
+ */
+
+/* ============================================================================
+ * OVERLAY COMPONENTS
+ * ============================================================================
+ * All overlay components use a consistent dark semi-transparent background
+ * for optimal contrast in both light and dark themes.
+ */
+
+/**
+ * Sheet Overlay
+ * Base: bg-black/60 (60% opacity) - Consistent with Sidebar overlay
+ *
+ * Z-INDEX FIX:
+ * - shadcn default: z-50 (z-index: 50) - appears BEHIND header (100)
+ * - Override: var(--z-overlay) (200) - appears ABOVE header (100)
+ * - Hierarchy: Header (100) < Overlay (200) < Sheet Content (210)
+ *
+ * CONSISTENCY: Matches Sidebar overlay opacity for uniform UX
+ * - Same visual weight as [data-sidebar="overlay"] (60%)
+ * - Provides clear visual distinction between overlay and content
+ * - No pointer-events override needed (handled by component)
+ */
+[data-slot="sheet-overlay"] {
+	background-color: rgba(0, 0, 0, 0.6) !important;
+	z-index: var(--z-overlay) !important;
+}
+
+/**
+ * Dialog Overlay
+ * Base: bg-black/50 (50% opacity) - Enhanced to 60% for better contrast
+ */
+[data-slot="dialog-overlay"] {
+	background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+/**
+ * Dropdown Menu Overlay (if used)
+ * Ensures consistent overlay treatment
+ */
+[data-slot="dropdown-overlay"],
+[data-dropdown-overlay] {
+	background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+/**
+ * Select Overlay (if used)
+ * Ensures consistent overlay treatment
+ */
+[data-slot="select-overlay"],
+[data-select-overlay] {
+	background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+/**
+ * Popover Overlay (if used)
+ * Note: Most popovers don't use overlays, but this ensures consistency
+ */
+[data-slot="popover-overlay"],
+[data-popover-overlay] {
+	background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+/* ============================================================================
+ * CONTENT COMPONENTS
+ * ============================================================================
+ * All content panels MUST use 100% opaque backgrounds.
+ * NO transparency or blur effects allowed.
+ */
+
+/**
+ * Sheet Content
+ * CRITICAL: Must be 100% opaque for readability
+ * Removes any glassmorphism effects that might be applied
+ *
+ * Z-INDEX FIX:
+ * - shadcn default: z-50 (z-index: 50) - appears BEHIND header (100)
+ * - Override: var(--z-modal) (210) - appears ABOVE header and overlay
+ * - Hierarchy: Header (100) < Overlay (200) < Sheet Content (210)
+ *
+ * DESIGN SYSTEM: Soft borders + subtle shadow (matches Sidebar aesthetic)
+ * - Border: 1px with 30% opacity (soft, subtle)
+ * - Shadow: Multi-layer soft shadow (professional, not excessive)
+ * - Applied to left, right, top edges (bottom has natural border-t from variant)
+ *
+ * BORDER-RADIUS FIX (Task 8B - REGRESSION FIX):
+ * - ISSUE: Sheet component lost border-radius styling
+ * - REFERENCE: .content-header-lesson uses rounded-lg = var(--radius-lg) = 0.625rem (10px)
+ * - SCOPE: Applied to ALL sheets for design system consistency
+ * - VARIANT-SPECIFIC: Directional sheets have appropriate corners rounded
+ */
+[data-slot="sheet-content"] {
+	background-color: hsl(var(--background)) !important;
+	backdrop-filter: none !important;
+	z-index: var(--z-modal) !important;
+	border-left: 1px solid hsl(var(--border) / 0.3) !important;
+	border-right: 1px solid hsl(var(--border) / 0.3) !important;
+	border-top: 1px solid hsl(var(--border) / 0.3) !important;
+	box-shadow:
+		0 -4px 6px -1px hsl(var(--foreground) / 0.08),
+		0 -2px 4px -1px hsl(var(--foreground) / 0.05) !important;
+	/* Border-radius: Use project's theme variable for consistency */
+	border-radius: var(--radius-lg) !important;
+}
+
+/**
+ * Sheet Variant-Specific Border-Radius Adjustments
+ *
+ * ARCHITECTURE: Directional sheets should only have rounded corners on the
+ * edge opposite to their entry direction for optimal visual design.
+ */
+
+/* Bottom sheet: slides from bottom, round only top corners */
+[data-slot="sheet-content"][class*="bottom"] {
+	border-bottom-left-radius: 0 !important;
+	border-bottom-right-radius: 0 !important;
+}
+
+/* Top sheet: slides from top, round only bottom corners */
+[data-slot="sheet-content"][class*="top"] {
+	border-top-left-radius: 0 !important;
+	border-top-right-radius: 0 !important;
+}
+
+/* Left sheet: slides from left, round only right corners */
+[data-slot="sheet-content"][class*="left"] {
+	border-top-left-radius: 0 !important;
+	border-bottom-left-radius: 0 !important;
+}
+
+/* Right sheet: slides from right, round only left corners */
+[data-slot="sheet-content"][class*="right"] {
+	border-top-right-radius: 0 !important;
+	border-bottom-right-radius: 0 !important;
+}
+
+/**
+ * Sheet Close Button Cursor Fix
+ * Ensures cursor pointer displays on ALL sheet close buttons
+ * - Targets X button (direct child of sheet-content)
+ * - Targets custom close buttons (Sheet.Close component)
+ */
+[data-slot="sheet-content"] > button,
+[data-slot="sheet-close"] {
+	cursor: pointer !important;
+}
+
+/**
+ * Dialog Content
+ * CRITICAL: Must be 100% opaque for readability
+ * Removes any glassmorphism effects that might be applied
+ */
+[data-slot="dialog-content"] {
+	background-color: hsl(var(--background)) !important;
+	backdrop-filter: none !important;
+}
+
+/**
+ * Dropdown Menu Content
+ * CRITICAL: Must be 100% opaque for readability
+ */
+[data-slot="dropdown-content"],
+.dropdown-content {
+	background-color: hsl(var(--background)) !important;
+	backdrop-filter: none !important;
+}
+
+/**
+ * Select Content
+ * CRITICAL: Must be 100% opaque for readability
+ */
+[data-slot="select-content"],
+.select-content {
+	background-color: hsl(var(--background)) !important;
+	backdrop-filter: none !important;
+}
+
+/**
+ * Popover Content
+ * CRITICAL: Must be 100% opaque for readability
+ */
+[data-slot="popover-content"],
+.popover-content {
+	background-color: hsl(var(--background)) !important;
+	backdrop-filter: none !important;
+}
+
+/**
+ * Tooltip Content
+ * Note: Tooltips are an exception - they traditionally use semi-transparent
+ * backgrounds, but should use theme-aware inverse colors
+ *
+ * CRITICAL: Uses 'background' shorthand (not 'background-color') to fully
+ * override any previous background declarations from components.css
+ */
+[data-slot="tooltip-content"],
+.tooltip-content {
+	background: hsl(var(--popover)) !important;
+	color: hsl(var(--popover-foreground)) !important;
+	backdrop-filter: none !important;
+	border: 1px solid hsl(var(--border)) !important;
+	box-shadow: 0 1px 3px 0 hsl(var(--foreground) / 0.1) !important;
+}
+
+/* Dark mode tooltip shadow enhancement */
+:global(.dark) [data-slot="tooltip-content"],
+:global(.dark) .tooltip-content {
+	box-shadow: 0 1px 3px 0 hsl(var(--foreground) / 0.3) !important;
+}
+
+/**
+ * Tooltip Arrow Fix
+ * CRITICAL: Fix both shape AND color of arrow to match tooltip body
+ *
+ * PROBLEM 1 (Shape): rotate-45 + rounded-[2px] creates diamond with rounded corners
+ * SOLUTION: Remove border-radius completely to create sharp triangular pointer
+ *
+ * PROBLEM 2 (Color): bg-primary doesn't match tooltip bg-popover
+ * SOLUTION: Override arrow background to use popover color for visual cohesion
+ *
+ * PROBLEM 3 (Selector): Previous selector [data-arrow] didn't match DOM structure
+ * SOLUTION: Use .rotate-45 class which is guaranteed to be on arrow div
+ *
+ * Technical Details:
+ * - Arrow is rendered inside TooltipPrimitive.Arrow with child snippet
+ * - Uses rotate-45 transform to create triangular appearance from square
+ * - Must match tooltip body color in both light and dark themes
+ * - Selector uses .rotate-45 class present on arrow div in tooltip-content.svelte:35
+ *
+ * DOM Structure:
+ * [data-slot="tooltip-content"]
+ *   └─ TooltipPrimitive.Arrow (rendered element)
+ *        └─ div.bg-primary.rotate-45 ← Target this
+ */
+[data-slot="tooltip-content"] .rotate-45,
+.tooltip-content .rotate-45 {
+	background: hsl(var(--popover)) !important;
+	border-radius: 0 !important;
+}
+
+/* ============================================================================
+ * SIDEBAR TRANSPARENCY FIX
+ * ============================================================================
+ * Sidebar overlay should follow the same pattern as other overlays
+ */
+
+/**
+ * Sidebar Overlay (Mobile)
+ * Consistent with other overlay components
+ */
+[data-sidebar="overlay"],
+.sidebar-overlay {
+	background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+/**
+ * Sidebar Content
+ * Must be 100% opaque
+ */
+[data-sidebar="sidebar"],
+.sidebar-content {
+	background-color: hsl(var(--sidebar-background)) !important;
+	backdrop-filter: none !important;
+}
+
+/* ============================================================================
+ * STICKY HEADER FIX
+ * ============================================================================
+ * Documented regression: sticky headers MUST be 100% opaque
+ */
+
+/**
+ * Sticky Header
+ * REGRESSION FIX: Previous implementations used bg-background/95 with
+ * backdrop-blur-md, causing readability issues. Header must be 100% opaque.
+ *
+ * This rule is defensive - StickyHeader.svelte should already use bg-background,
+ * but this ensures no other components override with transparency.
+ */
+.sticky-header,
+header.sticky {
+	background-color: hsl(var(--background)) !important;
+	backdrop-filter: none !important;
+}
+
+/* ============================================================================
+ * ANTI-PATTERN PREVENTION
+ * ============================================================================
+ * These rules prevent accidental application of transparency patterns
+ */
+
+/**
+ * Remove backdrop-blur from all content panels
+ * This is a defensive rule to catch any component that might try to apply
+ * glassmorphism effects
+ */
+[data-slot$="-content"]:not([data-slot="tooltip-content"]) {
+	backdrop-filter: none !important;
+}
+
+/**
+ * Ensure all panel backgrounds are opaque
+ * Catches any .panel, .sheet, .dialog, .popover, etc.
+ */
+.panel,
+.sheet,
+.dialog,
+.dropdown,
+.select,
+.popover {
+	backdrop-filter: none !important;
+}
+
+/**
+ * Remove any accidental background transparency from main content areas
+ */
+[data-slot$="-content"][style*="background"] {
+	backdrop-filter: none !important;
+}

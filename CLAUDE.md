@@ -196,6 +196,13 @@ Before installing any npm package, agents **MUST** perform due diligence:
 - **Validation:** Always run `shellcheck` on bash scripts before completion
 - **Python Cache:** Use `make` commands with `PYTHONPYCACHEPREFIX=tmp/pycache` for utility scripts
 
+**Test Output Directories:**
+
+- **E2E Tests (Playwright):** Results and artifacts MUST go to `./tmp/test/e2e/` (configured in `playwright.config.ts`)
+- **Unit Tests (Vitest):** Coverage and results MUST go to `./tmp/test/unit/` (configured in `vitest.config.ts`)
+- **Test Source Files:** E2E tests in `src/test/e2e/`, unit tests throughout `src/test/`
+- **Rationale:** Keeps temporary test artifacts separate from source code and version control
+
 > **🎯 Note:** These are development tools, not application code. SvelteKit application uses TypeScript/JavaScript only.
 
 **SvelteKit Configuration:**

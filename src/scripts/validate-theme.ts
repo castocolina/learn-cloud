@@ -650,7 +650,28 @@ function validateZIndexHierarchy(quiet = false): ValidationIssue[] {
 		if (filePath === CONFIG.paths.appCss) continue;
 
 		const lines = readFileLines(filePath);
+		let inMultilineComment = false;
+
 		lines.forEach((line, index) => {
+			const trimmed = line.trim();
+
+			// Track multi-line comment state (/* ... */)
+			if (trimmed.includes("/*")) {
+				inMultilineComment = true;
+			}
+			if (trimmed.includes("*/")) {
+				inMultilineComment = false;
+				return; // Skip this line as it ends a comment
+			}
+
+			// Skip comment lines (multi-line comments or single-line comment markers)
+			const isCommentLine =
+				inMultilineComment || trimmed.startsWith("/*") || trimmed.startsWith("*");
+
+			if (isCommentLine) {
+				return; // Skip validation for comment lines
+			}
+
 			const matches = line.match(CONFIG.patterns.hardcodedZIndex);
 			if (matches) {
 				// Check if it's using a CSS variable (allowed pattern)
@@ -684,6 +705,7 @@ function validateZIndexHierarchy(quiet = false): ValidationIssue[] {
 	for (const filePath of getFilesToValidate(CONFIG.patterns.svelteFiles)) {
 		const lines = readFileLines(filePath);
 		let inStyleBlock = false;
+		let inMultilineComment = false;
 
 		lines.forEach((line, index) => {
 			const trimmed = line.trim();
@@ -695,6 +717,23 @@ function validateZIndexHierarchy(quiet = false): ValidationIssue[] {
 			}
 
 			if (inStyleBlock) {
+				// Track multi-line comment state (/* ... */)
+				if (trimmed.includes("/*")) {
+					inMultilineComment = true;
+				}
+				if (trimmed.includes("*/")) {
+					inMultilineComment = false;
+					return; // Skip this line as it ends a comment
+				}
+
+				// Skip comment lines (multi-line comments or single-line comment markers)
+				const isCommentLine =
+					inMultilineComment || trimmed.startsWith("/*") || trimmed.startsWith("*");
+
+				if (isCommentLine) {
+					return; // Skip validation for comment lines
+				}
+
 				const matches = line.match(CONFIG.patterns.hardcodedZIndex);
 				if (matches && !line.includes("var(--z-")) {
 					const relativePath = relative(PROJECT_ROOT, filePath);

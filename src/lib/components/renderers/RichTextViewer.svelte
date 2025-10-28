@@ -134,7 +134,7 @@
 						<span class="callout-icon">
 							{#if block.calloutType === "info"}ℹ️
 							{:else if block.calloutType === "warning"}⚠️
-							{:else if block.calloutType === "error"}❌
+							{:else if block.calloutType === "danger"}❌
 							{:else if block.calloutType === "success"}✅
 							{:else if block.calloutType === "tip"}💡
 							{/if}
