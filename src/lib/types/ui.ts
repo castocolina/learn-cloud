@@ -32,6 +32,9 @@ export type ButtonSize = ShadcnButtonSize;
 
 /**
  * Button wrapper component props
+ *
+ * Supports all HTML button attributes and event handlers via index signature.
+ * This allows passing onclick, onsubmit, data-*, aria-*, and other props.
  */
 export interface ButtonProps {
 	/** Button visual variant (union type constraint) */
@@ -48,6 +51,9 @@ export interface ButtonProps {
 	href?: string;
 	/** Button content (Svelte 5 snippet pattern) */
 	children: Snippet;
+	/** Allow any additional props (event handlers, data attributes, aria attributes, etc.) */
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	[key: string]: any;
 }
 
 // =====================================================
@@ -67,6 +73,7 @@ export type DialogSize = "sm" | "md" | "lg" | "xl" | "full";
  * - Size presets with responsive behavior
  * - SETTINGS integration for default configuration
  * - Mobile-first responsive patterns
+ * - Custom close button support
  */
 export interface DialogProps {
 	/** Dialog open state (bindable) */
@@ -79,10 +86,12 @@ export interface DialogProps {
 	description?: string;
 	/** Show close button (default: true) */
 	showCloseButton?: boolean;
+	/** Custom close button snippet (optional - defaults to IconButton with subtle variant) */
+	closeButton?: Snippet;
 	/** Additional CSS classes for content */
 	class?: string;
-	/** Dialog content (Svelte 5 snippet pattern) */
-	children: Snippet;
+	/** Dialog content (Svelte 5 snippet pattern) - optional for store mode */
+	children?: Snippet;
 }
 
 // =====================================================

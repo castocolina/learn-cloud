@@ -47,9 +47,17 @@
 /**
  * Dialog Overlay
  * Base: bg-black/50 (50% opacity) - Enhanced to 60% for better contrast
+ *
+ * Z-INDEX FIX:
+ * - shadcn default: z-50 (z-index: 50) - appears BEHIND header (100)
+ * - Override: var(--z-overlay) (200) - appears ABOVE header (100)
+ * - Hierarchy: Header (100) < Overlay (200) < Dialog Content (210)
+ *
+ * CONSISTENCY: Matches Sheet overlay pattern for uniform z-index hierarchy
  */
 [data-slot="dialog-overlay"] {
 	background-color: rgba(0, 0, 0, 0.6) !important;
+	z-index: var(--z-overlay) !important;
 }
 
 /**
@@ -167,10 +175,19 @@
  * Dialog Content
  * CRITICAL: Must be 100% opaque for readability
  * Removes any glassmorphism effects that might be applied
+ *
+ * Z-INDEX FIX:
+ * - shadcn default: z-50 (z-index: 50) - appears BEHIND header (100)
+ * - Override: var(--z-modal) (210) - appears ABOVE header and overlay
+ * - Hierarchy: Header (100) < Overlay (200) < Dialog Content (210)
+ *
+ * NOTE: Close button styling removed - now uses IconButton component directly
+ * with variant="subtle" for consistency across the app.
  */
 [data-slot="dialog-content"] {
 	background-color: hsl(var(--background)) !important;
 	backdrop-filter: none !important;
+	z-index: var(--z-modal) !important;
 }
 
 /**

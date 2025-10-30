@@ -35,14 +35,16 @@
 		disabled = false,
 		type = "button",
 		href,
-		children
+		children,
+		...restProps
 	}: ButtonProps = $props();
 </script>
 
 <!--
 	Pass all props to shadcn Button component
 	This wrapper adds type safety without changing behavior
+	restProps passes through all event handlers (onclick, onsubmit, etc.)
 -->
-<ShadcnButton {variant} {size} class={className} {disabled} {type} {href}>
+<ShadcnButton {variant} {size} class={className} {disabled} {type} {href} {...restProps}>
 	{@render children()}
 </ShadcnButton>

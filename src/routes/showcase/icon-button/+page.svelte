@@ -24,7 +24,7 @@ URL: /demo/test/icon-button-variants
 		Pause,
 		Image as ImageIcon
 	} from "lucide-svelte";
-	import type { IconVariant, IconState, IconItem } from "$types";
+	import type { IconItem } from "$types";
 
 	// State management for interactive tests
 	let clickCount = $state(0);
@@ -96,6 +96,30 @@ URL: /demo/test/icon-button-variants
 			label: "Ghost",
 			variant: "ghost",
 			onClick: () => handleClick("grid-ghost")
+		}
+	];
+
+	// Disabled states grid
+	const disabledIcons: IconItem[] = [
+		{
+			id: "grid-disabled-copy",
+			icon: Copy,
+			label: "Copy (Disabled)",
+			disabled: true
+		},
+		{
+			id: "grid-disabled-download",
+			icon: Download,
+			label: "Download (Disabled)",
+			variant: "primary",
+			disabled: true
+		},
+		{
+			id: "grid-disabled-trash",
+			icon: Trash,
+			label: "Delete (Disabled)",
+			variant: "destructive",
+			disabled: true
 		}
 	];
 
@@ -486,6 +510,27 @@ URL: /demo/test/icon-button-variants
 	</section>
 
 	<!-- ============================================================================
+		 Disabled States Grid
+		 ============================================================================ -->
+
+	<section class="mb-12">
+		<h2 class="mb-4 text-2xl font-semibold">Disabled States in Grid</h2>
+		<p class="mb-4 text-sm text-muted-foreground">
+			IconGrid with disabled items across different variants - items cannot be clicked or hovered
+		</p>
+
+		<div class="rounded-lg border bg-card p-6">
+			<IconGrid
+				icons={disabledIcons}
+				positioning="inline"
+				gap="0.5rem"
+				data-testid="disabled-grid"
+			/>
+		</div>
+		<code class="mt-2 block text-xs">disabled=true with multiple variants</code>
+	</section>
+
+	<!-- ============================================================================
 		 Code Block Use Case (Real World)
 		 ============================================================================ -->
 
@@ -507,7 +552,7 @@ URL: /demo/test/icon-button-variants
 				<pre class="text-sm text-zinc-100"><code
 						>function hello() {`{`}
   console.log("Hello World!");
-{`}`}</code
+}</code
 					></pre>
 			</div>
 		</div>

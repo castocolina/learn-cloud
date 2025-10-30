@@ -3305,15 +3305,12 @@
 	border-color: hsl(var(--accent) / 0.3);
 
 	/* Size with padding (p-1.5 = 0.375rem on each side = 0.75rem total) */
-	width: calc(var(--icon-size) + 0.75rem);
-	height: calc(var(--icon-size) + 0.75rem);
+	/* WCAG 2.1 AA minimum 44px enforced via max() */
+	width: max(44px, calc(var(--icon-size) + 0.75rem));
+	height: max(44px, calc(var(--icon-size) + 0.75rem));
 
 	/* Color using theme variables */
 	color: hsl(var(--foreground));
-
-	/* Touch-friendly sizing (WCAG 2.1 AA minimum) */
-	min-width: 44px;
-	min-height: 44px;
 }
 
 /* ============================================================================
@@ -3364,7 +3361,7 @@
 }
 
 .icon-grid-item--subtle:hover:not(:disabled) {
-	background: hsl(var(--accent) / 0.65);
+	background: hsl(var(--accent) / 0.75);
 }
 
 /* Primary Variant - Brand Color */

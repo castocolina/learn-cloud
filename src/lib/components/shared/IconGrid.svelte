@@ -172,7 +172,7 @@ Accessibility:
 			variant={item.variant}
 			iconState={item.state}
 			disabled={item.disabled}
-			class={item.class}
+			class="icon-grid-item {item.class || ''}"
 			ariaLabel={item.ariaLabel}
 		/>
 	{/each}

@@ -4185,13 +4185,15 @@ This is a **reusable foundation component** that provides standardized icon pres
 
 ---
 
-## TASK 8E: Dialog Component Development (Shared Component)
+## TASK 8E: Dialog Component Development (Shared Component) ✅ COMPLETED
 
 ### Agent Responsibility
 
-You are responsible for developing a reusable DialogManager component that EXTENDS the Dialog wrapper pattern from Task 6 (see `src/lib/components/shared/Dialog.svelte`) to create a global dialog system shared across Search (8M), Flipcards (8H), Diagrams (8G), and Code Blocks (8F).
+You are responsible for developing a reusable hybrid Dialog component that EXTENDS the Dialog wrapper pattern from Task 6 (see `src/lib/components/shared/Dialog.svelte`) to create a unified dialog system supporting BOTH global store mode AND local state mode, shared across Search (8M), Flipcards (8H), Diagrams (8G), and Code Blocks (8F).
 
-You must think harder about the z-index hierarchy to prevent stacking context violations and the background overlay issues. You must ensure the dialog is mobile-first (full-screen on ≤390px) and accessible (focus management, escape key handling). You must also integrate IconGrid (8D) for consistent button styling. The default close button must be in the top-right corner with proper touch target size (≥44px), cursor pointer, hover effects, and focus states.
+**Implementation Status:** COMPLETED with hybrid architecture (store + local state in single component)
+
+You must think harder about the z-index hierarchy to prevent stacking context violations and the background overlay issues. You must ensure the dialog is mobile-first (full-screen on ≤390px) and accessible (focus management, escape key handling). You must also integrate IconButton (8D) for consistent button styling. The default close button must be in the top-right corner with proper touch target size (≥44px), cursor pointer, hover effects, and focus states.
 
 ### Technical Documents to Review
 
@@ -4207,35 +4209,47 @@ From `PLAN-TODO-FEATURES.md`:
 - Task 6: shadcn-svelte UI Components completed (Dialog wrapper foundation)
 - Task 8D: IconGrid Component completed
 
-### Implementation Details
+### Implementation Details ✅ COMPLETED
 
-**Reusable Dialog Manager Component:**
+**Hybrid Dialog Component Architecture:**
 
-Create `src/lib/components/ui/dialog/DialogManager.svelte` that can be used by multiple components:
+Implemented in `src/lib/components/shared/Dialog.svelte` as a unified component supporting TWO modes:
+
+**MODE 1: Global Store (Imperative API)**
 
 ```typescript
-// Store for global dialog state
-interface DialogConfig {
-	title: string;
-	content: ComponentType;
-	props?: Record<string, unknown>;
-	size?: "sm" | "md" | "lg" | "xl" | "full";
-}
+import { openDialog } from "$lib/stores/dialog";
+import SearchResults from "./SearchResults.svelte";
 
-export function openDialog(config: DialogConfig): void {
-	dialogStore.set({ ...config, isOpen: true });
-}
+openDialog({
+	title: "Search Results",
+	content: SearchResults,
+	size: "lg",
+	props: { query: "cloud-native" }
+});
 ```
 
-**Key Requirements:**
+**MODE 2: Local State (Declarative)**
 
-- **Component**: Enhanced shadcn-svelte Dialog integration with Svelte 5 runes
-- **Z-Index Hierarchy**: Use `var(--z-modal)` from global hierarchy
-- **Mobile-First**: Full-screen modals on mobile (≤390px), centered on desktop
-- **Accessibility**: Focus management, escape key handling, screen reader support
-- **Portal Rendering**: Proper DOM portal for modal content
-- **Size Variants**: Support sm, md, lg, xl, and full-screen modes
-- **Icon Integration**: Use IconGrid (8D) for consistent button styling
+```svelte
+<script>
+	let isOpen = $state(false);
+</script>
+
+<Dialog bind:open={isOpen} size="lg" title="Local Dialog">
+	<p>Dialog content here</p>
+</Dialog>
+```
+
+**Key Features Implemented:**
+
+- ✅ **Component**: Hybrid Dialog with Svelte 5 runes ($state, $derived, $props)
+- ✅ **Z-Index Hierarchy**: Uses `var(--z-overlay)` (200) and `var(--z-modal)` (210) with !important overrides
+- ✅ **Mobile-First**: Full-screen on ≤390px, size variants (sm/md/lg/xl/full) on ≥1024px desktop
+- ✅ **Accessibility**: Focus management, escape key, ARIA labels, screen reader support
+- ✅ **Portal Rendering**: shadcn Dialog Portal for proper DOM placement
+- ✅ **Size Variants**: sm, md, lg, xl, full with 90vh max-height constraint
+- ✅ **IconButton Integration**: Variant="subtle" with ≥44px touch target, custom closeButton snippet support
 
 ### Use Cases
 
@@ -4252,13 +4266,17 @@ This dialog will be consumed by:
 - **Coverage**: Modal behavior, z-index hierarchy, accessibility, mobile display, size variants
 - **Refactor Protection**: Prevents stacking context violations and accessibility regressions
 
-### Expected Output
+### Expected Output ✅ DELIVERED
 
-- `src/lib/components/ui/dialog/DialogManager.svelte`
-- `src/lib/stores/dialog.ts` (global dialog state)
-- `src/test/components/ui/Dialog.test.ts`
-- Z-index hierarchy compliance
-- Mobile-first modal patterns
+- ✅ `src/lib/components/shared/Dialog.svelte` (hybrid component - store + local state)
+- ✅ `src/lib/stores/dialog.ts` (global dialog store with openDialog/closeDialog/isDialogOpen)
+- ✅ `src/test/components/shared/Dialog.test.ts` (28 unit tests - type safety and store functionality)
+- ✅ `src/test/e2e/dialog.spec.ts` (60+ E2E tests - user interactions, mobile/desktop, accessibility)
+- ✅ `src/routes/showcase/dialog/+page.svelte` (isolated testing environment with main layout)
+- ✅ Z-index hierarchy compliance (var(--z-overlay)=200, var(--z-modal)=210)
+- ✅ Mobile-first modal patterns (full-screen ≤390px, variants ≥1024px)
+- ✅ `src/lib/types/ui.ts` updated with DialogProps and closeButton snippet support
+- ✅ `src/styles/shadcn-overrides.css` with z-index and styling overrides
 
 ### Testing Requirements
 
@@ -4294,7 +4312,7 @@ This dialog will be consumed by:
 - **Usage**: Study modal/dialog implementation patterns, z-index hierarchy management, focus trap logic, backdrop overlay styling, and size variant handling
 - **⚠️ CRITICAL**: DO NOT modify original reference files in `src/lib/components/demo/`
 - **⚠️ CRITICAL**: DO NOT import reference components directly into production code
-- **Implementation Strategy**: Copy modal patterns (z-index positioning, focus management, escape key handling, overlay interactions) and adapt for DialogManager global state system
+- **Implementation Strategy**: Copy modal patterns (z-index positioning, focus management, escape key handling, overlay interactions) and adapt for Dialog.svelte hybrid component with global dialog store (see `src/lib/stores/dialog.ts` for openDialog/closeDialog API)
 
 ### Final Validations
 

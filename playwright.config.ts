@@ -35,13 +35,19 @@ export default defineConfig({
 	// Retry on CI only
 	retries: process.env.CI ? 2 : 0,
 
-	// Opt out of parallel tests on CI
-	workers: process.env.CI ? 1 : undefined,
+	// Stop early if many tests fail (indicates broken build)
+	maxFailures: 10,
+
+	// Default timeout per test (30 seconds)
+	timeout: 30000,
+
+	// Workers: Percentage-based for portability (works on any machine/CI)
+	workers: "75%",
 
 	// Reporter to use
 	reporter: [
 		["html", { outputFolder: "tmp/test/e2e/playwright-report", open: "never" }],
-		["list"] // Console output
+		["line"] // Console output with progress indicator [X/206]
 	],
 
 	// Output directory for test artifacts
@@ -51,6 +57,9 @@ export default defineConfig({
 	use: {
 		// Base URL to use in actions like `await page.goto('/')`
 		baseURL: "http://localhost:5173",
+
+		// Run headless (no visible browser window) for better performance
+		headless: true,
 
 		// Collect trace when retrying the failed test
 		trace: "on-first-retry",

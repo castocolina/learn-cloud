@@ -130,7 +130,7 @@
 	}
 </script>
 
-<Sidebar.Root {collapsible} class="main-sidebar {className || ''}">
+<Sidebar.Root {collapsible} class="main-sidebar {className || ''}" role="navigation">
 	<Sidebar.Content class="main-sidebar-content">
 		<!-- Navigation Header with Integrated Trigger -->
 		<Sidebar.Header class="main-sidebar-header">
@@ -259,6 +259,7 @@
 											onClick={(e) => handleUnitToggle(unit.id, e)}
 											size={16}
 											variant="ghost"
+											aria-expanded={expandedUnitId === unit.id}
 											class="sidebar-unit-toggle-button"
 										/>
 									</Sidebar.MenuButton>

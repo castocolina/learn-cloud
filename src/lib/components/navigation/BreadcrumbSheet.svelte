@@ -78,6 +78,8 @@
 		- transition-all for smooth animations
 	-->
 	<Sheet.Trigger
+		data-slot="sheet-trigger"
+		aria-label="Open breadcrumb navigation menu"
 		class="flex h-11 max-w-[min(calc(100vw-10rem),48rem)] min-w-0 flex-1 cursor-pointer items-center gap-2
 		       rounded-md px-3 py-2 text-lg font-bold text-foreground
 		       transition-all hover:scale-[1.01] hover:bg-accent

@@ -21,8 +21,7 @@ import { test, expect } from "@playwright/test";
 // Test Configuration
 // ============================================================================
 
-const BASE_URL = "http://localhost:5173";
-const TEST_PAGE = `${BASE_URL}/demo/test/icon-button-variants`;
+const TEST_PAGE = "/showcase/icon-button";
 
 // Helper to parse RGB/RGBA strings to array
 function parseColor(colorString: string): number[] | null {
@@ -153,6 +152,8 @@ test.describe("IconButton Hover States", () => {
 
 		const bgBefore = await button.evaluate((el) => window.getComputedStyle(el).backgroundColor);
 		await button.hover();
+		// Wait for CSS hover state to be applied
+		await page.waitForTimeout(100);
 		const bgAfter = await button.evaluate((el) => window.getComputedStyle(el).backgroundColor);
 
 		// Background should change on hover
@@ -164,6 +165,8 @@ test.describe("IconButton Hover States", () => {
 
 		const bgBefore = await button.evaluate((el) => window.getComputedStyle(el).backgroundColor);
 		await button.hover();
+		// Wait for CSS hover state to be applied
+		await page.waitForTimeout(100);
 		const bgAfter = await button.evaluate((el) => window.getComputedStyle(el).backgroundColor);
 
 		// Ghost should be transparent before hover
