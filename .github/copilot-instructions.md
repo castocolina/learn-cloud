@@ -4,29 +4,44 @@
 
 This file provides GitHub Copilot with project-specific instructions while referencing the complete documentation.
 
+## Core Philosophy
+
+**Two Rowers in the Same Boat:** User and Copilot are equal partners rowing toward a shared destination. Distinguish between inquiry (questions) and instructions (imperatives). See [CLAUDE.md](../CLAUDE.md) for complete collaborative intelligence model.
+
 ## Quick Reference for Copilot
 
 For all project rules, technical specifications, and coding standards, refer to **[CLAUDE.md](../CLAUDE.md)**.
 
-## Key Standards for Code Generation
+## Tech Stack (Mandatory Versions)
 
-- **SvelteKit + TypeScript**: All components use Svelte 5 runes syntax with TypeScript interfaces
-- **Mobile-First Design**: Always prioritize mobile experience (≤390px) before desktop
-- **shadcn-svelte Priority**: Use component library before building custom components
-- **Tailwind CSS v4**: Centralized CSS architecture in `src/app.css` with `@layer components`
-- **Data-Driven**: Consume TypeScript/JSON data from `$data/` structure (alias for `src/data/`)
-- **Three-Tiered Validation**: Performance-optimized validation for efficient development:
-  - **Tier 1 (~5-15s)**: `make check-wip` or `pnpm run check:wip` (modified/untracked files only)
-  - **Tier 2 (~30-60s)**: `pnpm run test` (unit tests and validation tests)
-  - **Tier 3 (~1-3m)**: `pnpm run format` + `pnpm run lint` + `pnpm run check` (complete project formatting, linting, and TypeScript validation)
+- **Svelte 5** - MUST use runes syntax (`$state`, `$derived`, `$props`)
+- **SvelteKit** - Latest stable, file-based routing
+- **TypeScript** - Strict mode mandatory
+- **Tailwind CSS v4** - CSS-based configuration, modular architecture
+- **shadcn-svelte** - Check FIRST before building custom components
+- **Vitest** - Unit tests
+- **Playwright** - E2E tests (MANDATORY for visual/critical changes)
 
-## Critical Rules
+## Quality Standards
 
-- All conversational interactions **must be in English**
-- Follow Mermaid diagram syntax rules (double quotes for all text)
-- Use TypeScript interfaces for all component props
-- Never create vanilla HTML/CSS/JS files for new features
-- Always test mobile experience before desktop implementation
+**Definition:** Project quality = `eslint.config.js` compliance + 100% test pass rate
+
+**Validation (3-Tier Strategy):**
+
+- **Tier 1 (5-15s):** `make check-wip` - modified files only
+- **Tier 2 (30-90s):** `pnpm run test` - unit tests
+- **Tier 3 (1-3m):** `pnpm run format` + `pnpm run lint` + `pnpm run check`
+
+**E2E Testing:** MANDATORY for visual changes, layout modifications, navigation, critical flows
+
+## Key Standards
+
+- **Mobile-First**: Test mobile (≤390px) BEFORE desktop
+- **TypeScript**: Use interfaces for all component props, centralized imports from `$types`
+- **Data-Driven**: Consume TypeScript data from `$data/` (alias for `src/data/`)
+- **Zero Hardcoded Values**: All config in `src/config/settings.ts`
+- **Library Vetting**: Check native framework solutions FIRST, verify activity (≤6 months), 10k+ weekly downloads
+- **English Only**: All interactions and content MUST be in English
 
 ## Project Structure
 

@@ -159,7 +159,6 @@ You must indicate in a structured TOML format using multiline syntax:
   Choose the most appropriate scope based on the nature of the problem.
 - short_description = A brief description of the problem (50-100 characters)
 - improved_problem = Rewrite the user's problem description with better clarity, grammar, and technical precision
-- questions = list of questions you need answered to complete the framework (if any)
 - observations = relevant notes, considerations, or insights about the problem analysis or agent interactions (if any)
 - draft_prompt = A complete, strategically optimized prompt for the selected agent using TOML multiline format (\"\"\")
 
@@ -210,6 +209,10 @@ You must indicate in a structured TOML format using multiline syntax:
 
   \"\"\"
 
+- questions = [ # Numbered list of clarifying questions to ask the user to refine requirements
+  "1. Confirm numbering format: Arabic numerals (1, 2, 3) or another style?",
+  "2. Should the numbered list reset per unit or continue across the entire output?"
+  ]
 - complete = true/false indicating if the prompt is complete or if questions need to be answered
 
 Wrap your TOML response between `toml and ` markers. Do not include any other text outside these markers.

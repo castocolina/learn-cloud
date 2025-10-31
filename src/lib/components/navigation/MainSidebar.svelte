@@ -44,7 +44,7 @@
 	// Get sidebar context to detect collapsed state
 	const sidebar = useSidebar();
 
-	// Derive current ID from navigation store for active highlighting
+	// Subscribe to writable store with $ prefix
 	const currentId = $derived($navigationStore.currentId);
 
 	// Track expanded unit (accordion behavior - only one unit open at a time)

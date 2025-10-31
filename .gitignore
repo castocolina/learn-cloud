@@ -66,4 +66,10 @@ tmp/pycache/
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
+# Content scaffolds for E2E testing (TECHNICAL DEBT - TASK 9)
+# Only unit01 chapters 00-01 are versioned for CI/CD until content migration complete
+# TODO: Remove these exceptions after TASK 9 (Content Migration) is finished
+# Reference: PLAN-TODO-FEATURES.md TASK 9
+!src/data/book/unit01/01_00_*.ts
+!src/data/book/unit01/01_01_*.ts
 src/data/book/

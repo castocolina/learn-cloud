@@ -87,30 +87,6 @@ export type RichTextNode = TextNode | LinkNode | HeadingNode;
  */
 export type RichParagraph = RichTextNode[];
 
-// ============================================================================
-// DEPRECATED - Legacy Types (for backward compatibility)
-// ============================================================================
-
-/**
- * @deprecated Use RichTextNode union instead
- * Legacy interface kept for backward compatibility during migration
- * Will be removed in future version
- */
-export interface RichTextFragment {
-	text: string;
-	bold?: boolean;
-	italic?: boolean;
-	strikethrough?: boolean;
-	code?: boolean;
-	color?: string;
-	highlight?: string;
-	headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
-	href?: string;
-	target?: "_blank" | "_self" | "_parent" | "_top";
-	className?: string;
-	ariaLabel?: string;
-}
-
 /**
  * Rich text section for larger content blocks
  *

@@ -4,6 +4,10 @@
 
 This file serves as a clear entry point for Gemini-based agents while avoiding documentation duplication.
 
+## Core Philosophy
+
+**Two Rowers in the Same Boat:** User and Agent are equal partners rowing toward a shared destination. Distinguish between inquiry (questions) and instructions (imperatives). See [CLAUDE.md](CLAUDE.md) for complete collaborative intelligence model.
+
 ## Quick Reference
 
 For complete agent implementation guidelines, project rules, and technical specifications, please refer to **[CLAUDE.md](CLAUDE.md)**.

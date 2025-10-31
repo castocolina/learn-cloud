@@ -298,37 +298,29 @@ export function navigationSwipe(node: HTMLElement, options: Partial<SwipeOptions
 	// Lazy load navigation functions
 	async function loadNavigationFunctions() {
 		try {
-			const navModule = await import("$lib/stores/navigation.js");
+			const navModule = await import("$lib/stores/demo-navigation.svelte.js");
 			const { navigationStore } = navModule;
 
-			// Get current navigation state
-			let currentNav: any = null;
-			const unsubscribe = navigationStore.subscribe((nav) => {
-				currentNav = nav;
-			});
-
+			// Direct access to rune-based store (no subscription needed)
 			navigateToPrevious = () => {
-				if (currentNav?.previousLessonUrl) {
-					if (currentNav.previousLessonUrl.startsWith("#")) {
-						window.location.hash = currentNav.previousLessonUrl.slice(1);
+				if (navigationStore.previousLessonUrl) {
+					if (navigationStore.previousLessonUrl.startsWith("#")) {
+						window.location.hash = navigationStore.previousLessonUrl.slice(1);
 					} else {
-						goto(currentNav.previousLessonUrl);
+						goto(navigationStore.previousLessonUrl);
 					}
 				}
 			};
 
 			navigateToNext = () => {
-				if (currentNav?.nextLessonUrl) {
-					if (currentNav.nextLessonUrl.startsWith("#")) {
-						window.location.hash = currentNav.nextLessonUrl.slice(1);
+				if (navigationStore.nextLessonUrl) {
+					if (navigationStore.nextLessonUrl.startsWith("#")) {
+						window.location.hash = navigationStore.nextLessonUrl.slice(1);
 					} else {
-						goto(currentNav.nextLessonUrl);
+						goto(navigationStore.nextLessonUrl);
 					}
 				}
 			};
-
-			// Clean up subscription after getting the functions
-			setTimeout(unsubscribe, 100);
 		} catch (error) {
 			console.warn("Failed to load navigation functions:", error);
 		}

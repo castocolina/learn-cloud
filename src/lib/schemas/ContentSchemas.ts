@@ -92,27 +92,6 @@ export const RichParagraphSchema = z
 	.array(RichTextNodeSchema)
 	.min(1, "Paragraph must contain at least one node");
 
-// ============================================================================
-// DEPRECATED - Legacy Schemas (for backward compatibility)
-// ============================================================================
-
-/**
- * @deprecated Use RichTextNodeSchema instead
- * Legacy schema kept for backward compatibility during migration
- */
-export const RichTextFragmentSchema = z.object({
-	text: z.string().min(1, "Text content cannot be empty"),
-	bold: z.boolean().optional(),
-	italic: z.boolean().optional(),
-	code: z.boolean().optional(),
-	link: z
-		.object({
-			url: z.string().url("Invalid URL format"),
-			title: z.string().optional()
-		})
-		.optional()
-});
-
 export const RichTextSectionSchema = z.object({
 	title: z.string().min(1, "Section title is required"),
 	content: z.array(RichParagraphSchema).min(1, "Section must have content")
@@ -183,7 +162,7 @@ export const CalloutBlockSchema = z.object({
 
 export const ImageBlockSchema = z.object({
 	type: z.literal("image"),
-	src: z.string().url("Invalid image URL"),
+	src: z.url({ message: "Invalid image URL" }),
 	alt: z.string().min(1, "Alt text is required for accessibility"),
 	title: z.string().optional(),
 	caption: z.string().optional(),
@@ -193,7 +172,7 @@ export const ImageBlockSchema = z.object({
 
 export const VideoBlockSchema = z.object({
 	type: z.literal("video"),
-	src: z.string().url("Invalid video URL"),
+	src: z.url({ message: "Invalid video URL" }),
 	title: z.string().min(1, "Video title is required"),
 	description: z.string().optional(),
 	duration: z.number().positive().optional(),
@@ -433,7 +412,7 @@ export const ProjectContentSchema = BaseContentSchema.extend({
 			z.object({
 				type: z.enum(["link", "file", "tool", "documentation"]),
 				title: z.string().min(1, "Resource title is required"),
-				url: z.string().url().optional(),
+				url: z.url().optional(),
 				description: z.string().optional()
 			})
 		)
@@ -487,7 +466,7 @@ export const MenuUnitSchema = z.object({
 export const MenuStructureSchema = z.object({
 	units: z.array(MenuUnitSchema).min(1, "Menu must have at least one unit"),
 	metadata: z.object({
-		generatedAt: z.string().datetime(),
+		generatedAt: z.iso.datetime(),
 		totalUnits: z.number().int().positive(),
 		totalChapters: z.number().int().positive()
 	})
@@ -593,8 +572,6 @@ export const CONTENT_SCHEMAS = {
 	RichParagraph: RichParagraphSchema,
 	RichTextSection: RichTextSectionSchema,
 	RichTextDocument: RichTextDocumentSchema,
-	// Deprecated
-	RichTextFragment: RichTextFragmentSchema,
 	// Other base schemas
 	ContentMetadata: ContentMetadataSchema,
 	BaseContent: BaseContentSchema,

@@ -542,9 +542,12 @@ graph TD
 
 				const result = await validator.validate("/non/existent/path");
 
-				expect(result).toBe(false);
-				expect(console.error).toHaveBeenCalledWith(
-					expect.stringContaining('Target path "/non/existent/path" does not exist')
+				// New behavior: validator treats non-existent paths as skippable (returns true with INFO)
+				expect(result).toBe(true);
+				expect(console.log).toHaveBeenCalledWith(
+					expect.stringContaining(
+						'Target path "/non/existent/path" does not exist - skipping validation'
+					)
 				);
 			});
 
@@ -834,16 +837,19 @@ describe("Mermaid Validator Integration with ValidationService", () => {
 		// Test that existing scripts continue to work with the refactored validator
 		// This ensures the ValidationService integration doesn't break existing functionality
 
-		const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+		const consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 		mockedExistsSync.mockReturnValue(false);
 
 		const result = await validator.validate("/non/existent/path");
 
-		expect(result).toBe(false);
-		expect(consoleErrorSpy).toHaveBeenCalledWith(
-			expect.stringContaining('Target path "/non/existent/path" does not exist')
+		// New behavior: validator treats non-existent paths as skippable (returns true with INFO)
+		expect(result).toBe(true);
+		expect(console.log).toHaveBeenCalledWith(
+			expect.stringContaining(
+				'Target path "/non/existent/path" does not exist - skipping validation'
+			)
 		);
 
-		consoleErrorSpy.mockRestore();
+		consoleLogSpy.mockRestore();
 	});
 });

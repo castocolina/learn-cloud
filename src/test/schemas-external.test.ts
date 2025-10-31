@@ -99,7 +99,6 @@ describe("External Schema Validation with AJV", () => {
 
 		const expectedSchemas = [
 			"ContentMetadata",
-			"RichTextFragment",
 			"LessonContent",
 			"QuizContent",
 			"StudyGuideContent",

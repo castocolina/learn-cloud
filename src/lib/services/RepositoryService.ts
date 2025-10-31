@@ -349,7 +349,7 @@ export class RepositoryService {
 	 * Start a new transaction for atomic operations
 	 */
 	startTransaction(): string {
-		const transactionId = `tx_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+		const transactionId = `tx_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
 
 		const transaction: RepositoryTransaction = {
 			id: transactionId,

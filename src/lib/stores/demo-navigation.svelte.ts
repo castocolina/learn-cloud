@@ -1,5 +1,5 @@
 /**
- * Navigation Store - Global Lesson Navigation System
+ * Navigation Store - Global Lesson Navigation System (Svelte 5 Runes)
  *
  * This store acts as the central "GPS" for the learning platform, providing:
  * - Flattened, ordered list of all lessons across units
@@ -8,14 +8,19 @@
  * - Progress completion percentage across all content
  *
  * Architecture:
- * - Reactive to SvelteKit's $page store for URL changes
+ * - Reactive to SvelteKit's page state ($app/state) for URL changes
+ * - Uses Svelte 5 runes ($derived.by) for reactive computations
  * - Integrates with demoSidebarMenu data structure
  * - Provides seamless navigation between any two lessons
  * - Updates sidebar active state automatically via URL changes
+ *
+ * Migration from stores → runes:
+ * - Changed from derived(page, ...) to $derived.by(() => ...)
+ * - Import from '$app/state' instead of '$app/stores'
+ * - Direct property access instead of store subscription ($)
  */
 
-import { derived, type Readable } from "svelte/store";
-import { page } from "$app/stores";
+import { page } from "$app/state";
 import { browser } from "$app/environment";
 import {
 	demoSidebarMenu,
@@ -157,55 +162,62 @@ function createLessonUrl(lesson: FlattenedLesson): string {
 	return `#/demo/unit/${lesson.unitId}/lesson/${lesson.id}`;
 }
 
+// Precompute flattened lessons once (static data)
+const flattenedLessons = createFlattenedLessons();
+
 /**
- * Create the navigation store
+ * Navigation store using Svelte 5 runes
+ * Reactive state that updates when page.url changes
+ *
+ * Usage in components:
+ * ```svelte
+ * <script>
+ * import { navigationStore } from '$lib/stores/navigation.svelte';
+ * </script>
+ *
+ * {navigationStore.currentLesson.title}
+ * ```
  */
-function createNavigationStore(): Readable<NavigationState> {
-	const flattenedLessons = createFlattenedLessons();
+export const navigationStore = $derived.by((): NavigationState => {
+	const { unitId: _unitId, lessonId } = parseCurrentUrl(page.url.pathname, page.url.hash);
+	const currentLessonIndex = findLessonIndex(flattenedLessons, lessonId);
 
-	return derived(page, ($page) => {
-		const { unitId: _unitId, lessonId } = parseCurrentUrl($page.url.pathname, $page.url.hash);
-		const currentLessonIndex = findLessonIndex(flattenedLessons, lessonId);
+	const currentLesson = currentLessonIndex !== null ? flattenedLessons[currentLessonIndex] : null;
 
-		const currentLesson = currentLessonIndex !== null ? flattenedLessons[currentLessonIndex] : null;
+	// Calculate previous and next lesson URLs
+	let previousLessonUrl: string | null = null;
+	let nextLessonUrl: string | null = null;
 
-		// Calculate previous and next lesson URLs
-		let previousLessonUrl: string | null = null;
-		let nextLessonUrl: string | null = null;
-
-		if (currentLessonIndex !== null) {
-			// Previous lesson
-			if (currentLessonIndex > 0) {
-				const previousLesson = flattenedLessons[currentLessonIndex - 1];
-				previousLessonUrl = createLessonUrl(previousLesson);
-			}
-
-			// Next lesson
-			if (currentLessonIndex < flattenedLessons.length - 1) {
-				const nextLesson = flattenedLessons[currentLessonIndex + 1];
-				nextLessonUrl = createLessonUrl(nextLesson);
-			}
+	if (currentLessonIndex !== null) {
+		// Previous lesson
+		if (currentLessonIndex > 0) {
+			const previousLesson = flattenedLessons[currentLessonIndex - 1];
+			previousLessonUrl = createLessonUrl(previousLesson);
 		}
 
-		// Calculate completion percentage (simplified - could integrate with progress store later)
-		const completionPercentage =
-			currentLessonIndex !== null
-				? Math.round(((currentLessonIndex + 1) / flattenedLessons.length) * 100)
-				: 0;
+		// Next lesson
+		if (currentLessonIndex < flattenedLessons.length - 1) {
+			const nextLesson = flattenedLessons[currentLessonIndex + 1];
+			nextLessonUrl = createLessonUrl(nextLesson);
+		}
+	}
 
-		return {
-			flattenedLessons,
-			currentLessonIndex,
-			previousLessonUrl,
-			nextLessonUrl,
-			currentLesson,
-			totalLessons: flattenedLessons.length,
-			completionPercentage
-		};
-	});
-}
+	// Calculate completion percentage
+	const completionPercentage =
+		currentLessonIndex !== null
+			? Math.round(((currentLessonIndex + 1) / flattenedLessons.length) * 100)
+			: 0;
 
-export const navigationStore = createNavigationStore();
+	return {
+		flattenedLessons,
+		currentLessonIndex,
+		previousLessonUrl,
+		nextLessonUrl,
+		currentLesson,
+		totalLessons: flattenedLessons.length,
+		completionPercentage
+	};
+});
 
 /**
  * Navigation utility functions
@@ -217,7 +229,6 @@ export const navigationStore = createNavigationStore();
 export function navigateToLesson(lessonId: string): void {
 	if (!browser) return;
 
-	const flattenedLessons = createFlattenedLessons();
 	const lesson = flattenedLessons.find((l) => l.id === lessonId);
 
 	if (lesson) {
@@ -239,7 +250,6 @@ export function navigateToLesson(lessonId: string): void {
 export function navigateToPrevious(currentUrl: string): void {
 	if (!browser) return;
 
-	const flattenedLessons = createFlattenedLessons();
 	const currentLesson = flattenedLessons.find((lesson) => {
 		const lessonUrl = createLessonUrl(lesson);
 		return lessonUrl === currentUrl || lessonUrl.slice(1) === currentUrl;
@@ -263,7 +273,6 @@ export function navigateToPrevious(currentUrl: string): void {
 export function navigateToNext(currentUrl: string): void {
 	if (!browser) return;
 
-	const flattenedLessons = createFlattenedLessons();
 	const currentLesson = flattenedLessons.find((lesson) => {
 		const lessonUrl = createLessonUrl(lesson);
 		return lessonUrl === currentUrl || lessonUrl.slice(1) === currentUrl;
@@ -285,7 +294,6 @@ export function navigateToNext(currentUrl: string): void {
  * Get lesson by ID
  */
 export function getLessonById(lessonId: string): FlattenedLesson | null {
-	const flattenedLessons = createFlattenedLessons();
 	return flattenedLessons.find((l) => l.id === lessonId) || null;
 }
 
@@ -293,7 +301,6 @@ export function getLessonById(lessonId: string): FlattenedLesson | null {
  * Get lessons by unit ID
  */
 export function getLessonsByUnitId(unitId: string): FlattenedLesson[] {
-	const flattenedLessons = createFlattenedLessons();
 	return flattenedLessons.filter((l) => l.unitId === unitId);
 }
 
@@ -306,7 +313,6 @@ export function getNavigationContext(lessonId: string): {
 	next: FlattenedLesson | null;
 	progress: { current: number; total: number; percentage: number };
 } {
-	const flattenedLessons = createFlattenedLessons();
 	const currentIndex = flattenedLessons.findIndex((l) => l.id === lessonId);
 
 	if (currentIndex === -1) {

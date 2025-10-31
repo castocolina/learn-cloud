@@ -24,10 +24,49 @@ const generateESLintPaths = (aliases) => {
 
 const dynamicPaths = generateESLintPaths(svelteConfig.kit.alias);
 
+// Custom ESLint rule: Prefer $app/state over $app/stores (Svelte 5 runes)
+const preferAppState = {
+	meta: {
+		type: "suggestion",
+		docs: {
+			description: "Prefer $app/state over deprecated $app/stores for Svelte 5 runes",
+			category: "Best Practices"
+		},
+		messages: {
+			preferAppState:
+				'Use `page` from "$app/state" instead of "$app/stores" (Svelte 5 runes). Migration: Replace `derived(page, ($page) => ...)` with `$derived.by(() => { const p = page; ... })`. Docs: https://svelte.dev/docs/kit/$app-state'
+		}
+	},
+	create(context) {
+		return {
+			ImportDeclaration(node) {
+				// Check if importing from $app/stores
+				if (node.source.value === "$app/stores") {
+					// Check if importing 'page' specifically
+					const pageImport = node.specifiers.find(
+						(spec) => spec.type === "ImportSpecifier" && spec.imported.name === "page"
+					);
+
+					if (pageImport) {
+						context.report({
+							node: pageImport,
+							messageId: "preferAppState"
+						});
+					}
+				}
+			}
+		};
+	}
+};
+
 export default defineConfig(
 	includeIgnoreFile(gitignorePath),
 	globalIgnores(
 		[
+			"node_modules/**", // Dependencies (never lint third-party code)
+			".svelte-kit/**", // SvelteKit generated files
+			"build/**", // Build output
+			"dist/**", // Distribution output
 			"src/book/**", // Legacy directory
 			"src/data/demo/**", // Demo content (will be removed)
 			"src/lib/components/demo/**", // Demo components (will be removed)
@@ -37,14 +76,16 @@ export default defineConfig(
 			"src/lib/components/search/SearchModal.svelte", // Technical debt - TASK 8D
 			"src/lib/components/search/SearchFilters.svelte", // Technical debt - TASK 8D
 			"src/lib/components/search/SearchResults.svelte", // Technical debt - TASK 8D
-			"src/lib/components/ui/button/button.svelte", // shadcn-svelte component (external)
+			"src/lib/components/ui/**", // shadcn-svelte components (external)
 			"src/lib/actions/swipe.ts", // Technical debt - TASK 8X
+			"src/lib/stores/demo-navigation.svelte.ts", // Legacy demo store (not used in production)
+			"src/lib/stores/demo-unified-navigation.svelte.ts", // Legacy demo store (not used in production)
 			"**/*.md", // Markdown files (handled by Prettier only)
 			"package.json", // Configuration file (handled by Prettier only)
 			"components.json", // Configuration file (handled by Prettier only)
 			".github/**/*.md" // GitHub configuration markdown files
 		],
-		"Ignore legacy directories, demo content (temporary), problematic components (technical debt), and files handled by Prettier only"
+		"Ignore generated files, dependencies, legacy directories, demo content (temporary), problematic components (technical debt), and files handled by Prettier only"
 	),
 	js.configs.recommended,
 	...tsConfigs.recommended,
@@ -54,6 +95,15 @@ export default defineConfig(
 	prettier,
 	...svelte.configs.prettier,
 	{
+		// CUSTOM RULE: Prefer $app/state over $app/stores (Svelte 5 migration)
+		// This rule educates developers about the modern pattern
+		plugins: {
+			"custom-rules": {
+				rules: {
+					"prefer-app-state": preferAppState
+				}
+			}
+		},
 		languageOptions: {
 			globals: { ...globals.browser, ...globals.node }
 		},
@@ -74,6 +124,8 @@ export default defineConfig(
 			}
 		},
 		rules: {
+			// Custom rule: Prefer $app/state over $app/stores
+			"custom-rules/prefer-app-state": "error",
 			// typescript-eslint strongly recommend that you do not use the no-undef lint rule on TypeScript projects.
 			// see: https://typescript-eslint.io/troubleshooting/faqs/eslint/#i-get-errors-from-the-no-undef-rule-about-global-variables-not-being-defined-even-though-there-are-no-typescript-errors
 			"no-undef": "off",
@@ -110,17 +162,60 @@ export default defineConfig(
 		}
 	},
 	{
-		files: ["**/*.svelte", "**/*.svelte.ts", "**/*.svelte.js"],
+		// PERFORMANCE OPTIMIZATION: Enable projectService ONLY for deprecated API checking
+		// This is the only rule that requires type information
+		// Excludes: shadcn-svelte components, demo content, test files
+		files: [
+			"src/**/*.{ts,tsx}",
+			// Exclude patterns
+			"!src/lib/components/demo/**/*",
+			"!src/routes/demo/**/*",
+			"!src/data/demo/**/*",
+			"!src/test/**/*"
+		],
 		languageOptions: {
 			parserOptions: {
-				projectService: true,
+				projectService: true // Enable type-aware parsing ONLY here
+			}
+		},
+		rules: {
+			// Detect usage of deprecated APIs to maintain code quality
+			// Note: This is slow (requires type-checking), limited to src/ for performance
+			"@typescript-eslint/no-deprecated": "warn"
+		}
+	},
+	{
+		// PERFORMANCE OPTIMIZATION: Type-aware linting for Svelte files
+		// Same deprecated API checking as TypeScript files
+		files: [
+			"src/**/*.svelte",
+			// Exclude patterns
+			"!src/lib/components/demo/**/*.svelte",
+			"!src/routes/demo/**/*.svelte"
+		],
+		languageOptions: {
+			parserOptions: {
+				projectService: true, // Enable type-aware parsing ONLY here
 				extraFileExtensions: [".svelte"],
 				parser: tsParser,
 				svelteConfig
 			}
+		},
+		rules: {
+			// Detect usage of deprecated APIs in Svelte components
+			"@typescript-eslint/no-deprecated": "warn"
 		}
 	},
 	{
+		// ExternalLink component handles both external and internal links
+		// External links should NOT use resolve(), so disable this rule
+		files: ["src/lib/components/renderers/ExternalLink.svelte"],
+		rules: {
+			"svelte/no-navigation-without-resolve": "off"
+		}
+	},
+	{
+		// Store files use $app/stores for now (inline suppressions added for specific imports)
 		files: ["src/lib/stores/**/*.ts"],
 		rules: {
 			"import/extensions": "off" // Disable for SvelteKit store files that use $app imports
@@ -130,9 +225,24 @@ export default defineConfig(
 		// Reduce severity for files importing from node_modules/svelte
 		// Svelte 5 in node_modules causes parsing errors in import/namespace
 		// Convert to warning until eslint-plugin-import fully supports Svelte 5
+		// Also allow deprecated APIs in shadcn-svelte components (external library)
 		files: ["src/lib/components/ui/**/*.svelte.ts", "src/lib/components/ui/**/*.ts"],
 		rules: {
-			"import/namespace": "warn" // Parse errors from Svelte 5 internal files
+			"import/namespace": "warn", // Parse errors from Svelte 5 internal files
+			"@typescript-eslint/no-deprecated": "off" // shadcn components may use deprecated Svelte 5 APIs
+		}
+	},
+	{
+		// Config files don't need type-aware linting (not included in tsconfig project)
+		// This block must come LAST to override projectService from previous blocks
+		files: ["*.config.{js,ts}", "*.config.*.{js,ts}", "vitest.config.ts", "playwright.config.ts"],
+		languageOptions: {
+			parserOptions: {
+				projectService: false // Disable projectService for config files
+			}
+		},
+		rules: {
+			"@typescript-eslint/no-deprecated": "off" // Type information not available for config files
 		}
 	}
 );

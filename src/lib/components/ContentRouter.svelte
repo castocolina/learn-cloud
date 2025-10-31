@@ -56,7 +56,7 @@
 	let isLoading = $state(false);
 	let error = $state<string | null>(null);
 
-	// Derived from store
+	// Subscribe to writable store with $ prefix
 	const navState = $derived($navigationStore);
 	const currentEntry = $derived(
 		navState.currentId ? flatNavigation.sequenceMap.get(navState.currentId) : null

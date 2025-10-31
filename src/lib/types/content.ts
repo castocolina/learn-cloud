@@ -19,7 +19,6 @@ import type {
 } from "./types.js";
 import type {
 	RichParagraph,
-	RichTextFragment,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	RichTextSection,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -149,11 +148,10 @@ export type ContentBlock =
 
 /**
  * Rich text paragraph block
- * Supports both legacy RichTextFragment[] and new RichParagraph formats
  */
 export interface ParagraphBlock {
 	type: "paragraph";
-	content: RichTextFragment[] | RichParagraph;
+	content: RichParagraph;
 	id?: string;
 	className?: string;
 }
@@ -197,13 +195,12 @@ export interface DiagramBlock {
 
 /**
  * Callout block for highlighted information
- * Supports both legacy RichTextFragment[] and new RichParagraph formats
  */
 export interface CalloutBlock {
 	type: "callout";
 	calloutType: "info" | "warning" | "danger" | "success" | "tip";
 	title?: string;
-	content: RichTextFragment[] | RichParagraph;
+	content: RichParagraph;
 	id?: string;
 }
 

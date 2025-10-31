@@ -24,7 +24,7 @@ Architecture:
 <script lang="ts">
 	import { Button } from "$ui/button";
 	import { ChevronLeft, ChevronRight } from "lucide-svelte";
-	import { unifiedNavigation } from "$lib/stores/unified-navigation.js";
+	import { unifiedNavigation } from "$lib/stores/demo-unified-navigation.svelte.js";
 	import { browser } from "$app/environment";
 
 	// Subscribe to unified navigation store for reactive state
@@ -36,7 +36,7 @@ Architecture:
 	/**
 	 * Get current navigation state - no filtering needed as unified navigation handles this
 	 */
-	const navigationState = $derived(() => $navigation);
+	const navigationState = $derived(() => navigation);
 
 	/**
 	 * Navigate to previous lesson using unified navigation

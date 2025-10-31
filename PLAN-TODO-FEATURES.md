@@ -55,7 +55,9 @@ graph TD
     T8N --> T8X["TASK 8X: Component Integration & Scaffold Verification"]
     T8X --> T9["TASK 9: Content Migration"]
     T9 --> T10["TASK 10: Quality Assurance"]
-    T10 --> T11["TASK 11: Final Integration"]
+    T10 --> T10A["TASK 10A: Code Audit"]
+    T10A --> T10B["TASK 10B: CSS Linting Exploration"]
+    T10B --> T11["TASK 11: Final Integration"]
 
     T11 --> E1["EXISTING 1: Unit 1 Python Lessons"]
     E1 --> E2["EXISTING 2: Unit 1 Python Study Guides"]
@@ -124,6 +126,8 @@ graph TD
     style T8X fill:#1e88e5,stroke:#0d47a1,stroke-width:3px,color:#ffffff
     style T9 fill:#1565c0,stroke:#0d47a1,stroke-width:2px,color:#ffffff
     style T10 fill:#1976d2,stroke:#0d47a1,stroke-width:2px,color:#ffffff
+    style T10A fill:#2196f3,stroke:#0d47a1,stroke-width:2px,color:#ffffff
+    style T10B fill:#2196f3,stroke:#0d47a1,stroke-width:2px,color:#ffffff,stroke-dasharray:5 5
     style T11 fill:#0d47a1,stroke:#01579b,stroke-width:3px,color:#ffffff
 
     %% Existing Content - Green tones
@@ -5804,6 +5808,371 @@ You are responsible for implementing comprehensive testing strategy, validation 
 - Testing best practices
 
 ---
+
+## TASK 10A: Comprehensive Code Audit and Cleanup
+
+### Agent Responsibility
+
+Conduct a comprehensive code audit to eliminate technical debt. Research automated dead code detection tools FIRST, then review ESLint suppressions, remove unused code, and document all findings. Goal: achieve `eslint.config.js` compliance + zero unused code per CLAUDE.md quality standards.
+
+### Technical Documents to Review
+
+- `CLAUDE.md` - Quality standards and library vetting process
+- `eslint.config.js` - Current linting rules
+- `SVELTEKIT-GUIDE.md` - Code quality standards
+- `package.json` and `Makefile` - Available scripts
+
+### Prerequisites
+
+- TASK 10: Quality Assurance & Validation Pipeline completed
+- All prior development tasks completed
+
+### Implementation Workflow
+
+#### Phase 1: Automated Dead Code Detection Research
+
+**Objective**: Identify and recommend automated tooling for dead code detection
+
+**Tool Evaluation Criteria** (per CLAUDE.md Library Vetting):
+
+- Check native TypeScript/ESLint solutions FIRST
+- Last publish ≤6 months ago, 10k+ weekly downloads
+- Verify peer dependency compatibility (ESLint v9+, TypeScript 5.7+)
+- Use WebSearch to research alternatives
+
+**Candidate Tools** (research and evaluate):
+
+- `ts-prune` - Find unused exports in TypeScript projects
+- `unimported` - Find unused files and dependencies
+- `depcheck` - Check unused dependencies
+- `eslint-plugin-unused-imports` - ESLint integration
+- TypeScript compiler flags: `--noUnusedLocals`, `--noUnusedParameters`
+
+**Deliverables**:
+
+1. Test 2-3 top candidates in project environment
+2. Compare accuracy, performance, and integration complexity
+3. Recommend best tool(s) with installation instructions
+4. Propose `package.json` script and Makefile target: `make audit-deadcode`
+
+#### Phase 2: ESLint Suppression Audit
+
+**Objective**: Review all `eslint-disable` comments (~23 instances in `src/**/*.ts` and `src/**/*.svelte`)
+
+**Process**:
+
+1. Identify all suppressions: `grep -rn "eslint-disable" src/ --include="*.ts" --include="*.svelte"`
+2. For each suppression, decide:
+   - **Fix**: Resolve underlying issue and remove suppression
+   - **Justify**: Add inline comment explaining valid reason
+   - **Configure**: Move to `eslint.config.js` if project-wide exception
+3. Document in `tmp/reports/eslint-suppression-audit.md`:
+
+```markdown
+| File | Line | Rule | Action Taken | Justification |
+| ---- | ---- | ---- | ------------ | ------------- |
+```
+
+#### Phase 3: Dead Code Removal
+
+**Objective**: Use automated tools from Phase 1 + manual verification
+
+**Automated Detection**:
+
+- Run recommended tool(s) from Phase 1
+- Generate initial list of unused code
+
+**Manual Verification** (edge cases automated tools may miss):
+
+- Unused components: `.svelte` files not imported anywhere
+- Unused scripts: `src/bash/`, `src/python/` not referenced in `Makefile` or `package.json`
+- Unused configuration: Orphaned config files in project root
+- Unused Makefile targets: Not called by any automation
+
+**Actions**:
+
+- Remove verified unused code
+- Document valid retention reasons (e.g., future use, external references)
+- Verify removal: `pnpm run test` (must pass 100%)
+
+#### Phase 4: Comprehensive Audit Report
+
+**Report Location**: `tmp/reports/code-audit-report.md`
+
+**Required Sections**:
+
+##### Executive Summary
+
+- ESLint suppressions: Total reviewed, fixed, justified, remaining
+- Dead code: Files/functions identified, removed, retained (with justification)
+- Scripts: Bash/Python/Makefile audited, unused removed
+- Recommended tool: Name, installation, integration instructions
+
+##### Detailed Findings
+
+- Section 1: ESLint Suppression Audit (table with all actions)
+- Section 2: Dead Code Removal (categorized by type: imports, functions, components, scripts)
+- Section 3: Automated Tool Evaluation (comparison table, pros/cons)
+- Section 4: Quality Metrics (before/after comparison)
+
+##### Quality Metrics
+
+**Before Audit**:
+
+- ESLint suppressions: [X]
+- Unused exports: [X]
+- Test coverage: [X]%
+
+**After Audit**:
+
+- ESLint suppressions: [X] (reduction: [X]%)
+- Unused exports: 0 ✅
+- Test coverage: [X]%
+- Code quality: eslint.config.js compliance + 100% tests ✅
+
+##### Recommendations
+
+- Immediate actions (priority fixes)
+- Preventive measures (avoid future technical debt)
+- CI/CD integration (automated checks)
+
+##### Appendices
+
+- A. Complete ESLint suppression table
+- B. Removed code inventory (files, functions, lines deleted)
+- C. Tool evaluation matrix (detailed comparison)
+
+### Expected Output
+
+- `tmp/reports/code-audit-report.md` - Comprehensive findings
+- `tmp/reports/eslint-suppression-audit.md` - Detailed ESLint review
+- Cleaned codebase with reduced technical debt
+- Recommended dead code detection tool with integration plan
+- Updated inline documentation for retained suppressions
+
+### Testing Requirements
+
+**Validation After Cleanup**:
+
+- ✅ Three-tier validation: `make check-wip` → `pnpm run test` → `pnpm run format/lint/check`
+- ✅ All tests pass: 100% pass rate
+- ✅ No new ESLint errors or warnings
+- ✅ TypeScript compilation successful
+
+**Regression Prevention**:
+
+- ✅ Verify removed code truly unused (grep search across codebase)
+- ✅ Check git blame for context on suppression decisions
+- ✅ Review PR history for technical debt rationale
+
+### Final Validations
+
+- ✅ CLAUDE.md quality standards met
+- ✅ All ESLint suppressions reviewed (fixed or justified with inline comments)
+- ✅ Zero unused code (or documented exceptions)
+- ✅ Dead code detection tool researched and recommended
+- ✅ Comprehensive audit report generated with all required sections
+- ✅ No functionality broken by cleanup
+
+### Success Criteria
+
+**Code Quality Metrics**:
+
+- ESLint suppressions reduced by ≥50% (or all justified)
+- Zero unused exports/imports (verified by automated tool)
+- 100% test pass rate maintained
+- All scripts referenced in Makefile/package.json
+
+**Documentation Completeness**:
+
+- Detailed audit report with all findings
+- Every retained suppression has justification comment
+- Dead code detection tool evaluation complete
+- Integration plan provided for recommended tool
+
+**Maintainability Improvements**:
+
+- Cleaner codebase with reduced technical debt
+- Automated dead code detection integrated
+- Clear guidelines for future suppression usage
+- Preventive measures documented
+
+---
+
+## TASK 10B: CSS Linting Infrastructure Exploration (Technical Debt)
+
+### Agent Responsibility
+
+Explore and evaluate CSS linting library integration (Stylelint or alternatives) as a **supplement** (not replacement) to the existing `validate-theme.ts` script. Research modern CSS validation tools for syntax checking while maintaining our custom architectural validations.
+
+### Context & Rationale
+
+The `src/scripts/validate-theme.ts` script provides **unique architectural validations** that standard CSS linters cannot replicate:
+
+- Tailwind v4 compatibility enforcement (@apply usage patterns)
+- Theme system coherence (`:root` and `.dark` variable consistency)
+- Z-index hierarchy management (enforcing `var(--z-*)` usage)
+- Stacking context auditing (architecture-level validation)
+- Modular CSS architecture compliance (no inline styles, component style blocks)
+
+**Coverage Analysis**: 71% of current validations are framework/architecture-specific and **cannot be replicated** by standard CSS linters.
+
+**Decision**: Defer CSS linter integration as optional supplement for syntax validation only.
+
+### Technical Documents to Review
+
+- `src/scripts/validate-theme.ts` (Current implementation - DO NOT deprecate)
+- `SVELTEKIT-GUIDE.md` (Tailwind v4 + Svelte 5 architecture)
+- `.github/workflows/validation.yml` (Current CI/CD integration)
+- `check-wip.sh` (Local validation workflow)
+- **Analysis Reference**: See comprehensive feasibility study from 2025-10-31
+
+### Prerequisites
+
+- TASK 10A: Comprehensive Code Audit completed
+- Stable Tailwind v4 + Svelte 5 codebase
+- **Condition**: Only proceed if CSS syntax validation gaps identified during development
+
+### Implementation Scope
+
+#### Phase 1: Library Research & Evaluation
+
+**Objective**: Identify actively-maintained CSS linting libraries compatible with Tailwind v4 + Svelte 5
+
+**Evaluation Criteria** (per CLAUDE.md Library Vetting):
+
+- Native framework solutions checked FIRST (Tailwind v4 plugins, Svelte 5 tools)
+- Last publish ≤6 months ago, 10k+ weekly downloads OR official package
+- Verify peer dependency compatibility
+- Test Tailwind v4 compatibility (CSS nesting, @layer, @theme directives)
+- Confirm Svelte 5 parsing support (`<style>` blocks in components)
+
+**Candidate Libraries** (research and evaluate):
+
+- `stylelint` v16+ (primary candidate, 25M+ weekly downloads)
+- `stylelint-config-standard` (official standard rules)
+- `postcss-html` (HTML/Svelte parsing)
+- `stylelint-config-html` (Svelte integration - check Svelte 5 compatibility)
+- Tailwind v4 specific plugins (if available)
+
+**Deliverables**:
+
+1. Maintenance status report (GitHub activity, npm downloads)
+2. Tailwind v4 compatibility test results
+3. Svelte 5 parsing verification
+4. Performance benchmarking (impact on `make check-wip`)
+
+#### Phase 2: Hybrid Architecture Design
+
+**Objective**: Design integration strategy that **keeps** `validate-theme.ts` as primary validation
+
+**Architecture Pattern**:
+
+```
+┌─────────────────────────────────────────┐
+│ Tier 1: Fast Validation (5-15s)         │
+├─────────────────────────────────────────┤
+│ 1. Prettier (formatting)                 │
+│ 2. ESLint (JavaScript/TypeScript)        │
+│ 3. validate-theme.ts (architecture) ✅   │
+│ 4. Stylelint (CSS syntax - OPTIONAL)    │
+└─────────────────────────────────────────┘
+```
+
+**Key Principles**:
+
+- `validate-theme.ts` remains **mandatory** (architectural validation)
+- Stylelint is **optional supplement** (CSS syntax only)
+- No performance degradation (use caching, parallel CI execution)
+- Disabled by default via `ENABLE_STYLELINT_CHECK=false` flag
+
+#### Phase 3: Configuration & Integration (If Proceeding)
+
+**Configuration File**: `.stylelintrc.json`
+
+```json
+{
+	"extends": ["stylelint-config-standard", "stylelint-config-html/svelte"],
+	"customSyntax": "postcss-html",
+	"rules": {
+		"at-rule-no-unknown": [
+			true,
+			{
+				"ignoreAtRules": ["tailwind", "apply", "layer", "theme"]
+			}
+		],
+		"selector-class-pattern": null
+	}
+}
+```
+
+**Integration Points**:
+
+- **Local**: `check-wip.sh` with opt-in flag
+- **Pre-commit**: Optional (performance-sensitive)
+- **CI/CD**: Parallel matrix job (zero time penalty)
+
+#### Phase 4: Testing & Documentation
+
+**Testing Requirements**:
+
+- CSS syntax validation accuracy
+- False positive rate assessment
+- Performance impact measurement
+- Tailwind v4 directive compatibility
+
+**Documentation Updates**:
+
+- `SVELTEKIT-GUIDE.md` - CSS validation architecture
+- `CLAUDE.md` - Update quality standards if integrated
+- Inline documentation in configuration files
+
+### Expected Output (If Implementation Proceeds)
+
+- **Research Report**: `tmp/reports/css-linting-evaluation.md`
+- **Configuration**: `.stylelintrc.json` (optional)
+- **Integration Scripts**: Updated `check-wip.sh` with opt-in flag
+- **CI/CD Updates**: `.github/workflows/validation.yml` parallel job
+- **Performance Report**: Before/after benchmarks
+
+### Success Criteria
+
+**Research Phase (MINIMUM DELIVERABLE)**:
+
+- ✅ Library maintenance status verified
+- ✅ Tailwind v4 + Svelte 5 compatibility assessed
+- ✅ Performance impact estimated
+- ✅ Decision documented: integrate vs defer
+
+**Implementation Phase (ONLY IF DECISION = INTEGRATE)**:
+
+- ✅ `validate-theme.ts` remains primary validator (no deprecation)
+- ✅ Stylelint integration is opt-in (disabled by default)
+- ✅ Zero performance degradation on `make check-wip`
+- ✅ CI/CD runs in parallel (no time penalty)
+- ✅ False positive rate acceptable (<5%)
+
+### Decision Points
+
+**Proceed with Integration IF**:
+
+- CSS syntax errors frequently slip through current validation
+- Team size grows (standardization becomes valuable)
+- Tailwind v4 + Svelte 5 ecosystem support is mature
+
+**Defer Integration IF**:
+
+- Current validation is sufficient (likely scenario)
+- Performance impact is significant
+- Ecosystem compatibility is immature
+- Team prefers lean tooling
+
+### Notes
+
+- This is **technical debt exploration**, not a critical path item
+- `validate-theme.ts` provides irreplaceable value (71% unique validations)
+- Only pursue if clear benefit identified during development
+- Document decision rationale regardless of outcome
 
 ## TASK 11: Final Integration & Production Polish
 

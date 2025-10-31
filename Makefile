@@ -1,4 +1,4 @@
-.PHONY: help setup install run build clean validate validate-bash check lint format test validate-content check-wip generate-flatnav generate-scaffold validate-theme
+.PHONY: help setup install run build clean validate validate-bash check lint format test validate-content check-wip generate-flatnav generate-scaffold validate-theme generate-foundation generate-foundation-prod validate-generated-content validate-content-mermaid validate-all-generated ci-generate ci-validate
 
 # Load environment variables from .env file
 ifneq (,$(wildcard .env))
@@ -46,7 +46,7 @@ format: ## Format code with Prettier
 	pnpm run format
 
 # Validation targets
-validate: validate-bash validate-content validate-scripts validate-mermaid ## Run all validation checks
+validate: validate-bash validate-content validate-scripts validate-content-mermaid validate-theme ## Run all validation checks (local development)
 
 # Script validation examples:
 # make validate-script TARGETS="src/scripts/file1.ts src/scripts/file2.ts"
@@ -65,12 +65,14 @@ validate-bash: ## Validate bash scripts with shellcheck
 	@echo "✅ Bash script validation completed"
 
 
-validate-content: ## Validate content JSON structure
+validate-content: ## Validate content TypeScript structure (src/data/book only)
 	@echo "🔍 Validating content structure..."
-	@find src/data -name "*.json" -type f 2>/dev/null | while read -r file; do \
-		echo "Validating $$file"; \
-		python3 -m json.tool "$$file" > /dev/null || exit 1; \
-	done || echo "No JSON content files found to validate"
+	@if [ -d "src/data/book" ]; then \
+		echo "✅ Found src/data/book directory"; \
+		$(MAKE) validate-script TARGETS="src/data/book/"; \
+	else \
+		echo "ℹ️  src/data/book directory does not exist - skipping validation"; \
+	fi
 	@echo "✅ Content validation completed"
 
 validate-scripts: ## Validate TypeScript utility scripts with prettier and eslint
@@ -263,54 +265,55 @@ generate-schemas: ## Generate JSON schemas from Zod definitions
 	@npx tsx src/scripts/generate-schemas.ts
 	@echo "✅ Schema generation complete!"
 
-validate-all-scripts: validate-mermaid generate-menu generate-flatnav generate-search-index-dev ## Run all foundation scripts validation (development mode)
-	@echo "✅ All foundation scripts completed"
+# ============================================================================
+# GENERATION PHASE (Fast, no heavy validation)
+# ============================================================================
 
-validate-all-scripts-prod: validate-mermaid generate-menu generate-flatnav generate-search-index-prod ## Run all foundation scripts validation (production mode)
-	@echo "✅ All foundation scripts completed (production)"
+generate-foundation: generate-flatnav generate-search-index-dev ## Generate foundation files (flatnav + search index) - Development mode
+	@echo "✅ Foundation generation complete (flatnav + search index)"
 
-generate-all-content: generate-menu generate-flatnav generate-scaffold generate-search-index-dev validate-generated-full ## Generate all content files and validate them (development mode)
+generate-foundation-prod: generate-flatnav generate-search-index-prod ## Generate foundation files (flatnav + search index) - Production mode
+	@echo "✅ Foundation generation complete (production)"
 
-generate-all-content-prod: generate-menu generate-flatnav generate-scaffold generate-search-index-prod validate-generated-full ## Generate all content files and validate them (production mode)
-	@echo "🎉 All content generation and validation completed successfully!"
+# ============================================================================
+# VALIDATION PHASE (Slow, runs after generation)
+# ============================================================================
 
-# Project-wide validation
-validate-typescript: ## Run full SvelteKit TypeScript check (svelte-check for entire project)
-	@echo "🔍 Running full SvelteKit TypeScript validation..."
-	@pnpm run check
-	@echo "✅ Full TypeScript validation complete!"
-
-# Generated content validation
-
-validate-generated: ## Validate all generated content files (src/data/book and src/data/generated)
-	@echo "🔍 Validating all generated content files..."
-	@echo "📁 Checking generated directories..."
+validate-generated-content: ## Validate generated content (TypeScript + ESLint only)
+	@echo "🔍 Validating generated content files..."
 	@validated_something=false; \
-	if [ -d "src/data/book" ]; then \
-		echo "✅ Found src/data/book directory"; \
-		if $(MAKE) validate-script TARGETS="src/data/book/"; then \
-			echo "✅ src/data/book validation passed!"; \
-			validated_something=true; \
-		else \
-			echo "❌ src/data/book validation failed!"; \
-			exit 1; \
-		fi; \
-	fi; \
 	if [ -d "src/data/generated" ]; then \
-		echo "✅ Found src/data/generated directory"; \
-		if $(MAKE) validate-script TARGETS="src/data/generated/"; then \
-			echo "✅ src/data/generated validation passed!"; \
-			validated_something=true; \
-		else \
-			echo "❌ src/data/generated validation failed!"; \
-			exit 1; \
-		fi; \
+		echo "✅ Validating src/data/generated (TypeScript + ESLint)..."; \
+		$(MAKE) validate-script TARGETS="src/data/generated/"; \
+		validated_something=true; \
 	fi; \
 	if [ "$$validated_something" = "false" ]; then \
-		echo "📁 No generated content files found to validate"; \
+		echo "ℹ️  No generated content found to validate"; \
 	fi
-	@echo "✅ Generated content validation complete!"
+	@echo "✅ Generated content validation complete"
 
+validate-content-mermaid: ## Validate Mermaid diagrams in src/data/book (local only)
+	@echo "🔍 Validating Mermaid diagrams in content..."
+	@if [ -d "src/data/book" ]; then \
+		echo "✅ Validating Mermaid in src/data/book..."; \
+		$(MAKE) validate-mermaid ARGS="src/data/book"; \
+	else \
+		echo "ℹ️  src/data/book does not exist - skipping Mermaid validation"; \
+	fi
+	@echo "✅ Mermaid validation complete"
+
+validate-all-generated: validate-generated-content validate-content-mermaid validate-theme ## Validate all generated content + theme
+	@echo "✅ All generated content validation complete"
+
+# ============================================================================
+# COMPLETE WORKFLOWS (Generation + Validation)
+# ============================================================================
+
+ci-generate: generate-foundation-prod ## CI: Generate all foundation files (production mode)
+	@echo "✅ CI generation complete"
+
+ci-validate: validate-generated-content validate-theme ## CI: Validate generated content + theme
+	@echo "✅ CI validation complete"
 
 # CI/CD support
 ci-install: ## Install dependencies in CI environment

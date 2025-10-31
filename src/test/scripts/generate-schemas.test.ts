@@ -96,7 +96,6 @@ describe("JsonSchemaGenerator - Schema Detection", () => {
 		const schemaNames = schemas.map((s) => s.name);
 
 		const expectedBaseSchemas = [
-			"RichTextFragment",
 			"RichParagraph",
 			"RichTextSection",
 			"RichTextDocument",

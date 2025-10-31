@@ -14,8 +14,8 @@
  * - Mobile-first: ≥44px touch targets, responsive grid layout
  */
 
-import type { ComponentType, SvelteComponent } from "svelte";
 import type { HTMLAttributes } from "svelte/elements";
+import type { IconComponent } from "./icon-button.js";
 
 /**
  * Icon positioning strategy within parent component
@@ -71,9 +71,11 @@ export interface IconItem {
 
 	/**
 	 * Lucide icon component to render
-	 * Import from "lucide-svelte" (e.g., Copy, Check, X)
+	 * Import from "@lucide/svelte" (e.g., Copy, Check, X)
+	 *
+	 * Accepts both Svelte 4 and Svelte 5 component types via IconComponent union (aligned with IconButton).
 	 */
-	icon: ComponentType<SvelteComponent>;
+	icon: IconComponent;
 
 	/**
 	 * Accessible label for tooltip and screen readers

@@ -161,7 +161,7 @@ test.describe("Dialog Height Behavior", () => {
 				height: styles.height,
 				maxHeight: styles.maxHeight,
 				minHeight: styles.minHeight,
-				classes: el.className
+				classes: el.getAttribute("class") || ""
 			};
 		});
 

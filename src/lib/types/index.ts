@@ -67,9 +67,7 @@ export type {
 	RichTextSection,
 	RichTextDocument,
 	SimpleRichText,
-	RichTextValidation,
-	// Deprecated (backward compatibility)
-	RichTextFragment
+	RichTextValidation
 } from "./rich-text.js";
 
 // Content exports - All content-related interfaces
@@ -230,7 +228,7 @@ import type {
 	DragAndDropQuestion,
 	BaseContent
 } from "./content.js";
-import type { RichTextFragment, RichParagraph } from "./rich-text.js";
+import type { RichTextNode, RichParagraph } from "./rich-text.js";
 import type { NavigationItem } from "./navigation.js";
 import type { SearchableItem } from "./search.js";
 
@@ -311,17 +309,20 @@ export function isQuizContent(obj: unknown): obj is QuizContent {
 /**
  * Rich text type guards
  */
-export function isRichTextFragment(obj: unknown): obj is RichTextFragment {
+export function isRichTextNode(obj: unknown): obj is RichTextNode {
 	return (
 		typeof obj === "object" &&
 		obj !== null &&
-		"text" in obj &&
-		typeof (obj as { text: unknown }).text === "string"
+		"type" in obj &&
+		"content" in obj &&
+		typeof (obj as { type: unknown }).type === "string" &&
+		["text", "link", "heading"].includes((obj as { type: string }).type) &&
+		typeof (obj as { content: unknown }).content === "string"
 	);
 }
 
 export function isRichParagraph(obj: unknown): obj is RichParagraph {
-	return Array.isArray(obj) && obj.every(isRichTextFragment);
+	return Array.isArray(obj) && obj.every(isRichTextNode);
 }
 
 /**

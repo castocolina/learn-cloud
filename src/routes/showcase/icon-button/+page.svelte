@@ -16,7 +16,7 @@ URL: /demo/test/icon-button-variants
 		X,
 		Download,
 		Trash,
-		AlertCircle,
+		CircleAlert,
 		Code,
 		FileText,
 		Share2,
@@ -339,7 +339,7 @@ URL: /demo/test/icon-button-variants
 				<div class="flex flex-col gap-4">
 					<IconButton
 						data-testid="state-error-button"
-						icon={AlertCircle}
+						icon={CircleAlert}
 						label="Error State"
 						iconState="error"
 					/>
@@ -378,7 +378,7 @@ URL: /demo/test/icon-button-variants
 				<div class="flex flex-col gap-4">
 					<IconButton
 						data-testid="destructive-error-button"
-						icon={AlertCircle}
+						icon={CircleAlert}
 						label="Destructive Error"
 						variant="destructive"
 						iconState="error"

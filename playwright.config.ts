@@ -45,10 +45,16 @@ export default defineConfig({
 	workers: "75%",
 
 	// Reporter to use
-	reporter: [
-		["html", { outputFolder: "tmp/test/e2e/playwright-report", open: "never" }],
-		["line"] // Console output with progress indicator [X/206]
-	],
+	reporter: process.env.CI
+		? [
+				["html", { outputFolder: "tmp/test/e2e/playwright-report", open: "never" }],
+				["github"], // GitHub Actions annotations with file/line info
+				["list"] // Detailed summary with test names and durations
+			]
+		: [
+				["html", { outputFolder: "tmp/test/e2e/playwright-report", open: "never" }],
+				["line"] // Console output with progress indicator [X/206]
+			],
 
 	// Output directory for test artifacts
 	outputDir: "tmp/test/e2e/test-results",

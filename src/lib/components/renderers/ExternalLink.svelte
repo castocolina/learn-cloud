@@ -16,6 +16,12 @@
 	 * - Snippet pattern for children
 	 * - Type-safe (LinkTarget from types)
 	 *
+	 * ESLint Configuration:
+	 * - svelte/no-navigation-without-resolve disabled because this component
+	 *   handles both external and internal links, and external links should
+	 *   NOT use resolve(). The href is used directly for external links and
+	 *   passed through as-is for internal links with proper preload attributes.
+	 *
 	 * @component ExternalLink
 	 */
 
@@ -67,6 +73,7 @@
 	const preload = $derived(isExternal ? undefined : "hover");
 </script>
 
+<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 <a
 	{href}
 	target={computedTarget}

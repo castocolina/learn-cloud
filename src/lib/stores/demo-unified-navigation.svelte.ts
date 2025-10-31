@@ -1,21 +1,26 @@
 /**
- * Unified Navigation Store - Centralized Navigation System
+ * Unified Navigation Store - Centralized Navigation System (Svelte 5 Runes)
  *
  * This store provides a unified navigation system that handles:
  * - Cross-unit navigation (seamless unit boundary traversal)
  * - Consistent state management across all components
  * - URL parsing and state initialization for both hash and route-based URLs
  * - Integration between layout and floating navigation
+ *
+ * Migration from stores → runes:
+ * - Changed from writable() to $state() for internal state
+ * - Changed from derived() to $derived.by() for reactive computations
+ * - Import from '$app/state' instead of '$app/stores'
+ * - Direct property access instead of .set() and .update()
  */
 
-import { writable, derived, type Readable } from "svelte/store";
-import { page } from "$app/stores";
+import { page } from "$app/state";
 import { browser } from "$app/environment";
 import {
 	demoSidebarMenu,
+	DemoContentType,
 	type DemoLesson,
-	type DemoUnit,
-	DemoContentType
+	type DemoUnit
 } from "$data/demo/navigation/demo-sidebar-menu.js";
 
 /**
@@ -194,77 +199,74 @@ function findUnitById(unitId: string): DemoUnit | null {
 }
 
 /**
- * Create the unified navigation store
+ * Create the unified navigation store with Svelte 5 runes
  */
-function createUnifiedNavigationStore(): Readable<UnifiedNavigationState> & NavigationActions {
+function createUnifiedNavigationStore() {
 	const flattenedLessons = createFlattenedLessons();
 
-	// Internal state stores
-	const isLoading = writable(false);
-	const currentContext = writable<{ unitId?: string; lessonId?: string }>({});
+	// Internal state using runes
+	let isLoading = $state(false);
+	let currentContext = $state<{ unitId?: string; lessonId?: string }>({});
 
-	// Derived store for navigation state
-	const navigationState = derived(
-		[page, currentContext, isLoading],
-		([$page, $currentContext, $isLoading]) => {
-			// Parse URL context, preferring explicit context over URL parsing
-			const urlContext = parseUrlContext($page.url);
-			const { unitId, lessonId } = { ...urlContext, ...$currentContext };
+	// Derived state using runes (replaces derived store)
+	const navigationState = $derived.by(() => {
+		// Parse URL context, preferring explicit context over URL parsing
+		const urlContext = parseUrlContext(page.url);
+		const { unitId, lessonId } = { ...urlContext, ...currentContext };
 
-			// Find current lesson and unit
-			const currentLesson = lessonId ? findLessonById(flattenedLessons, lessonId) : null;
-			const currentUnit = unitId ? findUnitById(unitId) : null;
-			const currentLessonIndex = currentLesson
-				? flattenedLessons.findIndex((l) => l.id === lessonId)
-				: null;
-			const currentUnitIndex = currentUnit
-				? demoSidebarMenu.units.findIndex((u) => u.id === unitId)
-				: null;
+		// Find current lesson and unit
+		const currentLesson = lessonId ? findLessonById(flattenedLessons, lessonId) : null;
+		const currentUnit = unitId ? findUnitById(unitId) : null;
+		const currentLessonIndex = currentLesson
+			? flattenedLessons.findIndex((l) => l.id === lessonId)
+			: null;
+		const currentUnitIndex = currentUnit
+			? demoSidebarMenu.units.findIndex((u) => u.id === unitId)
+			: null;
 
-			// Calculate navigation URLs and lessons
-			let previousLessonUrl: string | null = null;
-			let nextLessonUrl: string | null = null;
-			let previousLesson: NavigationLesson | null = null;
-			let nextLesson: NavigationLesson | null = null;
+		// Calculate navigation URLs and lessons
+		let previousLessonUrl: string | null = null;
+		let nextLessonUrl: string | null = null;
+		let previousLesson: NavigationLesson | null = null;
+		let nextLesson: NavigationLesson | null = null;
 
-			if (currentLessonIndex !== null) {
-				// Previous lesson (cross-unit navigation)
-				if (currentLessonIndex > 0) {
-					previousLesson = flattenedLessons[currentLessonIndex - 1];
-					previousLessonUrl = createLessonUrl(previousLesson);
-				}
-
-				// Next lesson (cross-unit navigation)
-				if (currentLessonIndex < flattenedLessons.length - 1) {
-					nextLesson = flattenedLessons[currentLessonIndex + 1];
-					nextLessonUrl = createLessonUrl(nextLesson);
-				}
+		if (currentLessonIndex !== null) {
+			// Previous lesson (cross-unit navigation)
+			if (currentLessonIndex > 0) {
+				previousLesson = flattenedLessons[currentLessonIndex - 1];
+				previousLessonUrl = createLessonUrl(previousLesson);
 			}
 
-			// Calculate completion percentage
-			const completionPercentage =
-				currentLessonIndex !== null
-					? Math.round(((currentLessonIndex + 1) / flattenedLessons.length) * 100)
-					: 0;
-
-			return {
-				flattenedLessons,
-				totalLessons: flattenedLessons.length,
-				currentLesson,
-				currentUnit,
-				currentLessonIndex,
-				currentUnitIndex,
-				previousLessonUrl,
-				nextLessonUrl,
-				previousLesson,
-				nextLesson,
-				completionPercentage,
-				isLoading: $isLoading,
-				canNavigatePrevious: previousLessonUrl !== null,
-				canNavigateNext: nextLessonUrl !== null
-			} satisfies UnifiedNavigationState;
+			// Next lesson (cross-unit navigation)
+			if (currentLessonIndex < flattenedLessons.length - 1) {
+				nextLesson = flattenedLessons[currentLessonIndex + 1];
+				nextLessonUrl = createLessonUrl(nextLesson);
+			}
 		}
-	);
+
+		// Calculate completion percentage
+		const completionPercentage =
+			currentLessonIndex !== null
+				? Math.round(((currentLessonIndex + 1) / flattenedLessons.length) * 100)
+				: 0;
+
+		return {
+			flattenedLessons,
+			totalLessons: flattenedLessons.length,
+			currentLesson,
+			currentUnit,
+			currentLessonIndex,
+			currentUnitIndex,
+			previousLessonUrl,
+			nextLessonUrl,
+			previousLesson,
+			nextLesson,
+			completionPercentage,
+			isLoading,
+			canNavigatePrevious: previousLessonUrl !== null,
+			canNavigateNext: nextLessonUrl !== null
+		} satisfies UnifiedNavigationState;
+	});
 
 	// Navigation actions
 	const actions: NavigationActions = {
@@ -280,11 +282,11 @@ function createUnifiedNavigationStore(): Readable<UnifiedNavigationState> & Navi
 				return;
 			}
 
-			isLoading.set(true);
+			isLoading = true;
 
 			try {
 				// Update context first
-				currentContext.set({ unitId: lesson.unitId, lessonId: lesson.id });
+				currentContext = { unitId: lesson.unitId, lessonId: lesson.id };
 
 				// Navigate using hash-based navigation for all demo routes
 				const url = createLessonUrl(lesson);
@@ -292,7 +294,7 @@ function createUnifiedNavigationStore(): Readable<UnifiedNavigationState> & Navi
 			} catch (error) {
 				console.error("Navigation error:", error);
 			} finally {
-				isLoading.set(false);
+				isLoading = false;
 			}
 		},
 
@@ -308,18 +310,18 @@ function createUnifiedNavigationStore(): Readable<UnifiedNavigationState> & Navi
 				return;
 			}
 
-			isLoading.set(true);
+			isLoading = true;
 
 			try {
 				// Update context
-				currentContext.set({ unitId });
+				currentContext = { unitId };
 
 				// Navigate to unit overview (hash-based)
 				window.location.hash = `/demo/unit/${unitId}`;
 			} catch (error) {
 				console.error("Unit navigation error:", error);
 			} finally {
-				isLoading.set(false);
+				isLoading = false;
 			}
 		},
 
@@ -329,16 +331,9 @@ function createUnifiedNavigationStore(): Readable<UnifiedNavigationState> & Navi
 		async navigateToPrevious(): Promise<void> {
 			if (!browser) return;
 
-			const state = navigationState;
-			// Get current state synchronously
-			let currentState: UnifiedNavigationState;
-			const unsubscribe = state.subscribe((s) => {
-				currentState = s;
-			});
-			unsubscribe();
-
-			if (currentState!.previousLesson) {
-				await actions.navigateToLesson(currentState!.previousLesson.id);
+			// With runes, we can access navigationState directly
+			if (navigationState.previousLesson) {
+				await actions.navigateToLesson(navigationState.previousLesson.id);
 			}
 		},
 
@@ -348,16 +343,9 @@ function createUnifiedNavigationStore(): Readable<UnifiedNavigationState> & Navi
 		async navigateToNext(): Promise<void> {
 			if (!browser) return;
 
-			const state = navigationState;
-			// Get current state synchronously
-			let currentState: UnifiedNavigationState;
-			const unsubscribe = state.subscribe((s) => {
-				currentState = s;
-			});
-			unsubscribe();
-
-			if (currentState!.nextLesson) {
-				await actions.navigateToLesson(currentState!.nextLesson.id);
+			// With runes, we can access navigationState directly
+			if (navigationState.nextLesson) {
+				await actions.navigateToLesson(navigationState.nextLesson.id);
 			}
 		},
 
@@ -365,11 +353,11 @@ function createUnifiedNavigationStore(): Readable<UnifiedNavigationState> & Navi
 		 * Update current navigation context manually
 		 */
 		updateCurrentContext(unitId?: string, lessonId?: string): void {
-			currentContext.update((current) => ({
-				...current,
+			currentContext = {
+				...currentContext,
 				...(unitId && { unitId }),
 				...(lessonId && { lessonId })
-			}));
+			};
 		},
 
 		/**
@@ -378,14 +366,57 @@ function createUnifiedNavigationStore(): Readable<UnifiedNavigationState> & Navi
 		initializeFromUrl(url: URL): void {
 			const context = parseUrlContext(url);
 			if (context.unitId || context.lessonId) {
-				currentContext.set(context);
+				currentContext = context;
 			}
 		}
 	};
 
-	// Return store with actions
+	// Return reactive store with actions (Svelte 5 runes pattern)
 	return {
-		subscribe: navigationState.subscribe,
+		// Expose derived state as getters for reactivity
+		get flattenedLessons() {
+			return navigationState.flattenedLessons;
+		},
+		get totalLessons() {
+			return navigationState.totalLessons;
+		},
+		get currentLesson() {
+			return navigationState.currentLesson;
+		},
+		get currentUnit() {
+			return navigationState.currentUnit;
+		},
+		get currentLessonIndex() {
+			return navigationState.currentLessonIndex;
+		},
+		get currentUnitIndex() {
+			return navigationState.currentUnitIndex;
+		},
+		get previousLessonUrl() {
+			return navigationState.previousLessonUrl;
+		},
+		get nextLessonUrl() {
+			return navigationState.nextLessonUrl;
+		},
+		get previousLesson() {
+			return navigationState.previousLesson;
+		},
+		get nextLesson() {
+			return navigationState.nextLesson;
+		},
+		get completionPercentage() {
+			return navigationState.completionPercentage;
+		},
+		get isLoading() {
+			return navigationState.isLoading;
+		},
+		get canNavigatePrevious() {
+			return navigationState.canNavigatePrevious;
+		},
+		get canNavigateNext() {
+			return navigationState.canNavigateNext;
+		},
+		// Expose actions
 		...actions
 	};
 }

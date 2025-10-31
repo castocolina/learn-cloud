@@ -373,7 +373,7 @@ test.describe("IconButton - Variant Alias System (Regression)", () => {
 		await expect(defaultButton).toHaveClass(/icon-grid-item--subtle/);
 
 		// Should NOT have default variant class (it's just an alias)
-		const classList = await defaultButton.evaluate((el) => el.className);
+		const classList = await defaultButton.evaluate((el) => el.getAttribute("class") || "");
 		expect(classList).not.toContain("icon-grid-item--default");
 	});
 

@@ -5,7 +5,7 @@
  * learning platform. Enables seamless previous/next navigation across all
  * units and chapters with optimized lookup performance.
  *
- * Generated on: 2025-10-05T20:00:16.028Z
+ * Generated on: 2025-10-30T23:05:51.600Z
  * Total entries: 130
  * Book Overview: overview.html
  *

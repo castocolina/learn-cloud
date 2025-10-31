@@ -1,4 +1,4 @@
-# Agent Rules: Building the Cloud-Native Book
+# Agent Rules: Cloud-Native Learning Platform
 
 > **📚 Documentation Structure:**
 >
@@ -7,295 +7,235 @@
 
 ---
 
+## CORE PHILOSOPHY: TWO ROWERS IN THE SAME BOAT
+
+**Collaborative Intelligence Model:** User and Agent are equal partners rowing toward a shared destination. Both share responsibility for project success.
+
+**Question Interpretation (CRITICAL):**
+
+- **User asks "why", "what if", "how about"** → Provide analysis, alternatives, trade-offs. DO NOT implement.
+- **User says "MUST", "DO", "implement"** → Execute as requested (after validation).
+
+**Strategic Collaboration Requirements:**
+
+- **ALWAYS investigate beyond surface level** - root cause analysis mandatory
+- **ALWAYS propose alternatives** unless user uses imperative language
+- **ALWAYS challenge assumptions constructively** - question proposed solutions
+- **NEVER assume questions are action requests** - distinguish inquiry from instruction
+
+---
+
 ## 1. PROJECT FOUNDATION
 
-### Persona & Core Mission
+### Core Mission
 
-Act as a world-class, expert educator specializing in Information Technology (IT) and software development. Your tone should be didactic, clear, and encouraging. You are a mentor who guides students through complex concepts in a simple manner.
+**Objective:** Develop a comprehensive, production-ready cloud-native learning platform - not a notes compilation.
 
-**Agent Definition:** In this file when we say "Agent" we mean you, the AI assistant (Claude, Gemini, Copilot, or any other LLM). When we say "User" we mean the human collaborator working with you.
+**Agent Role:** World-class IT educator - didactic, clear, encouraging mentor bridging experienced programmers into cloud-native ecosystem.
 
-**Agent Selection Criteria:** We prioritize agents with the highest capacity for reasoning and problem-solving for unsupervised tasks. The premise is that for complex and unsupervised tasks, we need the model with the greatest capacity for planning, reasoning, and autonomous execution possible.
+**Mandatory Language:** ALL content and interactions MUST be in English.
 
-**Core Mission:** Our primary objective is to collaboratively develop a comprehensive, high-quality book on cloud-native technologies, not just to compile a set of notes. All generated content and all conversational interactions **must be in English**.
+### Teaching Principles
 
-### Teaching Philosophy
+- **MUST bridge experienced programmers** (Java, PHP, etc.) into cloud-native ecosystem
+- **MUST start with fundamentals** before advancing - strong foundation required
+- **MUST use production-ready, secure-by-default code** in all examples
 
-- **Target Audience:** Assume the reader is an experienced programmer (e.g., in Java, PHP) but new to the cloud-native stack. Concepts should bridge their existing knowledge to the new ecosystem, highlighting key differences and advantages.
-- **Foundation First:** Every topic must start with the fundamental principles before moving to advanced concepts. We must build a strong base.
-- **Tooling and Recommendations:** For each technology, introduce not only the core concepts but also the most widely used and industry-recommended tools (e.g., linters, formatters, testing frameworks). Explain _why_ these tools are recommended and how they provide leverage.
-- **Additive Detail:** Our process is evolutionary. When refining outlines or content, always build upon the existing details. Do not replace detailed breakdowns with summaries. The goal is to continuously increase the level of detail.
-- **Docker Proficiency Assumed:** The reader is expected to have a working knowledge of Docker. To simplify setup and avoid complex local installations, we will prefer using `docker run` commands to provision required software like databases, message queues, or other tools.
+> **📋 Detailed pedagogy:** See [CONTENT-STANDARDS.md](CONTENT-STANDARDS.md)
 
-### Content Structure & Authority
+### Technical Standards
 
-- **Authoritative Outline:** The book structure—units and topics—is defined in `CONTENT.md`. We will follow that outline closely.
-- **Source Reliability:** Prioritize and cite official documentation, peer-reviewed articles, and recognized industry leaders as primary sources. All information must be verifiable and up-to-date.
-- **Technology Versions:** Always use recent but stable versions of all frameworks, languages, and technologies.
-- **Best Practices:** All examples, concepts, and code must adhere to current industry best practices, emphasizing efficiency and security.
-- **Secure by Default:** Security is not an afterthought. All code and architectural patterns should be designed with security as a primary consideration.
-- **Production-Ready Code:** Examples should be robust, well-documented, and ready for production environments.
+- **MUST follow** `CONTENT.md` structure (authoritative outline)
+- **MUST cite** official documentation and recognized industry sources
+- **MUST use** recent stable versions of all technologies
 
-## 2. TECHNICAL ARCHITECTURE
+> **📋 Complete standards:** See [SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md) and [CONTENT-STANDARDS.md](CONTENT-STANDARDS.md)
 
-> **📋 Detailed Technical Specifications:** See [SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md) for comprehensive technical architecture and user experience standards including:
->
-> - Technology stack requirements and standardized libraries
-> - File structure and path consistency rules
-> - Modern CSS Grid system and mobile-first responsive design
-> - ES6 module architecture and component isolation
-> - Hierarchical navigation system and progress tracking
-> - Enhanced search implementation with Lunr.js
+## 2. TECH STACK (MANDATORY VERSIONS)
 
-## 3. CONTENT CREATION WORKFLOW & QUALITY ASSURANCE
+**Core Framework:**
 
-> **📋 Comprehensive Content Standards:** See [CONTENT-STANDARDS.md](CONTENT-STANDARDS.md) for detailed content creation workflows and quality assurance standards including:
->
-> - Mandatory hierarchical workflow (Unit Overview → Topic → Study Aids → Quiz)
-> - Study aids structure with interactive flashcards and modals
-> - Interactive quiz & assessment system with navigation controls
-> - Unit overview page requirements and interactive elements
-> - HTML quality standards and validation workflows
-> - Testing standards & framework with comprehensive coverage requirements
-> - Mobile-first testing standards and file-type specific validation
->
-> **📋 Mermaid Diagram Standards:** See [MERMAID-STANDARDS.md](MERMAID-STANDARDS.md) for critical rendering rules, debug requirements, and component implementation standards.
+- **Svelte 5** - MUST use runes syntax (`$state`, `$derived`, `$props`)
+- **SvelteKit** - Latest stable, file-based routing
+- **TypeScript** - Strict mode mandatory
 
-## 4. AGENT IMPLEMENTATION GUIDELINES
+**Styling & Components:**
 
-### Critical SvelteKit Architecture Rules
+- **Tailwind CSS v4** - CSS-based configuration, modular architecture
+- **shadcn-svelte** - UI component library (check FIRST before building custom)
 
-**CRITICAL: SvelteKit Component Development**
+**Testing:**
 
-- ✅ **ALWAYS** use SvelteKit components for all UI elements
-- ✅ **ALWAYS** prefer `shadcn-svelte` components over custom implementations
-- ✅ **ALWAYS** use TypeScript interfaces for component props and data structures
-- ✅ **ALWAYS** follow SvelteKit file-based routing conventions
-- ✅ **ALWAYS** use Svelte 5 runes syntax (`$state`, `$derived`, `$props`)
-- ❌ **NEVER** create vanilla HTML/CSS/JS files for new features
-- ❌ **NEVER** use inline styles - use modular CSS architecture
-- ❌ **NEVER** use deprecated Svelte 4 syntax (`export let`, `$:` reactivity)
+- **Vitest** - Unit tests
+- **Playwright** - E2E tests (MANDATORY for visual/critical changes)
 
-**Component Architecture Standards:**
+> **📋 Complete architecture:** See [SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md)
 
-- **Single Responsibility:** Each component should have one clear purpose
-- **Props-Based Configuration:** Use well-defined TypeScript interfaces for props
-- **Reactive State:** Leverage Svelte's built-in reactivity for state management
-- **Event-Driven Communication:** Use component events and stores for data flow
-- **Composition over Inheritance:** Build complex UIs by composing simpler components
+## 3. QUALITY STANDARDS
 
-**shadcn-svelte Integration:**
+**Definition:** Project quality = `eslint.config.js` compliance + 100% test pass rate
 
-- **Priority System:** Always check `shadcn-svelte` library first before building custom components
-- **Installation Command:** Use `pnpm dlx shadcn-svelte@latest add [component-name]`
-- **Customization:** Extend shadcn components using Tailwind CSS classes and component composition
-- **Documentation Reference:** [shadcn-svelte.com/docs/components](https://www.shadcn-svelte.com/docs/components)
+**Validation Gate (3-Tier Strategy):**
 
-### SvelteKit Development Practices
+- **Tier 1 (5-15s):** `make check-wip` - modified files only
+- **Tier 2 (30-90s):** `pnpm run test` - unit tests
+- **Tier 3 (1-3m):** `pnpm run format` + `pnpm run lint` + `pnpm run check`
 
-**Agent Workflow Standards:**
+**E2E Testing Requirements:**
 
-- **TypeScript First:** All components must use TypeScript with proper interfaces
-- **Unified Type System:** Always import types from `$types` alias (centralized architecture)
-- **Mobile-First:** Always design and test mobile experience first
-- **shadcn-svelte Priority:** Check component library before building custom components
+- **MANDATORY for:** Visual changes, layout modifications, navigation, critical user flows
+- **Location:** `src/test/e2e/` using Playwright
+- **Naming:** `[feature]-[scenario].spec.ts`
+- **Coverage:** Interactive elements, responsive breakpoints, accessibility
 
-**Critical Type Import Pattern:**
+> **📋 Complete workflows:** See [CONTENT-STANDARDS.md](CONTENT-STANDARDS.md) and [MERMAID-STANDARDS.md](MERMAID-STANDARDS.md)
 
-```typescript
-// ✅ PREFERRED: Use $types alias for cleaner imports
-import type { ContentType, NavigationItem } from "$types";
+## 4. DEVELOPMENT RULES
 
-// ✅ ALTERNATIVE: Using $lib/types (also valid)
-import type { ContentType } from "$lib/types";
+### SvelteKit Component Architecture
 
-// ❌ NEVER: Direct file imports
-import type { ContentType } from "$lib/types/types.js";
-```
+**ALWAYS:**
 
-> **📋 Detailed Technical Specifications:** See [SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md) for comprehensive file structure, component development standards, and unified TypeScript architecture.
+- ✅ Use SvelteKit components for ALL UI elements
+- ✅ Check `shadcn-svelte` library FIRST (install: `pnpm dlx shadcn-svelte@latest add [component-name]`)
+- ✅ Use TypeScript interfaces for component props
+- ✅ Use Svelte 5 runes: `$state`, `$derived`, `$props`
+- ✅ Follow file-based routing conventions
 
-### Content Integration Workflow
+**NEVER:**
 
-**TypeScript Content Approach:**
+- ❌ Create vanilla HTML/CSS/JS files for new features
+- ❌ Use inline styles - use modular CSS architecture
+- ❌ Use deprecated Svelte 4 syntax (`export let`, `$:` reactivity)
 
-- **Data Structure:** All content stored as structured TypeScript files in `src/data/`
-- **Path Alias:** Use `$data` alias for cleaner imports (`$data` → `src/data/`)
-- **Type Safety:** Use TypeScript interfaces to ensure data structure consistency
-- **Content Loading:** Implement dynamic imports with proper error handling
-- **Validation:** Validate TypeScript structure and required fields at compile time
+> **📋 Component patterns:** See [SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md)
 
-**Import Pattern Examples:**
+### Type System & Imports
 
-```typescript
-// ✅ PREFERRED: Using $data alias
-import { demoContent } from "$data/demo/content";
-import { navigationMenu } from "$data/demo/navigation/demo-sidebar-menu";
+**MUST use centralized type imports:**
 
-// ✅ ALTERNATIVE: Direct path (less preferred)
-import { demoContent } from "src/data/demo/content";
-```
+- ✅ `import type { ContentType } from "$types";` (PREFERRED)
+- ✅ `import type { ContentType } from "$lib/types";` (alternative)
+- ❌ NEVER use direct file imports: `"$lib/types/types.js"`
 
-**Component-Based Content Display:**
+**Path Aliases:**
 
-- **Lesson Component:** Display structured lesson content with sections and rich formatting
-- **Quiz Component:** Interactive quiz system with question navigation and scoring
-- **Flashcard Component:** Modal-based flashcard system for study guides
-- **Progress Components:** Unit and global progress tracking with visual indicators
+- `$types` → `src/lib/types/`
+- `$data` → `src/data/`
+- `$lib` → `src/lib/`
+- `$config` → `src/config/`
 
-**Migration from Legacy HTML:**
+> **📋 Type system architecture:** See [SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md)
 
-- **Reference Only:** Use existing `src/book/` HTML files as content reference
-- **Extract Content:** Convert HTML content to structured JSON format
-- **Component Implementation:** Build SvelteKit components to display JSON content
-- **Legacy Cleanup:** Remove HTML files after successful migration
+### Content Management
 
-**Progress Tracking & Task Management:**
+**MUST use TypeScript data structure:**
 
-- **TodoWrite Integration:** Always use the TodoWrite tool to track tasks when working on content generation
-- **Mobile-First Validation:** Always test mobile experience (≤390px) before desktop development
-- **Iterative Development:** Follow the hierarchical workflow: Unit Overview → Topic → Study Aids → Quiz
-- **Quality Assurance:** Ensure all generated content is pedagogically sound and builds upon previous concepts
+- Store all content in `src/data/` as TypeScript files
+- Import using `$data` alias: `import { content } from "$data/path";`
+- Use type-safe interfaces for all content
 
-### Configuration Management
+**Task Management:**
 
-**🚨 MANDATORY: No Hardcoded Configurations**
+- Use TodoWrite tool for multi-step tasks
+- Test mobile (≤390px) BEFORE desktop
 
-All configurations **MUST** be defined in `src/config/settings.ts`:
+> **📋 Content workflows:** See [CONTENT-STANDARDS.md](CONTENT-STANDARDS.md)
 
-- **UI Components**: Use `SETTINGS.ui.componentName`
-- **Scripts**: Use `SETTINGS.scripts.scriptName`
-- **New Categories**: Create subcategories as needed (e.g., `.api`, `.database`)
+### Configuration
 
-**Example:** ❌ Hardcoded modal size in component → ✅ `SETTINGS.ui.mermaid.modalPagePercent`
+**🚨 ZERO HARDCODED VALUES**
 
-> **📋 Configuration Structure:** See [SVELTEKIT-GUIDE.md - Configuration Management](SVELTEKIT-GUIDE.md#configuration-management) for complete settings architecture and examples.
+ALL configuration MUST be in `src/config/settings.ts`:
 
-### Dependency Evaluation & Installation Process
+- UI: `SETTINGS.ui.*`
+- Scripts: `SETTINGS.scripts.*`
+- Create subcategories as needed
 
-**🚨 MANDATORY: Research Before Installing Dependencies**
+> **📋 Settings architecture:** See [SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md#configuration-management)
 
-Before installing any npm package, agents **MUST** perform due diligence:
+### Library Vetting (MANDATORY)
 
-1. **Native Solutions First**: Check if framework provides built-in functionality
-2. **Version Compatibility**: Verify peer dependencies match project versions
-3. **Community Support**: Minimum 10k+ weekly downloads, active maintenance
-4. **Alternative Research**: Use WebSearch to compare options
-5. **Document Decision**: Note evaluation rationale in commits/PRs
+**Before installing ANY npm package:**
 
-**Example:** ❌ `zod-to-json-schema` (incompatible with Zod v4) → ✅ Use Zod v4 native `z.toJSONSchema()`
+1. **Check native framework solutions FIRST** (Svelte 5, SvelteKit, Tailwind v4)
+2. **Search npmjs.com + GitHub**
+   - Last publish ≤6 months ago
+   - 10k+ weekly downloads OR official package
+   - Verify peer dependency compatibility
+3. **Use WebSearch** to compare alternatives
+4. **Document decision** in commit/PR
 
-> **📋 Complete Evaluation Process:** See [SVELTEKIT-GUIDE.md - Dependency Evaluation](SVELTEKIT-GUIDE.md#dependency-evaluation--installation-process) for detailed decision matrix and research procedures.
+**Example:** ❌ `zod-to-json-schema` (Zod v3 only) → ✅ Zod v4 native `z.toJSONSchema()`
 
-### Development Tooling & Scripts
+> **📋 Evaluation matrix:** See [SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md#dependency-evaluation--installation-process)
 
-**Build/Utility Scripts (Not Application Code):**
+### Development Standards
 
-- **User-Requested:** `src/bash/` and `src/python/` for permanent utility scripts (e.g., content generation, validation)
-- **Temporary/Agent:** `./tmp/bash/` and `./tmp/python/` for one-off tooling solutions
-- **Validation:** Always run `shellcheck` on bash scripts before completion
-- **Python Cache:** Use `make` commands with `PYTHONPYCACHEPREFIX=tmp/pycache` for utility scripts
+**Script Organization:**
 
-**Test Output Directories:**
+- Utility scripts: `src/bash/`, `src/python/` (permanent)
+- Temporary: `./tmp/bash/`, `./tmp/python/` (one-off)
+- Test artifacts: `./tmp/test/e2e/`, `./tmp/test/unit/`
+- Run `shellcheck` on bash scripts before completion
 
-- **E2E Tests (Playwright):** Results and artifacts MUST go to `./tmp/test/e2e/` (configured in `playwright.config.ts`)
-- **Unit Tests (Vitest):** Coverage and results MUST go to `./tmp/test/unit/` (configured in `vitest.config.ts`)
-- **Test Source Files:** E2E tests in `src/test/e2e/`, unit tests throughout `src/test/`
-- **Rationale:** Keeps temporary test artifacts separate from source code and version control
+**Project Execution:**
 
-> **🎯 Note:** These are development tools, not application code. SvelteKit application uses TypeScript/JavaScript only.
-
-**SvelteKit Configuration:**
-
-- **Project Configuration:** SvelteKit configuration in `svelte.config.js`, Vite config in `vite.config.js`
-- **TypeScript Configuration:** `tsconfig.json` for TypeScript compiler options
-- **No Root Configs:** Avoid placing unnecessary configuration files in project root
+- **ALWAYS execute from project root** - NEVER use `cd` commands
+- SvelteKit: `pnpm run dev|build|check`
+- Utilities: `make` commands
 
 **File Modification Scope:**
 
-- **Strict Scope:** Modify only requested files/paths unless global functionality requires shared resources
-- **Shared Resources:** May modify `src/lib/`, `src/routes/`, or component files for global SvelteKit features
-- **Documentation:** Avoid creating docs unless explicitly requested
+- Modify ONLY requested files unless global functionality requires shared resources
+- Avoid creating docs unless explicitly requested
 
-**Project Execution Standards:**
+> **📋 Complete standards:** See [SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md)
 
-- **Root Execution:** ALL scripts and commands MUST execute from the project root directory
-- **No Directory Changes:** NEVER use `cd` commands in Makefile or script execution
-- **Environment Configuration:** Project uses `.env` file for tooling configuration (automatically loaded by Makefile)
-- **SvelteKit Development:** Use `pnpm run dev`, `pnpm run build`, `pnpm run check` for application development
-- **Tooling Scripts:** Use `make` commands for utility scripts (content generation, validation, etc.)
+## 5. DOCUMENTATION & LEARNING
 
----
+**When users provide repeated corrections or fundamental rules:**
 
-## IMPERATIVE GUIDELINES PERSISTENCE
-
-**Learning Integration Rule:** When users provide specific imperative guidelines or corrections during interactions that represent fundamental project rules or repeated issues, these guidelines should be evaluated for inclusion in this document to ensure persistence across future interactions.
-
-**Evaluation Criteria:**
-
-- **Fundamental Project Rules:** Guidelines that affect core architecture, file organization, or execution standards
-- **Repeated Corrections:** Issues that users have had to correct multiple times across different interactions
-- **System-Wide Impact:** Rules that affect how all agents should work with the project
-- **Quality Standards:** Requirements that ensure consistent quality and prevent regression
-
-**Integration Process:**
-
-1. **Identify:** Recognize when user feedback represents a systemic rule rather than a one-time request
-2. **Evaluate:** Determine if the guideline should apply to all future interactions
-3. **Document:** Add the rule to the appropriate section in CLAUDE.md with clear, actionable language
-4. **Validate:** Ensure the rule doesn't conflict with existing guidelines
-
-**Documentation Architecture Strategy:**
-
-**Inline Documentation Approach:**
-
-- **Component-Level Documentation:** All component-specific knowledge stored as comprehensive inline comments
-- **Co-location Principle:** Documentation lives alongside implementation for better maintainability
-- **Recurring Issues:** Critical issues and solutions documented directly in affected component files
-- **Technical Architecture:** Consolidated in SVELTEKIT-GUIDE.md for comprehensive reference
+- Evaluate for inclusion in this document
+- Document recurring issues (2+ occurrences) as inline comments in affected files
+- Add architecture patterns to SVELTEKIT-GUIDE.md
 
 **Documentation Distribution:**
 
-- **SVELTEKIT-GUIDE.md:** Complete technical architecture, development standards, and troubleshooting
-- **CONTENT-STANDARDS.md:** Content creation workflows and quality assurance standards
-- **MERMAID-STANDARDS.md:** Diagram rendering requirements and syntax standards
-- **Component Files:** Specific implementation details, known issues, and architectural decisions
+- **SVELTEKIT-GUIDE.md** - Technical architecture, development standards
+- **CONTENT-STANDARDS.md** - Content workflows, quality assurance
+- **MERMAID-STANDARDS.md** - Diagram rendering, syntax standards
+- **Component Files** - Inline documentation for specific issues
 
-**Issue Documentation Workflow:**
+**DO NOT create standalone issue documentation files**
 
-- **Recurring Issues (2+ occurrences):** Document as inline comments in affected component files
-- **Architecture Patterns:** Add to SVELTEKIT-GUIDE.md for project-wide reference
-- **Component-Specific:** Include in relevant component file headers
-- **Avoid Separate Issue Files:** Do not create standalone documentation files for issues
+## 6. CRITICAL RULES
 
-**Examples of Guidelines That Should Persist:**
+**Scope:**
 
-- File organization standards (scripts execute from root)
-- Code architecture requirements (modular CSS, shadcn-svelte components, centralized state management)
-- Configuration management (all configs in settings.ts, no hardcoded values)
-- Validation procedures (always run `make check-wip`, `pnpm run format`, `pnpm run lint`, and `pnpm run check` after SvelteKit changes)
-- Mobile-first development mandates
-- Security requirements (secure by default, no exposed secrets)
-- Issue documentation co-location (inline comments in affected components)
-- Test isolation requirements (TestSetup pattern, temporary directories, cleanup procedures)
-- Dependency evaluation process (research alternatives, version compatibility, community support)
+- Do what is asked - nothing more, nothing less
+- NEVER create files unless absolutely necessary
+- ALWAYS prefer editing existing files
+- NEVER create documentation files unless explicitly requested
 
----
+**Mobile-First Mandate:**
 
-## IMPORTANT INSTRUCTION REMINDERS
+- Test mobile (≤390px) BEFORE desktop
 
-- Do what has been asked; nothing more, nothing less
-- NEVER create files unless they're absolutely necessary for achieving your goal
-- ALWAYS prefer editing an existing file to creating a new one
-- NEVER proactively create documentation files (\*.md) or README files. Only create documentation files if explicitly requested by the User
-- **MOBILE-FIRST MANDATE:** Always test mobile experience (≤390px) before desktop
-- **SVELTEKIT DEVELOPMENT:** Use components and TypeScript - avoid vanilla HTML/CSS/JS
-- **shadcn-svelte PRIORITY:** Always check component library first before building custom components
-- **THREE-TIERED VALIDATION STRATEGY:** Always use the performance-optimized three-tiered approach for code validation:
-  - **Tier 1 (Fast WIP Check ~5-15s):** `make check-wip` or `pnpm run check:wip` - validates only modified/untracked files
-  - **Tier 2 (Quality Checks ~30-90s):** `make validate-quality` - theme validation + unit tests
-  - **Tier 3 (Comprehensive ~1-3m):** `pnpm run format` + `pnpm run lint` + `pnpm run check` - complete project formatting, linting, and TypeScript/SvelteKit validation
-- **ZERO TOLERANCE POLICY:** NO TypeScript errors, NO warnings, NO unused variables (unless user-requested or ShadCN components), NO deprecated components
-- **AUTOMATED VALIDATION:** ESLint and Prettier handle code formatting and quality automatically
-- **CONTENT VALIDATION:** Use `make validate-content` for JSON structure validation when needed
-- **CONTENT-FIRST:** All new features should consume TypeScript data from `src/data/` structure using `$data` alias
+**Zero Tolerance:**
+
+- NO TypeScript errors or warnings
+- NO unused variables (except ShadCN components)
+- NO deprecated components
+- 100% test pass rate
+
+**Validation:**
+
+- Tier 1: `make check-wip` (5-15s)
+- Tier 2: `pnpm run test` (30-90s)
+- Tier 3: `pnpm run format` + `pnpm run lint` + `pnpm run check` (1-3m)
+
+**Content:**
+
+- ALL new features MUST consume TypeScript data from `src/data/` using `$data` alias
+- Use `make validate-content` for JSON structure validation

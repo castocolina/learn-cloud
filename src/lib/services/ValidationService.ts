@@ -24,7 +24,7 @@ import { MermaidValidator } from "$lib/utils/mermaid-validator.js";
  */
 export class ValidationService {
 	private config: ValidationConfig;
-	private schemas: Map<string, z.ZodSchema> = new Map();
+	private schemas: Map<string, z.ZodType> = new Map();
 	private mermaidValidator: MermaidValidator;
 
 	constructor(config?: Partial<ValidationConfig>) {
@@ -326,7 +326,7 @@ export class ValidationService {
 	/**
 	 * Register a custom schema
 	 */
-	registerSchema(name: string, schema: z.ZodSchema): void {
+	registerSchema(name: string, schema: z.ZodType): void {
 		this.schemas.set(name, schema);
 	}
 

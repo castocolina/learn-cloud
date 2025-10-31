@@ -32,15 +32,99 @@ jobs:
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Cache node_modules
+      - name: Generate SvelteKit files
+        run: pnpm svelte-kit sync
+
+      - name: Cache node_modules and SvelteKit files
         uses: actions/cache@v4
         with:
-          path: node_modules
+          path: |
+            node_modules
+            .svelte-kit
           key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
 
-  # Parallel validations - SvelteKit validation and testing
+  # Generation phase - parallel jobs for flatnav and search index
+  generate-flatnav:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Restore node_modules and SvelteKit cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            .svelte-kit
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+          fail-on-cache-miss: true
+
+      - name: Generate flatnav
+        run: make generate-flatnav
+
+      - name: Upload flatnav
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-flatnav
+          path: src/data/generated/flatnav.ts
+          retention-days: 1
+
+  generate-search-index:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Restore node_modules and SvelteKit cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            .svelte-kit
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+          fail-on-cache-miss: true
+
+      - name: Generate search index
+        run: make generate-search-index-prod
+
+      - name: Upload search index
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-search-index
+          path: src/data/generated/search-index.ts
+          retention-days: 1
+
+  # Validation phase - runs in parallel with generation
   validate:
     needs: setup
     runs-on: ubuntu-latest
@@ -48,7 +132,7 @@ jobs:
       fail-fast: false # Continue with other validations even if one fails
       matrix:
         validation:
-          [svelte-check, svelte-lint, validate-bash, validate-content, validate-mermaid, tests]
+          [svelte-check, svelte-lint, validate-bash, validate-generated, validate-theme, tests]
 
     steps:
       - name: Checkout
@@ -65,21 +149,23 @@ jobs:
           node-version: "22"
           cache: "pnpm"
 
-      - name: Restore node_modules cache
+      - name: Restore node_modules and SvelteKit cache
         uses: actions/cache@v4
         with:
-          path: node_modules
+          path: |
+            node_modules
+            .svelte-kit
           key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-
 
-      - name: Cache TypeScript build info
+      - name: Cache ESLint and TypeScript
         uses: actions/cache@v4
         with:
           path: tmp/cache
-          key: ${{ runner.os }}-ts-build-${{ hashFiles('**/*.ts', '**/*.svelte', 'tsconfig.json', 'src/lib/utils/validation-utils.ts', 'src/bash/check-wip.sh') }}
+          key: ${{ runner.os }}-lint-cache-${{ hashFiles('pnpm-lock.yaml', 'eslint.config.js', 'tsconfig.json', '.prettierrc') }}
           restore-keys: |
-            ${{ runner.os }}-ts-build-
+            ${{ runner.os }}-lint-cache-
 
       - name: Run SvelteKit Check
         if: matrix.validation == 'svelte-check'
@@ -93,14 +179,71 @@ jobs:
         if: matrix.validation == 'validate-bash'
         run: make validate-bash
 
-      - name: Run Content Validation
-        if: matrix.validation == 'validate-content'
-        run: make validate-all-scripts-prod
+      - name: Validate Generated Content
+        if: matrix.validation == 'validate-generated'
+        run: make validate-generated-content
 
-      - name: Run Mermaid Validation
-        if: matrix.validation == 'validate-mermaid'
-        run: make validate-mermaid
+      - name: Validate Theme System
+        if: matrix.validation == 'validate-theme'
+        run: make validate-theme
 
       - name: Run Unit Tests
         if: matrix.validation == 'tests'
         run: make test-scripts
+
+  # E2E Tests - runs 200+ Playwright tests in parallel with validation and generation
+  e2e-tests:
+    needs: setup
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Restore node_modules and SvelteKit cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            .svelte-kit
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+          fail-on-cache-miss: true
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Install Playwright system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm exec playwright install-deps chromium
+
+      - name: Run E2E tests
+        run: pnpm run test:e2e
+
+      - name: Upload E2E test results on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-test-results
+          path: tmp/test/e2e/
+          retention-days: 7
