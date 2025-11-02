@@ -246,6 +246,58 @@ export interface AppSettings {
 			successStateDuration: number;
 		};
 		/**
+		 * Dialog Component Configuration
+		 *
+		 * Centralized settings for Dialog wrapper component behavior.
+		 * Includes close button, header styling, and action buttons.
+		 */
+		dialog: {
+			/** Close button configuration */
+			closeButton: {
+				/** Close button size (WCAG 2.1 minimum touch target: 44px) */
+				size: string;
+				/** Close button offset from dialog edges */
+				offset: {
+					/** Distance from top edge */
+					top: string;
+					/** Distance from right edge */
+					right: string;
+				};
+				/** IconButton variant */
+				variant: "subtle" | "default" | "ghost" | "primary" | "destructive";
+				/** Show close button by default (can be overridden by hideDefaultClose prop) */
+				showByDefault: boolean;
+			};
+			/** Action buttons configuration */
+			actionButtons: {
+				/** Default orientation for action buttons */
+				defaultOrientation: "horizontal" | "vertical";
+				/**
+				 * Default alignment for intelligent positioning system
+				 *
+				 * Simplified to 2 options (removed 'header-boundary' to eliminate collisions):
+				 * - 'content-aligned': Sticky float over content (always visible during scroll)
+				 * - 'close-adjacent': Adjacent to close button in header
+				 *
+				 * @see ActionButtonAlignment in ui.ts
+				 */
+				defaultAlignment: "content-aligned" | "close-adjacent";
+				/** Minimum number of action buttons that must be visible */
+				minVisibleButtons: number;
+				/** Safe gap for collision avoidance with close button */
+				safeGap: string;
+				/** Enable collision avoidance with close button */
+				respectCloseButton: boolean;
+				/** Alignment-specific offset configurations */
+				alignmentOffsets: {
+					/** Content-aligned offset from right edge */
+					contentAligned: string;
+					/** Close-adjacent offset from right edge */
+					closeAdjacent: string;
+				};
+			};
+		};
+		/**
 		 * Content Layout Configuration
 		 *
 		 * Controls the layout and typography presentation of content articles.
@@ -288,6 +340,153 @@ export interface AppSettings {
 			 */
 			padding: ContentPadding;
 		};
+
+		/**
+		 * CodeBlock Configuration (Task 8F)
+		 *
+		 * Centralized settings for syntax-highlighted code blocks with Shiki integration.
+		 * Bundle optimization through selective language loading.
+		 */
+		codeBlock: {
+			/**
+			 * Syntax highlighting configuration
+			 */
+			syntax: {
+				/**
+				 * Languages to load in Shiki highlighter (bundle optimization)
+				 *
+				 * Only languages in this list will be included in the bundle.
+				 * Reduces bundle size from ~6.6MB (all 200+ langs) to ~2MB (~14 langs).
+				 *
+				 * @default ["typescript", "javascript", "svelte", "python", "go", "rust",
+				 *           "java", "sql", "yaml", "bash", "hcl", "dockerfile", "graphql", "json"]
+				 */
+				enabledLanguages: import("./types.js").ProgrammingLanguage[];
+
+				/**
+				 * Shiki theme configuration for light/dark modes
+				 */
+				themes: {
+					/**
+					 * Theme for light mode
+					 * @default "vitesse-light"
+					 */
+					light: import("./ui.js").ShikiTheme;
+					/**
+					 * Theme for dark mode
+					 * @default "vitesse-dark"
+					 */
+					dark: import("./ui.js").ShikiTheme;
+				};
+
+				/**
+				 * Fallback language when specified language not supported
+				 * @default "text"
+				 */
+				fallbackLanguage: string;
+
+				/**
+				 * Enable syntax highlighting globally
+				 * When false, code blocks render as plain text
+				 * @default true
+				 */
+				enableSyntaxHighlighting: boolean;
+			};
+
+			/**
+			 * Default UI settings for code blocks
+			 */
+			defaults: {
+				/**
+				 * Show line numbers by default
+				 * @default true
+				 */
+				showLineNumbers: boolean;
+
+				/**
+				 * Show copy-to-clipboard button by default
+				 * @default true
+				 */
+				showCopyButton: boolean;
+
+				/**
+				 * Show expand button for Dialog full-screen view
+				 * @default true
+				 */
+				showExpandButton: boolean;
+
+				/**
+				 * Show download button to save code as file
+				 * @default false
+				 */
+				showDownloadButton: boolean;
+
+				/**
+				 * Maximum code block height before scrolling
+				 * @default "600px"
+				 */
+				maxHeight: string;
+
+				/**
+				 * Enable word wrap for long lines
+				 * @default false
+				 */
+				enableWordWrap: boolean;
+			};
+
+			/**
+			 * Copy-to-clipboard feedback configuration
+			 */
+			copyFeedback: {
+				/**
+				 * Success state duration in milliseconds
+				 * How long "Copied!" feedback persists
+				 * @default 2000 (inherits from iconGrid.successStateDuration)
+				 */
+				duration: number;
+
+				/**
+				 * Icon shown after successful copy
+				 * @default "Check"
+				 */
+				successIcon: string;
+
+				/**
+				 * Default copy button icon
+				 * @default "Copy"
+				 */
+				defaultIcon: string;
+			};
+
+			/**
+			 * Action Buttons Configuration
+			 *
+			 * Settings for action buttons in both inline IconGrid and Dialog expansion.
+			 */
+			actionButtons: {
+				/** Default orientation for action buttons (inline and Dialog) */
+				defaultOrientation: "horizontal" | "vertical";
+				/** Gap between buttons */
+				gap: string;
+				/** Button icon size */
+				iconSize: string;
+				/** Inline buttons positioning (compact view) */
+				inline: {
+					position: {
+						/** Distance from top */
+						top: string;
+						/** Distance from right */
+						right: string;
+					};
+				};
+				/** Dialog expansion configuration */
+				dialog: {
+					/** Alignment system for Dialog action buttons */
+					alignment: "content-aligned" | "close-adjacent";
+				};
+			};
+		};
+
 		// Future UI settings can be grouped here
 	};
 

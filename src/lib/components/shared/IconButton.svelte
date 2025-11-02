@@ -67,7 +67,7 @@ PROPS:
 	// ============================================================================
 
 	let {
-		icon,
+		icon: Icon,
 		label,
 		onClick,
 		size = SETTINGS.ui.iconGrid.defaultIconSize,
@@ -117,11 +117,6 @@ PROPS:
 	// ============================================================================
 	// Computed CSS Classes (Svelte 5 $derived)
 	// ============================================================================
-
-	/**
-	 * Icon component derived from props
-	 */
-	const IconComponent = $derived(icon);
 
 	/**
 	 * Generate CSS classes based on iconState and resolved variant
@@ -211,5 +206,5 @@ PROPS:
 	title={label}
 	type="button"
 >
-	<IconComponent {size} />
+	<Icon {size} />
 </button>

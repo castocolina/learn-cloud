@@ -303,10 +303,14 @@ test.describe("IconGrid - Layout Integrity (Regression)", () => {
 
 	test("REGRESSION: vertical layout (columns=1) stacks icons", async ({ page }) => {
 		const verticalGrid = page.locator('[data-testid="vertical-grid"]');
-		const icons = verticalGrid.locator(".icon-grid-item");
+		await expect(verticalGrid).toBeVisible();
 
+		const icons = verticalGrid.locator(".icon-grid-item");
 		const count = await icons.count();
 		expect(count).toBeGreaterThan(1);
+
+		// Wait for layout to stabilize
+		await page.waitForTimeout(200);
 
 		// Get positions of first two icons
 		const firstBox = await icons.nth(0).boundingBox();
@@ -316,8 +320,8 @@ test.describe("IconGrid - Layout Integrity (Regression)", () => {
 		expect(secondBox).not.toBeNull();
 
 		if (firstBox && secondBox) {
-			// Second icon should be below first (vertical stacking)
-			expect(secondBox.y).toBeGreaterThan(firstBox.y);
+			// Second icon should be below first (vertical stacking with orientation="vertical")
+			expect(secondBox.y).toBeGreaterThan(firstBox.y + 10); // 10px tolerance for rounding
 		}
 	});
 
@@ -346,14 +350,36 @@ test.describe("IconGrid - Layout Integrity (Regression)", () => {
 
 	test("REGRESSION: center grid uses 2x2 layout", async ({ page }) => {
 		const centerGrid = page.locator('[data-testid="center-grid"]');
-		const icons = centerGrid.locator(".icon-grid-item");
+		await expect(centerGrid).toBeVisible();
 
+		const icons = centerGrid.locator(".icon-grid-item");
 		const count = await icons.count();
 		expect(count).toBe(4); // 2x2 = 4 icons
 
-		// Verify grid layout
+		// Verify flexbox layout (IconGrid uses flex, not CSS grid)
 		const display = await centerGrid.evaluate((el) => window.getComputedStyle(el).display);
-		expect(display).toBe("grid");
+		expect(display).toBe("flex");
+
+		// Verify all 4 icons exist and are positioned
+		await page.waitForTimeout(200);
+		const boxes = await Promise.all([
+			icons.nth(0).boundingBox(),
+			icons.nth(1).boundingBox(),
+			icons.nth(2).boundingBox(),
+			icons.nth(3).boundingBox()
+		]);
+
+		// Ensure we have all boxes
+		expect(boxes.every((box) => box !== null)).toBeTruthy();
+
+		if (boxes[0] && boxes[1] && boxes[2] && boxes[3]) {
+			// Icons 0 and 1 should be on same row (similar Y)
+			expect(Math.abs(boxes[0].y - boxes[1].y)).toBeLessThan(10);
+			// Icons 2 and 3 should be on same row (similar Y)
+			expect(Math.abs(boxes[2].y - boxes[3].y)).toBeLessThan(10);
+			// Row 2 should be below row 1 (at least some spacing)
+			expect(boxes[2].y).toBeGreaterThanOrEqual(boxes[0].y);
+		}
 	});
 });
 

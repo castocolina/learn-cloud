@@ -28,6 +28,7 @@
 	import * as Sidebar from "$lib/components/ui/sidebar";
 	import MainSidebar from "$lib/components/navigation/MainSidebar.svelte";
 	import StickyHeader from "$lib/components/navigation/StickyHeader.svelte";
+	import Dialog from "$lib/components/shared/Dialog.svelte";
 
 	let { children } = $props();
 </script>
@@ -57,3 +58,6 @@
 		</div>
 	</main>
 </Sidebar.Provider>
+
+<!-- Global Dialog (TASK 8E): Store mode for openDialog() API -->
+<Dialog />

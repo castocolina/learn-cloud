@@ -286,6 +286,311 @@ export const SETTINGS: AppSettings = {
 		},
 
 		/**
+		 * CodeBlock Configuration (Task 8F)
+		 *
+		 * Centralized settings for syntax-highlighted code blocks with Shiki integration.
+		 * Bundle optimization: ~2MB (14 languages) vs ~6.6MB (200+ languages) = 70% reduction
+		 */
+		codeBlock: {
+			/**
+			 * Syntax highlighting configuration
+			 */
+			syntax: {
+				/**
+				 * Languages to load in Shiki highlighter (bundle optimization)
+				 *
+				 * Only these languages will be included in the bundle.
+				 * Add/remove languages based on your content needs.
+				 *
+				 * Current selection: 14 languages = ~2MB bundle size
+				 */
+				enabledLanguages: [
+					"typescript",
+					"javascript",
+					"svelte",
+					"python",
+					"go",
+					"rust",
+					"java",
+					"sql",
+					"yaml",
+					"bash",
+					"hcl",
+					"dockerfile",
+					"graphql",
+					"json"
+				],
+
+				/**
+				 * Shiki theme configuration for light/dark modes
+				 *
+				 * Available themes: "github-light", "github-dark",
+				 * "vitesse-light", "vitesse-dark", "dracula", "nord", "monokai"
+				 */
+				themes: {
+					light: "vitesse-light" as const,
+					dark: "vitesse-dark" as const
+				},
+
+				/**
+				 * Fallback language when specified language not supported
+				 */
+				fallbackLanguage: "text",
+
+				/**
+				 * Enable syntax highlighting globally
+				 * Set to false to render all code as plain text
+				 */
+				enableSyntaxHighlighting: true
+			},
+
+			/**
+			 * Default UI settings for code blocks
+			 */
+			defaults: {
+				/**
+				 * Show line numbers by default
+				 */
+				showLineNumbers: true,
+
+				/**
+				 * Show copy-to-clipboard button by default
+				 */
+				showCopyButton: true,
+
+				/**
+				 * Show expand button for Dialog full-screen view
+				 * @default true
+				 */
+				showExpandButton: true,
+
+				/**
+				 * Show download button to save code as file
+				 * @default true
+				 */
+				showDownloadButton: true,
+
+				/**
+				 * Maximum code block height before scrolling
+				 * CSS unit (px, rem, vh, etc.)
+				 */
+				maxHeight: "600px",
+
+				/**
+				 * Enable word wrap for long lines
+				 * When false, uses horizontal scroll
+				 * @default false
+				 */
+				enableWordWrap: false
+			},
+
+			/**
+			 * Copy-to-clipboard feedback configuration
+			 */
+			copyFeedback: {
+				/**
+				 * Success state duration in milliseconds
+				 * Inherits from iconGrid.successStateDuration for consistency
+				 */
+				duration: 2000,
+
+				/**
+				 * Icon shown after successful copy (Lucide icon name)
+				 */
+				successIcon: "Check",
+
+				/**
+				 * Default copy button icon (Lucide icon name)
+				 */
+				defaultIcon: "Copy"
+			},
+
+			/**
+			 * Action Buttons Configuration
+			 * Controls action buttons appearance in both inline IconGrid and Dialog expansion
+			 */
+			actionButtons: {
+				/**
+				 * Default orientation for action buttons
+				 * Applies to both inline buttons and Dialog expanded view
+				 * @default 'vertical'
+				 */
+				defaultOrientation: "vertical" as const,
+
+				/**
+				 * Gap between buttons (applies to inline and Dialog)
+				 * @default '0.5rem'
+				 */
+				gap: "0.5rem",
+
+				/**
+				 * Icon size (applies to inline and Dialog)
+				 * @default '20px'
+				 */
+				iconSize: "20px",
+
+				/**
+				 * Inline buttons positioning (compact view)
+				 */
+				inline: {
+					position: {
+						/** Distance from top */
+						top: "0.5rem",
+						/** Distance from right */
+						right: "0.5rem"
+					}
+				},
+
+				/**
+				 * Dialog expansion configuration
+				 */
+				dialog: {
+					/**
+					 * Alignment system for Dialog action buttons
+					 * @default 'content-aligned'
+					 */
+					alignment: "content-aligned" as const
+				}
+			}
+		},
+
+		/**
+		 * Dialog Component Configuration
+		 *
+		 * Settings for Dialog component including close button, header styling,
+		 * and action buttons
+		 */
+		dialog: {
+			/**
+			 * Close button configuration
+			 */
+			closeButton: {
+				/**
+				 * Close button size (minimum touch target)
+				 * WCAG 2.1 Level AA requires 44x44px minimum for touch targets
+				 * @default '44px'
+				 */
+				size: "44px",
+
+				/**
+				 * Close button offset from dialog edges
+				 */
+				offset: {
+					/**
+					 * Distance from top edge
+					 * @default '1.25rem' (20px)
+					 */
+					top: "1.25rem",
+					/**
+					 * Distance from right edge
+					 * @default '1.25rem' (20px)
+					 */
+					right: "1.25rem"
+				},
+
+				/**
+				 * IconButton variant for close button
+				 * @default 'subtle'
+				 */
+				variant: "subtle" as const,
+
+				/**
+				 * Show close button by default
+				 * Can be overridden by hideDefaultClose prop
+				 * @default true
+				 */
+				showByDefault: true
+			},
+
+			/**
+			 * Action buttons configuration
+			 */
+			actionButtons: {
+				/**
+				 * Default orientation for action buttons
+				 * @default 'horizontal'
+				 */
+				defaultOrientation: "horizontal" as const,
+
+				/**
+				 * Default alignment for intelligent positioning system
+				 *
+				 * SIMPLIFIED SYSTEM (2 Options):
+				 * - 'content-aligned': Sticky float over content (76px from top, 20px from right) - DEFAULT
+				 * - 'close-adjacent': Adjacent to close button in header (76px from right for horizontal)
+				 *
+				 * SMART FEATURES:
+				 * - Auto-switches to vertical if horizontal + 4+ buttons
+				 * - Sticky positioning for content-aligned (always visible during scroll)
+				 * - Automatic collision avoidance with 76px safe zone
+				 * - close-adjacent vertical: stacks BELOW close button
+				 *
+				 * REMOVED: 'header-boundary' (eliminated to prevent collisions)
+				 *
+				 * @default 'content-aligned'
+				 */
+				defaultAlignment: "content-aligned" as const,
+
+				/**
+				 * Minimum number of action buttons that must be visible
+				 *
+				 * Used for visibility validation in DEV mode.
+				 * Logs warning if fewer buttons are provided than this minimum.
+				 *
+				 * @default 3
+				 */
+				minVisibleButtons: 3,
+
+				/**
+				 * Safe gap for collision avoidance
+				 * Minimum spacing between action buttons and close button
+				 * @default '12px'
+				 */
+				safeGap: "12px",
+
+				/**
+				 * Enable collision avoidance with close button
+				 * When true, action buttons automatically adjust position to avoid overlap
+				 * @default true
+				 */
+				respectCloseButton: true,
+
+				/**
+				 * Alignment-specific offset configurations
+				 *
+				 * Simplified to 2 alignments (removed 'header-boundary' to eliminate collisions).
+				 * Used by intelligent positioning system for precise control.
+				 *
+				 * Design Decision (2025-11-01):
+				 * Industry research shows separate zones (header vs content) prevent collisions.
+				 * Our floating pattern matches VS Code, GitHub, CodeSandbox.
+				 */
+				alignmentOffsets: {
+					/**
+					 * Content-aligned offset from right edge
+					 *
+					 * Used for sticky positioning over content area.
+					 * Matches content horizontal padding for visual consistency.
+					 *
+					 * @default '1.25rem' (20px)
+					 */
+					contentAligned: "1.25rem",
+
+					/**
+					 * Close-adjacent offset from right edge
+					 *
+					 * Calculated safe zone to avoid collision with close button:
+					 * closeButton.size + closeButton.offset.right + safeGap
+					 * = 44px (WCAG min touch) + 20px (offset) + 12px (gap) = 76px
+					 *
+					 * @default '76px'
+					 */
+					closeAdjacent: "76px"
+				}
+			}
+		},
+
+		/**
 		 * Content Layout Configuration
 		 *
 		 * Controls how content articles are displayed for optimal readability.

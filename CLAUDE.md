@@ -2,7 +2,12 @@
 
 > **📚 Documentation Structure:**
 >
-> - **[SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md)** - Technical architecture and user experience standards
+> - **[SvelteKit Guides](docs/SVELTEKIT-INDEX.md)** - Technical architecture and user experience standards (master index)
+>   - [SVELTE-ARCHITECTURE.md](docs/SVELTE-ARCHITECTURE.md) - Core setup and architecture
+>   - [SVELTE-STYLING.md](docs/SVELTE-STYLING.md) - CSS architecture and layout
+>   - [SVELTE-COMPONENTS.md](docs/SVELTE-COMPONENTS.md) - Component development
+>   - [SVELTE-DEVELOPMENT.md](docs/SVELTE-DEVELOPMENT.md) - Development patterns
+>   - [SVELTE-TROUBLESHOOTING-UX.md](docs/SVELTE-TROUBLESHOOTING-UX.md) - Troubleshooting & UX
 > - **[CONTENT-STANDARDS.md](CONTENT-STANDARDS.md)** - Content creation workflows and quality assurance standards
 
 ---
@@ -49,7 +54,7 @@
 - **MUST cite** official documentation and recognized industry sources
 - **MUST use** recent stable versions of all technologies
 
-> **📋 Complete standards:** See [SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md) and [CONTENT-STANDARDS.md](CONTENT-STANDARDS.md)
+> **📋 Complete standards:** See [SvelteKit Guides](docs/SVELTEKIT-INDEX.md) and [CONTENT-STANDARDS.md](CONTENT-STANDARDS.md)
 
 ## 2. TECH STACK (MANDATORY VERSIONS)
 
@@ -69,7 +74,7 @@
 - **Vitest** - Unit tests
 - **Playwright** - E2E tests (MANDATORY for visual/critical changes)
 
-> **📋 Complete architecture:** See [SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md)
+> **📋 Complete architecture:** See [SVELTE-ARCHITECTURE.md](docs/SVELTE-ARCHITECTURE.md)
 
 ## 3. QUALITY STANDARDS
 
@@ -108,7 +113,7 @@
 - ❌ Use inline styles - use modular CSS architecture
 - ❌ Use deprecated Svelte 4 syntax (`export let`, `$:` reactivity)
 
-> **📋 Component patterns:** See [SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md)
+> **📋 Component patterns:** See [SVELTE-COMPONENTS.md](docs/SVELTE-COMPONENTS.md)
 
 ### Type System & Imports
 
@@ -125,7 +130,7 @@
 - `$lib` → `src/lib/`
 - `$config` → `src/config/`
 
-> **📋 Type system architecture:** See [SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md)
+> **📋 Type system architecture:** See [SVELTE-COMPONENTS.md](docs/SVELTE-COMPONENTS.md#unified-typescript-architecture)
 
 ### Content Management
 
@@ -152,7 +157,7 @@ ALL configuration MUST be in `src/config/settings.ts`:
 - Scripts: `SETTINGS.scripts.*`
 - Create subcategories as needed
 
-> **📋 Settings architecture:** See [SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md#configuration-management)
+> **📋 Settings architecture:** See [SVELTE-COMPONENTS.md](docs/SVELTE-COMPONENTS.md#global-configuration-strategy)
 
 ### Library Vetting (MANDATORY)
 
@@ -168,7 +173,7 @@ ALL configuration MUST be in `src/config/settings.ts`:
 
 **Example:** ❌ `zod-to-json-schema` (Zod v3 only) → ✅ Zod v4 native `z.toJSONSchema()`
 
-> **📋 Evaluation matrix:** See [SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md#dependency-evaluation--installation-process)
+> **📋 Evaluation matrix:** See [SVELTE-DEVELOPMENT.md](docs/SVELTE-DEVELOPMENT.md#dependency-evaluation--installation-process)
 
 ### Development Standards
 
@@ -190,7 +195,7 @@ ALL configuration MUST be in `src/config/settings.ts`:
 - Modify ONLY requested files unless global functionality requires shared resources
 - Avoid creating docs unless explicitly requested
 
-> **📋 Complete standards:** See [SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md)
+> **📋 Complete standards:** See [SvelteKit Guides](docs/SVELTEKIT-INDEX.md)
 
 ## 5. DOCUMENTATION & LEARNING
 
@@ -198,11 +203,12 @@ ALL configuration MUST be in `src/config/settings.ts`:
 
 - Evaluate for inclusion in this document
 - Document recurring issues (2+ occurrences) as inline comments in affected files
-- Add architecture patterns to SVELTEKIT-GUIDE.md
+- Add architecture patterns to relevant SvelteKit guides
 
 **Documentation Distribution:**
 
-- **SVELTEKIT-GUIDE.md** - Technical architecture, development standards
+- **SvelteKit Guides** (docs/SVELTEKIT-INDEX.md) - Technical architecture, development standards
+  - SVELTE-ARCHITECTURE.md, SVELTE-STYLING.md, SVELTE-COMPONENTS.md, SVELTE-DEVELOPMENT.md, SVELTE-TROUBLESHOOTING-UX.md
 - **CONTENT-STANDARDS.md** - Content workflows, quality assurance
 - **MERMAID-STANDARDS.md** - Diagram rendering, syntax standards
 - **Component Files** - Inline documentation for specific issues

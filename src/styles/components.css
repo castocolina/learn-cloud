@@ -2047,21 +2047,21 @@
 }
 
 .demo-quiz-difficulty-beginner {
-	background: hsl(142, 76%, 36%, 0.15) !important;
-	color: hsl(142, 76%, 36%) !important;
-	border-color: hsl(142, 76%, 36%, 0.3) !important;
+	background: hsl(var(--success) / 0.15) !important;
+	color: hsl(var(--success)) !important;
+	border-color: hsl(var(--success) / 0.3) !important;
 }
 
 .demo-quiz-difficulty-intermediate {
-	background: hsl(45, 93%, 47%, 0.15) !important;
-	color: hsl(45, 93%, 47%) !important;
-	border-color: hsl(45, 93%, 47%, 0.3) !important;
+	background: hsl(var(--warning) / 0.15) !important;
+	color: hsl(var(--warning)) !important;
+	border-color: hsl(var(--warning) / 0.3) !important;
 }
 
 .demo-quiz-difficulty-advanced {
-	background: hsl(0, 84%, 60%, 0.15) !important;
-	color: hsl(0, 84%, 60%) !important;
-	border-color: hsl(0, 84%, 60%, 0.3) !important;
+	background: hsl(var(--destructive) / 0.15) !important;
+	color: hsl(var(--destructive)) !important;
+	border-color: hsl(var(--destructive) / 0.3) !important;
 }
 
 .demo-quiz-category-badge {
@@ -2104,17 +2104,17 @@
 }
 
 .demo-quiz-prerequisite-badge {
-	background: hsl(45, 93%, 47%, 0.1) !important;
-	color: hsl(45, 93%, 47%) !important;
-	border: 1px solid hsl(45, 93%, 47%, 0.2) !important;
+	background: hsl(var(--warning) / 0.1) !important;
+	color: hsl(var(--warning)) !important;
+	border: 1px solid hsl(var(--warning) / 0.2) !important;
 	font-size: 0.8rem;
 	font-weight: 500;
 }
 
 .demo-quiz-objective-badge {
-	background: hsl(217, 91%, 60%, 0.1) !important;
-	color: hsl(217, 91%, 60%) !important;
-	border: 1px solid hsl(217, 91%, 60%, 0.2) !important;
+	background: hsl(var(--primary) / 0.1) !important;
+	color: hsl(var(--primary)) !important;
+	border: 1px solid hsl(var(--primary) / 0.2) !important;
 	font-size: 0.8rem;
 	font-weight: 500;
 }
@@ -2536,24 +2536,170 @@
    ===================================================== */
 
 /**
- * Dialog wrapper component styles
+ * Dialog Component Styles - Complete Suite
  *
- * These styles support the Dialog wrapper component from Task 6,
- * demonstrating the centralized CSS architecture pattern.
+ * Comprehensive styling for Dialog wrapper component with sophisticated design.
+ * Extracted from Dialog.svelte following modular CSS architecture standards.
  *
  * Key patterns:
  * - All styles in @layer components (Tailwind v4 compatible)
  * - Uses semantic color variables (--foreground, --muted, etc.)
  * - Z-index hierarchy via CSS custom properties (no hardcoded values)
  * - Mobile-first responsive design
+ * - Settings-driven dimensions (via CSS custom properties)
  *
  * Related files:
  * - src/lib/components/shared/Dialog.svelte
- * - docs/WRAPPER-PATTERN-GUIDE.md
+ * - src/config/settings.ts (dialog configuration)
+ * - SVELTEKIT-GUIDE.md (modular CSS architecture)
  */
 
 .dialog-body {
 	padding: 1rem 0;
+}
+
+/**
+ * Full-size dialog: Apply SETTINGS-based dimensions on tablet-portrait+ only
+ *
+ * Uses CSS custom properties set via inline styles (--dialog-max-width, --dialog-max-height)
+ * Only applies to dialogs with size="full" (marked with .dialog-full-size class)
+ * Mobile (< 640px): Always full-screen via Tailwind classes
+ * Tablet-portrait+ (≥ 640px): Uses SETTINGS.ui.mermaid.modalPagePercent (default 90%)
+ */
+@media (min-width: 640px) {
+	:global([data-slot="dialog-content"].dialog-full-size) {
+		max-width: var(--dialog-max-width, 90vw) !important;
+		max-height: var(--dialog-max-height, 90vh) !important;
+	}
+}
+
+/**
+ * Dialog Header - Sophisticated Modern Design
+ *
+ * DESIGN FEATURES:
+ * 1. Textured Background: Multi-layer radial gradients creating subtle depth
+ * 2. Dissolving Edge: CSS mask-image for smooth fade toward top-right corner
+ * 3. Directional Shadow: Material Design 3 + bottom-left inset shadows
+ * 4. Theme Integration: 100% semantic CSS variables (slate palette)
+ *
+ * TECHNICAL APPROACH:
+ * - Multi-layer radial gradients: Modern alternative to classic "relief" effect
+ * - mask-image: Dual-axis fade (right + bottom) for dissolving effect
+ * - box-shadow: MD3 elevation + directional bottom-left anchor
+ * - GPU-accelerated: All techniques use hardware acceleration
+ *
+ * BROWSER SUPPORT: Chrome 97+, Firefox 77+, Safari 15.4+, Edge 97+
+ * ACCESSIBILITY: WCAG AA compliant, reduced motion safe (static effects only)
+ */
+:global([data-slot="dialog-header"].dialog-header-sophisticated) {
+	/* === BASE STYLING === */
+	/* Solid background foundation */
+	background-color: hsl(var(--background)) !important;
+
+	/* === TEXTURED BACKGROUND === */
+	/* Multi-layer radial gradients creating sophisticated depth perception */
+	background-image:
+		/* Highlight zone (top-left area) - creates soft peak */
+		radial-gradient(circle at 20% 35%, hsl(var(--primary) / 0.08) 0%, transparent 40%),
+		/* Shadow zone (bottom-right area) - creates subtle valley */
+			radial-gradient(circle at 75% 70%, hsl(var(--foreground) / 0.06) 0%, transparent 30%),
+		/* Overall directional gradient - reinforces light source */
+			linear-gradient(135deg, hsl(var(--muted) / 0.5), hsl(var(--muted) / 0.2)) !important;
+
+	/* === BORDERS & ROUNDED CORNERS === */
+	/* Border radius: top corners + bottom-left for visual interest */
+	border: none !important;
+	border-top-left-radius: 0.5rem !important; /* 8px rounded corner (top-left) */
+	border-top-right-radius: 0.5rem !important; /* 8px rounded corner (top-right) */
+	border-bottom-left-radius: 0.5rem !important; /* 8px rounded corner (bottom-left) */
+	/* Bottom-right: No radius - creates asymmetric visual flow toward close button */
+
+	/* === SOPHISTICATED SHADOW SYSTEM === */
+	/* Material Design 3 elevation + bottom-left directional anchor */
+	box-shadow:
+		/* MD3 Elevation Level 3 - forward projection */
+		0 4px 20px -2px rgba(0, 0, 0, 0.15),
+		0 2px 12px -1px rgba(0, 0, 0, 0.1),
+		0 1px 4px 0px rgba(0, 0, 0, 0.06),
+		/* Bottom-left directional shadows - creates visual anchor */ inset 0px -10px 16px -8px
+			rgba(0, 0, 0, 0.1),
+		inset 10px 0px 16px -8px rgba(0, 0, 0, 0.08) !important;
+
+	/* === DISSOLVING EDGE EFFECT === */
+	/* Smooth fade toward top-right corner (close button area) */
+	/* Dual-axis gradient mask creates seamless "merge" effect */
+	/* CONFIGURABLE: Adjust fade points below */
+	/*   - Right fade: black 75% (fade starts at 75% width) */
+	/*   - Bottom fade: black 92% (fade starts at 92% height) */
+	mask-image:
+		linear-gradient(to right, black 0%, black 75%, transparent 100%),
+		linear-gradient(to bottom, black 0%, black 92%, transparent 100%) !important;
+	-webkit-mask-image:
+		linear-gradient(to right, black 0%, black 75%, transparent 100%),
+		linear-gradient(to bottom, black 0%, black 92%, transparent 100%) !important;
+	mask-composite: intersect !important;
+	-webkit-mask-composite: destination-in !important;
+
+	/* === SPACING & POSITIONING === */
+	/* Harmonious padding: 20px (1.25rem) provides balance */
+	/* Aligned with content padding for visual consistency */
+	padding: 1.25rem !important;
+	margin-bottom: 0 !important;
+	position: relative !important;
+}
+
+/**
+ * Mobile-First Responsive Adjustments
+ *
+ * Lighter texture on smaller screens for optimal performance
+ * and visual clarity on mobile devices
+ */
+@media (max-width: 640px) {
+	:global([data-slot="dialog-header"].dialog-header-sophisticated) {
+		/* Simplified gradient stack for mobile */
+		background-image:
+			/* Single highlight - reduced complexity */
+			radial-gradient(circle at 20% 35%, hsl(var(--primary) / 0.05) 0%, transparent 40%),
+			/* Simplified directional gradient */
+				linear-gradient(135deg, hsl(var(--muted) / 0.4), hsl(var(--muted) / 0.15)) !important;
+
+		/* Consistent padding on mobile */
+		padding: 1.25rem !important;
+
+		/* Square corners on mobile (full-screen dialogs) */
+		border-radius: 0 !important;
+	}
+}
+
+/**
+ * Dialog border fade-outs using box-shadow technique
+ *
+ * Problem: Dialog content has border all around, but we want:
+ * - Top-right area: border fades out in last 50px to let close button float
+ * - Bottom-right area: border fades out in last 30px for visual softness
+ *
+ * Solution: Inset box-shadow creates visual fade WITHOUT masking content
+ * - No Content Masking: Dialog remains fully visible (critical)
+ * - Simple CSS: No complex SVG, pure box-shadow technique
+ * - Tailwind Compatible: Uses hsl(var(--background)) from theme system
+ * - Universal Support: Works in all modern browsers
+ *
+ * Technique from: https://jsfiddle.net/Lw8pk5n7/
+ */
+:global([data-slot="dialog-content"]) {
+	/*
+	 * Multi-layered box-shadow:
+	 * 1. Standard Material Design elevation shadows (keep existing)
+	 * 2. Inset shadows for corner fade effects
+	 */
+	box-shadow:
+		/* Material Design 3 elevation (unchanged) */
+		0 4px 20px 0px rgba(0, 0, 0, 0.15),
+		0 2px 12px 0px rgba(0, 0, 0, 0.1),
+		/* Top-right corner fade (50px) - uses background color to fade border */ inset -50px -50px
+			50px -40px hsl(var(--background)),
+		/* Bottom-right corner fade (30px) - uses background color to fade border */ inset -30px 30px
+			30px -20px hsl(var(--background)) !important;
 }
 
 /**
@@ -2666,40 +2812,41 @@
 }
 
 /* Unit-Specific Accent Borders */
+/* Technology brand colors defined in src/app.css :root (--tech-*) */
 .python-accent {
-	border-left-color: #3776ab !important; /* Python blue */
+	border-left-color: hsl(var(--tech-python)) !important;
 }
 
 .go-accent {
-	border-left-color: #00add8 !important; /* Go cyan */
+	border-left-color: hsl(var(--tech-go)) !important;
 }
 
 .rust-accent {
-	border-left-color: #ce422b !important; /* Rust orange */
+	border-left-color: hsl(var(--tech-rust)) !important;
 }
 
 .cloud_databases-accent {
-	border-left-color: #4285f4 !important; /* Cloud blue */
+	border-left-color: hsl(var(--tech-cloud)) !important;
 }
 
 .graphql-accent {
-	border-left-color: #e10098 !important; /* GraphQL pink */
+	border-left-color: hsl(var(--tech-graphql)) !important;
 }
 
 .kubernetes-accent {
-	border-left-color: #326ce5 !important; /* Kubernetes blue */
+	border-left-color: hsl(var(--tech-kubernetes)) !important;
 }
 
 .docker-accent {
-	border-left-color: #2496ed !important; /* Docker blue */
+	border-left-color: hsl(var(--tech-docker)) !important;
 }
 
 .microservices-accent {
-	border-left-color: #00d1b2 !important; /* Teal */
+	border-left-color: hsl(var(--tech-microservices)) !important;
 }
 
 .monitoring-accent {
-	border-left-color: #ff6b6b !important; /* Monitoring red */
+	border-left-color: hsl(var(--tech-monitoring)) !important;
 }
 
 /* Header Container Layout */
@@ -3293,6 +3440,17 @@
 	@apply relative;
 }
 
+/* Orientation Modifiers - Control flex direction for icon layout */
+.icon-grid--horizontal {
+	@apply flex flex-row;
+	display: flex !important; /* Override grid display */
+}
+
+.icon-grid--vertical {
+	@apply flex flex-col;
+	display: flex !important; /* Override grid display */
+}
+
 /* ============================================================================
    Icon Grid Item (Button) Base Styles
    ============================================================================ */
@@ -3445,5 +3603,149 @@
 	/* Slightly larger gap for easier touch */
 	.icon-grid {
 		gap: var(--icon-gap, 0.75rem);
+	}
+}
+
+/* ============================================================================
+   Dialog Component Scrollbar Styling
+   ============================================================================ */
+
+/**
+ * Dialog Content Scrollbar Styling
+ * Matches navigation.css pattern for consistency
+ * Makes scrollbar subtle (6px) instead of default ~15-17px
+ *
+ * Purpose: Reduces visual prominence of scrollbar in dialog content area
+ * Pattern: Same as .main-sidebar-content scrollbar (navigation.css lines 527-544)
+ */
+
+/* Webkit browsers (Chrome, Safari, Edge) */
+:global(.dialog-content-scroll::-webkit-scrollbar) {
+	width: 6px; /* Thin, subtle scrollbar */
+}
+
+:global(.dialog-content-scroll::-webkit-scrollbar-track) {
+	background: transparent;
+}
+
+:global(.dialog-content-scroll::-webkit-scrollbar-thumb) {
+	background: hsl(var(--border));
+	border-radius: 3px;
+}
+
+:global(.dialog-content-scroll::-webkit-scrollbar-thumb:hover) {
+	background: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* Firefox scrollbar styling */
+:global(.dialog-content-scroll) {
+	scrollbar-width: thin;
+	scrollbar-color: hsl(var(--border)) transparent;
+}
+/**
+ * Dialog Content Scroll Wrapper
+ * 
+ * ARCHITECTURE FIX (2025-11-01):
+ * Moved overflow-y-auto from DialogPrimitive.Content to internal wrapper
+ * to enable sticky header that remains visible during scroll.
+ * 
+ * PATTERN: Follows shadcn-svelte best practice of scroll in content wrapper,
+ * NOT in Content primitive.
+ * 
+ * BENEFITS:
+ * - Header remains sticky (position: sticky, top: 0) during content scroll
+ * - Better UX: users can always see dialog title and description
+ * - Smooth scrolling with custom scrollbar styling
+ */
+.dialog-content-scroll-wrapper {
+	overflow-y: auto;
+	scroll-behavior: smooth;
+
+	/* Webkit scrollbar styling */
+	scrollbar-width: thin;
+	scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
+}
+
+.dialog-content-scroll-wrapper::-webkit-scrollbar {
+	width: 8px;
+}
+
+.dialog-content-scroll-wrapper::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.dialog-content-scroll-wrapper::-webkit-scrollbar-thumb {
+	background-color: hsl(var(--muted-foreground) / 0.3);
+	border-radius: 4px;
+	border: 2px solid transparent;
+	background-clip: content-box;
+}
+
+.dialog-content-scroll-wrapper::-webkit-scrollbar-thumb:hover {
+	background-color: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* =====================================================
+   CODE BLOCK EXTERNAL WRAPPER (RichTextViewer)
+   =====================================================
+
+   External wrapper for CodeBlock component when used with title/filename.
+   Matches showcase design pattern with header outside the component.
+
+   Architecture:
+   - Wrapper: Border container with overflow hidden (clean edges)
+   - External header: Separate from CodeBlock component
+   - CodeBlock inside: No border (inherits from wrapper)
+
+   Reference: src/routes/showcase/code-block/+page.svelte
+*/
+
+.code-block-wrapper {
+	margin-bottom: 1.5rem;
+	border: 1px solid hsl(var(--border));
+	border-radius: var(--radius);
+	overflow: hidden; /* Prevents border-radius bleeding */
+}
+
+.code-block-external-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0.75rem 1rem;
+	background: hsl(var(--muted));
+	border-bottom: 1px solid hsl(var(--border));
+}
+
+.code-block-external-title {
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: hsl(var(--foreground));
+	margin: 0;
+}
+
+.code-block-external-filename {
+	font-size: 0.75rem;
+	font-family: var(--font-mono);
+	color: hsl(var(--muted-foreground));
+}
+
+/* Remove CodeBlock's own border when inside wrapper */
+.code-block-wrapper :global(.code-block-container) {
+	border: none;
+	border-radius: 0;
+}
+
+/* Mobile optimization */
+@media (max-width: 640px) {
+	.code-block-external-header {
+		padding: 0.5rem 0.75rem;
+	}
+
+	.code-block-external-title {
+		font-size: 0.8125rem;
+	}
+
+	.code-block-external-filename {
+		font-size: 0.6875rem;
 	}
 }

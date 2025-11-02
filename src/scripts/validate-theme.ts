@@ -43,10 +43,57 @@ import { fileURLToPath } from "node:url";
 import { execSync } from "node:child_process";
 import { Command } from "commander";
 import { SETTINGS } from "$config/settings.js";
+import { ESLINT_IGNORE_PATTERNS } from "../../eslint.config.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const PROJECT_ROOT = join(__dirname, "../..");
+
+// ============================================================================
+// ESLINT PATTERN CONVERSION
+// ============================================================================
+
+/**
+ * Convert ESLint glob patterns to simple path prefixes for exclusion checking
+ *
+ * ESLint uses glob patterns (e.g., "src/book/**") for recursive matching.
+ * This validator uses startsWith() for simple directory exclusion.
+ * This function bridges the two approaches.
+ *
+ * Examples:
+ *   "src/book/**"          → "src/book"
+ *   "src/routes/demo/**"   → "src/routes/demo"
+ *   "**\/*.md"             → null (skip wildcard-only patterns)
+ *   "node_modules/**"      → "node_modules"
+ *
+ * @param patterns - Array of ESLint glob patterns
+ * @returns Array of simple path prefixes for startsWith() checking
+ */
+function convertESLintGlobsToSimplePaths(patterns: readonly string[]): string[] {
+	return patterns
+		.filter((pattern) => {
+			// Skip wildcard-only patterns (e.g., double-star-slash-star-dot-md)
+			if (pattern.startsWith("**")) return false;
+			// Skip single files without directory traversal (e.g., "package.json")
+			if (!pattern.includes("/")) return false;
+			return true;
+		})
+		.map((pattern) => {
+			// Remove trailing glob suffix (double-star)
+			return pattern.replace(/\/\*\*$/, "");
+		});
+}
+
+/**
+ * Pre-computed exclusion prefixes from ESLint configuration
+ * Single source of truth for directory exclusions across all validation tools
+ *
+ * Additional exclusion: "src/scripts" to prevent the validator from scanning itself
+ */
+const EXCLUDE_PREFIXES = [
+	...convertESLintGlobsToSimplePaths(ESLINT_IGNORE_PATTERNS),
+	"src/scripts" // Exclude validation scripts themselves
+];
 
 // ============================================================================
 // CLI ARGUMENT PARSING
@@ -95,6 +142,7 @@ interface ValidationConfig {
 		stackingContext: RegExp[];
 		inlineStyle: RegExp;
 		styleBlock: RegExp;
+		hardcodedColor: RegExp[];
 	};
 	zIndexVariables: string[];
 	requiredSemanticVars: string[];
@@ -109,6 +157,8 @@ const CONFIG: ValidationConfig = {
 		routesDir: join(PROJECT_ROOT, "src/routes")
 	},
 	patterns: {
+		// File extension filters: Only .svelte and .css files contain styles/CSS
+		// TypeScript/JavaScript files (.ts/.js) cannot have CSS, so no need to scan them
 		svelteFiles: /\.svelte$/,
 		cssFiles: /\.css$/,
 		// Detect @apply in <style> blocks (critical Tailwind v4 incompatibility)
@@ -116,16 +166,24 @@ const CONFIG: ValidationConfig = {
 		// Detect hardcoded z-index values (should use CSS variables)
 		hardcodedZIndex: /z-index:\s*\d+/gi,
 		// Detect properties that create stacking contexts
+		// Note: Only transform, opacity, filter, and will-change create stacking contexts
+		// text-transform, text-decoration, etc. do NOT create stacking contexts
 		stackingContext: [
-			/transform:\s*(?!none)/gi,
-			/opacity:\s*(?!1\b)/gi,
-			/filter:\s*(?!none)/gi,
-			/will-change:\s*transform/gi
+			/(?<![a-z-])transform:\s*(?!none)/gi, // Negative lookbehind excludes text-transform
+			/(?<![a-z-])opacity:\s*(?!1\b)/gi, // Negative lookbehind ensures exact property match
+			/(?<![a-z-])filter:\s*(?!none)/gi, // Negative lookbehind ensures exact property match
+			/(?<![a-z-])will-change:\s*transform/gi
 		],
 		// Detect inline styles in component templates (HIGH SEVERITY)
 		inlineStyle: /style\s*=\s*["'][^"']+["']/gi,
 		// Detect <style> block opening tag
-		styleBlock: /<style[^>]*>/gi
+		styleBlock: /<style[^>]*>/gi,
+		// Detect hardcoded color values (should use CSS variables from theme)
+		hardcodedColor: [
+			/#[0-9a-fA-F]{3,8}(?![0-9a-fA-F])/g, // Hex colors (#fff, #ffffff, #ffffffff)
+			/\brgba?\(\s*\d+/gi, // rgb/rgba with numeric values
+			/\bhsla?\(\s*\d+/gi // hsl/hsla with numeric values
+		]
 	},
 	zIndexVariables: [
 		"--z-base",
@@ -246,6 +304,42 @@ function formatTime(ms: number): string {
 	}
 }
 
+/**
+ * Get appropriate status symbol based on issue severity
+ * Ensures consistency between validation summary messages and detailed reports
+ *
+ * @param issues - Array of validation issues
+ * @returns Emoji symbol representing the highest severity level
+ */
+function getStatusSymbol(issues: ValidationIssue[]): string {
+	if (issues.length === 0) return "✅";
+
+	const hasErrors = issues.some((i) => i.severity === "error");
+	const hasWarnings = issues.some((i) => i.severity === "warning");
+
+	if (hasErrors) return "❌";
+	if (hasWarnings) return "⚠️ ";
+	return "ℹ️ ";
+}
+
+/**
+ * Get validation code range for clearer error messages
+ * Maps validation number to its associated THEME-XXX codes
+ */
+function getValidationCodes(validationNum: number): string {
+	const codeMap: Record<number, string> = {
+		1: "THEME-001", // @apply usage
+		2: "THEME-002-005", // Theme consistency
+		3: "THEME-006-007", // Z-index hierarchy
+		4: "THEME-008", // Stacking context
+		5: "N/A", // Color palette (info only)
+		6: "THEME-009", // Inline styles
+		7: "THEME-010", // Style blocks
+		8: "THEME-011" // Hardcoded colors
+	};
+	return codeMap[validationNum] || "N/A";
+}
+
 // ============================================================================
 // CSS CONTEXT EXTRACTION UTILITIES
 // ============================================================================
@@ -327,11 +421,11 @@ function getWipFilesFromGit(): string[] {
 		// Combine and deduplicate
 		const allFiles = [...new Set([...modifiedFiles, ...untrackedFiles])];
 
-		// Filter by .svelte and .css extensions, exclude src/book/
+		// Filter by .svelte and .css extensions, exclude paths from ESLint config
 		const filteredFiles = allFiles
 			.filter((file) => {
-				// Exclude src/book/ directory completely
-				if (file.startsWith("src/book/")) {
+				// Exclude paths matching ESLint ignore patterns (single source of truth)
+				if (EXCLUDE_PREFIXES.some((prefix) => file.startsWith(prefix))) {
 					return false;
 				}
 				// Only include .svelte and .css files
@@ -395,13 +489,11 @@ function* walkFiles(dir: string, pattern: RegExp): Generator<string> {
 			const fullPath = join(dir, entry.name);
 			const relativePath = relative(PROJECT_ROOT, fullPath);
 
-			// Skip node_modules, .git, build directories, and src/book
+			// Skip excluded directories using ESLint patterns as single source of truth
 			if (
 				entry.name === "node_modules" ||
 				entry.name === ".git" ||
-				entry.name === "build" ||
-				entry.name === ".svelte-kit" ||
-				relativePath.startsWith("src/book")
+				EXCLUDE_PREFIXES.some((prefix) => relativePath.startsWith(prefix))
 			) {
 				continue;
 			}
@@ -482,12 +574,15 @@ function validateNoApplyInComponents(quiet = false): ValidationIssue[] {
 	}
 
 	const elapsed = performance.now() - startTime;
+	const symbol = getStatusSymbol(issues);
+	const code = getValidationCodes(1);
+
 	const message =
 		issues.length === 0
 			? quiet
-				? `  ✅ No @apply usage`
-				: `  ✅ No @apply usage in component <style> blocks (${formatTime(elapsed)})`
-			: `  ❌ Found ${issues.length} @apply violations (${formatTime(elapsed)})`;
+				? `  ${symbol} No @apply usage`
+				: `  ${symbol} No @apply usage in component <style> blocks (${formatTime(elapsed)})`
+			: `  ${symbol} Found ${issues.length} @apply violations [${code}] (${formatTime(elapsed)})`;
 	console.log(message);
 
 	return issues;
@@ -600,13 +695,16 @@ function validateThemeConsistency(quiet = false): ValidationIssue[] {
 	}
 
 	const elapsed = performance.now() - startTime;
+	const symbol = getStatusSymbol(issues);
+	const code = getValidationCodes(2);
 	const errorCount = issues.filter((i) => i.severity === "error").length;
+
 	const message =
 		errorCount === 0
 			? quiet
-				? `  ✅ Theme variables properly defined`
-				: `  ✅ Theme variables properly defined (${formatTime(elapsed)})`
-			: `  ❌ Found ${errorCount} theme consistency issues (${formatTime(elapsed)})`;
+				? `  ${symbol} Theme variables properly defined`
+				: `  ${symbol} Theme variables properly defined (${formatTime(elapsed)})`
+			: `  ${symbol} Found ${errorCount} theme consistency issues [${code}] (${formatTime(elapsed)})`;
 	console.log(message);
 
 	return issues;
@@ -762,12 +860,15 @@ function validateZIndexHierarchy(quiet = false): ValidationIssue[] {
 	}
 
 	const elapsed = performance.now() - startTime;
+	const symbol = getStatusSymbol(issues);
+	const code = getValidationCodes(3);
+
 	const message =
 		issues.length === 0
 			? quiet
-				? `  ✅ Z-index hierarchy properly implemented`
-				: `  ✅ Z-index hierarchy properly implemented (${formatTime(elapsed)})`
-			: `  ❌ Found ${issues.length} z-index violations (${formatTime(elapsed)})`;
+				? `  ${symbol} Z-index hierarchy properly implemented`
+				: `  ${symbol} Z-index hierarchy properly implemented (${formatTime(elapsed)})`
+			: `  ${symbol} Found ${issues.length} z-index violations [${code}] (${formatTime(elapsed)})`;
 	console.log(message);
 
 	return issues;
@@ -807,7 +908,7 @@ function validateStackingContext(quiet = false): ValidationIssue[] {
 				CONFIG.patterns.stackingContext.forEach((pattern, _patternIndex) => {
 					if (pattern.test(line)) {
 						const relativePath = relative(PROJECT_ROOT, filePath);
-						const originalSeverity = "warning" as const;
+						const originalSeverity = "error" as const;
 						const severity = classifySeverity(relativePath, originalSeverity);
 
 						// Extract CSS context for better error reporting
@@ -833,12 +934,15 @@ function validateStackingContext(quiet = false): ValidationIssue[] {
 	}
 
 	const elapsed = performance.now() - startTime;
+	const symbol = getStatusSymbol(issues);
+	const code = getValidationCodes(4);
+
 	const message =
 		issues.length === 0
 			? quiet
-				? `  ✅ No stacking context violations detected`
-				: `  ✅ No stacking context violations detected (${formatTime(elapsed)})`
-			: `  ⚠️  Found ${issues.length} potential stacking context issues (${formatTime(elapsed)})`;
+				? `  ${symbol} No stacking context violations detected`
+				: `  ${symbol} No stacking context violations detected (${formatTime(elapsed)})`
+			: `  ${symbol} Found ${issues.length} potential stacking context issues [${code}] (${formatTime(elapsed)})`;
 	console.log(message);
 
 	return issues;
@@ -910,7 +1014,7 @@ function validateInlineStyles(quiet = false): ValidationIssue[] {
 				const matches = line.match(CONFIG.patterns.inlineStyle);
 				if (matches) {
 					const relativePath = relative(PROJECT_ROOT, filePath);
-					const originalSeverity = "error" as const;
+					const originalSeverity = "warning" as const;
 					const severity =
 						cliOptions.severityRules !== false
 							? classifySeverity(relativePath, originalSeverity)
@@ -935,12 +1039,15 @@ function validateInlineStyles(quiet = false): ValidationIssue[] {
 	}
 
 	const elapsed = performance.now() - startTime;
+	const symbol = getStatusSymbol(issues);
+	const code = getValidationCodes(6);
+
 	const message =
 		issues.length === 0
 			? quiet
-				? `  ✅ No inline styles detected`
-				: `  ✅ No inline styles detected (${formatTime(elapsed)})`
-			: `  ❌ Found ${issues.length} inline style violations (${formatTime(elapsed)})`;
+				? `  ${symbol} No inline styles detected`
+				: `  ${symbol} No inline styles detected (${formatTime(elapsed)})`
+			: `  ${symbol} Found ${issues.length} inline style violations [${code}] (${formatTime(elapsed)})`;
 	console.log(message);
 
 	return issues;
@@ -1006,12 +1113,169 @@ function validateComponentStyleBlocks(quiet = false): ValidationIssue[] {
 	}
 
 	const elapsed = performance.now() - startTime;
+	const symbol = getStatusSymbol(issues);
+	const code = getValidationCodes(7);
+
 	const message =
 		issues.length === 0
 			? quiet
-				? `  ✅ No <style> blocks detected`
-				: `  ✅ No <style> blocks detected (${formatTime(elapsed)})`
-			: `  ⚠️  Found ${issues.length} components with <style> blocks (${formatTime(elapsed)})`;
+				? `  ${symbol} No <style> blocks detected`
+				: `  ${symbol} No <style> blocks detected (${formatTime(elapsed)})`
+			: `  ${symbol} Found ${issues.length} components with <style> blocks [${code}] (${formatTime(elapsed)})`;
+	console.log(message);
+
+	return issues;
+}
+
+// ============================================================================
+// VALIDATION 8: HARDCODED COLOR VALUES
+// Ensure colors use CSS variables from theme (not hardcoded hex/rgb/hsl)
+// ============================================================================
+
+function validateHardcodedColors(quiet = false): ValidationIssue[] {
+	const issues: ValidationIssue[] = [];
+
+	if (!SETTINGS.ui.theme.validation.strictMode) {
+		console.log("\n⏭️  Validation 8: Skipped (strictMode disabled)");
+		return issues;
+	}
+
+	console.log("\n🔍 Validation 8: Checking for hardcoded color values...");
+	const startTime = performance.now();
+
+	// Check both .svelte and .css files
+	const filesToCheck = [
+		...getFilesToValidate(CONFIG.patterns.svelteFiles),
+		...getFilesToValidate(CONFIG.patterns.cssFiles)
+	];
+
+	for (const filePath of filesToCheck) {
+		const content = readFileSync(filePath, "utf-8");
+		const lines = content.split("\n");
+		const relativePath = relative(PROJECT_ROOT, filePath);
+
+		// Determine if this file has special allowances
+		const isAppCss = relativePath === "src/app.css";
+		const isComponentsCss = relativePath === "src/styles/components.css";
+
+		let inRootBlock = false;
+		let inDarkBlock = false;
+		let inThemeBlock = false;
+		let inStyleBlock = false; // For .svelte files
+		let inCssComment = false; // For /* */ comments in CSS files
+		let currentCssSelector = ""; // Track current CSS selector for context
+
+		lines.forEach((line, index) => {
+			const trimmed = line.trim();
+
+			// Track CSS multi-line comments (/* ... */)
+			if (trimmed.includes("/*")) {
+				inCssComment = true;
+			}
+			if (trimmed.includes("*/")) {
+				inCssComment = false;
+				return; // Skip this line as it ends a comment
+			}
+			// Skip comment lines
+			if (inCssComment || trimmed.startsWith("*") || trimmed.startsWith("//")) {
+				return;
+			}
+
+			// Track block context for app.css
+			if (isAppCss) {
+				if (trimmed === ":root {") {
+					inRootBlock = true;
+				} else if (trimmed === ".dark {") {
+					inDarkBlock = true;
+				} else if (trimmed.startsWith("@theme")) {
+					inThemeBlock = true;
+				} else if (trimmed === "}") {
+					inRootBlock = false;
+					inDarkBlock = false;
+					inThemeBlock = false;
+				}
+
+				// Skip if in allowed blocks
+				if (inRootBlock || inDarkBlock || inThemeBlock) {
+					return;
+				}
+			}
+
+			// Track <style> blocks for .svelte files
+			if (relativePath.endsWith(".svelte")) {
+				if (trimmed.startsWith("<style")) {
+					inStyleBlock = true;
+				} else if (trimmed.startsWith("</style>")) {
+					inStyleBlock = false;
+				}
+				// Only check within <style> blocks for .svelte files
+				if (!inStyleBlock) {
+					return;
+				}
+			}
+
+			// Track CSS selector context (for technology brand colors)
+			if (trimmed.endsWith("{") && !trimmed.startsWith("@")) {
+				currentCssSelector = trimmed.replace("{", "").trim();
+			} else if (trimmed === "}") {
+				currentCssSelector = "";
+			}
+
+			// Allow technology brand colors in components.css (documented exception)
+			if (
+				isComponentsCss &&
+				currentCssSelector.includes("-accent") &&
+				line.includes("!important")
+			) {
+				return; // Allowed: technology brand colors (.python-accent, .go-accent, etc.)
+			}
+
+			// Allow rgba(0, 0, 0, ...) and rgb(0 0 0 / ...) for overlays/shadows (black with alpha)
+			if (line.match(/rgba?\(\s*0[,\s]+0[,\s]+0[\s,/]/gi)) {
+				return; // Allowed: black overlays/shadows (rgba(0,0,0,0.x) or rgb(0 0 0 / 0.x))
+			}
+
+			// Check if line contains CSS variable usage (hsl(var(...)) or similar)
+			if (line.includes("var(--")) {
+				return; // Skip lines that properly use CSS variables
+			}
+
+			// Check for hardcoded color patterns
+			CONFIG.patterns.hardcodedColor.forEach((pattern) => {
+				// Reset regex lastIndex for each line
+				pattern.lastIndex = 0;
+				const matches = line.match(pattern);
+				if (matches) {
+					const originalSeverity = "error" as const;
+					const severity = classifySeverity(relativePath, originalSeverity);
+
+					issues.push({
+						file: relativePath,
+						line: index + 1,
+						message: `Hardcoded color value '${matches[0]}' found. Use CSS variables from theme instead (e.g., hsl(var(--background))).`,
+						severity,
+						code: "THEME-011",
+						...(severity !== originalSeverity && {
+							context: SETTINGS.ui.theme.validation.severityRules.find((r) =>
+								relativePath.includes(r.pattern)
+							)?.description
+						})
+					});
+				}
+			});
+		});
+	}
+
+	const elapsed = performance.now() - startTime;
+	const symbol = getStatusSymbol(issues);
+	const code = getValidationCodes(8);
+
+	const message =
+		issues.length === 0
+			? quiet
+				? `  ${symbol} No hardcoded colors detected`
+				: `  ${symbol} No hardcoded colors detected (${formatTime(elapsed)})`
+			: `  ${symbol} Found ${issues.length} hardcoded color violations [${code}] (${formatTime(elapsed)})`;
 	console.log(message);
 
 	return issues;
@@ -1180,7 +1444,8 @@ async function main(): Promise<void> {
 		...validateStackingContext(cliOptions.quiet),
 		...validateColorPalette(cliOptions.quiet),
 		...validateInlineStyles(cliOptions.quiet),
-		...validateComponentStyleBlocks(cliOptions.quiet)
+		...validateComponentStyleBlocks(cliOptions.quiet),
+		...validateHardcodedColors(cliOptions.quiet)
 	];
 
 	// Generate and print report

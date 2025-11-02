@@ -190,6 +190,21 @@
 
 	--header-project-bg: 291 64% 95%; /* Purple gradient - originally #7b1fa2 */
 	--header-project-border: 291 64% 49%;
+
+	/* ========================================================================
+	   TECHNOLOGY BRAND COLORS
+	   ======================================================================== */
+	/* Official brand colors for technology-specific visual identification */
+	/* Format: HSL (no hsl() wrapper) - CRITICAL: All colors MUST be defined here for easy theme management */
+	--tech-python: 215 65% 44%; /* #3776ab - Python blue */
+	--tech-go: 191 100% 42%; /* #00add8 - Go cyan */
+	--tech-rust: 9 64% 48%; /* #ce422b - Rust orange */
+	--tech-cloud: 217 89% 61%; /* #4285f4 - Cloud/GCP blue */
+	--tech-graphql: 330 87% 47%; /* #e10098 - GraphQL pink */
+	--tech-kubernetes: 220 64% 54%; /* #326ce5 - Kubernetes blue */
+	--tech-docker: 203 84% 55%; /* #2496ed - Docker blue */
+	--tech-microservices: 171 100% 41%; /* #00d1b2 - Teal */
+	--tech-monitoring: 0 79% 70%; /* #ff6b6b - Monitoring/alerting red */
 }
 
 /**

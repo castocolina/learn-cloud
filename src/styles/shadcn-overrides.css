@@ -1,6 +1,9 @@
 /**
  * shadcn-svelte Component Overrides
  *
+ * LOAD ORDER: This file loads LAST in app.css for maximum override power.
+ * Documentation: docs/SVELTE-STYLING.md - CSS Precedence & Override Hierarchy
+ *
  * CRITICAL TRANSPARENCY ANTI-PATTERN:
  * ===================================
  * NEVER use semi-transparent backgrounds (bg-background/95, bg-background/80)

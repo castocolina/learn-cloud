@@ -25,8 +25,9 @@
 	 * @component RichTextViewer
 	 */
 
-	import type { ContentBlock, RichTextViewerProps } from "$types";
+	import type { ContentBlock, RichTextViewerProps, ProgrammingLanguage } from "$types";
 	import RichParagraph from "./RichParagraph.svelte";
+	import CodeBlock from "$lib/components/shared/CodeBlock.svelte";
 
 	let { blocks, class: className }: RichTextViewerProps = $props();
 
@@ -94,19 +95,36 @@
 			<!-- Paragraph Block: Rich text with inline formatting (Task 7B - Secure rendering without {@html}) -->
 			<RichParagraph nodes={block.content} />
 		{:else if isCodeBlock(block)}
-			<!-- Code Block: Placeholder for Task 8F (CodeBlock component) -->
-			<div class="content-block content-block-code">
-				{#if block.title}
-					<div class="content-block-header">
-						<span class="content-block-icon">💻</span>
-						<h4 class="content-block-title">{block.title}</h4>
+			<!-- Code Block: Full syntax highlighting with Shiki (Task 8F) -->
+			{#if block.title || block.filename}
+				<!-- With header: Use external wrapper (matches showcase design) -->
+				<div class="code-block-wrapper">
+					<div class="code-block-external-header">
+						{#if block.title}
+							<h4 class="code-block-external-title">{block.title}</h4>
+						{/if}
+						{#if block.filename}
+							<span class="code-block-external-filename">{block.filename}</span>
+						{/if}
 					</div>
-				{/if}
-				<pre class="code-placeholder"><code>{block.code}</code></pre>
-				<p class="content-block-note">
-					📝 <strong>Task 8F:</strong> Full syntax highlighting coming soon
-				</p>
-			</div>
+					<CodeBlock
+						code={block.code}
+						language={block.language as ProgrammingLanguage}
+						showExpandButton={true}
+						showCopyButton={true}
+						showDownloadButton={true}
+					/>
+				</div>
+			{:else}
+				<!-- Without header: Use component standalone -->
+				<CodeBlock
+					code={block.code}
+					language={block.language as ProgrammingLanguage}
+					showExpandButton={true}
+					showCopyButton={true}
+					showDownloadButton={true}
+				/>
+			{/if}
 		{:else if isDiagramBlock(block)}
 			<!-- Diagram Block: Placeholder for Task 8G (MermaidDiagram component) -->
 			<div class="content-block content-block-diagram">

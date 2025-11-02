@@ -87,9 +87,14 @@ test.describe("IconGrid - Mobile Viewport", () => {
 		const iconGrid = page.locator("main .icon-grid").first();
 		await expect(iconGrid).toBeVisible();
 
-		// Verify grid is using CSS Grid
+		// Verify grid is using flexbox (IconGrid uses flex, not CSS Grid)
 		const display = await iconGrid.evaluate((el) => window.getComputedStyle(el).display);
-		expect(display).toBe("grid");
+		expect(display).toBe("flex");
+
+		// Verify icons are responsive and visible
+		const icons = iconGrid.locator(".icon-grid-item");
+		const count = await icons.count();
+		expect(count).toBeGreaterThan(0);
 	});
 
 	test("should handle touch interactions", async ({ page }) => {

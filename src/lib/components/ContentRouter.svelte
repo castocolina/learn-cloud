@@ -65,9 +65,13 @@
 	// Merge local error with navigationStore error for display
 	const displayError = $derived(error || navState.error);
 
-	// Load content when entry changes
+	// Track last loaded entry ID to prevent duplicate loads
+	let lastLoadedEntryId = $state<string | null>(null);
+
+	// Load content when entry changes (with duplicate prevention)
 	$effect(() => {
-		if (currentEntry) {
+		if (currentEntry && currentEntry.id !== lastLoadedEntryId) {
+			lastLoadedEntryId = currentEntry.id;
 			loadContent(currentEntry);
 		}
 	});
@@ -117,6 +121,20 @@
 		}
 	}
 
+	// Debounce hash changes to prevent rapid-fire navigation
+	let hashChangeTimeout: ReturnType<typeof setTimeout> | null = null;
+	const HASH_CHANGE_DEBOUNCE_MS = 100; // Wait 100ms before processing hash change
+
+	function debouncedHashChange() {
+		if (hashChangeTimeout) {
+			clearTimeout(hashChangeTimeout);
+		}
+		hashChangeTimeout = setTimeout(() => {
+			handleHashChange();
+			hashChangeTimeout = null;
+		}, HASH_CHANGE_DEBOUNCE_MS);
+	}
+
 	onMount(() => {
 		// Handle initial hash or navigate to book overview
 		const hash = window.location.hash;
@@ -142,9 +160,15 @@
 			handleHashChange();
 		}
 
-		// Listen for hash changes (browser back/forward)
-		window.addEventListener("hashchange", handleHashChange);
-		return () => window.removeEventListener("hashchange", handleHashChange);
+		// Listen for hash changes (browser back/forward) with debouncing
+		window.addEventListener("hashchange", debouncedHashChange);
+		return () => {
+			window.removeEventListener("hashchange", debouncedHashChange);
+			// Clear any pending debounced calls on unmount
+			if (hashChangeTimeout) {
+				clearTimeout(hashChangeTimeout);
+			}
+		};
 	});
 
 	function handleHashChange() {
@@ -196,26 +220,38 @@
 		}
 	}
 
-	// Debug logging for navigation state changes
+	// Debug logging for navigation state changes (throttled to prevent spam)
+	let lastNavDebugLog = 0;
+	const NAV_DEBUG_THROTTLE_MS = 500; // Log at most once per 500ms
+
 	$effect(() => {
-		console.log("[ContentRouter] Navigation state updated:", {
-			currentId: navState.currentId,
-			currentChapterUrl: navState.currentChapterUrl,
-			error: navState.error,
-			isLoading: navState.isLoading,
-			hasCurrentEntry: currentEntry !== null,
-			hasCurrentContent: currentContent !== null
-		});
+		const now = Date.now();
+		if (now - lastNavDebugLog > NAV_DEBUG_THROTTLE_MS) {
+			lastNavDebugLog = now;
+			console.log("[ContentRouter] Navigation state updated:", {
+				currentId: navState.currentId,
+				currentChapterUrl: navState.currentChapterUrl,
+				error: navState.error,
+				isLoading: navState.isLoading,
+				hasCurrentEntry: currentEntry !== null,
+				hasCurrentContent: currentContent !== null
+			});
+		}
 	});
 
-	// Debug logging for displayError
+	// Debug logging for displayError (only log when error state actually changes)
+	let lastLoggedError = $state<string | null>(null);
 	$effect(() => {
-		console.log("[ContentRouter] Display error state:", {
-			displayError,
-			localError: error,
-			navError: navState.error,
-			willShowError: !!displayError
-		});
+		const errorToLog = displayError || null;
+		if (errorToLog !== lastLoggedError) {
+			lastLoggedError = errorToLog;
+			console.log("[ContentRouter] Display error state:", {
+				displayError,
+				localError: error,
+				navError: navState.error,
+				willShowError: !!displayError
+			});
+		}
 	});
 </script>
 

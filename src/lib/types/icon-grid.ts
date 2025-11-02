@@ -190,6 +190,13 @@ export interface IconGridProps extends Omit<HTMLAttributes<HTMLDivElement>, "cla
 	gap?: string;
 
 	/**
+	 * Icon layout orientation
+	 * Controls flex-direction: "horizontal" = row, "vertical" = column
+	 * @default "horizontal"
+	 */
+	orientation?: "horizontal" | "vertical";
+
+	/**
 	 * Number of columns (for inline mode)
 	 * @default "auto" - icons flow naturally
 	 * @example 3 - exactly 3 columns | "auto-fit" - responsive columns

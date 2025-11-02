@@ -19,7 +19,7 @@ For LLMs with limited context, intelligently select relevant project files using
 
 **Context Selection Rules:**
 - **@CLAUDE.md**: Always include (core project rules)
-- **@SVELTEKIT-GUIDE.md**: Frontend/UI/build issues and tasks
+- **@docs/SVELTEKIT-INDEX.md**: Frontend/UI/build issues and tasks
 - **@CONTENT-STANDARDS.md**: Content creation/educational material
 - **@MERMAID-STANDARDS.md**: Diagram-related tasks only
 
@@ -36,9 +36,9 @@ For LLMs with limited context, intelligently select relevant project files using
 - **RECURRING ISSUES DOCUMENTATION**: When generating prompts for debugging/error resolution tasks that represent RECURRING patterns (issues that have appeared 2+ times), ALWAYS include instructions for the agent to document findings as inline comments in the affected component files. This ensures knowledge is co-located with implementation. One-time bugs should NOT be documented to maintain focus on architectural requirements.
 
 **CRITICAL FOR WEB ASSET MODIFICATION ROLES (AF02, UX03, VD04):**
-- **MANDATORY SVELTEKIT-GUIDE REVIEW**: Before any web asset modification, agent MUST read and understand current `SVELTEKIT-GUIDE.md`
+- **MANDATORY SVELTEKIT-GUIDE REVIEW**: Before any web asset modification, agent MUST read and understand current `docs/SVELTEKIT-INDEX.md`
 - **VALIDATION REQUIREMENTS**: Agent MUST execute complete testing cycle (`pnpm run format`, `pnpm run check`, `pnpm run lint`, `pnpm run dev`) until achieving ZERO errors
-- **DOCUMENTATION UPDATE**: Agent MUST update `SVELTEKIT-GUIDE.md` with new architectural patterns, compatibility issues, or critical requirements discovered during implementation
+- **DOCUMENTATION UPDATE**: Agent MUST update `docs/SVELTEKIT-INDEX.md` with new architectural patterns, compatibility issues, or critical requirements discovered during implementation
 - **ARCHITECTURE COMPLIANCE**: Agent MUST follow established patterns (e.g., Tailwind CSS v4 centralized architecture, Svelte 5 runes syntax)
 
 **CRITICAL FOR CONTENT/DIAGRAM GENERATION ROLES (EE01, AF02, UX03, QA05):**
@@ -154,7 +154,6 @@ You must indicate in a structured TOML format using multiline syntax:
     Choose the most appropriate scope based on the nature of the problem.
 - short_description = A brief description of the problem (50-100 characters)
 - improved_problem = Rewrite the user's problem description with better clarity, grammar, and technical precision
-- questions = list of questions you need answered to complete the framework (if any)
 - observations = relevant notes, considerations, or insights about the problem analysis or agent interactions (if any)
 - draft_prompt = A complete, strategically optimized prompt for the selected agent using TOML multiline format (\"\"\")
     
@@ -198,6 +197,10 @@ You must indicate in a structured TOML format using multiline syntax:
       
       [Additional instructions based on the framework and specific requirements]
     \"\"\"
+- questions = [ # Numbered list of clarifying questions to ask the user to refine requirements
+  "1. Confirm numbering format: Arabic numerals (1, 2, 3) or another style?",
+  "2. Should the numbered list reset per unit or continue across the entire output?"
+  ]
 - complete = true/false indicating if the prompt is complete or if questions need to be answered
 
 Wrap your TOML response between ```toml and ``` markers. Do not include any other text outside these markers.

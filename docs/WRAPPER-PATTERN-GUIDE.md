@@ -369,6 +369,12 @@ touch src/lib/components/shared/ComponentName.svelte
    // ✅ CORRECT: Custom styles in src/app.css @layer components
    ```
 
+   **📋 CSS Precedence & Override Strategies:** See [SVELTE-STYLING.md](./SVELTE-STYLING.md#css-precedence--override-hierarchy) for:
+   - File load order hierarchy
+   - Override strategies (!important, shorthand properties, @layer)
+   - Browser vs Tailwind class precedence
+   - Proper use of `!` modifier for shadcn component overrides
+
 4. **SETTINGS Integration**:
 
    ```typescript

@@ -129,7 +129,8 @@ export type ProgrammingLanguage =
 	| "dynamodb"
 	| "mongodb"
 	| "redis"
-	| "elasticsearch";
+	| "elasticsearch"
+	| "text";
 
 /**
  * Content categories for educational organization

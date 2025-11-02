@@ -13,7 +13,7 @@ This document contains the content creation workflows and quality assurance stan
 > **📚 Related Documentation:**
 >
 > - [CLAUDE.md](CLAUDE.md) - Core project rules and agent implementation guidelines
-> - [SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md) - Technical architecture and user experience standards
+> - [SvelteKit Guides](docs/SVELTEKIT-INDEX.md) - Technical architecture and user experience standards
 
 ---
 
@@ -119,7 +119,7 @@ src/lib/components/content/
 - **Styling:** Tailwind CSS with component isolation
 - **State Management:** Svelte's built-in reactivity system
 - **Type Safety:** Full TypeScript coverage with interface inheritance
-- **Code Generation:** ts-morph for TypeScript AST manipulation (see [Code Block Escaping Strategy](SVELTEKIT-GUIDE.md#code-block-escaping-strategy-for-data-generation))
+- **Code Generation:** ts-morph for TypeScript AST manipulation (see [Code Block Escaping Strategy](docs/SVELTE-STYLING.md#code-block-escaping-strategy-for-data-generation))
 
 ### Content Data Structure
 
@@ -240,7 +240,7 @@ export type ContentStatus = "scaffold" | "draft" | "final";
 
 ### Union Type Integration
 
-> **📋 Complete Union Type Documentation**: See the TypeScript Interface Hierarchy section above and [SVELTEKIT-GUIDE.md](SVELTEKIT-GUIDE.md) for comprehensive union type patterns, performance optimizations, and refactoring workflows.
+> **📋 Complete Union Type Documentation**: See the TypeScript Interface Hierarchy section above and [SvelteKit Guides](docs/SVELTEKIT-INDEX.md) for comprehensive union type patterns, performance optimizations, and refactoring workflows.
 
 **Key Union Types for Content**:
 

@@ -1,3 +1,4 @@
+// @ts-nocheck - Configuration file, exclude from TypeScript checking
 import prettier from "eslint-config-prettier";
 import { fileURLToPath } from "node:url";
 import { includeIgnoreFile } from "@eslint/compat";
@@ -59,32 +60,41 @@ const preferAppState = {
 	}
 };
 
+// ============================================================================
+// SHARED IGNORE PATTERNS
+// Single source of truth for file/directory exclusions across tooling
+// Used by: ESLint, theme validator, and other code quality scripts
+// ============================================================================
+
+export const ESLINT_IGNORE_PATTERNS = [
+	"node_modules/**", // Dependencies (never lint third-party code)
+	".svelte-kit/**", // SvelteKit generated files
+	"build/**", // Build output
+	"dist/**", // Distribution output
+	"src/book/**", // Legacy directory
+	"src/data/demo/**", // Demo content (will be removed)
+	"src/lib/components/demo/**", // Demo components (will be removed)
+	"src/routes/demo/**", // Demo routes (will be removed)
+	"src/lib/components/ThemeSwitch.svelte", // Technical debt - TASK 8F
+	"src/lib/components/search/SearchBox.svelte", // Technical debt - TASK 8D
+	"src/lib/components/search/SearchModal.svelte", // Technical debt - TASK 8D
+	"src/lib/components/search/SearchFilters.svelte", // Technical debt - TASK 8D
+	"src/lib/components/search/SearchResults.svelte", // Technical debt - TASK 8D
+	"src/lib/components/ui/**", // shadcn-svelte components (external)
+	"src/lib/actions/swipe.ts", // Technical debt - TASK 8X
+	"src/lib/stores/demo-navigation.svelte.ts", // Legacy demo store (not used in production)
+	"src/lib/stores/demo-unified-navigation.svelte.ts", // Legacy demo store (not used in production)
+	"**/*.md", // Markdown files (handled by Prettier only)
+	"package.json", // Configuration file (handled by Prettier only)
+	"components.json", // Configuration file (handled by Prettier only)
+	".github/**/*.md", // GitHub configuration markdown files
+	"eslint.config.js" // ESLint config itself (prevent self-scanning)
+];
+
 export default defineConfig(
 	includeIgnoreFile(gitignorePath),
 	globalIgnores(
-		[
-			"node_modules/**", // Dependencies (never lint third-party code)
-			".svelte-kit/**", // SvelteKit generated files
-			"build/**", // Build output
-			"dist/**", // Distribution output
-			"src/book/**", // Legacy directory
-			"src/data/demo/**", // Demo content (will be removed)
-			"src/lib/components/demo/**", // Demo components (will be removed)
-			"src/routes/demo/**", // Demo routes (will be removed)
-			"src/lib/components/ThemeSwitch.svelte", // Technical debt - TASK 8F
-			"src/lib/components/search/SearchBox.svelte", // Technical debt - TASK 8D
-			"src/lib/components/search/SearchModal.svelte", // Technical debt - TASK 8D
-			"src/lib/components/search/SearchFilters.svelte", // Technical debt - TASK 8D
-			"src/lib/components/search/SearchResults.svelte", // Technical debt - TASK 8D
-			"src/lib/components/ui/**", // shadcn-svelte components (external)
-			"src/lib/actions/swipe.ts", // Technical debt - TASK 8X
-			"src/lib/stores/demo-navigation.svelte.ts", // Legacy demo store (not used in production)
-			"src/lib/stores/demo-unified-navigation.svelte.ts", // Legacy demo store (not used in production)
-			"**/*.md", // Markdown files (handled by Prettier only)
-			"package.json", // Configuration file (handled by Prettier only)
-			"components.json", // Configuration file (handled by Prettier only)
-			".github/**/*.md" // GitHub configuration markdown files
-		],
+		ESLINT_IGNORE_PATTERNS,
 		"Ignore generated files, dependencies, legacy directories, demo content (temporary), problematic components (technical debt), and files handled by Prettier only"
 	),
 	js.configs.recommended,
@@ -230,6 +240,13 @@ export default defineConfig(
 		rules: {
 			"import/namespace": "warn", // Parse errors from Svelte 5 internal files
 			"@typescript-eslint/no-deprecated": "off" // shadcn components may use deprecated Svelte 5 APIs
+		}
+	},
+	{
+		// Validation scripts can import from config files
+		files: ["src/scripts/**/*.ts"],
+		rules: {
+			"import/extensions": "off" // Allow .js extension when importing from eslint.config.js
 		}
 	},
 	{

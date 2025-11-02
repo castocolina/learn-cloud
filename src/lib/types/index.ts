@@ -415,17 +415,20 @@ export type {
  */
 export { isContentParseResult, isScaffoldingArgs, isCliExecutionResult } from "./scripts.js";
 
-// UI wrapper exports - Wrapper component types (Task 6, Task 7, Task 7B)
+// UI wrapper exports - Wrapper component types (Task 6, Task 7, Task 7B, Task 8F)
 export type {
 	ButtonVariant,
 	ButtonSize,
 	ButtonProps,
 	DialogSize,
+	DialogActionButtonsConfig,
 	DialogProps,
 	ProgressSize,
 	ProgressProps,
 	ContentHeaderProps,
-	RichParagraphProps
+	RichParagraphProps,
+	ShikiTheme,
+	CodeBlockProps
 } from "./ui.js";
 
 // IconGrid exports - Shared icon grid component types (Task 8D)

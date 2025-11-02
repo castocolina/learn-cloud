@@ -84,6 +84,7 @@ Accessibility:
 		positioning = "inline",
 		iconSize = SETTINGS.ui.iconGrid.defaultIconSize,
 		gap = SETTINGS.ui.iconGrid.defaultGap,
+		orientation = "horizontal",
 		columns = "auto",
 		alignment = "center",
 		showTooltips: _showTooltips = SETTINGS.ui.iconGrid.showTooltips,
@@ -151,7 +152,7 @@ Accessibility:
 
 <div
 	{...restProps}
-	class="icon-grid icon-grid--{positioning} {className}"
+	class="icon-grid icon-grid--{positioning} icon-grid--{orientation} {className}"
 	style={styleString}
 	role="toolbar"
 	aria-label="Actions"

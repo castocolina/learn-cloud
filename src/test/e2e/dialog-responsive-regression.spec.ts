@@ -171,10 +171,15 @@ test.describe("Dialog Height Behavior", () => {
 		console.log("  min-height:", computedStyles.minHeight);
 		console.log("  classes:", computedStyles.classes);
 
-		// Should have h-auto (auto height) at ALL viewports (no sm: prefix)
-		expect(computedStyles.classes).toContain("h-auto");
+		// Should use flexbox for content-based height (flex flex-col)
+		expect(computedStyles.classes).toContain("flex");
+		expect(computedStyles.classes).toContain("flex-col");
 		// Should have max-h-[90vh] constraint at all viewports
 		expect(computedStyles.classes).toContain("max-h-[90vh]");
+		// Verify computed height is content-based (not 100vh or fixed)
+		const heightValue = parseInt(computedStyles.height);
+		const maxHeightValue = parseInt(computedStyles.maxHeight);
+		expect(heightValue).toBeLessThan(maxHeightValue); // Height adapts to content, not maxed out
 	});
 
 	test("should adjust to content height on mobile (not full viewport)", async ({ page }) => {

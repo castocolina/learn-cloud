@@ -154,38 +154,38 @@
 	}
 
 	.callout-info {
-		--callout-bg: rgb(219 234 254 / 0.5);
-		--callout-border: rgb(59 130 246);
+		--callout-bg: hsl(var(--primary) / 0.1);
+		--callout-border: hsl(var(--primary));
 	}
 
 	.callout-warning {
-		--callout-bg: rgb(254 243 199 / 0.5);
-		--callout-border: rgb(245 158 11);
+		--callout-bg: hsl(var(--warning) / 0.1);
+		--callout-border: hsl(var(--warning));
 	}
 
 	.callout-tip {
-		--callout-bg: rgb(220 252 231 / 0.5);
-		--callout-border: rgb(34 197 94);
+		--callout-bg: hsl(var(--success) / 0.1);
+		--callout-border: hsl(var(--success));
 	}
 
 	.callout-danger {
-		--callout-bg: rgb(254 226 226 / 0.5);
-		--callout-border: rgb(239 68 68);
+		--callout-bg: hsl(var(--destructive) / 0.1);
+		--callout-border: hsl(var(--destructive));
 	}
 
 	:global(.dark) .callout-info {
-		--callout-bg: rgb(30 58 138 / 0.3);
+		--callout-bg: hsl(var(--primary) / 0.15);
 	}
 
 	:global(.dark) .callout-warning {
-		--callout-bg: rgb(120 53 15 / 0.3);
+		--callout-bg: hsl(var(--warning) / 0.15);
 	}
 
 	:global(.dark) .callout-tip {
-		--callout-bg: rgb(20 83 45 / 0.3);
+		--callout-bg: hsl(var(--success) / 0.15);
 	}
 
 	:global(.dark) .callout-danger {
-		--callout-bg: rgb(127 29 29 / 0.3);
+		--callout-bg: hsl(var(--destructive) / 0.15);
 	}
 </style>

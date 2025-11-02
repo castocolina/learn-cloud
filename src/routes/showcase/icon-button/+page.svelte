@@ -791,11 +791,14 @@ URL: /demo/test/icon-button-variants
 				<IconGrid
 					icons={defaultIcons}
 					positioning="inline"
+					orientation="vertical"
 					gap="0.5rem"
 					columns={1}
 					data-testid="vertical-grid"
 				/>
-				<code class="mt-2 block text-xs text-muted-foreground">columns=1</code>
+				<code class="mt-2 block text-xs text-muted-foreground"
+					>orientation="vertical" columns=1</code
+				>
 			</div>
 
 			<!-- Grid (2 columns) -->

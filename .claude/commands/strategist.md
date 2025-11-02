@@ -17,7 +17,7 @@ For LLMs with limited context, intelligently select relevant project files using
 **Context Selection Rules:**
 
 - **@CLAUDE.md**: Always include (core project rules)
-- **@SVELTEKIT-GUIDE.md**: Frontend/UI/build issues and tasks
+- **@docs/SVELTEKIT-INDEX.md**: Frontend/UI/build issues and tasks
 - **@CONTENT-STANDARDS.md**: Content creation/educational material
 - **@MERMAID-STANDARDS.md**: Diagram-related tasks only
 
@@ -37,9 +37,9 @@ For LLMs with limited context, intelligently select relevant project files using
 
 **CRITICAL FOR WEB ASSET MODIFICATION ROLES (AF02, UX03, VD04):**
 
-- **MANDATORY SVELTEKIT-GUIDE REVIEW**: Before any web asset modification, agent MUST read and understand current `SVELTEKIT-GUIDE.md`
+- **MANDATORY SVELTEKIT-GUIDE REVIEW**: Before any web asset modification, agent MUST read and understand current `docs/SVELTEKIT-INDEX.md`
 - **VALIDATION REQUIREMENTS**: Agent MUST execute complete testing cycle (`pnpm run format`, `pnpm run check`, `pnpm run lint`, `pnpm run dev`) until achieving ZERO errors
-- **DOCUMENTATION UPDATE**: Agent MUST update `SVELTEKIT-GUIDE.md` with new architectural patterns, compatibility issues, or critical requirements discovered during implementation
+- **DOCUMENTATION UPDATE**: Agent MUST update `docs/SVELTEKIT-INDEX.md` with new architectural patterns, compatibility issues, or critical requirements discovered during implementation
 - **ARCHITECTURE COMPLIANCE**: Agent MUST follow established patterns (e.g., Tailwind CSS v4 centralized architecture, Svelte 5 runes syntax)
 
 **CRITICAL FOR CONTENT/DIAGRAM GENERATION ROLES (EE01, AF02, UX03, QA05):**

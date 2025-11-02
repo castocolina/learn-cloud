@@ -1,5 +1,6 @@
 import { writable, get } from "svelte/store";
 import type { Component } from "svelte";
+import type { DialogActionButtonsConfig } from "$types";
 
 /**
  * Dialog Store - Global Dialog State Management
@@ -62,6 +63,9 @@ export interface DialogConfig {
 
 	/** Size variant (mobile: always full-screen, desktop: varies) */
 	size?: DialogSize;
+
+	/** Action buttons with intelligent positioning (Task 8F - CodeBlock integration) */
+	actionButtons?: DialogActionButtonsConfig;
 
 	/** Optional callback when dialog closes */
 	onClose?: () => void;
