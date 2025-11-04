@@ -56,7 +56,8 @@ export interface DialogConfig {
 	title: string;
 
 	/** Svelte component to render as dialog content */
-	content: Component;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	content: Component<any>;
 
 	/** Props to pass to the rendered component */
 	props?: Record<string, unknown>;
@@ -64,8 +65,14 @@ export interface DialogConfig {
 	/** Size variant (mobile: always full-screen, desktop: varies) */
 	size?: DialogSize;
 
-	/** Action buttons with intelligent positioning (Task 8F - CodeBlock integration) */
+	/** Action buttons with intelligent positioning (legacy single-group mode) */
 	actionButtons?: DialogActionButtonsConfig;
+
+	/** Top action buttons group (NEW - dual-group mode, e.g., Download button) */
+	topActionButtons?: DialogActionButtonsConfig;
+
+	/** Bottom action buttons group (NEW - dual-group mode, e.g., 3×3 navigation grid) */
+	bottomActionButtons?: DialogActionButtonsConfig;
 
 	/** Optional callback when dialog closes */
 	onClose?: () => void;
@@ -120,6 +127,20 @@ export const dialogStore = writable<DialogState>(initialState);
  * ```
  */
 export function openDialog(config: DialogConfig): void {
+	// Race condition protection: Close existing dialog first if already open
+	// This prevents duplicate dialogs from rapid clicks
+	const currentState = get(dialogStore);
+	if (currentState.isOpen) {
+		// Close current dialog first
+		dialogStore.update((state) => ({
+			...state,
+			isOpen: false
+		}));
+		// Trigger onClose callback for the previous dialog
+		currentState.onClose?.();
+	}
+
+	// Open new dialog
 	dialogStore.set({
 		...config,
 		isOpen: true,

@@ -13,7 +13,7 @@
  */
 
 import type { Snippet } from "svelte";
-import type { IconItem } from "./icon-grid.js";
+import type { IconItem, IconGridConfig } from "./icon-grid.js";
 
 // =====================================================
 // BUTTON WRAPPER TYPES
@@ -116,8 +116,8 @@ export type ActionButtonAlignment = "content-aligned" | "close-adjacent";
  * - Automatic collision avoidance with 76px safe zone
  */
 export interface DialogActionButtonsConfig {
-	/** IconGrid icons array (required) */
-	icons: IconItem[];
+	/** IconGrid icons array (required) - null values create empty cells in grid layout */
+	icons: (IconItem | null)[];
 
 	/**
 	 * Alignment preset for intelligent positioning
@@ -132,11 +132,22 @@ export interface DialogActionButtonsConfig {
 	/**
 	 * Orientation of button layout
 	 *
+	 * - horizontal: Flex row (single line, left-to-right)
+	 * - vertical: Flex column (single stack, top-to-bottom)
+	 * - grid: CSS Grid 2D layout (requires gridConfig)
+	 *
 	 * AUTO-SWITCH: If horizontal + 4+ buttons → automatically changes to vertical
 	 *
 	 * @default 'horizontal' (from SETTINGS.ui.dialog.actionButtons.defaultOrientation)
 	 */
-	orientation?: "horizontal" | "vertical";
+	orientation?: "horizontal" | "vertical" | "grid";
+
+	/**
+	 * Grid layout configuration (only applies when orientation="grid")
+	 * Defines grid dimensions and behavior for 2D button layouts
+	 * @example { columns: 3, rows: 3 } - Fixed 3×3 grid
+	 */
+	gridConfig?: IconGridConfig;
 
 	/**
 	 * Whether to respect close button position and avoid collision
@@ -156,6 +167,12 @@ export interface DialogActionButtonsConfig {
 
 	/** Icon size */
 	iconSize?: string | number;
+
+	/**
+	 * Enable tooltips for action buttons
+	 * @default false (tooltips require Tooltip.Provider in component tree)
+	 */
+	showTooltips?: boolean;
 
 	/** Additional CSS classes */
 	class?: string;
@@ -191,8 +208,14 @@ export interface DialogProps {
 	/** Custom close button snippet (optional - defaults to IconButton with subtle variant) */
 	closeButton?: Snippet;
 
-	/** Structured action buttons with intelligent positioning (recommended approach) */
+	/** Structured action buttons with intelligent positioning (recommended approach - legacy single group) */
 	actionButtons?: DialogActionButtonsConfig;
+
+	/** Top action buttons group (NEW - dual-group mode, e.g., Download button) */
+	topActionButtons?: DialogActionButtonsConfig;
+
+	/** Bottom action buttons group (NEW - dual-group mode, e.g., 3×3 navigation grid) */
+	bottomActionButtons?: DialogActionButtonsConfig;
 
 	/** Custom actions snippet for complex cases */
 	customActions?: Snippet;
@@ -241,7 +264,12 @@ export interface ProgressProps {
 // CONTENT HEADER WRAPPER TYPES (TASK 7)
 // =====================================================
 
-import type { ChapterType, ContentDifficulty, TechnologyUnit } from "./types.js";
+import type {
+	ChapterType,
+	ContentDifficulty,
+	TechnologyUnit,
+	ValidationResult as ContentValidationResult
+} from "./types.js";
 
 /**
  * Content Header wrapper component props
@@ -422,4 +450,391 @@ export interface CodeBlockProps {
 	 * Unique identifier for accessibility
 	 */
 	id?: string;
+}
+
+// =====================================================
+// TASK 8G: MERMAID DIAGRAM COMPONENT TYPES
+// =====================================================
+
+/**
+ * MermaidDiagram Component Props (Task 8G)
+ *
+ * Production-ready diagram renderer with GitHub-style zoom controls.
+ * Supports 10+ diagram types (flowchart, sequence, class, state, etc.)
+ * with integrated validation, modal expansion, and mobile-optimized interactions.
+ *
+ * Features:
+ * - GitHub-style zoom controls (50%-200% range, 25% steps)
+ * - IconGrid integration for action buttons
+ * - Dialog expansion for full-screen viewing
+ * - Mermaid validator integration
+ * - Mobile-responsive with touch gestures
+ * - Keyboard navigation support
+ *
+ * Related:
+ * - src/lib/components/shared/MermaidDiagram.svelte
+ * - src/lib/components/shared/MermaidFullView.svelte
+ * - src/lib/utils/mermaid-validator.ts
+ * - MERMAID-STANDARDS.md (diagram standards and validation)
+ */
+export interface MermaidDiagramProps {
+	/**
+	 * Mermaid diagram definition (DSL syntax)
+	 * Example: "flowchart LR\n  A --> B"
+	 */
+	diagram: string;
+
+	/**
+	 * Optional title/caption displayed above diagram
+	 */
+	title?: string;
+
+	/**
+	 * Enable debug mode for detailed error logging and diagram source display
+	 * @default false (controlled by SETTINGS.ui.mermaid.debug)
+	 */
+	debug?: boolean;
+
+	/**
+	 * Enable Dialog expansion button for full-screen diagram viewing
+	 *
+	 * PRECEDENCE HIERARCHY (OS Analogy):
+	 * 1. Component prop (this value)     = Program argument (--flag=value)
+	 * 2. SETTINGS global config          = Environment variable (ENV_VAR=value)
+	 * 3. Component internal defaults     = Hardcoded fallback
+	 *
+	 * FEATURE FLAG SEMANTICS:
+	 * This prop acts as a "feature enable flag", not an absolute override.
+	 * Component ALWAYS applies viewport discrimination (mobile/desktop) via SETTINGS.
+	 *
+	 * BEHAVIOR:
+	 * - undefined (or prop omitted): Uses SETTINGS.ui.mermaid.buttons.mobile/desktop
+	 *   • Mobile (< 768px): Uses mobile button configuration
+	 *   • Desktop (≥ 768px): Uses desktop button configuration
+	 *
+	 * - true: Feature enabled, component applies viewport discrimination
+	 *   • Logic: true !== false && buttonDefaults.showExpandButton
+	 *   • Respects mobile/desktop settings from SETTINGS
+	 *
+	 * - false: Feature explicitly disabled everywhere
+	 *   • Logic: false !== false && ... → false
+	 *   • Button hidden on all viewports
+	 *
+	 * @default undefined (uses SETTINGS.ui.mermaid.buttons.mobile/desktop)
+	 * @see {@link file://src/config/settings.ts} - SETTINGS.ui.mermaid.buttons
+	 */
+	showExpandButton?: boolean;
+
+	/**
+	 * Enable GitHub-style zoom controls (3×3 pan/zoom grid)
+	 *
+	 * PRECEDENCE HIERARCHY (OS Analogy):
+	 * 1. Component prop (this value)     = Program argument (--flag=value)
+	 * 2. SETTINGS global config          = Environment variable (ENV_VAR=value)
+	 * 3. Component internal defaults     = Hardcoded fallback
+	 *
+	 * FEATURE FLAG SEMANTICS:
+	 * This prop acts as a "feature enable flag", not an absolute override.
+	 * Component ALWAYS applies viewport discrimination (mobile/desktop) via SETTINGS.
+	 *
+	 * BEHAVIOR:
+	 * - undefined (or prop omitted): Uses SETTINGS.ui.mermaid.buttons.mobile/desktop
+	 *   • Mobile (< 768px): Uses mobile button configuration
+	 *   • Desktop (≥ 768px): Uses desktop button configuration
+	 *
+	 * - true: Feature enabled, component applies viewport discrimination
+	 *   • Logic: true !== false && buttonDefaults.showZoomControls
+	 *   • Respects mobile/desktop settings from SETTINGS
+	 *
+	 * - false: Feature explicitly disabled everywhere
+	 *   • Logic: false !== false && ... → false
+	 *   • Controls hidden on all viewports
+	 *
+	 * @default undefined (uses SETTINGS.ui.mermaid.buttons.mobile/desktop)
+	 * @see {@link file://src/config/settings.ts} - SETTINGS.ui.mermaid.buttons
+	 */
+	showZoomControls?: boolean;
+
+	/**
+	 * Enable "Download SVG" button to save diagram as SVG file
+	 *
+	 * PRECEDENCE HIERARCHY (OS Analogy):
+	 * 1. Component prop (this value)     = Program argument (--flag=value)
+	 * 2. SETTINGS global config          = Environment variable (ENV_VAR=value)
+	 * 3. Component internal defaults     = Hardcoded fallback
+	 *
+	 * FEATURE FLAG SEMANTICS:
+	 * This prop acts as a "feature enable flag", not an absolute override.
+	 * Component ALWAYS applies viewport discrimination (mobile/desktop) via SETTINGS.
+	 *
+	 * BEHAVIOR:
+	 * - undefined (or prop omitted): Uses SETTINGS.ui.mermaid.buttons.mobile/desktop
+	 *   • Mobile (< 768px): Uses mobile button configuration
+	 *   • Desktop (≥ 768px): Uses desktop button configuration
+	 *
+	 * - true: Feature enabled, component applies viewport discrimination
+	 *   • Logic: true !== false && buttonDefaults.showDownloadButton
+	 *   • Respects mobile/desktop settings from SETTINGS
+	 *
+	 * - false: Feature explicitly disabled everywhere
+	 *   • Logic: false !== false && ... → false
+	 *   • Button hidden on all viewports
+	 *
+	 * @default undefined (uses SETTINGS.ui.mermaid.buttons.mobile/desktop)
+	 * @see {@link file://src/config/settings.ts} - SETTINGS.ui.mermaid.buttons
+	 */
+	showDownloadButton?: boolean;
+
+	/**
+	 * Enable "Download PNG" button to save diagram as PNG image
+	 * High-quality raster export for presentations, documents, etc.
+	 *
+	 * PRECEDENCE HIERARCHY (OS Analogy):
+	 * 1. Component prop (this value)     = Program argument (--flag=value)
+	 * 2. SETTINGS global config          = Environment variable (ENV_VAR=value)
+	 * 3. Component internal defaults     = Hardcoded fallback
+	 *
+	 * FEATURE FLAG SEMANTICS:
+	 * This prop acts as a "feature enable flag", not an absolute override.
+	 * Component ALWAYS applies viewport discrimination (mobile/desktop) via SETTINGS.
+	 *
+	 * BEHAVIOR:
+	 * - undefined (or prop omitted): Uses SETTINGS.ui.mermaid.buttons.mobile/desktop
+	 *   • Mobile (< 768px): Uses mobile button configuration
+	 *   • Desktop (≥ 768px): Uses desktop button configuration
+	 *
+	 * - true: Feature enabled, component applies viewport discrimination
+	 *   • Logic: true !== false && buttonDefaults.showDownloadPngButton
+	 *   • Respects mobile/desktop settings from SETTINGS
+	 *
+	 * - false: Feature explicitly disabled everywhere
+	 *   • Logic: false !== false && ... → false
+	 *   • Button hidden on all viewports
+	 *
+	 * @default undefined (uses SETTINGS.ui.mermaid.buttons.mobile/desktop)
+	 * @see {@link file://src/config/settings.ts} - SETTINGS.ui.mermaid.buttons
+	 */
+	showDownloadPngButton?: boolean;
+
+	/**
+	 * Enable "Download JPG" button to save diagram as JPG image
+	 * Smaller file size than PNG, useful for web/email sharing
+	 * Note: JPG does not support transparency (white background)
+	 *
+	 * PRECEDENCE HIERARCHY (OS Analogy):
+	 * 1. Component prop (this value)     = Program argument (--flag=value)
+	 * 2. SETTINGS global config          = Environment variable (ENV_VAR=value)
+	 * 3. Component internal defaults     = Hardcoded fallback
+	 *
+	 * FEATURE FLAG SEMANTICS:
+	 * This prop acts as a "feature enable flag", not an absolute override.
+	 * Component ALWAYS applies viewport discrimination (mobile/desktop) via SETTINGS.
+	 *
+	 * BEHAVIOR:
+	 * - undefined (or prop omitted): Uses SETTINGS.ui.mermaid.buttons.mobile/desktop
+	 *   • Mobile (< 768px): Uses mobile button configuration
+	 *   • Desktop (≥ 768px): Uses desktop button configuration
+	 *
+	 * - true: Feature enabled, component applies viewport discrimination
+	 *   • Logic: true !== false && buttonDefaults.showDownloadJpgButton
+	 *   • Respects mobile/desktop settings from SETTINGS
+	 *
+	 * - false: Feature explicitly disabled everywhere
+	 *   • Logic: false !== false && ... → false
+	 *   • Button hidden on all viewports
+	 *
+	 * @default undefined (uses SETTINGS.ui.mermaid.buttons.mobile/desktop)
+	 * @see {@link file://src/config/settings.ts} - SETTINGS.ui.mermaid.buttons
+	 */
+	showDownloadJpgButton?: boolean;
+
+	/**
+	 * Enable "Copy SVG" button to copy diagram as SVG text to clipboard
+	 * Useful for pasting into code editors, XML tools, etc.
+	 *
+	 * PRECEDENCE HIERARCHY (OS Analogy):
+	 * 1. Component prop (this value)     = Program argument (--flag=value)
+	 * 2. SETTINGS global config          = Environment variable (ENV_VAR=value)
+	 * 3. Component internal defaults     = Hardcoded fallback
+	 *
+	 * FEATURE FLAG SEMANTICS:
+	 * This prop acts as a "feature enable flag", not an absolute override.
+	 * Component ALWAYS applies viewport discrimination (mobile/desktop) via SETTINGS.
+	 *
+	 * BEHAVIOR:
+	 * - undefined (or prop omitted): Uses SETTINGS.ui.mermaid.buttons.mobile/desktop
+	 *   • Mobile (< 768px): Uses mobile button configuration
+	 *   • Desktop (≥ 768px): Uses desktop button configuration
+	 *
+	 * - true: Feature enabled, component applies viewport discrimination
+	 *   • Logic: true !== false && buttonDefaults.showCopySvgButton
+	 *   • Respects mobile/desktop settings from SETTINGS
+	 *
+	 * - false: Feature explicitly disabled everywhere
+	 *   • Logic: false !== false && ... → false
+	 *   • Button hidden on all viewports
+	 *
+	 * @default undefined (uses SETTINGS.ui.mermaid.buttons.mobile/desktop)
+	 * @see {@link file://src/config/settings.ts} - SETTINGS.ui.mermaid.buttons
+	 */
+	showCopySvgButton?: boolean;
+
+	/**
+	 * Enable "Copy PNG" button to copy diagram as PNG image to clipboard
+	 * High-quality image export for pasting into documents, presentations, etc.
+	 *
+	 * PRECEDENCE HIERARCHY (OS Analogy):
+	 * 1. Component prop (this value)     = Program argument (--flag=value)
+	 * 2. SETTINGS global config          = Environment variable (ENV_VAR=value)
+	 * 3. Component internal defaults     = Hardcoded fallback
+	 *
+	 * FEATURE FLAG SEMANTICS:
+	 * This prop acts as a "feature enable flag", not an absolute override.
+	 * Component ALWAYS applies viewport discrimination (mobile/desktop) via SETTINGS.
+	 *
+	 * BEHAVIOR:
+	 * - undefined (or prop omitted): Uses SETTINGS.ui.mermaid.buttons.mobile/desktop
+	 *   • Mobile (< 768px): Uses mobile button configuration
+	 *   • Desktop (≥ 768px): Uses desktop button configuration
+	 *
+	 * - true: Feature enabled, component applies viewport discrimination
+	 *   • Logic: true !== false && buttonDefaults.showCopyPngButton
+	 *   • Respects mobile/desktop settings from SETTINGS
+	 *
+	 * - false: Feature explicitly disabled everywhere
+	 *   • Logic: false !== false && ... → false
+	 *   • Button hidden on all viewports
+	 *
+	 * @default undefined (uses SETTINGS.ui.mermaid.buttons.mobile/desktop)
+	 * @see {@link file://src/config/settings.ts} - SETTINGS.ui.mermaid.buttons
+	 */
+	showCopyPngButton?: boolean;
+
+	/**
+	 * Enable "Copy Code" button to copy Mermaid DSL source code to clipboard
+	 * Allows users to copy the diagram definition for editing or sharing
+	 *
+	 * PRECEDENCE HIERARCHY (OS Analogy):
+	 * 1. Component prop (this value)     = Program argument (--flag=value)
+	 * 2. SETTINGS global config          = Environment variable (ENV_VAR=value)
+	 * 3. Component internal defaults     = Hardcoded fallback
+	 *
+	 * FEATURE FLAG SEMANTICS:
+	 * This prop acts as a "feature enable flag", not an absolute override.
+	 * Component ALWAYS applies viewport discrimination (mobile/desktop) via SETTINGS.
+	 *
+	 * BEHAVIOR:
+	 * - undefined (or prop omitted): Uses SETTINGS.ui.mermaid.buttons.mobile/desktop
+	 *   • Mobile (< 768px): Uses mobile button configuration
+	 *   • Desktop (≥ 768px): Uses desktop button configuration
+	 *
+	 * - true: Feature enabled, component applies viewport discrimination
+	 *   • Logic: true !== false && buttonDefaults.showCopyCodeButton
+	 *   • Respects mobile/desktop settings from SETTINGS
+	 *
+	 * - false: Feature explicitly disabled everywhere
+	 *   • Logic: false !== false && ... → false
+	 *   • Button hidden on all viewports
+	 *
+	 * @default undefined (uses SETTINGS.ui.mermaid.buttons.mobile/desktop)
+	 * @see {@link file://src/config/settings.ts} - SETTINGS.ui.mermaid.buttons
+	 */
+	showCopyCodeButton?: boolean;
+
+	/**
+	 * Display validation status badge with real-time Mermaid syntax validation
+	 * Uses mermaid-validator.ts for precise error reporting
+	 * @default false
+	 */
+	showValidationStatus?: boolean;
+
+	/**
+	 * Pre-computed validation result (avoids re-validation)
+	 * If provided, component uses this instead of running validator
+	 */
+	validationResult?: ContentValidationResult;
+
+	/**
+	 * Action grid orientation (applies to BOTH inline IconGrid and Dialog expansion)
+	 * - horizontal: Buttons arranged left-to-right (auto-switches to vertical if 4+ buttons)
+	 * - vertical: Buttons stacked top-to-bottom
+	 * @default "vertical" (from SETTINGS.ui.mermaid.actionButtons.defaultOrientation)
+	 */
+	actionGridOrientation?: "horizontal" | "vertical";
+
+	/**
+	 * Additional CSS classes for container
+	 */
+	class?: string;
+
+	/**
+	 * Unique identifier for accessibility
+	 */
+	id?: string;
+
+	/**
+	 * Enable zoom/pan state persistence in localStorage
+	 *
+	 * Persists zoom level and pan offset across page navigation for improved UX.
+	 * When user zooms/pans a diagram, navigates away, then returns, the diagram
+	 * is restored to the same zoom/pan state.
+	 *
+	 * STORAGE KEY STRATEGY (Hybrid):
+	 * 1. props.storageKey (explicit user control) - highest priority
+	 * 2. props.id (component-level identity) - secondary
+	 * 3. Auto-hash (location + content) - automatic fallback
+	 *
+	 * EXPIRATION: States older than SETTINGS.ui.mermaid.statePersistence.maxAgeDays
+	 * are automatically purged on app mount to prevent localStorage bloat.
+	 *
+	 * @default true (from SETTINGS.ui.mermaid.statePersistence.enabled)
+	 * @see {@link file://src/config/settings.ts} - SETTINGS.ui.mermaid.statePersistence
+	 */
+	enableStatePersistence?: boolean;
+
+	/**
+	 * Custom storage key for explicit state identity control
+	 *
+	 * Overrides automatic key generation (location + content hash).
+	 * Useful when diagram content changes but you want to preserve zoom/pan state.
+	 *
+	 * EXAMPLES:
+	 * - storageKey="docker-architecture-overview"
+	 * - storageKey="k8s-networking-diagram"
+	 *
+	 * KEY FORMAT:
+	 * - mermaid-v1-{scope}-{storageKey}
+	 * - Example: mermaid-v1-loc-docker-architecture-overview
+	 *
+	 * PRECEDENCE: Highest priority (overrides id and auto-hash)
+	 *
+	 * @default undefined (uses automatic key generation)
+	 */
+	storageKey?: string;
+
+	/**
+	 * State persistence scope
+	 *
+	 * Controls how state is shared across different pages/sections:
+	 *
+	 * - 'location' (RECOMMENDED): State tied to current page/hash
+	 *   → Same diagram on different pages = independent zoom/pan states
+	 *   → Example: Diagram X in #/intro and #/advanced have separate states
+	 *
+	 * - 'global': State shared across all pages for same diagram content
+	 *   → Same diagram everywhere = shared zoom/pan state
+	 *   → Useful for "remember user's zoom preference" UX
+	 *
+	 * HASH NAVIGATION BEHAVIOR:
+	 * With location scope (default):
+	 * - #/kubernetes/intro → Diagram "K8s Arch" → zoom 150%
+	 * - #/kubernetes/advanced → SAME "K8s Arch" → zoom 100% (independent)
+	 * - #/kubernetes/intro (return) → zoom 150% ✅ restored
+	 *
+	 * With global scope:
+	 * - All instances share same state (may be confusing for users)
+	 *
+	 * @default 'location' (from SETTINGS.ui.mermaid.statePersistence.scope)
+	 */
+	statePersistenceScope?: "location" | "global";
 }

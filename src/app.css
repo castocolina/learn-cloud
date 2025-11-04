@@ -40,6 +40,11 @@
 
 @plugin "@tailwindcss/typography";
 
+/* Inter Font - Optimized for small UI text (badges, labels) */
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+
 @import "./styles/layout.css";
 @import "./styles/components.css";
 @import "./styles/navigation.css";
@@ -79,6 +84,12 @@
 	--sidebar-width-icon: 3rem; /* Collapsed state: 48px */
 	--header-height: 4rem; /* Sticky header: 64px */
 	--footer-height: 4rem; /* Floating navigation: 64px */
+
+	/* ========================================================================
+	   TYPOGRAPHY - Badge & Small UI Text Optimization
+	   ======================================================================== */
+	/* Inter font family for badges and small text (8-10px) - exceptional legibility */
+	--font-inter: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
 
 	/* ========================================================================
 	   SEMANTIC COLOR VARIABLES - Slate Palette (Light Mode)
@@ -331,6 +342,8 @@
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-lg: var(--radius);
 	--radius-xl: calc(var(--radius) + 4px);
+	--font-sans: var(--font-inter);
+	--font-badge: var(--font-inter);
 	--color-background: hsl(var(--background));
 	--color-foreground: hsl(var(--foreground));
 	--color-card: hsl(var(--card));

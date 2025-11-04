@@ -143,13 +143,120 @@ export interface AppSettings {
 				wide: string;
 			};
 		};
-		/** Mermaid diagram rendering and modal configuration */
+		/** Mermaid diagram rendering and modal configuration (Task 8G) */
 		mermaid: {
 			/** Enable debug mode for detailed error logging */
 			debug: boolean;
 			/** Viewport percentage for modal dialogs (default: 90) */
 			modalPagePercent: number;
-			// Add more Mermaid-specific settings here as needed
+			/** GitHub-style zoom controls configuration */
+			zoom: {
+				/** Default zoom level percentage (default: 100) */
+				defaultLevel: number;
+				/** Minimum zoom level percentage (default: 50) */
+				minLevel: number;
+				/** Maximum zoom level percentage (default: 200) */
+				maxLevel: number;
+				/** Zoom step for in/out buttons (default: 25) */
+				step: number;
+				/** Enable mouse wheel zoom on desktop (default: true) */
+				enableMouseWheel: boolean;
+				/** Enable pinch-to-zoom gestures on mobile (default: true) */
+				enablePinchGestures: boolean;
+			};
+			/** Pan controls configuration (GitHub-style directional navigation) */
+			pan: {
+				/** Pan step for directional button clicks in pixels (default: 50) */
+				step: number;
+				/** Maximum pan offset in pixels (default: 500) */
+				maxOffset: number;
+			};
+			/** Copy/Download feedback configuration */
+			copyFeedback: {
+				/** Success state duration in milliseconds (default: 2000) */
+				duration: number;
+			};
+			/** Responsive button visibility configuration (mobile/desktop discrimination) */
+			buttons: {
+				/** Mobile configuration (< 768px): Copy-only strategy */
+				mobile: {
+					/** Show Copy SVG button (mobile: true) */
+					showCopySvgButton: boolean;
+					/** Show Copy PNG button (mobile: true) */
+					showCopyPngButton: boolean;
+					/** Show Copy Code button (mobile: true) */
+					showCopyCodeButton: boolean;
+					/** Show Download SVG button (mobile: false) */
+					showDownloadButton: boolean;
+					/** Show Download PNG button (mobile: false) */
+					showDownloadPngButton: boolean;
+					/** Show Download JPG button (mobile: false) */
+					showDownloadJpgButton: boolean;
+					/** Show Expand button (mobile: false) */
+					showExpandButton: boolean;
+					/** Show Zoom Controls (mobile: false) */
+					showZoomControls: boolean;
+				};
+				/** Desktop configuration (≥ 768px): All features enabled */
+				desktop: {
+					/** Show Copy SVG button (desktop: true) */
+					showCopySvgButton: boolean;
+					/** Show Copy PNG button (desktop: true) */
+					showCopyPngButton: boolean;
+					/** Show Copy Code button (desktop: true) */
+					showCopyCodeButton: boolean;
+					/** Show Download SVG button (desktop: true) */
+					showDownloadButton: boolean;
+					/** Show Download PNG button (desktop: true) */
+					showDownloadPngButton: boolean;
+					/** Show Download JPG button (desktop: true) */
+					showDownloadJpgButton: boolean;
+					/** Show Expand button (desktop: true) */
+					showExpandButton: boolean;
+					/** Show Zoom Controls (desktop: true) */
+					showZoomControls: boolean;
+				};
+			};
+			/** Action buttons configuration (IconGrid integration) */
+			actionButtons: {
+				/** Default orientation for action buttons (default: "vertical") */
+				defaultOrientation: "vertical" | "horizontal";
+				/** Gap between buttons (default: "0.5rem") */
+				gap: string;
+				/** Icon size (default: "20px") */
+				iconSize: string;
+				/** Inline buttons positioning (compact view) */
+				inline: {
+					/** Positioning coordinates for top action buttons */
+					position: {
+						/** Distance from top */
+						top: string;
+						/** Distance from right */
+						right: string;
+					};
+					/** Positioning coordinates for bottom navigation buttons */
+					bottomPosition: {
+						/** Distance from bottom */
+						bottom: string;
+						/** Distance from right */
+						right: string;
+					};
+				};
+				/** Dialog expansion configuration */
+				dialog: {
+					/** Alignment system for Dialog action buttons (default: "content-aligned") */
+					alignment: "content-aligned" | "close-adjacent";
+				};
+			};
+			/** State persistence configuration (localStorage) */
+			statePersistence: {
+				/** Enable zoom/pan state persistence in localStorage (default: true) */
+				enabled: boolean;
+				/** Maximum age in days before state expires and is purged (default: 14) */
+				maxAgeDays: number;
+				/** Default persistence scope: 'location' (per-page) or 'global' (cross-page) (default: 'location') */
+				scope: "location" | "global";
+			};
 		};
 		/** Flip card component configuration */
 		flipCard: {
@@ -244,6 +351,59 @@ export interface AppSettings {
 			 * @default 2000
 			 */
 			successStateDuration: number;
+			/**
+			 * Badge Configuration - Icon + Text Strategy
+			 * Settings for text badges superimposed on icons
+			 * @see docs/PLAN-COMPOSE-ICONS.md (Strategy B: Icon + Text Badge)
+			 */
+			badge: {
+				/**
+				 * Badge font size (CSS unit)
+				 * @default "0.625rem" (10px)
+				 */
+				fontSize: string;
+				/**
+				 * Badge font weight
+				 * @default 600 (semi-bold)
+				 */
+				fontWeight: number;
+				/**
+				 * Maximum characters for badge text (auto-truncated)
+				 * @default 4
+				 */
+				maxChars: number;
+				/**
+				 * Badge background opacity (0.0 - 1.0)
+				 * @default 0.2 (20% opacity - mostly transparent)
+				 */
+				backgroundOpacity: number;
+				/**
+				 * Badge layering strategy - controls z-index rendering order
+				 * @default "overlay" - badge on top of icon
+				 * @option "behind" - badge behind icon (better for mobile without tooltips)
+				 */
+				layer: "overlay" | "behind";
+				/**
+				 * Badge background opacity when using layer="behind"
+				 * @default 0.6 (60% opacity - more visible than overlay)
+				 */
+				behindOpacity: number;
+				/**
+				 * Badge vertical position relative to icon
+				 * @default "bottom"
+				 */
+				verticalPosition: "top" | "center" | "bottom";
+				/**
+				 * Badge horizontal position relative to icon
+				 * @default "right"
+				 */
+				horizontalPosition: "left" | "center" | "right";
+				/**
+				 * Badge offset from icon edge
+				 * @default "10px" (20% overlap for better icon visibility)
+				 */
+				offset: string;
+			};
 		};
 		/**
 		 * Dialog Component Configuration

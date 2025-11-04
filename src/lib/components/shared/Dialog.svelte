@@ -79,6 +79,7 @@
 -->
 <script lang="ts">
 	import * as DialogPrimitive from "$lib/components/ui/dialog";
+	import * as Tooltip from "$lib/components/ui/tooltip";
 	import { dialogStore, closeDialog } from "$lib/stores/dialog";
 	import { SETTINGS } from "$config/settings.js";
 	import type { DialogProps } from "$types/ui";
@@ -95,6 +96,8 @@
 		showCloseButton = SETTINGS.ui.dialog.closeButton.showByDefault,
 		closeButton,
 		actionButtons,
+		topActionButtons,
+		bottomActionButtons,
 		customActions,
 		class: className,
 		children
@@ -142,6 +145,30 @@
 	const effectiveActionButtons = $derived(isStoreMode ? $dialogStore.actionButtons : actionButtons);
 
 	/**
+	 * Effective top action buttons (dual-group mode support - NEW for MermaidDiagram)
+	 * Example: Download button positioned at top-right
+	 */
+	const effectiveTopActionButtons = $derived(
+		isStoreMode ? $dialogStore.topActionButtons : topActionButtons
+	);
+
+	/**
+	 * Effective bottom action buttons (dual-group mode support - NEW for MermaidDiagram)
+	 * Example: 3×3 navigation grid positioned at bottom-right
+	 */
+	const effectiveBottomActionButtons = $derived(
+		isStoreMode ? $dialogStore.bottomActionButtons : bottomActionButtons
+	);
+
+	/**
+	 * Button mode detection
+	 * - dualGroupMode: topActionButtons OR bottomActionButtons defined
+	 * - singleGroupMode: actionButtons defined (legacy mode)
+	 */
+	const isDualGroupMode = $derived(!!(effectiveTopActionButtons || effectiveBottomActionButtons));
+	const isSingleGroupMode = $derived(!!effectiveActionButtons && !isDualGroupMode);
+
+	/**
 	 * Size-based CSS classes using derived state
 	 *
 	 * MOBILE-FIRST APPROACH (TASK 8E requirement):
@@ -171,7 +198,7 @@
 		// Removed overflow-y-auto from DialogPrimitive.Content (moved to internal wrapper)
 		// This enables sticky header that remains visible during content scroll
 		// Scroll is now in .dialog-content-scroll-wrapper (see lines 652-660)
-		// CSS custom properties (--dialog-max-width/height) override for size="full" via !important
+		// NOTE: CSS custom properties are applied via inline styles (fullSizeStyles), not Tailwind classes
 		const baseClasses = "w-full max-h-[90vh] flex flex-col";
 
 		switch (effectiveSize) {
@@ -184,10 +211,10 @@
 			case "xl":
 				return `${baseClasses} sm:!max-w-xl`; // ~576px width - extra large
 			case "full":
-				// For "full", we use inline styles (not classes) to support dynamic SETTINGS
-				// Add marker class for CSS targeting
-				// sm:!max-w-[90vw] ensures width on tablet+, max-h handled by baseClasses
-				return `${baseClasses} dialog-full-size sm:!max-w-[90vw]`;
+				// For "full", we use inline styles (not Tailwind classes) to support dynamic SETTINGS
+				// maxWidth and maxHeight are applied via fullSizeStyles (see lines 206-221)
+				// Using marker class dialog-full-size for CSS targeting
+				return `${baseClasses} dialog-full-size`;
 			default:
 				return `${baseClasses} sm:!max-w-md`;
 		}
@@ -196,20 +223,27 @@
 	/**
 	 * Inline styles for "full" size variant
 	 *
-	 * Uses SETTINGS.ui.mermaid.modalPagePercent to support configuration
-	 * Tailwind doesn't support dynamic class interpolation, so we use inline styles
+	 * Uses SETTINGS.ui.mermaid.modalPagePercent to support dynamic configuration
+	 * Tailwind arbitrary values don't support CSS custom properties, so we use inline styles
 	 *
-	 * NOTE: Only applies on tablet-portrait+ (≥640px via @media in CSS)
-	 * Mobile (≤639px) is always full-screen via Tailwind classes
+	 * IMPORTANT: maxWidth/maxHeight are applied directly as inline styles
+	 * This ensures size="full" respects SETTINGS.ui.mermaid.modalPagePercent
+	 *
+	 * Mobile (≤639px): Always full-screen via Tailwind classes (w-full, max-h-[90vh])
+	 * Tablet+ (≥640px): Uses configured modalPagePercent (default 90vw/90vh)
 	 */
 	const fullSizeStyles = $derived.by(() => {
 		if (effectiveSize !== "full") return undefined;
 
 		const modalPercent = SETTINGS.ui.mermaid.modalPagePercent;
-		// Using CSS custom properties to apply only on desktop
+		// FORCE width and height to modalPagePercent (not just limit with max-)
+		// This ensures size="full" ALWAYS uses configured viewport percentage
+		// Result: Dialog is ALWAYS 90vw × 90vh (not adaptive to content)
 		return {
-			"--dialog-max-width": `${modalPercent}vw`,
-			"--dialog-max-height": `${modalPercent}vh`
+			width: `min(100vw, ${modalPercent}vw)`, // Force width (90vw on tablet+)
+			height: `min(100vh, ${modalPercent}vh)`, // Force height (90vh on tablet+)
+			maxWidth: `${modalPercent}vw`, // Safety fallback
+			maxHeight: `${modalPercent}vh` // Safety fallback
 		};
 	});
 
@@ -272,29 +306,25 @@
 	});
 
 	/**
-	 * Intelligent Action Button Positioning (Refactored 2025-11-01)
+	 * Action Button Positioning Calculator (Reusable Function)
 	 *
-	 * SIMPLIFIED SYSTEM (2 Alignments):
-	 * - content-aligned: Sticky float over content (76px from top, 20px from right)
-	 * - close-adjacent: Adjacent to close button in header
+	 * ARCHITECTURE: Single source of truth for positioning logic
+	 * Used by legacy single-group AND new dual-group modes
 	 *
 	 * POSITIONING BEHAVIOR:
-	 * - content-aligned: STICKY positioning (always visible during scroll)
-	 * - close-adjacent: ABSOLUTE positioning (in header)
+	 * - content-aligned: Sticky float over content (76px from top, 20px from right)
+	 * - close-adjacent: Adjacent to close button in header (respects safe zone)
 	 *
-	 * SAFE ZONE CALCULATION:
-	 * - Close button: 44px (WCAG min touch) + 20px (offset) + 12px (gap) = 76px from right edge
-	 *
-	 * ORIENTATION SUPPORT:
-	 * - content-aligned: Both horizontal and vertical
-	 * - close-adjacent horizontal: 76px from right (LEFT of close button)
-	 * - close-adjacent vertical: 20px from right (SAME column as close), 76px from top (BELOW close)
-	 *
-	 * REMOVED: 'header-boundary' (eliminated to prevent collisions)
+	 * @param config - DialogActionButtonsConfig (effectiveActionButtons, effectiveTopActionButtons, etc.)
+	 * @param orientation - Current orientation (after auto-vertical switching)
+	 * @returns Position object with top/right/bottom/left CSS values
 	 */
-	const actionButtonPositioning = $derived.by(() => {
-		// Early return if no actionButtons to avoid undefined access
-		if (!effectiveActionButtons) {
+	function calculateActionButtonPosition(
+		config: typeof effectiveActionButtons,
+		orientation: "horizontal" | "vertical" | "grid"
+	) {
+		// Early return if no config
+		if (!config) {
 			return {
 				top: "1.25rem",
 				right: "1.25rem",
@@ -305,11 +335,9 @@
 			};
 		}
 
-		// Get alignment preference (new system) or fall back to legacy location
-		const alignment =
-			effectiveActionButtons.alignment || SETTINGS.ui.dialog.actionButtons.defaultAlignment;
-		const respectClose = effectiveActionButtons.respectCloseButton ?? true;
-		const orientation = effectiveActionButtonsOrientation; // Get current orientation
+		// Get alignment preference or fall back to SETTINGS default
+		const alignment = config.alignment || SETTINGS.ui.dialog.actionButtons.defaultAlignment;
+		const respectClose = config.respectCloseButton ?? true;
 
 		// Close button safe zone calculation (from SETTINGS)
 		const closeButtonWidth = parseInt(SETTINGS.ui.dialog.closeButton.size); // 44px (WCAG 2.1 min touch target)
@@ -327,7 +355,6 @@
 			case "content-aligned":
 				// STICKY float OVER content area (always visible during scroll)
 				// Positioned AFTER header, aligned with content padding
-				// Orientation: Both horizontal and vertical supported
 				right = SETTINGS.ui.dialog.actionButtons.alignmentOffsets.contentAligned; // 1.25rem (20px)
 				top = SETTINGS.ui.dialog.actionButtons.alignmentOffsets.closeAdjacent; // 76px (after header)
 				break;
@@ -339,25 +366,24 @@
 					right = SETTINGS.ui.dialog.actionButtons.alignmentOffsets.closeAdjacent; // 76px
 					top = SETTINGS.ui.dialog.closeButton.offset.top; // 1.25rem (in header, aligned with close)
 				} else {
-					// Vertical: BELOW close button, SAME vertical column (aligned horizontally)
+					// Vertical/Grid: BELOW close button, SAME vertical column
 					right = SETTINGS.ui.dialog.closeButton.offset.right; // 1.25rem (SAME as close button)
 					top = SETTINGS.ui.dialog.actionButtons.alignmentOffsets.closeAdjacent; // 76px (below close button)
 				}
 				break;
 
 			default:
-				// Fallback: content-aligned behavior (sticky float over content)
+				// Fallback: content-aligned behavior
 				right = SETTINGS.ui.dialog.actionButtons.alignmentOffsets.contentAligned; // 1.25rem
 				top = SETTINGS.ui.dialog.actionButtons.alignmentOffsets.closeAdjacent; // 76px
 				console.warn(`[Dialog] Unknown alignment "${alignment}". Using default: content-aligned`);
 		}
 
 		// Safety check: Only enforce safe zone for close-adjacent alignment
-		// content-aligned uses sticky positioning and floats over content (no collision risk)
 		if (respectClose && alignment === "close-adjacent" && !bottom && !left && right) {
 			const rightValue = parseInt(right);
 			if (!isNaN(rightValue) && rightValue < closeButtonSafeZone) {
-				// User specified right offset is too close - adjust to safe zone
+				// Adjust to safe zone to avoid collision
 				right = `${closeButtonSafeZone}px`;
 				console.warn(
 					`[Dialog] Action buttons right offset adjusted from ${rightValue}px to ${closeButtonSafeZone}px to avoid close button collision`
@@ -366,10 +392,47 @@
 		}
 
 		return { top, right, bottom, left, alignment, closeButtonSafeZone };
+	}
+
+	/**
+	 * Legacy Single-Group Positioning (backward compatible)
+	 * Alias using shared calculation logic
+	 */
+	const actionButtonPositioning = $derived.by(() => {
+		return calculateActionButtonPosition(effectiveActionButtons, effectiveActionButtonsOrientation);
 	});
 
 	/**
-	 * Position styles for action buttons container
+	 * Top Action Buttons Positioning (Dual-Group Mode)
+	 * Alias using shared calculation logic
+	 */
+	const topActionButtonPositioning = $derived.by(() => {
+		const orientation =
+			effectiveTopActionButtons?.orientation || SETTINGS.ui.dialog.actionButtons.defaultOrientation;
+		return calculateActionButtonPosition(effectiveTopActionButtons, orientation);
+	});
+
+	/**
+	 * Bottom Action Buttons Positioning (Dual-Group Mode)
+	 * Alias using shared calculation logic, with bottom positioning override
+	 */
+	const bottomActionButtonPositioning = $derived.by(() => {
+		const orientation =
+			effectiveBottomActionButtons?.orientation ||
+			SETTINGS.ui.dialog.actionButtons.defaultOrientation;
+		const pos = calculateActionButtonPosition(effectiveBottomActionButtons, orientation);
+
+		// Override: Use bottom positioning instead of top for bottom group
+		// Maintains same offset distance but anchors to bottom edge
+		return {
+			...pos,
+			top: "", // Clear top
+			bottom: pos.top || "1.25rem" // Use top value as bottom offset
+		};
+	});
+
+	/**
+	 * Position styles for action buttons container (Legacy Single-Group)
 	 *
 	 * ARCHITECTURE DECISION: Use inline styles instead of Tailwind classes
 	 * - Tailwind v4 cannot detect dynamically generated arbitrary values like top-[${var}]
@@ -378,6 +441,34 @@
 	 */
 	const positionStyles = $derived.by(() => {
 		const pos = actionButtonPositioning;
+		return {
+			top: pos.top || undefined,
+			right: pos.right || undefined,
+			bottom: pos.bottom || undefined,
+			left: pos.left || undefined
+		};
+	});
+
+	/**
+	 * Position styles for top action buttons (Dual-Group Mode)
+	 * Alias using shared styling logic
+	 */
+	const topPositionStyles = $derived.by(() => {
+		const pos = topActionButtonPositioning;
+		return {
+			top: pos.top || undefined,
+			right: pos.right || undefined,
+			bottom: pos.bottom || undefined,
+			left: pos.left || undefined
+		};
+	});
+
+	/**
+	 * Position styles for bottom action buttons (Dual-Group Mode)
+	 * Alias using shared styling logic
+	 */
+	const bottomPositionStyles = $derived.by(() => {
+		const pos = bottomActionButtonPositioning;
 		return {
 			top: pos.top || undefined,
 			right: pos.right || undefined,
@@ -407,12 +498,6 @@
 	 * - Dialog overlay: z-[200]
 	 */
 	const actionButtonsClasses = $derived("absolute z-[225] flex items-start justify-end");
-
-	/**
-	 * Check if action buttons should be rendered
-	 * Either structured actionButtons OR custom actions snippet
-	 */
-	const hasActionButtons = $derived(!!effectiveActionButtons || !!customActions);
 
 	/**
 	 * Visibility Validation (DEV mode only)
@@ -511,159 +596,208 @@
 	<DialogPrimitive.Portal>
 		<DialogPrimitive.Overlay />
 		<DialogPrimitive.Content class={dialogClasses} showCloseButton={false} style={fullSizeStyles}>
-			<!-- Custom Close Button (IconButton with subtle variant or custom snippet) -->
-			{#if showCloseButton}
-				<div
-					class="absolute z-[230]"
-					style:top={SETTINGS.ui.dialog.closeButton.offset.top}
-					style:right={SETTINGS.ui.dialog.closeButton.offset.right}
-				>
-					{#if closeButton}
-						<!-- Custom close button provided by user -->
-						{@render closeButton()}
-					{:else}
-						<!-- Default: IconButton (WCAG 2.1 AA minimum 44x44px touch target) -->
-						<!-- Variant and size controlled by SETTINGS -->
-						<IconButton
-							icon={X}
-							label="Close dialog"
-							onClick={handleClose}
-							variant={SETTINGS.ui.dialog.closeButton.variant}
-							class="min-h-11 min-w-11"
-						/>
-					{/if}
-				</div>
-			{/if}
-
-			<!-- Action Buttons (structured IconGrid or custom snippet) -->
-			{#if hasActionButtons}
-				<div
-					class={actionButtonsClasses}
-					style:top={positionStyles.top}
-					style:right={positionStyles.right}
-					style:bottom={positionStyles.bottom}
-					style:left={positionStyles.left}
-				>
-					{#if effectiveActionButtons}
-						<!-- Structured action buttons using IconGrid -->
-						<IconGrid
-							icons={effectiveActionButtons.icons}
-							orientation={effectiveActionButtonsOrientation}
-							gap={effectiveActionButtons.gap}
-							iconSize={effectiveActionButtons.iconSize}
-							class={effectiveActionButtons.class}
-						/>
-					{:else if customActions}
-						<!-- Custom actions snippet for complex cases -->
-						{@render customActions()}
-					{/if}
-				</div>
-			{/if}
-
-			<!-- Debug Visualization Overlay (TEMPORARILY DISABLED - requires showDebugOverlay) -->
-			{#if false}
-				{@const pos = actionButtonPositioning}
-				<div class="debug-overlay pointer-events-none absolute inset-0 z-50">
-					<!-- Close Button Bounding Box (Red) -->
-					<!-- eslint-disable-next-line svelte/no-inline-styles -- Debug overlay uses inline styles for dynamic values -->
+			<!-- Tooltip.Provider wrapper for action button tooltips -->
+			<Tooltip.Provider delayDuration={0}>
+				<!-- Custom Close Button (IconButton with subtle variant or custom snippet) -->
+				{#if showCloseButton}
 					<div
-						class="absolute border-2 border-red-500 bg-red-500/10"
-						style="top: 1.25rem; right: 1.25rem; width: 44px; height: 44px;"
+						class="absolute z-[230]"
+						style:top={SETTINGS.ui.dialog.closeButton.offset.top}
+						style:right={SETTINGS.ui.dialog.closeButton.offset.right}
 					>
-						<div class="absolute right-0 -bottom-6 rounded bg-red-500 px-1 text-xs text-white">
-							Close: 44x44px @ (20px, 20px)
-						</div>
+						{#if closeButton}
+							<!-- Custom close button provided by user -->
+							{@render closeButton()}
+						{:else}
+							<!-- Default: IconButton (WCAG 2.1 AA minimum 44x44px touch target) -->
+							<!-- Variant and size controlled by SETTINGS -->
+							<IconButton
+								icon={X}
+								label="Close dialog"
+								onClick={handleClose}
+								variant={SETTINGS.ui.dialog.closeButton.variant}
+								class="min-h-11 min-w-11"
+							/>
+						{/if}
 					</div>
+				{/if}
 
-					<!-- Safe Zone Visualization (Yellow) -->
-					<!-- eslint-disable-next-line svelte/no-inline-styles -- Debug overlay uses inline styles for dynamic values -->
+				<!-- Legacy Single-Group Action Buttons (backward compatible) -->
+				{#if isSingleGroupMode}
 					<div
-						class="absolute border-2 border-dashed border-yellow-500 bg-yellow-500/10"
-						style="top: 1.25rem; right: 1.25rem; width: {pos.closeButtonSafeZone}px; height: 44px;"
+						class={actionButtonsClasses}
+						style:top={positionStyles.top}
+						style:right={positionStyles.right}
+						style:bottom={positionStyles.bottom}
+						style:left={positionStyles.left}
 					>
+						{#if effectiveActionButtons}
+							<!-- Structured action buttons using IconGrid -->
+							<IconGrid
+								icons={effectiveActionButtons.icons}
+								orientation={effectiveActionButtonsOrientation}
+								gap={effectiveActionButtons.gap}
+								iconSize={effectiveActionButtons.iconSize}
+								showTooltips={effectiveActionButtons.showTooltips ?? false}
+								class={effectiveActionButtons.class}
+							/>
+						{:else if customActions}
+							<!-- Custom actions snippet for complex cases -->
+							{@render customActions()}
+						{/if}
+					</div>
+				{/if}
+
+				<!-- NEW: Dual-Group Action Buttons (top + bottom) -->
+				{#if isDualGroupMode}
+					<!-- Top Action Buttons (e.g., Download button) -->
+					{#if effectiveTopActionButtons}
 						<div
-							class="absolute -bottom-6 left-0 rounded bg-yellow-500 px-1 text-xs whitespace-nowrap text-black"
+							class={actionButtonsClasses}
+							style:top={topPositionStyles.top}
+							style:right={topPositionStyles.right}
+							style:bottom={topPositionStyles.bottom}
+							style:left={topPositionStyles.left}
 						>
-							Safe Zone: {pos.closeButtonSafeZone}px (44px + 20px + 12px)
+							<IconGrid
+								icons={effectiveTopActionButtons.icons}
+								orientation={effectiveTopActionButtons.orientation || "horizontal"}
+								gridConfig={effectiveTopActionButtons.gridConfig}
+								gap={effectiveTopActionButtons.gap}
+								iconSize={effectiveTopActionButtons.iconSize}
+								showTooltips={effectiveTopActionButtons.showTooltips ?? false}
+								class={effectiveTopActionButtons.class}
+							/>
 						</div>
-					</div>
+					{/if}
 
-					<!-- Action Buttons Position Indicator (Blue) -->
-					{#if actionButtons}
+					<!-- Bottom Action Buttons (e.g., 3×3 navigation grid) -->
+					{#if effectiveBottomActionButtons}
+						<div
+							class={actionButtonsClasses}
+							style:top={bottomPositionStyles.top}
+							style:right={bottomPositionStyles.right}
+							style:bottom={bottomPositionStyles.bottom}
+							style:left={bottomPositionStyles.left}
+						>
+							<IconGrid
+								icons={effectiveBottomActionButtons.icons}
+								orientation={effectiveBottomActionButtons.orientation || "grid"}
+								gridConfig={effectiveBottomActionButtons.gridConfig}
+								gap={effectiveBottomActionButtons.gap}
+								iconSize={effectiveBottomActionButtons.iconSize}
+								showTooltips={effectiveBottomActionButtons.showTooltips ?? false}
+								class={effectiveBottomActionButtons.class}
+							/>
+						</div>
+					{/if}
+				{/if}
+
+				<!-- Debug Visualization Overlay (TEMPORARILY DISABLED - requires showDebugOverlay) -->
+				{#if false}
+					{@const pos = actionButtonPositioning}
+					<div class="debug-overlay pointer-events-none absolute inset-0 z-50">
+						<!-- Close Button Bounding Box (Red) -->
 						<!-- eslint-disable-next-line svelte/no-inline-styles -- Debug overlay uses inline styles for dynamic values -->
 						<div
-							class="absolute border-2 border-blue-500 bg-blue-500/10"
-							style="top: {pos.top}; right: {pos.right}; min-width: 44px; min-height: 44px;"
+							class="absolute border-2 border-red-500 bg-red-500/10"
+							style="top: 1.25rem; right: 1.25rem; width: 44px; height: 44px;"
+						>
+							<div class="absolute right-0 -bottom-6 rounded bg-red-500 px-1 text-xs text-white">
+								Close: 44x44px @ (20px, 20px)
+							</div>
+						</div>
+
+						<!-- Safe Zone Visualization (Yellow) -->
+						<!-- eslint-disable-next-line svelte/no-inline-styles -- Debug overlay uses inline styles for dynamic values -->
+						<div
+							class="absolute border-2 border-dashed border-yellow-500 bg-yellow-500/10"
+							style="top: 1.25rem; right: 1.25rem; width: {pos.closeButtonSafeZone}px; height: 44px;"
 						>
 							<div
-								class="absolute -top-6 right-0 rounded bg-blue-500 px-1 text-xs whitespace-nowrap text-white"
+								class="absolute -bottom-6 left-0 rounded bg-yellow-500 px-1 text-xs whitespace-nowrap text-black"
 							>
-								Alignment: {pos.alignment} | Right: {pos.right}
+								Safe Zone: {pos.closeButtonSafeZone}px (44px + 20px + 12px)
 							</div>
 						</div>
-					{/if}
 
-					<!-- Debug Info Panel -->
-					<div
-						class="absolute bottom-2 left-2 max-w-xs rounded-lg border border-gray-500 bg-black/90 p-3 text-xs text-white"
-					>
-						<div class="mb-2 font-bold">Dialog Debug Info</div>
-						<div class="space-y-1">
-							<div>
-								<span class="text-gray-400">Alignment:</span>
-								{pos.alignment}
+						<!-- Action Buttons Position Indicator (Blue) -->
+						{#if actionButtons}
+							<!-- eslint-disable-next-line svelte/no-inline-styles -- Debug overlay uses inline styles for dynamic values -->
+							<div
+								class="absolute border-2 border-blue-500 bg-blue-500/10"
+								style="top: {pos.top}; right: {pos.right}; min-width: 44px; min-height: 44px;"
+							>
+								<div
+									class="absolute -top-6 right-0 rounded bg-blue-500 px-1 text-xs whitespace-nowrap text-white"
+								>
+									Alignment: {pos.alignment} | Right: {pos.right}
+								</div>
 							</div>
-							<div>
-								<span class="text-gray-400">Position:</span> Top: {pos.top}, Right: {pos.right}
-							</div>
-							<div>
-								<span class="text-gray-400">Close Safe Zone:</span>
-								{pos.closeButtonSafeZone}px
-							</div>
-							{#if actionButtons}
+						{/if}
+
+						<!-- Debug Info Panel -->
+						<div
+							class="absolute bottom-2 left-2 max-w-xs rounded-lg border border-gray-500 bg-black/90 p-3 text-xs text-white"
+						>
+							<div class="mb-2 font-bold">Dialog Debug Info</div>
+							<div class="space-y-1">
 								<div>
-									<span class="text-gray-400">Button Count:</span>
-									{effectiveActionButtons?.icons.length ?? 0}
+									<span class="text-gray-400">Alignment:</span>
+									{pos.alignment}
 								</div>
 								<div>
-									<span class="text-gray-400">Orientation:</span>
-									{effectiveActionButtonsOrientation}
+									<span class="text-gray-400">Position:</span> Top: {pos.top}, Right: {pos.right}
 								</div>
 								<div>
-									<span class="text-gray-400">Respect Close:</span>
-									{effectiveActionButtons?.respectCloseButton ?? true}
+									<span class="text-gray-400">Close Safe Zone:</span>
+									{pos.closeButtonSafeZone}px
 								</div>
-							{/if}
+								{#if actionButtons}
+									<div>
+										<span class="text-gray-400">Button Count:</span>
+										{effectiveActionButtons?.icons.length ?? 0}
+									</div>
+									<div>
+										<span class="text-gray-400">Orientation:</span>
+										{effectiveActionButtonsOrientation}
+									</div>
+									<div>
+										<span class="text-gray-400">Respect Close:</span>
+										{effectiveActionButtons?.respectCloseButton ?? true}
+									</div>
+								{/if}
+							</div>
 						</div>
 					</div>
-				</div>
-			{/if}
-
-			<!-- Dialog header - Sticky (remains visible during content scroll) -->
-			{#if effectiveTitle || effectiveDescription}
-				<DialogPrimitive.Header
-					class="dialog-header-sophisticated sticky top-0 z-[220] flex-shrink-0 bg-background"
-				>
-					{#if effectiveTitle}
-						<DialogPrimitive.Title>{effectiveTitle}</DialogPrimitive.Title>
-					{/if}
-					{#if effectiveDescription}
-						<DialogPrimitive.Description>{effectiveDescription}</DialogPrimitive.Description>
-					{/if}
-				</DialogPrimitive.Header>
-			{/if}
-
-			<!-- Dialog body content - Scrollable wrapper (follows shadcn-svelte best practice) -->
-			<div class="dialog-content-scroll-wrapper flex-1 overflow-y-auto">
-				{#if isStoreMode && $dialogStore.content}
-					<!-- Store mode: Dynamic component rendering -->
-					{@const ContentComponent = $dialogStore.content}
-					<ContentComponent {...$dialogStore.props || {}} />
-				{:else}
-					<!-- Local mode: Render children snippet -->
-					{@render children?.()}
 				{/if}
-			</div>
+
+				<!-- Dialog header - Sticky (remains visible during content scroll) -->
+				{#if effectiveTitle || effectiveDescription}
+					<DialogPrimitive.Header
+						class="dialog-header-sophisticated sticky top-0 z-[220] flex-shrink-0 bg-background"
+					>
+						{#if effectiveTitle}
+							<DialogPrimitive.Title>{effectiveTitle}</DialogPrimitive.Title>
+						{/if}
+						{#if effectiveDescription}
+							<DialogPrimitive.Description>{effectiveDescription}</DialogPrimitive.Description>
+						{/if}
+					</DialogPrimitive.Header>
+				{/if}
+
+				<!-- Dialog body content - Scrollable wrapper (follows shadcn-svelte best practice) -->
+				<div class="dialog-content-scroll-wrapper flex-1 overflow-y-auto">
+					{#if isStoreMode && $dialogStore.content}
+						<!-- Store mode: Dynamic component rendering -->
+						{@const ContentComponent = $dialogStore.content}
+						<ContentComponent {...$dialogStore.props || {}} />
+					{:else}
+						<!-- Local mode: Render children snippet -->
+						{@render children?.()}
+					{/if}
+				</div>
+			</Tooltip.Provider>
 		</DialogPrimitive.Content>
 	</DialogPrimitive.Portal>
 </DialogPrimitive.Root>

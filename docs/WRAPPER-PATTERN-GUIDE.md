@@ -1,6 +1,6 @@
 # Wrapper Component Pattern Guide
 
-This guide demonstrates how to create wrapper components for shadcn-svelte UI primitives, following the architecture standards defined in SVELTEKIT-GUIDE.md.
+This guide demonstrates how to create wrapper components for shadcn-svelte UI primitives, following the architecture standards defined in docs/SVELTE-INDEX.md.
 
 **Purpose**: Establish consistent patterns for wrapping third-party components with project-specific enhancements (union types, SETTINGS integration, theme-awareness).
 
@@ -667,7 +667,7 @@ import type { ButtonVariant } from "$lib/components/ui/button";
 
 ## Related Documentation
 
-- **SVELTEKIT-GUIDE.md**: Complete architecture standards and technical requirements
+- **docs/SVELTE-INDEX.md**: Complete architecture standards and technical requirements
 - **PLAN-TODO-FEATURES.md**: Task dependencies and implementation order
 - **src/config/settings.ts**: Centralized configuration with type definitions
 - **src/app.css**: Centralized CSS architecture with theme system

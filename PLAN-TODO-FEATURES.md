@@ -169,7 +169,7 @@ You are responsible for developing a TypeScript search index generator script th
 - `PLAN-SEARCH-ARCHITECTURE.md` (indexing architecture)
 - `src/lib/types/` (result from Task 2 - unified type system)
 - `CONTENT-STANDARDS.md` (content structure and validation standards)
-- `SVELTEKIT-GUIDE.md` (SPA architecture standards)
+- `DOCS/SVELTE-INDEX.md` (SPA architecture standards)
 - `CLAUDE.md` (Project entry guidelines)
 
 **Type Reuse Requirement:**
@@ -286,7 +286,7 @@ You are responsible for developing a TypeScript flat navigation generator script
 - `src/lib/utils/prettier-writer.ts` (centralized formatting utility)
 - `src/config/settings.ts` (centralized configuration management)
 - `CONTENT-STANDARDS.md` (content structure requirements)
-- `SVELTEKIT-GUIDE.md` (navigation architecture standards)
+- `DOCS/SVELTE-INDEX.md` (navigation architecture standards)
 - `CLAUDE.md` (Project entry guidelines)
 
 ### Prerequisites & Dependencies
@@ -3019,7 +3019,7 @@ You are responsible for conducting the final assessment of generated data struct
 ### Technical Documents to Review
 
 - `src/data/generated/` (Final optimized generated files)
-- `SVELTEKIT-GUIDE.md` (Frontend component architecture requirements)
+- `DOCS/SVELTE-INDEX.md` (Frontend component architecture requirements)
 - `CONTENT-STANDARDS.md` (Current content creation standards - verify against implementation reality)
 - `CONTENT-CREATOR.md` (Content creation CLI workflows - validate integration with standards)
 - Task 4-8 specifications (Planned frontend components)
@@ -4455,13 +4455,13 @@ function handleExpandCode() {
 
 ### Agent Responsibility
 
-You are responsible for enhancing MermaidDiagram component with error handling, **GitHub-style zoom controls**, modal expansion using Dialog (8E), and validation integration using IconGrid (8D) for controls, following SVELTEKIT-GUIDE.md patterns.
+You are responsible for enhancing MermaidDiagram component with error handling, **GitHub-style zoom controls**, modal expansion using Dialog (8E), and validation integration using IconGrid (8D) for controls, following DOCS/SVELTE-INDEX.md patterns.
 
 You must think harder about the zoom controls are intuitive and mobile-friendly (≥44px touch targets). You must also implement modal expansion for full-screen diagram viewing using Dialog (8E). Integration with IconGrid (8D) for zoom buttons is essential for consistent styling.
 
 ### Technical Documents to Review
 
-- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and error handling)
+- `DOCS/SVELTE-INDEX.md` (Svelte 5 syntax and error handling)
 - `docs/WRAPPER-PATTERN-GUIDE.md` (wrapper component patterns from Task 6)
 - `src/lib/components/shared/` (reference wrapper patterns from Task 6)
 - `MERMAID-STANDARDS.md` (diagram standards, validation, and error reporting)
@@ -4563,7 +4563,7 @@ This task builds on the wrapper component patterns established in Task 6:
 
 ### Final Validations
 
-- ✅ SVELTEKIT-GUIDE.md compliance verified
+- ✅ DOCS/SVELTE-INDEX.md compliance verified
 - ✅ Error handling with precise reporting
 - ✅ Modal expansion with zoom/pan controls working on mobile
 - ✅ GitHub-style zoom controls functional (zoom in/out/reset/fullscreen)
@@ -4578,13 +4578,13 @@ This task builds on the wrapper component patterns established in Task 6:
 
 ### Agent Responsibility
 
-You are responsible for developing interactive flipcard components for study guides with modal expansion using Dialog (8E), touch gestures, and mobile-first interactions following SVELTEKIT-GUIDE.md patterns.
+You are responsible for developing interactive flipcard components for study guides with modal expansion using Dialog (8E), touch gestures, and mobile-first interactions following DOCS/SVELTE-INDEX.md patterns.
 
 You must think harder about the flip animation to ensure smooth performance across devices. You must also implement modal expansion for full-screen study mode using Dialog (8E). Touch gestures for flipping cards on mobile and keyboard navigation for desktop are essential. Integration with progress tracking is also required.
 
 ### Technical Documents to Review
 
-- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and component standards)
+- `DOCS/SVELTE-INDEX.md` (Svelte 5 syntax and component standards)
 - `src/lib/components/ui/` (shadcn-svelte components)
 
 ### Prerequisites
@@ -4653,7 +4653,7 @@ From `PLAN-TODO-FEATURES.md`:
 
 ### Final Validations
 
-- ✅ SVELTEKIT-GUIDE.md compliance verified
+- ✅ DOCS/SVELTE-INDEX.md compliance verified
 - ✅ Flip animations smooth on all devices
 - ✅ Dialog integration for study mode working
 - ✅ Touch gestures functional (≤390px tested)
@@ -4667,13 +4667,13 @@ From `PLAN-TODO-FEATURES.md`:
 
 ### Agent Responsibility
 
-You are responsible for developing quiz and exam navigation components with question tracking, progress indicators, and mobile-optimized controls following SVELTEKIT-GUIDE.md patterns.
+You are responsible for developing quiz and exam navigation components with question tracking, progress indicators, and mobile-optimized controls following DOCS/SVELTE-INDEX.md patterns.
 
 You must think harder about the question navigation flow to ensure users can easily move between questions. You must also implement a visual progress indicator to show quiz completion status. Mobile optimization with touch-friendly buttons (≥44px) is critical. Integration with quiz state management using Svelte stores is also required.
 
 ### Technical Documents to Review
 
-- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and state management)
+- `DOCS/SVELTE-INDEX.md` (Svelte 5 syntax and state management)
 - `src/lib/types/` (quiz and exam types)
 
 ### Prerequisites
@@ -4742,7 +4742,7 @@ From `PLAN-TODO-FEATURES.md`:
 
 ### Final Validations
 
-- ✅ SVELTEKIT-GUIDE.md compliance verified
+- ✅ DOCS/SVELTE-INDEX.md compliance verified
 - ✅ Question navigation working correctly
 - ✅ Progress indicator accurate
 - ✅ Mobile controls functional (≤390px tested)
@@ -4755,13 +4755,13 @@ From `PLAN-TODO-FEATURES.md`:
 
 ### Agent Responsibility
 
-You are responsible for developing popover components using shadcn-svelte Popover with proper positioning, z-index hierarchy (applying lessons from Dialog 8E), and integration with Progress reset button, following SVELTEKIT-GUIDE.md standards.
+You are responsible for developing popover components using shadcn-svelte Popover with proper positioning, z-index hierarchy (applying lessons from Dialog 8E), and integration with Progress reset button, following DOCS/SVELTE-INDEX.md standards.
 
 As with Dialog (8E), you must think harder about the z-index hierarchy to prevent stacking context violations and background overlay issues. You must ensure proper positioning with collision detection and mobile-first design with touch-friendly interactions (≥44px touch targets). You must also integrate the popover for the reset confirmation button in the Progress component (8K).
 
 ### Technical Documents to Review
 
-- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax, z-index hierarchy, popover specifications)
+- `DOCS/SVELTE-INDEX.md` (Svelte 5 syntax, z-index hierarchy, popover specifications)
 - `src/lib/components/ui/` (shadcn-svelte Popover components)
 - Review Dialog (8E) implementation for z-index and background issue solutions
 
@@ -4839,7 +4839,7 @@ When developing Popover, review Dialog (8E) implementation for:
 
 ### Final Validations
 
-- ✅ SVELTEKIT-GUIDE.md compliance verified
+- ✅ DOCS/SVELTE-INDEX.md compliance verified
 - ✅ Z-index hierarchy respected (lessons from Dialog applied)
 - ✅ Positioning with collision detection working
 - ✅ Mobile-first interactions functional
@@ -4853,11 +4853,11 @@ When developing Popover, review Dialog (8E) implementation for:
 
 ### Agent Responsibility
 
-You are responsible for building a comprehensive progress tracking system with derived stores, learning analytics, visual dashboard, time tracking, export/import functionality, and **passive integration with navigation system (8L)**, following SVELTEKIT-GUIDE.md standards.
+You are responsible for building a comprehensive progress tracking system with derived stores, learning analytics, visual dashboard, time tracking, export/import functionality, and **passive integration with navigation system (8L)**, following DOCS/SVELTE-INDEX.md standards.
 
 ### Technical Documents to Review
 
-- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and derived state patterns)
+- `DOCS/SVELTE-INDEX.md` (Svelte 5 syntax and derived state patterns)
 - `src/lib/stores/progress.ts` (existing demo progress store - analyze what's already implemented)
 - `src/data/generated/content-menu.ts` (for per-unit progress calculation)
 - `AUDIT-REPORT-TASK-3G5.md` (Progress Tracking State Management recommendations)
@@ -5015,7 +5015,7 @@ Progress tracking has a **passive relationship** with the navigation system:
 
 ### Agent Responsibility
 
-You are responsible for developing a **unified navigation system that coordinates and integrates** Sidebar (8A), Header (8B), Breadcrumb (8C), and Popover (8J) components with consistent routing, state management, and **orchestrating navigation events for all components including Progress (8K)**, following SVELTEKIT-GUIDE.md patterns.
+You are responsible for developing a **unified navigation system that coordinates and integrates** Sidebar (8A), Header (8B), Breadcrumb (8C), and Popover (8J) components with consistent routing, state management, and **orchestrating navigation events for all components including Progress (8K)**, following DOCS/SVELTE-INDEX.md patterns.
 
 You must think harder about the unified navigation handler to ensure all components update simultaneously and consistently. You must also ensure that navigation events trigger appropriate progress tracking notifications (entry/exit) without direct control over navigation flow. Handling multiple navigation sources (sidebar clicks, search results, breadcrumb clicks, sequential navigation, direct URL access, browser back/forward) is critical for a seamless user experience.
 
@@ -5023,7 +5023,7 @@ You must provide both, visual buttons (previous/next) and keyboard shortcuts (Ar
 
 ### Technical Documents to Review
 
-- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and union-based routing)
+- `DOCS/SVELTE-INDEX.md` (Svelte 5 syntax and union-based routing)
 - `PLAN-SEARCH-ARCHITECTURE.md` (Unified Navigation System Architecture section)
 - Previous Tasks 8A, 8B, 8C, 8J (Sidebar, Header, Breadcrumb, Popover implementations)
 - `src/lib/types/navigation.ts` (navigation and routing structure)
@@ -5158,7 +5158,7 @@ export function navigateToContent(event: NavigationEvent): void {
 
 ### Final Validations
 
-- ✅ SVELTEKIT-GUIDE.md compliance verified
+- ✅ DOCS/SVELTE-INDEX.md compliance verified
 - ✅ Unified handler updates ALL components simultaneously
 - ✅ All navigation sources handled (sidebar, search, breadcrumb, sequential, direct, back/forward)
 - ✅ Progress receives entry/exit notifications correctly
@@ -5233,7 +5233,7 @@ const hasNext = $derived(navState.nextEntry !== null);
 
 ### Agent Responsibility
 
-You are responsible for developing comprehensive search functionality using the pre-built Lunr.js index from `src/data/generated/search-index.ts` with Dialog (8E) for results display, and **integration with multiple navigation components (Sidebar 8A, Breadcrumb 8C, Navigation 8L)** for coordinated updates, following SVELTEKIT-GUIDE.md patterns.
+You are responsible for developing comprehensive search functionality using the pre-built Lunr.js index from `src/data/generated/search-index.ts` with Dialog (8E) for results display, and **integration with multiple navigation components (Sidebar 8A, Breadcrumb 8C, Navigation 8L)** for coordinated updates, following DOCS/SVELTE-INDEX.md patterns.
 
 You must think harder about the multi-component navigation integration to ensure that when a user clicks a search result, all relevant components update simultaneously and consistently. You must also ensure that the search experience is mobile-optimized (≤390px) with a focus on usability and accessibility (keyboard shortcuts, focus management). You must implement debounced search input to optimize performance and display results grouped by content type (lesson, quiz, study_guide, etc.). Integration with Dialog (8E) for displaying results is essential.
 
@@ -5241,7 +5241,7 @@ Before implement you must review the pre-built Lunr.js index structure to ensure
 
 ### Technical Documents to Review
 
-- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and component standards)
+- `DOCS/SVELTE-INDEX.md` (Svelte 5 syntax and component standards)
 - `src/data/generated/search-index.ts` (pre-built Lunr.js index with 5,579 lines, 129 searchable items)
 - `src/lib/stores/dialog.ts` (from Task 8E - for results display)
 - `PLAN-SEARCH-ARCHITECTURE.md` (search specifications and unified navigation)
@@ -5423,15 +5423,15 @@ function handleResultClick(item: SearchIndexItem) {
 
 ### Agent Responsibility
 
-You are responsible for developing a theme switcher component with light/dark mode toggle, system preference detection, and persistent storage following SVELTEKIT-GUIDE.md patterns.
+You are responsible for developing a theme switcher component with light/dark mode toggle, system preference detection, and persistent storage following DOCS/SVELTE-INDEX.md patterns.
 
 You must think harder about the theme switching mechanism to ensure smooth transitions and accessibility compliance. You must also implement automatic detection of system theme preferences and save user preferences in localStorage for persistence across sessions. The component should be mobile-optimized (≤390px) with touch-friendly interactions (≥44px touch targets). Present options for dropdown or toggle switch UI (Possible IconGrid integration). Integration with the global theme store is essential for consistent theming across the application.
 
 ### Technical Documents to Review
 
-- `SVELTEKIT-GUIDE.md` (Svelte 5 syntax and state management)
+- `DOCS/SVELTE-INDEX.md` (Svelte 5 syntax and state management)
 - `src/lib/stores/theme.ts` (theme store integration)
-- `SVELTEKIT-GUIDE.md` (theme system specifications)
+- `DOCS/SVELTE-INDEX.md` (theme system specifications)
 
 ### Prerequisites
 
@@ -5497,7 +5497,7 @@ From `PLAN-TODO-FEATURES.md`:
 
 ### Final Validations
 
-- ✅ SVELTEKIT-GUIDE.md compliance verified
+- ✅ DOCS/SVELTE-INDEX.md compliance verified
 - ✅ System preference detection working
 - ✅ Theme persistence functional
 - ✅ Smooth transitions on theme change
@@ -5521,17 +5521,17 @@ From `PLAN-TODO-FEATURES.md`:
 ## TASK 8X: Component Integration & Scaffold Verification
 
 **Agent Responsibility:**
-You are responsible for integrating all developed UI components (Tasks 8A-8N) into a unified system, creating a comprehensive scaffold verification, and ensuring all components work harmoniously before content migration, following SVELTEKIT-GUIDE.md architecture patterns.
+You are responsible for integrating all developed UI components (Tasks 8A-8N) into a unified system, creating a comprehensive scaffold verification, and ensuring all components work harmoniously before content migration, following DOCS/SVELTE-INDEX.md architecture patterns.
 
 **Technical Documents to Review:**
 
-- `SVELTEKIT-GUIDE.md` (Svelte 5 integration patterns, centralized CSS, union-first architecture - CRITICAL)
+- `DOCS/SVELTE-INDEX.md` (Svelte 5 integration patterns, centralized CSS, union-first architecture - CRITICAL)
 - `docs/WRAPPER-PATTERN-GUIDE.md` (wrapper component patterns from Task 6 - foundational reference)
 - `src/lib/components/shared/` (Task 6 wrapper implementations)
 - All Task 8A-8N implementations (component outputs)
 - `src/app.css` (centralized component styles)
 - `src/lib/types/` (unified type system for component integration)
-- `SVELTEKIT-GUIDE.md` (integration requirements)
+- `DOCS/SVELTE-INDEX.md` (integration requirements)
 
 **Prerequisites:**
 
@@ -5541,7 +5541,7 @@ You are responsible for integrating all developed UI components (Tasks 8A-8N) in
 
 **Implementation Details:**
 
-**Critical Integration Requirements (from SVELTEKIT-GUIDE.md):**
+**Critical Integration Requirements (from DOCS/SVELTE-INDEX.md):**
 
 1. **Component Integration Architecture**:
 
@@ -5767,7 +5767,7 @@ You are responsible for implementing comprehensive testing strategy, validation 
 
 **Technical Documents to Review:**
 
-- `SVELTEKIT-GUIDE.md` (validation requirements)
+- `DOCS/SVELTE-INDEX.md` (validation requirements)
 - `CONTENT-STANDARDS.md` (testing standards)
 - All implemented components and scripts
 - `src/types/enums.ts` (union definitions)
@@ -5819,7 +5819,7 @@ Conduct a comprehensive code audit to eliminate technical debt. Research automat
 
 - `CLAUDE.md` - Quality standards and library vetting process
 - `eslint.config.js` - Current linting rules
-- `SVELTEKIT-GUIDE.md` - Code quality standards
+- `DOCS/SVELTE-INDEX.md` - Code quality standards
 - `package.json` and `Makefile` - Available scripts
 
 ### Prerequisites
@@ -6022,7 +6022,7 @@ The `src/scripts/validate-theme.ts` script provides **unique architectural valid
 ### Technical Documents to Review
 
 - `src/scripts/validate-theme.ts` (Current implementation - DO NOT deprecate)
-- `SVELTEKIT-GUIDE.md` (Tailwind v4 + Svelte 5 architecture)
+- `DOCS/SVELTE-INDEX.md` (Tailwind v4 + Svelte 5 architecture)
 - `.github/workflows/validation.yml` (Current CI/CD integration)
 - `check-wip.sh` (Local validation workflow)
 - **Analysis Reference**: See comprehensive feasibility study from 2025-10-31
@@ -6123,7 +6123,7 @@ The `src/scripts/validate-theme.ts` script provides **unique architectural valid
 
 **Documentation Updates**:
 
-- `SVELTEKIT-GUIDE.md` - CSS validation architecture
+- `DOCS/SVELTE-INDEX.md` - CSS validation architecture
 - `CLAUDE.md` - Update quality standards if integrated
 - Inline documentation in configuration files
 
@@ -6186,7 +6186,7 @@ You must think harder and thoroughly review and research the codebase to identif
 **Technical Documents to Review:**
 
 - All outputs from previous tasks
-- `SVELTEKIT-GUIDE.md` (performance requirements)
+- `DOCS/SVELTE-INDEX.md` (performance requirements)
 - `CONTENT-STANDARDS.md` (quality standards)
 - Production deployment requirements
 

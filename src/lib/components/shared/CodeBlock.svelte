@@ -29,7 +29,7 @@
 	import { onMount, type Component } from "svelte";
 	import type { Highlighter } from "shiki";
 	import { Copy, Check, Expand, Download } from "lucide-svelte";
-	import type { CodeBlockProps } from "$types";
+	import type { CodeBlockProps, IconItem } from "$types";
 	import { SETTINGS } from "$config/settings";
 	import IconGrid from "$lib/components/shared/IconGrid.svelte";
 	import { openDialog, dialogStore } from "$lib/stores/dialog";
@@ -178,17 +178,21 @@
 			if (!state.actionButtons) return state;
 
 			// Rebuild action buttons with current reactive values
-			const updatedIcons = state.actionButtons.icons.map((btn) => {
-				if (btn.id === "copy") {
-					return {
-						...btn,
-						icon: dialogCopyIcon,
-						label: dialogCopyLabel,
-						state: dialogCopyState
-					};
-				}
-				return btn;
-			});
+			const updatedIcons = state.actionButtons.icons
+				.map((btn) => {
+					if (!btn) return null; // Handle null cells in grid
+
+					if (btn.id === "copy") {
+						return {
+							...btn,
+							icon: dialogCopyIcon,
+							label: dialogCopyLabel,
+							state: dialogCopyState
+						};
+					}
+					return btn;
+				})
+				.filter((btn): btn is IconItem => btn !== null);
 
 			return {
 				...state,
@@ -333,56 +337,64 @@
 	);
 </script>
 
-<!-- Header: Title or Filename -->
-{#if title || filename}
-	<div class="code-block-header">
-		{#if title}
-			<h3 class="code-block-title">{title}</h3>
+<!-- Wrapper: Ensures single root element for proper spacing in parent contexts -->
+<div class="code-block-wrapper">
+	<!-- Header: Title or Filename -->
+	{#if title || filename}
+		<div class="code-block-header">
+			{#if title}
+				<h3 class="code-block-title">{title}</h3>
+			{/if}
+			{#if filename}
+				<span class="code-block-filename">{filename}</span>
+			{/if}
+		</div>
+	{/if}
+
+	<!-- Code Container -->
+	<div
+		class="code-block-container {className}"
+		class:custom-max-height={maxHeight !== SETTINGS.ui.codeBlock.defaults.maxHeight}
+		{id}
+		role="region"
+		aria-label="Code block"
+		style:max-height={maxHeight !== SETTINGS.ui.codeBlock.defaults.maxHeight
+			? maxHeight
+			: undefined}
+	>
+		<!-- Action Buttons (IconGrid) -->
+		{#if actionIcons.length > 0}
+			<IconGrid
+				icons={actionIcons}
+				positioning="absolute"
+				position={SETTINGS.ui.codeBlock.actionButtons.inline.position}
+				orientation={actionGridOrientation}
+				gap={SETTINGS.ui.codeBlock.actionButtons.gap}
+				iconSize={SETTINGS.ui.codeBlock.actionButtons.iconSize}
+			/>
 		{/if}
-		{#if filename}
-			<span class="code-block-filename">{filename}</span>
+
+		<!-- Loading Skeleton -->
+		{#if isLoading}
+			<div class="code-block-skeleton" aria-label="Loading code block">
+				<div class="skeleton-line"></div>
+				<div class="skeleton-line"></div>
+				<div class="skeleton-line"></div>
+			</div>
+		{:else}
+			<!-- Rendered Code -->
+			<div class="code-block-content">
+				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+				{@html highlightedCode}
+			</div>
 		{/if}
 	</div>
-{/if}
-
-<!-- Code Container -->
-<div
-	class="code-block-container {className}"
-	class:custom-max-height={maxHeight !== SETTINGS.ui.codeBlock.defaults.maxHeight}
-	{id}
-	role="region"
-	aria-label="Code block"
-	style:max-height={maxHeight !== SETTINGS.ui.codeBlock.defaults.maxHeight ? maxHeight : undefined}
->
-	<!-- Action Buttons (IconGrid) -->
-	{#if actionIcons.length > 0}
-		<IconGrid
-			icons={actionIcons}
-			positioning="absolute"
-			position={SETTINGS.ui.codeBlock.actionButtons.inline.position}
-			orientation={actionGridOrientation}
-			gap={SETTINGS.ui.codeBlock.actionButtons.gap}
-			iconSize={SETTINGS.ui.codeBlock.actionButtons.iconSize}
-		/>
-	{/if}
-
-	<!-- Loading Skeleton -->
-	{#if isLoading}
-		<div class="code-block-skeleton" aria-label="Loading code block">
-			<div class="skeleton-line"></div>
-			<div class="skeleton-line"></div>
-			<div class="skeleton-line"></div>
-		</div>
-	{:else}
-		<!-- Rendered Code -->
-		<div class="code-block-content">
-			<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-			{@html highlightedCode}
-		</div>
-	{/if}
 </div>
 
 <style>
+	/* Root wrapper (.code-block-wrapper) - ensures single root element for proper spacing in parent contexts */
+	/* No visual styles needed - structural wrapper only */
+
 	.code-block-header {
 		display: flex;
 		justify-content: space-between;

@@ -112,6 +112,56 @@ export interface IconItem {
 	state?: IconState;
 
 	/**
+	 * Badge text to display on icon (Icon + Text Strategy)
+	 * Text is automatically truncated and uppercased
+	 * @see IconButtonProps.badge for full documentation
+	 * @default undefined (no badge)
+	 */
+	badge?: string;
+
+	/**
+	 * Badge vertical position (overrides SETTINGS)
+	 * @see IconButtonProps.badgeVerticalPosition for full documentation
+	 * @default undefined (uses SETTINGS value: "bottom")
+	 */
+	badgeVerticalPosition?: "top" | "center" | "bottom";
+
+	/**
+	 * Badge horizontal position (overrides SETTINGS)
+	 * @see IconButtonProps.badgeHorizontalPosition for full documentation
+	 * @default undefined (uses SETTINGS value: "right")
+	 */
+	badgeHorizontalPosition?: "left" | "center" | "right";
+
+	/**
+	 * Badge background opacity (explicit control)
+	 * @see IconButtonProps.badgeBackgroundOpacity for full documentation
+	 * @default undefined (uses SETTINGS value: 0.2)
+	 */
+	badgeBackgroundOpacity?: number;
+
+	/**
+	 * Badge background opaque/transparent toggle
+	 * @see IconButtonProps.badgeOpaque for full documentation
+	 * @default undefined (uses SETTINGS value: 0.2 - transparent)
+	 */
+	badgeOpaque?: boolean;
+
+	/**
+	 * Badge layering strategy - controls z-index rendering order
+	 * @see IconButtonProps.badgeLayer for full documentation
+	 * @default undefined (uses SETTINGS.ui.iconGrid.badge.layer: "overlay")
+	 */
+	badgeLayer?: "overlay" | "behind";
+
+	/**
+	 * Badge offset from icon edge (controls overlap percentage)
+	 * @see IconButtonProps.badgeOffset for full documentation
+	 * @default undefined (uses SETTINGS.ui.iconGrid.badge.offset: "10px")
+	 */
+	badgeOffset?: string;
+
+	/**
 	 * Custom CSS classes
 	 * Additional Tailwind classes or custom styles
 	 */
@@ -157,6 +207,37 @@ export interface IconGridPosition {
 }
 
 /**
+ * Grid Layout Configuration
+ * Only applies when orientation="grid"
+ * Provides fine-grained control over CSS Grid 2D layout
+ */
+export interface IconGridConfig {
+	/**
+	 * Number of grid columns or auto-fit behavior
+	 * @default "auto-fit"
+	 * @example 2 - Fixed 2-column grid
+	 * @example 3 - Fixed 3-column grid
+	 * @example "auto-fit" - Responsive wrapping based on available space
+	 */
+	columns?: number | "auto-fit" | "auto";
+
+	/**
+	 * Number of grid rows (usually auto for natural flow)
+	 * @default "auto"
+	 * @example 3 - Fixed 3-row grid
+	 * @example "auto" - Rows expand as needed
+	 */
+	rows?: number | "auto";
+
+	/**
+	 * CSS grid-auto-flow direction
+	 * Controls how auto-placed items fill the grid
+	 * @default "row"
+	 */
+	autoFlow?: "row" | "column" | "dense" | "row dense" | "column dense";
+}
+
+/**
  * IconGrid component props
  *
  * Complete configuration interface for the IconGrid component.
@@ -166,8 +247,11 @@ export interface IconGridProps extends Omit<HTMLAttributes<HTMLDivElement>, "cla
 	/**
 	 * Array of icon configurations
 	 * Each icon is rendered in the grid according to its properties
+	 * Supports null items for grid layouts (renders empty cells to maintain structure)
+	 * @example [{ id: 'copy', icon: Copy, label: 'Copy', onClick: handleCopy }]
+	 * @example [null, panUp, zoomIn] - Grid with empty cell at start
 	 */
-	icons: IconItem[];
+	icons: (IconItem | null)[];
 
 	/**
 	 * Positioning strategy: 'absolute' (top-right) or 'inline' (flexbox)
@@ -191,13 +275,25 @@ export interface IconGridProps extends Omit<HTMLAttributes<HTMLDivElement>, "cla
 
 	/**
 	 * Icon layout orientation
-	 * Controls flex-direction: "horizontal" = row, "vertical" = column
+	 * Controls layout mode:
+	 * - "horizontal": Flex row (single line, left-to-right)
+	 * - "vertical": Flex column (single stack, top-to-bottom)
+	 * - "grid": CSS Grid 2D layout (rows × columns)
 	 * @default "horizontal"
 	 */
-	orientation?: "horizontal" | "vertical";
+	orientation?: "horizontal" | "vertical" | "grid";
 
 	/**
-	 * Number of columns (for inline mode)
+	 * Grid layout configuration (only applies when orientation="grid")
+	 * Provides fine-grained control over grid dimensions and behavior
+	 * @default { columns: "auto-fit", rows: "auto", autoFlow: "row" }
+	 * @example { columns: 3, rows: 3 } - Fixed 3×3 grid
+	 * @example { columns: 2 } - Fixed 2-column grid with auto rows
+	 */
+	gridConfig?: IconGridConfig;
+
+	/**
+	 * Number of columns (simple alternative to gridConfig.columns)
 	 * @default "auto" - icons flow naturally
 	 * @example 3 - exactly 3 columns | "auto-fit" - responsive columns
 	 */

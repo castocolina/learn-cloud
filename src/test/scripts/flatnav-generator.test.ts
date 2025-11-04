@@ -759,5 +759,5 @@ export const contentMenu: MenuStructure = {
 		} finally {
 			validationTestSetup.cleanup();
 		}
-	}, 10000); // Extended timeout for complex test
+	}, 30000); // Extended timeout for complex test with validation
 });

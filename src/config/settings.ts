@@ -188,9 +188,290 @@ export const SETTINGS: AppSettings = {
 				wide: "1280px" // xl breakpoint
 			}
 		},
+		/**
+		 * Mermaid Diagram Configuration (Task 8G)
+		 *
+		 * Centralized settings for diagram rendering with GitHub-style zoom controls.
+		 * Supports 10+ diagram types (flowchart, sequence, class, state, etc.)
+		 * with integrated validation, modal expansion, and mobile-optimized interactions.
+		 */
 		mermaid: {
-			debug: true, // Enabled for development - provides detailed error logging
-			modalPagePercent: 90 // Default modal viewport percentage
+			/**
+			 * Enable debug mode for detailed error logging and diagram source display
+			 * @default true (development mode - enables troubleshooting)
+			 */
+			debug: true,
+
+			/**
+			 * Default modal viewport percentage for Dialog expansion
+			 * @default 90 (90% of viewport width/height)
+			 */
+			modalPagePercent: 90,
+
+			/**
+			 * GitHub-style zoom controls configuration
+			 */
+			zoom: {
+				/**
+				 * Default zoom level percentage
+				 * @default 100 (100% = original size)
+				 */
+				defaultLevel: 100,
+
+				/**
+				 * Minimum zoom level percentage
+				 * @default 50 (50% = half size)
+				 */
+				minLevel: 50,
+
+				/**
+				 * Maximum zoom level percentage
+				 * @default 200 (200% = double size)
+				 */
+				maxLevel: 200,
+
+				/**
+				 * Zoom step for in/out buttons
+				 * @default 25 (25% increments)
+				 */
+				step: 25,
+
+				/**
+				 * Enable mouse wheel zoom on desktop
+				 * @default true
+				 */
+				enableMouseWheel: true,
+
+				/**
+				 * Enable pinch-to-zoom gestures on mobile
+				 * @default true
+				 */
+				enablePinchGestures: true
+			},
+
+			/**
+			 * Pan Controls Configuration (GitHub-style navigation)
+			 * Replaces scroll-based navigation with directional buttons
+			 * Works in both inline mode and Dialog expansion
+			 */
+			pan: {
+				/**
+				 * Pan step for directional button clicks (in pixels)
+				 * @default 50 (50px movement per click)
+				 */
+				step: 50,
+
+				/**
+				 * Maximum pan offset in pixels (prevents excessive panning)
+				 * @default 500 (can pan up to 500px in any direction)
+				 */
+				maxOffset: 500
+			},
+
+			/**
+			 * State Persistence Configuration (localStorage)
+			 * Persists zoom/pan state across page navigation for improved UX
+			 *
+			 * STORAGE KEY STRATEGY (Hybrid Approach):
+			 * 1. Prop `storageKey` (explicit user control) - highest priority
+			 * 2. Prop `id` (component-level identity) - secondary
+			 * 3. Auto-hash (location + content) - automatic fallback
+			 *
+			 * SCOPE OPTIONS:
+			 * - 'location': State tied to current page/hash (recommended for multi-page diagrams)
+			 * - 'global': State shared across all pages for same diagram content
+			 *
+			 * CLEANUP: Expired entries (older than maxAgeDays) removed automatically on app mount
+			 */
+			statePersistence: {
+				/**
+				 * Enable zoom/pan state persistence in localStorage
+				 * @default true
+				 */
+				enabled: true,
+
+				/**
+				 * Maximum age in days before state expires and is purged
+				 * Prevents localStorage bloat from stale diagram states
+				 * @default 14 (2 weeks)
+				 */
+				maxAgeDays: 14,
+
+				/**
+				 * Default persistence scope
+				 * - 'location': State per page/hash (independent state for same diagram on different pages)
+				 * - 'global': State shared globally (same zoom for diagram across all pages)
+				 * @default 'location'
+				 */
+				scope: "location" as const
+			},
+
+			/**
+			 * Copy/Download Feedback Configuration
+			 * Follows same pattern as codeBlock.copyFeedback for consistency
+			 */
+			copyFeedback: {
+				/**
+				 * Success state duration in milliseconds
+				 * How long the Check icon displays after successful copy/download
+				 * @default 2000 (2 seconds)
+				 */
+				duration: 2000
+			},
+
+			/**
+			 * Responsive button visibility configuration
+			 * Discriminates button visibility between mobile and desktop viewports
+			 *
+			 * ═══════════════════════════════════════════════════════════════════════
+			 * ARCHITECTURE: Precedence Hierarchy (OS Analogy)
+			 * ═══════════════════════════════════════════════════════════════════════
+			 *
+			 * These SETTINGS function as GLOBAL ENVIRONMENT VARIABLES that establish
+			 * baseline behavior across the application. Think of them like OS env vars
+			 * that programs consult when users don't provide explicit arguments.
+			 *
+			 * PRECEDENCE HIERARCHY (highest to lowest):
+			 * 1. Component props (explicit)    = Program arguments (--flag=value)
+			 * 2. SETTINGS (global config)      = Environment variables (ENV_VAR=value)
+			 * 3. Component internals           = Hardcoded defaults
+			 *
+			 * ═══════════════════════════════════════════════════════════════════════
+			 * USAGE & BEHAVIOR
+			 * ═══════════════════════════════════════════════════════════════════════
+			 *
+			 * These are INTERNAL GLOBAL DEFAULTS that apply when component consumers
+			 * DO NOT pass explicit props. Parent components should rarely need to pass
+			 * button visibility props - trust these defaults.
+			 *
+			 * EXAMPLES:
+			 * • Consumer passes showExpandButton={undefined} or omits prop
+			 *   → SETTINGS default applies (viewport-specific: mobile/desktop)
+			 *
+			 * • Consumer passes showExpandButton={true}
+			 *   → Prop takes precedence, BUT component still applies viewport discrimination
+			 *   → Logic: true !== false && buttonDefaults.showExpandButton
+			 *   → Result: Shows only if viewport allows it (respects mobile/desktop config)
+			 *
+			 * • Consumer passes showExpandButton={false}
+			 *   → Feature explicitly disabled everywhere (all viewports)
+			 *
+			 * MOBILE vs DESKTOP DISCRIMINATION:
+			 * Component ALWAYS consults these SETTINGS to determine viewport-appropriate
+			 * behavior. This ensures consistent responsive UX across the application.
+			 *
+			 * ═══════════════════════════════════════════════════════════════════════
+			 * STRATEGY
+			 * ═══════════════════════════════════════════════════════════════════════
+			 * Mobile  (< 768px): Copy actions + Expand (no downloads, no zoom/pan)
+			 * Desktop (≥ 768px): All buttons enabled
+			 */
+			buttons: {
+				/**
+				 * Mobile configuration (< 768px)
+				 * Simplified interface optimized for small screens and touch interactions
+				 * Strategy: Keep only Copy actions + Expand, disable downloads/zoom
+				 */
+				mobile: {
+					/** Copy SVG source to clipboard - ✅ ACTIVE (useful for code editors) */
+					showCopySvgButton: true,
+					/** Copy PNG image to clipboard - ✅ ACTIVE (paste in docs/presentations) */
+					showCopyPngButton: true,
+					/** Copy diagram code to clipboard - ✅ ACTIVE (share diagram definition) */
+					showCopyCodeButton: true,
+					/** Download SVG file - ❌ DISABLED (limited mobile storage/workflow) */
+					showDownloadButton: false,
+					/** Download PNG file - ❌ DISABLED (mobile browsers have download limitations) */
+					showDownloadPngButton: false,
+					/** Download JPG file - ❌ DISABLED (avoid cluttering mobile interface) */
+					showDownloadJpgButton: false,
+					/** Expand to Dialog - ❌ DISABLED (mobile already uses full width) */
+					showExpandButton: true, // TESTING: compare vertical layout with 4 buttons
+					/** Zoom/Pan controls - ❌ DISABLED (pinch-to-zoom preferred on mobile) */
+					showZoomControls: false
+				},
+				/**
+				 * Desktop configuration (≥ 768px)
+				 * Full-featured interface with all export and navigation options
+				 * Strategy: Enable everything for maximum flexibility
+				 */
+				desktop: {
+					/** Copy SVG source to clipboard - ✅ ACTIVE */
+					showCopySvgButton: true,
+					/** Copy PNG image to clipboard - ✅ ACTIVE */
+					showCopyPngButton: true,
+					/** Copy diagram code to clipboard - ✅ ACTIVE */
+					showCopyCodeButton: true,
+					/** Download SVG file - ✅ ACTIVE */
+					showDownloadButton: true,
+					/** Download PNG file - ✅ ACTIVE */
+					showDownloadPngButton: true,
+					/** Download JPG file - ✅ ACTIVE */
+					showDownloadJpgButton: true,
+					/** Expand to Dialog - ✅ ACTIVE */
+					showExpandButton: true,
+					/** Zoom/Pan controls - ✅ ACTIVE */
+					showZoomControls: true
+				}
+			},
+
+			/**
+			 * Action Buttons Configuration
+			 * Controls action buttons appearance in both inline IconGrid and Dialog expansion
+			 * Follows exact same pattern as codeBlock.actionButtons
+			 */
+			actionButtons: {
+				/**
+				 * Default orientation for action buttons
+				 * Applies to both inline buttons and Dialog expanded view
+				 * @default 'vertical' - auto-switches if horizontal + 4+ buttons
+				 */
+				defaultOrientation: "vertical" as const,
+
+				/**
+				 * Gap between buttons (applies to inline and Dialog)
+				 * @default '0.5rem'
+				 */
+				gap: "0.5rem",
+
+				/**
+				 * Icon size (applies to inline and Dialog)
+				 * @default '20px'
+				 */
+				iconSize: "20px",
+
+				/**
+				 * Inline buttons positioning (compact view)
+				 * GitHub-style two-group layout:
+				 * - position: Top-right (Download, Expand)
+				 * - bottomPosition: Bottom-right (Zoom, Pan controls)
+				 */
+				inline: {
+					position: {
+						/** Distance from top */
+						top: "0.5rem",
+						/** Distance from right */
+						right: "0.5rem"
+					},
+					bottomPosition: {
+						/** Distance from bottom */
+						bottom: "0.5rem",
+						/** Distance from right */
+						right: "0.5rem"
+					}
+				},
+
+				/**
+				 * Dialog expansion configuration
+				 */
+				dialog: {
+					/**
+					 * Alignment system for Dialog action buttons
+					 * @default 'content-aligned' - sticky float over content
+					 */
+					alignment: "content-aligned" as const
+				}
+			}
 		},
 		flipCard: {
 			modalPagePercent: 90 // Default modal viewport percentage for flip cards
@@ -282,7 +563,87 @@ export const SETTINGS: AppSettings = {
 			 * How long success state (e.g., "Copied!") persists before reset
 			 * @default 2000 (2 seconds)
 			 */
-			successStateDuration: 2000
+			successStateDuration: 2000,
+
+			/**
+			 * Badge Configuration - Icon + Text Strategy (PLAN-COMPOSE-ICONS.md)
+			 *
+			 * Settings for text badges superimposed on icons to indicate format/action type.
+			 * Uses Inter font optimized for 8-10px legibility with uppercase transformation.
+			 *
+			 * Use Case: Download/Copy buttons with format indicators (SVG, PNG, JPG, etc.)
+			 * Implementation: src/lib/components/shared/IconButton.svelte
+			 *
+			 * Related:
+			 * - Font: Inter (@fontsource/inter) - exceptional small-text legibility
+			 * - Typography: src/styles/components.css (.badge-text-xs, .badge-text-sm)
+			 * - Documentation: docs/PLAN-COMPOSE-ICONS.md (Strategy B: Icon + Text Badge)
+			 */
+			badge: {
+				/**
+				 * Default badge font size
+				 * @default "0.625rem" (10px) - balanced legibility
+				 * Alternative: "0.5rem" (8px) for extreme compactness
+				 */
+				fontSize: "0.625rem",
+
+				/**
+				 * Badge font weight
+				 * @default 600 (semi-bold) - optimal for 10px text
+				 * Use 700 (bold) for 8px text for maximum visibility
+				 */
+				fontWeight: 600,
+
+				/**
+				 * Maximum characters for badge text
+				 * Text automatically truncated and uppercased (e.g., "Download" → "DOWN")
+				 * @default 4 - fits within 20px icon bounds with 2px offset
+				 */
+				maxChars: 4,
+
+				/**
+				 * Badge background opacity for transparency
+				 * Allows icon to be visible through badge background
+				 * @default 0.2 (20% opacity) - mostly transparent, icon visible through text
+				 * Range: 0.0 (fully transparent) to 1.0 (fully opaque)
+				 */
+				backgroundOpacity: 0.2,
+
+				/**
+				 * Badge layering strategy - controls z-index rendering order
+				 * @default "overlay" - badge rendered on top of icon (current behavior)
+				 * @option "behind" - badge rendered behind icon (z-index inverted, better for mobile without tooltips)
+				 */
+				layer: "overlay" as const,
+
+				/**
+				 * Badge background opacity when using layer="behind"
+				 * Badge needs higher opacity when behind icon for visibility
+				 * @default 0.6 (60% opacity) - more visible than overlay default (0.2)
+				 */
+				behindOpacity: 0.6,
+
+				/**
+				 * Badge vertical position relative to icon
+				 * @default "bottom" - positioned at bottom edge
+				 * Options: "top" | "center" | "bottom"
+				 */
+				verticalPosition: "bottom" as const,
+
+				/**
+				 * Badge horizontal position relative to icon
+				 * @default "right" - positioned at right edge
+				 * Options: "left" | "center" | "right"
+				 */
+				horizontalPosition: "right" as const,
+
+				/**
+				 * Badge offset from icon edge
+				 * @default "10px" - 20% overlap (icon 20x20px = 400px², 20% = ~80px² = ~9x9px overlap)
+				 * Previous: "2px" (64% overlap) - reduced for better icon visibility
+				 */
+				offset: "10px"
+			}
 		},
 
 		/**

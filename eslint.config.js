@@ -243,6 +243,18 @@ export default defineConfig(
 		}
 	},
 	{
+		// Mermaid library has complex internal module structure that confuses import parser
+		// The library exports are valid but include internal parser references that
+		// ESLint's static analysis cannot fully resolve
+		// Pattern: Same as Svelte 5/shadcn-svelte handling above
+		files: ["src/lib/components/shared/MermaidDiagram.svelte"],
+		rules: {
+			"import/default": "warn", // Mermaid exports are valid but complex to analyze statically
+			"import/no-named-as-default": "warn", // Mermaid package structure includes internal parser references
+			"import/no-named-as-default-member": "warn"
+		}
+	},
+	{
 		// Validation scripts can import from config files
 		files: ["src/scripts/**/*.ts"],
 		rules: {

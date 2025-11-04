@@ -61,6 +61,7 @@ PROPS:
 	import type { IconButtonProps } from "$types";
 	import { cn } from "$lib/utils.js";
 	import { SETTINGS } from "$config/settings.js";
+	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
 
 	// ============================================================================
 	// Props with defaults from settings.ts
@@ -73,7 +74,15 @@ PROPS:
 		size = SETTINGS.ui.iconGrid.defaultIconSize,
 		variant = "default",
 		iconState = "default",
+		badge,
+		badgeVerticalPosition,
+		badgeHorizontalPosition,
+		badgeBackgroundOpacity,
+		badgeOpaque,
+		badgeLayer,
+		badgeOffset,
 		disabled = false,
+		showTooltip = false,
 		class: className = "",
 		ariaLabel,
 		...restProps
@@ -92,6 +101,134 @@ PROPS:
 	 * Currently active state (during click animation)
 	 */
 	let isActive = $state(false);
+
+	/**
+	 * Filter null values from restProps for Tooltip compatibility
+	 * Tooltip.Trigger doesn't accept null for id, only string | undefined
+	 */
+	const filteredRestProps = $derived(
+		Object.fromEntries(Object.entries(restProps).filter(([_, value]) => value !== null))
+	);
+
+	// ============================================================================
+	// Badge Processing (Icon + Text Strategy)
+	// ============================================================================
+
+	/**
+	 * Processed badge text: truncated to maxChars and uppercased
+	 * Example: "Download" → "DOWN", "svg" → "SVG"
+	 */
+	const processedBadge = $derived(
+		badge ? badge.slice(0, SETTINGS.ui.iconGrid.badge.maxChars).toUpperCase() : undefined
+	);
+
+	/**
+	 * Calculate badge positioning styles based on vertical and horizontal positions
+	 * Supports 9 position combinations (3x3 grid: top/center/bottom × left/center/right)
+	 * Uses prop overrides if provided, otherwise falls back to SETTINGS
+	 *
+	 * SMART POSITIONING (Visual Suggestion Strategy):
+	 * When badge is positioned at "center" (vertical or horizontal), the badge
+	 * automatically moves further from the icon's visual center to avoid obstruction.
+	 * - Edge positions (top/bottom/left/right): Uses standard offset (2px)
+	 * - Center positions: No offset needed (centered via transform)
+	 *
+	 * This "visual suggestion" approach ensures the badge doesn't cover the icon's
+	 * critical visual area while maintaining flexibility for edge positioning.
+	 */
+	const badgePositionStyle = $derived(() => {
+		if (!processedBadge) return "";
+
+		// Use prop overrides if provided, otherwise use SETTINGS
+		const verticalPosition = badgeVerticalPosition ?? SETTINGS.ui.iconGrid.badge.verticalPosition;
+		const horizontalPosition =
+			badgeHorizontalPosition ?? SETTINGS.ui.iconGrid.badge.horizontalPosition;
+		const baseOffset = badgeOffset ?? SETTINGS.ui.iconGrid.badge.offset;
+
+		// Smart offset: Use larger offset for non-center positions to create clear visual separation
+		// Center positions don't need offset (they're positioned via transform centering)
+		const verticalOffset = verticalPosition === "center" ? "0" : baseOffset;
+		const horizontalOffset = horizontalPosition === "center" ? "0" : baseOffset;
+
+		const styles: string[] = [];
+
+		// Vertical positioning
+		switch (verticalPosition) {
+			case "top":
+				styles.push(`top: -${verticalOffset};`);
+				break;
+			case "center":
+				styles.push("top: 50%; transform: translateY(-50%);");
+				break;
+			case "bottom":
+				styles.push(`bottom: -${verticalOffset};`);
+				break;
+		}
+
+		// Horizontal positioning
+		switch (horizontalPosition) {
+			case "left":
+				styles.push(`left: -${horizontalOffset};`);
+				break;
+			case "center":
+				styles.push("left: 50%; transform: translateX(-50%);");
+				break;
+			case "right":
+				styles.push(`right: -${horizontalOffset};`);
+				break;
+		}
+
+		// Handle center-center case (both transforms needed)
+		if (verticalPosition === "center" && horizontalPosition === "center") {
+			// Replace individual transforms with combined one
+			const filtered = styles.filter((s) => !s.includes("transform"));
+			filtered.push("top: 50%; left: 50%; transform: translate(-50%, -50%);");
+			return filtered.join(" ");
+		}
+
+		return styles.join(" ");
+	});
+
+	/**
+	 * Resolved badge layer (from prop or SETTINGS)
+	 */
+	const resolvedBadgeLayer = $derived(badgeLayer ?? SETTINGS.ui.iconGrid.badge.layer);
+
+	/**
+	 * Badge background color with opacity
+	 * Priority system:
+	 * 1. badgeBackgroundOpacity prop (explicit numeric control)
+	 * 2. badgeOpaque prop (boolean: true=0.9, false=0.0)
+	 * 3. Layer-aware SETTINGS default:
+	 *    - "behind" mode: SETTINGS.ui.iconGrid.badge.behindOpacity (0.6 - more visible)
+	 *    - "overlay" mode: SETTINGS.ui.iconGrid.badge.backgroundOpacity (0.2 - transparent)
+	 */
+	const badgeBackgroundStyle = $derived(() => {
+		let opacity: number;
+
+		// Priority 1: Explicit opacity prop
+		if (badgeBackgroundOpacity !== undefined) {
+			opacity = badgeBackgroundOpacity;
+		}
+		// Priority 2: Boolean opaque toggle
+		else if (badgeOpaque !== undefined) {
+			opacity = badgeOpaque ? 0.9 : 0.0;
+		}
+		// Priority 3: Layer-aware SETTINGS default
+		else {
+			opacity =
+				resolvedBadgeLayer === "behind"
+					? SETTINGS.ui.iconGrid.badge.behindOpacity
+					: SETTINGS.ui.iconGrid.badge.backgroundOpacity;
+		}
+
+		// Return empty string if fully transparent (no background needed)
+		if (opacity === 0.0) {
+			return "";
+		}
+
+		return `background: hsl(var(--muted) / ${opacity});`;
+	});
 
 	// ============================================================================
 	// Variant Alias Resolution
@@ -194,17 +331,94 @@ PROPS:
      Icon Button Element
      ============================================================================ -->
 
-<button
-	{...restProps}
-	class={buttonClasses}
-	onclick={handleClick}
-	onkeydown={handleKeydown}
-	onmouseenter={handleMouseEnter}
-	onmouseleave={handleMouseLeave}
-	{disabled}
-	aria-label={ariaLabel || label}
-	title={label}
-	type="button"
->
-	<Icon {size} />
-</button>
+{#if showTooltip}
+	<Tooltip.Root>
+		<Tooltip.Trigger
+			{...filteredRestProps}
+			class={buttonClasses}
+			onclick={handleClick}
+			onkeydown={handleKeydown}
+			onmouseenter={handleMouseEnter}
+			onmouseleave={handleMouseLeave}
+			{disabled}
+			aria-label={ariaLabel || label}
+			type="button"
+		>
+			<div
+				style="position: relative; display: inline-flex; align-items: center; justify-content: center;"
+			>
+				{#if resolvedBadgeLayer === "behind"}
+					<!-- Behind Mode: Badge FIRST (z-index: 0), Icon SECOND (z-index: 1) -->
+					{#if processedBadge}
+						<span
+							class="badge-text"
+							style="position: absolute; z-index: 0; {badgePositionStyle()} {badgeBackgroundStyle()} border: 1px solid hsl(var(--border)); border-radius: 2px; padding: 0 2px; pointer-events: none;"
+							aria-hidden="true"
+						>
+							{processedBadge}
+						</span>
+					{/if}
+					<Icon {size} style="position: relative; z-index: 1;" />
+				{:else}
+					<!-- Overlay Mode (default): Icon FIRST (z-index: 0), Badge SECOND (z-index: 1) -->
+					<Icon {size} />
+					{#if processedBadge}
+						<span
+							class="badge-text"
+							style="position: absolute; {badgePositionStyle()} {badgeBackgroundStyle()} border: 1px solid hsl(var(--border)); border-radius: 2px; padding: 0 2px; pointer-events: none;"
+							aria-hidden="true"
+						>
+							{processedBadge}
+						</span>
+					{/if}
+				{/if}
+			</div>
+		</Tooltip.Trigger>
+		<Tooltip.Content>
+			<p>{label}</p>
+		</Tooltip.Content>
+	</Tooltip.Root>
+{:else}
+	<button
+		{...filteredRestProps}
+		class={buttonClasses}
+		onclick={handleClick}
+		onkeydown={handleKeydown}
+		onmouseenter={handleMouseEnter}
+		onmouseleave={handleMouseLeave}
+		{disabled}
+		aria-label={ariaLabel || label}
+		title={label}
+		type="button"
+	>
+		<div
+			style="position: relative; display: inline-flex; align-items: center; justify-content: center;"
+		>
+			{#if resolvedBadgeLayer === "behind"}
+				<!-- Behind Mode: Badge FIRST (z-index: 0), Icon SECOND (z-index: 1) -->
+				{#if processedBadge}
+					<span
+						class="badge-text"
+						style="position: absolute; z-index: 0; {badgePositionStyle()} {badgeBackgroundStyle()} border: 1px solid hsl(var(--border)); border-radius: 2px; padding: 0 2px; pointer-events: none;"
+						aria-hidden="true"
+					>
+						{processedBadge}
+					</span>
+				{/if}
+				<Icon {size} style="position: relative; z-index: 1;" />
+			{:else}
+				<!-- Overlay Mode (default): Icon FIRST (z-index: 0), Badge SECOND (z-index: 1) -->
+				<Icon {size} />
+				{#if processedBadge}
+					<span
+						class="badge-text"
+						style="position: absolute; {badgePositionStyle()} {badgeBackgroundStyle()} border: 1px solid hsl(var(--border)); border-radius: 2px; padding: 0 2px; pointer-events: none;"
+						aria-hidden="true"
+					>
+						{processedBadge}
+					</span>
+				{/if}
+			{/if}
+		</div>
+	</button>
+{/if}

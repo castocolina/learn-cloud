@@ -29,8 +29,15 @@
 	import MainSidebar from "$lib/components/navigation/MainSidebar.svelte";
 	import StickyHeader from "$lib/components/navigation/StickyHeader.svelte";
 	import Dialog from "$lib/components/shared/Dialog.svelte";
+	import { onMount } from "svelte";
+	import { cleanupOldStates } from "$lib/stores/diagram-persistence.js";
 
 	let { children } = $props();
+
+	// Cleanup expired diagram states on app mount
+	onMount(() => {
+		cleanupOldStates();
+	});
 </script>
 
 <svelte:head>

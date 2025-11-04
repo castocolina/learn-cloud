@@ -28,6 +28,7 @@
 	import type { ContentBlock, RichTextViewerProps, ProgrammingLanguage } from "$types";
 	import RichParagraph from "./RichParagraph.svelte";
 	import CodeBlock from "$lib/components/shared/CodeBlock.svelte";
+	import MermaidDiagram from "$lib/components/shared/MermaidDiagram.svelte";
 
 	let { blocks, class: className }: RichTextViewerProps = $props();
 
@@ -96,54 +97,23 @@
 			<RichParagraph nodes={block.content} />
 		{:else if isCodeBlock(block)}
 			<!-- Code Block: Full syntax highlighting with Shiki (Task 8F) -->
-			{#if block.title || block.filename}
-				<!-- With header: Use external wrapper (matches showcase design) -->
-				<div class="code-block-wrapper">
-					<div class="code-block-external-header">
-						{#if block.title}
-							<h4 class="code-block-external-title">{block.title}</h4>
-						{/if}
-						{#if block.filename}
-							<span class="code-block-external-filename">{block.filename}</span>
-						{/if}
-					</div>
-					<CodeBlock
-						code={block.code}
-						language={block.language as ProgrammingLanguage}
-						showExpandButton={true}
-						showCopyButton={true}
-						showDownloadButton={true}
-					/>
-				</div>
-			{:else}
-				<!-- Without header: Use component standalone -->
-				<CodeBlock
-					code={block.code}
-					language={block.language as ProgrammingLanguage}
-					showExpandButton={true}
-					showCopyButton={true}
-					showDownloadButton={true}
-				/>
-			{/if}
+			<CodeBlock
+				code={block.code}
+				language={block.language as ProgrammingLanguage}
+				title={block.title}
+				filename={block.filename}
+				showExpandButton={true}
+				showCopyButton={true}
+				showDownloadButton={true}
+			/>
 		{:else if isDiagramBlock(block)}
-			<!-- Diagram Block: Placeholder for Task 8G (MermaidDiagram component) -->
-			<div class="content-block content-block-diagram">
-				{#if block.title}
-					<div class="content-block-header">
-						<span class="content-block-icon">📊</span>
-						<h4 class="content-block-title">{block.title}</h4>
-					</div>
-				{/if}
-				<div class="diagram-placeholder">
-					<p class="content-block-note">
-						📊 <strong>Task 8G:</strong> Mermaid diagram rendering coming soon
-					</p>
-					<pre class="diagram-code">{block.definition}</pre>
-				</div>
-				{#if block.caption}
-					<p class="content-block-caption">{block.caption}</p>
-				{/if}
-			</div>
+			<!-- Diagram Block: Mermaid diagram rendering (Task 8G) -->
+			<!-- Trusts component SETTINGS for mobile/desktop discrimination -->
+			<!-- Component applies viewport-appropriate button visibility internally -->
+			<MermaidDiagram diagram={block.definition} title={block.title} id={block.id} />
+			{#if block.caption}
+				<p class="content-block-caption">{block.caption}</p>
+			{/if}
 		{:else if isCalloutBlock(block)}
 			<!-- Callout Block: Highlighted information boxes -->
 			<div class="content-block content-block-callout content-callout-{block.calloutType}">

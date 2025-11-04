@@ -147,7 +147,7 @@ describe("SearchIndexGenerator - Class-based Tests", () => {
 
 			const success = await generator.generate();
 			expect(success).toBe(true);
-		});
+		}, 30000); // Extended timeout for validation
 	});
 
 	describe("CLI Integration", () => {

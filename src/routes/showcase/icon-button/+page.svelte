@@ -815,4 +815,931 @@ URL: /demo/test/icon-button-variants
 			</div>
 		</div>
 	</section>
+
+	<!-- ============================================================================
+		 Badge Examples (Icon + Text Strategy)
+		 ============================================================================ -->
+
+	<section class="mb-12">
+		<h2 class="mb-4 text-2xl font-semibold">Icon + Text Badges</h2>
+		<p class="mb-4 text-sm text-muted-foreground">
+			Icon buttons with text badges for format/action indicators. Text is auto-truncated to 4
+			characters and uppercased for maximum legibility at small sizes.
+		</p>
+
+		<div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+			<!-- Download Format Badges -->
+			<div class="rounded-lg border p-6">
+				<h3 class="mb-3 font-medium">Download Format Badges</h3>
+				<p class="mb-4 text-sm text-muted-foreground">
+					Download actions with format indicators (SVG, PNG, JPG, WEBP)
+				</p>
+				<div class="flex flex-wrap gap-4">
+					<IconButton
+						data-testid="badge-svg"
+						icon={Download}
+						label="Download SVG"
+						badge="SVG"
+						onClick={() => handleClick("download-svg")}
+						variant="default"
+					/>
+					<IconButton
+						data-testid="badge-png"
+						icon={Download}
+						label="Download PNG"
+						badge="PNG"
+						onClick={() => handleClick("download-png")}
+						variant="default"
+					/>
+					<IconButton
+						data-testid="badge-jpg"
+						icon={Download}
+						label="Download JPG"
+						badge="JPG"
+						onClick={() => handleClick("download-jpg")}
+						variant="default"
+					/>
+					<IconButton
+						data-testid="badge-webp"
+						icon={ImageIcon}
+						label="Download WEBP"
+						badge="WEBP"
+						onClick={() => handleClick("download-webp")}
+						variant="default"
+					/>
+				</div>
+				<code class="mt-4 block text-xs">badge="SVG|PNG|JPG|WEBP"</code>
+			</div>
+
+			<!-- Copy/Export Format Badges -->
+			<div class="rounded-lg border p-6">
+				<h3 class="mb-3 font-medium">Copy/Export Format Badges</h3>
+				<p class="mb-4 text-sm text-muted-foreground">
+					Copy actions with format indicators for clipboard operations
+				</p>
+				<div class="flex flex-wrap gap-4">
+					<IconButton
+						data-testid="badge-copy-svg"
+						icon={Copy}
+						label="Copy SVG"
+						badge="SVG"
+						onClick={() => handleClick("copy-svg")}
+						variant="default"
+					/>
+					<IconButton
+						data-testid="badge-copy-png"
+						icon={Copy}
+						label="Copy PNG"
+						badge="PNG"
+						onClick={() => handleClick("copy-png")}
+						variant="primary"
+					/>
+					<IconButton
+						data-testid="badge-code"
+						icon={Code}
+						label="Copy Code"
+						badge="CODE"
+						onClick={() => handleClick("copy-code")}
+						variant="default"
+					/>
+					<IconButton
+						data-testid="badge-text"
+						icon={FileText}
+						label="Copy Text"
+						badge="TXT"
+						onClick={() => handleClick("copy-text")}
+						variant="default"
+					/>
+				</div>
+				<code class="mt-4 block text-xs">badge="SVG|PNG|CODE|TXT"</code>
+			</div>
+
+			<!-- Truncation Demo -->
+			<div class="rounded-lg border p-6">
+				<h3 class="mb-3 font-medium">Text Truncation Demo</h3>
+				<p class="mb-4 text-sm text-muted-foreground">
+					Long text is auto-truncated to 4 characters and uppercased
+				</p>
+				<div class="flex flex-wrap gap-4">
+					<IconButton
+						data-testid="badge-truncate-download"
+						icon={Download}
+						label="Download File"
+						badge="Download"
+						onClick={() => handleClick("truncate-download")}
+						variant="default"
+					/>
+					<IconButton
+						data-testid="badge-truncate-export"
+						icon={Share2}
+						label="Export Data"
+						badge="Export"
+						onClick={() => handleClick("truncate-export")}
+						variant="default"
+					/>
+					<IconButton
+						data-testid="badge-truncate-image"
+						icon={ImageIcon}
+						label="Image Processing"
+						badge="Image"
+						onClick={() => handleClick("truncate-image")}
+						variant="default"
+					/>
+					<IconButton
+						data-testid="badge-truncate-document"
+						icon={FileText}
+						label="Document Format"
+						badge="Document"
+						onClick={() => handleClick("truncate-document")}
+						variant="default"
+					/>
+				</div>
+				<code class="mt-4 block text-xs">badge="Download" → "DOWN", badge="Export" → "EXPO"</code>
+			</div>
+
+			<!-- Badge with Variants -->
+			<div class="rounded-lg border p-6">
+				<h3 class="mb-3 font-medium">Badges with Variants</h3>
+				<p class="mb-4 text-sm text-muted-foreground">
+					Badge works with all variants (default, primary, destructive, ghost)
+				</p>
+				<div class="flex flex-wrap gap-4">
+					<IconButton
+						data-testid="badge-variant-default"
+						icon={Download}
+						label="Default Download"
+						badge="SVG"
+						onClick={() => handleClick("variant-default")}
+						variant="default"
+					/>
+					<IconButton
+						data-testid="badge-variant-primary"
+						icon={Copy}
+						label="Primary Copy"
+						badge="PNG"
+						onClick={() => handleClick("variant-primary")}
+						variant="primary"
+					/>
+					<IconButton
+						data-testid="badge-variant-destructive"
+						icon={Trash}
+						label="Destructive Delete"
+						badge="DEL"
+						onClick={() => handleClick("variant-destructive")}
+						variant="destructive"
+					/>
+					<IconButton
+						data-testid="badge-variant-ghost"
+						icon={Share2}
+						label="Ghost Share"
+						badge="SHR"
+						onClick={() => handleClick("variant-ghost")}
+						variant="ghost"
+					/>
+				</div>
+				<code class="mt-4 block text-xs">variant="default|primary|destructive|ghost"</code>
+			</div>
+		</div>
+
+		<!-- Badge Grid Layout Demo -->
+		<div class="mt-8 rounded-lg border p-6">
+			<h3 class="mb-3 font-medium">Badge in IconGrid Layout</h3>
+			<p class="mb-4 text-sm text-muted-foreground">
+				Badges work seamlessly in IconGrid component for multiple action buttons
+			</p>
+			<div class="rounded-lg bg-muted p-4">
+				<IconGrid
+					icons={[
+						{
+							id: "grid-badge-svg",
+							icon: Download,
+							label: "Download SVG",
+							badge: "SVG",
+							onClick: () => handleClick("grid-badge-svg")
+						},
+						{
+							id: "grid-badge-png",
+							icon: Download,
+							label: "Download PNG",
+							badge: "PNG",
+							onClick: () => handleClick("grid-badge-png")
+						},
+						{
+							id: "grid-badge-jpg",
+							icon: Download,
+							label: "Download JPG",
+							badge: "JPG",
+							onClick: () => handleClick("grid-badge-jpg")
+						},
+						{
+							id: "grid-badge-copy",
+							icon: Copy,
+							label: "Copy SVG",
+							badge: "SVG",
+							variant: "primary",
+							onClick: () => handleClick("grid-badge-copy")
+						}
+					]}
+					positioning="inline"
+					gap="0.5rem"
+					data-testid="badge-grid"
+				/>
+			</div>
+			<code class="mt-4 block text-xs">IconGrid with badge prop on IconItems</code>
+		</div>
+
+		<!-- Badge Positioning Matrix Demo -->
+		<div class="mt-8 rounded-lg border p-6">
+			<h3 class="mb-3 font-medium">Badge Positioning Matrix (9 Positions)</h3>
+			<p class="mb-4 text-sm text-muted-foreground">
+				Badge supports 9 position combinations: 3 vertical (top/center/bottom) × 3 horizontal
+				(left/center/right). Background has 90% opacity for transparency.
+			</p>
+
+			<div class="grid grid-cols-3 gap-8">
+				<!-- Top-Left -->
+				<div class="flex flex-col items-center gap-2 rounded-lg bg-muted p-4">
+					<IconButton
+						data-testid="badge-position-top-left"
+						icon={Download}
+						label="Top-Left Position"
+						badge="TL"
+						badgeVerticalPosition="top"
+						badgeHorizontalPosition="left"
+						onClick={() => handleClick("position-top-left")}
+						variant="default"
+					/>
+					<code class="text-xs">top + left</code>
+				</div>
+
+				<!-- Top-Center -->
+				<div class="flex flex-col items-center gap-2 rounded-lg bg-muted p-4">
+					<IconButton
+						data-testid="badge-position-top-center"
+						icon={Download}
+						label="Top-Center Position"
+						badge="TC"
+						badgeVerticalPosition="top"
+						badgeHorizontalPosition="center"
+						onClick={() => handleClick("position-top-center")}
+						variant="default"
+					/>
+					<code class="text-xs">top + center</code>
+				</div>
+
+				<!-- Top-Right -->
+				<div class="flex flex-col items-center gap-2 rounded-lg bg-muted p-4">
+					<IconButton
+						data-testid="badge-position-top-right"
+						icon={Download}
+						label="Top-Right Position"
+						badge="TR"
+						badgeVerticalPosition="top"
+						badgeHorizontalPosition="right"
+						onClick={() => handleClick("position-top-right")}
+						variant="default"
+					/>
+					<code class="text-xs">top + right</code>
+				</div>
+
+				<!-- Center-Left -->
+				<div class="flex flex-col items-center gap-2 rounded-lg bg-muted p-4">
+					<IconButton
+						data-testid="badge-position-center-left"
+						icon={Download}
+						label="Center-Left Position"
+						badge="CL"
+						badgeVerticalPosition="center"
+						badgeHorizontalPosition="left"
+						onClick={() => handleClick("position-center-left")}
+						variant="default"
+					/>
+					<code class="text-xs">center + left</code>
+				</div>
+
+				<!-- Center-Center -->
+				<div class="flex flex-col items-center gap-2 rounded-lg bg-muted p-4">
+					<IconButton
+						data-testid="badge-position-center-center"
+						icon={Download}
+						label="Center-Center Position"
+						badge="CC"
+						badgeVerticalPosition="center"
+						badgeHorizontalPosition="center"
+						onClick={() => handleClick("position-center-center")}
+						variant="primary"
+					/>
+					<code class="text-xs">center + center</code>
+				</div>
+
+				<!-- Center-Right -->
+				<div class="flex flex-col items-center gap-2 rounded-lg bg-muted p-4">
+					<IconButton
+						data-testid="badge-position-center-right"
+						icon={Download}
+						label="Center-Right Position"
+						badge="CR"
+						badgeVerticalPosition="center"
+						badgeHorizontalPosition="right"
+						onClick={() => handleClick("position-center-right")}
+						variant="default"
+					/>
+					<code class="text-xs">center + right</code>
+				</div>
+
+				<!-- Bottom-Left -->
+				<div class="flex flex-col items-center gap-2 rounded-lg bg-muted p-4">
+					<IconButton
+						data-testid="badge-position-bottom-left"
+						icon={Download}
+						label="Bottom-Left Position"
+						badge="BL"
+						badgeVerticalPosition="bottom"
+						badgeHorizontalPosition="left"
+						onClick={() => handleClick("position-bottom-left")}
+						variant="default"
+					/>
+					<code class="text-xs">bottom + left</code>
+				</div>
+
+				<!-- Bottom-Center -->
+				<div class="flex flex-col items-center gap-2 rounded-lg bg-muted p-4">
+					<IconButton
+						data-testid="badge-position-bottom-center"
+						icon={Download}
+						label="Bottom-Center Position"
+						badge="BC"
+						badgeVerticalPosition="bottom"
+						badgeHorizontalPosition="center"
+						onClick={() => handleClick("position-bottom-center")}
+						variant="default"
+					/>
+					<code class="text-xs">bottom + center</code>
+				</div>
+
+				<!-- Bottom-Right (Default) -->
+				<div class="flex flex-col items-center gap-2 rounded-lg bg-muted p-4">
+					<IconButton
+						data-testid="badge-position-bottom-right"
+						icon={Download}
+						label="Bottom-Right Position (Default)"
+						badge="BR"
+						badgeVerticalPosition="bottom"
+						badgeHorizontalPosition="right"
+						onClick={() => handleClick("position-bottom-right")}
+						variant="default"
+					/>
+					<code class="text-xs">bottom + right (default)</code>
+				</div>
+			</div>
+
+			<code class="mt-4 block text-xs"
+				>badgeVerticalPosition="top|center|bottom" badgeHorizontalPosition="left|center|right"</code
+			>
+		</div>
+
+		<!-- Badge Opacity Control Demo -->
+		<div class="mt-8 rounded-lg border p-6">
+			<h3 class="mb-3 font-medium">Badge Background Opacity Control</h3>
+			<p class="mb-4 text-sm text-muted-foreground">
+				Control badge transparency to see icon through text. Default is 0.2 (20% opaque, 80%
+				transparent).
+			</p>
+
+			<div class="grid grid-cols-2 gap-8 md:grid-cols-4">
+				<!-- Default Opacity (0.2) -->
+				<div class="flex flex-col items-center gap-2 rounded-lg bg-card p-4">
+					<IconButton
+						data-testid="badge-opacity-default"
+						icon={Download}
+						label="Default Opacity (0.2)"
+						badge="SVG"
+						onClick={() => handleClick("opacity-default")}
+						variant="default"
+					/>
+					<code class="text-xs">default (0.2)</code>
+					<p class="text-center text-xs text-muted-foreground">Mostly transparent</p>
+				</div>
+
+				<!-- Fully Transparent (0.0) -->
+				<div class="flex flex-col items-center gap-2 rounded-lg bg-card p-4">
+					<IconButton
+						data-testid="badge-opacity-zero"
+						icon={Download}
+						label="Fully Transparent (0.0)"
+						badge="PNG"
+						badgeBackgroundOpacity={0.0}
+						onClick={() => handleClick("opacity-zero")}
+						variant="default"
+					/>
+					<code class="text-xs">opacity={0.0}</code>
+					<p class="text-center text-xs text-muted-foreground">No background</p>
+				</div>
+
+				<!-- Boolean Opaque -->
+				<div class="flex flex-col items-center gap-2 rounded-lg bg-card p-4">
+					<IconButton
+						data-testid="badge-opaque-true"
+						icon={Download}
+						label="Opaque Badge"
+						badge="JPG"
+						badgeOpaque={true}
+						onClick={() => handleClick("opaque-true")}
+						variant="default"
+					/>
+					<code class="text-xs">opaque={true}</code>
+					<p class="text-center text-xs text-muted-foreground">Solid background (0.9)</p>
+				</div>
+
+				<!-- Custom Opacity (0.5) -->
+				<div class="flex flex-col items-center gap-2 rounded-lg bg-card p-4">
+					<IconButton
+						data-testid="badge-opacity-half"
+						icon={Download}
+						label="Semi-transparent (0.5)"
+						badge="WEBP"
+						badgeBackgroundOpacity={0.5}
+						onClick={() => handleClick("opacity-half")}
+						variant="default"
+					/>
+					<code class="text-xs">opacity={0.5}</code>
+					<p class="text-center text-xs text-muted-foreground">Half transparent</p>
+				</div>
+			</div>
+
+			<code class="mt-4 block text-xs"
+				>badgeOpaque={"{true|false}"} or badgeBackgroundOpacity={"{0.0-1.0}"}</code
+			>
+		</div>
+
+		<!-- Ghost Variant Contrast Test -->
+		<div class="mt-8 rounded-lg border p-6">
+			<h3 class="mb-3 font-medium">Ghost Variant Contrast Test</h3>
+			<p class="mb-4 text-sm text-muted-foreground">
+				Ghost variant buttons have transparent backgrounds, making contrast critical. Test the same
+				button on different background colors.
+			</p>
+
+			<div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+				<!-- White/Card Background (Best Contrast) -->
+				<div>
+					<h4 class="mb-2 text-sm font-medium">Card Background (Best)</h4>
+					<div class="flex flex-wrap gap-4 rounded-lg bg-card p-4">
+						<IconButton
+							data-testid="ghost-contrast-card-1"
+							icon={Download}
+							label="Ghost on Card"
+							badge="SVG"
+							onClick={() => handleClick("ghost-card")}
+							variant="ghost"
+						/>
+						<IconButton
+							data-testid="ghost-contrast-card-2"
+							icon={Copy}
+							label="Ghost on Card"
+							badge="PNG"
+							onClick={() => handleClick("ghost-card-2")}
+							variant="ghost"
+						/>
+					</div>
+					<code class="mt-2 block text-xs">bg-card - High contrast</code>
+				</div>
+
+				<!-- Muted Background (Low Contrast) -->
+				<div>
+					<h4 class="mb-2 text-sm font-medium">Muted Background (Low)</h4>
+					<div class="flex flex-wrap gap-4 rounded-lg bg-muted p-4">
+						<IconButton
+							data-testid="ghost-contrast-muted-1"
+							icon={Download}
+							label="Ghost on Muted"
+							badge="SVG"
+							onClick={() => handleClick("ghost-muted")}
+							variant="ghost"
+						/>
+						<IconButton
+							data-testid="ghost-contrast-muted-2"
+							icon={Copy}
+							label="Ghost on Muted"
+							badge="PNG"
+							onClick={() => handleClick("ghost-muted-2")}
+							variant="ghost"
+						/>
+					</div>
+					<code class="mt-2 block text-xs">bg-muted - Low contrast ⚠️</code>
+				</div>
+
+				<!-- Primary Tinted Background -->
+				<div>
+					<h4 class="mb-2 text-sm font-medium">Primary Tinted</h4>
+					<div class="flex flex-wrap gap-4 rounded-lg bg-primary/10 p-4">
+						<IconButton
+							data-testid="ghost-contrast-primary-1"
+							icon={Download}
+							label="Ghost on Primary"
+							badge="SVG"
+							onClick={() => handleClick("ghost-primary")}
+							variant="ghost"
+						/>
+						<IconButton
+							data-testid="ghost-contrast-primary-2"
+							icon={Copy}
+							label="Ghost on Primary"
+							badge="PNG"
+							onClick={() => handleClick("ghost-primary-2")}
+							variant="ghost"
+						/>
+					</div>
+					<code class="mt-2 block text-xs">bg-primary/10 - Subtle color</code>
+				</div>
+			</div>
+
+			<p class="mt-4 text-xs text-muted-foreground">
+				💡 Tip: Ghost variant works best on card/white backgrounds. Consider using "default" or
+				"subtle" variants on muted backgrounds for better visibility.
+			</p>
+		</div>
+	</section>
+
+	<!-- Badge Behind Icon (20% Overlap) - Mobile-Optimized UX -->
+	<section class="mt-8 rounded-lg border bg-card p-6">
+		<div>
+			<div class="mb-4 flex items-center gap-2">
+				<h2 class="text-2xl font-semibold">Badge Behind Icon (20% Overlap)</h2>
+				<span
+					class="rounded bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary"
+					data-testid="badge-behind-mobile-badge">Mobile-Optimized</span
+				>
+			</div>
+
+			<p class="text-sm text-muted-foreground">
+				<strong>Problem:</strong> Mobile devices don't have hover/tooltips, making it hard to
+				communicate icon actions.
+				<br />
+				<strong>Solution:</strong> Badge rendered
+				<em>behind</em> icon (z-index inverted) with reduced overlap (20% vs 64%). Icon fully visible,
+				badge provides context without obstruction.
+			</p>
+
+			<!-- Comparison: Overlay vs Behind -->
+			<div class="mt-6">
+				<h3 class="mb-3 text-lg font-medium">Comparison: Overlay vs Behind (Both 20% Overlap)</h3>
+				<div class="grid gap-6 sm:grid-cols-2">
+					<!-- Overlay Mode (Current/Default) -->
+					<div class="rounded-lg border bg-card p-4">
+						<h4 class="mb-2 text-sm font-medium text-muted-foreground">Overlay Mode (Default)</h4>
+						<p class="mb-3 text-xs text-muted-foreground">
+							Badge on top of icon, 20% overlap, opacity 0.2
+						</p>
+						<div class="flex gap-3">
+							<IconButton
+								data-testid="badge-overlay-svg"
+								icon={Download}
+								label="Download SVG (Overlay)"
+								badge="SVG"
+								badgeLayer="overlay"
+								onClick={() => handleClick("overlay-svg")}
+								size={24}
+							/>
+							<IconButton
+								data-testid="badge-overlay-png"
+								icon={Download}
+								label="Download PNG (Overlay)"
+								badge="PNG"
+								badgeLayer="overlay"
+								onClick={() => handleClick("overlay-png")}
+								size={24}
+							/>
+							<IconButton
+								data-testid="badge-overlay-jpg"
+								icon={Copy}
+								label="Copy JPEG (Overlay)"
+								badge="JPG"
+								badgeLayer="overlay"
+								onClick={() => handleClick("overlay-jpg")}
+								size={24}
+							/>
+						</div>
+						<p class="mt-2 text-xs text-muted-foreground">
+							✅ Good: Badge prominent
+							<br />
+							⚠️ Overlay: Badge blocks part of icon (low opacity helps)
+						</p>
+					</div>
+
+					<!-- Behind Mode (Mobile-Optimized) -->
+					<div class="rounded-lg border bg-primary/5 p-4">
+						<h4 class="mb-2 text-sm font-medium text-primary">Behind Mode (Mobile-Optimized)</h4>
+						<p class="mb-3 text-xs text-muted-foreground">
+							Badge behind icon, 20% overlap, opacity 0.6
+						</p>
+						<div class="flex gap-3">
+							<IconButton
+								data-testid="badge-behind-svg"
+								icon={Download}
+								label="Download SVG (Behind)"
+								badge="SVG"
+								badgeLayer="behind"
+								onClick={() => handleClick("behind-svg")}
+								size={24}
+							/>
+							<IconButton
+								data-testid="badge-behind-png"
+								icon={Download}
+								label="Download PNG (Behind)"
+								badge="PNG"
+								badgeLayer="behind"
+								onClick={() => handleClick("behind-png")}
+								size={24}
+							/>
+							<IconButton
+								data-testid="badge-behind-jpg"
+								icon={Copy}
+								label="Copy JPEG (Behind)"
+								badge="JPG"
+								badgeLayer="behind"
+								onClick={() => handleClick("behind-jpg")}
+								size={24}
+							/>
+						</div>
+						<p class="mt-2 text-xs text-primary">
+							✅ Icon fully visible (80% unobstructed)
+							<br />
+							✅ Badge provides context without blocking icon
+							<br />
+							✅ Better mobile UX (no tooltips needed)
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- Configurable Overlap (10% vs 20%) + Positions (Top vs Bottom) -->
+			<div class="mt-6">
+				<h3 class="mb-3 text-lg font-medium">Configurable Overlap & Position</h3>
+				<p class="mb-4 text-sm text-muted-foreground">
+					Control overlap percentage via <code class="rounded bg-muted px-1 py-0.5 text-xs"
+						>badgeOffset</code
+					>
+					and position via
+					<code class="rounded bg-muted px-1 py-0.5 text-xs">badgeVerticalPosition</code>.
+				</p>
+
+				<div class="grid gap-6 sm:grid-cols-2">
+					<!-- 10% Overlap (Minimal) -->
+					<div class="rounded-lg border p-4">
+						<h4 class="mb-2 text-sm font-medium">10% Overlap (offset="14px")</h4>
+						<p class="mb-3 text-xs text-muted-foreground">
+							Minimal obstruction - maximum icon visibility
+						</p>
+
+						<div class="space-y-3">
+							<!-- Top Position -->
+							<div>
+								<p class="mb-1 text-xs font-medium text-muted-foreground">Badge Top</p>
+								<div class="flex gap-2">
+									<IconButton
+										data-testid="badge-10-top-svg"
+										icon={Download}
+										label="Download SVG (10% Top)"
+										badge="SVG"
+										badgeLayer="behind"
+										badgeOffset="14px"
+										badgeVerticalPosition="top"
+										onClick={() => handleClick("10-top-svg")}
+										size={24}
+									/>
+									<IconButton
+										data-testid="badge-10-top-png"
+										icon={Copy}
+										label="Copy PNG (10% Top)"
+										badge="PNG"
+										badgeLayer="behind"
+										badgeOffset="14px"
+										badgeVerticalPosition="top"
+										onClick={() => handleClick("10-top-png")}
+										size={24}
+									/>
+								</div>
+							</div>
+
+							<!-- Bottom Position -->
+							<div>
+								<p class="mb-1 text-xs font-medium text-muted-foreground">Badge Bottom</p>
+								<div class="flex gap-2">
+									<IconButton
+										data-testid="badge-10-bottom-svg"
+										icon={Download}
+										label="Download SVG (10% Bottom)"
+										badge="SVG"
+										badgeLayer="behind"
+										badgeOffset="14px"
+										badgeVerticalPosition="bottom"
+										onClick={() => handleClick("10-bottom-svg")}
+										size={24}
+									/>
+									<IconButton
+										data-testid="badge-10-bottom-png"
+										icon={Copy}
+										label="Copy PNG (10% Bottom)"
+										badge="PNG"
+										badgeLayer="behind"
+										badgeOffset="14px"
+										badgeVerticalPosition="bottom"
+										onClick={() => handleClick("10-bottom-png")}
+										size={24}
+									/>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- 20% Overlap (Default) -->
+					<div class="rounded-lg border bg-primary/5 p-4">
+						<h4 class="mb-2 text-sm font-medium text-primary">
+							20% Overlap (offset="10px" - Default)
+						</h4>
+						<p class="mb-3 text-xs text-muted-foreground">Balanced visibility and context</p>
+
+						<div class="space-y-3">
+							<!-- Top Position -->
+							<div>
+								<p class="mb-1 text-xs font-medium text-muted-foreground">Badge Top</p>
+								<div class="flex gap-2">
+									<IconButton
+										data-testid="badge-20-top-json"
+										icon={Copy}
+										label="Copy JSON (20% Top)"
+										badge="JSON"
+										badgeLayer="behind"
+										badgeVerticalPosition="top"
+										onClick={() => handleClick("20-top-json")}
+										size={24}
+									/>
+									<IconButton
+										data-testid="badge-20-top-yaml"
+										icon={Copy}
+										label="Copy YAML (20% Top)"
+										badge="YAML"
+										badgeLayer="behind"
+										badgeVerticalPosition="top"
+										onClick={() => handleClick("20-top-yaml")}
+										size={24}
+									/>
+								</div>
+							</div>
+
+							<!-- Bottom Position -->
+							<div>
+								<p class="mb-1 text-xs font-medium text-muted-foreground">Badge Bottom</p>
+								<div class="flex gap-2">
+									<IconButton
+										data-testid="badge-20-bottom-xml"
+										icon={Copy}
+										label="Copy XML (20% Bottom)"
+										badge="XML"
+										badgeLayer="behind"
+										badgeVerticalPosition="bottom"
+										onClick={() => handleClick("20-bottom-xml")}
+										size={24}
+									/>
+									<IconButton
+										data-testid="badge-20-bottom-csv"
+										icon={Copy}
+										label="Copy CSV (20% Bottom)"
+										badge="CSV"
+										badgeLayer="behind"
+										badgeVerticalPosition="bottom"
+										onClick={() => handleClick("20-bottom-csv")}
+										size={24}
+									/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="mt-4 rounded-lg bg-muted/50 p-3">
+					<p class="text-xs text-muted-foreground">
+						<strong>💡 Recommendation:</strong> Use 10% overlap (14px offset) when icon clarity is critical
+						(download buttons). Use 20% overlap (10px offset - default) for balanced visibility and context.
+					</p>
+				</div>
+			</div>
+
+			<!-- Use Cases for Behind Mode -->
+			<div class="mt-6">
+				<h3 class="mb-3 text-lg font-medium">Use Cases: When to Use Behind Mode</h3>
+				<div class="grid gap-4 sm:grid-cols-2">
+					<!-- Download Multiple Formats -->
+					<div class="rounded-lg border p-4">
+						<h4 class="mb-2 text-sm font-medium">Download Multiple Formats</h4>
+						<p class="mb-3 text-xs text-muted-foreground">
+							User needs to know format before tapping (mobile)
+						</p>
+						<div class="flex gap-2">
+							<IconButton
+								data-testid="download-svg-behind"
+								icon={Download}
+								label="Download SVG"
+								badge="SVG"
+								badgeLayer="behind"
+								variant="primary"
+								onClick={() => handleClick("dl-svg")}
+							/>
+							<IconButton
+								data-testid="download-png-behind"
+								icon={Download}
+								label="Download PNG"
+								badge="PNG"
+								badgeLayer="behind"
+								variant="primary"
+								onClick={() => handleClick("dl-png")}
+							/>
+							<IconButton
+								data-testid="download-jpg-behind"
+								icon={Download}
+								label="Download JPEG"
+								badge="JPEG"
+								badgeLayer="behind"
+								variant="primary"
+								onClick={() => handleClick("dl-jpg")}
+							/>
+						</div>
+					</div>
+
+					<!-- Copy Code Formats -->
+					<div class="rounded-lg border p-4">
+						<h4 class="mb-2 text-sm font-medium">Copy Code/Data Formats</h4>
+						<p class="mb-3 text-xs text-muted-foreground">Indicate clipboard format clearly</p>
+						<div class="flex gap-2">
+							<IconButton
+								data-testid="copy-json-behind"
+								icon={Copy}
+								label="Copy as JSON"
+								badge="JSON"
+								badgeLayer="behind"
+								onClick={() => handleClick("copy-json")}
+							/>
+							<IconButton
+								data-testid="copy-yaml-behind"
+								icon={Copy}
+								label="Copy as YAML"
+								badge="YAML"
+								badgeLayer="behind"
+								onClick={() => handleClick("copy-yaml")}
+							/>
+							<IconButton
+								data-testid="copy-xml-behind"
+								icon={Copy}
+								label="Copy as XML"
+								badge="XML"
+								badgeLayer="behind"
+								onClick={() => handleClick("copy-xml")}
+							/>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Technical Details -->
+			<div class="mt-6 rounded-lg bg-muted/50 p-4">
+				<h3 class="mb-2 text-sm font-medium">Technical Implementation</h3>
+				<ul class="space-y-1 text-xs text-muted-foreground">
+					<li>
+						<strong>Overlay Mode:</strong> Badge z-index: 1, Icon z-index: 0
+					</li>
+					<li>
+						<strong>Behind Mode:</strong> Badge z-index: 0, Icon z-index: 1
+					</li>
+					<li>
+						<strong>Opacity:</strong> Behind mode uses 0.6 (60%) vs Overlay 0.2 (20%) for better visibility
+					</li>
+					<li>
+						<strong>Overlap Control:</strong> badgeOffset="10px" (20% default), "14px" (10% minimal),
+						"2px" (64% legacy)
+					</li>
+					<li>
+						<strong>Position Control:</strong> badgeVerticalPosition="top" | "bottom" (default), badgeHorizontalPosition="left"
+						| "right" (default)
+					</li>
+					<li>
+						<strong>Configuration:</strong> SETTINGS.ui.iconGrid.badge (layer, offset, opacity, position)
+					</li>
+					<li>
+						<strong>Backward Compatible:</strong> All defaults preserve current behavior (zero breaking
+						changes)
+					</li>
+				</ul>
+			</div>
+
+			<!-- UX Research -->
+			<div class="mt-4 rounded-lg border-l-4 border-primary bg-primary/5 p-4">
+				<p class="text-xs text-muted-foreground">
+					<strong>📚 UX Research (Nielsen Norman Group):</strong> "Always use text labels with icons.
+					Tooltips are NOT a substitute for visible labels on mobile devices without hover interactions."
+					Behind mode provides visible context labels without requiring tooltips.
+				</p>
+			</div>
+		</div>
+	</section>
 </div>

@@ -85,9 +85,10 @@ Accessibility:
 		iconSize = SETTINGS.ui.iconGrid.defaultIconSize,
 		gap = SETTINGS.ui.iconGrid.defaultGap,
 		orientation = "horizontal",
+		gridConfig = { columns: "auto-fit", rows: "auto", autoFlow: "row" },
 		columns = "auto",
 		alignment = "center",
-		showTooltips: _showTooltips = SETTINGS.ui.iconGrid.showTooltips,
+		showTooltips = SETTINGS.ui.iconGrid.showTooltips,
 		class: className = "",
 		position = { top: "0.5rem", right: "0.5rem" },
 		...restProps
@@ -101,24 +102,53 @@ Accessibility:
 	 * Generate dynamic CSS styles based on positioning and configuration
 	 */
 	const gridStyles = $derived.by(() => {
-		// Resolve columns to valid grid-template-columns value
-		let gridColumns: string;
-		if (typeof columns === "number") {
-			gridColumns = `repeat(${columns}, 1fr)`;
-		} else if (columns === "auto" || columns === "auto-fit") {
-			// Horizontal layout: auto-fit with minimum 44px touch targets
-			gridColumns = "repeat(auto-fit, minmax(44px, 1fr))";
-		} else {
-			gridColumns = columns;
-		}
-
-		// Base CSS custom properties for grid configuration
+		// Base CSS custom properties
 		const base: Record<string, string | number> = {
 			"--icon-size": typeof iconSize === "number" ? `${iconSize}px` : iconSize,
 			"--icon-gap": gap,
-			"--icon-columns": gridColumns,
 			"--icon-alignment": alignment
 		};
+
+		// Grid-specific configuration (only for orientation="grid")
+		if (orientation === "grid") {
+			// Use gridConfig.columns or fallback to deprecated columns prop
+			const effectiveColumns = gridConfig.columns ?? columns;
+			const effectiveRows = gridConfig.rows ?? "auto";
+			const effectiveAutoFlow = gridConfig.autoFlow ?? "row";
+
+			// Resolve columns to grid-template-columns value
+			let gridColumns: string;
+			if (typeof effectiveColumns === "number") {
+				gridColumns = `repeat(${effectiveColumns}, 1fr)`;
+			} else if (effectiveColumns === "auto-fit" || effectiveColumns === "auto") {
+				gridColumns = "repeat(auto-fit, minmax(44px, 1fr))";
+			} else {
+				gridColumns = effectiveColumns;
+			}
+
+			// Resolve rows to grid-template-rows value
+			let gridRows: string;
+			if (typeof effectiveRows === "number") {
+				gridRows = `repeat(${effectiveRows}, 1fr)`;
+			} else {
+				gridRows = "auto";
+			}
+
+			base["--icon-columns"] = gridColumns;
+			base["--icon-rows"] = gridRows;
+			base["grid-auto-flow"] = effectiveAutoFlow;
+		} else {
+			// Legacy: For horizontal/vertical flex layouts (backward compatibility)
+			let gridColumns: string;
+			if (typeof columns === "number") {
+				gridColumns = `repeat(${columns}, 1fr)`;
+			} else if (columns === "auto" || columns === "auto-fit") {
+				gridColumns = "repeat(auto-fit, minmax(44px, 1fr))";
+			} else {
+				gridColumns = columns;
+			}
+			base["--icon-columns"] = gridColumns;
+		}
 
 		// Add absolute positioning coordinates if using absolute mode
 		if (positioning === "absolute") {
@@ -163,18 +193,33 @@ Accessibility:
 		Each IconItem is passed directly to IconButton component via spread operator.
 		IconButton handles all interactivity (hover, active, click, keyboard, ARIA).
 		IconGrid only provides the grid layout structure.
+
+		For grid orientation: null items render as empty divs to maintain grid structure
 	-->
-	{#each icons as item (item.id)}
-		<IconButton
-			icon={item.icon}
-			label={item.label}
-			onClick={item.onClick}
-			size={iconSize}
-			variant={item.variant}
-			iconState={item.state}
-			disabled={item.disabled}
-			class="icon-grid-item {item.class || ''}"
-			ariaLabel={item.ariaLabel}
-		/>
+	{#each icons as item, index (item?.id || `empty-${index}`)}
+		{#if item}
+			<IconButton
+				icon={item.icon}
+				label={item.label}
+				onClick={item.onClick}
+				size={iconSize}
+				variant={item.variant}
+				iconState={item.state}
+				badge={item.badge}
+				badgeVerticalPosition={item.badgeVerticalPosition}
+				badgeHorizontalPosition={item.badgeHorizontalPosition}
+				badgeBackgroundOpacity={item.badgeBackgroundOpacity}
+				badgeOpaque={item.badgeOpaque}
+				badgeLayer={item.badgeLayer}
+				badgeOffset={item.badgeOffset}
+				disabled={item.disabled}
+				showTooltip={showTooltips}
+				class="icon-grid-item {item.class || ''}"
+				ariaLabel={item.ariaLabel}
+			/>
+		{:else if orientation === "grid"}
+			<!-- Empty grid cell (maintains grid structure) -->
+			<div class="icon-grid-empty" aria-hidden="true"></div>
+		{/if}
 	{/each}
 </div>
