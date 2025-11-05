@@ -260,7 +260,7 @@ class SearchIndexGenerator {
 			projects: typeDistribution.project,
 			codeBlocks: items.reduce((sum, item) => sum + item.codeBlocks.length, 0),
 			diagrams: items.reduce((sum, item) => sum + item.diagrams.length, 0),
-			flashcards: items.reduce((sum, item) => sum + item.flashcards.length, 0),
+			flipCards: items.reduce((sum, item) => sum + item.flipCards.length, 0),
 			questions: items.reduce((sum, item) => sum + item.questions.length, 0)
 		};
 
@@ -322,7 +322,7 @@ class SearchIndexGenerator {
 			searchableText: "",
 			codeBlocks: [],
 			diagrams: [],
-			flashcards: [],
+			flipCards: [],
 			questions: [],
 			requirements: [],
 			learningObjectives: [],
@@ -413,7 +413,7 @@ class SearchIndexGenerator {
 			item.summary,
 			item.searchableText,
 			...item.codeBlocks.map((c) => `${c.title} ${c.code}`),
-			...item.flashcards.map((f) => `${f.front} ${f.back}`),
+			...item.flipCards.map((f) => `${f.front} ${f.back}`),
 			...item.questions.map((q) => `${q.question} ${q.explanation || ""}`),
 			...(item.learningObjectives || []),
 			...(item.requirements || [])
@@ -459,7 +459,7 @@ class SearchIndexGenerator {
 		if (item.codeBlocks.length > 0) weight += 0.2;
 		if (item.diagrams.length > 0) weight += 0.2;
 		if (item.questions.length > 0) weight += 0.1;
-		if (item.flashcards.length > 0) weight += 0.1;
+		if (item.flipCards.length > 0) weight += 0.1;
 
 		// Boost lessons over other types
 		if (item.type === "lesson") weight += 0.1;

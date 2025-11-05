@@ -36,7 +36,7 @@ import type {
 	StudyGuideContent,
 	ExamContent,
 	ProjectContent,
-	Flashcard,
+	FlipCard,
 	ContentSection,
 	ContentBlock,
 	CodeBlock,
@@ -798,15 +798,23 @@ spec:
 /**
  * Generate flashcards for study guides
  */
-function generateFlashcards(count: number): Flashcard[] {
-	const flashcards = [];
+function generateFlashcards(count: number): FlipCard[] {
+	const flashcards: FlipCard[] = [];
 	for (let i = 0; i < count; i++) {
 		flashcards.push({
 			id: `card${i + 1}`,
 			front: `${extractLoremText(CONFIG.contentLengths.flashcardQuestion)}?`,
 			back: extractLoremText(CONFIG.contentLengths.flashcardAnswer),
-			tags: ["concept", "fundamentals", "cloud-native"],
-			difficulty: "beginner" as const
+			category: "cloud-native",
+			education: {
+				learningObjectives: ["Understand cloud-native concepts", "Apply best practices"],
+				prerequisites: [],
+				relatedConcepts: ["containers", "microservices", "kubernetes"],
+				estimatedTime: 5,
+				difficulty: "beginner",
+				keywords: ["concept", "fundamentals", "cloud-native"],
+				tags: ["concept", "fundamentals", "cloud-native"]
+			}
 		});
 	}
 	return flashcards;
@@ -941,7 +949,7 @@ export class TemplateGenerator {
 	 */
 	generateStudyGuideContent(_args: ValidatedScaffoldingArgs): StudyGuideContent {
 		const title = `Study Guide: Cloud-Native Development - ${_args.id}`;
-		const flashcards = generateFlashcards(this.config.studyGuides.flashcards);
+		const flipCards = generateFlashcards(this.config.studyGuides.flipCards);
 
 		return {
 			type: "study_guide",
@@ -952,7 +960,7 @@ export class TemplateGenerator {
 			studyGuide: {
 				description:
 					"Comprehensive study materials covering cloud-native principles, containerization, microservices architecture, and deployment strategies through interactive flashcards.",
-				flashcards,
+				flipCards,
 				categories: ["fundamentals", "concepts", "implementation"],
 				randomizeCards: true
 			}

@@ -219,7 +219,7 @@ describe("JsonSchemaGenerator - Consolidated Generation", () => {
 			"LessonContent",
 			"QuizContent",
 			"Question",
-			"Flashcard",
+			"FlipCard",
 			"ContentBlock"
 		];
 

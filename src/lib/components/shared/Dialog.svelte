@@ -210,6 +210,10 @@
 				return `${baseClasses} sm:!max-w-lg`; // ~512px width - large content
 			case "xl":
 				return `${baseClasses} sm:!max-w-xl`; // ~576px width - extra large
+			case "2xl":
+				return `${baseClasses} sm:!max-w-2xl`; // ~672px width - extra large content
+			case "3xl":
+				return `${baseClasses} sm:!max-w-3xl`; // ~768px width - full detailed views
 			case "full":
 				// For "full", we use inline styles (not Tailwind classes) to support dynamic SETTINGS
 				// maxWidth and maxHeight are applied via fullSizeStyles (see lines 206-221)

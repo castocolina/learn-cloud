@@ -64,8 +64,9 @@ export interface ButtonProps {
 /**
  * Dialog size variants
  * Defines responsive modal sizes for different use cases
+ * Follows Tailwind CSS max-width conventions (sm, md, lg, xl, 2xl, 3xl)
  */
-export type DialogSize = "sm" | "md" | "lg" | "xl" | "full";
+export type DialogSize = "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full";
 
 /**
  * Action Button Alignment System (Intelligent Positioning)

@@ -757,7 +757,7 @@ export interface AppSettings {
 			/** Minimum content requirements for study guides */
 			studyGuides: {
 				/** Minimum flashcards per study guide */
-				flashcards: number;
+				flipCards: number;
 			};
 			/** Minimum content requirements for projects */
 			projects: {
@@ -837,7 +837,7 @@ export interface AppSettings {
 				content: number;
 				codeBlocks: number;
 				diagrams: number;
-				flashcards: number;
+				flipCards: number;
 				questions: number;
 				requirements: number;
 				keywords: number;

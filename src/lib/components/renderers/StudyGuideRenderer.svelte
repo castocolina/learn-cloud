@@ -18,6 +18,7 @@
 	import type { StudyGuideContent } from "$types";
 	import { SETTINGS } from "$config/settings.js";
 	import ContentHeader from "$lib/components/shared/ContentHeader.svelte";
+	import FlipCard from "$lib/components/content/FlipCard.svelte";
 
 	interface Props {
 		content: StudyGuideContent;
@@ -40,22 +41,26 @@
 			<ContentHeader title={content.title} chapterType="study_guide" summary={content.summary} />
 
 			<div class="renderer-content">
-				<!-- Study Guide Content Placeholder -->
-				<div class="renderer-placeholder">
-					<p class="renderer-placeholder-text">
-						📋 <strong>Task 8H:</strong> Flashcard integration coming soon
-					</p>
-					{#if content.relatedLessons && content.relatedLessons.length > 0}
-						<div class="related-lessons">
-							<h3>Related Lessons:</h3>
-							<ul>
-								{#each content.relatedLessons as lesson, index (index)}
-									<li>{lesson}</li>
-								{/each}
-							</ul>
-						</div>
-					{/if}
-				</div>
+				<!-- FlipCards Grid -->
+				{#if content.studyGuide.flipCards && content.studyGuide.flipCards.length > 0}
+					<div class="flashcard-grid">
+						{#each content.studyGuide.flipCards as card (card.id)}
+							<FlipCard {card} showMetadata={true} showProgress={true} />
+						{/each}
+					</div>
+				{/if}
+
+				<!-- Related Lessons -->
+				{#if content.relatedLessons && content.relatedLessons.length > 0}
+					<div class="related-lessons">
+						<h3>Related Lessons:</h3>
+						<ul>
+							{#each content.relatedLessons as lesson, index (index)}
+								<li>{lesson}</li>
+							{/each}
+						</ul>
+					</div>
+				{/if}
 			</div>
 		</article>
 	</div>
@@ -66,3 +71,18 @@
 		</div>
 	</div>
 {/if}
+
+<style>
+	.flashcard-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+		gap: 1.5rem;
+		margin-bottom: 2rem;
+	}
+
+	@media (max-width: 640px) {
+		.flashcard-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

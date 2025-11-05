@@ -319,17 +319,40 @@ export const QuestionSchema = z.discriminatedUnion("type", [
 ]);
 
 /**
- * Flashcard schema for study guides
+ * FlipCard schema for study guides
+ * Matches FlipCard interface from interactive.ts
  */
 
-export const FlashcardSchema = z.object({
-	id: z.string().min(1, "Flashcard ID is required"),
-	question: z.string().min(1, "Question is required"),
-	answer: z.string().min(1, "Answer is required"),
-	hint: z.string().optional(),
+const EducationalMetadataSchema = z.object({
+	learningObjectives: z.array(z.string()).optional(),
+	prerequisites: z.array(z.string()).optional(),
+	relatedConcepts: z.array(z.string()).optional(),
+	estimatedTime: z.number().int().positive().optional(),
+	difficulty: z.enum(["beginner", "intermediate", "advanced"]).optional(),
+	keywords: z.array(z.string()).optional(),
+	tags: z.array(z.string()).optional(),
+	additionalResources: z
+		.array(
+			z.object({
+				title: z.string(),
+				url: z.url(),
+				type: z.enum(["documentation", "tutorial", "video", "article", "exercise"]),
+				estimatedTime: z.number().int().positive().optional()
+			})
+		)
+		.optional()
+});
+
+export const FlipCardSchema = z.object({
+	id: z.string().min(1, "FlipCard ID is required"),
+	front: z.string().min(1, "Front content is required"),
+	back: z.string().min(1, "Back content is required"),
 	category: z.string().optional(),
-	difficulty: z.enum(["easy", "medium", "hard"]),
-	tags: z.array(z.string()).min(1, "Tags required for search functionality")
+	education: EducationalMetadataSchema,
+	animation: z.any().optional(),
+	interaction: z.any().optional(),
+	progress: z.any().optional(),
+	display: z.any().optional()
 });
 
 /**
@@ -367,7 +390,7 @@ export const QuizContentSchema = BaseContentSchema.extend({
 
 export const StudyGuideContentSchema = BaseContentSchema.extend({
 	type: z.literal("study_guide"),
-	flashcards: z.array(FlashcardSchema).min(6, "Study guide must have at least 6 flashcards"),
+	flipCards: z.array(FlipCardSchema).min(6, "Study guide must have at least 6 flip cards"),
 	categories: z.array(z.string()).optional()
 });
 
@@ -597,7 +620,7 @@ export const CONTENT_SCHEMAS = {
 	Question: QuestionSchema,
 
 	// Other components
-	Flashcard: FlashcardSchema,
+	FlipCard: FlipCardSchema,
 
 	// Content types
 	LessonContent: LessonContentSchema,

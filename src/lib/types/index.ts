@@ -102,7 +102,6 @@ export type {
 	TrueFalseQuestion,
 	ShortAnswerQuestion,
 	DragAndDropQuestion,
-	Flashcard,
 	ContentValidation,
 	ContentRendererProps,
 	RichTextViewerProps
@@ -167,6 +166,14 @@ export type {
 	AccessibilityConfiguration,
 	QuizConfiguration,
 	InteractiveQuestion
+} from "./interactive.js";
+
+// Interactive learning default constants
+export {
+	defaultInteractiveAnimation,
+	defaultInteractiveConfiguration,
+	defaultLearningProgress,
+	defaultAccessibilityConfiguration
 } from "./interactive.js";
 
 // Educational content exports - Learning materials and examples

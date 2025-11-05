@@ -103,7 +103,7 @@ describe("External Schema Validation with AJV", () => {
 			"QuizContent",
 			"StudyGuideContent",
 			"Question",
-			"Flashcard"
+			"FlipCard"
 		];
 
 		expectedSchemas.forEach((schemaName) => {

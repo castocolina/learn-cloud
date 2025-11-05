@@ -122,25 +122,25 @@ export interface LearningProgress {
  */
 export interface EducationalMetadata {
 	/** Learning objectives this content addresses */
-	learningObjectives: string[];
+	learningObjectives?: string[];
 
 	/** Prerequisites knowledge required */
-	prerequisites: string[];
+	prerequisites?: string[];
 
 	/** Related concepts and cross-references */
-	relatedConcepts: string[];
+	relatedConcepts?: string[];
 
 	/** Estimated time to complete/understand (in minutes) */
-	estimatedTime: number;
+	estimatedTime?: number;
 
 	/** Content difficulty level */
-	difficulty: ContentDifficulty;
+	difficulty?: ContentDifficulty;
 
 	/** Keywords for search and categorization */
-	keywords: string[];
+	keywords?: string[];
 
 	/** Tags for flexible categorization */
-	tags: string[];
+	tags?: string[];
 
 	/** Additional resources for deeper learning */
 	additionalResources?: {
@@ -167,8 +167,8 @@ export interface FlipCard {
 	/** The back side content (usually the definition/answer) */
 	back: string;
 
-	/** Content category for organization */
-	category: string;
+	/** Content category for organization (optional) */
+	category?: string;
 
 	/** Educational metadata and learning context */
 	education: EducationalMetadata;

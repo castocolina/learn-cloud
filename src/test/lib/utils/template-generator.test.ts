@@ -191,17 +191,17 @@ describe("TemplateGenerator", () => {
 
 			expect(content.type).toBe("study_guide");
 			expect(content.studyGuide).toBeDefined();
-			expect(content.studyGuide.flashcards).toBeInstanceOf(Array);
-			expect(content.studyGuide.flashcards.length).toBe(
-				SETTINGS.scripts.scaffolding.studyGuides.flashcards
+			expect(content.studyGuide.flipCards).toBeInstanceOf(Array);
+			expect(content.studyGuide.flipCards.length).toBe(
+				SETTINGS.scripts.scaffolding.studyGuides.flipCards
 			);
 
 			// Check flashcard structure
-			const flashcard = (content as StudyGuideContent).studyGuide.flashcards[0];
+			const flashcard = (content as StudyGuideContent).studyGuide.flipCards[0];
 			expect(flashcard).toHaveProperty("id");
 			expect(flashcard).toHaveProperty("front");
 			expect(flashcard).toHaveProperty("back");
-			expect(flashcard).toHaveProperty("tags");
+			expect(flashcard.education).toHaveProperty("tags");
 		});
 
 		it("should generate exam content with comprehensive questions", () => {
@@ -341,7 +341,7 @@ describe("TemplateGenerator", () => {
 			const content = generateStudyGuideContent(args);
 
 			expect(content.type).toBe("study_guide");
-			expect(content.studyGuide.flashcards).toBeInstanceOf(Array);
+			expect(content.studyGuide.flipCards).toBeInstanceOf(Array);
 		});
 
 		it("should support standalone generateExamContent function", () => {
@@ -392,8 +392,8 @@ describe("TemplateGenerator", () => {
 			const args = createTestArgs("study_guide");
 			const content = generator.generateStudyGuideContent(args);
 
-			expect(content.studyGuide.flashcards.length).toBe(
-				SETTINGS.scripts.scaffolding.studyGuides.flashcards
+			expect(content.studyGuide.flipCards.length).toBe(
+				SETTINGS.scripts.scaffolding.studyGuides.flipCards
 			);
 		});
 

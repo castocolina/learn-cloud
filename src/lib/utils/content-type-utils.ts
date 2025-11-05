@@ -95,7 +95,7 @@ export function isStudyGuideContent(content: unknown): content is StudyGuideCont
 		content !== null &&
 		(content as StudyGuideContent).type === "study_guide" &&
 		typeof (content as StudyGuideContent).studyGuide === "object" &&
-		Array.isArray((content as StudyGuideContent).studyGuide.flashcards)
+		Array.isArray((content as StudyGuideContent).studyGuide.flipCards)
 	);
 }
 

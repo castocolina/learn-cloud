@@ -1096,7 +1096,7 @@ export const SETTINGS: AppSettings = {
 				content: 5,
 				codeBlocks: 7,
 				diagrams: 6,
-				flashcards: 4,
+				flipCards: 4,
 				questions: 5,
 				requirements: 6,
 				keywords: 9,
@@ -1240,7 +1240,7 @@ export const SETTINGS: AppSettings = {
 				diverseTypes: true // Use diverse question types
 			},
 			studyGuides: {
-				flashcards: 5 // Minimum 5 flashcards per study guide
+				flipCards: 5 // Minimum 5 flashcards per study guide
 			},
 			projects: {
 				sections: 5, // Minimum 5 sections per project

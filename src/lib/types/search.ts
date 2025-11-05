@@ -234,7 +234,7 @@ export interface SearchIndexConfig {
 		content: number;
 		codeBlocks: number;
 		diagrams: number;
-		flashcards: number;
+		flipCards: number;
 		questions: number;
 		requirements: number;
 		keywords: number;
@@ -281,7 +281,7 @@ export interface RawContentItem {
 	diagrams: ExtractedDiagram[];
 
 	/** Extracted flashcards (for study guides) */
-	flashcards: ExtractedFlashcard[];
+	flipCards: ExtractedFlashcard[];
 
 	/** Extracted questions (for quizzes/exams) */
 	questions: ExtractedQuestion[];
@@ -456,7 +456,7 @@ export interface ExtractionStats {
 		projects: number;
 		codeBlocks: number;
 		diagrams: number;
-		flashcards: number;
+		flipCards: number;
 		questions: number;
 	};
 }

@@ -42,9 +42,11 @@ import type { DialogActionButtonsConfig } from "$types";
  * - md: ~448px (standard dialogs)
  * - lg: ~512px (large content, search results)
  * - xl: ~576px (extra large forms)
+ * - 2xl: ~672px (extra large content)
+ * - 3xl: ~768px (full detailed views)
  * - full: 90-95% viewport (diagram viewer)
  */
-export type DialogSize = "sm" | "md" | "lg" | "xl" | "full";
+export type DialogSize = "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full";
 
 /**
  * Dialog configuration interface

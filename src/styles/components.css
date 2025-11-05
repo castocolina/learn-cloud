@@ -3973,3 +3973,425 @@
 		letter-spacing: 0.02em;
 	}
 }
+
+/**
+ * Production Flip Card Component Styles
+ * Production-ready interactive learning cards with 3D animations
+ * Mobile-first responsive design with global progress tracking
+ */
+
+/* Container & 3D Perspective */
+.flipcard {
+	@apply relative w-full cursor-pointer;
+	height: 280px;
+	perspective: 1000px;
+	transition: transform 0.2s ease;
+	touch-action: manipulation; /* Prevent double-tap zoom on mobile */
+}
+
+.flipcard:hover {
+	@apply -translate-y-1;
+}
+
+.flipcard:focus-visible {
+	@apply outline-2 outline-offset-2;
+	outline-color: hsl(var(--ring));
+}
+
+/* 3D Flip Animation Inner Container */
+.flipcard-inner {
+	@apply relative h-full w-full transition-transform duration-600 ease-in-out;
+	transform-style: preserve-3d;
+}
+
+.flipcard.flipped .flipcard-inner {
+	transform: rotateY(180deg);
+}
+
+.flipcard--flipping .flipcard-inner {
+	pointer-events: none; /* Prevent clicks during animation */
+}
+
+/* Front and Back Face Styling */
+.flipcard-front,
+.flipcard-back {
+	@apply absolute inset-0 flex h-full w-full flex-col rounded-lg border shadow-md;
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+	background: linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(var(--primary) / 0.05));
+	border-color: hsl(var(--border));
+	color: hsl(var(--foreground));
+}
+
+.flipcard-front {
+	@apply p-6;
+}
+
+.flipcard-back {
+	padding: 0.375rem 0.75rem 0.375rem 0.75rem; /* Ultra-compact: 6px top/bottom, 12px sides (was 8px/12px) */
+	transform: rotateY(180deg);
+	background: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--accent) / 0.8));
+	pointer-events: none; /* Disable interactions when not visible (default state) */
+}
+
+/* Enable pointer events on visible side only */
+.flipcard.flipped .flipcard-front {
+	pointer-events: none; /* Disable front when showing back */
+}
+
+.flipcard.flipped .flipcard-back {
+	pointer-events: auto; /* Enable back when flipped */
+}
+
+/* ========================================
+   FRONT CARD: Vertical Centering & Justified Text
+   ======================================== */
+
+/* Front: True vertical centering container */
+.flipcard-front-content {
+	@apply flex flex-1 flex-col items-center justify-center gap-6 px-6;
+}
+
+/* Front: Question protagonist with justified text */
+.flipcard-front .flipcard-question {
+	@apply w-full text-lg leading-tight font-semibold;
+	text-align: justify;
+	hyphens: auto;
+}
+
+/* Front: Hint secondary below question */
+.flipcard-hint {
+	@apply text-center text-xs opacity-50;
+}
+
+/* ========================================
+   BACK CARD: Compact Layout & Answer Protagonist
+   ======================================== */
+
+/* Back: Compact header */
+.flipcard-back .flipcard-header {
+	@apply mb-1 flex-shrink-0;
+}
+
+/* Back: Content with better readability */
+.flipcard-back .flipcard-content {
+	@apply flex-1 overflow-auto;
+}
+
+/* Back: Inline question with minimal spacing */
+.flipcard-question-inline {
+	@apply mb-2 text-xs leading-tight;
+	color: hsl(var(--muted-foreground));
+}
+
+.flipcard-label-small {
+	@apply font-semibold tracking-wide uppercase opacity-60;
+}
+
+/* Answer label with reduced margin */
+.flipcard-answer-label {
+	@apply mb-0 text-base font-semibold;
+}
+
+/* Answer text: Justified and readable */
+.flipcard-answer-text {
+	@apply text-sm leading-relaxed;
+	text-align: justify;
+	hyphens: auto;
+}
+
+/* Back metadata: Compact with border */
+.flipcard-metadata--back {
+	@apply mt-auto flex flex-wrap items-center gap-2 border-t pt-2;
+	border-color: hsl(var(--border) / 0.5);
+}
+
+/* Small badges for back card */
+.flipcard-badge--small {
+	@apply inline-flex items-center rounded-md px-1.5 py-0.5 text-xs font-medium;
+	background: hsl(var(--muted));
+	color: hsl(var(--muted-foreground));
+}
+
+/* Metadata icons container in bottom bar */
+.flipcard-metadata-icons {
+	@apply ml-2 flex items-center;
+	gap: 5px;
+}
+
+/* Generic icon button with hover effect */
+.flipcard-icon-button {
+	@apply flex cursor-pointer items-center gap-0.5 opacity-60 transition-opacity hover:opacity-100;
+}
+
+/* Keywords icon trigger (legacy - use flipcard-icon-button instead) */
+.flipcard-keywords-trigger {
+	@apply flex cursor-pointer items-center gap-0.5 opacity-60 transition-opacity hover:opacity-100;
+}
+
+/* Tags inside tooltip */
+.flipcard-tag-tooltip {
+	@apply rounded-full px-2 py-0.5 text-xs;
+	background: hsl(var(--muted) / 0.5);
+	color: hsl(var(--muted-foreground));
+}
+
+/* Header */
+.flipcard-header {
+	@apply mb-2 flex-shrink-0;
+}
+
+.flipcard-question,
+.flipcard-answer {
+	@apply m-0 text-lg leading-tight font-semibold;
+	color: hsl(var(--foreground));
+}
+
+/* Content */
+.flipcard-content {
+	@apply flex-1 overflow-auto text-sm;
+	color: hsl(var(--muted-foreground));
+}
+
+/* Metadata */
+.flipcard-metadata {
+	@apply mt-auto flex flex-wrap items-center gap-2 pt-2;
+}
+
+/* Badges */
+.flipcard-badge {
+	@apply inline-flex items-center rounded px-2 py-1 text-xs font-medium;
+	background: hsl(var(--muted));
+	color: hsl(var(--muted-foreground));
+}
+
+.flipcard-badge--category {
+	background: hsl(var(--primary) / 0.15);
+	color: hsl(var(--primary));
+}
+
+.flipcard-badge--beginner {
+	background: hsl(var(--success) / 0.15);
+	color: hsl(var(--success));
+}
+
+.flipcard-badge--intermediate {
+	background: hsl(var(--warning) / 0.15);
+	color: hsl(var(--warning));
+}
+
+.flipcard-badge--advanced {
+	background: hsl(var(--destructive) / 0.15);
+	color: hsl(var(--destructive));
+}
+
+/* Progress Indicators */
+.flipcard-progress {
+	@apply flex items-center gap-3 pt-3;
+	border-top: 1px solid hsl(var(--border));
+}
+
+/* Compact progress bar for back side */
+.flipcard-back .flipcard-progress {
+	@apply gap-1.5 pt-0.5 pb-0.5; /* Hyper-compact: 2px top/bottom, 6px gap (was 4px/8px) */
+}
+
+.flipcard-progress-dot {
+	@apply h-2 w-2 rounded-full transition-all duration-200;
+	background: hsl(var(--muted));
+}
+
+.flipcard-progress-dot--default {
+	background: hsl(var(--muted) / 0.3);
+}
+
+.flipcard-progress-dot--viewed {
+	background: hsl(var(--info));
+	box-shadow: 0 0 6px hsl(var(--info) / 0.5);
+}
+
+.flipcard-progress-dot--completed {
+	background: hsl(var(--success));
+	box-shadow: 0 0 6px hsl(var(--success) / 0.5);
+}
+
+.flipcard-progress-dot--mastered {
+	background: hsl(var(--primary));
+	box-shadow: 0 0 6px hsl(var(--primary) / 0.5);
+}
+
+.flipcard-learning-time {
+	@apply flex items-center gap-1 text-xs;
+	color: hsl(var(--muted-foreground));
+}
+
+/* Control Buttons */
+.flipcard-controls {
+	@apply absolute right-2 bottom-2 flex gap-1;
+	z-index: var(--z-dropdown);
+}
+
+.flipcard-button {
+	@apply flex h-8 w-8 items-center justify-center rounded-md border transition-all duration-200;
+	background: hsl(var(--background));
+	border-color: hsl(var(--border));
+	color: hsl(var(--muted-foreground));
+	min-width: 44px; /* WCAG 2.1 AA touch target */
+	min-height: 44px;
+}
+
+.flipcard-button:hover {
+	background: hsl(var(--accent));
+	color: hsl(var(--accent-foreground));
+	border-color: hsl(var(--ring));
+}
+
+.flipcard-button:focus-visible {
+	@apply outline-2 outline-offset-2;
+	outline-color: hsl(var(--ring));
+}
+
+.flipcard-button--primary {
+	background: hsl(var(--primary));
+	color: hsl(var(--primary-foreground));
+	border-color: hsl(var(--primary));
+}
+
+.flipcard-button--primary:hover {
+	background: hsl(var(--primary) / 0.9);
+}
+
+/* Modal Dialog Styles */
+.flipcard-modal-content {
+	@apply overflow-hidden rounded-lg;
+}
+
+.flipcard-modal-body {
+	@apply space-y-6 overflow-auto p-6;
+}
+
+.flipcard-modal-section {
+	@apply space-y-2;
+}
+
+.flipcard-modal-section-title {
+	@apply flex items-center gap-2 text-sm font-semibold tracking-wide uppercase;
+	color: hsl(var(--muted-foreground));
+}
+
+.flipcard-modal-question,
+.flipcard-modal-answer {
+	@apply text-base leading-relaxed;
+	color: hsl(var(--foreground));
+}
+
+.flipcard-modal-objectives {
+	@apply space-y-2;
+}
+
+.flipcard-modal-objective {
+	@apply flex items-start gap-2 text-sm;
+	color: hsl(var(--muted-foreground));
+}
+
+.flipcard-modal-objective-bullet {
+	@apply mt-0.5;
+	color: hsl(var(--primary));
+}
+
+.flipcard-modal-metadata {
+	@apply space-y-4 rounded-lg border p-4;
+	background: hsl(var(--muted) / 0.3);
+	border-color: hsl(var(--border));
+}
+
+.flipcard-modal-badges {
+	@apply flex flex-wrap gap-2;
+}
+
+.flipcard-modal-tags {
+	@apply flex flex-wrap gap-2;
+}
+
+.flipcard-modal-stats {
+	@apply flex flex-wrap gap-4 text-sm;
+	color: hsl(var(--muted-foreground));
+}
+
+/* ========================================
+   Tooltip Color Identity (Inner Spans Pattern)
+   Replicates successful .flipcard-tag-tooltip pattern
+   ======================================== */
+
+/* Category tooltip inner span - Primary blue */
+.tooltip-category-inner {
+	@apply block rounded-md px-2 py-1 text-xs;
+	background: hsl(var(--primary) / 0.9);
+	color: white;
+}
+
+/* Difficulty tooltip inner spans - Color-coded by level */
+.tooltip-difficulty-inner--beginner {
+	@apply block rounded-md px-2 py-1 text-xs;
+	background: hsl(var(--success) / 0.9);
+	color: white;
+}
+
+.tooltip-difficulty-inner--intermediate {
+	@apply block rounded-md px-2 py-1 text-xs;
+	background: hsl(var(--warning) / 0.9);
+	color: hsl(var(--warning-foreground));
+}
+
+.tooltip-difficulty-inner--advanced {
+	@apply block rounded-md px-2 py-1 text-xs;
+	background: hsl(var(--destructive) / 0.9);
+	color: white;
+}
+
+.flipcard-modal-stat {
+	@apply flex items-center gap-1;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 390px) {
+	.flipcard {
+		height: 320px; /* Taller on mobile for better content visibility */
+	}
+
+	.flipcard-front,
+	.flipcard-back {
+		@apply p-4;
+	}
+
+	.flipcard-question,
+	.flipcard-answer {
+		@apply text-base;
+	}
+
+	.flipcard-content {
+		@apply text-xs;
+	}
+
+	.flipcard-controls {
+		@apply right-1 bottom-1;
+	}
+
+	.flipcard-button {
+		@apply h-10 w-10;
+	}
+}
+
+@media (min-width: 1024px) {
+	.flipcard {
+		height: 300px;
+	}
+
+	.flipcard:hover .flipcard-controls {
+		@apply opacity-100;
+	}
+
+	.flipcard-controls {
+		@apply opacity-0 transition-opacity duration-200;
+	}
+}

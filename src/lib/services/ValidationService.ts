@@ -183,7 +183,7 @@ export class ValidationService {
 					break;
 
 				case "study_guide":
-					if (scaffoldingConfig.studyGuides.flashcards < 1) {
+					if (scaffoldingConfig.studyGuides.flipCards < 1) {
 						warnings.push("Study guide configuration specifies no flashcards");
 					}
 					break;

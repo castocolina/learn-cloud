@@ -329,6 +329,9 @@ deploy: build ## Deploy to GitHub Pages
 	@echo "🚀 Deploying to GitHub Pages..."
 	@echo "Build completed. GitHub Actions will handle deployment."
 	
-# Allow any argument to be treated as a valid target
+# Catch-all: show help and fail for unknown targets
 %:
-	@:
+	@echo "❌ Error: Unknown target '$@'"
+	@echo ""
+	@$(MAKE) help
+	@exit 1

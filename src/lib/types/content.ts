@@ -26,6 +26,7 @@ import type {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	SimpleRichText
 } from "./rich-text.js";
+import type { FlipCard } from "./interactive.js";
 
 /**
  * Base content interface with common properties and lifecycle tracking
@@ -356,7 +357,7 @@ export interface Exam {
  */
 export interface StudyGuide {
 	description?: string;
-	flashcards: Flashcard[];
+	flipCards: FlipCard[];
 	categories?: string[];
 	randomizeCards?: boolean;
 }
@@ -465,20 +466,6 @@ export type AnyQuestion =
 	| TrueFalseQuestion
 	| ShortAnswerQuestion
 	| DragAndDropQuestion;
-
-/**
- * Flashcard interface for study guides
- */
-export interface Flashcard {
-	id: string;
-	front: string;
-	back: string;
-	tags?: string[];
-	category?: string;
-	difficulty?: ContentDifficulty;
-	lastReviewed?: Date;
-	reviewCount?: number;
-}
 
 /**
  * Content validation interface
