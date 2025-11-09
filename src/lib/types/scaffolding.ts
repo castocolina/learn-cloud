@@ -33,9 +33,24 @@ export interface UnitIdentification {
 }
 
 /**
- * Statistics interface for scaffolding operations
+ * File operation statistics
+ * Generic statistics interface for file operations (scaffolding, content generation, etc.)
+ *
+ * @deprecated Use FileOperationStats from $types/scripts instead
  */
 export interface ScaffoldingStats {
+	totalChapters: number;
+	existingFiles: number;
+	newFiles: number;
+	orphanFiles: string[];
+	errors: string[];
+}
+
+/**
+ * File operation statistics (replaces ScaffoldingStats)
+ * Generic statistics interface for file operations
+ */
+export interface FileOperationStats {
 	totalChapters: number;
 	existingFiles: number;
 	newFiles: number;
@@ -49,22 +64,6 @@ export interface ScaffoldingStats {
 export interface ContentGenerationResult {
 	success: boolean;
 	filePath?: string;
-	stats?: ScaffoldingStats;
+	stats?: FileOperationStats;
 	errors?: string[];
-}
-
-/**
- * Safety status levels for content protection
- */
-export type ContentStatus = "scaffold" | "draft" | "final";
-
-/**
- * Safety operation result
- */
-export interface SafetyCheckResult {
-	canProceed: boolean;
-	requiresForce: boolean;
-	warning?: string;
-	error?: string;
-	currentStatus?: ContentStatus;
 }

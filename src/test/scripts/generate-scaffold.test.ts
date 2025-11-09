@@ -21,11 +21,12 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { writeFileSync, existsSync, mkdirSync, rmSync } from "fs";
+import { writeFileSync, existsSync, mkdirSync } from "fs";
 import { join } from "path";
 import { ScaffoldCLI, ScaffoldingLogic } from "../../scripts/generate-scaffold.js";
-import { generateConfigId } from "../test-utils.js";
+import { generateConfigId } from "../helpers/test-utils.js";
 import { SETTINGS } from "$config/settings.js";
+import { ExtendedTestSetup } from "../helpers/test-setup.js";
 
 // Mock process.argv for CLI testing
 const originalArgv = process.argv;
@@ -33,25 +34,30 @@ const _originalExit = process.exit;
 
 /**
  * Test setup class optimized for scaffolding architecture testing
+ * Extends ExtendedTestSetup to use standardized conditional cleanup
  */
-class TestSetup {
-	private tempDir: string;
+class ScaffoldTestSetup extends ExtendedTestSetup {
 	private testDataDir: string;
 	public readonly configId: string;
+	private originalValidationSetting: boolean;
 
 	constructor(testSuiteId: string = "scaffold") {
-		const timestamp = Date.now();
-		const uniqueId = `${testSuiteId}-${timestamp}`;
-		this.tempDir = join(process.cwd(), "tmp", `test-scaffold-generator-${uniqueId}`);
-		this.testDataDir = join(this.tempDir, "data", "book");
+		// Use standardized path structure: ./tmp/test/unit/scripts/{name}-{timestamp}
+		super("scripts", testSuiteId);
+		this.testDataDir = join(this.getTempDir(), "data", "book");
 		this.configId = generateConfigId(SETTINGS.scripts.scaffolding.validationPrefix, testSuiteId);
+
+		// Save original validation setting
+		this.originalValidationSetting = (
+			SETTINGS.scripts.validation.generated as { runAfterGeneration: boolean }
+		).runAfterGeneration;
 	}
 
 	async setup(): Promise<void> {
-		// Create temp directories
-		if (!existsSync(this.tempDir)) {
-			mkdirSync(this.tempDir, { recursive: true });
-		}
+		// Call parent setup to create base temp directory
+		super.setup();
+
+		// Create test data directories
 		if (!existsSync(this.testDataDir)) {
 			mkdirSync(this.testDataDir, { recursive: true });
 		}
@@ -65,11 +71,11 @@ class TestSetup {
 		}
 
 		// Write minimal test CONTENT.md
-		const contentMdPath = join(this.tempDir, "CONTENT.md");
+		const contentMdPath = join(this.getTempDir(), "CONTENT.md");
 		writeFileSync(contentMdPath, MINIMAL_CONTENT, "utf-8");
 
 		// Create minimal content-menu.ts for testing scaffolding discovery
-		const generatedDir = join(this.tempDir, "src", "data", "generated");
+		const generatedDir = join(this.getTempDir(), "src", "data", "generated");
 		if (!existsSync(generatedDir)) {
 			mkdirSync(generatedDir, { recursive: true });
 		}
@@ -80,14 +86,16 @@ class TestSetup {
 		this.configureValidation();
 	}
 
-	cleanup(): void {
+	/**
+	 * Override cleanup to restore validation settings before cleanup
+	 */
+	cleanup(testPassed: boolean): void {
 		// Restore original validation setting
 		(SETTINGS.scripts.validation.generated as { runAfterGeneration: boolean }).runAfterGeneration =
-			true;
+			this.originalValidationSetting;
 
-		if (existsSync(this.tempDir)) {
-			rmSync(this.tempDir, { recursive: true, force: true });
-		}
+		// Call parent cleanup for conditional file removal
+		super.cleanup(testPassed);
 	}
 
 	/**
@@ -98,16 +106,12 @@ class TestSetup {
 		(SETTINGS.scripts.validation.generated as { runAfterGeneration: boolean }).runAfterGeneration =
 			false;
 	}
-
-	getTempDir(): string {
-		return this.tempDir;
-	}
 }
 
 /**
  * Test setup class with validation enabled for integration tests
  */
-class TestSetupWithValidation extends TestSetup {
+class TestSetupWithValidation extends ScaffoldTestSetup {
 	constructor(testSuiteId: string = "scaffold-validation") {
 		super(testSuiteId);
 	}
@@ -176,7 +180,7 @@ const MINIMAL_CONTENT_MENU = `export const contentMenu = {
 };`;
 
 describe("Scaffold Generator CLI - Specialized Architecture", () => {
-	let testSetup: TestSetup;
+	let testSetup: ScaffoldTestSetup;
 
 	beforeEach(async () => {
 		// Mock process.exit to prevent actual exits during testing
@@ -185,16 +189,16 @@ describe("Scaffold Generator CLI - Specialized Architecture", () => {
 		});
 
 		// Setup test environment
-		testSetup = new TestSetup("scaffold-arch");
+		testSetup = new ScaffoldTestSetup("scaffold-arch");
 		await testSetup.setup();
 
 		// Mock process.cwd to use test directory
 		vi.spyOn(process, "cwd").mockReturnValue(testSetup.getTempDir());
 	});
 
-	afterEach(() => {
-		// Cleanup test files
-		testSetup?.cleanup();
+	afterEach((context) => {
+		// Conditional cleanup: only remove files if test passed
+		testSetup?.cleanupIfPassed(context);
 
 		// Restore original functions
 		process.argv = originalArgv;
@@ -602,61 +606,59 @@ describe("ScaffoldGenerator Integration", () => {
 		const validationTestSetup = new TestSetupWithValidation("scaffold-integration");
 		await validationTestSetup.setup();
 
+		const cli = new ScaffoldCLI();
+
+		// Mock console to prevent output
+		const mockConsoleLog = vi.spyOn(console, "log").mockImplementation(() => {});
+
+		// Mock process.exit
+		vi.spyOn(process, "exit").mockImplementation((code?: string | number | null | undefined) => {
+			throw new Error(`Process exit called with code: ${code}`);
+		});
+
+		// Mock process.cwd
+		vi.spyOn(process, "cwd").mockReturnValue(validationTestSetup.getTempDir());
+
 		try {
-			const cli = new ScaffoldCLI();
-
-			// Mock console to prevent output
-			const mockConsoleLog = vi.spyOn(console, "log").mockImplementation(() => {});
-
-			// Mock process.exit
-			vi.spyOn(process, "exit").mockImplementation((code?: string | number | null | undefined) => {
-				throw new Error(`Process exit called with code: ${code}`);
-			});
-
-			// Mock process.cwd
-			vi.spyOn(process, "cwd").mockReturnValue(validationTestSetup.getTempDir());
-
-			try {
-				await cli.execute(["node", "script.js", "scaffold", "--unit=1", "--dry-run"]);
-			} catch {
-				// Expected due to process.exit mock
-			}
-
-			expect(mockConsoleLog).toHaveBeenCalled();
-			mockConsoleLog.mockRestore();
-		} finally {
-			validationTestSetup.cleanup();
-			vi.restoreAllMocks();
+			await cli.execute(["node", "script.js", "scaffold", "--unit=1", "--dry-run"]);
+		} catch {
+			// Expected due to process.exit mock
 		}
+
+		expect(mockConsoleLog).toHaveBeenCalled();
+		mockConsoleLog.mockRestore();
+		vi.restoreAllMocks();
+
+		// Test passed - cleanup immediately
+		validationTestSetup.forceCleanup();
 	}, 15000); // Extended timeout for validation
 
 	it("should integrate with ContentCore for persistent operations", async () => {
 		const validationTestSetup = new TestSetupWithValidation("scaffold-persistence");
 		await validationTestSetup.setup();
 
+		const logic = new ScaffoldingLogic();
+
+		// Mock console to prevent output
+		const mockConsoleLog = vi.spyOn(console, "log").mockImplementation(() => {});
+
+		// Mock process.cwd
+		vi.spyOn(process, "cwd").mockReturnValue(validationTestSetup.getTempDir());
+
 		try {
-			const logic = new ScaffoldingLogic();
-
-			// Mock console to prevent output
-			const mockConsoleLog = vi.spyOn(console, "log").mockImplementation(() => {});
-
-			// Mock process.cwd
-			vi.spyOn(process, "cwd").mockReturnValue(validationTestSetup.getTempDir());
-
-			try {
-				await logic.runScaffolding({
-					unit: "1",
-					dryRun: true
-				});
-			} catch {
-				// Expected due to ContentCore integration complexity
-			}
-
-			expect(mockConsoleLog).toHaveBeenCalled();
-			mockConsoleLog.mockRestore();
-		} finally {
-			validationTestSetup.cleanup();
-			vi.restoreAllMocks();
+			await logic.runScaffolding({
+				unit: "1",
+				dryRun: true
+			});
+		} catch {
+			// Expected due to ContentCore integration complexity
 		}
+
+		expect(mockConsoleLog).toHaveBeenCalled();
+		mockConsoleLog.mockRestore();
+		vi.restoreAllMocks();
+
+		// Test passed - cleanup immediately
+		validationTestSetup.forceCleanup();
 	}, 15000); // Extended timeout for validation
 });

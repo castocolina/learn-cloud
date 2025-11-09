@@ -17,6 +17,7 @@
 	import type { OverviewContent } from "$types";
 	import { SETTINGS } from "$config/settings.js";
 	import ContentHeader from "$lib/components/shared/ContentHeader.svelte";
+	import Callout from "$lib/components/content/Callout.svelte";
 
 	interface Props {
 		content: OverviewContent;
@@ -100,25 +101,7 @@
 								</ul>
 							{/if}
 						{:else if block.type === "callout"}
-							<div class="callout callout-{block.calloutType} mb-4 rounded-lg border-l-4 p-4">
-								{#if block.title}
-									<h3 class="mb-2 font-semibold">{block.title}</h3>
-								{/if}
-								<p class="text-sm">
-									{#each block.content as textPart, textIndex (textIndex)}
-										{@const text = "text" in textPart ? textPart.text : textPart.content}
-										{@const isBold =
-											"bold" in textPart
-												? textPart.bold
-												: "styles" in textPart && textPart.styles?.includes("bold")}
-										{#if isBold}
-											<strong>{text}</strong>
-										{:else}
-											{text}
-										{/if}
-									{/each}
-								</p>
-							</div>
+							<Callout {block} />
 						{:else if block.type === "diagram"}
 							<div class="diagram-container mb-6">
 								{#if block.title}
@@ -146,46 +129,3 @@
 		</div>
 	</article>
 </div>
-
-<style>
-	.callout {
-		background-color: var(--callout-bg);
-		border-left-color: var(--callout-border);
-	}
-
-	.callout-info {
-		--callout-bg: hsl(var(--primary) / 0.1);
-		--callout-border: hsl(var(--primary));
-	}
-
-	.callout-warning {
-		--callout-bg: hsl(var(--warning) / 0.1);
-		--callout-border: hsl(var(--warning));
-	}
-
-	.callout-tip {
-		--callout-bg: hsl(var(--success) / 0.1);
-		--callout-border: hsl(var(--success));
-	}
-
-	.callout-danger {
-		--callout-bg: hsl(var(--destructive) / 0.1);
-		--callout-border: hsl(var(--destructive));
-	}
-
-	:global(.dark) .callout-info {
-		--callout-bg: hsl(var(--primary) / 0.15);
-	}
-
-	:global(.dark) .callout-warning {
-		--callout-bg: hsl(var(--warning) / 0.15);
-	}
-
-	:global(.dark) .callout-tip {
-		--callout-bg: hsl(var(--success) / 0.15);
-	}
-
-	:global(.dark) .callout-danger {
-		--callout-bg: hsl(var(--destructive) / 0.15);
-	}
-</style>

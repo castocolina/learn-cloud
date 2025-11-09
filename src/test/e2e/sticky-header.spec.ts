@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { waitForScrollPosition } from "./helpers/wait-utilities";
 
 /**
  * E2E Tests: Sticky Header Behavior (Comprehensive Regression Suite)
@@ -59,7 +60,6 @@ test.describe("Sticky Header - Position and Visibility", () => {
 
 		// Wait for page to be fully loaded
 		await page.waitForLoadState("networkidle");
-		await page.waitForTimeout(500);
 
 		// Get header element
 		const header = page.locator('header[style*="--z-header"]');
@@ -89,20 +89,14 @@ test.describe("Sticky Header - Position and Visibility", () => {
 		for (const percentage of scrollPercentages) {
 			const targetScroll = Math.floor(pageInfo.maxScroll * (percentage / 100));
 
-			// Scroll to target position
+			// Scroll to target position and wait for scroll to complete
 			await page.evaluate((scroll) => window.scrollTo(0, scroll), targetScroll);
-			await page.waitForTimeout(100);
+			await waitForScrollPosition(page, targetScroll, { tolerance: 15, timeout: 2000 });
 
-			// ASSERT 1: Verify scroll position reached (with tolerance)
-			const currentScrollY = await page.evaluate(() => window.scrollY);
-			const scrollTolerance = 15; // pixels
-			expect(currentScrollY).toBeGreaterThanOrEqual(Math.max(0, targetScroll - scrollTolerance));
-			expect(currentScrollY).toBeLessThanOrEqual(targetScroll + scrollTolerance);
-
-			// ASSERT 2: Header must remain visible (CRITICAL for sticky behavior)
+			// ASSERT 1: Header must remain visible (CRITICAL for sticky behavior)
 			await expect(header).toBeVisible();
 
-			// ASSERT 3: Header must be at top of viewport (sticky positioning)
+			// ASSERT 2: Header must be at top of viewport (sticky positioning)
 			const headerPosition = await header.boundingBox();
 			expect(headerPosition).not.toBeNull();
 			expect(headerPosition?.y).toBeGreaterThanOrEqual(-5); // Allow small browser variance
@@ -110,12 +104,14 @@ test.describe("Sticky Header - Position and Visibility", () => {
 		}
 
 		// FINAL: Rapid scroll stress test (tests dynamic scroll updates)
+		const beforeRapidScroll = await page.evaluate(() => window.scrollY);
 		await page.evaluate(() => window.scrollBy(0, 200));
-		await page.waitForTimeout(50);
+		await waitForScrollPosition(page, beforeRapidScroll + 200, { tolerance: 20, timeout: 1000 });
 		await expect(header).toBeVisible();
 
+		const beforeScrollUp = await page.evaluate(() => window.scrollY);
 		await page.evaluate(() => window.scrollBy(0, -100));
-		await page.waitForTimeout(50);
+		await waitForScrollPosition(page, beforeScrollUp - 100, { tolerance: 20, timeout: 1000 });
 		await expect(header).toBeVisible();
 
 		// Verify header position after rapid scrolling
@@ -163,7 +159,6 @@ test.describe("Sticky Header - Position and Visibility", () => {
 
 		await page.goto("/#/01_01_lesson_dev");
 		await page.waitForLoadState("networkidle");
-		await page.waitForTimeout(500);
 
 		const header = page.locator('header[style*="--z-header"]');
 
@@ -192,20 +187,14 @@ test.describe("Sticky Header - Position and Visibility", () => {
 		for (const percentage of scrollPercentages) {
 			const targetScroll = Math.floor(pageInfo.maxScroll * (percentage / 100));
 
-			// Scroll to target position
+			// Scroll to target position and wait for scroll to complete
 			await page.evaluate((scroll) => window.scrollTo(0, scroll), targetScroll);
-			await page.waitForTimeout(100);
+			await waitForScrollPosition(page, targetScroll, { tolerance: 15, timeout: 2000 });
 
-			// ASSERT 1: Verify scroll position reached (with tolerance)
-			const currentScrollY = await page.evaluate(() => window.scrollY);
-			const scrollTolerance = 15; // pixels
-			expect(currentScrollY).toBeGreaterThanOrEqual(Math.max(0, targetScroll - scrollTolerance));
-			expect(currentScrollY).toBeLessThanOrEqual(targetScroll + scrollTolerance);
-
-			// ASSERT 2: Header must remain visible (CRITICAL for sticky behavior on mobile)
+			// ASSERT 1: Header must remain visible (CRITICAL for sticky behavior on mobile)
 			await expect(header).toBeVisible();
 
-			// ASSERT 3: Header must be at top of viewport (sticky positioning on mobile)
+			// ASSERT 2: Header must be at top of viewport (sticky positioning on mobile)
 			const headerPosition = await header.boundingBox();
 			expect(headerPosition).not.toBeNull();
 			expect(headerPosition?.y).toBeGreaterThanOrEqual(-5); // Allow small browser variance
@@ -213,12 +202,14 @@ test.describe("Sticky Header - Position and Visibility", () => {
 		}
 
 		// FINAL: Touch-like scroll simulation (rapid swipe down/up on mobile)
+		const beforeSwipeDown = await page.evaluate(() => window.scrollY);
 		await page.evaluate(() => window.scrollBy(0, 150));
-		await page.waitForTimeout(50);
+		await waitForScrollPosition(page, beforeSwipeDown + 150, { tolerance: 20, timeout: 1000 });
 		await expect(header).toBeVisible();
 
+		const beforeSwipeUp = await page.evaluate(() => window.scrollY);
 		await page.evaluate(() => window.scrollBy(0, -80));
-		await page.waitForTimeout(50);
+		await waitForScrollPosition(page, beforeSwipeUp - 80, { tolerance: 20, timeout: 1000 });
 		await expect(header).toBeVisible();
 
 		// Verify header position after rapid scrolling on mobile

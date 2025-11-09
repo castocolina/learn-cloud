@@ -7,7 +7,7 @@
 
 import { spawn, type ChildProcess } from "child_process";
 import { SETTINGS } from "$config/settings.js";
-import type { ValidationOptions, ValidationResult } from "$types";
+import type { ValidationOptions, CommandValidationResult } from "$types";
 import fs from "fs";
 import { join, isAbsolute, dirname, basename, extname, resolve, normalize } from "path";
 import crypto from "crypto";
@@ -25,7 +25,7 @@ async function executeWithStreaming(
 	command: string,
 	args: string[],
 	cwd: string = process.cwd()
-): Promise<ValidationResult> {
+): Promise<CommandValidationResult> {
 	const { logging: validationLogging } = validationConf;
 
 	return new Promise((resolve) => {
@@ -116,7 +116,9 @@ async function executeWithStreaming(
  * Uses dynamic tsconfig file to check only specified target files
  * @param configPath Absolute path to the TypeScript config file to use
  */
-export async function runGeneratedTypeScriptCheck(configPath: string): Promise<ValidationResult> {
+export async function runGeneratedTypeScriptCheck(
+	configPath: string
+): Promise<CommandValidationResult> {
 	// return executeWithStreaming("npx", ["svelte-check", "--tsconfig", configPath]);
 	const { commands: validationCommands } = validationConf;
 	return executeWithStreaming(validationCommands.checkGenerated[0], [
@@ -128,7 +130,7 @@ export async function runGeneratedTypeScriptCheck(configPath: string): Promise<V
 /**
  * Run ESLint validation on specific target
  */
-export async function runLintValidation(target: string): Promise<ValidationResult> {
+export async function runLintValidation(target: string): Promise<CommandValidationResult> {
 	const { commands: validationCommands } = validationConf;
 	return executeWithStreaming(validationCommands.lint[0], [
 		...validationCommands.lint.slice(1),
@@ -184,7 +186,7 @@ export function getValidationConfig(
  *   target: string,
  *   options?: ValidationOptions,
  *   configId?: string  // NEW: Unique identifier for test isolation
- * ): Promise<ValidationResult[]>
+ * ): Promise<CommandValidationResult[]>
  * ```
  *
  * When `configId` is provided (test environment):
@@ -212,7 +214,7 @@ export async function runGeneratedFileValidation(
 	target: string,
 	configId?: string,
 	options?: ValidationOptions
-): Promise<ValidationResult[]> {
+): Promise<CommandValidationResult[]> {
 	const config = getValidationConfig(options, target);
 
 	if (!config.enabled) {
@@ -240,7 +242,7 @@ export async function runGeneratedFileValidation(
 	console.log("");
 
 	// For generated TypeScript files, we run our specific TypeScript check
-	const results: ValidationResult[] = [];
+	const results: CommandValidationResult[] = [];
 	let configPath = "";
 
 	try {

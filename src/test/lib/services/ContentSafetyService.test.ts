@@ -6,27 +6,23 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { existsSync, writeFileSync, mkdirSync, rmSync } from "fs";
+import { writeFileSync } from "fs";
 import { join } from "path";
 import { ContentSafetyService } from "$lib/services/ContentSafetyService.js";
 import type { ContentStatus } from "$types";
+import { TestSetup } from "../../helpers/test-setup.js";
 
 describe("ContentSafetyService", () => {
-	const testDir = join(process.cwd(), "tmp", "script-test-safety");
+	const testSetup = new TestSetup("services", "content-safety");
+	const testDir = testSetup.getTempDir();
 	const testFile = join(testDir, "test-content.ts");
 
 	beforeEach(() => {
-		// Create test directory if it doesn't exist
-		if (!existsSync(testDir)) {
-			mkdirSync(testDir, { recursive: true });
-		}
+		testSetup.setup();
 	});
 
-	afterEach(() => {
-		// Clean up test files
-		if (existsSync(testDir)) {
-			rmSync(testDir, { recursive: true, force: true });
-		}
+	afterEach((context) => {
+		testSetup.cleanupIfPassed(context);
 	});
 
 	describe("checkOperation", () => {
@@ -34,9 +30,7 @@ describe("ContentSafetyService", () => {
 			it("should allow creating new files", () => {
 				const result = ContentSafetyService.checkOperation("create", testFile);
 
-				expect(result.success).toBe(true);
-				expect(result.action).toBe("proceed");
-				expect(result.message).toBe("Creating new content file");
+				expect(result.canProceed).toBe(true);
 			});
 
 			it("should handle existing files with expected status", () => {
@@ -51,9 +45,7 @@ export default {
 
 				const result = ContentSafetyService.checkOperation("create", testFile);
 
-				expect(result.success).toBe(true);
-				expect(result.action).toBe("proceed");
-				expect(result.message).toBe("Creating expected content");
+				expect(result.canProceed).toBe(true);
 			});
 
 			it("should handle existing files with scaffold status", () => {
@@ -68,9 +60,7 @@ export default {
 
 				const result = ContentSafetyService.checkOperation("create", testFile);
 
-				expect(result.success).toBe(true);
-				expect(result.action).toBe("proceed");
-				expect(result.message).toBe("Creating scaffold content");
+				expect(result.canProceed).toBe(true);
 			});
 
 			it("should warn for draft status content", () => {
@@ -85,8 +75,7 @@ export default {
 
 				const result = ContentSafetyService.checkOperation("create", testFile);
 
-				expect(result.success).toBe(true);
-				expect(result.action).toBe("warn_and_proceed");
+				expect(result.canProceed).toBe(true);
 				expect(result.warning).toContain("Creating content with 'draft' status");
 			});
 
@@ -102,9 +91,8 @@ export default {
 
 				const result = ContentSafetyService.checkOperation("create", testFile);
 
-				expect(result.success).toBe(false);
-				expect(result.action).toBe("error");
-				expect(result.message).toContain("Cannot create content with 'final' status");
+				expect(result.canProceed).toBe(false);
+				expect(result.error).toContain("Cannot create content with 'final' status");
 				expect(result.requiresForce).toBe(true);
 			});
 
@@ -122,8 +110,7 @@ export default {
 					forceOverwrite: true
 				});
 
-				expect(result.success).toBe(true);
-				expect(result.action).toBe("warn_and_proceed");
+				expect(result.canProceed).toBe(true);
 				expect(result.warning).toContain("FORCE CREATE");
 			});
 		});
@@ -132,9 +119,8 @@ export default {
 			it("should error for non-existent files", () => {
 				const result = ContentSafetyService.checkOperation("update", testFile);
 
-				expect(result.success).toBe(false);
-				expect(result.action).toBe("error");
-				expect(result.message).toContain("Cannot update non-existent file");
+				expect(result.canProceed).toBe(false);
+				expect(result.error).toContain("Cannot update non-existent file");
 			});
 
 			it("should allow updating expected content", () => {
@@ -149,9 +135,7 @@ export default {
 
 				const result = ContentSafetyService.checkOperation("update", testFile);
 
-				expect(result.success).toBe(true);
-				expect(result.action).toBe("proceed");
-				expect(result.message).toBe("Updating expected content");
+				expect(result.canProceed).toBe(true);
 			});
 
 			it("should warn for orphan content", () => {
@@ -166,8 +150,7 @@ export default {
 
 				const result = ContentSafetyService.checkOperation("update", testFile);
 
-				expect(result.success).toBe(true);
-				expect(result.action).toBe("warn_and_proceed");
+				expect(result.canProceed).toBe(true);
 				expect(result.warning).toContain("Updating orphan content");
 			});
 
@@ -182,8 +165,7 @@ export default {
 
 				const result = ContentSafetyService.checkOperation("update", testFile);
 
-				expect(result.success).toBe(true);
-				expect(result.action).toBe("warn_and_proceed");
+				expect(result.canProceed).toBe(true);
 				expect(result.warning).toContain("File exists but no status found");
 			});
 		});
@@ -192,9 +174,8 @@ export default {
 			it("should error for non-existent files", () => {
 				const result = ContentSafetyService.checkOperation("delete", testFile);
 
-				expect(result.success).toBe(false);
-				expect(result.action).toBe("error");
-				expect(result.message).toContain("Cannot delete non-existent file");
+				expect(result.canProceed).toBe(false);
+				expect(result.error).toContain("Cannot delete non-existent file");
 			});
 
 			it("should allow deleting scaffold content", () => {
@@ -209,9 +190,7 @@ export default {
 
 				const result = ContentSafetyService.checkOperation("delete", testFile);
 
-				expect(result.success).toBe(true);
-				expect(result.action).toBe("proceed");
-				expect(result.message).toBe("Deleting scaffold content");
+				expect(result.canProceed).toBe(true);
 			});
 
 			it("should block final content deletion without force", () => {
@@ -226,8 +205,7 @@ export default {
 
 				const result = ContentSafetyService.checkOperation("delete", testFile);
 
-				expect(result.success).toBe(false);
-				expect(result.action).toBe("error");
+				expect(result.canProceed).toBe(false);
 				expect(result.requiresForce).toBe(true);
 			});
 		});
@@ -258,8 +236,8 @@ export default {
 	describe("displaySafetyResult", () => {
 		it("should handle dry run mode", () => {
 			const result = {
-				success: true,
-				action: "warn_and_proceed" as const,
+				canProceed: true,
+				requiresForce: false,
 				warning: "Test warning"
 			};
 
@@ -271,9 +249,9 @@ export default {
 
 		it("should handle verbose mode", () => {
 			const result = {
-				success: true,
-				action: "proceed" as const,
-				message: "Test message"
+				canProceed: true,
+				requiresForce: false,
+				currentStatus: "scaffold" as const
 			};
 
 			// This should not throw in verbose mode

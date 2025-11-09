@@ -298,165 +298,75 @@ const configId = generateConfigId(validationPrefix, testSuiteId);
 const tempSettings = createTempValidationConfig(configId, testSettings);
 ```
 
-### Test Isolation & TestSetup Patterns
+### Testing & Quality Assurance
 
-**TestSetup Class Architecture**: Standardized test isolation pattern used across all test suites:
+**📖 Comprehensive Testing Guide**: For detailed testing strategies, patterns, and best practices, see **[TESTING.md](./TESTING.md)**.
+
+**Quick Reference**:
+
+- **494 unit tests** (25 files) + **260 E2E tests** (14 files)
+- Test infrastructure: Vitest (unit), Playwright (E2E)
+- Execution: ~30-90s (unit), ~1-3min (E2E)
+
+**Critical Testing Rules**:
+
+1. **✅ MUST use TestSetup pattern** for all file-generating tests
+   - Location: `src/test/helpers/test-setup.ts`
+   - Provides: Unique temp directories, settings mocking, race condition prevention
+
+2. **✅ MUST use generateConfigId()** for parallel-safe asset generation
+   - Location: `src/test/helpers/test-utils.ts`
+   - Prevents: Race conditions when scripts run in parallel
+
+3. **❌ NEVER use hardcoded paths** in tests
+   - Bad: `"src/data/book/menu.ts"` (modifies production)
+   - Good: `join(testSetup.tempDir, "menu.ts")` (isolated)
+
+4. **✅ MUST cleanup** with `cleanupIfPassed(context)` in `afterEach()`
+   - Preserves files on failure for debugging
+   - Removes files on success to prevent bloat
+
+**Example Test Pattern**:
 
 ```typescript
-class TestSetup {
-	public tempDir: string;
+import { ExtendedTestSetup } from "../helpers/test-setup.js";
+import { generateConfigId } from "../helpers/test-utils.js";
+
+class MyTestSetup extends ExtendedTestSetup {
 	public configId: string;
-	public readonly testSuiteId: string;
-
-	constructor(testSuiteId: string = "main") {
-		const timestamp = Date.now();
-		const uniqueId = `${testSuiteId}-${timestamp}`;
-
-		// Unique temporary directory
-		this.tempDir = join(process.cwd(), "tmp", `test-${uniqueId}`);
-
-		// Unique config ID for validation settings
+	constructor(testSuiteId = "main") {
+		super("scripts", `my-test-${testSuiteId}`);
 		this.configId = generateConfigId("test-prefix", testSuiteId);
-
-		this.testSuiteId = testSuiteId;
-	}
-
-	async setup(): Promise<void> {
-		// Create isolated test environment
-		await ensureDir(this.tempDir);
-		await this.createTestFiles();
-	}
-
-	async cleanup(): Promise<void> {
-		// Clean up temporary resources
-		await remove(this.tempDir);
-		await cleanupTempValidationConfig(this.configId);
 	}
 }
-```
 
-**Usage Pattern in Tests**:
+describe("My Tests", () => {
+	let testSetup: MyTestSetup;
 
-```typescript
-describe("Script Tests", () => {
-	let testSetup: TestSetup;
-
-	beforeEach(async () => {
-		testSetup = new TestSetup("unique-suite-id");
-		await testSetup.setup();
-	});
-
-	afterEach(async () => {
-		await testSetup.cleanup();
-	});
-
-	it("should execute with isolation", async () => {
-		// Test uses testSetup.tempDir and testSetup.configId
-		// No interference with other parallel tests
-	});
-});
-```
-
-**Race Condition Prevention**: Unique identifiers prevent parallel test conflicts:
-
-```typescript
-// Each test gets unique resources
-const timestamp = Date.now();
-const randomId = Math.random().toString(36).substring(7);
-const uniqueId = `${testSuiteId}-${timestamp}-${randomId}`;
-```
-
-**🚨 CRITICAL RULE: NO HARDCODED PATHS IN TESTS**
-
-All test files **MUST** use TestSetup pattern with temporary directories. Never use hardcoded paths to production files.
-
-```typescript
-// ❌ INCORRECT: Hardcoded path to production file
-describe("Schema Tests", () => {
-	const schemaPath = "src/data/generated/content-schemas.json"; // ❌ WRONG!
-
-	beforeAll(() => {
-		// Reads from production directory
-		const schema = readFileSync(schemaPath, "utf-8");
-	});
-});
-
-// ✅ CORRECT: TestSetup with temporary directory
-describe("Schema Tests", () => {
-	let testSetup: TestSetup;
-
-	beforeAll(async () => {
-		testSetup = new TestSetup("schema-validation");
+	beforeEach(() => {
+		testSetup = new MyTestSetup("unique-id");
 		testSetup.setup();
-
-		// Generate test schema in isolated directory
-		await generateTestSchema(testSetup.schemaPath);
-		const schema = readFileSync(testSetup.schemaPath, "utf-8");
 	});
 
-	afterAll(() => {
-		testSetup.cleanup(); // Always cleanup
-	});
-});
-```
-
-**Why This Matters**:
-
-- **Test Isolation**: Tests don't interfere with production files
-- **Parallel Execution**: Multiple tests can run safely in parallel
-- **CI/CD Safety**: Tests work in clean environments without pre-existing files
-- **Cleanup**: Temporary files are automatically removed after tests
-
-**🧹 MANDATORY: Cleanup Temporary Directories**
-
-All TestSetup implementations **MUST** include proper cleanup in `afterAll()` or `afterEach()` hooks:
-
-```typescript
-describe("Test Suite", () => {
-	let testSetup: TestSetup;
-
-	beforeAll(async () => {
-		testSetup = new TestSetup("suite-id");
-		await testSetup.setup();
+	afterEach((context) => {
+		testSetup.cleanupIfPassed(context); // Conditional cleanup
 	});
 
-	// ✅ CRITICAL: Always cleanup temporary resources
-	afterAll(() => {
-		testSetup.cleanup(); // Removes tmp/test-suite-id-* directories
-	});
-
-	// Alternative for per-test cleanup
-	afterEach(() => {
-		testSetup.cleanup(); // Use if each test needs fresh state
+	it("should run in isolation", () => {
+		// Uses testSetup.tempDir and testSetup.configId
 	});
 });
 ```
 
-**Cleanup Implementation Pattern**:
+**For Complete Details**: See **[TESTING.md](./TESTING.md)** for:
 
-```typescript
-class TestSetup {
-	cleanup(): void {
-		// Remove temporary directory and all contents
-		if (existsSync(this.tempDir)) {
-			rmSync(this.tempDir, {
-				recursive: true, // Remove all nested files/folders
-				force: true // Ignore errors if already deleted
-			});
-		}
-
-		// Additional cleanup (config files, database connections, etc.)
-		// ... cleanup other resources
-	}
-}
-```
-
-**Why Cleanup Matters**:
-
-- **Disk Space**: Prevents accumulation of temporary files
-- **Test Reliability**: Ensures clean state between test runs
-- **CI/CD Performance**: Keeps build environments clean
-- **Local Development**: Prevents tmp/ directory bloat (use `make clean` to remove all)
+- TestSetup architecture and usage patterns
+- Race condition prevention strategies
+- Unit test DO/AVOID guidelines
+- E2E test best practices (snapshots, server management, URLs)
+- 3-tier validation strategy
+- CI/CD considerations
+- Troubleshooting guide
 
 ### Type Safety & Import Patterns
 

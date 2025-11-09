@@ -1,525 +1,300 @@
 # Content Generation & Validation Plan
 
-## 1. Architecture Overview
-
-This document outlines a robust, service-oriented architecture for the `content-creator` CLI with **dual-flow support**. The design supports both automated scaffold generation and manual content CRUD operations, ensuring all content follows unified validation and safety standards.
-
-### 1.1 Dual-Flow Architecture
-
-The system supports two distinct content workflows that converge on shared validation and repository services:
-
-```mermaid
-flowchart TB
-    User["User/Agent"] --> CLI["content-creator CLI"]
-
-    subgraph "Dual Content Sources"
-        direction TB
-
-        subgraph "Flow 1: Template Generation (Scaffolding)"
-            CLI -- "scaffold command" --> ScaffoldGen["ContentScaffoldingGenerator<br/>(CLI Coordination)"]
-            ScaffoldGen --> TemplateUtil["TemplateGenerator Utility<br/>(src/lib/utils/)"]
-            TemplateUtil --> TemplateContent["Lorem Ipsum Templates<br/>Random Data"]
-        end
-
-        subgraph "Flow 2: Real Content (Content Creator)"
-            CLI -- "create/update commands" --> ContentCreator["Content Creator CLI<br/>(Real Content Input)"]
-            ContentCreator --> RealContent["User Content<br/>(--inline json | --file path)"]
-        end
-    end
-
-    subgraph "Core API (Shared Processing)"
-        direction LR
-        TemplateContent --> CoreAPI["Core API<br/>(ValidationService + RepositoryService)"]
-        RealContent --> CoreAPI
-        CoreAPI --> VS["ValidationService<br/>(Zod + Mermaid + Rules)"]
-        CoreAPI --> RS["RepositoryService<br/>(Safety + File I/O)"]
-        VS --> RS
-        RS --> FileSystem["File System<br/>(src/data/book/*)"]
-    end
-
-    %% Styling
-    style ScaffoldGen fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
-    style TemplateUtil fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px
-    style ContentCreator fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
-    style CoreAPI fill:#fff3e0,stroke:#ff9800,stroke-width:3px
-    style VS fill:#fffbe6,stroke:#ffc400,stroke-width:2px
-    style RS fill:#fce4ec,stroke:#e91e63,stroke-width:2px
-```
-
-**Key Architecture Principles:**
-
-- **Clear Separation of Concerns**:
-  - **Template Generation**: TemplateGenerator utility (pure, reusable, in src/lib/utils/) creates lorem ipsum content
-  - **CLI Coordination**: ContentScaffoldingGenerator coordinates TemplateGenerator → Core API
-  - **Real Content Input**: Content Creator CLI accepts actual user content
-  - **Core API**: Content-agnostic ValidationService + RepositoryService for processing any content
-- **Single Processing Pipeline**: Both template and real content use identical Core API
-- **Unified Safety**: Single RepositoryService enforces safety strategy across all operations
-- **Modern Integration**: Leverages Prettier formatting, TestSetup isolation, and settings destructuring
-
-### 1.1.1 Implementation Phases (Reengineering Approach)
-
-This architecture implementation follows a **3-phase reengineering approach** that includes modernization of existing scripts alongside new ContentCore development:
-
-**Phase 1: Foundation Modernization & Service Layer (Task 3F1) ✅ COMPLETED**
-
-- ✅ Consolidate types: Move reusable interfaces to `$types` (ValidatedScaffoldingArgs, UnitIdentification, ScaffoldingStats)
-- ✅ Refactor content-scaffolding.ts to class-based architecture (ContentScaffoldingGenerator - hybrid implementation)
-- ✅ Implement ContentCore services: ValidationService, RepositoryService, Zod schemas
-- ✅ Apply optimized TestSetup patterns with `runAfterGeneration: false` by default
-- ✅ Maintain backward compatibility with function exports
-
-**Phase 2: Core API Integration & Complete Refactoring (Task 3F2)**
-
-- **Create TemplateGenerator Utility & Modernize ContentScaffoldingGenerator**:
-  - **CREATE**: `src/lib/utils/template-generator.ts` - Pure template generation utility
-  - **MOVE**: All template logic (generateXContent functions, lorem ipsum, random data) → TemplateGenerator
-  - **SIMPLIFY**: ContentScaffoldingGenerator to CLI coordination only (TemplateGenerator + Core API)
-  - Remove standalone functions (parseCliArguments, executeDataDrivenMode, etc.)
-  - **CLEAR SEPARATION**: CLI coordination ≠ Template generation ≠ Core API processing
-- **content-creator CLI Implementation**:
-  - Commander.js CLI with commands: scaffold, create, update, validate, list, delete
-  - scaffold command: Uses TemplateGenerator utility → Core API
-  - create/update commands: Accepts real content (--inline/--file) → Core API
-  - All commands converge on ValidationService + RepositoryService
-- **3-Tier Validation Requirements**:
-  - Mandatory `make check-wip` before any operation
-  - Code quality: `pnpm run format` + `pnpm run lint`
-  - Comprehensive: `pnpm run test` + `pnpm run check` (integration tests only)
-- **TestSetup Optimization Standards**:
-  - 96% tests use `TestSetup` (validation disabled)
-  - 4% tests use `TestSetupWithValidation` (full validation)
-  - All test suites follow optimization pattern
-
-**Phase 3: Legacy Integration & Architecture Finalization (Task 3F3)**
-
-- **Legacy Script Integration**:
-  - Refactor mermaid-validator.ts to use ValidationService
-  - Apply 3-tier validation pattern across all legacy test files
-  - Ensure all scripts use Core API for content operations
-- **Package.json Workflow Scripts**:
-  - Complete automation workflows with 3-tier validation
-  - Integration scripts that enforce architectural standards
-- **Final Architecture Validation**:
-  - Zero standalone functions in content generation scripts
-  - All content operations flow through Core API
-  - TestSetup optimization applied project-wide
-- **User Documentation**:
-  - **`CONTENT-CREATOR-CLI-GUIDE.md`** - Comprehensive user guide for content-creator CLI
-  - **Primary focus**: Real content workflows (create, update, validate, list, delete)
-  - **Secondary section**: Scaffold workflows (appendix with less emphasis)
-  - Migration guides for developers
-
-### 1.2 Content Creator CLI Command Flow
-
-This diagram shows the detailed command routing and service integration:
-
-```mermaid
-flowchart TB
-    CLI["content-creator CLI Entry"] --> Parser{Command Parser}
-
-    subgraph "Automation Commands"
-        Parser -- "scaffold" --> ScaffoldCmd["Scaffold Command"]
-        ScaffoldCmd --> ExistingScript["ContentScaffoldingGenerator<br/>(CLI Coordination)"]
-        ExistingScript --> TemplateGen["TemplateGenerator Utility<br/>(src/lib/utils/)"]
-        TemplateGen --> BulkValidation["Template Content<br/>→ Validation"]
-    end
-
-    subgraph "CRUD Commands"
-        Parser -- "create" --> CreateCmd["Create Command"]
-        Parser -- "update" --> UpdateCmd["Update Command"]
-        CreateCmd --> AcquireContent["Acquire User Content<br/>(--input file or --inline json)"]
-        UpdateCmd --> AcquireContent
-        AcquireContent --> SingleValidation["Single Content<br/>Validation"]
-    end
-
-    subgraph "Utility Commands"
-        Parser -- "validate" --> ValidateCmd["Validate Command"] --> ValidationOnly["ValidationService<br/>(No Write)"]
-        Parser -- "list" --> ListCmd["List Command"] --> Discovery["Content Discovery<br/>(Read-Only)"]
-        Parser -- "delete" --> DeleteCmd["Delete Command"] --> SafetyCheck["Safety Check<br/>+ Delete"]
-    end
-
-    subgraph "ContentCore Services (Shared)"
-        BulkValidation --> VS["ValidationService"]
-        SingleValidation --> VS
-        VS --> ZodValidation["Zod Schema<br/>+ Business Rules"]
-        VS --> MermaidValidation["Mermaid Syntax<br/>Validation"]
-        VS --> ValidationResult["Validation Result<br/>{success, errors}"]
-
-        ValidationResult -- "success" --> RS["RepositoryService"]
-        RS --> SafetyStrategy["Safety Strategy<br/>(scaffold/draft/final)"]
-        RS --> PrettierWrite["writeFormattedFile()<br/>Integration"]
-
-        SafetyCheck --> RS
-    end
-
-    %% Styling
-    style ExistingScript fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
-    style TemplateGen fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px
-    style VS fill:#fffbe6,stroke:#ffc400,stroke-width:2px
-    style RS fill:#fce4ec,stroke:#e91e63,stroke-width:2px
-    style ValidationOnly fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px
-```
+> **Architecture documentation for the content-creator CLI with dual-flow support**
+>
+> This document outlines a robust, service-oriented architecture that supports both automated scaffold generation and manual content CRUD operations, ensuring all content follows unified validation and safety standards.
 
 ---
 
-### 1.3 Optimized Testing Strategy
+## 1. CORE ARCHITECTURE
 
-The ContentCore implementation leverages the **validation optimization patterns** developed for existing generator scripts to ensure fast test execution while maintaining comprehensive validation coverage:
+### 1.1 System Overview
 
-#### **Test Performance Optimization Pattern**
+The system follows a **4-layer architecture** with clear separation of concerns:
 
-```typescript
-// Base TestSetup - validation disabled by default for speed
-class TestSetup {
-	protected configureValidation(): void {
-		(SETTINGS.scripts.validation.generated as any).runAfterGeneration = false;
-	}
-
-	cleanup(): void {
-		// Always restore original setting
-		(SETTINGS.scripts.validation.generated as any).runAfterGeneration = true;
-	}
-}
-
-// Specialized setup - validation enabled for specific tests
-class TestSetupWithValidation extends TestSetup {
-	protected configureValidation(): void {
-		(SETTINGS.scripts.validation.generated as any).runAfterGeneration = true;
-	}
-}
-```
-
-#### **Testing Strategy Distribution**
-
-- **96% Fast Tests**: Use `TestSetup` with validation disabled for unit tests and basic functionality
-- **4% Validation Tests**: Use `TestSetupWithValidation` for integration tests and validation scenarios
-- **Result**: Significant performance improvement while maintaining comprehensive validation coverage
-
-This pattern is applied consistently across:
-
-- Existing optimized generators: `flatnav-generator`, `search-indexer`, `content-menu-generator`
-- **New TemplateGenerator utility**: `template-generator` tests (pure template logic, fastest execution)
-- New ContentCore services: `ValidationService`, `RepositoryService` tests
-- Simplified ContentScaffoldingGenerator tests (CLI coordination only)
-- content-creator CLI comprehensive test suite
-
-#### **TemplateGenerator Testing Strategy**
-
-**Optimized Testing for Template Generation:**
-
-```typescript
-// TemplateGenerator tests - fastest execution (no validation, no file I/O)
-describe("TemplateGenerator", () => {
-	test("generates lesson content with correct structure", () => {
-		const generator = new TemplateGenerator();
-		const content = generator.generateLessonContent(args);
-		expect(content.type).toBe("lesson");
-		expect(content.sections).toHaveLength(expectedSections);
-	});
-
-	// 96% of tests: Pure logic validation, no file operations
-	test("generates diverse quiz questions", () => {
-		const questions = generator.generateQuizContent(args);
-		expect(questions.quiz.questions).toHaveLength(10);
-	});
-});
-```
-
-**Testing Benefits:**
-
-- **Fastest Execution**: No file I/O, no validation, pure template logic testing
-- **Independent Testing**: Template generation tested separately from CLI and Core API
-- **Focused Testing**: Each `generateXContent()` method tested individually
-- **High Coverage**: All template variations and edge cases covered
-- **Reusability Testing**: Utility can be tested in different contexts
-
-#### **3-Tier Validation Requirements**
-
-**ALL development workflows MUST follow the 3-tier validation pattern before considering any task complete:**
+1. **CLI Layer**: Commander.js parsers (generate-scaffold, manage-content)
+2. **Orchestration Layer**: ContentCore class (single entry point for all content operations)
+3. **Service Layer**: ValidationService (Zod + Mermaid) + RepositoryService (Safety + Formatting)
+4. **Storage Layer**: File system operations (src/data/book/\*.ts)
 
 ```mermaid
-flowchart LR
-    Start([Development Work]) --> Tier1[Tier 1: Fast WIP<br/>make check-wip]
-    Tier1 --> Check1{Pass?}
-    Check1 -- No --> Fix1[Fix Issues]
-    Fix1 --> Tier1
-    Check1 -- Yes --> Tier2[Tier 2: Code Quality<br/>pnpm run format<br/>pnpm run lint]
-    Tier2 --> Check2{Pass?}
-    Check2 -- No --> Fix2[Fix Issues]
-    Fix2 --> Tier2
-    Check2 -- Yes --> Critical{Integration/Critical<br/>Test?}
-    Critical -- Yes --> Tier3[Tier 3: Comprehensive<br/>pnpm run test<br/>pnpm run check]
-    Critical -- No --> Complete([Task Complete])
-    Tier3 --> Check3{Pass?}
-    Check3 -- No --> Fix3[Fix Issues]
-    Fix3 --> Tier1
-    Check3 -- Yes --> Complete
+flowchart TB
+    User([User])
 
-    %% Styling
-    style Tier1 fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
-    style Tier2 fill:#fff3e0,stroke:#ff9800,stroke-width:2px
-    style Tier3 fill:#fce4ec,stroke:#e91e63,stroke-width:2px
-    style Complete fill:#e3f2fd,stroke:#2196f3,stroke-width:3px
+    User --> ScaffoldCLI["generate-scaffold CLI<br/>(Template Generation)"]
+    User --> ManageCLI["manage-content CLI<br/>(Real Content)"]
+
+    ScaffoldCLI --> TemplateGen["TemplateGenerator<br/>(Lorem Ipsum)"]
+    ManageCLI --> UserInput["User Input Parser<br/>(--inline/--file)"]
+
+    TemplateGen --> ContentCore["ContentCore.processContent()<br/>(Single Entry Point)"]
+    UserInput --> ContentCore
+
+    ContentCore --> VS["ValidationService<br/>(Zod + Mermaid)"]
+    ContentCore --> RS["RepositoryService<br/>(Safety + Prettier)"]
+
+    VS -.-> RS
+    RS --> Files[("Content Files<br/>src/data/book/*.ts")]
+
+    style ContentCore fill:#fff3e0,stroke:#ff9800,stroke-width:4px
+    style VS fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    style RS fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
 ```
 
-**Tier Definitions:**
+**Key Principle**: CLIs parse user input → ContentCore orchestrates validation & persistence → Services execute → Files written
 
-- **Tier 1 (Fast WIP - ~5-15s)**: `make check-wip` - Validates only modified/untracked files
-- **Tier 2 (Code Quality - ~30-45s)**: `pnpm run format` + `pnpm run lint` - Complete project formatting and linting
-- **Tier 3 (Comprehensive - ~1-3m)**: `pnpm run test` + `pnpm run check` - Full test suite and TypeScript validation
-
-**Application Rules:**
-
-- **Tier 1**: MANDATORY for ALL development work
-- **Tier 2**: Required before commits and pull requests
-- **Tier 3**: Only for integration tests and critical functionality changes
+**Dual-Flow Support**: Two distinct content sources (template generation vs real content) converge on the **same** ContentCore pipeline, ensuring unified validation and safety rules.
 
 ---
 
-### 1.4 Core API Architecture
+### 1.2 ContentCore: The Orchestrator
 
-The **Core API** represents the unified processing layer that handles all content operations, regardless of whether content originates from template generation (scaffolding) or real user input (content creator CLI).
+**Location**: `src/lib/services/ContentCore.ts` (standalone file)
 
-#### **Core API Components**
+**Responsibility**: Single entry point for all content persistence operations. Acts as the orchestration layer between CLIs and services.
 
-```mermaid
-flowchart LR
-    subgraph "Content Sources"
-        TemplateGen["Template Generation<br/>(Scaffolding)"]
-        UserContent["Real Content<br/>(Content Creator CLI)"]
-    end
-
-    subgraph "Core API"
-        TemplateGen --> CoreEntry["Core API Entry Point"]
-        UserContent --> CoreEntry
-        CoreEntry --> Validation["ValidationService<br/>(Zod + Mermaid + Rules)"]
-        Validation --> Repository["RepositoryService<br/>(Safety + File I/O)"]
-    end
-
-    subgraph "Output"
-        Repository --> Files["Validated Content Files<br/>(src/data/book/*)"]
-    end
-
-    %% Styling
-    style CoreEntry fill:#fff3e0,stroke:#ff9800,stroke-width:3px
-    style Validation fill:#fffbe6,stroke:#ffc400,stroke-width:2px
-    style Repository fill:#fce4ec,stroke:#e91e63,stroke-width:2px
-```
-
-#### **Core API Interface**
+#### Interface
 
 ```typescript
-// Core API unified interface
 interface ContentCoreAPI {
-	// Primary content processing pipeline
-	processContent(content: ContentObject): Promise<ValidationResult>;
+	/**
+	 * Primary content processing pipeline
+	 * Orchestrates: Validation → Repository → File Write
+	 */
+	processContent(
+		filePath: string,
+		content: unknown,
+		options?: ProcessOptions
+	): Promise<ValidationResult>;
 
-	// Validation layer
+	/**
+	 * Validate content without writing (for validate command)
+	 */
+	validateContent(content: unknown): Promise<ValidationResult>;
+
+	// Service layer access
 	validation: ValidationService;
-
-	// Repository layer
 	repository: RepositoryService;
 }
+```
 
-// Usage by ContentScaffoldingGenerator
-class ContentScaffoldingGenerator {
-	constructor(private coreAPI: ContentCoreAPI) {}
+#### Processing Flow
 
-	async generate(args: ValidatedScaffoldingArgs): Promise<boolean> {
-		// 1. Generate template content (lorem ipsum, random data)
-		const templateContent = this.generateTemplateContent(args);
+```typescript
+// ContentCore orchestrates the pipeline
+async processContent(filePath: string, content: unknown, options: ProcessOptions) {
+	// 1. Validate with Zod schemas + Mermaid
+	const validationResult = await this.validation.validate(content);
 
-		// 2. Send to Core API for validation and storage
-		const result = await this.coreAPI.processContent(templateContent);
-		return result.success;
+	if (!validationResult.success) {
+		return validationResult;
 	}
-}
 
-// Usage by Content Creator CLI
-async function createContent(options: CreateOptions): Promise<boolean> {
-	// 1. Get real content from user (--inline or --file)
-	const userContent = await getUserContent(options);
+	// 2. Write with safety checks + Prettier formatting
+	const writeResult = await this.repository.writeFormattedContent(
+		filePath,
+		validationResult.validatedData,
+		options
+	);
 
-	// 2. Send to Core API (same pipeline as scaffolding)
-	const result = await coreAPI.processContent(userContent);
-	return result.success;
+	return { success: writeResult.success, errors: [...] };
 }
 ```
 
-#### **Key Benefits**
+#### Why ContentCore?
 
-- **Unified Pipeline**: Single validation and storage flow for all content
-- **Consistency**: Template and real content follow identical validation rules
-- **Maintainability**: Changes to validation/storage logic affect both flows
-- **Testability**: Core API can be tested independently of content sources
+- **CLIs don't know HOW**: They parse user input and delegate to ContentCore
+- **Services don't know WHEN**: They execute validation/writing when told by ContentCore
+- **Single Orchestration Point**: ContentCore coordinates the entire pipeline
 
 ---
 
-### 1.5 Layered Service Architecture
+### 1.3 Service Layer
 
-This diagram illustrates the complete layered dependencies from CLI to utilities, showing modern pattern integration:
+#### ValidationService
+
+**Location**: `src/lib/services/ValidationService.ts`
+
+**Purpose**: Validate content structure (Zod schemas) and syntax (Mermaid diagrams)
+
+**Primary Method**:
+
+```typescript
+validate(content: unknown): Promise<ValidationResult>
+```
+
+**Responsibilities**:
+
+1. Validate content against Zod discriminated union (`CONTENT_SCHEMAS.AnyContent`)
+2. Validate Mermaid diagram syntax within content
+3. Return structured validation result with errors/warnings
+
+**Key Principle**: Business rules are encoded in Zod schemas (e.g., `z.array(questionSchema).min(10)`), NOT in hardcoded switch statements.
+
+---
+
+#### RepositoryService
+
+**Location**: `src/lib/services/RepositoryService.ts`
+
+**Purpose**: Enforce safety rules, format code, and write files to disk
+
+**Primary Method**:
+
+```typescript
+writeFormattedContent(
+	filePath: string,
+	content: BaseContent | AnyContent,
+	options: WriteOptions
+): Promise<WriteResult>
+```
+
+**Responsibilities**:
+
+1. Check safety rules via ContentSafetyService (scaffold/draft/final status)
+2. Format content with Prettier (TypeScript formatting)
+3. Write formatted content to file system
+
+**Key Principle**: RepositoryService is the **sole gatekeeper** for filesystem modifications. No other component writes directly.
+
+---
+
+### 1.4 Key Architectural Principles
+
+1. **Single Entry Point**: All content persistence flows through `ContentCore.processContent()`
+2. **Unified Validation**: Same Zod schemas validate both template and real content
+3. **Separation of Concerns**:
+   - CLIs: Parse user input (commander.js)
+   - ContentCore: Orchestrate validation → persistence
+   - Services: Execute validation and writing
+4. **Type Safety**: All content flows through `BaseContent → AnyContent` (discriminated union on `type` field)
+5. **Safety First**: RepositoryService enforces scaffold/draft/final rules before any write/delete operation
+
+---
+
+## 2. IMPLEMENTATION PHASES
+
+### Phase Overview
 
 ```mermaid
-graph TB
-    subgraph "Consumer Layer"
-        User["User/Agent"] --> CLI["content-creator CLI<br/>(Commander.js)"]
-    end
+flowchart LR
+    P1["Phase 1<br/>Foundation & Validation"] --> P2["Phase 2<br/>Repository & Formatting"]
+    P2 --> P3["Phase 3<br/>ContentCore & CLI Integration"]
 
-    subgraph "Application Layer"
-        CLI --> ScaffoldFlow["Scaffold Flow<br/>(Existing Scripts)"]
-        CLI --> CRUDFlow["CRUD Flow<br/>(ContentCore Services)"]
-    end
-
-    subgraph "Service Layer (ContentCore)"
-        CRUDFlow --> VS["ValidationService<br/>(Zod + Mermaid)"]
-        CRUDFlow --> RS["RepositoryService<br/>(Safety + I/O)"]
-        ScaffoldFlow --> VS
-        VS --> RS
-    end
-
-    subgraph "Utility Layer"
-        VS --> VU["validation-utils.ts<br/>(Mermaid Validator)"]
-        RS --> PW["prettier-writer.ts<br/>(Modern Formatting)"]
-        RS --> CU["content-utils.ts<br/>(File Operations)"]
-        ScaffoldFlow --> SG["content-scaffolding.ts<br/>(Existing Generator)"]
-    end
-
-    subgraph "Configuration Layer"
-        VU --> SETTINGS["SETTINGS.scripts<br/>(Destructured Config)"]
-        PW --> PRETTIERRC[".prettierrc<br/>(Format Config)"]
-        CU --> SETTINGS
-    end
-
-    subgraph "Data Layer"
-        VS --> ZOD["Zod Schemas<br/>(src/lib/validation/)"]
-        RS --> TYPES["TypeScript Types<br/>($types alias)"]
-        ZOD --> TYPES
-    end
-
-    %% Modern Pattern Highlights
-    style PW fill:#e8f5e8,stroke:#4caf50,stroke-width:3px
-    style SETTINGS fill:#fff3e0,stroke:#ff9800,stroke-width:2px
-    style TYPES fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
-    style ZOD fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px
+    style P1 fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    style P2 fill:#fff3e0,stroke:#ff9800,stroke-width:2px
+    style P3 fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
 ```
 
-**Modern Pattern Integration Highlights:**
-
-- **Prettier Integration**: `writeFormattedFile()` with .prettierrc configuration resolution
-- **Settings Destructuring**: `const { validation: validationSettings } = SETTINGS.scripts;`
-- **Type Safety**: Unified `$types` alias for consistent imports across the project
-- **Test Isolation**: TestSetup pattern with unique directories and config IDs
-- **Performance Optimization**: Selective validation enabling in tests vs global settings
+**Critical Path**: Phases are sequential. Each phase depends on completion of previous phase(s).
 
 ---
 
-## 2. Analysis & Justification
+### 2.1 Phase 1: Foundation & Validation
 
-- **Unified Pipeline:** A single validation and write pipeline for all content modifications ensures maximum consistency and reliability.
-- **Layered Architecture:** The design separates concerns effectively: The CLI orchestrates, Services contain business logic, and Utilities handle low-level tasks. This makes the system easier to maintain and test.
-- **Robust Validation:** The multi-layered validation pipeline (Schema, Business Rules, Content-Specific) is now a shared service, guaranteeing that no content—not even placeholders—can be written to disk in an invalid state.
-- **Repository Pattern:** The `Repository Service` acts as a gatekeeper to the filesystem, centralizing all write/update/delete logic, including the critical overwrite and delete safety strategy.
+**Goal**: Enable runtime content validation using Zod schemas
 
----
+**Why First?**: Validation is the foundation. Cannot build repository layer without knowing content is valid.
 
-## 3. Implementation Plan: Phased Approach
+#### Components to Build
 
-This project will be implemented in three distinct phases, building from the lowest-level utilities up to the user-facing CLI.
+1. **ValidationService.validate()**: Generic validation using Zod schemas
+2. **CONTENT_SCHEMAS Integration**: Use existing 35+ Zod schemas for runtime validation
+3. **MermaidValidator Integration**: Validate Mermaid diagram syntax
+4. **Remove Hardcoded Logic**: Eliminate `validateBusinessRules()` (rules are in Zod schemas)
 
-### **Phase 1: Foundational Modules (Utilities & Data)**
+#### Success Criteria
 
-This phase focuses on creating the low-level, reusable building blocks of the application.
+- ✅ `ValidationService.validate()` uses `CONTENT_SCHEMAS.AnyContent.safeParse()`
+- ✅ All business rules enforced via Zod schemas (no switch statements)
+- ✅ Mermaid diagrams validated automatically within content
+- ✅ Tests pass: valid content accepted, invalid content rejected with clear errors
+- ✅ `make check-wip` passes
 
-#### **Task 1.1: Zod Schemas & Schema Generation Script**
+#### Dependencies
 
-- **Details:**
-  1. In a new directory `src/lib/validation/`, create Zod schema definitions for all content types (`LessonContent`, `QuizContent`, etc.).
-  2. Embed business rules directly into the schemas using Zod's validation methods (e.g., `z.array(questionSchema).min(10)` for quizzes).
-  3. Create a new script, `src/scripts/generate-json-schemas.ts`, which imports the Zod schemas and uses `zod-to-json-schema` to export them as `.json` files into the `src/schema/` directory.
-  4. Add a corresponding script to `package.json`: `"generate-schemas": "tsx src/scripts/generate-json-schemas.ts"`.
-- **Expected Output:**
-  - Zod schema files in `src/lib/validation/`.
-  - A `generate-schemas` script in `package.json`.
-  - Generated JSON schema files in `src/schema/`.
-- **Validation:**
-  - ✅ The Zod schemas accurately reflect the TypeScript interfaces.
-  - ✅ `pnpm run generate-schemas` executes successfully.
+**None** (foundation layer)
 
-#### **Task 1.2: Core & Specialized Utilities**
+#### Deliverables
 
-- **Details:**
-  1. Create `src/lib/utils/common-content-utils.ts` for general-purpose file I/O (reading, writing) and AST manipulation using `ts-morph`.
-  2. Create `src/lib/utils/scaffold-generator.ts` to house the logic for creating placeholder data objects (e.g., `generatePlaceholderLesson()`).
-  3. Create `src/lib/utils/validation-utils.ts` to contain the reusable Mermaid syntax validator function, which must return a structured result (`{ isValid: boolean; error?: string; }`).
-- **Expected Output:**
-  - `common-content-utils.ts`, `scaffold-generator.ts`, `validation-utils.ts`.
-- **Validation:**
-  - ✅ All utility functions are type-safe and exported.
-  - ✅ The Mermaid validator correctly identifies valid and invalid syntax.
+- Refactored `ValidationService.ts` with `validate()` method
+- Unit tests for ValidationService
+- Integration tests for Zod + Mermaid validation pipeline
 
 ---
 
-### **Phase 2: Service Layer Implementation**
+### 2.2 Phase 2: Repository & Formatting
 
-This phase builds the core business logic on top of the foundational utilities.
+**Goal**: Enable safe, formatted content persistence
 
-#### **Task 2.1: Validation Service**
+**Why Second?**: Requires validated content from Phase 1. Cannot write without validation.
 
-- **Details:**
-  1. Create `src/lib/services/ValidationService.ts`.
-  2. Expose a primary method, `validate(contentObject)`, that orchestrates the full validation pipeline (Zod schemas, then content-specific checks like the Mermaid validator).
-  3. The service should return a structured result, like `{ success: boolean, errors: string[] }`.
-- **Expected Output:**
-  - `ValidationService.ts` file.
-- **Validation:**
-  - ✅ The service correctly validates or rejects content objects based on the full pipeline.
-  - ✅ Error messages are clear and indicate the path of the error.
+#### Components to Build
 
-#### **Task 2.2: Repository Service**
+1. **RepositoryService.writeFormattedContent()**: Write with Prettier formatting
+2. **Type-Safe Signatures**: Change from `unknown` to `BaseContent | AnyContent`
+3. **Prettier Integration**: Format TypeScript before writing
+4. **ContentSafetyService Integration**: Enforce scaffold/draft/final safety rules
 
-- **Details:**
-  1. Create `src/lib/services/RepositoryService.ts`.
-  2. Expose methods like `writeFile(path, contentObject)` and `deleteFile(path)`.
-  3. This service **must** be the sole gatekeeper for all filesystem modifications, implementing the full "Overwrite/Delete Safety Strategy" before calling the low-level I/O utilities.
-- **Expected Output:**
-  - `RepositoryService.ts` file.
-- **Validation:**
-  - ✅ The safety logic for `scaffold`, `draft`, and `final` statuses works exactly as specified.
-  - ✅ Attempting to modify a `final` file without `--force-overwrite` fails as expected.
+#### Success Criteria
 
----
+- ✅ RepositoryService formats with Prettier before every write
+- ✅ Safety checks enforce scaffold/draft/final rules correctly
+- ✅ Type errors caught at compile time (no `unknown` types)
+- ✅ Tests pass: formatted output matches .prettierrc configuration
+- ✅ `make check-wip` passes
 
-### **Phase 3: Application Layer (CLI)**
+#### Dependencies
 
-This phase builds the user-facing tool that orchestrates the services.
+**Phase 1** (needs ValidationService to validate content before writing)
 
-#### **Task 3.1: CLI Implementation**
+#### Deliverables
 
-- **Details:**
-  1. Create the main CLI entrypoint at `src/scripts/content-creator.ts`.
-  2. Use a library like `commander` to define all subcommands (`scaffold`, `list`, `create`, etc.) and global flags (`--dry-run`, `--force-overwrite`).
-  3. Wire up each command to the appropriate services:
-     - `scaffold`: Uses `scaffold-generator` to create objects, then passes them to the `ValidationService` and `RepositoryService`.
-     - `create`/`update`: Gets user content, then passes it to the `ValidationService` and `RepositoryService`.
-     - `delete`: Gets a file path and passes it directly to the `RepositoryService`.
-     - `validate`: Gets a file path and passes it to the `ValidationService`.
-     - `list`: Implements the read-only discovery workflow.
-  4. Implement the `--dry-run` logic at this layer.
-- **Expected Output:**
-  - A fully functional `content-creator.ts` script.
-  - A `package.json` script to run it: `"content-creator": "tsx src/scripts/content-creator.ts"`.
-- **Validation:**
-  - ✅ Each command and flag works as documented in the command reference table.
-  - ✅ The `--dry-run` mode accurately reports intended actions without changing files.
+- Refactored `RepositoryService.ts` with Prettier integration
+- Updated type signatures (`BaseContent | AnyContent`)
+- Unit tests for RepositoryService
+- Integration tests for safety strategy
 
 ---
 
-## 4. API/CLI Strategy
+### 2.3 Phase 3: ContentCore & CLI Integration
 
-The `content-creator` CLI is the unified interface for all content manipulation.
+**Goal**: Unify all content operations through ContentCore orchestrator
 
-### 4.1 Command & Flag Reference
+**Why Last?**: Requires both ValidationService (Phase 1) and RepositoryService (Phase 2) to be complete.
+
+#### Components to Build
+
+1. **ContentCore Class**: Standalone orchestrator in `src/lib/services/ContentCore.ts`
+2. **CLI Updates**: Refactor generate-scaffold and manage-content to use ContentCore
+3. **Type Cleanup**: Remove duplicate types (ContentStatus, SafetyCheckResult)
+4. **End-to-End Integration**: Both CLIs use `ContentCore.processContent()`
+
+#### Success Criteria
+
+- ✅ ContentCore orchestrates ValidationService → RepositoryService
+- ✅ Both CLIs (generate-scaffold, manage-content) use ContentCore.processContent()
+- ✅ No duplicate types (single ContentStatus, single SafetyCheckResult)
+- ✅ End-to-end tests pass for both template and real content flows
+- ✅ `make check-wip test` passes
+
+#### Dependencies
+
+**Phase 1 + Phase 2** (needs both ValidationService and RepositoryService)
+
+#### Deliverables
+
+- New `src/lib/services/ContentCore.ts`
+- Refactored `generate-scaffold.ts` (uses ContentCore)
+- Refactored `manage-content.ts` (uses ContentCore)
+- Type cleanup in `$types` directory
+- End-to-end integration tests
+
+---
+
+## 3. OPERATIONAL DESIGN
+
+### 3.1 CLI Command Reference
 
 | Command          | Description                                                                | Options & Flags                                                                        |
 | :--------------- | :------------------------------------------------------------------------- | :------------------------------------------------------------------------------------- |
@@ -533,17 +308,42 @@ The `content-creator` CLI is the unified interface for all content manipulation.
 |                  | Simulates a command and logs the intended actions without writing to disk. | `--dry-run`                                                                            |
 |                  | Required to overwrite or delete content with `final` status.               | `--force-overwrite`                                                                    |
 
-### 4.2 Shared Validation Pipeline
+---
 
-All commands that generate or accept content (`scaffold`, `create`, `update`) **MUST** process it through the shared `Validation Service` before any write operation. The `validate` command also uses this service directly. The pipeline runs in this order:
+### 3.2 Validation Pipeline
 
-1.  **Unified Zod Validation:** The primary validation uses a single, comprehensive Zod schema for the given content type. These schemas are designed to enforce both the **data structure** (correct properties, types, etc.) and **business rules** (e.g., using `.min(10)` on an array of questions to ensure a quiz is long enough). This makes Zod the single source of truth for most validation.
+All content operations flow through the unified validation pipeline:
 
-2.  **Content-Specific Validation:** After passing the Zod schema, the service runs specialized validators for specific content blocks, such as the **Mermaid syntax validator** (from TASK 3C) on all diagram definitions.
+```mermaid
+flowchart LR
+    Content["Content<br/>(unknown)"] --> ZodValidation["Zod Schema Validation<br/>(Structure + Business Rules)"]
+    ZodValidation -- "success" --> MermaidValidation["Mermaid Syntax Validation<br/>(Diagrams Only)"]
+    ZodValidation -- "failure" --> Error["ValidationResult<br/>{success: false, errors: [...]}"]
+    MermaidValidation -- "success" --> Success["ValidationResult<br/>{success: true, validatedData: content}"]
+    MermaidValidation -- "failure" --> Error
 
-### 4.3 Shared Repository Service & Safety Strategy
+    style ZodValidation fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px
+    style MermaidValidation fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    style Success fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
+    style Error fill:#ffebee,stroke:#f44336,stroke-width:2px
+```
 
-The `Repository Service` is the single point of entry for all filesystem modifications, including deletion. It enforces the safety rules before performing any write, update, or delete operation.
+**Pipeline Steps**:
+
+1. **Zod Schema Validation**: Validates structure and business rules
+   - Uses `CONTENT_SCHEMAS.AnyContent` discriminated union
+   - Business rules: `.min(10)` for quiz questions, `.min(5)` for lesson sections, etc.
+   - Returns clear error messages with field paths
+
+2. **Content-Specific Validation**: Validates specialized content
+   - Mermaid diagram syntax validation
+   - Only runs if Zod validation succeeds
+
+---
+
+### 3.3 Safety Strategy
+
+The RepositoryService enforces safety rules before any write/delete operation:
 
 ```mermaid
 flowchart TB
@@ -569,29 +369,204 @@ flowchart TB
     WriteOrDelete --> Success["Operation Succeeded"]
     Success --> End(["End"])
     FinalError --> End
+
+    style WriteOrDelete fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
+    style FinalError fill:#ffebee,stroke:#f44336,stroke-width:2px
+    style Success fill:#e3f2fd,stroke:#2196f3,stroke-width:2px
 ```
 
-1.  **If `status` is `"scaffold"`:** The file can be overwritten or deleted freely.
-2.  **If `status` is `"draft"`:** The file can be overwritten or deleted, but a prominent warning will be displayed.
-3.  **If `status` is `"final"`:** The operation will **fail by default**. Modifying or deleting requires the `--force-overwrite` flag. For updates, the new content must also have a `status` of `"final"`.
+**Safety Rules**:
+
+1. **`scaffold` status**: Can be overwritten or deleted freely
+2. **`draft` status**: Can be overwritten or deleted with warning
+3. **`final` status**: Cannot be modified/deleted without `--force-overwrite` flag
 
 ---
 
-## 5. Module Design: `scaffold` Command
+## 4. IMPLEMENTATION DETAILS
 
-The `scaffold` command is now a simple client of the shared services.
+### 4.1 File Structure & Naming Conventions
 
-- **Responsibility:** Its sole job is to determine which files are missing and use the `scaffold-generator.ts` utility to create placeholder content objects.
-- **Workflow:**
-  1. It generates a list of placeholder objects.
-  2. It passes each object to the shared `Validation Service`.
-  3. If valid, it passes the object and target file path to the shared `Repository Service`, which then handles the write logic and safety checks.
+#### ContentCore & Services
+
+```
+src/lib/services/
+├── ContentCore.ts           # Orchestrator class
+├── ValidationService.ts     # Zod + Mermaid validation
+├── RepositoryService.ts     # Safety + Prettier + Write
+└── ContentSafetyService.ts  # Safety rule enforcement
+```
+
+#### Schemas & Types
+
+```
+src/lib/schemas/
+└── ContentSchemas.ts        # 35+ Zod schemas with business rules
+
+src/lib/types/
+├── index.ts                 # Public type exports (AnyContent union)
+├── content.ts               # BaseContent interface, content type interfaces
+├── scripts.ts               # Script-specific types (SafetyCheckResult, FileOperationStats)
+└── scaffolding.ts           # Scaffolding-specific types (ValidatedScaffoldingArgs)
+```
+
+#### CLIs
+
+```
+src/scripts/
+├── generate-scaffold.ts     # Template generation CLI
+└── manage-content.ts        # Real content CRUD CLI
+```
 
 ---
 
-## 6. Summary of Key Principles
+### 4.2 Testing Strategy
 
-- **Unified Pipeline:** A single validation and write/delete pipeline for all content modifications ensures maximum consistency and reliability.
-- **Layered Architecture:** The design separates concerns effectively: The CLI orchestrates, Services contain business logic, and Utilities handle low-level tasks.
-- **Validate First, Write Last:** No file is ever created, modified, or deleted until it has passed all necessary validation and safety checks.
-- **Design for Safety:** The CLI is powerful yet safe, with a discovery command (`list`), a simulation mode (`--dry-run`), and a strict, centralized safety policy managed by the Repository Service.
+#### Test Performance Optimization Pattern
+
+```typescript
+// Base TestSetup - validation disabled by default for speed
+class TestSetup {
+	protected configureValidation(): void {
+		(SETTINGS.scripts.validation.generated as any).runAfterGeneration = false;
+	}
+
+	cleanup(): void {
+		// Always restore original setting
+		(SETTINGS.scripts.validation.generated as any).runAfterGeneration = true;
+	}
+}
+
+// Specialized setup - validation enabled for specific tests
+class TestSetupWithValidation extends TestSetup {
+	protected configureValidation(): void {
+		(SETTINGS.scripts.validation.generated as any).runAfterGeneration = true;
+	}
+}
+```
+
+#### Testing Strategy Distribution
+
+- **96% Fast Tests**: Use `TestSetup` (validation disabled) for unit tests and basic functionality
+- **4% Validation Tests**: Use `TestSetupWithValidation` for integration tests and validation scenarios
+- **Result**: Significant performance improvement while maintaining comprehensive validation coverage
+
+#### Test Coverage by Component
+
+| Component         | Test Type   | Setup                   | Focus                              |
+| ----------------- | ----------- | ----------------------- | ---------------------------------- |
+| ValidationService | Unit        | TestSetup               | Zod schema validation logic        |
+| ValidationService | Integration | TestSetupWithValidation | Full validation pipeline           |
+| RepositoryService | Unit        | TestSetup               | Safety checks, Prettier formatting |
+| ContentCore       | Integration | TestSetupWithValidation | End-to-end pipeline                |
+| CLIs              | Integration | TestSetupWithValidation | Full user workflows                |
+
+---
+
+### 4.3 Development Workflow
+
+#### 3-Tier Validation Requirements
+
+**ALL development workflows MUST follow the 3-tier validation pattern before considering any task complete:**
+
+**Tier Definitions:**
+
+- **Tier 1 (Fast WIP - ~5-15s)**: `make check-wip` - Validates only modified/untracked files
+- **Tier 2 (Code Quality - ~30-45s)**: `pnpm run format` + `pnpm run lint` - Complete project formatting and linting
+- **Tier 3 (Comprehensive - ~1-3m)**: `pnpm run test` + `pnpm run check` - Full test suite and TypeScript validation
+
+**Application Rules:**
+
+- **Tier 1**: MANDATORY for ALL development work
+- **Tier 2**: Required before commits and pull requests
+- **Tier 3**: Only for integration tests and critical functionality changes
+
+---
+
+### 4.4 Detailed Task Breakdown
+
+#### Phase 1 Tasks
+
+**Task 1.1: Refactor ValidationService**
+
+1. Import `CONTENT_SCHEMAS` from ContentSchemas.ts
+2. Remove `validateBusinessRules()` method (business rules are in Zod schemas)
+3. Remove `validateComprehensive()` method (ContentCore orchestrates)
+4. Add `validate(content: unknown)` method using `CONTENT_SCHEMAS.AnyContent.safeParse()`
+5. Keep `validateMermaidContent()` as internal validator
+6. Update tests to validate with Zod schemas
+
+**Task 1.2: Test ValidationService**
+
+1. Unit tests for `validate()` with valid content (all types: lesson, quiz, etc.)
+2. Unit tests for `validate()` with invalid content (missing fields, wrong types)
+3. Unit tests for business rule violations (too few questions, sections, etc.)
+4. Integration tests for Mermaid validation
+5. Performance tests with TestSetup optimization
+
+---
+
+#### Phase 2 Tasks
+
+**Task 2.1: Refactor RepositoryService**
+
+1. Update `writeFormattedContent()` signature: `content: BaseContent | AnyContent`
+2. Add Prettier import and configuration resolution
+3. Format content with Prettier before write
+4. Remove any validation logic (ContentCore handles this)
+5. Update imports to use correct types (remove scaffolding.ts imports)
+
+**Task 2.2: Test RepositoryService**
+
+1. Unit tests for safety checks (scaffold/draft/final)
+2. Unit tests for Prettier formatting
+3. Integration tests for write operations
+4. Tests for `--force-overwrite` flag behavior
+
+**Task 2.3: Fix Type Duplication**
+
+1. Remove `ContentStatus` from scaffolding.ts (use types.ts canonical version)
+2. Unify `SafetyCheckResult` (move to types/scripts.ts)
+3. Rename `ScaffoldingStats` to `FileOperationStats`
+4. Update all imports across codebase
+
+---
+
+#### Phase 3 Tasks
+
+**Task 3.1: Create ContentCore**
+
+1. Create `src/lib/services/ContentCore.ts`
+2. Implement `ContentCoreAPI` interface
+3. Implement `processContent()` method (orchestrate validation → write)
+4. Implement `validateContent()` method (validation only)
+5. Add constructor dependency injection for ValidationService and RepositoryService
+
+**Task 3.2: Refactor CLIs**
+
+1. Update `generate-scaffold.ts` to use ContentCore
+2. Update `manage-content.ts` to use ContentCore
+3. Remove duplicate validation logic from CLIs
+4. Simplify CLIs to focus on user input parsing
+
+**Task 3.3: End-to-End Testing**
+
+1. Integration tests for template generation flow
+2. Integration tests for real content flow
+3. End-to-end tests for all CLI commands
+4. Performance benchmarks
+
+---
+
+## Summary
+
+This architecture provides:
+
+- **Unified Pipeline**: Single validation and write pipeline for all content modifications
+- **Layered Architecture**: Clear separation (CLI → ContentCore → Services → Storage)
+- **Type Safety**: BaseContent → AnyContent (discriminated union)
+- **Safety First**: Centralized safety strategy in RepositoryService
+- **Testability**: Independent testing of each layer with optimization patterns
+- **Maintainability**: Changes to validation/storage logic affect both template and real content flows identically
+
+**Next Steps**: Begin Phase 1 implementation (ValidationService refactoring).

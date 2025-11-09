@@ -1236,11 +1236,11 @@ export const SETTINGS: AppSettings = {
 				diverseTypes: true // Use diverse question types
 			},
 			exams: {
-				questions: 30, // Minimum 30 questions per exam
+				questions: 35, // Minimum 35 questions (schema requirement) per exam
 				diverseTypes: true // Use diverse question types
 			},
 			studyGuides: {
-				flipCards: 5 // Minimum 5 flashcards per study guide
+				flipCards: 10 // Minimum 10 flashcards (providing more than schema minimum of 6) per study guide
 			},
 			projects: {
 				sections: 5, // Minimum 5 sections per project

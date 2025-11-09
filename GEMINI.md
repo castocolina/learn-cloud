@@ -12,6 +12,8 @@ This file serves as a clear entry point for Gemini-based agents while avoiding d
 
 For complete agent implementation guidelines, project rules, and technical specifications, please refer to **[CLAUDE.md](CLAUDE.md)**.
 
+**Testing Infrastructure:** See **[docs/TESTING.md](docs/TESTING.md)** for comprehensive testing strategies, TestSetup patterns, and best practices.
+
 ## Platform-Specific Notes for Gemini
 
 - All conversational interactions **must be in English**

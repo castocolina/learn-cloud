@@ -29,6 +29,47 @@ import type {
 import type { FlipCard } from "./interactive.js";
 
 /**
+ * Question difficulty level (for individual questions in quizzes/exams)
+ * Separate from ContentDifficulty which is for lessons, projects, etc.
+ */
+export type QuestionDifficulty = "easy" | "medium" | "hard";
+
+/**
+ * Educational metadata interface - Mixin for all content types
+ *
+ * Provides consistent educational metadata across all content types.
+ * All content types (Lesson, Quiz, StudyGuide, Exam, Project) include
+ * these fields at root level for optimal navigation and search indexing.
+ *
+ * Design Decision: Root-level vs Nested
+ * - Root-level chosen for consistency with existing production content
+ * - Enables faster access patterns for search and navigation components
+ * - Matches FlipCard.education pattern (nested but separate semantic context)
+ */
+export interface EducationalContent {
+	/** Content difficulty level */
+	difficulty?: ContentDifficulty;
+
+	/** Estimated completion time in minutes */
+	estimatedTime?: number;
+
+	/** Content prerequisites */
+	prerequisites?: string[];
+
+	/** Learning objectives */
+	learningObjectives?: string[];
+
+	/** Content keywords for search indexing */
+	keywords?: string[];
+
+	/** Content tags for categorization */
+	tags?: string[];
+
+	/** Technology unit for styling and organization */
+	technologyUnit?: TechnologyUnit;
+}
+
+/**
  * Base content interface with common properties and lifecycle tracking
  *
  * All content types extend this interface to ensure consistent metadata
@@ -44,7 +85,7 @@ export interface BaseContent {
 	/** Content lifecycle status for maturity tracking */
 	status?: ContentStatus;
 
-	/** Unique content identifier */
+	/** Unique content identifier (required for all content) */
 	id?: string;
 
 	/** Unit this content belongs to */
@@ -53,17 +94,20 @@ export interface BaseContent {
 	/** Chapter or section number */
 	chapterNumber?: string;
 
-	/** Content creation metadata */
-	metadata?: ContentMetadata;
+	/** Navigation metadata (optional - only used for nav context) */
+	metadata?: NavigationMetadata;
 }
 
 /**
- * Content metadata interface for tracking and management
+ * Navigation metadata interface - Renamed from ContentMetadata
  *
- * Provides comprehensive metadata for content organization,
- * authoring, and lifecycle management.
+ * Contains ONLY navigation-related fields. Educational fields are now
+ * at root level via EducationalContent interface.
+ *
+ * This metadata is optional and used only when navigation context is needed
+ * (e.g., breadcrumbs, sidebar state). Most content relies on root-level fields.
  */
-export interface ContentMetadata {
+export interface NavigationMetadata {
 	/** Unique content identifier */
 	id: string;
 
@@ -75,24 +119,6 @@ export interface ContentMetadata {
 
 	/** Content type for renderer selection */
 	type: ChapterType;
-
-	/** Technology unit for styling and organization */
-	technologyUnit?: TechnologyUnit;
-
-	/** Content difficulty level */
-	difficulty?: ContentDifficulty;
-
-	/** Estimated completion time in minutes */
-	estimatedTime?: number;
-
-	/** Content prerequisites */
-	prerequisites?: string[];
-
-	/** Learning objectives */
-	learningObjectives?: string[];
-
-	/** Content tags for categorization */
-	tags?: string[];
 
 	/** Content creation and modification tracking */
 	timestamps?: {
@@ -110,6 +136,12 @@ export interface ContentMetadata {
 	/** Content language */
 	language?: string;
 }
+
+/**
+ * @deprecated Use NavigationMetadata instead
+ * Kept for backwards compatibility during migration
+ */
+export type ContentMetadata = NavigationMetadata;
 
 /**
  * Consolidated content section interface
@@ -199,7 +231,7 @@ export interface DiagramBlock {
  */
 export interface CalloutBlock {
 	type: "callout";
-	calloutType: "info" | "warning" | "danger" | "success" | "tip";
+	style: "info" | "warning" | "danger" | "success" | "tip";
 	title?: string;
 	content: RichParagraph;
 	id?: string;
@@ -258,34 +290,24 @@ export interface InteractiveBlock {
 /**
  * Lesson content interface
  */
-export interface LessonContent extends BaseContent {
+export interface LessonContent extends BaseContent, EducationalContent {
 	type: "lesson";
 	sections: ContentSection[];
-	prerequisites?: string[];
-	estimatedTime?: number;
-	learningObjectives?: string[];
-	difficulty?: ContentDifficulty;
-	technologyUnit?: TechnologyUnit;
 }
 
 /**
  * Overview content interface
  * Used for book overview and unit overview pages
  */
-export interface OverviewContent extends BaseContent {
+export interface OverviewContent extends BaseContent, EducationalContent {
 	type: "overview";
 	sections: ContentSection[];
-	prerequisites?: string[];
-	estimatedTime?: number;
-	learningObjectives?: string[];
-	difficulty?: ContentDifficulty;
-	technologyUnit?: TechnologyUnit;
 }
 
 /**
  * Quiz content interface
  */
-export interface QuizContent extends BaseContent {
+export interface QuizContent extends BaseContent, EducationalContent {
 	type: "quiz";
 	quiz: Quiz;
 	relatedLesson?: string;
@@ -295,35 +317,41 @@ export interface QuizContent extends BaseContent {
 /**
  * Study guide content interface
  */
-export interface StudyGuideContent extends BaseContent {
+export interface StudyGuideContent extends BaseContent, EducationalContent {
 	type: "study_guide";
-	studyGuide: StudyGuide;
+	flipCards: FlipCard[];
 	relatedLessons?: string[];
+	categories?: string[];
 }
 
 /**
  * Exam content interface
  */
-export interface ExamContent extends BaseContent {
+export interface ExamContent extends BaseContent, EducationalContent {
 	type: "exam";
 	exam: Exam;
 	duration?: number;
 	passingScore?: number;
-	prerequisites?: string[];
 }
 
 /**
  * Project content interface
  */
-export interface ProjectContent extends BaseContent {
+export interface ProjectContent extends BaseContent, EducationalContent {
 	type: "project";
 	sections: ContentSection[];
+	objectives: string[];
 	requirements: string[];
 	deliverables: string[];
 	estimatedHours: number;
-	difficulty?: ContentDifficulty;
 	technologies?: string[];
-	technologyUnit?: TechnologyUnit;
+	skillsRequired?: string[];
+	resources?: Array<{
+		type: "link" | "file" | "tool" | "documentation";
+		title: string;
+		url?: string;
+		description?: string;
+	}>;
 }
 
 /**
@@ -334,8 +362,9 @@ export interface Quiz {
 	passingScore: number;
 	timeLimit?: number;
 	questions: AnyQuestion[];
-	randomizeQuestions?: boolean;
+	shuffleQuestions?: boolean;
 	showResults?: boolean;
+	allowRetry?: boolean;
 }
 
 /**
@@ -347,19 +376,10 @@ export interface Exam {
 	passingScore: number;
 	timeLimit?: number;
 	questions: AnyQuestion[];
-	randomizeQuestions?: boolean;
+	shuffleQuestions?: boolean;
 	questionsToShow?: number;
 	showResults?: boolean;
-}
-
-/**
- * Study guide interface with flashcard system
- */
-export interface StudyGuide {
-	description?: string;
-	flipCards: FlipCard[];
-	categories?: string[];
-	randomizeCards?: boolean;
+	allowRetry?: boolean;
 }
 
 /**
@@ -372,7 +392,7 @@ export interface Question {
 	points?: number;
 	explanation?: string;
 	tags?: string[];
-	difficulty?: ContentDifficulty;
+	difficulty?: QuestionDifficulty;
 }
 
 /**
@@ -381,7 +401,7 @@ export interface Question {
 export interface SingleChoiceQuestion extends Question {
 	type: "single_choice";
 	options: string[];
-	correct: number;
+	correctAnswer: number;
 }
 
 /**
@@ -390,17 +410,17 @@ export interface SingleChoiceQuestion extends Question {
 export interface MultipleChoiceQuestion extends Question {
 	type: "multiple_choice";
 	options: string[];
-	correct: number[];
+	correctAnswers: number[];
 }
 
 /**
- * Code completion question with underscore patterns
+ * Code completion question with blanks
  */
 export interface CodeCompletionQuestion extends Question {
 	type: "code_completion";
-	codeSnippet: string;
+	language: string;
+	codeTemplate: string;
 	blanks: CodeBlank[];
-	correctAnswers: Record<string, string>;
 }
 
 /**
@@ -408,7 +428,9 @@ export interface CodeCompletionQuestion extends Question {
  */
 export interface CodeBlank {
 	id: string;
-	options: string[];
+	expectedAnswer: string;
+	hint?: string;
+	alternatives?: string[];
 }
 
 /**
@@ -416,7 +438,7 @@ export interface CodeBlank {
  */
 export interface TrueFalseQuestion extends Question {
 	type: "true_false";
-	correct: boolean;
+	correctAnswer: boolean;
 }
 
 /**
@@ -429,7 +451,7 @@ export interface ShortAnswerQuestion extends Question {
 }
 
 /**
- * Drag and drop question with matching items to targets
+ * Drag and drop question with categorization
  */
 export interface DragAndDropQuestion extends Question {
 	/** Question type discriminator */
@@ -442,17 +464,11 @@ export interface DragAndDropQuestion extends Question {
 		category: string;
 	}>;
 
-	/** Drop targets */
-	targets: Array<{
+	/** Categories for drag and drop */
+	categories: Array<{
 		id: string;
-		label: string;
-		acceptsItems: string[]; // Array of item IDs that belong in this target
-	}>;
-
-	/** Correct matches between items and targets */
-	correctMatches: Array<{
-		itemId: string;
-		targetId: string;
+		title: string;
+		description?: string;
 	}>;
 }
 

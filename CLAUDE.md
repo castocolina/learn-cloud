@@ -8,6 +8,7 @@
 >   - [SVELTE-COMPONENTS.md](docs/SVELTE-COMPONENTS.md) - Component development
 >   - [SVELTE-DEVELOPMENT.md](docs/SVELTE-DEVELOPMENT.md) - Development patterns
 >   - [SVELTE-TROUBLESHOOTING-UX.md](docs/SVELTE-TROUBLESHOOTING-UX.md) - Troubleshooting & UX
+>   - **[TESTING.md](docs/TESTING.md)** - Testing strategies, best practices, and infrastructure
 > - **[CONTENT-STANDARDS.md](CONTENT-STANDARDS.md)** - Content creation workflows and quality assurance standards
 
 ---

@@ -1,30 +1,25 @@
 /**
  * ValidationService
  *
- * Comprehensive validation service that integrates Zod schema validation
- * with Mermaid diagram validation and business rule enforcement.
+ * Generic validation service that validates content using Zod schemas
+ * and Mermaid diagram validation.
  *
  * Features:
- * - Type-safe validation using Zod schemas
- * - Integration with existing Mermaid validator
- * - Business rule enforcement for content generation
- * - Performance optimization with selective validation
+ * - Runtime content validation using Zod discriminated unions
+ * - Integration with MermaidValidator for diagram validation
+ * - Business rules encoded in Zod schemas (no hardcoded logic)
  * - Centralized validation logic for all content types
  */
 
-import { z } from "zod";
-import type { ValidatedScaffoldingArgs } from "$types/scaffolding";
-import type { ValidationConfig, ValidationResult } from "$types/scripts";
-import { CONTENT_SCHEMAS } from "$lib/schemas/ContentSchemas.js";
-import { SETTINGS } from "../../config/settings.js";
+import type { ValidationConfig, SchemaValidationResult } from "$types/scripts";
 import { MermaidValidator } from "$lib/utils/mermaid-validator.js";
+import { CONTENT_SCHEMAS } from "$lib/schemas/ContentSchemas.js";
 
 /**
  * Comprehensive ValidationService class
  */
 export class ValidationService {
 	private config: ValidationConfig;
-	private schemas: Map<string, z.ZodType> = new Map();
 	private mermaidValidator: MermaidValidator;
 
 	constructor(config?: Partial<ValidationConfig>) {
@@ -43,47 +38,65 @@ export class ValidationService {
 			validationTimeout: 30000,
 			enableErrorCategorization: true
 		});
-
-		this.initializeSchemas();
 	}
 
 	/**
-	 * Initialize Zod schemas using centralized CONTENT_SCHEMAS
+	 * Primary validation method using Zod schemas + Mermaid validation
+	 *
+	 * This is the main entry point for content validation. It:
+	 * 1. Validates content structure using Zod discriminated union (CONTENT_SCHEMAS.AnyContent)
+	 * 2. Validates Mermaid diagrams within the content (if any)
+	 * 3. Returns combined validation result
+	 *
+	 * Business rules are enforced via Zod schemas (e.g., .min(10) for quiz questions)
+	 *
+	 * @param content - Unknown content object to validate
+	 * @returns ValidationResult with success flag, errors, warnings, and validated data
 	 */
-	private initializeSchemas(): void {
-		// Register centralized schemas
-		this.schemas.set("scaffoldingArgs", CONTENT_SCHEMAS.ScaffoldingArgs);
-		this.schemas.set("safetyCheck", CONTENT_SCHEMAS.SafetyCheckResult);
-		this.schemas.set("contentGeneration", CONTENT_SCHEMAS.ContentGenerationResult);
-		this.schemas.set("validationConfig", CONTENT_SCHEMAS.ValidationConfig);
-		this.schemas.set("repositoryConfig", CONTENT_SCHEMAS.RepositoryConfig);
-	}
+	async validate(content: unknown): Promise<SchemaValidationResult> {
+		try {
+			// 1. Validate content structure and business rules with Zod
+			const schemaResult = CONTENT_SCHEMAS.AnyContent.safeParse(content);
 
-	/**
-	 * Validate scaffolding arguments
-	 */
-	async validateScaffoldingArgs(args: unknown): Promise<ValidationResult> {
-		return this.validateWithSchema("scaffoldingArgs", args);
-	}
+			if (!schemaResult.success) {
+				const errors = schemaResult.error.issues.map((err) => {
+					const path = err.path.length > 0 ? `${err.path.join(".")}: ` : "";
+					return `${path}${err.message}`;
+				});
 
-	/**
-	 * Validate content generation result
-	 */
-	async validateContentGeneration(result: unknown): Promise<ValidationResult> {
-		return this.validateWithSchema("contentGeneration", result);
-	}
+				return {
+					success: false,
+					errors,
+					warnings: []
+				};
+			}
 
-	/**
-	 * Validate safety check result
-	 */
-	async validateSafetyCheck(result: unknown): Promise<ValidationResult> {
-		return this.validateWithSchema("safetyCheck", result);
+			// 2. Validate Mermaid diagrams (if content has diagrams)
+			const mermaidResult = await this.validateMermaidContent(JSON.stringify(schemaResult.data));
+
+			// 3. Combine results
+			return {
+				success: mermaidResult.success,
+				errors: mermaidResult.errors,
+				warnings: mermaidResult.warnings,
+				validatedData: schemaResult.data
+			};
+		} catch (error) {
+			return {
+				success: false,
+				errors: [`Validation failed: ${error instanceof Error ? error.message : String(error)}`],
+				warnings: []
+			};
+		}
 	}
 
 	/**
 	 * Validate Mermaid diagrams in content using centralized MermaidValidator
+	 *
+	 * This is an internal method used by validate(). It extracts Mermaid diagrams
+	 * from content and validates their syntax.
 	 */
-	async validateMermaidContent(content: string): Promise<ValidationResult> {
+	async validateMermaidContent(content: string): Promise<SchemaValidationResult> {
 		if (!this.config.enableMermaidValidation) {
 			return { success: true, errors: [], warnings: [] };
 		}
@@ -142,173 +155,6 @@ export class ValidationService {
 		}
 	}
 
-	// validateSingleMermaidDiagram method removed - now using centralized MermaidValidator utility
-
-	/**
-	 * Validate business rules for content generation
-	 */
-	async validateBusinessRules(args: ValidatedScaffoldingArgs): Promise<ValidationResult> {
-		if (!this.config.enableBusinessRules) {
-			return { success: true, errors: [], warnings: [] };
-		}
-
-		const errors: string[] = [];
-		const warnings: string[] = [];
-
-		try {
-			// Validate against configuration requirements
-			const scaffoldingConfig = SETTINGS.scripts.scaffolding;
-
-			// Check if the content type has specific requirements
-			switch (args.type) {
-				case "lesson":
-					if (scaffoldingConfig.lessons.sections < 1) {
-						warnings.push("Lesson configuration specifies no sections");
-					}
-					if (scaffoldingConfig.lessons.codeBlocks < 1) {
-						warnings.push("Lesson configuration specifies no code blocks");
-					}
-					break;
-
-				case "quiz":
-					if (scaffoldingConfig.quizzes.questions < 1) {
-						errors.push("Quiz configuration specifies no questions");
-					}
-					break;
-
-				case "exam":
-					if (scaffoldingConfig.exams.questions < 1) {
-						errors.push("Exam configuration specifies no questions");
-					}
-					break;
-
-				case "study_guide":
-					if (scaffoldingConfig.studyGuides.flipCards < 1) {
-						warnings.push("Study guide configuration specifies no flashcards");
-					}
-					break;
-
-				case "project":
-					if (scaffoldingConfig.projects.sections < 1) {
-						warnings.push("Project configuration specifies no sections");
-					}
-					break;
-			}
-
-			// Validate unit and ID format
-			if (args.unit) {
-				const unitValue =
-					args.unit.type === "numeric" ? args.unit.value.toString() : args.unit.value;
-				if (typeof unitValue === "string" && !/^[\w-]+$/.test(unitValue)) {
-					errors.push(
-						"Unit name must contain only alphanumeric characters, hyphens, and underscores"
-					);
-				}
-			}
-
-			if (args.id && !/^[\w-]+$/.test(args.id)) {
-				errors.push("ID must contain only alphanumeric characters, hyphens, and underscores");
-			}
-
-			return {
-				success: errors.length === 0,
-				errors,
-				warnings
-			};
-		} catch (error) {
-			return {
-				success: false,
-				errors: [
-					`Business rule validation failed: ${error instanceof Error ? error.message : String(error)}`
-				],
-				warnings
-			};
-		}
-	}
-
-	/**
-	 * Comprehensive validation combining all validation types
-	 */
-	async validateComprehensive(
-		args: ValidatedScaffoldingArgs,
-		content?: string
-	): Promise<ValidationResult> {
-		const results: ValidationResult[] = [];
-
-		// Type validation
-		if (this.config.enableTypeValidation) {
-			results.push(await this.validateScaffoldingArgs(args));
-		}
-
-		// Business rules validation
-		if (this.config.enableBusinessRules) {
-			results.push(await this.validateBusinessRules(args));
-		}
-
-		// Mermaid validation (if content provided)
-		if (content && this.config.enableMermaidValidation) {
-			results.push(await this.validateMermaidContent(content));
-		}
-
-		// Combine results
-		const combinedErrors: string[] = [];
-		const combinedWarnings: string[] = [];
-		let overallSuccess = true;
-
-		for (const result of results) {
-			if (!result.success) {
-				overallSuccess = false;
-			}
-			combinedErrors.push(...result.errors);
-			combinedWarnings.push(...result.warnings);
-		}
-
-		return {
-			success: overallSuccess,
-			errors: combinedErrors,
-			warnings: combinedWarnings,
-			validatedData: args
-		};
-	}
-
-	/**
-	 * Validate using a specific schema
-	 */
-	private async validateWithSchema(schemaName: string, data: unknown): Promise<ValidationResult> {
-		const schema = this.schemas.get(schemaName);
-		if (!schema) {
-			return {
-				success: false,
-				errors: [`Schema '${schemaName}' not found`],
-				warnings: []
-			};
-		}
-
-		try {
-			const validatedData = schema.parse(data);
-			return {
-				success: true,
-				errors: [],
-				warnings: [],
-				validatedData
-			};
-		} catch (error) {
-			if (error instanceof z.ZodError) {
-				return {
-					success: false,
-					errors: error.issues.map((err) => `${err.path.join(".")}: ${err.message}`),
-					warnings: []
-				};
-			}
-
-			return {
-				success: false,
-				errors: [`Validation failed: ${error instanceof Error ? error.message : String(error)}`],
-				warnings: []
-			};
-		}
-	}
-
 	/**
 	 * Update validation configuration
 	 */
@@ -321,30 +167,6 @@ export class ValidationService {
 	 */
 	getConfig(): ValidationConfig {
 		return { ...this.config };
-	}
-
-	/**
-	 * Register a custom schema
-	 */
-	registerSchema(name: string, schema: z.ZodType): void {
-		this.schemas.set(name, schema);
-	}
-
-	/**
-	 * Performance-optimized validation for testing
-	 */
-	async validateForTesting(args: ValidatedScaffoldingArgs): Promise<ValidationResult> {
-		if (this.config.skipValidationInTests) {
-			return {
-				success: true,
-				errors: [],
-				warnings: ["Validation skipped in test environment"],
-				validatedData: args
-			};
-		}
-
-		// Run only essential validations for testing
-		return this.validateWithSchema("scaffoldingArgs", args);
 	}
 }
 

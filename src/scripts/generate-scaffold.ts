@@ -26,6 +26,7 @@ import { readFileSync, existsSync, readdirSync, statSync } from "fs";
 import { join } from "path";
 import { TemplateGenerator } from "../lib/utils/template-generator.js";
 import { isValidChapterType } from "../lib/utils/content-type-utils.js";
+import { ContentCore } from "../lib/services/ContentCore.js";
 import { SETTINGS } from "$config/settings.js";
 import type {
 	ChapterType,
@@ -34,9 +35,9 @@ import type {
 	ValidatedScaffoldingArgs,
 	UnitIdentification,
 	MenuStructure,
-	MenuUnit
+	MenuUnit,
+	FileOperationStats
 } from "$types";
-import type { ScaffoldingStats } from "$types/scaffolding";
 
 // ============================================================================
 // SCAFFOLDING LOGIC CLASS
@@ -51,6 +52,15 @@ import type { ScaffoldingStats } from "$types/scaffolding";
 export class ScaffoldingLogic {
 	private templateGenerator: TemplateGenerator;
 	private config = SETTINGS.scripts.scaffolding;
+
+	/**
+	 * Special system files that should not be considered orphans
+	 * These files exist outside the content-menu.ts structure but are intentional
+	 */
+	private specialSystemFiles = [
+		"src/data/book/overview.ts", // Main book overview (not a unit overview)
+		"src/data/book/index.ts" // Barrel export file (if it exists)
+	];
 
 	constructor() {
 		this.templateGenerator = new TemplateGenerator();
@@ -152,6 +162,28 @@ export class ScaffoldingLogic {
 			// Normalize unit identification
 			const unitIdentification = this.normalizeUnitIdentification(args.unit);
 
+			// Validate unit exists in content menu
+			if (unitIdentification) {
+				const contentMenu = await this.loadContentMenu();
+				if (contentMenu) {
+					const unitExists = contentMenu.units.some((u) =>
+						unitIdentification.type === "numeric"
+							? u.unitNumber === unitIdentification.value
+							: u.technologyUnit === unitIdentification.value ||
+								u.id.includes(String(unitIdentification.value))
+					);
+
+					if (!unitExists) {
+						const availableUnits = contentMenu.units
+							.map((u) => `${u.unitNumber} - ${u.title}`)
+							.join("\n   • ");
+						console.error(`❌ Unit not found: ${args.unit}`);
+						console.error(`\n💡 Available units:\n   • ${availableUnits}\n`);
+						return null;
+					}
+				}
+			}
+
 			// Build validated args
 			const validatedArgs: ValidatedScaffoldingArgs = {
 				unit: unitIdentification,
@@ -159,10 +191,15 @@ export class ScaffoldingLogic {
 				id: args.id ? this.normalizeId(args.id) : undefined
 			};
 
-			// Basic validation
-			if (validatedArgs.id && !/^[\w-]+$/.test(validatedArgs.id)) {
-				console.error("❌ ID must contain only alphanumeric characters, hyphens, and underscores");
-				return null;
+			// Validate ID format after normalization
+			if (validatedArgs.id) {
+				// Expected format: XX_YY or XX_YY[SUFFIX] where SUFFIX is uppercase letters
+				const validIdPattern = /^\d{2}_\d{2}[A-Z]*$/;
+				if (!validIdPattern.test(validatedArgs.id)) {
+					console.error(`❌ Invalid ID format: ${args.id} (normalized to: ${validatedArgs.id})`);
+					console.error(`💡 Expected formats: 1.5, 01_05, 1.5L, 01_05L, 1_5, etc.`);
+					return null;
+				}
 			}
 
 			return validatedArgs;
@@ -192,29 +229,43 @@ export class ScaffoldingLogic {
 
 	/**
 	 * Normalize chapter ID format
+	 * Handles various formats: 1.5 -> 01_05, 1.5L -> 01_05L, 1_5 -> 01_05, 01_05L -> 01_05L
 	 */
 	private normalizeId(idInput: string): string {
-		// Convert various formats to XX_YY format
+		// Convert various formats to XX_YY[SUFFIX] format
 		const cleanInput = idInput.trim();
 
-		// Already in correct format
-		if (/^\d{2}_\d{2}$/.test(cleanInput)) {
-			return cleanInput;
+		// Extract suffix if present (L, SG, Q, etc.)
+		const suffixMatch = cleanInput.match(/^(.+?)([A-Z]+)$/);
+		const suffix = suffixMatch ? suffixMatch[2] : "";
+		const numericPart = suffixMatch ? suffixMatch[1] : cleanInput;
+
+		// Already in correct format (01_05 or 01_05 with suffix removed)
+		if (/^\d{2}_\d{2}$/.test(numericPart)) {
+			return numericPart + suffix;
 		}
 
-		// Handle dot notation (1.1 -> 01_01)
-		const dotMatch = cleanInput.match(/^(\d+)\.(\d+)$/);
+		// Handle dot notation (1.5 -> 01_05)
+		const dotMatch = numericPart.match(/^(\d+)\.(\d+)$/);
 		if (dotMatch) {
 			const unit = dotMatch[1].padStart(2, "0");
 			const chapter = dotMatch[2].padStart(2, "0");
-			return `${unit}_${chapter}`;
+			return `${unit}_${chapter}${suffix}`;
+		}
+
+		// Handle underscore without padding (1_5 -> 01_05)
+		const underscoreMatch = numericPart.match(/^(\d+)_(\d+)$/);
+		if (underscoreMatch) {
+			const unit = underscoreMatch[1].padStart(2, "0");
+			const chapter = underscoreMatch[2].padStart(2, "0");
+			return `${unit}_${chapter}${suffix}`;
 		}
 
 		// Handle single number (1 -> 01_01)
-		const singleMatch = cleanInput.match(/^(\d+)$/);
+		const singleMatch = numericPart.match(/^(\d+)$/);
 		if (singleMatch) {
 			const unit = singleMatch[1].padStart(2, "0");
-			return `${unit}_01`;
+			return `${unit}_01${suffix}`;
 		}
 
 		// Return as-is if no pattern matches
@@ -287,7 +338,23 @@ export class ScaffoldingLogic {
 			let chaptersToProcess = unit.chapters || [];
 
 			if (args.id) {
-				chaptersToProcess = chaptersToProcess.filter((chapter) => chapter.id === args.id);
+				// Filter by exact match OR prefix match
+				// Examples:
+				// - --id=01_05 matches 01_05L, 01_05SG, 01_05Q (prefix)
+				// - --id=01_05L matches only 01_05L (exact)
+				chaptersToProcess = chaptersToProcess.filter((chapter) => {
+					// Exact match
+					if (chapter.id === args.id) return true;
+					// Prefix match (allows matching all types for a chapter)
+					if (chapter.id.startsWith(args.id!)) return true;
+					return false;
+				});
+
+				// Log matched IDs for debugging
+				if (chaptersToProcess.length > 0) {
+					const matchedIds = chaptersToProcess.map((ch) => ch.id).join(", ");
+					console.log(`   ✓ Matched chapter IDs: ${matchedIds}`);
+				}
 			}
 
 			if (args.type) {
@@ -412,8 +479,11 @@ export class ScaffoldingLogic {
 								}
 							}
 
+							// Check if file is in official structure or is a special system file
 							const isOfficial = officialFiles.some((f) => f.relativePath === relativePath);
-							if (!isOfficial) {
+							const isSpecialFile = this.specialSystemFiles.includes(relativePath);
+
+							if (!isOfficial && !isSpecialFile) {
 								orphanFiles.push(relativePath);
 							}
 						}
@@ -589,8 +659,8 @@ export class ScaffoldingLogic {
 	/**
 	 * Print scaffolding statistics
 	 */
-	printScaffoldingStats(
-		stats: ScaffoldingStats & {
+	printFileOperationStats(
+		stats: FileOperationStats & {
 			existingOfficialFiles?: number;
 			newOfficialFiles?: number;
 			orphanFilesDetected?: string[];
@@ -666,7 +736,8 @@ export class ScaffoldCLI {
 		this.program
 			.name("scaffold-generator")
 			.description("Specialized CLI for generating placeholder content using templates")
-			.version(this.version);
+			.version(this.version)
+			.allowUnknownOption(false); // Reject unknown options
 
 		// Global options
 		this.program
@@ -770,7 +841,47 @@ export class ScaffoldCLI {
 			}
 
 			if (officialFiles.length === 0) {
+				console.log("");
 				console.log("ℹ️  No files found in official structure matching the criteria");
+				console.log("");
+				console.log("🔍 Applied filters:");
+
+				if (validatedArgs.unit) {
+					const unitDisplay =
+						validatedArgs.unit.type === "numeric"
+							? `Unit ${validatedArgs.unit.value}`
+							: validatedArgs.unit.value;
+					console.log(`   • Unit: ${unitDisplay}`);
+				}
+				if (validatedArgs.type) {
+					console.log(`   • Type: ${validatedArgs.type}`);
+				}
+				if (validatedArgs.id) {
+					console.log(`   • ID: ${validatedArgs.id}`);
+				}
+
+				// Suggest similar IDs from content menu
+				const contentMenu = await this.scaffoldingLogic.loadContentMenu();
+				if (contentMenu && validatedArgs.id) {
+					const allIds = contentMenu.units.flatMap(
+						(unit) => unit.chapters?.map((ch) => ch.id) || []
+					);
+
+					// Extract numeric part for similarity matching
+					const numericPart = validatedArgs.id.replace(/\D/g, "");
+					const similarIds = allIds.filter((id) => id.includes(numericPart)).slice(0, 5);
+
+					if (similarIds.length > 0) {
+						console.log("");
+						console.log("💡 Similar IDs found in structure:");
+						similarIds.forEach((id) => console.log(`   • ${id}`));
+					}
+				}
+
+				console.log("");
+				console.log("💡 Tip: Use --dry-run without filters to see all available content");
+				console.log("");
+
 				return {
 					success: true
 				};
@@ -813,7 +924,7 @@ export class ScaffoldCLI {
 			if (result.success) {
 				console.log("✅ Content scaffolding completed successfully");
 				if (result.stats) {
-					this.scaffoldingLogic.printScaffoldingStats(result.stats);
+					this.scaffoldingLogic.printFileOperationStats(result.stats);
 				}
 			} else {
 				console.error("❌ Content scaffolding failed");
@@ -852,7 +963,7 @@ export class ScaffoldCLI {
 		}
 	): Promise<{
 		success: boolean;
-		stats: ScaffoldingStats & {
+		stats: FileOperationStats & {
 			existingOfficialFiles: number;
 			newOfficialFiles: number;
 			orphanFilesDetected: string[];
@@ -889,8 +1000,7 @@ export class ScaffoldCLI {
 
 		console.log(`🔄 Generating ${filesToGenerate.length} missing file(s)...`);
 
-		// Import ContentCore dynamically to avoid circular dependencies
-		const { ContentCore } = await import("./manage-content.js");
+		// Use ContentCore service for validation and persistence
 		const contentCore = new ContentCore();
 
 		for (const file of filesToGenerate) {

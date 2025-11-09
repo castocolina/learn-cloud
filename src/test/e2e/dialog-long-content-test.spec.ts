@@ -3,7 +3,7 @@ import { test } from "@playwright/test";
 test("Dialog long content overflow test", async ({ page }) => {
 	// Test at narrow viewport
 	await page.setViewportSize({ width: 600, height: 900 });
-	await page.goto("http://localhost:5173/showcase/dialog");
+	await page.goto("/showcase/dialog");
 	await page.waitForLoadState("networkidle");
 
 	console.log("\n=== TESTING LONG CONTENT DIALOG ===\n");

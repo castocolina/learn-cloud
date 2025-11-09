@@ -29,7 +29,7 @@
 	 * />
 	 * ```
 	 */
-	import { onMount } from "svelte";
+	import { onMount, onDestroy } from "svelte";
 	// eslint-disable-next-line import/default, import/no-named-as-default, import/no-named-as-default-member
 	import mermaid from "mermaid";
 	import {
@@ -227,21 +227,6 @@
 				statePersistenceScope: persistenceScope
 			});
 
-			// Load persisted state if enabled
-			if (statePersistenceEnabled) {
-				const savedState = loadDiagramState(persistenceKey);
-				if (savedState) {
-					zoomLevel = savedState.zoomLevel;
-					panOffset = savedState.panOffset;
-
-					if (debug || mermaidSettings.debug) {
-						console.info(
-							`[MermaidDiagram] Restored state: zoom=${savedState.zoomLevel}%, pan=(${savedState.panOffset.x}, ${savedState.panOffset.y})`
-						);
-					}
-				}
-			}
-
 			// Initialize Mermaid with settings
 			// Production: Only fatal errors (suppress warnings/logs for mobile performance)
 			// Development: Full debug mode for troubleshooting
@@ -259,6 +244,22 @@
 			});
 
 			await renderDiagram();
+
+			// Load persisted state AFTER rendering completes and BEFORE isLoading=false
+			// This ensures $effect auto-save can properly track restored values
+			if (statePersistenceEnabled) {
+				const savedState = loadDiagramState(persistenceKey);
+				if (savedState) {
+					zoomLevel = savedState.zoomLevel;
+					panOffset = savedState.panOffset;
+
+					if (debug || mermaidSettings.debug) {
+						console.info(
+							`[MermaidDiagram] Restored state: zoom=${savedState.zoomLevel}%, pan=(${savedState.panOffset.x}, ${savedState.panOffset.y})`
+						);
+					}
+				}
+			}
 		} catch (error) {
 			const errorMsg = error instanceof Error ? error.message : "Unknown error";
 			console.error(`[MermaidDiagram] Initialization failed: ${errorMsg}`);
@@ -269,9 +270,28 @@
 	});
 
 	/**
+	 * Flush pending state save before component unmounts
+	 * This ensures state is saved even if navigation happens before debounce completes
+	 */
+	onDestroy(() => {
+		// Clear pending timeout
+		clearTimeout(saveTimeout);
+
+		// Immediately save current state if persistence is enabled
+		// Note: We don't check isLoading because we want to save even during unmount
+		if (statePersistenceEnabled && persistenceKey) {
+			saveDiagramState(persistenceKey, {
+				zoomLevel,
+				panOffset
+			});
+		}
+	});
+
+	/**
 	 * Auto-save state on zoom/pan changes (debounced 1s)
 	 * Uses $effect for reactive tracking of zoomLevel and panOffset
 	 */
+
 	let saveTimeout: ReturnType<typeof setTimeout> | undefined;
 
 	$effect(() => {

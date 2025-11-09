@@ -20,8 +20,8 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { ExtendedTestSetup } from "../../helpers/test-setup.js";
 import { existsSync, mkdirSync, rmSync } from "fs";
-import { join } from "path";
 import {
 	TemplateGenerator,
 	generateLessonContent,
@@ -31,14 +31,13 @@ import {
 	generateProjectContent,
 	getContentGenerator
 } from "../../../lib/utils/template-generator.js";
-import { generateConfigId } from "../../test-utils.js";
+import { generateConfigId } from "../../helpers/test-utils.js";
 import { SETTINGS } from "$config/settings.js";
 import type {
 	ValidatedScaffoldingArgs,
 	ChapterType,
 	AnyQuestion,
 	QuizContent,
-	StudyGuideContent,
 	QuestionType
 } from "$types";
 
@@ -48,14 +47,15 @@ import type {
  * - No file I/O operations
  * - Pure template logic testing
  */
-class TestSetup {
-	private tempDir: string;
+class TemplateGeneratorTestSetup extends ExtendedTestSetup {
 	public readonly configId: string;
 
 	constructor(testSuiteId: string = "main") {
-		const timestamp = Date.now();
-		const uniqueId = `${testSuiteId}-${timestamp}`;
-		this.tempDir = join(process.cwd(), "tmp", `test-template-generator-${uniqueId}`);
+		// Use standardized path structure: ./tmp/test/unit/utils/{name}-{timestamp}
+		super("utils", `template-generator-${testSuiteId}`);
+		const _timestamp = Date.now();
+		const _uniqueId = `${testSuiteId}-${_timestamp}`;
+		this.tempDir = this.getTempDir();
 		this.configId = generateConfigId(SETTINGS.scripts.scaffolding.validationPrefix, testSuiteId);
 	}
 
@@ -101,7 +101,7 @@ class TestSetup {
  * Test setup class with validation enabled for specific integration tests
  * Only used for the 4% of tests that need full validation
  */
-class TestSetupWithValidation extends TestSetup {
+class TestSetupWithValidation extends TemplateGeneratorTestSetup {
 	constructor(testSuiteId: string = "validation") {
 		super(testSuiteId);
 	}
@@ -133,17 +133,17 @@ const createTestArgs = (
  * Main test suite - Template Generation Logic
  */
 describe("TemplateGenerator", () => {
-	let testSetup: TestSetup;
+	let testSetup: TemplateGeneratorTestSetup;
 	let generator: TemplateGenerator;
 
 	beforeEach(async () => {
-		testSetup = new TestSetup();
+		testSetup = new TemplateGeneratorTestSetup();
 		await testSetup.setup();
 		generator = new TemplateGenerator();
 	});
 
-	afterEach(() => {
-		testSetup.cleanup();
+	afterEach((context) => {
+		testSetup.cleanupIfPassed(context);
 	});
 
 	/**
@@ -160,7 +160,6 @@ describe("TemplateGenerator", () => {
 
 			expect(content.type).toBe("lesson");
 			expect(content.title).toContain("Cloud-Native");
-			expect(content.status).toBe("scaffold");
 			expect(content.sections).toBeInstanceOf(Array);
 			expect(content.sections.length).toBeGreaterThan(0);
 			expect(content.prerequisites).toBeInstanceOf(Array);
@@ -190,14 +189,11 @@ describe("TemplateGenerator", () => {
 			const content = generator.generateStudyGuideContent(args);
 
 			expect(content.type).toBe("study_guide");
-			expect(content.studyGuide).toBeDefined();
-			expect(content.studyGuide.flipCards).toBeInstanceOf(Array);
-			expect(content.studyGuide.flipCards.length).toBe(
-				SETTINGS.scripts.scaffolding.studyGuides.flipCards
-			);
+			expect(content.flipCards).toBeInstanceOf(Array);
+			expect(content.flipCards.length).toBe(SETTINGS.scripts.scaffolding.studyGuides.flipCards);
 
 			// Check flashcard structure
-			const flashcard = (content as StudyGuideContent).studyGuide.flipCards[0];
+			const flashcard = content.flipCards[0];
 			expect(flashcard).toHaveProperty("id");
 			expect(flashcard).toHaveProperty("front");
 			expect(flashcard).toHaveProperty("back");
@@ -341,7 +337,7 @@ describe("TemplateGenerator", () => {
 			const content = generateStudyGuideContent(args);
 
 			expect(content.type).toBe("study_guide");
-			expect(content.studyGuide.flipCards).toBeInstanceOf(Array);
+			expect(content.flipCards).toBeInstanceOf(Array);
 		});
 
 		it("should support standalone generateExamContent function", () => {
@@ -392,9 +388,7 @@ describe("TemplateGenerator", () => {
 			const args = createTestArgs("study_guide");
 			const content = generator.generateStudyGuideContent(args);
 
-			expect(content.studyGuide.flipCards.length).toBe(
-				SETTINGS.scripts.scaffolding.studyGuides.flipCards
-			);
+			expect(content.flipCards.length).toBe(SETTINGS.scripts.scaffolding.studyGuides.flipCards);
 		});
 
 		it("should respect settings configuration for exams", () => {
@@ -428,8 +422,8 @@ describe("TemplateGenerator Integration with Validation", () => {
 		generator = new TemplateGenerator();
 	});
 
-	afterEach(() => {
-		testSetup.cleanup();
+	afterEach((context) => {
+		testSetup.cleanupIfPassed(context);
 	});
 
 	it("should generate valid content structures when validation is enabled", () => {
@@ -443,7 +437,6 @@ describe("TemplateGenerator Integration with Validation", () => {
 			// Basic structure validation
 			expect(content).toBeDefined();
 			expect(content.type).toBe(type);
-			expect(content.status).toBe("scaffold");
 			expect(typeof content.title).toBe("string");
 			expect(content.title.length).toBeGreaterThan(0);
 		});

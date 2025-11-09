@@ -24,8 +24,9 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync } from "fs";
 import { join } from "path";
 import { MarkdownContentGenerator } from "../../scripts/generate-menu.js";
-import { generateConfigId } from "../test-utils.js";
+import { generateConfigId } from "../helpers/test-utils.js";
 import { SETTINGS } from "$config/settings.js";
+import { ExtendedTestSetup } from "../helpers/test-setup.js";
 const { contentMenu: contentMenuSettings } = SETTINGS.scripts;
 
 // Simplified approach for testing - using any to avoid complex type redeclarations
@@ -34,31 +35,36 @@ import type { UnifiedPathConfig } from "$types";
 
 /**
  * Test setup class for test isolation and dynamic configuration
+ * Extends ExtendedTestSetup to use standardized conditional cleanup
  */
-class TestSetup {
-	public tempDir: string;
+class MenuTestSetup extends ExtendedTestSetup {
 	public testContentDir: string;
 	public testOutputDir: string;
 	public readonly configId: string;
 	public contentMdPath: string;
 	public outputPath: string;
+	private originalValidationSetting: boolean;
 
 	constructor(testSuiteId: string = "main") {
-		const timestamp = Date.now();
-		const uniqueId = `${testSuiteId}-${timestamp}`;
-		this.tempDir = join(process.cwd(), "tmp", `test-content-menu-${uniqueId}`);
-		this.testContentDir = this.tempDir;
-		this.testOutputDir = join(this.tempDir, "output");
+		// Use standardized path structure: ./tmp/test/unit/scripts/{name}-{timestamp}
+		super("scripts", `menu-${testSuiteId}`);
+		this.testContentDir = this.getTempDir();
+		this.testOutputDir = join(this.getTempDir(), "output");
 		this.configId = generateConfigId(contentMenuSettings.validationPrefix, testSuiteId);
 		this.contentMdPath = join(this.testContentDir, "CONTENT.md");
 		this.outputPath = join(this.testOutputDir, "content-menu.ts");
+
+		// Save original validation setting
+		this.originalValidationSetting = (
+			SETTINGS.scripts.validation.generated as { runAfterGeneration: boolean }
+		).runAfterGeneration;
 	}
 
 	async setup(): Promise<void> {
-		// Create temp directories
-		if (!existsSync(this.tempDir)) {
-			mkdirSync(this.tempDir, { recursive: true });
-		}
+		// Call parent setup to create base temp directory
+		super.setup();
+
+		// Create output directory
 		if (!existsSync(this.testOutputDir)) {
 			mkdirSync(this.testOutputDir, { recursive: true });
 		}
@@ -80,21 +86,23 @@ class TestSetup {
 			false;
 	}
 
-	cleanup(): void {
+	/**
+	 * Override cleanup to restore validation settings before cleanup
+	 */
+	cleanup(testPassed: boolean): void {
 		// Restore original validation setting
 		(SETTINGS.scripts.validation.generated as { runAfterGeneration: boolean }).runAfterGeneration =
-			true;
+			this.originalValidationSetting;
 
-		if (existsSync(this.tempDir)) {
-			rmSync(this.tempDir, { recursive: true, force: true });
-		}
+		// Call parent cleanup for conditional file removal
+		super.cleanup(testPassed);
 	}
 }
 
 /**
  * Test setup class with validation enabled for integration tests
  */
-class TestSetupWithValidation extends TestSetup {
+class TestSetupWithValidation extends MenuTestSetup {
 	constructor(testSuiteId: string = "validation") {
 		super(testSuiteId);
 	}
@@ -174,11 +182,11 @@ and complex formatting.
 `;
 
 describe("MarkdownContentGenerator", () => {
-	let testSetup: TestSetup;
+	let testSetup: MenuTestSetup;
 	let generator: any; // Simplified approach for testing private methods
 
 	beforeEach(async () => {
-		testSetup = new TestSetup();
+		testSetup = new MenuTestSetup();
 		await testSetup.setup();
 
 		// Initialize generator with test isolation
@@ -188,8 +196,9 @@ describe("MarkdownContentGenerator", () => {
 		}) as any;
 	});
 
-	afterEach(() => {
-		testSetup.cleanup();
+	afterEach((context) => {
+		// Conditional cleanup: only remove files if test passed
+		testSetup.cleanupIfPassed(context);
 	});
 
 	describe("Content Reading and Validation", () => {
@@ -710,7 +719,7 @@ describe("MarkdownContentGenerator", () => {
 		it("should handle generation with custom input file", async () => {
 			// Create custom content file
 			const customFileName = "custom-content.md";
-			const customContentPath = join(testSetup.tempDir, customFileName);
+			const customContentPath = join(testSetup.getTempDir(), customFileName);
 			writeFileSync(customContentPath, MINIMAL_CONTENT, "utf-8");
 
 			const customOutputPath = join(testSetup.testOutputDir, "custom-menu.ts");
@@ -795,7 +804,7 @@ describe("MarkdownContentGenerator", () => {
 		it("should handle file write errors gracefully", async () => {
 			// Test with read-only directory (if supported by OS)
 			try {
-				const readOnlyDir = join(testSetup.tempDir, "readonly");
+				const readOnlyDir = join(testSetup.getTempDir(), "readonly");
 				mkdirSync(readOnlyDir, { recursive: true });
 
 				generator.outputPath = join(readOnlyDir, "readonly-output.ts");
@@ -822,23 +831,22 @@ describe("Full Validation Integration", () => {
 		const validationTestSetup = new TestSetupWithValidation("validation");
 		await validationTestSetup.setup();
 
-		try {
-			// Create generator WITH validation enabled (via TestSetupWithValidation)
-			const generator = new MarkdownContentGenerator(validationTestSetup.contentMdPath) as any;
-			generator.outputPath = validationTestSetup.outputPath;
+		// Create generator WITH validation enabled (via TestSetupWithValidation)
+		const generator = new MarkdownContentGenerator(validationTestSetup.contentMdPath) as any;
+		generator.outputPath = validationTestSetup.outputPath;
 
-			const success = await generator.generate();
+		const success = await generator.generate();
 
-			expect(success).toBe(true);
-			expect(existsSync(validationTestSetup.outputPath)).toBe(true);
+		expect(success).toBe(true);
+		expect(existsSync(validationTestSetup.outputPath)).toBe(true);
 
-			// Verify generated content
-			const generatedContent = readFileSync(validationTestSetup.outputPath, "utf-8");
-			expect(generatedContent).toContain("export const contentMenu");
-			expect(generatedContent).toContain("MenuStructure");
-		} finally {
-			validationTestSetup.cleanup();
-		}
+		// Verify generated content
+		const generatedContent = readFileSync(validationTestSetup.outputPath, "utf-8");
+		expect(generatedContent).toContain("export const contentMenu");
+		expect(generatedContent).toContain("MenuStructure");
+
+		// Test passed - cleanup immediately
+		validationTestSetup.forceCleanup();
 	}, 15000); // Extended timeout for validation test
 });
 

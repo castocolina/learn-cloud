@@ -14,20 +14,12 @@
  */
 
 import { existsSync, readFileSync } from "fs";
-import type { ContentStatus } from "$types";
+import type { ContentStatus, SafetyCheckResult } from "$types";
 
 export interface SafetyCheckOptions {
 	dryRun?: boolean;
 	forceOverwrite?: boolean;
 	verbose?: boolean;
-}
-
-export interface SafetyCheckResult {
-	success: boolean;
-	action: "proceed" | "warn_and_proceed" | "error";
-	message?: string;
-	warning?: string;
-	requiresForce?: boolean;
 }
 
 export interface ContentStatusInfo {
@@ -54,18 +46,17 @@ export class ContentSafetyService {
 		// If file doesn't exist, allow creation
 		if (!statusInfo.exists && operation === "create") {
 			return {
-				success: true,
-				action: "proceed",
-				message: "Creating new content file"
+				canProceed: true,
+				requiresForce: false
 			};
 		}
 
 		// If file doesn't exist but trying to update/delete, error
 		if (!statusInfo.exists && (operation === "update" || operation === "delete")) {
 			return {
-				success: false,
-				action: "error",
-				message: `Cannot ${operation} non-existent file: ${filePath}`
+				canProceed: false,
+				requiresForce: false,
+				error: `Cannot ${operation} non-existent file: ${filePath}`
 			};
 		}
 
@@ -76,10 +67,9 @@ export class ContentSafetyService {
 
 		// File exists but no status found - treat as orphan with warning
 		return {
-			success: true,
-			action: "warn_and_proceed",
-			warning: `File exists but no status found. Treating as orphan content.`,
-			message: `Proceeding with ${operation} operation`
+			canProceed: true,
+			requiresForce: false,
+			warning: `File exists but no status found. Treating as orphan content.`
 		};
 	}
 
@@ -139,57 +129,56 @@ export class ContentSafetyService {
 		switch (status) {
 			case "expected":
 				return {
-					success: true,
-					action: "proceed",
-					message: `${verb} expected content`
+					canProceed: true,
+					requiresForce: false,
+					currentStatus: status
 				};
 
 			case "scaffold":
 				return {
-					success: true,
-					action: "proceed",
-					message: `${verb} scaffold content`
+					canProceed: true,
+					requiresForce: false,
+					currentStatus: status
 				};
 
 			case "draft":
 			case "review":
 				return {
-					success: true,
-					action: "warn_and_proceed",
-					warning: `⚠️  ${verb} content with '${status}' status.`,
-					message: "Proceeding with operation"
+					canProceed: true,
+					requiresForce: false,
+					currentStatus: status,
+					warning: `⚠️  ${verb} content with '${status}' status.`
 				};
 
 			case "final":
 				if (!forceOverwrite) {
 					return {
-						success: false,
-						action: "error",
-						message: `❌ ERROR: Cannot ${operation} content with 'final' status without --force-overwrite flag.`,
-						requiresForce: true
+						canProceed: false,
+						requiresForce: true,
+						currentStatus: status,
+						error: `❌ ERROR: Cannot ${operation} content with 'final' status without --force-overwrite flag.`
 					};
 				}
 				return {
-					success: true,
-					action: "warn_and_proceed",
-					warning: `🚨 FORCE ${operation.toUpperCase()}: Modifying 'final' content with --force-overwrite flag.`,
-					message: "Proceeding with forced operation"
+					canProceed: true,
+					requiresForce: false,
+					currentStatus: status,
+					warning: `🚨 FORCE ${operation.toUpperCase()}: Modifying 'final' content with --force-overwrite flag.`
 				};
 
 			case "orphan":
 				return {
-					success: true,
-					action: "warn_and_proceed",
-					warning: `⚠️  ${verb} orphan content (exists in filesystem but not in content-menu).`,
-					message: "Proceeding with operation"
+					canProceed: true,
+					requiresForce: false,
+					currentStatus: status,
+					warning: `⚠️  ${verb} orphan content (exists in filesystem but not in content-menu).`
 				};
 
 			default:
 				return {
-					success: true,
-					action: "warn_and_proceed",
-					warning: `Unknown status '${status}'. Proceeding with caution.`,
-					message: `Proceeding with ${operation} operation`
+					canProceed: true,
+					requiresForce: false,
+					warning: `Unknown status '${status}'. Proceeding with caution.`
 				};
 		}
 	}
@@ -223,15 +212,15 @@ export class ContentSafetyService {
 			console.warn(result.warning);
 		}
 
-		if (result.message && options.verbose) {
-			console.log(`ℹ️  ${result.message}`);
-		}
-
-		if (!result.success) {
-			console.error(result.message);
+		if (result.error) {
+			console.error(result.error);
 			if (result.requiresForce) {
 				console.error("💡 Hint: Use --force-overwrite to override this protection.");
 			}
+		}
+
+		if (options.verbose && result.currentStatus) {
+			console.log(`ℹ️  Current status: ${result.currentStatus}`);
 		}
 	}
 

@@ -5,10 +5,11 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { writeFileSync, mkdirSync, rmSync, existsSync } from "fs";
+import { ExtendedTestSetup } from "../helpers/test-setup.js";
+import { writeFileSync, mkdirSync, existsSync } from "fs";
 import { join } from "path";
 import { SearchIndexCLI, SearchIndexGenerator } from "../../scripts/generate-search-index.js";
-import { generateConfigId } from "../test-utils.js";
+import { generateConfigId } from "../helpers/test-utils.js";
 import { SETTINGS } from "../../config/settings.js";
 
 // Mock process.argv for CLI testing
@@ -18,18 +19,15 @@ const _originalExit = process.exit;
 /**
  * Test setup for validation testing
  */
-class SearchIndexTestSetup {
+class SearchIndexTestSetup extends ExtendedTestSetup {
 	public configId: string;
-	private tempDir: string;
 	public readonly testSuiteId: string;
 
 	constructor(testSuiteId: string = "search-indexer") {
-		const timestamp = Date.now();
-		const uniqueId = `${testSuiteId}-${timestamp}`;
-
+		// Use standardized path structure: ./tmp/test/unit/scripts/{name}-{timestamp}
+		super("scripts", `search-index-${testSuiteId}`);
 		this.testSuiteId = testSuiteId;
 		this.configId = generateConfigId("test-search-idx", testSuiteId);
-		this.tempDir = join(process.cwd(), "tmp", `test-${uniqueId}`);
 		this.createTestStructure();
 	}
 
@@ -69,16 +67,6 @@ This demonstrates the fundamental concepts of Docker.`;
 		writeFileSync(join(testDir, "01_lesson.md"), testLessonContent);
 	}
 
-	public getTempDir(): string {
-		return this.tempDir;
-	}
-
-	public cleanup(): void {
-		if (existsSync(this.tempDir)) {
-			rmSync(this.tempDir, { recursive: true });
-		}
-	}
-
 	/**
 	 * Create test settings with validation disabled
 	 */
@@ -113,8 +101,8 @@ describe("SearchIndexGenerator - Class-based Tests", () => {
 		testSetup = new SearchIndexTestSetup("search-gen");
 	});
 
-	afterEach(() => {
-		testSetup.cleanup();
+	afterEach((context) => {
+		testSetup.cleanupIfPassed(context);
 		vi.restoreAllMocks();
 	});
 

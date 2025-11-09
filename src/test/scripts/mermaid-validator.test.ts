@@ -16,12 +16,12 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { ExtendedTestSetup } from "../helpers/test-setup.js";
 import { promises as fs, existsSync, statSync, mkdirSync, rmSync } from "fs";
 import { spawn } from "child_process";
 import { EventEmitter } from "events";
-import { join } from "path";
 import { MermaidValidator, parseCliArguments, printHelp } from "../../scripts/mermaid-validator.js";
-import { generateConfigId } from "../test-utils.js";
+import { generateConfigId } from "../helpers/test-utils.js";
 import { SETTINGS } from "$config/settings.js";
 import type { DiagramReference, MermaidValidationResult, FileProcessingResult } from "$types";
 
@@ -31,16 +31,19 @@ import type { DiagramReference, MermaidValidationResult, FileProcessingResult } 
  * - Focus on AST parsing and CLI logic
  * - Validation enabled only for integration tests (4% of tests)
  */
-class TestSetup {
-	public tempDir: string;
+class MermaidValidatorTestSetup extends ExtendedTestSetup {
 	public readonly configId: string;
 
 	constructor(testSuiteId: string = "mermaid") {
+		// Use standardized path structure: ./tmp/test/unit/scripts/{name}-{timestamp}
+		super("scripts", `mermaid-validator-${testSuiteId}`);
 		const timestamp = Date.now();
-		const uniqueId = `${testSuiteId}-${timestamp}`;
-		this.tempDir = join(process.cwd(), "tmp", `test-mermaid-${uniqueId}`);
+		this.tempDir = this.getTempDir();
 		this.configId = generateConfigId("mermaid-test", testSuiteId);
 		this.configureValidation();
+
+		// Silence unused variable warning
+		void timestamp;
 	}
 
 	/**
@@ -73,7 +76,7 @@ class TestSetup {
 /**
  * Test setup class with validation enabled for integration tests (4% of tests)
  */
-class TestSetupWithValidation extends TestSetup {
+class TestSetupWithValidation extends MermaidValidatorTestSetup {
 	constructor(testSuiteId: string = "validation") {
 		super(testSuiteId);
 	}
@@ -778,8 +781,8 @@ describe("Mermaid Validator Integration with ValidationService", () => {
 		validator = new MermaidValidator();
 	});
 
-	afterEach(() => {
-		testSetup.cleanup();
+	afterEach((context) => {
+		testSetup.cleanupIfPassed(context);
 	});
 
 	it("should integrate with ValidationService for enhanced validation", async () => {
@@ -826,7 +829,7 @@ describe("Mermaid Validator Integration with ValidationService", () => {
 		mockedExistsSync.mockReturnValue(true);
 		mockedStatSync.mockReturnValue({ isDirectory: () => true } as any);
 
-		const result = await validator.validate(testSetup.tempDir);
+		const result = await validator.validate(testSetup.getTempDir());
 
 		expect(result).toBe(true);
 		// Validate that the integration maintains the expected interface

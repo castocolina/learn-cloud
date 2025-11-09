@@ -20,6 +20,7 @@
  */
 
 import { test, expect } from "@playwright/test";
+import { waitForTransform, waitForDialogState } from "./helpers/wait-utilities";
 
 const SHOWCASE_URL = "/showcase/mermaid-diagram";
 
@@ -38,7 +39,9 @@ test.describe("MermaidDiagram - Desktop Viewport", () => {
 		await page.waitForSelector('.mermaid-diagram-container[role="application"]', {
 			timeout: 15000
 		});
-		await page.waitForTimeout(500); // Extra buffer for event listener attachment
+		// Wait for diagram to be fully initialized (SVG rendered)
+		const diagram = page.locator('.mermaid-diagram-container[role="application"]').first();
+		await expect(diagram.locator("svg").first()).toBeVisible({ timeout: 3000 });
 	});
 
 	test("should display showcase page with diagram examples", async ({ page }) => {
@@ -90,8 +93,8 @@ test.describe("MermaidDiagram - Desktop Viewport", () => {
 		const zoomInBtn = page.getByLabel(/zoom in/i).first();
 		await zoomInBtn.click();
 
-		// Wait for transition
-		await page.waitForTimeout(300);
+		// Wait for transform to update
+		await waitForTransform(diagram, "scale(1.25)", { timeout: 1000 });
 
 		// Verify zoom increased
 		const newTransform = await diagram.getAttribute("style");
@@ -106,14 +109,14 @@ test.describe("MermaidDiagram - Desktop Viewport", () => {
 			.getByLabel(/zoom in/i)
 			.first()
 			.click();
-		await page.waitForTimeout(300);
+		await waitForTransform(diagram, "scale(1.25)", { timeout: 1000 });
 
 		// Now zoom out
 		await page
 			.getByLabel(/zoom out/i)
 			.first()
 			.click();
-		await page.waitForTimeout(300);
+		await waitForTransform(diagram, "scale(1)", { timeout: 1000 });
 
 		// Should be back to 100%
 		const transform = await diagram.getAttribute("style");
@@ -126,9 +129,9 @@ test.describe("MermaidDiagram - Desktop Viewport", () => {
 		// Zoom in multiple times
 		const zoomInBtn = page.getByLabel(/zoom in/i).first();
 		await zoomInBtn.click();
-		await page.waitForTimeout(200);
+		await waitForTransform(diagram, "scale(1.25)", { timeout: 1000 });
 		await zoomInBtn.click();
-		await page.waitForTimeout(200);
+		await waitForTransform(diagram, "scale(1.5)", { timeout: 1000 });
 
 		// Verify zoomed in
 		let transform = await diagram.getAttribute("style");
@@ -139,7 +142,7 @@ test.describe("MermaidDiagram - Desktop Viewport", () => {
 			.getByLabel(/reset zoom/i)
 			.first()
 			.click();
-		await page.waitForTimeout(300);
+		await waitForTransform(diagram, "scale(1)", { timeout: 1000 });
 
 		// Should be back to 100%
 		transform = await diagram.getAttribute("style");
@@ -148,11 +151,13 @@ test.describe("MermaidDiagram - Desktop Viewport", () => {
 
 	test("should disable zoom in button at 200% limit", async ({ page }) => {
 		const zoomInBtn = page.getByLabel(/zoom in/i).first();
+		const diagram = page.locator(".mermaid-diagram-zoom-wrapper").first();
 
 		// Zoom to maximum (200% = 100 + 25*4)
-		for (let i = 0; i < 4; i++) {
+		const zoomLevels = ["scale(1.25)", "scale(1.5)", "scale(1.75)", "scale(2)"];
+		for (const level of zoomLevels) {
 			await zoomInBtn.click();
-			await page.waitForTimeout(100);
+			await waitForTransform(diagram, level, { timeout: 1000 });
 		}
 
 		// Button should be disabled at 200%
@@ -161,11 +166,13 @@ test.describe("MermaidDiagram - Desktop Viewport", () => {
 
 	test("should disable zoom out button at 50% limit", async ({ page }) => {
 		const zoomOutBtn = page.getByLabel(/zoom out/i).first();
+		const diagram = page.locator(".mermaid-diagram-zoom-wrapper").first();
 
 		// Zoom to minimum (50% = 100 - 25*2)
-		for (let i = 0; i < 2; i++) {
+		const zoomLevels = ["scale(0.75)", "scale(0.5)"];
+		for (const level of zoomLevels) {
 			await zoomOutBtn.click();
-			await page.waitForTimeout(100);
+			await waitForTransform(diagram, level, { timeout: 1000 });
 		}
 
 		// Button should be disabled at 50%
@@ -184,7 +191,7 @@ test.describe("MermaidDiagram - Desktop Viewport", () => {
 			.getByLabel(/pan up/i)
 			.first()
 			.click();
-		await page.waitForTimeout(200);
+		await waitForTransform(diagram, "translate(0px, 50px)", { timeout: 1000 });
 
 		// Verify pan offset changed
 		const transform = await diagram.getAttribute("style");
@@ -196,7 +203,7 @@ test.describe("MermaidDiagram - Desktop Viewport", () => {
 		await expandBtn.click();
 
 		// Wait for Dialog to open
-		await page.waitForTimeout(500);
+		await waitForDialogState(page, "open");
 
 		// Verify Dialog is visible
 		const dialog = page.getByRole("dialog");
@@ -235,21 +242,30 @@ test.describe("MermaidDiagram - Desktop Viewport", () => {
 		// Zoom in to 150%
 		const zoomInBtn = page.getByLabel(/zoom in/i).first();
 		await zoomInBtn.click();
-		await page.waitForTimeout(200);
+		await waitForTransform(diagram, "scale(1.25)", { timeout: 1000 });
 		await zoomInBtn.click();
-		await page.waitForTimeout(200);
+		await waitForTransform(diagram, "scale(1.5)", { timeout: 1000 });
 
 		// Verify zoom is 150%
 		let transform = await diagram.getAttribute("style");
 		expect(transform).toContain("scale(1.5)");
 
+		// Wait for debounced state save to complete (1s debounce)
+		// This ensures the final zoom level (150%) is saved to localStorage
+		// before navigation triggers onDestroy
+		await page.waitForTimeout(1500);
+
 		// Navigate away
 		await page.goto("/");
-		await page.waitForTimeout(500);
+		await page.waitForLoadState("networkidle");
 
 		// Navigate back
 		await page.goto(SHOWCASE_URL);
-		await page.waitForTimeout(1500); // Wait for Mermaid to render
+		await page.waitForLoadState("networkidle");
+		// Wait for diagram to render and zoom state to restore from localStorage
+		await page.waitForSelector('.mermaid-diagram-container[role="application"]', {
+			timeout: 15000
+		});
 
 		// Verify zoom state is restored to 150%
 		const restoredDiagram = page.locator(".mermaid-diagram-zoom-wrapper").first();
@@ -340,7 +356,9 @@ test.describe("MermaidDiagram - Mobile Viewport", () => {
 		await page.waitForSelector('.mermaid-diagram-container[role="application"]', {
 			timeout: 15000
 		});
-		await page.waitForTimeout(500); // Extra buffer for event listener attachment
+		// Wait for diagram to be fully initialized (SVG rendered)
+		const diagram = page.locator('.mermaid-diagram-container[role="application"]').first();
+		await expect(diagram.locator("svg").first()).toBeVisible({ timeout: 5000 });
 	});
 
 	test("should display diagram on mobile viewport", async ({ page }) => {
@@ -388,7 +406,7 @@ test.describe("MermaidDiagram - Mobile Viewport", () => {
 		await expandBtn.click();
 
 		// Wait for Dialog
-		await page.waitForTimeout(500);
+		await waitForDialogState(page, "open");
 
 		// Verify Dialog is full-screen on mobile
 		const dialog = page.getByRole("dialog");
@@ -410,7 +428,13 @@ test.describe("MermaidDiagram - Keyboard Navigation", () => {
 
 	test.beforeEach(async ({ page }) => {
 		await page.goto(SHOWCASE_URL);
-		await page.waitForTimeout(1500);
+		await page.waitForLoadState("networkidle");
+		// Wait for diagram to render
+		await page.waitForSelector('.mermaid-diagram-container[role="application"]', {
+			timeout: 15000
+		});
+		const diagram = page.locator('.mermaid-diagram-container[role="application"]').first();
+		await expect(diagram.locator("svg").first()).toBeVisible({ timeout: 3000 });
 	});
 
 	test("should navigate through controls with Tab key", async ({ page }) => {
@@ -451,7 +475,7 @@ test.describe("MermaidDiagram - Keyboard Navigation", () => {
 
 		// Press + to zoom in (keyboard shortcut)
 		await page.keyboard.press("+");
-		await page.waitForTimeout(300);
+		await waitForTransform(diagram, "scale(1.25)", { timeout: 1000 });
 
 		// Verify zoom increased to 125%
 		let newTransform = await diagram.getAttribute("style");
@@ -460,7 +484,7 @@ test.describe("MermaidDiagram - Keyboard Navigation", () => {
 
 		// Press - to zoom out (keyboard shortcut)
 		await page.keyboard.press("-");
-		await page.waitForTimeout(300);
+		await waitForTransform(diagram, "scale(1)", { timeout: 1000 });
 
 		// Verify zoom back to 100%
 		newTransform = await diagram.getAttribute("style");
@@ -468,9 +492,9 @@ test.describe("MermaidDiagram - Keyboard Navigation", () => {
 
 		// Press + twice then 0 to reset
 		await page.keyboard.press("+");
-		await page.waitForTimeout(200);
+		await waitForTransform(diagram, "scale(1.25)", { timeout: 1000 });
 		await page.keyboard.press("+");
-		await page.waitForTimeout(200);
+		await waitForTransform(diagram, "scale(1.5)", { timeout: 1000 });
 
 		// Verify zoomed to 150%
 		newTransform = await diagram.getAttribute("style");
@@ -478,7 +502,7 @@ test.describe("MermaidDiagram - Keyboard Navigation", () => {
 
 		// Press 0 to reset
 		await page.keyboard.press("0");
-		await page.waitForTimeout(300);
+		await waitForTransform(diagram, "scale(1)", { timeout: 1000 });
 
 		// Verify reset to 100%
 		newTransform = await diagram.getAttribute("style");
@@ -504,7 +528,11 @@ test.describe("MermaidDiagram - Error Handling", () => {
 		});
 
 		await page.goto(SHOWCASE_URL);
-		await page.waitForTimeout(1500);
+		await page.waitForLoadState("networkidle");
+		// Wait for diagram to render
+		await page.waitForSelector('.mermaid-diagram-container[role="application"]', {
+			timeout: 15000
+		});
 
 		// Should have no fatal console errors
 		const fatalErrors = consoleErrors.filter((err) => err.toLowerCase().includes("fatal"));

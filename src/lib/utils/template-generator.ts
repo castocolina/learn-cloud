@@ -576,6 +576,7 @@ function generateDiagram(preferredTypes: DiagramType[] = []): DiagramBlock {
  */
 function generateContentSection(
 	sectionTitle: string,
+	sectionIndex: number,
 	includeCodeBlock: boolean = false,
 	includeDiagram: boolean = false,
 	usedDiagramTypes: DiagramType[] = []
@@ -636,7 +637,7 @@ function generateContentSection(
 	// Add callout for important information
 	content.push({
 		type: "callout",
-		calloutType: "info",
+		style: "info",
 		title: "Key Concept",
 		content: [
 			{
@@ -658,6 +659,7 @@ function generateContentSection(
 	});
 
 	return {
+		id: `section-${sectionIndex + 1}`,
 		title: sectionTitle,
 		content
 	};
@@ -688,9 +690,10 @@ function generateDiverseQuestions(count: number, diverseTypes: boolean = true): 
 						extractLoremText(40),
 						extractLoremText(40)
 					],
-					correct: i % 4,
+					correctAnswer: i % 4,
 					explanation: extractLoremText(CONFIG.contentLengths.explanation),
-					points: 5
+					difficulty: ["easy", "medium", "hard"][i % 3] as "easy" | "medium" | "hard",
+					tags: ["cloud-native", "fundamentals"]
 				} as SingleChoiceQuestion);
 				break;
 
@@ -706,9 +709,10 @@ function generateDiverseQuestions(count: number, diverseTypes: boolean = true): 
 						"Infrastructure as Code",
 						"Manual scaling processes"
 					],
-					correct: [0, 1, 3], // Multiple correct answers
+					correctAnswers: [0, 1, 3], // Multiple correct answers
 					explanation: extractLoremText(CONFIG.contentLengths.explanation),
-					points: 10
+					difficulty: ["easy", "medium", "hard"][i % 3] as "easy" | "medium" | "hard",
+					tags: ["cloud-native", "fundamentals"]
 				} as MultipleChoiceQuestion);
 				break;
 
@@ -717,7 +721,8 @@ function generateDiverseQuestions(count: number, diverseTypes: boolean = true): 
 					id: `q${questionNumber}`,
 					type: "code_completion",
 					question: "Complete the Kubernetes deployment configuration:",
-					codeSnippet: `apiVersion: apps/v1
+					language: "yaml",
+					codeTemplate: `apiVersion: apps/v1
 kind: _____
 metadata:
   name: web-app
@@ -729,24 +734,26 @@ spec:
 					blanks: [
 						{
 							id: "deployment-kind",
-							options: ["Deployment", "Service", "Pod", "ConfigMap"]
+							expectedAnswer: "Deployment",
+							hint: "Type of Kubernetes resource for managing pods",
+							alternatives: ["Service", "Pod", "ConfigMap"]
 						},
 						{
 							id: "replica-count",
-							options: ["1", "3", "5", "10"]
+							expectedAnswer: "3",
+							hint: "Number of pod replicas",
+							alternatives: ["1", "5", "10"]
 						},
 						{
 							id: "app-label",
-							options: ["web-app", "frontend", "backend", "database"]
+							expectedAnswer: "web-app",
+							hint: "Label selector for the application",
+							alternatives: ["frontend", "backend", "database"]
 						}
 					],
-					correctAnswers: {
-						"deployment-kind": "Deployment",
-						"replica-count": "3",
-						"app-label": "web-app"
-					},
 					explanation: extractLoremText(CONFIG.contentLengths.explanation),
-					points: 15
+					difficulty: ["easy", "medium", "hard"][i % 3] as "easy" | "medium" | "hard",
+					tags: ["cloud-native", "kubernetes", "docker"]
 				} as CodeCompletionQuestion);
 				break;
 
@@ -756,9 +763,10 @@ spec:
 					type: "true_false",
 					question:
 						"Containers share the same operating system kernel, making them more lightweight than virtual machines.",
-					correct: true,
+					correctAnswer: true,
 					explanation: extractLoremText(CONFIG.contentLengths.explanation),
-					points: 5
+					difficulty: ["easy", "medium", "hard"][i % 3] as "easy" | "medium" | "hard",
+					tags: ["cloud-native", "concepts"]
 				} as TrueFalseQuestion);
 				break;
 
@@ -773,20 +781,31 @@ spec:
 						{ id: "prometheus", content: "Prometheus", category: "monitoring" },
 						{ id: "terraform", content: "Terraform", category: "infrastructure" }
 					],
-					targets: [
-						{ id: "containerization", label: "Containerization", acceptsItems: ["docker"] },
-						{ id: "orchestration", label: "Orchestration", acceptsItems: ["kubernetes"] },
-						{ id: "monitoring", label: "Monitoring", acceptsItems: ["prometheus"] },
-						{ id: "infrastructure", label: "Infrastructure as Code", acceptsItems: ["terraform"] }
-					],
-					correctMatches: [
-						{ itemId: "docker", targetId: "containerization" },
-						{ itemId: "kubernetes", targetId: "orchestration" },
-						{ itemId: "prometheus", targetId: "monitoring" },
-						{ itemId: "terraform", targetId: "infrastructure" }
+					categories: [
+						{
+							id: "containerization",
+							title: "Containerization",
+							description: "Tools for creating and managing containers"
+						},
+						{
+							id: "orchestration",
+							title: "Orchestration",
+							description: "Tools for managing container clusters"
+						},
+						{
+							id: "monitoring",
+							title: "Monitoring",
+							description: "Tools for observability and metrics"
+						},
+						{
+							id: "infrastructure",
+							title: "Infrastructure as Code",
+							description: "Tools for provisioning infrastructure"
+						}
 					],
 					explanation: extractLoremText(CONFIG.contentLengths.explanation),
-					points: 20
+					difficulty: ["easy", "medium", "hard"][i % 3] as "easy" | "medium" | "hard",
+					tags: ["cloud-native", "architecture"]
 				} as DragAndDropQuestion);
 				break;
 		}
@@ -843,6 +862,7 @@ export class TemplateGenerator {
 	 */
 	generateLessonContent(args: ValidatedScaffoldingArgs): LessonContent {
 		const title = `Unit ${args.id}: Cloud-Native Development Environment`;
+		const summary = extractLoremText(this.config.contentLengths.summary);
 		const sections: ContentSection[] = [];
 		const usedDiagramTypes: DiagramType[] = [];
 
@@ -862,6 +882,7 @@ export class TemplateGenerator {
 
 			const section = generateContentSection(
 				sectionTitle,
+				i,
 				includeCodeBlock,
 				includeDiagram,
 				usedDiagramTypes
@@ -895,23 +916,31 @@ export class TemplateGenerator {
 		}
 
 		return {
+			id: args.id,
 			type: "lesson",
 			title,
-			summary: extractLoremText(this.config.contentLengths.summary),
-			status: "scaffold" as const,
-			estimatedTime: 45,
-			prerequisites: [
-				"Basic understanding of cloud computing concepts",
-				"Familiarity with software development principles",
-				"Command line interface experience"
+			summary,
+			// Educational metadata at root level
+			keywords: [
+				"cloud-native",
+				"development",
+				"containers",
+				"microservices",
+				"infrastructure-as-code"
 			],
+			difficulty: "beginner" as const,
 			learningObjectives: [
 				"Understand cloud-native development principles and their advantages",
 				"Learn to implement containerized applications using Docker",
 				"Master microservices architecture patterns and best practices",
 				"Explore infrastructure as code and orchestration technologies"
 			],
-			difficulty: "beginner" as const,
+			estimatedTime: 45,
+			prerequisites: [
+				"Basic understanding of cloud computing concepts",
+				"Familiarity with software development principles",
+				"Command line interface experience"
+			],
 			sections
 		};
 	}
@@ -921,25 +950,33 @@ export class TemplateGenerator {
 	 */
 	generateQuizContent(args: ValidatedScaffoldingArgs): QuizContent {
 		const title = `Quiz: Cloud-Native Development - ${args.id}`;
+		const summary =
+			"Test your knowledge of cloud-native development concepts, containerization, and microservices architecture through this comprehensive quiz.";
 		const questions = generateDiverseQuestions(
 			this.config.quizzes.questions,
 			this.config.quizzes.diverseTypes
 		);
 
 		return {
+			id: args.id,
 			type: "quiz",
 			title,
-			summary:
-				"Test your knowledge of cloud-native development concepts, containerization, and microservices architecture through this comprehensive quiz.",
-			status: "scaffold" as const,
+			summary,
+			// Educational metadata at root level
+			keywords: ["quiz", "assessment", "cloud-native", "testing", "evaluation"],
+			difficulty: "intermediate" as const,
+			learningObjectives: [
+				"Test understanding of cloud-native development principles",
+				"Evaluate knowledge of containerization and Docker",
+				"Assess comprehension of microservices architecture"
+			],
 			quiz: {
-				description:
-					"This quiz covers fundamental cloud-native concepts including containerization with Docker, microservices patterns, infrastructure as code, and cloud deployment strategies.",
 				passingScore: 70,
 				timeLimit: 30,
 				questions,
-				randomizeQuestions: false,
-				showResults: true
+				shuffleQuestions: false,
+				showResults: true,
+				allowRetry: true
 			}
 		};
 	}
@@ -947,60 +984,67 @@ export class TemplateGenerator {
 	/**
 	 * Generate study guide content structure
 	 */
-	generateStudyGuideContent(_args: ValidatedScaffoldingArgs): StudyGuideContent {
-		const title = `Study Guide: Cloud-Native Development - ${_args.id}`;
+	generateStudyGuideContent(args: ValidatedScaffoldingArgs): StudyGuideContent {
+		const title = `Study Guide: Cloud-Native Development - ${args.id}`;
+		const summary =
+			"Interactive flashcards and study materials to reinforce cloud-native development concepts and prepare for assessments.";
 		const flipCards = generateFlashcards(this.config.studyGuides.flipCards);
 
 		return {
+			id: args.id,
 			type: "study_guide",
 			title,
-			summary:
-				"Interactive flashcards and study materials to reinforce cloud-native development concepts and prepare for assessments.",
-			status: "scaffold" as const,
-			studyGuide: {
-				description:
-					"Comprehensive study materials covering cloud-native principles, containerization, microservices architecture, and deployment strategies through interactive flashcards.",
-				flipCards,
-				categories: ["fundamentals", "concepts", "implementation"],
-				randomizeCards: true
-			}
+			summary,
+			// Educational metadata at root level
+			keywords: ["study-guide", "flashcards", "review", "cloud-native", "practice"],
+			difficulty: "beginner" as const,
+			learningObjectives: [
+				"Review key cloud-native development concepts",
+				"Reinforce understanding through active recall",
+				"Prepare for assessments with interactive materials"
+			],
+			flipCards,
+			categories: ["fundamentals", "concepts", "implementation"]
 		};
 	}
 
 	/**
 	 * Generate exam content structure with diverse question types
 	 */
-	generateExamContent(_args: ValidatedScaffoldingArgs): ExamContent {
+	generateExamContent(args: ValidatedScaffoldingArgs): ExamContent {
 		const title = `Final Exam: Cloud-Native Development`;
+		const summary =
+			"Comprehensive examination covering all aspects of cloud-native development, including containerization, microservices, orchestration, and deployment strategies.";
 		const questions = generateDiverseQuestions(
 			this.config.exams.questions,
 			this.config.exams.diverseTypes
 		);
 
 		return {
+			id: args.id,
 			type: "exam",
 			title,
-			summary:
-				"Comprehensive examination covering all aspects of cloud-native development, including containerization, microservices, orchestration, and deployment strategies.",
-			status: "scaffold" as const,
+			summary,
+			// Educational metadata at root level
+			keywords: ["exam", "assessment", "cloud-native", "final", "comprehensive"],
+			difficulty: "advanced" as const,
+			learningObjectives: [
+				"Demonstrate comprehensive understanding of cloud-native development",
+				"Apply knowledge of containerization and orchestration",
+				"Synthesize concepts from all course modules"
+			],
+			estimatedTime: 90,
+			// Exam-specific fields at root level
 			duration: 90,
 			passingScore: 75,
 			exam: {
-				description:
-					"Final assessment testing comprehensive understanding of cloud-native technologies, Docker containerization, Kubernetes orchestration, microservices architecture, and modern deployment practices.",
-				instructions: [
-					{
-						type: "text",
-						content:
-							"Read each question carefully and select the best answer. You have 90 minutes to complete all questions."
-					}
-				],
 				passingScore: 75,
 				timeLimit: 90,
 				questions,
-				randomizeQuestions: true,
+				shuffleQuestions: true,
 				questionsToShow: this.config.exams.questions,
-				showResults: true
+				showResults: false,
+				allowRetry: false
 			}
 		};
 	}
@@ -1008,8 +1052,10 @@ export class TemplateGenerator {
 	/**
 	 * Generate project content structure
 	 */
-	generateProjectContent(_args: ValidatedScaffoldingArgs): ProjectContent {
+	generateProjectContent(args: ValidatedScaffoldingArgs): ProjectContent {
 		const title = `Project: Cloud-Native Application Implementation`;
+		const summary =
+			"Build a comprehensive cloud-native application using modern containerization, orchestration, and deployment technologies.";
 		const sections: ContentSection[] = [];
 		const usedDiagramTypes: DiagramType[] = [];
 
@@ -1029,6 +1075,7 @@ export class TemplateGenerator {
 
 			const section = generateContentSection(
 				`Phase ${i + 1}: ${phaseName}`,
+				i,
 				includeCodeBlock,
 				includeDiagram,
 				usedDiagramTypes
@@ -1036,6 +1083,12 @@ export class TemplateGenerator {
 
 			sections.push(section);
 		}
+
+		const objectives = [
+			"Build a production-ready cloud-native application",
+			"Demonstrate mastery of containerization and orchestration",
+			"Apply DevOps best practices including CI/CD and monitoring"
+		];
 
 		const requirements = [
 			"Implement containerized microservices using Docker and best practices",
@@ -1052,17 +1105,25 @@ export class TemplateGenerator {
 		];
 
 		return {
+			id: args.id,
 			type: "project",
 			title,
-			summary:
-				"Build a comprehensive cloud-native application using modern containerization, orchestration, and deployment technologies.",
-			status: "scaffold" as const,
-			estimatedHours: 20,
+			summary,
+			// Educational metadata at root level
+			keywords: ["project", "hands-on", "cloud-native", "implementation", "practical"],
 			difficulty: "intermediate" as const,
-			technologies: ["Docker", "Kubernetes", "TypeScript", "Node.js", "PostgreSQL"],
+			learningObjectives: [
+				"Build a complete cloud-native application from scratch",
+				"Apply containerization and orchestration knowledge",
+				"Implement CI/CD pipelines and monitoring solutions"
+			],
+			estimatedTime: 1200, // 20 hours in minutes
+			objectives,
 			requirements,
 			deliverables,
-			sections
+			sections,
+			estimatedHours: 20,
+			technologies: ["Docker", "Kubernetes", "CI/CD", "Monitoring"]
 		};
 	}
 

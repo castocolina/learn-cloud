@@ -227,6 +227,7 @@
 					showExpandButton={useResponsiveDefaults ? undefined : manualExpand}
 					showZoomControls={useResponsiveDefaults ? undefined : manualZoomControls}
 					actionGridOrientation="vertical"
+					enableStatePersistence={true}
 				/>
 			</div>
 		{/each}

@@ -15,13 +15,16 @@
 
 import { promises as fs, existsSync, statSync } from "fs";
 import { join, dirname, basename, extname } from "path";
-import type { SafetyCheckResult, ContentStatus, ScaffoldingStats } from "$types/scaffolding";
+import { formatContent } from "$lib/utils/prettier-writer.js";
+import type { ContentStatus, BaseContent, AnyContent } from "$types";
 import type {
 	WriteOptions,
 	RepositoryConfig,
 	FileOperationResult,
-	RepositoryTransaction
+	RepositoryTransaction,
+	SafetyCheckResult
 } from "$types/scripts";
+import type { FileOperationStats } from "$types/scaffolding";
 
 /**
  * Repository operation modes
@@ -54,115 +57,6 @@ export class RepositoryService {
 	}
 
 	/**
-	 * Perform safety check before file operations
-	 */
-	async performSafetyCheck(filePath: string, operation: FileOperation): Promise<SafetyCheckResult> {
-		try {
-			const fileExists = existsSync(filePath);
-
-			if (!fileExists && operation !== "create") {
-				return {
-					canProceed: false,
-					requiresForce: false,
-					error: `File does not exist: ${filePath}`
-				};
-			}
-
-			if (fileExists && operation === "create") {
-				const contentStatus = await this.detectContentStatus(filePath);
-
-				switch (contentStatus) {
-					case "scaffold":
-						return {
-							canProceed: true,
-							requiresForce: false,
-							currentStatus: contentStatus,
-							warning: "Overwriting scaffold content (safe)"
-						};
-
-					case "draft":
-						return {
-							canProceed: false,
-							requiresForce: true,
-							currentStatus: contentStatus,
-							warning: "Draft content detected - use force flag to overwrite"
-						};
-
-					case "final":
-						return {
-							canProceed: false,
-							requiresForce: true,
-							currentStatus: contentStatus,
-							error: "Final content is protected - requires force flag"
-						};
-				}
-			}
-
-			return {
-				canProceed: true,
-				requiresForce: false
-			};
-		} catch (error) {
-			return {
-				canProceed: false,
-				requiresForce: false,
-				error: `Safety check failed: ${error instanceof Error ? error.message : String(error)}`
-			};
-		}
-	}
-
-	/**
-	 * Detect content status from file content
-	 */
-	async detectContentStatus(filePath: string): Promise<ContentStatus> {
-		try {
-			if (!existsSync(filePath)) {
-				return "scaffold";
-			}
-
-			const content = await fs.readFile(filePath, "utf-8");
-
-			// Look for content status markers
-			if (content.includes("// STATUS: final") || content.includes("/* STATUS: final */")) {
-				return "final";
-			}
-
-			if (content.includes("// STATUS: draft") || content.includes("/* STATUS: draft */")) {
-				return "draft";
-			}
-
-			// Heuristic detection based on content quality
-			const lines = content.split("\n");
-			const contentLines = lines.filter((line) => line.trim() && !line.trim().startsWith("//"));
-
-			// If file has substantial content (more than 50 lines), consider it draft
-			if (contentLines.length > 50) {
-				const placeholderPatterns = [
-					/TODO:/i,
-					/PLACEHOLDER/i,
-					/REPLACE.*WITH/i,
-					/GENERATED.*CONTENT/i
-				];
-
-				const hasPlaceholders = content.match(
-					new RegExp(placeholderPatterns.map((p) => p.source).join("|"), "i")
-				);
-
-				if (!hasPlaceholders) {
-					return "final";
-				}
-
-				return "draft";
-			}
-
-			return "scaffold";
-		} catch (error) {
-			console.warn(`Failed to detect content status for ${filePath}:`, error);
-			return "scaffold";
-		}
-	}
-
-	/**
 	 * Create a backup of a file
 	 */
 	async createBackups(filePath: string): Promise<string> {
@@ -189,29 +83,9 @@ export class RepositoryService {
 		content: string,
 		options?: { force?: boolean; contentStatus?: ContentStatus }
 	): Promise<FileOperationResult> {
-		const force = options?.force || this.config.mode === "force";
 		const operation: FileOperation = existsSync(filePath) ? "update" : "create";
 
 		try {
-			// Perform safety check
-			const safetyCheck = await this.performSafetyCheck(filePath, operation);
-
-			if (!safetyCheck.canProceed && !force) {
-				return {
-					success: false,
-					action:
-						operation === "create"
-							? "created"
-							: operation === "update"
-								? "updated"
-								: operation === "delete"
-									? "skipped"
-									: "skipped",
-					filePath,
-					error: safetyCheck.error || safetyCheck.warning || "Safety check failed"
-				};
-			}
-
 			let backupPath: string | undefined;
 
 			// Create backup if file exists and backups are enabled
@@ -285,12 +159,10 @@ export class RepositoryService {
 			}
 
 			const content = await fs.readFile(filePath, "utf-8");
-			const contentStatus = await this.detectContentStatus(filePath);
 
 			return {
 				success: true,
-				content,
-				contentStatus
+				content
 			};
 		} catch (error) {
 			return {
@@ -303,22 +175,8 @@ export class RepositoryService {
 	/**
 	 * Delete file with safety checks
 	 */
-	async deleteFile(filePath: string, options?: { force?: boolean }): Promise<FileOperationResult> {
-		const force = options?.force || this.config.mode === "force";
-
+	async deleteFile(filePath: string, _options?: { force?: boolean }): Promise<FileOperationResult> {
 		try {
-			// Perform safety check
-			const safetyCheck = await this.performSafetyCheck(filePath, "delete");
-
-			if (!safetyCheck.canProceed && !force) {
-				return {
-					success: false,
-					action: "skipped",
-					filePath,
-					error: safetyCheck.error || safetyCheck.warning || "Safety check failed"
-				};
-			}
-
 			let backupPath: string | undefined;
 
 			// Create backup before deletion
@@ -423,9 +281,9 @@ export class RepositoryService {
 	}
 
 	/**
-	 * Generate scaffolding statistics
+	 * Generate file operation statistics
 	 */
-	generateStats(operations: FileOperationResult[]): ScaffoldingStats {
+	generateStats(operations: FileOperationResult[]): FileOperationStats {
 		const successfulOps = operations.filter((op) => op.success);
 		const existingFiles = successfulOps.filter((op) => op.action === "updated").length;
 		const newFiles = successfulOps.filter((op) => op.action === "created").length;
@@ -500,21 +358,14 @@ export class RepositoryService {
 		options: WriteOptions
 	): Promise<FileOperationResult> {
 		try {
-			// Check safety before write
-			const safetyCheck = await this.checkSafetyBeforeWrite(filePath);
-
-			if (!safetyCheck.canProceed && options.mode === "safe") {
-				return {
-					success: false,
-					action: "created",
-					filePath,
-					error: safetyCheck.error || "Safety check failed"
-				};
-			}
+			// Determine if this is a create or update operation (before writing)
+			const fileExists = existsSync(filePath);
+			const operation: FileOperation = fileExists ? "update" : "create";
 
 			// Create backup if needed
-			if (options.createBackup && existsSync(filePath)) {
-				await this.createBackups(filePath);
+			let backupPath: string | undefined;
+			if (options.createBackup && fileExists) {
+				backupPath = await this.createBackups(filePath);
 			}
 
 			// Create directory if needed
@@ -526,8 +377,9 @@ export class RepositoryService {
 
 			return {
 				success: true,
-				action: existsSync(filePath) ? "updated" : "created",
-				filePath
+				action: operation === "create" ? "created" : "updated",
+				filePath,
+				backupPath
 			};
 		} catch (error) {
 			return {
@@ -578,25 +430,41 @@ export class RepositoryService {
 	}
 
 	/**
-	 * Write formatted content to file (convenience method for ContentScaffoldingGenerator)
+	 * Write formatted content to file with Prettier integration
+	 *
+	 * This is the primary method for content persistence operations.
+	 * Converts content object to TypeScript export, formats with Prettier,
+	 * and writes to file with safety checks.
+	 *
+	 * Note: Validation is NOT performed here - ContentCore orchestrates
+	 * validation before calling this method.
+	 *
+	 * @param filePath - Target file path
+	 * @param content - Content object (BaseContent or AnyContent union type)
+	 * @param options - Write options (mode, backups)
+	 * @returns FileOperationResult with success status and details
 	 */
 	async writeFormattedContent(
 		filePath: string,
-		content: unknown,
+		content: BaseContent | AnyContent,
 		options: { mode?: "safe" | "force"; createBackups?: boolean } = {}
 	): Promise<FileOperationResult> {
 		try {
-			// Convert content to formatted TypeScript string
-			const formattedContent = `export const content = ${JSON.stringify(content, null, 2)};`;
+			// 1. Convert content to TypeScript export string
+			const contentString = `export const content = ${JSON.stringify(content, null, 2)};`;
 
-			// Use existing writeContentFile method with proper options
+			// 2. Format with Prettier using centralized utility
+			const formattedContent = await formatContent(contentString, filePath);
+
+			// 3. Prepare write options
 			const writeOptions: WriteOptions = {
 				mode: options.mode || this.config.mode,
 				createBackup: options.createBackups ?? this.config.createBackups,
-				validateContent: this.config.validateBeforeWrite,
+				validateContent: false, // ContentCore handles validation
 				respectContentStatus: this.config.respectContentStatus
 			};
 
+			// 4. Write formatted content to file
 			return await this.writeContentFile(filePath, formattedContent, writeOptions);
 		} catch (error) {
 			return {

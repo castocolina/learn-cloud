@@ -73,7 +73,6 @@ export type {
 // Content exports - All content-related interfaces
 export type {
 	BaseContent,
-	ContentMetadata,
 	ContentSection,
 	ContentBlock,
 	ParagraphBlock,
@@ -93,7 +92,6 @@ export type {
 	ProjectContent,
 	Quiz,
 	Exam,
-	StudyGuide,
 	Question,
 	SingleChoiceQuestion,
 	MultipleChoiceQuestion,
@@ -376,7 +374,7 @@ export {
 // Validation exports - Testing and validation utilities
 export type {
 	ValidationOptions,
-	ValidationResult,
+	ValidationResult as CommandValidationResult,
 	DiagramReference,
 	MermaidValidationResult,
 	FileProcessingResult,
@@ -391,9 +389,8 @@ export { ERROR_CATEGORIES } from "./validation.js";
 export type {
 	ValidatedScaffoldingArgs,
 	UnitIdentification,
-	ScaffoldingStats,
-	ContentGenerationResult,
-	SafetyCheckResult
+	FileOperationStats,
+	ContentGenerationResult
 } from "./scaffolding.js";
 
 // Scripts exports - Script-specific types and CLI interfaces
@@ -414,7 +411,14 @@ export type {
 	ExtendedCommandOptions,
 	ContentCreatorOptions,
 	FormatProcessorResult,
-	FormatProcessor
+	FormatProcessor,
+	SafetyCheckResult, // Moved from scaffolding.ts
+	ValidationConfig,
+	SchemaValidationResult,
+	WriteOptions,
+	RepositoryConfig,
+	FileOperationResult,
+	RepositoryTransaction
 } from "./scripts.js";
 
 /**

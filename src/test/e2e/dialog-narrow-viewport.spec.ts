@@ -3,7 +3,7 @@ import { test } from "@playwright/test";
 test("Dialog narrow viewport test - 600px width", async ({ page }) => {
 	// Set narrow viewport (600px width as requested)
 	await page.setViewportSize({ width: 600, height: 900 });
-	await page.goto("http://localhost:5173/showcase/dialog");
+	await page.goto("/showcase/dialog");
 	await page.waitForLoadState("networkidle");
 
 	console.log("\n=== DIALOG NARROW VIEWPORT TEST (600px) ===\n");

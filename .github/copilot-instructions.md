@@ -12,6 +12,8 @@ This file provides GitHub Copilot with project-specific instructions while refer
 
 For all project rules, technical specifications, and coding standards, refer to **[CLAUDE.md](../CLAUDE.md)**.
 
+**Testing Infrastructure:** See **[docs/TESTING.md](../docs/TESTING.md)** for comprehensive testing strategies, TestSetup patterns, and best practices.
+
 ## Tech Stack (Mandatory Versions)
 
 - **Svelte 5** - MUST use runes syntax (`$state`, `$derived`, `$props`)

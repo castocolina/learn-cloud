@@ -1599,7 +1599,119 @@ schemas: {
 
 ---
 
-## 15. WORKING WITH TEMPORARY FILES
+## 15. CONTENT SCHEMA ARCHITECTURE
+
+### Overview
+
+The content validation system uses **Zod schemas** for runtime validation of educational content. This section explains the architecture and separation of concerns.
+
+### ContentSchemas.ts - Educational Content Only
+
+**Location:** `src/lib/schemas/ContentSchemas.ts`
+
+**Purpose:** Runtime validation schemas for **user-created educational content** ONLY.
+
+**What's included:**
+
+- ✅ **Content Types**: LessonContent, QuizContent, StudyGuideContent, ExamContent, ProjectContent
+- ✅ **Content Blocks**: ParagraphBlock, CodeBlock, DiagramBlock, CalloutBlock, ImageBlock, VideoBlock, InteractiveBlock
+- ✅ **Questions**: SingleChoiceQuestion, MultipleChoiceQuestion, CodeCompletionQuestion, TrueFalseQuestion, etc.
+- ✅ **Rich Text**: TextNode, LinkNode, HeadingNode, RichParagraph (TASK 7B: Union-based)
+- ✅ **Interactive**: FlipCard
+- ✅ **Metadata**: ContentMetadata, BaseContent
+
+**What's NOT included:**
+
+- ❌ Navigation schemas (generated internally, TypeScript only)
+- ❌ Menu/Search schemas (generated internally, TypeScript only)
+- ❌ Scaffolding/CLI schemas (defined inline in CLI scripts)
+
+### Generated JSON Schema
+
+**Output:** `src/data/generated/content-schemas.json`
+
+**Purpose:**
+
+1. **User validation**: Users can validate their content locally before submitting to CLI
+2. **IDE integration**: Provides autocomplete and validation in editors
+3. **Documentation**: Serves as API contract for content structure
+
+**Generation:**
+
+```bash
+npx tsx src/scripts/generate-schemas.ts
+```
+
+### Internal CLI Validation
+
+**Where:** CLI scripts define their own validation schemas inline
+
+**Examples:**
+
+**generate-scaffold.ts:**
+
+```typescript
+const ScaffoldingArgsSchema = z.object({...});
+const MenuStructureSchema = z.object({...});
+```
+
+**manage-content.ts:**
+
+```typescript
+const ContentGenerationResultSchema = z.object({...});
+const SafetyCheckResultSchema = z.object({...});
+```
+
+**ValidationService.ts:**
+
+```typescript
+const ValidationConfigSchema = z.object({...});
+```
+
+**Rationale:**
+
+- 🎯 **Separation of concerns**: User content vs internal operations
+- 📦 **Smaller bundles**: `content-schemas.json` contains only user-facing schemas
+- 🔒 **Encapsulation**: Internal validation details stay in respective modules
+- 📝 **Clarity**: Clear distinction between what users create vs what system generates
+
+### Validation Flow
+
+**User creates content → manage-content:**
+
+```
+User writes lesson.ts
+       ↓
+Validates locally with content-schemas.json (optional)
+       ↓
+manage-content create --file=lesson.ts
+       ↓
+ValidationService.validateContent(content, LessonContentSchema)
+       ↓
+If valid → persist
+```
+
+**scaffold generates content → manage-content:**
+
+```
+scaffold --id=1.5 --type=lesson
+       ↓
+ValidationService validates args (inline schema)
+       ↓
+TemplateGenerator creates content
+       ↓
+manage-content.processGeneratedContent()
+       ↓
+ValidationService.validateContent(content, LessonContentSchema)
+       ↓
+If valid → persist
+```
+
+**Key insight:** Both flows use the **same ContentSchemas** for validating educational content, but different inline schemas for validating their respective CLI arguments.
+
+---
+
+## 16. WORKING WITH TEMPORARY FILES
 
 ### Using tmp/content-creator Directory
 

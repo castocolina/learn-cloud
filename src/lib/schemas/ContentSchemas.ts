@@ -1,16 +1,23 @@
 /**
- * Comprehensive Zod Schemas for Content Validation
+ * Educational Content Validation Schemas
  *
- * This module provides complete Zod schema definitions for all content types
- * in the Cloud-Native Learning Platform. These schemas ensure type safety
- * and data validation across all content generation and processing workflows.
+ * This module provides Zod schema definitions for educational content types
+ * in the Cloud-Native Learning Platform. These schemas validate user-created
+ * content (lessons, quizzes, study guides, etc.) at runtime.
+ *
+ * Purpose:
+ * - User content validation (via content-schemas.json)
+ * - Runtime validation in ValidationService
+ * - Type safety for educational content structures
  *
  * Features:
- * - Complete schema definitions for all content interfaces
- * - Business rule validation embedded in schemas
- * - Reusable schema components for composition
- * - Runtime validation with detailed error messages
- * - Integration with ValidationService
+ * - Rich text and content block validation
+ * - Question type validation (quiz, exam)
+ * - Interactive component validation (FlipCard)
+ * - Content metadata and structure validation
+ *
+ * Note: Internal CLI schemas (scaffolding, navigation, search) are defined
+ * locally in their respective scripts, not in this file.
  */
 
 import { z } from "zod";
@@ -102,30 +109,59 @@ export const RichTextDocumentSchema = z.object({
 	sections: z.array(RichTextSectionSchema).min(1, "Document must have at least one section")
 });
 
-// Content metadata schema
-export const ContentMetadataSchema = z.object({
-	title: z.string().min(1, "Title is required").max(200, "Title too long"),
-	summary: z.string().min(10, "Summary too short").max(500, "Summary too long"),
-	description: z.string().optional(),
+/**
+ * Educational fields schema - Root-level educational metadata
+ *
+ * These fields appear at root level on all content types (not nested).
+ * Matches EducationalContent interface from content.ts
+ */
+export const EducationalFieldsSchema = z.object({
+	difficulty: z.enum(["beginner", "intermediate", "advanced"]).optional(),
+	estimatedTime: z.number().int().min(1, "Estimated time must be positive").optional(),
+	prerequisites: z.array(z.string()).optional(),
+	learningObjectives: z.array(z.string()).optional(),
 	keywords: z
 		.array(z.string())
 		.min(3, "Minimum 3 keywords required for search functionality")
-		.max(20, "Too many keywords"),
-	difficulty: z.enum(["beginner", "intermediate", "advanced"]),
-	estimatedTime: z.number().int().min(1, "Estimated time must be positive").optional(),
-	prerequisites: z.array(z.string()).optional(),
-	learningObjectives: z.array(z.string()).min(1, "At least one learning objective required"),
-	tags: z.array(z.string()).optional()
+		.max(20, "Too many keywords")
+		.optional(),
+	tags: z.array(z.string()).optional(),
+	technologyUnit: z.string().optional()
 });
 
-// Base content schema
-export const BaseContentSchema = z.object({
+/**
+ * Navigation metadata schema - Optional navigation context
+ *
+ * Contains ONLY navigation-related fields. Used optionally for
+ * breadcrumbs, sidebar state, etc. Most content relies on root-level fields.
+ */
+export const NavigationMetadataSchema = z.object({
 	id: z.string().min(1, "ID is required"),
+	unitId: z.string().min(1, "Unit ID is required"),
+	chapterNumber: z.string().min(1, "Chapter number is required"),
 	type: z.enum(["lesson", "quiz", "study_guide", "exam", "project"]),
-	title: z.string().min(1, "Title is required"),
-	summary: z.string().min(10, "Summary is required and must be descriptive"),
-	metadata: ContentMetadataSchema
+	timestamps: z
+		.object({
+			created: z.date().optional(),
+			modified: z.date().optional(),
+			published: z.date().optional()
+		})
+		.optional(),
+	author: z.string().optional(),
+	version: z.string().optional(),
+	language: z.string().optional()
 });
+
+// Base content schema with root-level educational fields
+export const BaseContentSchema = z
+	.object({
+		id: z.string().min(1, "ID is required"),
+		type: z.enum(["lesson", "quiz", "study_guide", "exam", "project"]),
+		title: z.string().min(1, "Title is required"),
+		summary: z.string().min(10, "Summary is required and must be descriptive"),
+		metadata: NavigationMetadataSchema.optional()
+	})
+	.extend(EducationalFieldsSchema.shape);
 
 /**
  * Content block schemas
@@ -361,9 +397,7 @@ export const FlipCardSchema = z.object({
 
 export const LessonContentSchema = BaseContentSchema.extend({
 	type: z.literal("lesson"),
-	sections: z.array(ContentSectionSchema).min(5, "Lesson must have at least 5 sections"),
-	duration: z.number().int().positive().optional(),
-	prerequisites: z.array(z.string()).optional()
+	sections: z.array(ContentSectionSchema).min(5, "Lesson must have at least 5 sections")
 });
 
 export const QuizContentSchema = BaseContentSchema.extend({
@@ -454,134 +488,11 @@ export const AnyContentSchema = z.discriminatedUnion("type", [
 ]);
 
 /**
- * Navigation and structure schemas
- */
-
-export const NavigationItemSchema = z.object({
-	id: z.string().min(1, "Navigation ID is required"),
-	title: z.string().min(1, "Navigation title is required"),
-	path: z.string().min(1, "Navigation path is required"),
-	type: z.enum(["overview", "lesson", "quiz", "study_guide", "exam", "project"]),
-	section: z.enum(["overview", "content", "assessment", "resources"]),
-	state: z.enum(["locked", "available", "in_progress", "completed"]),
-	icon: z.string().optional(),
-	description: z.string().optional(),
-	estimatedTime: z.number().positive().optional()
-});
-
-export const MenuUnitSchema = z.object({
-	unitNumber: z.number().int().positive(),
-	title: z.string().min(1, "Unit title is required"),
-	icon: z.string().optional(),
-	technologyUnit: z.string().min(1, "Technology unit is required"),
-	chapters: z
-		.array(
-			z.object({
-				id: z.string().min(1, "Chapter ID is required"),
-				title: z.string().min(1, "Chapter title is required"),
-				type: z.enum(["overview", "lesson", "quiz", "study_guide", "exam", "project"]),
-				path: z.string().min(1, "Chapter path is required")
-			})
-		)
-		.min(1, "Unit must have at least one chapter")
-});
-
-export const MenuStructureSchema = z.object({
-	units: z.array(MenuUnitSchema).min(1, "Menu must have at least one unit"),
-	metadata: z.object({
-		generatedAt: z.iso.datetime(),
-		totalUnits: z.number().int().positive(),
-		totalChapters: z.number().int().positive()
-	})
-});
-
-/**
- * Scaffolding and generation schemas
- */
-
-export const ScaffoldingArgsSchema = z.object({
-	unit: z
-		.string()
-		.min(1, "Unit name is required")
-		.regex(/^[\w-]+$/, "Unit name must be alphanumeric with hyphens"),
-	type: z.enum(["lesson", "quiz", "exam", "study_guide", "project"]),
-	id: z
-		.string()
-		.min(1, "ID is required")
-		.regex(/^[\w-]+$/, "ID must be alphanumeric with hyphens")
-});
-
-export const ScaffoldingStatsSchema = z.object({
-	totalChapters: z.number().int().min(0),
-	existingFiles: z.number().int().min(0),
-	newFiles: z.number().int().min(0),
-	orphanFiles: z.array(z.string()),
-	errors: z.array(z.string())
-});
-
-export const ContentGenerationResultSchema = z.object({
-	success: z.boolean(),
-	filePath: z.string().optional(),
-	stats: ScaffoldingStatsSchema.optional(),
-	errors: z.array(z.string()).optional()
-});
-
-export const SafetyCheckResultSchema = z.object({
-	canProceed: z.boolean(),
-	requiresForce: z.boolean(),
-	warning: z.string().optional(),
-	error: z.string().optional(),
-	currentStatus: z.enum(["scaffold", "draft", "final"]).optional()
-});
-
-/**
- * Search and indexing schemas
- */
-
-export const SearchableItemSchema = z.object({
-	id: z.string().min(1, "Search item ID is required"),
-	title: z.string().min(1, "Search item title is required"),
-	description: z.string(),
-	content: z.string(),
-	type: z.enum(["lesson", "quiz", "study_guide", "exam", "project"]),
-	keywords: z.array(z.string()),
-	nav: z.object({
-		unit: z.string(),
-		chapter: z.string(),
-		path: z.string().min(1, "Navigation path is required")
-	}),
-	metadata: z
-		.object({
-			difficulty: z.enum(["beginner", "intermediate", "advanced"]),
-			estimatedTime: z.number().positive().optional(),
-			tags: z.array(z.string()).optional()
-		})
-		.optional()
-});
-
-/**
- * Validation configuration schema
- */
-export const ValidationConfigSchema = z.object({
-	enableMermaidValidation: z.boolean().default(true),
-	enableBusinessRules: z.boolean().default(true),
-	enableTypeValidation: z.boolean().default(true),
-	skipValidationInTests: z.boolean().default(false)
-});
-
-/**
- * Repository configuration schema
- */
-export const RepositoryConfigSchema = z.object({
-	mode: z.enum(["safe", "force", "backup"]).default("safe"),
-	createBackups: z.boolean().default(true),
-	validateBeforeWrite: z.boolean().default(true),
-	respectContentStatus: z.boolean().default(true),
-	backupDirectory: z.string().default("tmp/backups")
-});
-
-/**
- * Schema registry for easy access
+ * Schema registry for educational content validation
+ * Contains ONLY schemas for user-created educational content.
+ *
+ * Note: Internal CLI schemas (scaffolding, configuration, etc.) are now
+ * defined locally in their respective scripts, not here.
  */
 export const CONTENT_SCHEMAS = {
 	// Base schemas (TASK 7B: Union-based)
@@ -596,7 +507,9 @@ export const CONTENT_SCHEMAS = {
 	RichTextSection: RichTextSectionSchema,
 	RichTextDocument: RichTextDocumentSchema,
 	// Other base schemas
-	ContentMetadata: ContentMetadataSchema,
+	EducationalFields: EducationalFieldsSchema,
+	NavigationMetadata: NavigationMetadataSchema,
+	ContentMetadata: NavigationMetadataSchema,
 	BaseContent: BaseContentSchema,
 
 	// Content blocks
@@ -628,25 +541,7 @@ export const CONTENT_SCHEMAS = {
 	StudyGuideContent: StudyGuideContentSchema,
 	ExamContent: ExamContentSchema,
 	ProjectContent: ProjectContentSchema,
-	AnyContent: AnyContentSchema,
-
-	// Navigation
-	NavigationItem: NavigationItemSchema,
-	MenuUnit: MenuUnitSchema,
-	MenuStructure: MenuStructureSchema,
-
-	// Scaffolding
-	ScaffoldingArgs: ScaffoldingArgsSchema,
-	ScaffoldingStats: ScaffoldingStatsSchema,
-	ContentGenerationResult: ContentGenerationResultSchema,
-	SafetyCheckResult: SafetyCheckResultSchema,
-
-	// Search
-	SearchableItem: SearchableItemSchema,
-
-	// Configuration
-	ValidationConfig: ValidationConfigSchema,
-	RepositoryConfig: RepositoryConfigSchema
+	AnyContent: AnyContentSchema
 } as const;
 
 /**

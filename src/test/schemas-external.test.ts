@@ -11,8 +11,9 @@
  * - Validate real content examples against schemas
  */
 
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { readFileSync, existsSync, mkdirSync, rmSync } from "fs";
+import { describe, it, expect, beforeAll, afterEach } from "vitest";
+import { ExtendedTestSetup } from "./helpers/test-setup.js";
+import { readFileSync, existsSync, mkdirSync } from "fs";
 import { join } from "path";
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
@@ -21,14 +22,13 @@ import { JsonSchemaGenerator } from "../scripts/generate-schemas.js";
 /**
  * Test setup class for test isolation
  */
-class TestSetup {
-	public tempDir: string;
+class SchemasExternalTestSetup extends ExtendedTestSetup {
 	public schemaPath: string;
 
 	constructor(testSuiteId: string = "external-validation") {
-		const timestamp = Date.now();
-		const uniqueId = `${testSuiteId}-${timestamp}`;
-		this.tempDir = join(process.cwd(), "tmp", `test-schema-${uniqueId}`);
+		// Use standardized path structure: ./tmp/test/unit/scripts/{name}-{timestamp}
+		super("scripts", `schemas-external-${testSuiteId}`);
+		this.tempDir = this.getTempDir();
 		this.schemaPath = join(this.tempDir, "content-schemas.json");
 	}
 
@@ -37,22 +37,16 @@ class TestSetup {
 			mkdirSync(this.tempDir, { recursive: true });
 		}
 	}
-
-	cleanup(): void {
-		if (existsSync(this.tempDir)) {
-			rmSync(this.tempDir, { recursive: true, force: true });
-		}
-	}
 }
 
 describe("External Schema Validation with AJV", () => {
-	let testSetup: TestSetup;
+	let testSetup: SchemasExternalTestSetup;
 	let ajv: Ajv;
 	let generatedSchema: Record<string, unknown>;
 
 	beforeAll(async () => {
 		// Setup isolated test environment
-		testSetup = new TestSetup();
+		testSetup = new SchemasExternalTestSetup();
 		testSetup.setup();
 
 		// Generate schema in temporary directory
@@ -126,8 +120,9 @@ describe("External Schema Validation with AJV", () => {
 			expect(refSchema).toBeDefined();
 		} else if (contentMetadata.properties) {
 			// Direct properties - this is what we expect after improved conversion
+			// ContentMetadata is now NavigationMetadata with id, unitId, chapterNumber, type
 			const properties = contentMetadata.properties as Record<string, unknown>;
-			expect(properties).toHaveProperty("title");
+			expect(properties).toHaveProperty("id");
 		}
 
 		// At minimum, verify the schema compiles and can validate
@@ -275,11 +270,6 @@ describe("External Schema Validation with AJV", () => {
 	// INTEGRATION TESTS: Real-world usage scenarios
 	// ============================================================================
 
-	afterAll(() => {
-		// Cleanup test environment
-		testSetup.cleanup();
-	});
-
 	it("should support validation of content from external sources", () => {
 		const definitions = generatedSchema.definitions as Record<string, unknown>;
 
@@ -297,5 +287,10 @@ describe("External Schema Validation with AJV", () => {
 
 		// Should not throw
 		expect(() => validate(externalContent)).not.toThrow();
+	});
+
+	afterEach((context) => {
+		// Cleanup test environment
+		testSetup.cleanupIfPassed(context);
 	});
 });

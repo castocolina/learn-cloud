@@ -40,15 +40,9 @@ import {
 	unlinkSync
 } from "fs";
 import { join } from "path";
-import { ValidationService } from "../lib/services/ValidationService.js";
-import { RepositoryService } from "../lib/services/RepositoryService.js";
 import { ContentSafetyService } from "../lib/services/ContentSafetyService.js";
+import { ContentCore } from "../lib/services/ContentCore.js";
 import { parseJsonSafely } from "../lib/utils/validation-utils.js";
-import {
-	generateContentId
-	// parseContentId, parseFilePath reserved for future use in content queries
-} from "../lib/utils/content-identifiers.js";
-import { SETTINGS } from "$config/settings.js";
 import type {
 	CliExecutionResult,
 	ContentInventoryItem,
@@ -63,6 +57,11 @@ import type {
 	SupportedFormat,
 	ChapterType
 } from "$types";
+import {
+	generateContentId
+	// parseContentId, parseFilePath reserved for future use in content queries
+} from "../lib/utils/content-identifiers.js";
+import { SETTINGS } from "$config/settings.js";
 
 // ============================================================================
 // CONTENT CREATOR CLI - ENHANCED UX WITH FORMAT SUPPORT
@@ -217,148 +216,6 @@ class FormatProcessor {
 	 */
 	static isFormatSupported(format: string): format is SupportedFormat {
 		return ["plain", "json", "yaml", "yml"].includes(format);
-	}
-}
-
-// ============================================================================
-// CONTENT CORE API CLASS
-// ============================================================================
-
-/**
- * ContentCore - Core API for content validation and persistence
- *
- * Provides the central service layer for content operations, including
- * validation, safety checks, and file operations. This class acts as the
- * state machine for content management and can be called by external scripts.
- */
-export class ContentCore {
-	private validationService: ValidationService;
-	private repositoryService: RepositoryService;
-	private config = SETTINGS.scripts.contentCreator;
-	private commonConfig = SETTINGS.scripts.common;
-
-	constructor() {
-		this.validationService = new ValidationService({
-			enableMermaidValidation: true,
-			enableBusinessRules: true,
-			enableTypeValidation: true,
-			skipValidationInTests: false
-		});
-		this.repositoryService = new RepositoryService({
-			mode: "safe",
-			createBackups: true,
-			validateBeforeWrite: true,
-			respectContentStatus: true,
-			backupDirectory: this.config.repository.backupDirectory
-		});
-	}
-
-	/**
-	 * Process generated content from external sources (e.g., scaffold-generator)
-	 * This is the main entry point for the content state machine
-	 */
-	async processGeneratedContent(
-		filePath: string,
-		content: Record<string, unknown>,
-		options: {
-			mode?: "safe" | "force";
-			createBackups?: boolean;
-		} = {}
-	): Promise<{ success: boolean; error?: string }> {
-		try {
-			// Validate content using ValidationService
-			const validationResult = await this.validationService.validateMermaidContent(
-				JSON.stringify(content)
-			);
-
-			if (!validationResult.success) {
-				return {
-					success: false,
-					error: `Content validation failed: ${validationResult.errors.join("; ")}`
-				};
-			}
-
-			// Write content using RepositoryService
-			const writeResult = await this.repositoryService.writeFormattedContent(filePath, content, {
-				mode: options.mode || "safe",
-				createBackups: options.createBackups ?? true
-			});
-
-			return writeResult;
-		} catch (error) {
-			return {
-				success: false,
-				error: error instanceof Error ? error.message : String(error)
-			};
-		}
-	}
-
-	/**
-	 * Validate content without writing (used by validate command)
-	 */
-	async validateContent(content: Record<string, unknown>): Promise<{
-		success: boolean;
-		errors: string[];
-		warnings?: string[];
-	}> {
-		return await this.validationService.validateMermaidContent(JSON.stringify(content));
-	}
-
-	/**
-	 * Check safety before write/delete operations
-	 */
-	async checkSafety(filePath: string): Promise<{
-		canProceed: boolean;
-		error?: string;
-		requiresForce?: boolean;
-	}> {
-		return await this.repositoryService.checkSafetyBeforeWrite(filePath);
-	}
-
-	/**
-	 * Update existing content with merge capability
-	 */
-	async updateContent(
-		filePath: string,
-		updateData: Record<string, unknown>,
-		options: {
-			mode?: "safe" | "force";
-			createBackups?: boolean;
-		} = {}
-	): Promise<{ success: boolean; error?: string }> {
-		try {
-			// Read existing content
-			const existingContent = this.readContentFromFile(filePath);
-
-			// Merge content
-			const mergedContent = { ...existingContent, ...updateData };
-
-			// Process merged content
-			return await this.processGeneratedContent(filePath, mergedContent, options);
-		} catch (error) {
-			return {
-				success: false,
-				error: error instanceof Error ? error.message : String(error)
-			};
-		}
-	}
-
-	/**
-	 * Read content from file path
-	 */
-	private readContentFromFile(filePath: string): Record<string, unknown> {
-		try {
-			const content = readFileSync(filePath, "utf-8");
-			const result = parseJsonSafely<Record<string, unknown>>(content);
-			if (!result.isValid) {
-				throw new Error(`Invalid JSON content: ${result.error}`);
-			}
-			return result.data!;
-		} catch (error) {
-			throw new Error(
-				`Failed to read file ${filePath}: ${error instanceof Error ? error.message : String(error)}`
-			);
-		}
 	}
 }
 
@@ -612,23 +469,7 @@ export class ContentCreatorCLI {
 				console.log(`📍 Internal mapping: ${outputPath}`);
 			}
 
-			// Perform safety checks before creation
-			const safetyResult = ContentSafetyService.checkOperation("create", outputPath, {
-				dryRun: options.dryRun,
-				forceOverwrite: options.forceOverwrite,
-				verbose: options.verbose
-			});
-
-			if (!safetyResult.success) {
-				ContentSafetyService.displaySafetyResult(safetyResult, options);
-				return { success: false, error: safetyResult.message || "Safety check failed" };
-			}
-
-			// Display safety warnings if any
-			if (safetyResult.warning) {
-				ContentSafetyService.displaySafetyResult(safetyResult, options);
-			}
-
+			// Safety checks are handled by ContentCore
 			if (options.dryRun) {
 				console.log("🔍 DRY RUN MODE - Content validation only");
 				// Validate content
@@ -746,25 +587,7 @@ export class ContentCreatorCLI {
 				try {
 					console.log(`\n🎯 Processing: ${filePath}`);
 
-					// Perform safety checks
-					const safetyResult = ContentSafetyService.checkOperation("update", filePath, {
-						dryRun: options.dryRun,
-						forceOverwrite: options.forceOverwrite,
-						verbose: options.verbose
-					});
-
-					if (!safetyResult.success) {
-						ContentSafetyService.displaySafetyResult(safetyResult, options);
-						console.error(`   ❌ SKIPPED: ${safetyResult.message}`);
-						errorCount++;
-						continue;
-					}
-
-					// Display safety warnings if any
-					if (safetyResult.warning) {
-						ContentSafetyService.displaySafetyResult(safetyResult, options);
-					}
-
+					// Safety checks are handled by ContentCore
 					if (options.dryRun) {
 						console.log("   🔍 DRY RUN - Would update with:");
 						console.log(`   ${JSON.stringify(updateData, null, 2)}`);
@@ -1405,29 +1228,19 @@ export class ContentCreatorCLI {
 
 			for (const item of itemsToDelete) {
 				try {
-					// Perform safety checks using ContentSafetyService
-					const safetyResult = ContentSafetyService.checkOperation("delete", item.filePath, {
-						dryRun: options.dryRun,
-						forceOverwrite: options.forceOverwrite,
-						verbose: true
+					// Safety checks are handled by ContentCore
+					// Use ContentCore for deletion
+					const result = await this.contentCore.deleteContent(item.filePath, {
+						mode: options.forceOverwrite ? "force" : "safe"
 					});
 
-					if (!safetyResult.success) {
-						ContentSafetyService.displaySafetyResult(safetyResult, options);
-						console.error(`   ❌ SKIPPED: ${safetyResult.message}`);
+					if (result.success) {
+						console.log(`✅ Deleted: ${item.filePath}`);
+						deletedCount++;
+					} else {
+						console.error(`   ❌ SKIPPED: ${result.error}`);
 						errorCount++;
-						continue;
 					}
-
-					// Display safety warnings if any
-					if (safetyResult.warning) {
-						ContentSafetyService.displaySafetyResult(safetyResult, options);
-					}
-
-					// Use Node.js fs to delete the file
-					unlinkSync(item.filePath);
-					console.log(`✅ Deleted: ${item.filePath}`);
-					deletedCount++;
 				} catch (error) {
 					console.error(
 						`❌ Failed to delete ${item.filePath}: ${error instanceof Error ? error.message : String(error)}`

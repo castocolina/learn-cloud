@@ -70,6 +70,12 @@ vite.config.ts.timestamp-*
 # Only unit01 chapters 00-01 are versioned for CI/CD until content migration complete
 # TODO: Remove these exceptions after TASK 9 (Content Migration) is finished
 # Reference: PLAN-TODO-FEATURES.md TASK 9
+
+# Ignore all files in book/ and its subdirectories
+src/data/book/**/*
+
+# But track these specific files
+!src/data/book/overview.ts
+!src/data/book/unit01/
 !src/data/book/unit01/01_00_*.ts
 !src/data/book/unit01/01_01_*.ts
-src/data/book/

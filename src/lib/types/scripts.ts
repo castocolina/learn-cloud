@@ -239,9 +239,9 @@ export interface ValidationConfig {
 }
 
 /**
- * Result of validation operation
+ * Result of schema validation operation (Zod, etc.)
  */
-export interface ValidationResult {
+export interface SchemaValidationResult {
 	success: boolean;
 	errors: string[];
 	warnings: string[];
@@ -251,6 +251,18 @@ export interface ValidationResult {
 // ============================================================================
 // REPOSITORY SERVICE TYPES
 // ============================================================================
+
+/**
+ * Safety check result for content protection operations
+ * Used by RepositoryService to determine if file operations can proceed
+ */
+export interface SafetyCheckResult {
+	canProceed: boolean;
+	requiresForce: boolean;
+	warning?: string;
+	error?: string;
+	currentStatus?: ContentStatus;
+}
 
 /**
  * Write operation options for RepositoryService
@@ -284,7 +296,7 @@ export interface FileOperationResult {
 	backupPath?: string;
 	error?: string;
 	warnings?: string[];
-	validationResults?: ValidationResult;
+	validationResults?: SchemaValidationResult;
 }
 
 /**

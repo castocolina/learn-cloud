@@ -29,6 +29,7 @@
 	import RichParagraph from "./RichParagraph.svelte";
 	import CodeBlock from "$lib/components/shared/CodeBlock.svelte";
 	import MermaidDiagram from "$lib/components/shared/MermaidDiagram.svelte";
+	import Callout from "$lib/components/content/Callout.svelte";
 
 	let { blocks, class: className }: RichTextViewerProps = $props();
 
@@ -116,23 +117,7 @@
 			{/if}
 		{:else if isCalloutBlock(block)}
 			<!-- Callout Block: Highlighted information boxes -->
-			<div class="content-block content-block-callout content-callout-{block.calloutType}">
-				{#if block.title}
-					<div class="content-block-header">
-						<span class="callout-icon">
-							{#if block.calloutType === "info"}ℹ️
-							{:else if block.calloutType === "warning"}⚠️
-							{:else if block.calloutType === "danger"}❌
-							{:else if block.calloutType === "success"}✅
-							{:else if block.calloutType === "tip"}💡
-							{/if}
-						</span>
-						<h4 class="content-block-title">{block.title}</h4>
-					</div>
-				{/if}
-				<!-- Task 7B - Secure rendering without {@html} -->
-				<RichParagraph nodes={block.content} class="callout-content" />
-			</div>
+			<Callout {block} />
 		{:else if isImageBlock(block)}
 			<!-- Image Block: Images with captions -->
 			<figure class="content-block content-block-image">

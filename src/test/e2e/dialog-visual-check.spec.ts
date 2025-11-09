@@ -2,7 +2,7 @@ import { test } from "@playwright/test";
 
 test("Visual check - take screenshots", async ({ page }) => {
 	await page.setViewportSize({ width: 1280, height: 900 });
-	await page.goto("http://localhost:5173/showcase/dialog");
+	await page.goto("/showcase/dialog");
 	await page.waitForLoadState("networkidle");
 
 	console.log("\n=== DIALOG VISUAL CHECK ===\n");

@@ -2,7 +2,7 @@ import { test } from "@playwright/test";
 
 test("Long content dialog visual inspection", async ({ page }) => {
 	await page.setViewportSize({ width: 1280, height: 900 });
-	await page.goto("http://localhost:5173/showcase/dialog");
+	await page.goto("/showcase/dialog");
 	await page.waitForLoadState("networkidle");
 
 	// Open long content dialog

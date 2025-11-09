@@ -16,6 +16,7 @@
  */
 
 import { test, expect, type Page } from "@playwright/test";
+import { waitForStyleChange } from "./helpers/wait-utilities";
 
 // ============================================================================
 // Test Configuration
@@ -34,7 +35,6 @@ const DESKTOP_VIEWPORT = { width: 1280, height: 720 };
 async function waitForPageContent(page: Page) {
 	// Wait for page to fully load (same strategy as breadcrumb-sheet tests)
 	await page.waitForLoadState("networkidle");
-	await page.waitForTimeout(500);
 
 	// Wait for main heading to appear (indicates page content is loaded)
 	await page.waitForSelector("h1", { timeout: 10000 });
@@ -45,8 +45,7 @@ async function waitForPageContent(page: Page) {
 		const main = document.querySelector("main");
 		if (main) main.scrollIntoView({ behavior: "instant" });
 	});
-	// Additional wait for IconGrids to fully render
-	await page.waitForTimeout(300);
+	// IconGrids are already rendered when selector above completes
 }
 
 // ============================================================================
@@ -144,7 +143,9 @@ test.describe("IconGrid - Desktop Viewport", () => {
 		// Hover over icon
 		await iconButton.hover();
 		// Wait for CSS hover state to be applied
-		await page.waitForTimeout(100);
+		await waitForStyleChange(iconButton, "backgroundColor", (value) => value !== bgColorBefore, {
+			timeout: 1000
+		});
 
 		// Get background color after hover
 		const bgColorAfter = await iconButton.evaluate(
@@ -373,10 +374,7 @@ test.describe("IconGrid - Visual Regression", () => {
 			.first();
 		await copyButton.click();
 
-		// Wait for success state transition
-		await page.waitForTimeout(100);
-
-		// Take screenshot of success state
+		// Screenshot will auto-wait for success state to stabilize
 		await expect(copyButton).toHaveScreenshot("icon-grid-success.png");
 	});
 });

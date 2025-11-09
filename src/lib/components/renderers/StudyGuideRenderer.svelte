@@ -42,9 +42,9 @@
 
 			<div class="renderer-content">
 				<!-- FlipCards Grid -->
-				{#if content.studyGuide.flipCards && content.studyGuide.flipCards.length > 0}
+				{#if content.flipCards && content.flipCards.length > 0}
 					<div class="flashcard-grid">
-						{#each content.studyGuide.flipCards as card (card.id)}
+						{#each content.flipCards as card (card.id)}
 							<FlipCard {card} showMetadata={true} showProgress={true} />
 						{/each}
 					</div>

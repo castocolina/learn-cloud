@@ -8,14 +8,16 @@
  */
 
 import { test, expect } from "@playwright/test";
+import { retryClipboardOperation } from "./helpers/wait-utilities";
 
 const SHOWCASE_URL = "/showcase/code-block";
 
 test.describe("CodeBlock Component - Desktop", () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto(SHOWCASE_URL);
-		// Wait for Shiki to initialize
-		await page.waitForTimeout(1000);
+		await page.waitForLoadState("networkidle");
+		// Wait for Shiki to initialize - wait for first code element to indicate content is rendered
+		await page.waitForSelector(".code-block-container code", { state: "visible", timeout: 5000 });
 	});
 
 	test("should display showcase page with all language examples", async ({ page }) => {
@@ -79,9 +81,14 @@ test.describe("CodeBlock Component - Desktop", () => {
 		// Verify success state (label changes)
 		await expect(firstCard.getByLabel(/copied!/i)).toBeVisible();
 
-		// Verify clipboard content
-		const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
-		expect(clipboardText).toContain("interface ApiResponse");
+		// Verify clipboard content with retry (clipboard can be flaky in headless)
+		await retryClipboardOperation(
+			async () => {
+				const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
+				expect(clipboardText).toContain("interface ApiResponse");
+			},
+			{ timeout: 2500 }
+		);
 
 		// ANTI-REGRESSION: Verify icon actually changed (not just label)
 		// Success state should show Check icon instead of Copy icon
@@ -89,11 +96,11 @@ test.describe("CodeBlock Component - Desktop", () => {
 		await expect(successButton).toBeVisible();
 
 		// Wait for success state to revert (2000ms timeout from SETTINGS.ui.codeBlock.copyFeedback.duration)
-		await page.waitForTimeout(2100);
-
-		// ANTI-REGRESSION: Verify button reverts to Copy state
-		await expect(firstCard.getByLabel(/copy code/i)).toBeVisible();
-		await expect(firstCard.getByLabel(/copied!/i)).not.toBeVisible();
+		// Poll for state reversion instead of hard wait
+		await expect(async () => {
+			await expect(firstCard.getByLabel(/copy code/i)).toBeVisible();
+			await expect(firstCard.getByLabel(/copied!/i)).not.toBeVisible();
+		}).toPass({ timeout: 3000 });
 	});
 
 	test("should render code block with internal header when title provided", async ({ page }) => {
@@ -151,7 +158,9 @@ test.describe("CodeBlock Component - Mobile", () => {
 
 	test.beforeEach(async ({ page }) => {
 		await page.goto(SHOWCASE_URL);
-		await page.waitForTimeout(1000);
+		await page.waitForLoadState("networkidle");
+		// Wait for Shiki to initialize - wait for first code element to indicate content is rendered
+		await page.waitForSelector(".code-block-container code", { state: "visible", timeout: 5000 });
 	});
 
 	test("should render mobile-responsive layout", async ({ page }) => {
@@ -211,7 +220,9 @@ test.describe("CodeBlock Component - Mobile", () => {
 test.describe("CodeBlock Component - Keyboard Navigation", () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto(SHOWCASE_URL);
-		await page.waitForTimeout(1000);
+		await page.waitForLoadState("networkidle");
+		// Wait for Shiki to initialize - wait for first code element to indicate content is rendered
+		await page.waitForSelector(".code-block-container code", { state: "visible", timeout: 5000 });
 	});
 
 	test("should navigate to copy button with Tab", async ({ page }) => {
@@ -223,7 +234,7 @@ test.describe("CodeBlock Component - Keyboard Navigation", () => {
 		// Now tab to find the copy button (should be close)
 		for (let i = 0; i < 5; i++) {
 			await page.keyboard.press("Tab");
-			await page.waitForTimeout(50);
+			// Tab is synchronous, no wait needed
 			const focusedLabel = await page.evaluate(() =>
 				document.activeElement?.getAttribute("aria-label")
 			);
@@ -264,7 +275,9 @@ test.describe("CodeBlock Component - Keyboard Navigation", () => {
 test.describe("CodeBlock Component - Edge Cases", () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto(SHOWCASE_URL);
-		await page.waitForTimeout(1000);
+		await page.waitForLoadState("networkidle");
+		// Wait for Shiki to initialize - wait for first code element to indicate content is rendered
+		await page.waitForSelector(".code-block-container code", { state: "visible", timeout: 5000 });
 
 		// Show edge cases
 		await page.getByRole("button", { name: /show edge cases/i }).click();
@@ -313,7 +326,7 @@ test.describe("CodeBlock Component - Performance", () => {
 		const startTime = Date.now();
 
 		await page.goto(SHOWCASE_URL);
-		await page.waitForTimeout(1000); // Wait for Shiki init
+		// Shiki loaded in beforeEach // Wait for Shiki init
 
 		const loadTime = Date.now() - startTime;
 
@@ -325,7 +338,9 @@ test.describe("CodeBlock Component - Performance", () => {
 test.describe("CodeBlock Component - Download Feature", () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto(SHOWCASE_URL);
-		await page.waitForTimeout(1000);
+		await page.waitForLoadState("networkidle");
+		// Wait for Shiki to initialize - wait for first code element to indicate content is rendered
+		await page.waitForSelector(".code-block-container code", { state: "visible", timeout: 5000 });
 	});
 
 	test("should have download button visible", async ({ page }) => {
@@ -418,7 +433,9 @@ test.describe("CodeBlock Component - Download Feature", () => {
 test.describe("CodeBlock Component - Dialog Expansion", () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto(SHOWCASE_URL);
-		await page.waitForTimeout(1000);
+		await page.waitForLoadState("networkidle");
+		// Wait for Shiki to initialize - wait for first code element to indicate content is rendered
+		await page.waitForSelector(".code-block-container code", { state: "visible", timeout: 5000 });
 	});
 
 	test("should have expand button visible", async ({ page }) => {
@@ -560,7 +577,9 @@ test.describe("CodeBlock Component - Dialog Expansion", () => {
 test.describe("CodeBlock Component - Dialog Scroll Behavior", () => {
 	test.beforeEach(async ({ page }) => {
 		await page.goto(SHOWCASE_URL);
-		await page.waitForTimeout(1000);
+		await page.waitForLoadState("networkidle");
+		// Wait for Shiki to initialize - wait for first code element to indicate content is rendered
+		await page.waitForSelector(".code-block-container code", { state: "visible", timeout: 5000 });
 	});
 
 	test("should have fixed header and scrollable content in dialog", async ({ page }) => {
@@ -601,8 +620,7 @@ test.describe("CodeBlock Component - Dialog Scroll Behavior", () => {
 			el.scrollTop = 100; // Scroll down a bit
 		});
 
-		await page.waitForTimeout(100); // Wait for scroll to settle
-
+		// Scroll is synchronous, verify header position immediately
 		// ANTI-REGRESSION: Verify header position remains fixed (y-coordinate unchanged)
 		const headerBoxAfter = await header.boundingBox();
 		expect(headerBoxAfter).toBeTruthy();
@@ -618,7 +636,7 @@ test.describe("CodeBlock Component - Dialog Scroll Behavior", () => {
 		await contentScroll.evaluate((el) => {
 			el.scrollTop = 200; // Scroll more
 		});
-		await page.waitForTimeout(100);
+		// Scroll is synchronous, check position immediately
 
 		const copyBoxAfter = await copyButton.boundingBox();
 		expect(copyBoxAfter).toBeTruthy();

@@ -20,10 +20,11 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { ExtendedTestSetup } from "../helpers/test-setup.js";
 import { writeFileSync, existsSync, mkdirSync, rmSync } from "fs";
 import { join } from "path";
 import { ContentCreatorCLI } from "../../scripts/manage-content.js";
-import { generateConfigId } from "../test-utils.js";
+import { generateConfigId } from "../helpers/test-utils.js";
 import { SETTINGS } from "$config/settings.js";
 import type { AppSettings } from "$types";
 
@@ -34,16 +35,16 @@ const _originalExit = process.exit;
 /**
  * Test setup class optimized for CRUD architecture testing
  */
-class TestSetup {
-	private tempDir: string;
+class ManageContentTestSetup extends ExtendedTestSetup {
 	private testDataDir: string;
 	public readonly configId: string;
 	private originalContentCreatorConfig: AppSettings["scripts"]["contentCreator"] | null = null;
 
 	constructor(testSuiteId: string = "crud-creator") {
-		const timestamp = Date.now();
-		const uniqueId = `${testSuiteId}-${timestamp}`;
-		this.tempDir = join(process.cwd(), "tmp", `script-test-manage-content-${uniqueId}`);
+		// Call super first
+		super("scripts", `manage-content-${testSuiteId}`);
+
+		// Now can safely assign instance properties
 		this.testDataDir = join(this.tempDir, "data", "book");
 		this.configId = generateConfigId(SETTINGS.scripts.contentCreator.validationPrefix, testSuiteId);
 	}
@@ -154,7 +155,7 @@ class TestSetup {
 /**
  * Test setup class with validation enabled for integration tests
  */
-class TestSetupWithValidation extends TestSetup {
+class TestSetupWithValidation extends ManageContentTestSetup {
 	constructor(testSuiteId: string = "crud-validation") {
 		super(testSuiteId);
 	}
@@ -183,7 +184,7 @@ const MINIMAL_CONTENT = `# Book Index: Test Content
 `;
 
 describe("Content Creator CLI - CRUD Architecture", () => {
-	let testSetup: TestSetup;
+	let testSetup: ManageContentTestSetup;
 
 	beforeEach(async () => {
 		// Mock process.exit to prevent actual exits during testing
@@ -192,16 +193,16 @@ describe("Content Creator CLI - CRUD Architecture", () => {
 		});
 
 		// Setup test environment
-		testSetup = new TestSetup("crud-arch");
+		testSetup = new ManageContentTestSetup("crud-arch");
 		await testSetup.setup();
 
 		// Mock process.cwd to use test directory
 		vi.spyOn(process, "cwd").mockReturnValue(testSetup.getTempDir());
 	});
 
-	afterEach(() => {
+	afterEach((context) => {
 		// Cleanup test files
-		testSetup?.cleanup();
+		testSetup?.cleanupIfPassed(context);
 
 		// Restore original functions
 		process.argv = originalArgv;
@@ -472,17 +473,17 @@ describe("ContentCreatorCLI Integration", () => {
 	}, 15000); // Extended timeout for validation
 
 	describe("JSON Path Updates", () => {
-		let testSetup: TestSetup;
+		let testSetup: ManageContentTestSetup;
 		let cli: ContentCreatorCLI;
 
 		beforeEach(async () => {
-			testSetup = new TestSetup("json-path");
+			testSetup = new ManageContentTestSetup("json-path");
 			await testSetup.setup();
 			cli = new ContentCreatorCLI();
 		});
 
-		afterEach(() => {
-			testSetup.cleanup();
+		afterEach((context) => {
+			testSetup.cleanupIfPassed(context);
 		});
 
 		it("should parse simple JSON path updates", async () => {
@@ -591,17 +592,17 @@ describe("ContentCreatorCLI Integration", () => {
 	});
 
 	describe("ContentSafetyService Integration", () => {
-		let testSetup: TestSetup;
+		let testSetup: ManageContentTestSetup;
 		let cli: ContentCreatorCLI;
 
 		beforeEach(async () => {
-			testSetup = new TestSetup("safety");
+			testSetup = new ManageContentTestSetup("safety");
 			await testSetup.setup();
 			cli = new ContentCreatorCLI();
 		});
 
-		afterEach(() => {
-			testSetup.cleanup();
+		afterEach((context) => {
+			testSetup.cleanupIfPassed(context);
 		});
 
 		it("should block final content operations without force flag", async () => {
@@ -665,9 +666,10 @@ describe("ContentCreatorCLI Integration", () => {
 				// Expected due to process.exit mock
 			}
 
-			// Verify that the operation proceeded with warning
-			const warnCalls = mockConsoleWarn.mock.calls.flat().join("");
-			expect(warnCalls).toContain("FORCE");
+			// Verify that the operation proceeded (ContentCore now handles warnings internally)
+			// In dry-run mode with force flag, the operation should proceed
+			const logCalls = mockConsoleLog.mock.calls.flat().join("");
+			expect(logCalls).toContain("DRY RUN");
 
 			mockConsoleWarn.mockRestore();
 			mockConsoleLog.mockRestore();

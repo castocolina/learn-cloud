@@ -19,17 +19,17 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync } from "fs";
 import { join } from "path";
 import { FlatNavGenerator } from "../../scripts/flatnav-generator.js";
 import type { AppSettings } from "$types";
-import { generateConfigId } from "../test-utils.js";
+import { generateConfigId } from "../helpers/test-utils.js";
 import { SETTINGS } from "$config/settings.js";
+import { ExtendedTestSetup } from "../helpers/test-setup.js";
 
 const { flatNav: flatNavSettings } = SETTINGS.scripts;
 
 /**
  * Test setup class for test isolation and dynamic configuration
- * By default disables validation for faster test execution
+ * Extends ExtendedTestSetup to use standardized conditional cleanup
  */
-class TestSetup {
-	public tempDir: string;
+class FlatNavTestSetup extends ExtendedTestSetup {
 	public testInputDir: string;
 	public testOutputDir: string;
 	public readonly configId: string;
@@ -38,11 +38,10 @@ class TestSetup {
 	protected enableValidation: boolean;
 
 	constructor(testSuiteId: string = "main", enableValidation: boolean = false) {
-		const timestamp = Date.now();
-		const uniqueId = `${testSuiteId}-${timestamp}`;
-		this.tempDir = join(process.cwd(), "tmp", `test-flatnav-${uniqueId}`);
-		this.testInputDir = this.tempDir;
-		this.testOutputDir = join(this.tempDir, "output");
+		// Use standardized path structure: ./tmp/test/unit/scripts/{name}-{timestamp}
+		super("scripts", `flatnav-${testSuiteId}`);
+		this.testInputDir = this.getTempDir();
+		this.testOutputDir = join(this.getTempDir(), "output");
 		this.configId = generateConfigId(flatNavSettings.validationPrefix, testSuiteId);
 		this.inputPath = join(this.testInputDir, "content-menu.ts");
 		this.outputPath = join(this.testOutputDir, "flatnav.ts");
@@ -50,10 +49,10 @@ class TestSetup {
 	}
 
 	async setup(): Promise<void> {
-		// Create temp directories
-		if (!existsSync(this.tempDir)) {
-			mkdirSync(this.tempDir, { recursive: true });
-		}
+		// Call parent setup to create base temp directory
+		super.setup();
+
+		// Create output directory
 		if (!existsSync(this.testOutputDir)) {
 			mkdirSync(this.testOutputDir, { recursive: true });
 		}
@@ -100,21 +99,12 @@ class TestSetup {
 		// This method is kept for backward compatibility but not used with dependency injection
 		// The validation is now controlled via createGenerator() method
 	}
-
-	cleanup(): void {
-		// No need to restore global SETTINGS when using dependency injection
-		// Each test uses its own mocked settings instance
-
-		if (existsSync(this.tempDir)) {
-			rmSync(this.tempDir, { recursive: true, force: true });
-		}
-	}
 }
 
 /**
  * Test setup class with validation enabled for integration tests
  */
-class TestSetupWithValidation extends TestSetup {
+class TestSetupWithValidation extends FlatNavTestSetup {
 	constructor(testSuiteId: string = "validation") {
 		super(testSuiteId, true); // Enable validation
 	}
@@ -273,17 +263,18 @@ export const contentMenu: MenuStructure = {
 };`;
 
 describe("FlatNavGenerator", () => {
-	let testSetup: TestSetup;
+	let testSetup: FlatNavTestSetup;
 	let generator: FlatNavGenerator;
 
 	beforeEach(async () => {
-		testSetup = new TestSetup();
+		testSetup = new FlatNavTestSetup();
 		await testSetup.setup();
 		generator = testSetup.createGenerator();
 	});
 
-	afterEach(() => {
-		testSetup.cleanup();
+	afterEach((context) => {
+		// Conditional cleanup: only remove files if test passed
+		testSetup.cleanupIfPassed(context);
 	});
 
 	describe("Content Menu Loading", () => {
@@ -323,17 +314,16 @@ describe("FlatNavGenerator", () => {
 			const validationTestSetup = new TestSetupWithValidation("malformed");
 			await validationTestSetup.setup();
 
-			try {
-				const validationGenerator = validationTestSetup.createGenerator();
+			const validationGenerator = validationTestSetup.createGenerator();
 
-				const malformedContent = `export const contentMenu = { invalid syntax }`;
-				writeFileSync(validationTestSetup.inputPath, malformedContent, "utf-8");
+			const malformedContent = `export const contentMenu = { invalid syntax }`;
+			writeFileSync(validationTestSetup.inputPath, malformedContent, "utf-8");
 
-				const success = await validationGenerator.generate();
-				expect(success).toBe(false);
-			} finally {
-				validationTestSetup.cleanup();
-			}
+			const success = await validationGenerator.generate();
+			expect(success).toBe(false);
+
+			// Test passed - cleanup immediately
+			validationTestSetup.forceCleanup();
 		}, 10000);
 	});
 
@@ -735,29 +725,28 @@ export const contentMenu: MenuStructure = {
 		const validationTestSetup = new TestSetupWithValidation("complex");
 		await validationTestSetup.setup();
 
-		try {
-			writeFileSync(validationTestSetup.inputPath, complexContent, "utf-8");
+		writeFileSync(validationTestSetup.inputPath, complexContent, "utf-8");
 
-			const generator = validationTestSetup.createGenerator();
-			const success = await generator.generate();
+		const generator = validationTestSetup.createGenerator();
+		const success = await generator.generate();
 
-			expect(success).toBe(true);
-			expect(existsSync(validationTestSetup.outputPath)).toBe(true);
+		expect(success).toBe(true);
+		expect(existsSync(validationTestSetup.outputPath)).toBe(true);
 
-			const outputContent = readFileSync(validationTestSetup.outputPath, "utf-8");
+		const outputContent = readFileSync(validationTestSetup.outputPath, "utf-8");
 
-			// Verify all content types are properly ordered
-			expect(outputContent).toContain('chapterType: "overview"');
-			expect(outputContent).toContain('chapterType: "lesson"');
-			expect(outputContent).toContain('chapterType: "study_guide"');
-			expect(outputContent).toContain('chapterType: "quiz"');
-			expect(outputContent).toContain('chapterType: "project"');
-			expect(outputContent).toContain('chapterType: "exam"');
+		// Verify all content types are properly ordered
+		expect(outputContent).toContain('chapterType: "overview"');
+		expect(outputContent).toContain('chapterType: "lesson"');
+		expect(outputContent).toContain('chapterType: "study_guide"');
+		expect(outputContent).toContain('chapterType: "quiz"');
+		expect(outputContent).toContain('chapterType: "project"');
+		expect(outputContent).toContain('chapterType: "exam"');
 
-			// Verify sequential navigation
-			expect(outputContent).toContain("totalCount: 8"); // 7 chapters + 1 book overview
-		} finally {
-			validationTestSetup.cleanup();
-		}
+		// Verify sequential navigation
+		expect(outputContent).toContain("totalCount: 8"); // 7 chapters + 1 book overview
+
+		// Test passed - cleanup immediately
+		validationTestSetup.forceCleanup();
 	}, 30000); // Extended timeout for complex test with validation
 });

@@ -18,6 +18,7 @@
  */
 
 import { test, expect, type Page } from "@playwright/test";
+import { waitForFocusWithin } from "./helpers/wait-utilities";
 
 // ============================================================================
 // Test Configuration
@@ -542,13 +543,12 @@ test.describe("Dialog - Accessibility", () => {
 		await page.click('button:has-text("Store: Large")');
 		await waitForDialogOpen(page);
 
-		// Wait for focus to stabilize
-		await page.waitForTimeout(300);
+		// Wait for focus to move inside dialog
+		await waitForFocusWithin(page, '[role="dialog"][data-state="open"]', { timeout: 1000 });
 
-		// Tab a few times
+		// Tab a few times (Tab is synchronous, no wait needed)
 		for (let i = 0; i < 3; i++) {
 			await page.keyboard.press("Tab");
-			await page.waitForTimeout(50);
 		}
 
 		// Verify dialog exists (focus trap implementation needs work)
@@ -599,13 +599,13 @@ test.describe("Dialog - Regression Tests", () => {
 			await button.click({ delay: 50, force: true });
 		}
 
-		// Wait a bit for all operations to complete
-		await page.waitForTimeout(500);
-
-		// Should NOT have multiple dialogs open (0 or 1 is acceptable)
-		// Rapid clicks may toggle state, but shouldn't create duplicates
-		const dialogCount = await page.locator('[role="dialog"]').count();
-		expect(dialogCount).toBeLessThanOrEqual(1);
+		// Poll for dialog count to stabilize after rapid clicks
+		await expect(async () => {
+			const dialogCount = await page.locator('[role="dialog"]').count();
+			// Should NOT have multiple dialogs open (0 or 1 is acceptable)
+			// Rapid clicks may toggle state, but shouldn't create duplicates
+			expect(dialogCount).toBeLessThanOrEqual(1);
+		}).toPass({ timeout: 1500 });
 	});
 
 	test("should preserve content when switching between sizes", async ({ page }) => {

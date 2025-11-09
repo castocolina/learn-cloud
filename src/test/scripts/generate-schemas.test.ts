@@ -14,11 +14,12 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { readFileSync, existsSync, mkdirSync, rmSync } from "fs";
+import { ExtendedTestSetup } from "../helpers/test-setup.js";
+import { readFileSync, existsSync, mkdirSync } from "fs";
 import { join } from "path";
 import { JsonSchemaGenerator, JsonSchemaGeneratorCLI } from "../../scripts/generate-schemas.js";
 import { CONTENT_SCHEMAS } from "$lib/schemas/ContentSchemas.js";
-import { generateConfigId } from "../test-utils.js";
+import { generateConfigId } from "../helpers/test-utils.js";
 import { SETTINGS } from "$config/settings.js";
 
 const { schemas: schemasSettings } = SETTINGS.scripts;
@@ -26,15 +27,16 @@ const { schemas: schemasSettings } = SETTINGS.scripts;
 /**
  * Test setup class for test isolation and dynamic configuration
  */
-class TestSetup {
-	public tempDir: string;
+class GenerateSchemasTestSetup extends ExtendedTestSetup {
 	public testOutputFile: string;
 	public readonly configId: string;
 
 	constructor(testSuiteId: string = "schema-gen") {
+		// Use standardized path structure: ./tmp/test/unit/scripts/{name}-{timestamp}
+		super("scripts", `generate-schemas-${testSuiteId}`);
 		const timestamp = Date.now();
 		const uniqueId = `${testSuiteId}-${timestamp}`;
-		this.tempDir = join(process.cwd(), "tmp", `test-schema-gen-${uniqueId}`);
+		this.tempDir = this.getTempDir();
 		this.testOutputFile = join(this.tempDir, "content-schemas.json");
 		this.configId = generateConfigId(schemasSettings.validationPrefix, uniqueId);
 	}
@@ -45,12 +47,6 @@ class TestSetup {
 			mkdirSync(this.tempDir, { recursive: true });
 		}
 	}
-
-	cleanup(): void {
-		if (existsSync(this.tempDir)) {
-			rmSync(this.tempDir, { recursive: true, force: true });
-		}
-	}
 }
 
 // ============================================================================
@@ -58,17 +54,17 @@ class TestSetup {
 // ============================================================================
 
 describe("JsonSchemaGenerator - Schema Detection", () => {
-	let setup: TestSetup;
+	let setup: GenerateSchemasTestSetup;
 	let generator: JsonSchemaGenerator;
 
 	beforeEach(async () => {
-		setup = new TestSetup("detection");
+		setup = new GenerateSchemasTestSetup("detection");
 		await setup.setup();
 		generator = new JsonSchemaGenerator();
 	});
 
-	afterEach(() => {
-		setup.cleanup();
+	afterEach((context) => {
+		setup.cleanupIfPassed(context);
 	});
 
 	it("should detect all schemas from CONTENT_SCHEMAS object", () => {
@@ -149,17 +145,17 @@ describe("JsonSchemaGenerator - Schema Detection", () => {
 // ============================================================================
 
 describe("JsonSchemaGenerator - Consolidated Generation", () => {
-	let setup: TestSetup;
+	let setup: GenerateSchemasTestSetup;
 	let generator: JsonSchemaGenerator;
 
 	beforeEach(async () => {
-		setup = new TestSetup("generation");
+		setup = new GenerateSchemasTestSetup("generation");
 		await setup.setup();
 		generator = new JsonSchemaGenerator();
 	});
 
-	afterEach(() => {
-		setup.cleanup();
+	afterEach((context) => {
+		setup.cleanupIfPassed(context);
 	});
 
 	it("should generate consolidated schema file successfully", async () => {
@@ -300,15 +296,15 @@ describe("JsonSchemaGenerator - Consolidated Generation", () => {
 // ============================================================================
 
 describe("JsonSchemaGeneratorCLI - Command Interface", () => {
-	let setup: TestSetup;
+	let setup: GenerateSchemasTestSetup;
 
 	beforeEach(async () => {
-		setup = new TestSetup("cli");
+		setup = new GenerateSchemasTestSetup("cli");
 		await setup.setup();
 	});
 
-	afterEach(() => {
-		setup.cleanup();
+	afterEach((context) => {
+		setup.cleanupIfPassed(context);
 	});
 
 	it("should create CLI instance successfully", () => {
@@ -351,7 +347,7 @@ describe("JsonSchemaGenerator - Configuration Integration", () => {
 	});
 
 	it("should generate config ID correctly", () => {
-		const setup = new TestSetup("config-test");
+		const setup = new GenerateSchemasTestSetup("config-test");
 		expect(setup.configId).toContain(schemasSettings.validationPrefix);
 		// Config ID uses timestamp, so just verify it starts with the expected prefix
 		expect(setup.configId.startsWith(schemasSettings.validationPrefix)).toBe(true);
@@ -363,17 +359,17 @@ describe("JsonSchemaGenerator - Configuration Integration", () => {
 // ============================================================================
 
 describe("JsonSchemaGenerator - Output Validation", () => {
-	let setup: TestSetup;
+	let setup: GenerateSchemasTestSetup;
 	let generator: JsonSchemaGenerator;
 
 	beforeEach(async () => {
-		setup = new TestSetup("validation");
+		setup = new GenerateSchemasTestSetup("validation");
 		await setup.setup();
 		generator = new JsonSchemaGenerator();
 	});
 
-	afterEach(() => {
-		setup.cleanup();
+	afterEach((context) => {
+		setup.cleanupIfPassed(context);
 	});
 
 	it("should validate output schema structure", async () => {
@@ -445,21 +441,21 @@ describe("JsonSchemaGenerator - Output Validation", () => {
 // ============================================================================
 
 describe("JsonSchemaGenerator - Edge Cases", () => {
-	let setup: TestSetup;
+	let setup: GenerateSchemasTestSetup;
 	let generator: JsonSchemaGenerator;
 
 	beforeEach(async () => {
-		setup = new TestSetup("edge-cases");
+		setup = new GenerateSchemasTestSetup("edge-cases");
 		await setup.setup();
 		generator = new JsonSchemaGenerator();
 	});
 
-	afterEach(() => {
-		setup.cleanup();
+	afterEach((context) => {
+		setup.cleanupIfPassed(context);
 	});
 
 	it("should handle empty directory creation", async () => {
-		const deepOutputPath = join(setup.tempDir, "deep", "nested", "path", "schemas.json");
+		const deepOutputPath = join(setup.getTempDir(), "deep", "nested", "path", "schemas.json");
 
 		const result = await generator.generateConsolidatedSchema({
 			outputFile: deepOutputPath,
