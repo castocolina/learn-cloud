@@ -44,6 +44,417 @@ export type ContentMaxWidth = "prose" | "3xl" | "4xl" | "5xl" | "6xl" | "full";
 export type ContentPadding = "4" | "6" | "8" | "12" | "16";
 
 /**
+ * Content Display Settings - Educational Content Presentation
+ *
+ * Configuration for quiz/exam display, pagination, progress tracking, and timers.
+ * Extracted from AppSettings for better modularity and maintainability.
+ */
+export interface ContentSettings {
+	/** Quiz configuration - QuizEngine behavior and display settings */
+	quiz: {
+		/** Passing score percentage (70 = C grade) */
+		passingScore: number;
+		/** Time limit in minutes (controlled by timer.enabled) */
+		timeLimit: number;
+		/** Shuffle questions to prevent memorization */
+		shuffleQuestions: boolean;
+		/** Show results immediately after completion */
+		showResults: boolean;
+		/** Allow retries for practice and learning */
+		allowRetry: boolean;
+		/** Number of questions to show from pool (0 = all, N = N random) */
+		questionsToShow: number;
+		/** Show progress bar during quiz */
+		showProgressBar: boolean;
+		/** Show question numbers ("Question 1 of 10") */
+		showQuestionNumbers: boolean;
+		/** Enable navigation between questions */
+		enableNavigation: boolean;
+		/** Timer configuration for quizzes */
+		timer: {
+			/** Enable timer for quizzes */
+			enabled: boolean;
+			/** Default time limit in minutes */
+			defaultLimit: number;
+			/** Show timer warning when time is running low */
+			showWarning: boolean;
+			/** Warning threshold in minutes */
+			warningThreshold: number;
+		};
+	};
+	/** Exam configuration - QuizEngine behavior and display settings */
+	exam: {
+		/** Passing score percentage (70 = C grade) */
+		passingScore: number;
+		/** Time limit in minutes (controlled by timer.enabled) */
+		timeLimit: number;
+		/** Shuffle questions for exam integrity */
+		shuffleQuestions: boolean;
+		/** Show results after exam completion */
+		showResults: boolean;
+		/** Allow retries for exam */
+		allowRetry: boolean;
+		/** Number of questions to show from pool (0 = all, N = N random) */
+		questionsToShow: number;
+		/** Show progress bar during exam */
+		showProgressBar: boolean;
+		/** Show question numbers ("Question 1 of 25") */
+		showQuestionNumbers: boolean;
+		/** Enable navigation between questions */
+		enableNavigation: boolean;
+		/** Timer configuration for exams */
+		timer: {
+			/** Enable timer for exams */
+			enabled: boolean;
+			/** Default time limit in minutes */
+			defaultLimit: number;
+			/** Show timer warning when time is running low */
+			showWarning: boolean;
+			/** Warning threshold in minutes */
+			warningThreshold: number;
+		};
+	};
+	/** Progress tracking configuration */
+	progressTracking: {
+		/** Completion threshold percentage (minimum to mark as completed) */
+		completionThreshold: number;
+		/** Mastery threshold percentage (score required for mastery) */
+		masteryThreshold: number;
+		/** Enable progress persistence to localStorage */
+		enablePersistence: boolean;
+		/** localStorage key prefix for storing progress data */
+		persistenceKeyPrefix: string;
+	};
+	/** Pagination configuration */
+	pagination: {
+		/** Enable keyboard navigation (arrow keys) */
+		enableKeyboardNav: boolean;
+		/** Enable swipe gestures on mobile */
+		enableSwipeGestures: boolean;
+		/** Show page indicators (dots/numbers) */
+		showPageIndicators: boolean;
+		/** Animation duration in milliseconds */
+		animationDuration: number;
+	};
+}
+
+/**
+ * Scripts Settings - Build/Generation Configuration
+ *
+ * Configuration for CLI tools, scaffolding, validation, and build processes.
+ * Extracted from AppSettings for better modularity and maintainability.
+ */
+export interface ScriptsSettings {
+	/** Validation script configuration */
+	validation: {
+		/** Generated content validation settings */
+		generated: {
+			/** Run validation after content generation */
+			runAfterGeneration: boolean;
+			/** Run TypeScript check validation */
+			includeCheck: boolean;
+			/** Run lint validation */
+			includeLint: boolean;
+		};
+		/** Mermaid diagram validation settings */
+		mermaid: {
+			/** Maximum number of files to process in parallel (default: 4) */
+			maxParallelFiles: number;
+			/** Supported property names for diagram detection */
+			diagramPropertyNames: readonly string[];
+			/** Enable verbose output for debugging */
+			verbose: boolean;
+		};
+		/** Path configurations for validation */
+		paths: {
+			/** Temporary configuration directory */
+			tempConfigDir: string;
+			/** Generated TypeScript config filename */
+			generatedConfigFile: string;
+			/** Work-in-progress config filename */
+			wipConfigFile: string;
+			/** Root TypeScript config path */
+			rootTsConfig: string;
+			/** SvelteKit TypeScript config path */
+			svelteKitTsConfig: string;
+		};
+		/** Command configurations for validation tools */
+		commands: {
+			/** Generated content check command */
+			checkGenerated: readonly string[];
+			/** ESLint command */
+			lint: readonly string[];
+		};
+		/** TypeScript compiler configuration */
+		typescript: {
+			/** Path to extend from */
+			extendsPath: string;
+		};
+		/** Logging configuration */
+		logging: {
+			/** Show command execution */
+			showCommands: boolean;
+			/** Use emojis in output */
+			useEmojis: boolean;
+			/** Show timestamps */
+			showTimestamps: boolean;
+			/** Enable verbose output */
+			verboseOutput: boolean;
+		};
+		/** File cleanup configuration */
+		cleanup: {
+			/** Automatically clean temporary files */
+			autoCleanup: boolean;
+			/** Retain files on error for debugging */
+			retainOnError: boolean;
+			/** Prefix for temporary config files */
+			tempFilePrefix: string;
+			/** Name for file list temporary file */
+			fileListName: string;
+		};
+	};
+	/** Content scaffolding configuration */
+	scaffolding: {
+		/** Path configurations for content scaffolding */
+		paths: {
+			/** Input file for reading unit structure */
+			inputFile: string;
+			/** Output folder for generated content files */
+			outputFolder: string;
+		};
+		/** Validation prefix for generating unique config IDs */
+		validationPrefix: string;
+		/** Minimum content requirements for lessons */
+		lessons: {
+			/** Minimum sections per lesson */
+			sections: number;
+			/** Minimum code blocks per lesson */
+			codeBlocks: number;
+			/** Minimum diagrams per lesson */
+			diagrams: number;
+		};
+		/** Minimum content requirements for quizzes */
+		quizzes: {
+			/** Minimum questions per quiz */
+			questions: number;
+			/** Use diverse question types (single, multiple, code_completion, drag_drop) */
+			diverseTypes: boolean;
+		};
+		/** Minimum content requirements for exams */
+		exams: {
+			/** Minimum questions per exam */
+			questions: number;
+			/** Use diverse question types */
+			diverseTypes: boolean;
+		};
+		/** Minimum content requirements for study guides */
+		studyGuides: {
+			/** Minimum flashcards per study guide */
+			flipCards: number;
+		};
+		/** Minimum content requirements for projects */
+		projects: {
+			/** Minimum sections per project */
+			sections: number;
+			/** Minimum requirements per project */
+			requirements: number;
+			/** Minimum deliverables per project */
+			deliverables: number;
+		};
+		/** Content length configurations (in characters) */
+		contentLengths: {
+			/** Summary length */
+			summary: number;
+			/** Standard paragraph length */
+			paragraph: number;
+			/** Extended paragraph length */
+			longParagraph: number;
+			/** Question text length */
+			question: number;
+			/** Explanation text length */
+			explanation: number;
+			/** Flashcard question length */
+			flashcardQuestion: number;
+			/** Flashcard answer length */
+			flashcardAnswer: number;
+			/** Learning objective length */
+			objective: number;
+			/** Project requirement length */
+			requirement: number;
+			/** Project deliverable length */
+			deliverable: number;
+			/** Diagram title length */
+			diagramTitle: number;
+			/** Diagram caption length */
+			diagramCaption: number;
+		};
+	};
+	/** Content menu generator configuration */
+	contentMenu: {
+		/** Path configurations for content menu generation */
+		paths: {
+			/** Input markdown file path */
+			inputFile: string;
+			/** Output TypeScript file path */
+			outputFile: string;
+		};
+		/** Validation prefix for generating unique config IDs */
+		validationPrefix: string;
+	};
+	/** Search index generation configuration */
+	searchIndex: {
+		/** Path configuration for input and output */
+		paths: {
+			/** Input directory containing content files */
+			inputFolder: string;
+			/** Output file path for generated search index */
+			outputFile: string;
+		};
+		/** Processing options and behavior settings */
+		processing: {
+			/** Generation mode for development vs production */
+			mode: "development" | "production";
+			/** Enable/disable NLP processing for keyword extraction */
+			enableNLP: boolean;
+			/** Enable/disable verbose logging during generation */
+			verboseLogging: boolean;
+			/** Maximum keywords to extract per content item */
+			maxKeywords: number;
+			/** Minimum keyword length for filtering */
+			minKeywordLength: number;
+		};
+		/** Lunr.js field boost configuration for search relevance */
+		fieldBoosts: {
+			title: number;
+			summary: number;
+			content: number;
+			codeBlocks: number;
+			diagrams: number;
+			flipCards: number;
+			questions: number;
+			requirements: number;
+			keywords: number;
+			tags: number;
+		};
+		/** Prefix for generating unique validation config IDs */
+		validationPrefix: string;
+		/** Technical keywords organized by category for enhanced search */
+		keywords: {
+			cloudNative: string[];
+			infrastructure: string[];
+			languages: string[];
+			databases: string[];
+			webTechnologies: string[];
+			cloudProviders: string[];
+			security: string[];
+		};
+	};
+	/** Flat navigation generator configuration */
+	flatNav: {
+		/** Path configurations for flat navigation generation */
+		paths: {
+			/** Input file from content menu generator */
+			inputFile: string;
+			/** Output navigation map file */
+			outputFile: string;
+		};
+		/** Validation prefix for generating unique config IDs */
+		validationPrefix: string;
+		/** Book Overview Entry Configuration */
+		bookOverview: {
+			/** Unique identifier for book overview entry */
+			id: string;
+			/** Display title for book overview */
+			title: string;
+			/** Chapter URL for navigation */
+			chapterUrl: string;
+			/** TypeScript data file path */
+			filePath: string;
+			/** Unit title for display context */
+			unitTitle: string;
+			/** Navigation source for analytics */
+			defaultSource: "menu" | "sidebar" | "search" | "breadcrumb" | "sequential" | "direct";
+		};
+		/** Navigation behavior settings */
+		navigation: {
+			/** Allow navigation across unit boundaries */
+			crossUnitNavigation: boolean;
+			/** Skip units with no available content */
+			skipEmptyUnits: boolean;
+			/** Include debug information in output */
+			generateDebugInfo: boolean;
+		};
+	};
+	/** Content creator configuration for CRUD operations */
+	contentCreator: {
+		/** Path configurations for content creation */
+		paths: {
+			/** Input file for reading unit structure */
+			inputFile: string;
+			/** Output folder for content files */
+			outputFolder: string;
+		};
+		/** Validation prefix for generating unique config IDs */
+		validationPrefix: string;
+		/** Repository service configuration */
+		repository: {
+			/** Backup directory for content operations */
+			backupDirectory: string;
+		};
+	};
+	/** Common file configurations used across multiple scripts */
+	common: {
+		/** Project configuration files */
+		configFiles: {
+			/** Package.json path */
+			packageJson: string;
+			/** TypeScript configuration file */
+			tsConfig: string;
+		};
+		/** File extension patterns */
+		extensions: {
+			/** TypeScript files */
+			typescript: string;
+			/** JavaScript files */
+			javascript: string;
+			/** JSON files */
+			json: string;
+			/** Markdown files */
+			markdown: string;
+		};
+	};
+	/** JSON Schema generation configuration */
+	schemas: {
+		/** Path configurations for schema generation */
+		paths: {
+			/** Source file containing Zod schema definitions */
+			sourceFile: string;
+			/** Output file for consolidated JSON schemas */
+			outputFile: string;
+		};
+		/** Schema generation options (Zod v4 native conversion) */
+		generation: {
+			/** Zod native target: "draft-2020-12" | "draft-7" | "draft-4" | "openapi-3.0" */
+			target: "draft-2020-12" | "draft-7" | "draft-4" | "openapi-3.0";
+			/** Schema $id URI */
+			schemaId: string;
+			/** Schema title */
+			title: string;
+			/** Zod IO mode: "input" | "output" */
+			io: "input" | "output";
+			/** How to handle unrepresentable types: "throw" | "any" */
+			unrepresentable: "throw" | "any";
+			/** How to handle circular references: "ref" | "throw" */
+			cycles: "ref" | "throw";
+			/** Validate generated schemas */
+			validateOutput: boolean;
+		};
+		/** Validation prefix for generating unique config IDs */
+		validationPrefix: string;
+	};
+}
+
+/**
  * Main application settings interface defining the complete configuration structure.
  * This interface groups all application parameters by functional domain.
  */
@@ -650,319 +1061,22 @@ export interface AppSettings {
 		// Future UI settings can be grouped here
 	};
 
-	/** Script execution and validation configuration */
-	scripts: {
-		/** Validation script configuration */
-		validation: {
-			/** Generated content validation settings */
-			generated: {
-				/** Run validation after content generation */
-				runAfterGeneration: boolean;
-				/** Run TypeScript check validation */
-				includeCheck: boolean;
-				/** Run lint validation */
-				includeLint: boolean;
-			};
-			/** Mermaid diagram validation settings */
-			mermaid: {
-				/** Maximum number of files to process in parallel (default: 4) */
-				maxParallelFiles: number;
-				/** Supported property names for diagram detection */
-				diagramPropertyNames: readonly string[];
-				/** Enable verbose output for debugging */
-				verbose: boolean;
-			};
-			/** Path configurations for validation */
-			paths: {
-				/** Temporary configuration directory */
-				tempConfigDir: string;
-				/** Generated TypeScript config filename */
-				generatedConfigFile: string;
-				/** Work-in-progress config filename */
-				wipConfigFile: string;
-				/** Root TypeScript config path */
-				rootTsConfig: string;
-				/** SvelteKit TypeScript config path */
-				svelteKitTsConfig: string;
-			};
-			/** Command configurations for validation tools */
-			commands: {
-				/** Generated content check command */
-				checkGenerated: readonly string[];
-				/** ESLint command */
-				lint: readonly string[];
-			};
-			/** TypeScript compiler configuration */
-			typescript: {
-				/** Path to extend from */
-				extendsPath: string;
-			};
-			/** Logging configuration */
-			logging: {
-				/** Show command execution */
-				showCommands: boolean;
-				/** Use emojis in output */
-				useEmojis: boolean;
-				/** Show timestamps */
-				showTimestamps: boolean;
-				/** Enable verbose output */
-				verboseOutput: boolean;
-			};
-			/** File cleanup configuration */
-			cleanup: {
-				/** Automatically clean temporary files */
-				autoCleanup: boolean;
-				/** Retain files on error for debugging */
-				retainOnError: boolean;
-				/** Prefix for temporary config files */
-				tempFilePrefix: string;
-				/** Name for file list temporary file */
-				fileListName: string;
-			};
-		};
-		/** Content scaffolding configuration */
-		scaffolding: {
-			/** Path configurations for content scaffolding */
-			paths: {
-				/** Input file for reading unit structure */
-				inputFile: string;
-				/** Output folder for generated content files */
-				outputFolder: string;
-			};
-			/** Validation prefix for generating unique config IDs */
-			validationPrefix: string;
-			/** Minimum content requirements for lessons */
-			lessons: {
-				/** Minimum sections per lesson */
-				sections: number;
-				/** Minimum code blocks per lesson */
-				codeBlocks: number;
-				/** Minimum diagrams per lesson */
-				diagrams: number;
-			};
-			/** Minimum content requirements for quizzes */
-			quizzes: {
-				/** Minimum questions per quiz */
-				questions: number;
-				/** Use diverse question types (single, multiple, code_completion, drag_drop) */
-				diverseTypes: boolean;
-			};
-			/** Minimum content requirements for exams */
-			exams: {
-				/** Minimum questions per exam */
-				questions: number;
-				/** Use diverse question types */
-				diverseTypes: boolean;
-			};
-			/** Minimum content requirements for study guides */
-			studyGuides: {
-				/** Minimum flashcards per study guide */
-				flipCards: number;
-			};
-			/** Minimum content requirements for projects */
-			projects: {
-				/** Minimum sections per project */
-				sections: number;
-				/** Minimum requirements per project */
-				requirements: number;
-				/** Minimum deliverables per project */
-				deliverables: number;
-			};
-			/** Content length configurations (in characters) */
-			contentLengths: {
-				/** Summary length */
-				summary: number;
-				/** Standard paragraph length */
-				paragraph: number;
-				/** Extended paragraph length */
-				longParagraph: number;
-				/** Question text length */
-				question: number;
-				/** Explanation text length */
-				explanation: number;
-				/** Flashcard question length */
-				flashcardQuestion: number;
-				/** Flashcard answer length */
-				flashcardAnswer: number;
-				/** Learning objective length */
-				objective: number;
-				/** Project requirement length */
-				requirement: number;
-				/** Project deliverable length */
-				deliverable: number;
-				/** Diagram title length */
-				diagramTitle: number;
-				/** Diagram caption length */
-				diagramCaption: number;
-			};
-		};
-		/** Content menu generator configuration */
-		contentMenu: {
-			/** Path configurations for content menu generation */
-			paths: {
-				/** Input markdown file path */
-				inputFile: string;
-				/** Output TypeScript file path */
-				outputFile: string;
-			};
-			/** Validation prefix for generating unique config IDs */
-			validationPrefix: string;
-		};
-		/** Search index generation configuration */
-		searchIndex: {
-			/** Path configuration for input and output */
-			paths: {
-				/** Input directory containing content files */
-				inputFolder: string;
-				/** Output file path for generated search index */
-				outputFile: string;
-			};
-			/** Processing options and behavior settings */
-			processing: {
-				/** Generation mode for development vs production */
-				mode: "development" | "production";
-				/** Enable/disable NLP processing for keyword extraction */
-				enableNLP: boolean;
-				/** Enable/disable verbose logging during generation */
-				verboseLogging: boolean;
-				/** Maximum keywords to extract per content item */
-				maxKeywords: number;
-				/** Minimum keyword length for filtering */
-				minKeywordLength: number;
-			};
-			/** Lunr.js field boost configuration for search relevance */
-			fieldBoosts: {
-				title: number;
-				summary: number;
-				content: number;
-				codeBlocks: number;
-				diagrams: number;
-				flipCards: number;
-				questions: number;
-				requirements: number;
-				keywords: number;
-				tags: number;
-			};
-			/** Prefix for generating unique validation config IDs */
-			validationPrefix: string;
-			/** Technical keywords organized by category for enhanced search */
-			keywords: {
-				cloudNative: string[];
-				infrastructure: string[];
-				languages: string[];
-				databases: string[];
-				webTechnologies: string[];
-				cloudProviders: string[];
-				security: string[];
-			};
-		};
-		/** Flat navigation generator configuration */
-		flatNav: {
-			/** Path configurations for flat navigation generation */
-			paths: {
-				/** Input file from content menu generator */
-				inputFile: string;
-				/** Output navigation map file */
-				outputFile: string;
-			};
-			/** Validation prefix for generating unique config IDs */
-			validationPrefix: string;
-			/** Book Overview Entry Configuration */
-			bookOverview: {
-				/** Unique identifier for book overview entry */
-				id: string;
-				/** Display title for book overview */
-				title: string;
-				/** Chapter URL for navigation */
-				chapterUrl: string;
-				/** TypeScript data file path */
-				filePath: string;
-				/** Unit title for display context */
-				unitTitle: string;
-				/** Navigation source for analytics */
-				defaultSource: "menu" | "sidebar" | "search" | "breadcrumb" | "sequential" | "direct";
-			};
-			/** Navigation behavior settings */
-			navigation: {
-				/** Allow navigation across unit boundaries */
-				crossUnitNavigation: boolean;
-				/** Skip units with no available content */
-				skipEmptyUnits: boolean;
-				/** Include debug information in output */
-				generateDebugInfo: boolean;
-			};
-		};
-		/** Content creator configuration for CRUD operations */
-		contentCreator: {
-			/** Path configurations for content creation */
-			paths: {
-				/** Input file for reading unit structure */
-				inputFile: string;
-				/** Output folder for content files */
-				outputFolder: string;
-			};
-			/** Validation prefix for generating unique config IDs */
-			validationPrefix: string;
-			/** Repository service configuration */
-			repository: {
-				/** Backup directory for content operations */
-				backupDirectory: string;
-			};
-		};
-		/** Common file configurations used across multiple scripts */
-		common: {
-			/** Project configuration files */
-			configFiles: {
-				/** Package.json path */
-				packageJson: string;
-				/** TypeScript configuration file */
-				tsConfig: string;
-			};
-			/** File extension patterns */
-			extensions: {
-				/** TypeScript files */
-				typescript: string;
-				/** JavaScript files */
-				javascript: string;
-				/** JSON files */
-				json: string;
-				/** Markdown files */
-				markdown: string;
-			};
-		};
-		/** JSON Schema generation configuration */
-		schemas: {
-			/** Path configurations for schema generation */
-			paths: {
-				/** Source file containing Zod schema definitions */
-				sourceFile: string;
-				/** Output file for consolidated JSON schemas */
-				outputFile: string;
-			};
-			/** Schema generation options (Zod v4 native conversion) */
-			generation: {
-				/** Zod native target: "draft-2020-12" | "draft-7" | "draft-4" | "openapi-3.0" */
-				target: "draft-2020-12" | "draft-7" | "draft-4" | "openapi-3.0";
-				/** Schema $id URI */
-				schemaId: string;
-				/** Schema title */
-				title: string;
-				/** Zod IO mode: "input" | "output" */
-				io: "input" | "output";
-				/** How to handle unrepresentable types: "throw" | "any" */
-				unrepresentable: "throw" | "any";
-				/** How to handle circular references: "ref" | "throw" */
-				cycles: "ref" | "throw";
-				/** Validate generated schemas */
-				validateOutput: boolean;
-			};
-			/** Validation prefix for generating unique config IDs */
-			validationPrefix: string;
-		};
-	};
+	/** Script execution and validation configuration (extracted to ScriptsSettings) */
+	scripts: ScriptsSettings;
+
+	/** Content display configuration (extracted to ContentSettings) */
+	content: ContentSettings;
 
 	// Future settings can be grouped here (e.g., api, performance)
 }
+
+/**
+ * UI Settings - User Interface Configuration
+ *
+ * Type alias extracted from AppSettings for modular imports.
+ * Contains all UI-related configuration including theme, layout, and components.
+ */
+export type UISettings = AppSettings["ui"];
 
 /**
  * Type guards for configuration validation

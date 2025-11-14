@@ -4185,6 +4185,56 @@
 	color: hsl(var(--destructive));
 }
 
+.flipcard-badge--expert {
+	background: hsl(var(--muted-foreground) / 0.15);
+	color: hsl(var(--muted-foreground));
+}
+
+/* ============================================================================
+ * Unified Difficulty Badge Classes
+ * ============================================================================
+ * Generic difficulty badge classes for use across all components
+ * (QuestionRenderer, ContentHeader, etc.)
+ *
+ * Color mapping (via theme CSS variables):
+ * - beginner → --success (Green)
+ * - intermediate → --warning (Orange)
+ * - advanced → --destructive (Red)
+ * - expert → --muted-foreground (Gray)
+ *
+ * Usage: Apply both base class + modifier:
+ * <span class="difficulty-badge difficulty-badge--beginner">Beginner</span>
+ * ============================================================================
+ */
+.difficulty-badge {
+	@apply inline-flex items-center rounded px-2 py-1 text-xs font-medium;
+	background: hsl(var(--muted));
+	color: hsl(var(--muted-foreground));
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+
+.difficulty-badge--beginner {
+	background: hsl(var(--success) / 0.15);
+	color: hsl(var(--success));
+}
+
+.difficulty-badge--intermediate {
+	background: hsl(var(--warning) / 0.15);
+	color: hsl(var(--warning));
+}
+
+.difficulty-badge--advanced {
+	background: hsl(var(--destructive) / 0.15);
+	color: hsl(var(--destructive));
+}
+
+.difficulty-badge--expert {
+	background: hsl(var(--muted-foreground) / 0.15);
+	color: hsl(var(--muted-foreground));
+}
+
 /* Progress Indicators */
 .flipcard-progress {
 	@apply flex items-center gap-3 pt-3;

@@ -42,6 +42,7 @@ import type {
 	CodeBlock,
 	DiagramBlock
 } from "$types";
+import { DIFFICULTY_LEVELS } from "$types";
 
 // ============================================================================
 // LOREM IPSUM CONTENT BASE
@@ -677,22 +678,25 @@ function generateDiverseQuestions(count: number, diverseTypes: boolean = true): 
 	for (let i = 0; i < count; i++) {
 		const questionType = questionTypes[i % questionTypes.length];
 		const questionNumber = i + 1;
+		const difficulty = DIFFICULTY_LEVELS[i % DIFFICULTY_LEVELS.length];
+		// Vary lorem ipsum extraction offset for each question
+		const textOffset = i * 200;
 
 		switch (questionType) {
 			case "single_choice":
 				questions.push({
 					id: `q${questionNumber}`,
 					type: "single_choice",
-					question: `${extractLoremText(CONFIG.contentLengths.question)}?`,
+					question: `${LOREM_IPSUM_TEXT.substring(textOffset, textOffset + CONFIG.contentLengths.question).trim()}?`,
 					options: [
-						extractLoremText(40),
-						extractLoremText(40),
-						extractLoremText(40),
-						extractLoremText(40)
+						LOREM_IPSUM_TEXT.substring(textOffset + 50, textOffset + 90).trim(),
+						LOREM_IPSUM_TEXT.substring(textOffset + 100, textOffset + 140).trim(),
+						LOREM_IPSUM_TEXT.substring(textOffset + 150, textOffset + 190).trim(),
+						LOREM_IPSUM_TEXT.substring(textOffset + 200, textOffset + 240).trim()
 					],
 					correctAnswer: i % 4,
 					explanation: extractLoremText(CONFIG.contentLengths.explanation),
-					difficulty: ["easy", "medium", "hard"][i % 3] as "easy" | "medium" | "hard",
+					difficulty,
 					tags: ["cloud-native", "fundamentals"]
 				} as SingleChoiceQuestion);
 				break;
@@ -711,7 +715,7 @@ function generateDiverseQuestions(count: number, diverseTypes: boolean = true): 
 					],
 					correctAnswers: [0, 1, 3], // Multiple correct answers
 					explanation: extractLoremText(CONFIG.contentLengths.explanation),
-					difficulty: ["easy", "medium", "hard"][i % 3] as "easy" | "medium" | "hard",
+					difficulty,
 					tags: ["cloud-native", "fundamentals"]
 				} as MultipleChoiceQuestion);
 				break;
@@ -752,7 +756,7 @@ spec:
 						}
 					],
 					explanation: extractLoremText(CONFIG.contentLengths.explanation),
-					difficulty: ["easy", "medium", "hard"][i % 3] as "easy" | "medium" | "hard",
+					difficulty,
 					tags: ["cloud-native", "kubernetes", "docker"]
 				} as CodeCompletionQuestion);
 				break;
@@ -765,7 +769,7 @@ spec:
 						"Containers share the same operating system kernel, making them more lightweight than virtual machines.",
 					correctAnswer: true,
 					explanation: extractLoremText(CONFIG.contentLengths.explanation),
-					difficulty: ["easy", "medium", "hard"][i % 3] as "easy" | "medium" | "hard",
+					difficulty,
 					tags: ["cloud-native", "concepts"]
 				} as TrueFalseQuestion);
 				break;
@@ -804,7 +808,7 @@ spec:
 						}
 					],
 					explanation: extractLoremText(CONFIG.contentLengths.explanation),
-					difficulty: ["easy", "medium", "hard"][i % 3] as "easy" | "medium" | "hard",
+					difficulty,
 					tags: ["cloud-native", "architecture"]
 				} as DragAndDropQuestion);
 				break;

@@ -16,9 +16,22 @@
 export type ContentStatus = "expected" | "scaffold" | "draft" | "review" | "final" | "orphan";
 
 /**
- * Content difficulty levels for educational content classification
+ * Unified difficulty level classification for all educational content
+ * Used across lessons, quizzes, exams, projects, and individual questions.
+ *
+ * Design Decision: Single unified type for consistency
+ * - Replaces previous QuestionDifficulty ("easy" | "medium" | "hard")
+ * - Replaces previous ContentDifficulty (was same values but separate type)
+ * - Aligns with FlipCard difficulty badge system
+ * - Ensures consistent color coding across all components
+ *
+ * Color Mapping (via theme variables):
+ * - beginner → --success (Green)
+ * - intermediate → --warning (Orange)
+ * - advanced → --destructive (Red)
+ * - expert → --muted-foreground (Gray)
  */
-export type ContentDifficulty = "beginner" | "intermediate" | "advanced" | "expert";
+export type DifficultyLevel = "beginner" | "intermediate" | "advanced" | "expert";
 
 /**
  * Chapter types for content categorization and renderer selection
@@ -221,9 +234,49 @@ export type CardStyle = "modern" | "classic" | "minimal";
 export type SupportedFormat = "plain" | "json" | "yaml" | "yml";
 
 /**
+ * Text formatting styles for rich text content
+ * Used in educational content rich text nodes
+ */
+export type TextStyle = "bold" | "italic" | "code" | "strikethrough";
+
+/**
+ * Link target attributes for hyperlinks
+ * Standard HTML target values for links in educational content
+ */
+export type LinkTarget = "_blank" | "_self" | "_parent" | "_top";
+
+/**
+ * Callout box styles for educational content
+ * Visual styles for information, warnings, tips, etc.
+ */
+export type CalloutStyle = "info" | "warning" | "danger" | "success" | "tip";
+
+/**
+ * Project resource types
+ * Types of resources that can be attached to project content
+ */
+export type ProjectResourceType = "link" | "file" | "tool" | "documentation";
+
+/**
+ * FlipCard resource types
+ * Subset of EducationalResourceType for FlipCard additional resources
+ */
+export type FlipCardResourceType = "documentation" | "tutorial" | "video" | "article" | "exercise";
+export const FLIPCARD_RESOURCE_TYPES: FlipCardResourceType[] = [
+	"documentation",
+	"tutorial",
+	"video",
+	"article",
+	"exercise"
+];
+
+/**
  * Constant arrays for union types (needed for Object.values() replacement)
  */
-export const CONTENT_DIFFICULTIES: ContentDifficulty[] = [
+/**
+ * Available difficulty levels (for iteration, validation, etc.)
+ */
+export const DIFFICULTY_LEVELS: DifficultyLevel[] = [
 	"beginner",
 	"intermediate",
 	"advanced",
@@ -263,6 +316,31 @@ export const CONTENT_STATUSES: ContentStatus[] = [
 	"orphan"
 ];
 export const SUPPORTED_FORMATS: SupportedFormat[] = ["plain", "json", "yaml", "yml"];
+
+/**
+ * Text formatting style constants
+ */
+export const TEXT_STYLES: TextStyle[] = ["bold", "italic", "code", "strikethrough"];
+
+/**
+ * Link target constants
+ */
+export const LINK_TARGETS: LinkTarget[] = ["_blank", "_self", "_parent", "_top"];
+
+/**
+ * Callout style constants
+ */
+export const CALLOUT_STYLES: CalloutStyle[] = ["info", "warning", "danger", "success", "tip"];
+
+/**
+ * Project resource type constants
+ */
+export const PROJECT_RESOURCE_TYPES: ProjectResourceType[] = [
+	"link",
+	"file",
+	"tool",
+	"documentation"
+];
 
 // ============================================================================
 // CONTENT IDENTIFIER SYSTEM (TASK 3G4)

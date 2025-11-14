@@ -21,6 +21,44 @@
  */
 
 import { z } from "zod";
+import {
+	DIFFICULTY_LEVELS,
+	CHAPTER_TYPES,
+	TEXT_STYLES,
+	LINK_TARGETS,
+	CALLOUT_STYLES,
+	PROJECT_RESOURCE_TYPES,
+	FLIPCARD_RESOURCE_TYPES
+} from "$types";
+
+/**
+ * Reusable Centralized Schemas
+ * - Single source of truth for all enum validation
+ * - Matches type definitions from types.ts
+ * - Eliminates hardcoded values in validation schemas
+ * - Future-proof: adding/removing values only requires changing types.ts
+ */
+
+/** Difficulty level schema - used across all educational content */
+export const DifficultyLevelSchema = z.enum(DIFFICULTY_LEVELS as [string, ...string[]]);
+
+/** Chapter type schema - used in content metadata and navigation */
+export const ChapterTypeSchema = z.enum(CHAPTER_TYPES as [string, ...string[]]);
+
+/** Text style schema - used in rich text nodes */
+export const TextStyleSchema = z.enum(TEXT_STYLES as [string, ...string[]]);
+
+/** Link target schema - used in hyperlink nodes */
+export const LinkTargetSchema = z.enum(LINK_TARGETS as [string, ...string[]]);
+
+/** Callout style schema - used in callout blocks */
+export const CalloutStyleSchema = z.enum(CALLOUT_STYLES as [string, ...string[]]);
+
+/** Project resource type schema - used in project deliverables */
+export const ProjectResourceTypeSchema = z.enum(PROJECT_RESOURCE_TYPES as [string, ...string[]]);
+
+/** FlipCard resource type schema - used in study guide additional resources */
+export const FlipCardResourceTypeSchema = z.enum(FLIPCARD_RESOURCE_TYPES as [string, ...string[]]);
 
 /**
  * Base content validation schemas
@@ -29,16 +67,6 @@ import { z } from "zod";
 // ============================================================================
 // RICH TEXT SCHEMAS (TASK 7B: Union-based architecture)
 // ============================================================================
-
-/**
- * Text formatting styles schema
- */
-export const TextStyleSchema = z.enum(["bold", "italic", "code", "strikethrough"]);
-
-/**
- * Link target types schema
- */
-export const LinkTargetSchema = z.enum(["_blank", "_self", "_parent", "_top"]);
 
 /**
  * Base rich text node schema - shared properties
@@ -116,7 +144,7 @@ export const RichTextDocumentSchema = z.object({
  * Matches EducationalContent interface from content.ts
  */
 export const EducationalFieldsSchema = z.object({
-	difficulty: z.enum(["beginner", "intermediate", "advanced"]).optional(),
+	difficulty: DifficultyLevelSchema.optional(),
 	estimatedTime: z.number().int().min(1, "Estimated time must be positive").optional(),
 	prerequisites: z.array(z.string()).optional(),
 	learningObjectives: z.array(z.string()).optional(),
@@ -139,7 +167,7 @@ export const NavigationMetadataSchema = z.object({
 	id: z.string().min(1, "ID is required"),
 	unitId: z.string().min(1, "Unit ID is required"),
 	chapterNumber: z.string().min(1, "Chapter number is required"),
-	type: z.enum(["lesson", "quiz", "study_guide", "exam", "project"]),
+	type: ChapterTypeSchema,
 	timestamps: z
 		.object({
 			created: z.date().optional(),
@@ -156,7 +184,7 @@ export const NavigationMetadataSchema = z.object({
 export const BaseContentSchema = z
 	.object({
 		id: z.string().min(1, "ID is required"),
-		type: z.enum(["lesson", "quiz", "study_guide", "exam", "project"]),
+		type: ChapterTypeSchema,
 		title: z.string().min(1, "Title is required"),
 		summary: z.string().min(10, "Summary is required and must be descriptive"),
 		metadata: NavigationMetadataSchema.optional()
@@ -191,7 +219,7 @@ export const DiagramBlockSchema = z.object({
 
 export const CalloutBlockSchema = z.object({
 	type: z.literal("callout"),
-	style: z.enum(["info", "warning", "danger", "success", "tip"]),
+	style: CalloutStyleSchema,
 	title: z.string().optional(),
 	content: RichParagraphSchema
 });
@@ -251,7 +279,7 @@ export const SingleChoiceQuestionSchema = z
 		options: z.array(z.string()).min(2, "At least 2 options required").max(6, "Too many options"),
 		correctAnswer: z.number().int().min(0, "Correct answer index invalid"),
 		explanation: z.string().min(1, "Explanation is required"),
-		difficulty: z.enum(["easy", "medium", "hard"]),
+		difficulty: DifficultyLevelSchema,
 		tags: z.array(z.string()).min(1, "Tags required for search functionality")
 	})
 	.refine((data) => data.correctAnswer < data.options.length, {
@@ -267,7 +295,7 @@ export const MultipleChoiceQuestionSchema = z
 		options: z.array(z.string()).min(3, "At least 3 options required").max(8, "Too many options"),
 		correctAnswers: z.array(z.number().int().min(0)).min(2, "At least 2 correct answers required"),
 		explanation: z.string().min(1, "Explanation is required"),
-		difficulty: z.enum(["easy", "medium", "hard"]),
+		difficulty: DifficultyLevelSchema,
 		tags: z.array(z.string()).min(1, "Tags required for search functionality")
 	})
 	.refine((data) => data.correctAnswers.every((idx) => idx < data.options.length), {
@@ -292,7 +320,7 @@ export const CodeCompletionQuestionSchema = z.object({
 		)
 		.min(1, "At least one blank required"),
 	explanation: z.string().min(1, "Explanation is required"),
-	difficulty: z.enum(["easy", "medium", "hard"]),
+	difficulty: DifficultyLevelSchema,
 	tags: z.array(z.string()).min(1, "Tags required for search functionality")
 });
 
@@ -302,7 +330,7 @@ export const TrueFalseQuestionSchema = z.object({
 	question: z.string().min(1, "Question text is required"),
 	correctAnswer: z.boolean(),
 	explanation: z.string().min(1, "Explanation is required"),
-	difficulty: z.enum(["easy", "medium", "hard"]),
+	difficulty: DifficultyLevelSchema,
 	tags: z.array(z.string()).min(1, "Tags required for search functionality")
 });
 
@@ -314,7 +342,7 @@ export const ShortAnswerQuestionSchema = z.object({
 	alternatives: z.array(z.string()).optional(),
 	caseSensitive: z.boolean().default(false),
 	explanation: z.string().min(1, "Explanation is required"),
-	difficulty: z.enum(["easy", "medium", "hard"]),
+	difficulty: DifficultyLevelSchema,
 	tags: z.array(z.string()).min(1, "Tags required for search functionality")
 });
 
@@ -341,7 +369,7 @@ export const DragAndDropQuestionSchema = z.object({
 		)
 		.min(2, "At least 2 categories required"),
 	explanation: z.string().min(1, "Explanation is required"),
-	difficulty: z.enum(["easy", "medium", "hard"]),
+	difficulty: DifficultyLevelSchema,
 	tags: z.array(z.string()).min(1, "Tags required for search functionality")
 });
 
@@ -364,7 +392,7 @@ const EducationalMetadataSchema = z.object({
 	prerequisites: z.array(z.string()).optional(),
 	relatedConcepts: z.array(z.string()).optional(),
 	estimatedTime: z.number().int().positive().optional(),
-	difficulty: z.enum(["beginner", "intermediate", "advanced"]).optional(),
+	difficulty: DifficultyLevelSchema.optional(),
 	keywords: z.array(z.string()).optional(),
 	tags: z.array(z.string()).optional(),
 	additionalResources: z
@@ -372,7 +400,7 @@ const EducationalMetadataSchema = z.object({
 			z.object({
 				title: z.string(),
 				url: z.url(),
-				type: z.enum(["documentation", "tutorial", "video", "article", "exercise"]),
+				type: FlipCardResourceTypeSchema,
 				estimatedTime: z.number().int().positive().optional()
 			})
 		)
@@ -451,7 +479,7 @@ export const ExamContentSchema = BaseContentSchema.extend({
 			return difficulties.size >= 3;
 		},
 		{
-			message: "Exam must include questions of all 3 difficulty levels (easy, medium, hard)",
+			message: `Exam must include questions of at least 3 different difficulty levels (available: ${DIFFICULTY_LEVELS.join(", ")})`,
 			path: ["exam", "questions"]
 		}
 	);
@@ -467,7 +495,7 @@ export const ProjectContentSchema = BaseContentSchema.extend({
 	resources: z
 		.array(
 			z.object({
-				type: z.enum(["link", "file", "tool", "documentation"]),
+				type: ProjectResourceTypeSchema,
 				title: z.string().min(1, "Resource title is required"),
 				url: z.url().optional(),
 				description: z.string().optional()

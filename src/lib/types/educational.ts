@@ -10,7 +10,7 @@
  */
 
 import type {
-	ContentDifficulty,
+	DifficultyLevel,
 	ChapterType,
 	TechnologyUnit,
 	MermaidDirection,
@@ -38,7 +38,7 @@ export interface CodeExample {
 	language: ProgrammingLanguage;
 
 	/** Educational complexity level */
-	complexity: ContentDifficulty;
+	complexity: DifficultyLevel;
 
 	/** Content category for organization */
 	category: EducationalCategory;
@@ -67,7 +67,7 @@ export interface CodeExample {
 		estimatedTime: number;
 
 		/** Difficulty level */
-		difficulty: ContentDifficulty;
+		difficulty: DifficultyLevel;
 
 		/** Technology unit classification */
 		technologyUnit?: TechnologyUnit;
@@ -137,7 +137,7 @@ export interface MermaidDiagram {
 	type: MermaidDiagramType;
 
 	/** Educational complexity level */
-	complexity: ContentDifficulty;
+	complexity: DifficultyLevel;
 
 	/** Diagram category for organization */
 	category: EducationalCategory;
@@ -166,7 +166,7 @@ export interface MermaidDiagram {
 		estimatedTime: number;
 
 		/** Difficulty level */
-		difficulty: ContentDifficulty;
+		difficulty: DifficultyLevel;
 
 		/** Technology unit */
 		technologyUnit?: TechnologyUnit;
@@ -260,7 +260,7 @@ export interface EducationalLesson {
 		estimatedTime: number;
 
 		/** Difficulty level */
-		difficulty: ContentDifficulty;
+		difficulty: DifficultyLevel;
 
 		/** Technology focus */
 		technologyUnit: TechnologyUnit;
@@ -351,7 +351,7 @@ export interface LearningPath {
 	/** Target audience */
 	audience: {
 		/** Experience level required */
-		level: ContentDifficulty;
+		level: DifficultyLevel;
 
 		/** Role/profession target */
 		roles: string[];
@@ -396,7 +396,7 @@ export interface LearningPath {
 		completionRate: number;
 
 		/** Mastery level achieved */
-		masteryLevel: "none" | ContentDifficulty;
+		masteryLevel: "none" | DifficultyLevel;
 
 		/** Skills acquired */
 		skillsAcquired: string[];

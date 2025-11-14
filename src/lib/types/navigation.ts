@@ -21,7 +21,7 @@ import type {
 	ComponentState,
 	ProgressStatus,
 	TechnologyUnit,
-	ContentDifficulty,
+	DifficultyLevel,
 	BreadcrumbType
 } from "./types.js";
 
@@ -101,7 +101,7 @@ export interface NavigationItemMetadata {
 	estimatedTime?: number;
 
 	/** Difficulty level */
-	difficulty?: ContentDifficulty;
+	difficulty?: DifficultyLevel;
 
 	/** Prerequisites for this content */
 	prerequisites?: string[];
@@ -344,7 +344,7 @@ export interface BreadcrumbItem {
 		chapterType?: ChapterType;
 		technologyUnit?: TechnologyUnit;
 		estimatedTime?: number;
-		difficulty?: ContentDifficulty;
+		difficulty?: DifficultyLevel;
 	};
 }
 
@@ -470,7 +470,7 @@ export interface MenuChapter {
 	estimatedTime?: number;
 
 	/** Chapter difficulty level */
-	difficulty?: ContentDifficulty;
+	difficulty?: DifficultyLevel;
 
 	/** Chapter progress status */
 	progress?: ProgressStatus;

@@ -175,6 +175,16 @@
 }
 
 /**
+ * Button Cursor Fix
+ * Ensures all ShadCN buttons display pointer cursor
+ * - ShadCN button component doesn't include cursor: pointer by default
+ * - Applied globally for consistency across all button variants
+ */
+[data-slot="button"] {
+	cursor: pointer !important;
+}
+
+/**
  * Dialog Content
  * CRITICAL: Must be 100% opaque for readability
  * Removes any glassmorphism effects that might be applied

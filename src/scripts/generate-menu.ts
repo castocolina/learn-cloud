@@ -60,7 +60,7 @@ import type {
 	ChapterType,
 	TechnologyUnit,
 	UnifiedPathConfig,
-	ContentDifficulty,
+	DifficultyLevel,
 	ContentParseResult,
 	NavigationPaths
 } from "$types";
@@ -707,7 +707,7 @@ export class MarkdownContentGenerator {
 		}
 
 		if (parseResult.difficulty) {
-			chapter.difficulty = parseResult.difficulty as ContentDifficulty;
+			chapter.difficulty = parseResult.difficulty as DifficultyLevel;
 		}
 
 		if (parseResult.prerequisites && parseResult.prerequisites.length > 0) {

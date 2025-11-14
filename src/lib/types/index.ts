@@ -14,7 +14,7 @@
 // Union Type exports - All project union types consolidated for zero runtime overhead
 export type {
 	ContentStatus,
-	ContentDifficulty,
+	DifficultyLevel,
 	ChapterType,
 	ContentType,
 	NavigationSection,
@@ -34,6 +34,12 @@ export type {
 	Layout,
 	CardStyle,
 	SupportedFormat,
+	// Rich text and content styling types
+	TextStyle,
+	LinkTarget,
+	CalloutStyle,
+	ProjectResourceType,
+	FlipCardResourceType,
 	// Content identifier system types (TASK 3G4)
 	ParsedContentId,
 	ParsedContentUrl,
@@ -44,19 +50,23 @@ export type {
 
 // Union type constants - For iteration and Object.values() replacement
 export {
-	CONTENT_DIFFICULTIES,
+	DIFFICULTY_LEVELS,
 	CHAPTER_TYPES,
 	QUESTION_TYPES,
 	CONTENT_TYPES,
 	CONTENT_STATUSES,
-	SUPPORTED_FORMATS
+	SUPPORTED_FORMATS,
+	// Rich text and content styling constants
+	TEXT_STYLES,
+	LINK_TARGETS,
+	CALLOUT_STYLES,
+	PROJECT_RESOURCE_TYPES,
+	FLIPCARD_RESOURCE_TYPES
 } from "./types.js";
 
 // Rich text exports - Structured content system (TASK 7B: Union-based architecture)
 export type {
-	// New union-based types
-	TextStyle,
-	LinkTarget,
+	// New union-based types (TextStyle and LinkTarget now in types.ts)
 	BaseRichTextNode,
 	TextNode,
 	LinkNode,
@@ -198,7 +208,15 @@ export type {
 } from "./learning.js";
 
 // Configuration exports - Application settings and validation
-export type { AppSettings, ContentLayoutMode, ContentMaxWidth, ContentPadding } from "./config.js";
+export type {
+	AppSettings,
+	UISettings,
+	ScriptsSettings,
+	ContentSettings,
+	ContentLayoutMode,
+	ContentMaxWidth,
+	ContentPadding
+} from "./config.js";
 
 // Theme exports - Theme system configuration and state
 export type {

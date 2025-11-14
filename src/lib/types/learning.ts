@@ -9,7 +9,7 @@
  * a unified learning experience with robust progress tracking.
  */
 
-import type { ContentDifficulty, TechnologyUnit, ChapterType, ProgressStatus } from "./types.js";
+import type { DifficultyLevel, TechnologyUnit, ChapterType, ProgressStatus } from "./types.js";
 
 /**
  * Learning style preferences for personalized education
@@ -425,7 +425,7 @@ export interface LearningProgress {
 		engagement: number; // 0-1 scale
 
 		/** Difficulty rating from user perspective */
-		perceivedDifficulty: ContentDifficulty;
+		perceivedDifficulty: DifficultyLevel;
 
 		/** Recommended next content */
 		recommendations: string[];
@@ -555,7 +555,7 @@ export interface LearningRecommendation {
 		estimatedTime?: number; // minutes
 
 		/** Expected difficulty level */
-		difficulty?: ContentDifficulty;
+		difficulty?: DifficultyLevel;
 	};
 
 	/** Recommendation context and triggers */

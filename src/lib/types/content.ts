@@ -11,7 +11,7 @@
 
 import type {
 	ContentStatus,
-	ContentDifficulty,
+	DifficultyLevel,
 	ChapterType,
 	QuestionType,
 	TechnologyUnit,
@@ -29,10 +29,15 @@ import type {
 import type { FlipCard } from "./interactive.js";
 
 /**
- * Question difficulty level (for individual questions in quizzes/exams)
- * Separate from ContentDifficulty which is for lessons, projects, etc.
+ * @deprecated Removed in favor of unified DifficultyLevel type.
+ * All questions now use DifficultyLevel ("beginner" | "intermediate" | "advanced" | "expert")
+ * for consistency with lesson/project difficulty and badge styling.
+ *
+ * Migration guide:
+ * - "easy" → "beginner"
+ * - "medium" → "intermediate"
+ * - "hard" → "advanced"
  */
-export type QuestionDifficulty = "easy" | "medium" | "hard";
 
 /**
  * Educational metadata interface - Mixin for all content types
@@ -48,7 +53,7 @@ export type QuestionDifficulty = "easy" | "medium" | "hard";
  */
 export interface EducationalContent {
 	/** Content difficulty level */
-	difficulty?: ContentDifficulty;
+	difficulty?: DifficultyLevel;
 
 	/** Estimated completion time in minutes */
 	estimatedTime?: number;
@@ -392,7 +397,7 @@ export interface Question {
 	points?: number;
 	explanation?: string;
 	tags?: string[];
-	difficulty?: QuestionDifficulty;
+	difficulty?: DifficultyLevel;
 }
 
 /**

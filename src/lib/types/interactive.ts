@@ -9,7 +9,7 @@
  */
 
 import type {
-	ContentDifficulty,
+	DifficultyLevel,
 	QuestionType,
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	ContentStatus,
@@ -134,7 +134,7 @@ export interface EducationalMetadata {
 	estimatedTime?: number;
 
 	/** Content difficulty level */
-	difficulty?: ContentDifficulty;
+	difficulty?: DifficultyLevel;
 
 	/** Keywords for search and categorization */
 	keywords?: string[];

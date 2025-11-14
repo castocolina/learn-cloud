@@ -14,7 +14,7 @@
  */
 
 // Import centralized types instead of duplicating
-import type { ContentType, ContentDifficulty } from "$types";
+import type { ContentType, DifficultyLevel } from "$types";
 
 /**
  * Legacy content type mapping for demo compatibility
@@ -30,7 +30,7 @@ export enum DemoContentType {
 
 /**
  * Legacy difficulty mapping for demo compatibility
- * @deprecated Use ContentDifficulty from centralized types instead
+ * @deprecated Use DifficultyLevel from centralized types instead
  */
 export enum DemoDifficulty {
 	BEGINNER = "beginner",

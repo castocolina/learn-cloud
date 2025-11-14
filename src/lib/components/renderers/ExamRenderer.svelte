@@ -1,15 +1,17 @@
 <script lang="ts">
 	/**
-	 * Exam Renderer Component (Task 7)
+	 * Exam Renderer Component (Task 7 + Production Quiz Engine Integration)
 	 *
 	 * Displays exam content with:
 	 * - Type-specific header with red gradient and exam icon (🎯)
-	 * - Exam system integration (placeholder for Task 8I)
+	 * - Full production quiz engine with all 6 question types
+	 * - Exam-specific configuration (formal assessment: hides results, no retry)
 	 *
 	 * Architecture:
 	 * - Svelte 5 runes syntax
 	 * - Union type-first patterns
 	 * - ContentHeader shared component
+	 * - QuizEngine encapsulated component (handles all exam logic)
 	 *
 	 * @component ExamRenderer
 	 */
@@ -17,6 +19,7 @@
 	import type { ExamContent } from "$types";
 	import { SETTINGS } from "$config/settings.js";
 	import ContentHeader from "$lib/components/shared/ContentHeader.svelte";
+	import QuizEngine from "$lib/components/content/QuizEngine.svelte";
 
 	interface Props {
 		content: ExamContent;
@@ -45,17 +48,18 @@
 			/>
 
 			<div class="renderer-content">
-				<div class="renderer-placeholder">
-					<p class="renderer-placeholder-text">
-						🎯 <strong>Task 8I:</strong> Exam system integration coming soon
-					</p>
-					{#if content.exam}
-						<p class="renderer-placeholder-text">
-							Duration: {content.duration} min | Passing Score: {content.exam.passingScore}% |
-							Questions: {content.exam.questions.length}
-						</p>
-					{/if}
-				</div>
+				{#if content.exam}
+					<!-- Production Quiz Engine (Task 8J) -->
+					<QuizEngine
+						questionPool={content.exam.questions}
+						config={SETTINGS.content.exam}
+						title={content.title}
+					/>
+				{:else}
+					<div class="renderer-placeholder">
+						<p class="renderer-placeholder-text">🎯 No exam data available for this content.</p>
+					</div>
+				{/if}
 			</div>
 		</article>
 	</div>

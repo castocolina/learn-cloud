@@ -12,8 +12,8 @@
 // =============================================================================
 
 // Import centralized types instead of defining duplicates
-import type { ContentStatus, ContentDifficulty, QuestionType } from "$types";
-import { CONTENT_DIFFICULTIES, QUESTION_TYPES } from "$types";
+import type { ContentStatus, DifficultyLevel, QuestionType } from "$types";
+import { DIFFICULTY_LEVELS, QUESTION_TYPES } from "$types";
 
 /**
  * Quiz categories for topic-based organization
@@ -36,7 +36,7 @@ export interface BaseQuizQuestion {
 	explanation: string;
 	points: number;
 	category: QuizCategory;
-	difficulty: ContentDifficulty;
+	difficulty: DifficultyLevel;
 	tags: string[];
 }
 
@@ -155,7 +155,7 @@ export interface Quiz {
 	title: string;
 	description: string;
 	category: QuizCategory;
-	difficulty: ContentDifficulty;
+	difficulty: DifficultyLevel;
 	estimatedTime: number; // Minutes
 	prerequisites: string[];
 	learningObjectives: string[];
@@ -1812,7 +1812,7 @@ export function getQuizzesByCategory(category: QuizCategory): Quiz[] {
 /**
  * Utility function to get quizzes by difficulty
  */
-export function getQuizzesByDifficulty(difficulty: ContentDifficulty): Quiz[] {
+export function getQuizzesByDifficulty(difficulty: DifficultyLevel): Quiz[] {
 	return allQuizzes.filter((quiz) => quiz.difficulty === difficulty);
 }
 
@@ -1838,7 +1838,7 @@ export function getQuizStatistics() {
 	const stats = {
 		totalQuizzes: allQuizzes.length,
 		byCategory: {} as Record<QuizCategory, number>,
-		byDifficulty: {} as Record<ContentDifficulty, number>,
+		byDifficulty: {} as Record<DifficultyLevel, number>,
 		totalQuestions: 0,
 		averageQuestionsPerQuiz: 0,
 		questionTypes: {} as Record<QuestionType, number>
@@ -1848,7 +1848,7 @@ export function getQuizStatistics() {
 	Object.values(QuizCategory).forEach((category) => {
 		stats.byCategory[category] = 0;
 	});
-	CONTENT_DIFFICULTIES.forEach((difficulty) => {
+	DIFFICULTY_LEVELS.forEach((difficulty) => {
 		stats.byDifficulty[difficulty] = 0;
 	});
 	QUESTION_TYPES.forEach((type) => {
@@ -1920,5 +1920,5 @@ export const QUIZ_LIBRARY_METADATA = {
 	lastUpdated: "2024-01-15T22:00:00Z",
 	supportedQuestionTypes: QUESTION_TYPES,
 	supportedCategories: Object.values(QuizCategory),
-	supportedDifficulties: CONTENT_DIFFICULTIES
+	supportedDifficulties: DIFFICULTY_LEVELS
 };

@@ -12,7 +12,7 @@ import type {
 	ChapterType,
 	TechnologyUnit,
 	ProgressStatus,
-	ContentDifficulty
+	DifficultyLevel
 } from "./types.js";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { NavigationItemMetadata } from "./navigation.js";
@@ -71,7 +71,7 @@ export interface SearchableItem {
 		technologyUnit?: TechnologyUnit;
 
 		/** Difficulty level */
-		difficulty?: ContentDifficulty;
+		difficulty?: DifficultyLevel;
 
 		/** Estimated completion time */
 		estimatedTime?: number;
@@ -148,7 +148,7 @@ export interface SearchFilters {
 	tags?: string[];
 
 	/** Difficulty level filter */
-	difficulty?: ContentDifficulty;
+	difficulty?: DifficultyLevel;
 
 	/** Unit ID filter */
 	unitId?: string;
@@ -296,7 +296,7 @@ export interface RawContentItem {
 	tags: string[];
 
 	/** Content difficulty level */
-	difficulty?: ContentDifficulty;
+	difficulty?: DifficultyLevel;
 
 	/** Technology unit classification */
 	technologyUnit?: TechnologyUnit;
@@ -368,7 +368,7 @@ export interface ExtractedFlashcard {
 	category?: string;
 
 	/** Difficulty level */
-	difficulty?: ContentDifficulty;
+	difficulty?: DifficultyLevel;
 }
 
 /**

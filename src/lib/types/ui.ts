@@ -267,7 +267,7 @@ export interface ProgressProps {
 
 import type {
 	ChapterType,
-	ContentDifficulty,
+	DifficultyLevel,
 	TechnologyUnit,
 	ValidationResult as ContentValidationResult
 } from "./types.js";
@@ -296,7 +296,7 @@ export interface ContentHeaderProps {
 	/** Optional estimated time in minutes */
 	estimatedTime?: number;
 	/** Optional difficulty level */
-	difficulty?: ContentDifficulty;
+	difficulty?: DifficultyLevel;
 	/** Optional prerequisites list */
 	prerequisites?: string[];
 	/** Optional learning objectives list */
