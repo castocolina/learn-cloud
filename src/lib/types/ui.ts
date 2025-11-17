@@ -839,3 +839,74 @@ export interface MermaidDiagramProps {
 	 */
 	statePersistenceScope?: "location" | "global";
 }
+
+// =====================================================
+// POPOVER WRAPPER TYPES (TASK 8J)
+// =====================================================
+
+/**
+ * Popover positioning sides
+ * Defines where the popover appears relative to trigger
+ */
+export type PopoverSide = "top" | "bottom" | "left" | "right";
+
+/**
+ * Popover alignment relative to trigger
+ * Controls how popover aligns with trigger element
+ */
+export type PopoverAlign = "start" | "center" | "end";
+
+/**
+ * Popover Content wrapper component props
+ *
+ * Enhanced PopoverContent with automatic Arrow rendering and SETTINGS integration.
+ * Follows Pattern 2 (Complex Wrapper) from WRAPPER-PATTERN-GUIDE.md
+ *
+ * FEATURES:
+ * - Automatic arrow rendering (enabled by default via SETTINGS)
+ * - Z-index hierarchy compliance (var(--z-popover) = 300)
+ * - Collision detection with configurable padding
+ * - Mobile-first responsive behavior
+ * - Touch-friendly (≥44px touch targets)
+ *
+ * USAGE:
+ * import * as Popover from "$lib/components/shared/popover";
+ *
+ * <Popover.Root>
+ *   <Popover.Trigger><Button>Click</Button></Popover.Trigger>
+ *   <Popover.Content side="bottom" showArrow={true}>Content here</Popover.Content>
+ * </Popover.Root>
+ */
+export interface PopoverContentProps {
+	/** Bindable ref to the popover content element */
+	ref?: HTMLElement | null;
+	/** Additional CSS classes */
+	class?: string;
+	/** Positioning side relative to trigger */
+	side?: PopoverSide;
+	/** Offset distance from trigger (in pixels) */
+	sideOffset?: number;
+	/** Alignment relative to trigger */
+	align?: PopoverAlign;
+	/** Alignment offset (in pixels) */
+	alignOffset?: number;
+	/** Collision padding (virtual padding around viewport edges) */
+	collisionPadding?: number | { top?: number; right?: number; bottom?: number; left?: number };
+	/** Enable collision detection (repositions if would overflow) */
+	avoidCollisions?: boolean;
+	/** Boundary element for collision detection (defaults to viewport) */
+	collisionBoundary?: Element | null | Element[];
+	/** Show arrow pointing to trigger */
+	showArrow?: boolean;
+	/** Custom CSS classes for arrow element */
+	arrowClasses?: string;
+	/** Force mount (useful for preventing jump behavior) */
+	forceMount?: boolean;
+	/** Callback when popover closes and auto-focuses trigger (default prevents scroll jump) */
+	onCloseAutoFocus?: (event: Event) => void;
+	/** Popover content (Svelte 5 snippet pattern) */
+	children?: Snippet;
+	/** Allow any additional props (event handlers, data attributes, aria attributes, etc.) */
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	[key: string]: any;
+}

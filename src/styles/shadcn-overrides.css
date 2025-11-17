@@ -226,11 +226,13 @@
 /**
  * Popover Content
  * CRITICAL: Must be 100% opaque for readability
+ * Z-index: Enforces hierarchy (popover: 300 > sidebar: 90)
  */
 [data-slot="popover-content"],
 .popover-content {
 	background-color: hsl(var(--background)) !important;
 	backdrop-filter: none !important;
+	z-index: var(--z-popover) !important;
 }
 
 /**

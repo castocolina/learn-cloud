@@ -444,7 +444,7 @@ export type {
  */
 export { isContentParseResult, isScaffoldingArgs, isCliExecutionResult } from "./scripts.js";
 
-// UI wrapper exports - Wrapper component types (Task 6, Task 7, Task 7B, Task 8F, Task 8G)
+// UI wrapper exports - Wrapper component types (Task 6, Task 7, Task 7B, Task 8F, Task 8G, Task 8J)
 export type {
 	ButtonVariant,
 	ButtonSize,
@@ -458,7 +458,10 @@ export type {
 	RichParagraphProps,
 	ShikiTheme,
 	CodeBlockProps,
-	MermaidDiagramProps
+	MermaidDiagramProps,
+	PopoverContentProps,
+	PopoverSide,
+	PopoverAlign
 } from "./ui.js";
 
 // IconGrid exports - Shared icon grid component types (Task 8D)

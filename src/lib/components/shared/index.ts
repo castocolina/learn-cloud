@@ -8,6 +8,7 @@
  * - Button: Basic wrapper with union types
  * - Dialog: Complex wrapper with SETTINGS and z-index hierarchy
  * - Progress: Configuration wrapper with theme integration
+ * - Popover: Complex wrapper with automatic Arrow rendering (Task 8J)
  *
  * Content Components (production-ready with advanced features):
  * - CodeBlock: Syntax highlighting with Shiki, copy/download/expand features (Task 8F)
@@ -18,6 +19,7 @@
  * Usage:
  * ```typescript
  * import { Button, Dialog, MermaidDiagram, CodeBlock } from "$lib/components/shared";
+ * import * as Popover from "$lib/components/shared/popover";
  * ```
  *
  * Related Documentation:
@@ -31,4 +33,5 @@ export { default as ContentHeader } from "./ContentHeader.svelte";
 export { default as Dialog } from "./Dialog.svelte";
 export { default as MermaidDiagram } from "./MermaidDiagram.svelte";
 export { default as MermaidFullView } from "./MermaidFullView.svelte";
+export * as Popover from "./popover.js";
 export { default as Progress } from "./Progress.svelte";

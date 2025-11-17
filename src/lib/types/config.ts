@@ -869,6 +869,47 @@ export interface AppSettings {
 			};
 		};
 		/**
+		 * Popover Component Configuration (Task 8J)
+		 *
+		 * Settings for Popover component including positioning, offsets, arrow visibility,
+		 * and interaction behavior. Uses shadcn-svelte Popover with bits-ui primitives.
+		 */
+		popover: {
+			/** Default side for popover positioning */
+			defaultSide: "top" | "bottom" | "left" | "right";
+			/** Default side offset in pixels */
+			defaultSideOffset: number;
+			/** Default align positioning */
+			defaultAlign: "start" | "center" | "end";
+			/** Default align offset in pixels */
+			defaultAlignOffset: number;
+			/** Enable arrow by default */
+			showArrow: boolean;
+			/** Arrow size in pixels */
+			arrowSize: number;
+			/** Close on escape key press */
+			closeOnEscape: boolean;
+			/** Close on outside click */
+			closeOnOutsideClick: boolean;
+			/** Minimum touch target size (WCAG 2.1 Level AA) */
+			minTouchTarget: string;
+			/** Default width for popover content */
+			defaultWidth: string;
+			/** Maximum height for popover content */
+			maxHeight: string;
+			/** Content padding */
+			contentPadding: string;
+			/** Collision detection configuration */
+			collision: {
+				/** Enable collision boundary detection */
+				enabled: boolean;
+				/** Padding from viewport edges */
+				boundaryPadding: number;
+				/** Enable sticky positioning during collision */
+				sticky: boolean;
+			};
+		};
+		/**
 		 * Content Layout Configuration
 		 *
 		 * Controls the layout and typography presentation of content articles.

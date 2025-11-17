@@ -969,6 +969,124 @@ export const UI_SETTINGS: AppSettings["ui"] = {
 	},
 
 	/**
+	 * Popover Component Configuration (Task 8J)
+	 *
+	 * Settings for Popover component including positioning, offsets, arrow visibility,
+	 * and interaction behavior. Uses shadcn-svelte Popover with bits-ui primitives.
+	 *
+	 * Reference: src/lib/components/ui/popover/
+	 */
+	popover: {
+		/**
+		 * Default side for popover positioning
+		 * Options: "top", "bottom", "left", "right"
+		 * @default "bottom"
+		 */
+		defaultSide: "bottom" as "top" | "bottom" | "left" | "right",
+
+		/**
+		 * Default side offset in pixels
+		 * Distance from the trigger element
+		 * @default 4
+		 */
+		defaultSideOffset: 4,
+
+		/**
+		 * Default align positioning
+		 * Options: "start", "center", "end"
+		 * @default "center"
+		 */
+		defaultAlign: "center" as "start" | "center" | "end",
+
+		/**
+		 * Default align offset in pixels
+		 * Fine-tune alignment positioning
+		 * @default 0
+		 */
+		defaultAlignOffset: 0,
+
+		/**
+		 * Enable arrow by default
+		 * Provides visual connection between trigger and content
+		 * @default true
+		 */
+		showArrow: true,
+
+		/**
+		 * Arrow size in pixels
+		 * @default 8
+		 */
+		arrowSize: 8,
+
+		/**
+		 * Close on escape key press
+		 * @default true
+		 */
+		closeOnEscape: true,
+
+		/**
+		 * Close on outside click
+		 * Click outside popover content closes it
+		 * @default true
+		 */
+		closeOnOutsideClick: true,
+
+		/**
+		 * Minimum touch target size (WCAG 2.1 Level AA)
+		 * Ensures interactive elements are accessible on touch devices
+		 * @default "44px"
+		 */
+		minTouchTarget: "44px",
+
+		/**
+		 * Default width for popover content
+		 * Can be overridden with className prop
+		 * @default "18rem" (288px)
+		 */
+		defaultWidth: "18rem",
+
+		/**
+		 * Maximum height for popover content
+		 * Enables scrolling for large content
+		 * @default "calc(100vh - 2rem)"
+		 */
+		maxHeight: "calc(100vh - 2rem)",
+
+		/**
+		 * Content padding
+		 * Default padding for popover content
+		 * @default "1rem" (16px)
+		 */
+		contentPadding: "1rem",
+
+		/**
+		 * Collision detection configuration
+		 * Automatically repositions popover when it would overflow viewport
+		 */
+		collision: {
+			/**
+			 * Enable collision boundary detection
+			 * @default true
+			 */
+			enabled: true,
+
+			/**
+			 * Padding from viewport edges
+			 * Minimum distance to maintain from screen edges
+			 * @default 16
+			 */
+			boundaryPadding: 16,
+
+			/**
+			 * Enable sticky positioning during collision
+			 * Keeps popover visible when scrolling
+			 * @default false
+			 */
+			sticky: false as const
+		}
+	},
+
+	/**
 	 * Content Layout Configuration
 	 *
 	 * Controls how content articles are displayed for optimal readability.
