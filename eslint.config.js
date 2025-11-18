@@ -77,6 +77,8 @@ export const ESLINT_IGNORE_PATTERNS = [
 	"src/routes/demo/**", // Demo routes (will be removed)
 	"src/lib/components/ThemeSwitch.svelte", // Technical debt - TASK 8F
 	"src/lib/components/search/SearchBox.svelte", // Technical debt - TASK 8D
+	".claude/hooks/**/*.cjs", // CommonJS hooks (formatted by Prettier only, not ESLint)
+	".claude/skills/**/__tests__/**", // Skill tests (use vitest's TypeScript checking, not ESLint's projectService)
 	"src/lib/components/search/SearchModal.svelte", // Technical debt - TASK 8D
 	"src/lib/components/search/SearchFilters.svelte", // Technical debt - TASK 8D
 	"src/lib/components/search/SearchResults.svelte", // Technical debt - TASK 8D

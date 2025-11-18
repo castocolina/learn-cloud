@@ -139,6 +139,229 @@ export interface ContentSettings {
 }
 
 /**
+ * Agent Settings - Automated Agent Behaviors
+ *
+ * Configuration for automated agents that enhance development workflows.
+ * Includes validation agents, component integration agents, and test quality agents.
+ */
+export interface AgentsSettings {
+	/** Validation agent configuration */
+	validation: {
+		/** Auto-trigger validation when files change */
+		autoTriggerOnFileChange: boolean;
+		/** Block completion if validation fails */
+		blockCompletionOnFailure: boolean;
+		/** Timeout configurations for three-tiered validation strategy */
+		tiers: {
+			/** Tier 1: Fast WIP check (modified files only) in milliseconds */
+			tier1Timeout: number;
+			/** Tier 2: Quality checks (theme + unit tests) in milliseconds */
+			tier2Timeout: number;
+			/** Tier 3: Comprehensive checks (format + lint + check) in milliseconds */
+			tier3Timeout: number;
+		};
+	};
+	/** Component integration agent configuration */
+	componentIntegration: {
+		/** Auto-trigger component integration checks after component creation/modification */
+		autoTriggerAfterComponent: boolean;
+		/** Required checks that must pass for component integration */
+		requiredChecks: string[];
+	};
+	/** Test quality agent configuration */
+	testQuality: {
+		/** Enforce TestSetup pattern for isolated test environments */
+		enforceTestSetupPattern: boolean;
+		/** Enforce generateConfigId() usage for parallel-safe test IDs */
+		enforceGenerateConfigId: boolean;
+		/** Enforce wait utilities (waitFor, waitForElement) in E2E tests */
+		enforceWaitUtilities: boolean;
+		/** Disallow waitForTimeout() in E2E tests */
+		noWaitForTimeout: boolean;
+		/** Minimum test coverage percentage for new features */
+		minCoverage: number;
+		/** Auto-block test-architect completion if quality checks fail */
+		autoBlockOnFailure: boolean;
+	};
+	/** TypeScript refactor agent configuration */
+	tsRefactor: {
+		/** AST manipulation configuration */
+		ast: {
+			/** Preserve original code formatting during AST transformations */
+			preserveFormatting: boolean;
+			/** Validate TypeScript compilation after AST changes */
+			validateAfter: boolean;
+			/** Create backup before performing AST refactoring */
+			backupBeforeRefactor: boolean;
+			/** Maximum files to process in a single batch */
+			maxFilesPerBatch: number;
+		};
+		/** ts-morph library configuration */
+		tsmorph: {
+			/** TypeScript compiler options for ts-morph project */
+			compilerOptions: {
+				/** ECMAScript target version */
+				target: "ES2022";
+				/** Module system */
+				module: "ESNext";
+				/** Enable all strict type-checking options */
+				strict: boolean;
+			};
+		};
+	};
+	/** Content guardian agent configuration */
+	contentGuardian: {
+		/** Auto-trigger content validation after content creation/modification */
+		autoTriggerAfterContentChange: boolean;
+		/** Blocking level for content validation */
+		blockingLevel: {
+			/** Allow draft content with warnings */
+			draft: boolean;
+			/** Block final content with violations */
+			final: boolean;
+		};
+		/** Content status lifecycle validation */
+		statusLifecycle: {
+			/** Validate scaffold → draft transition */
+			validateScaffoldToDraft: boolean;
+			/** Validate draft → final transition */
+			validateDraftToFinal: boolean;
+		};
+		/** Interactive component standards */
+		interactiveStandards: {
+			/** Quiz standards */
+			quiz: {
+				/** Number of questions per quiz */
+				questionCount: number;
+				/** Passing score percentage */
+				passingScore: number;
+			};
+			/** Study guide standards */
+			studyGuide: {
+				/** Minimum flashcards required */
+				minFlashcards: number;
+			};
+			/** Code completion question standards */
+			codeCompletion: {
+				/** Exactly 5 underscores per blank */
+				underscoreCount: number;
+			};
+		};
+		/** Educational quality requirements */
+		qualityRequirements: {
+			/** Minimum sections for final lesson content */
+			minLessonSections: number;
+			/** Require specific, measurable learning objectives */
+			requireMeasurableObjectives: boolean;
+			/** Require secure-by-default code examples */
+			requireSecureCodeExamples: boolean;
+			/** Validate estimated time is realistic */
+			validateEstimatedTime: boolean;
+		};
+	};
+	/** Mermaid validator agent configuration */
+	mermaidValidator: {
+		/** Auto-trigger Mermaid validation after diagram creation/modification */
+		autoTriggerAfterDiagramChange: boolean;
+		/** Use mmdc (Mermaid CLI) for server-side validation */
+		useMmdcValidation: boolean;
+		/** Best practice enforcement level */
+		bestPracticeLevel: "strict" | "recommended";
+		/** Syntax validation requirements */
+		syntaxValidation: {
+			/** Enforce double quotes on all node text */
+			enforceDoubleQuotes: boolean;
+			/** Warn about HTML entities */
+			warnHtmlEntities: boolean;
+			/** Validate bracket syntax consistency */
+			validateBracketSyntax: boolean;
+			/** Enforce quote escaping within text */
+			enforceQuoteEscaping: boolean;
+		};
+		/** Mobile optimization preferences */
+		mobileOptimization: {
+			/** Prefer Left-to-Right layout for mobile */
+			preferLRLayout: boolean;
+			/** Warn when using Top-Down layout */
+			warnTDLayout: boolean;
+			/** Test diagrams at mobile viewport width */
+			mobileViewportWidth: number;
+		};
+		/** TypeScript integration requirements */
+		typeScriptIntegration: {
+			/** Valid property names for diagram definitions */
+			validPropertyNames: readonly string[];
+			/** Validate all exported diagram objects */
+			validateExportedDiagrams: boolean;
+		};
+		/** Component integration requirements */
+		componentRequirements: {
+			/** Require expand functionality (modal) */
+			requireExpandButton: boolean;
+			/** Require debug mode support */
+			requireDebugMode: boolean;
+			/** Require error handling and fallback UI */
+			requireErrorHandling: boolean;
+			/** Require orphaned element cleanup */
+			requireCleanup: boolean;
+			/** Require ARIA labels for accessibility */
+			requireAriaLabels: boolean;
+		};
+		/** Validation blocking behavior */
+		blockOnFailure: boolean;
+	};
+}
+
+/**
+ * Requirements Settings - Task Atomicity & Subdivision
+ *
+ * Configuration for requirement atomicity thresholds and subdivision strategies.
+ * Ensures tasks remain manageable and focused.
+ */
+export interface RequirementsSettings {
+	/** Atomicity threshold configurations */
+	atomicityThreshold: {
+		/** Maximum lines of code for a single requirement implementation */
+		maxLines: number;
+		/** Maximum files affected by a single requirement */
+		maxFiles: number;
+		/** Maximum cyclomatic complexity per requirement (1-5 scale) */
+		maxComplexity: number;
+		/** Maximum estimated effort in hours */
+		maxEffortHours: number;
+		/** Maximum dependencies on other requirements */
+		maxDependencies: number;
+	};
+	/** Subdivision strategy when atomicity thresholds are exceeded */
+	subdivisionStrategy: "consolidate-if-under-500-lines" | "always-subdivide" | "complexity-based";
+}
+
+/**
+ * MCP Settings - Model Context Protocol Configuration
+ *
+ * Configuration for external MCP servers providing enhanced agent capabilities.
+ * Includes npm registry and GitHub integrations.
+ */
+export interface MCPsSettings {
+	/** npm registry MCP configuration */
+	npm: {
+		/** Enable npm registry MCP integration */
+		enabled: boolean;
+		/** Minimum weekly downloads threshold for package evaluation */
+		minWeeklyDownloads: number;
+		/** Maximum months since last publish for package evaluation */
+		maxLastPublishMonths: number;
+	};
+	/** GitHub MCP configuration */
+	github: {
+		/** Enable GitHub MCP integration */
+		enabled: boolean;
+		/** Require active repository for package evaluation */
+		requireActiveRepo: boolean;
+	};
+}
+
+/**
  * Scripts Settings - Build/Generation Configuration
  *
  * Configuration for CLI tools, scaffolding, validation, and build processes.
@@ -459,6 +682,15 @@ export interface ScriptsSettings {
  * This interface groups all application parameters by functional domain.
  */
 export interface AppSettings {
+	/** Agent behaviors configuration (extracted to AgentsSettings) */
+	agents: AgentsSettings;
+
+	/** Requirements atomicity configuration (extracted to RequirementsSettings) */
+	requirements: RequirementsSettings;
+
+	/** MCP integration configuration (extracted to MCPsSettings) */
+	mcps: MCPsSettings;
+
 	/** User interface configuration */
 	ui: {
 		/**

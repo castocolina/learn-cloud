@@ -36,7 +36,8 @@ export default defineConfig({
 					include: [
 						"**/scripts/**/*.test.ts",
 						"**/lib/services/**/*.test.ts",
-						"**/schemas-external.test.ts"
+						"**/schemas-external.test.ts",
+						".claude/skills/**/__tests__/*.test.ts"
 					],
 					exclude: ["node_modules/", "dist/", ".svelte-kit/", "tmp/", "src/test/e2e/**"]
 				}

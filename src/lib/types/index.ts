@@ -213,6 +213,9 @@ export type {
 	UISettings,
 	ScriptsSettings,
 	ContentSettings,
+	AgentsSettings,
+	RequirementsSettings,
+	MCPsSettings,
 	ContentLayoutMode,
 	ContentMaxWidth,
 	ContentPadding

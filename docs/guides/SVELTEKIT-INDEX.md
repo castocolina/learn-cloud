@@ -4,9 +4,13 @@
 
 > **📚 Related Project Documentation:**
 >
-> - [CLAUDE.md](../CLAUDE.md) - Core project rules and agent implementation guidelines
-> - [CONTENT-STANDARDS.md](../CONTENT-STANDARDS.md) - Content creation workflows and quality assurance standards
-> - [WRAPPER-PATTERN-GUIDE.md](./WRAPPER-PATTERN-GUIDE.md) - Component wrapper development patterns
+> - [CLAUDE.md](../../CLAUDE.md) - Core project rules and agent implementation guidelines
+> - [Content Standards](../standards/CONTENT-STANDARDS.md) - Content creation workflows and quality assurance standards
+> - [Development Guides](../development/README.md) - Development workflows, testing patterns, and best practices
+> - [Testing Guide](../testing/README.md) - Comprehensive testing strategies and infrastructure
+> - [Agent Specifications](../agents/README.md) - Automated agent behaviors and validation rules
+> - [Requirements & Tasks](../reqs/README.md) - Project requirements and task management
+> - [Wrapper Pattern Guide](./WRAPPER-PATTERN-GUIDE.md) - Component wrapper development patterns
 
 ---
 
@@ -230,23 +234,26 @@
 | `@layer components`      | [STYLING](./SVELTE-STYLING.md)                       | CSS Architecture Standards           |
 | `:global()` scoping      | [STYLING](./SVELTE-STYLING.md)                       | CSS Architecture Standards           |
 | Accessibility            | [TROUBLESHOOTING-UX](./SVELTE-TROUBLESHOOTING-UX.md) | Interactive Element Requirements     |
+| Agents                   | [Agent Specs](../agents/README.md)                   | Automated Validation & Integration   |
 | Breadcrumbs              | [TROUBLESHOOTING-UX](./SVELTE-TROUBLESHOOTING-UX.md) | Navigation Standards                 |
 | CSS precedence           | [STYLING](./SVELTE-STYLING.md)                       | CSS Precedence & Override Hierarchy  |
 | CSS variables            | [STYLING](./SVELTE-STYLING.md)                       | CSS Variable System                  |
 | Dark mode                | [ARCHITECTURE](./SVELTE-ARCHITECTURE.md)             | Theme System Architecture            |
-| Dependencies             | [DEVELOPMENT](./SVELTE-DEVELOPMENT.md)               | Dependency Evaluation & Installation |
+| Dependencies             | [Development](../development/README.md)              | Dependency Evaluation & Installation |
 | Derived state            | [COMPONENTS](./SVELTE-COMPONENTS.md)                 | Svelte 5 Reactive Collections        |
+| E2E Testing              | [Testing](../testing/README.md)                      | Playwright E2E Tests                 |
 | File structure           | [ARCHITECTURE](./SVELTE-ARCHITECTURE.md)             | File Structure Deep Dive             |
 | Flexbox + Grid           | [STYLING](./SVELTE-STYLING.md)                       | Flexbox + Grid Hybrid Layout         |
-| Import patterns          | [DEVELOPMENT](./SVELTE-DEVELOPMENT.md)               | Type Safety & Import Patterns        |
+| Import patterns          | [Development](../development/README.md)              | Type Safety & Import Patterns        |
 | Inline styles            | [STYLING](./SVELTE-STYLING.md)                       | CSS Architecture Standards           |
 | Layout proportions       | [STYLING](./SVELTE-STYLING.md)                       | Configurable Layout Proportions      |
 | lucide-svelte            | [ARCHITECTURE](./SVELTE-ARCHITECTURE.md)             | Icons                                |
 | Mobile-first             | [TROUBLESHOOTING-UX](./SVELTE-TROUBLESHOOTING-UX.md) | Mobile-First Design                  |
 | Modals                   | [TROUBLESHOOTING-UX](./SVELTE-TROUBLESHOOTING-UX.md) | Modal System                         |
 | Navigation               | [COMPONENTS](./SVELTE-COMPONENTS.md)                 | Global Navigation Architecture       |
-| Prettier                 | [DEVELOPMENT](./SVELTE-DEVELOPMENT.md)               | Prettier Integration Patterns        |
+| Prettier                 | [Development](../development/README.md)              | Prettier Integration Patterns        |
 | Props                    | [COMPONENTS](./SVELTE-COMPONENTS.md)                 | TypeScript Interface Standards       |
+| Requirements             | [Requirements](../reqs/README.md)                    | Atomicity & Task Management          |
 | Runes ($state, $derived) | [ARCHITECTURE](./SVELTE-ARCHITECTURE.md)             | Svelte 5 Critical Syntax             |
 | Settings configuration   | [COMPONENTS](./SVELTE-COMPONENTS.md)                 | Global Configuration Strategy        |
 | shadcn-svelte            | [ARCHITECTURE](./SVELTE-ARCHITECTURE.md)             | UI Components                        |
@@ -254,10 +261,11 @@
 | Stacking context         | [STYLING](./SVELTE-STYLING.md)                       | Z-Index Hierarchy Standards          |
 | SvelteMap                | [COMPONENTS](./SVELTE-COMPONENTS.md)                 | Svelte 5 Reactive Collections        |
 | Tailwind CSS v4          | [STYLING](./SVELTE-STYLING.md)                       | CSS Architecture Standards           |
-| Testing                  | [DEVELOPMENT](./SVELTE-DEVELOPMENT.md)               | Test Isolation & TestSetup Patterns  |
+| Testing                  | [Testing](../testing/README.md)                      | Test Isolation & TestSetup Patterns  |
 | Theme system             | [ARCHITECTURE](./SVELTE-ARCHITECTURE.md)             | Theme System Architecture            |
 | TypeScript types         | [COMPONENTS](./SVELTE-COMPONENTS.md)                 | Unified TypeScript Architecture      |
-| Validation               | [ARCHITECTURE](./SVELTE-ARCHITECTURE.md)             | CRITICAL TESTING REQUIREMENT         |
+| Unit Testing             | [Testing](../testing/README.md)                      | Vitest Unit Tests                    |
+| Validation               | [Testing](../testing/README.md)                      | Three-Tiered Validation Strategy     |
 | Z-index                  | [STYLING](./SVELTE-STYLING.md)                       | Z-Index Hierarchy Standards          |
 
 ---
@@ -269,7 +277,7 @@
 | Task                      | Recommended Guide                                                                                 |
 | ------------------------- | ------------------------------------------------------------------------------------------------- |
 | Setting up new project    | [SVELTE-ARCHITECTURE.md](./SVELTE-ARCHITECTURE.md)                                                |
-| Installing dependencies   | [SVELTE-DEVELOPMENT.md](./SVELTE-DEVELOPMENT.md) → Dependency Evaluation                          |
+| Installing dependencies   | [Development Guide](../development/README.md) → Dependency Evaluation                             |
 | Creating new component    | [SVELTE-COMPONENTS.md](./SVELTE-COMPONENTS.md) → Component Architecture Patterns                  |
 | Styling component         | [SVELTE-STYLING.md](./SVELTE-STYLING.md) → CSS Architecture Standards                             |
 | Layout issues             | [SVELTE-STYLING.md](./SVELTE-STYLING.md) → Flexbox + Grid Hybrid Layout                           |
@@ -277,7 +285,7 @@
 | CSS precedence problems   | [SVELTE-STYLING.md](./SVELTE-STYLING.md) → CSS Precedence & Override Hierarchy                    |
 | TypeScript errors         | [SVELTE-COMPONENTS.md](./SVELTE-COMPONENTS.md) → TypeScript Interface Standards                   |
 | Type imports              | [SVELTE-COMPONENTS.md](./SVELTE-COMPONENTS.md) → Unified TypeScript Architecture                  |
-| Writing tests             | [SVELTE-DEVELOPMENT.md](./SVELTE-DEVELOPMENT.md) → Test Isolation & TestSetup                     |
+| Writing tests             | [Testing Guide](../testing/README.md) → Test Isolation & TestSetup                                |
 | Configuration values      | [SVELTE-COMPONENTS.md](./SVELTE-COMPONENTS.md) → Global Configuration Strategy                    |
 | Build failures            | [SVELTE-TROUBLESHOOTING-UX.md](./SVELTE-TROUBLESHOOTING-UX.md) → Common Troubleshooting           |
 | Mobile responsive         | [SVELTE-TROUBLESHOOTING-UX.md](./SVELTE-TROUBLESHOOTING-UX.md) → Mobile-First Design              |
@@ -285,6 +293,8 @@
 | Svelte 5 migration        | [SVELTE-TROUBLESHOOTING-UX.md](./SVELTE-TROUBLESHOOTING-UX.md) → Svelte 5 Migration Issues        |
 | Theme customization       | [SVELTE-STYLING.md](./SVELTE-STYLING.md) → Theming & Styling                                      |
 | Navigation implementation | [SVELTE-COMPONENTS.md](./SVELTE-COMPONENTS.md) → Global Navigation Architecture                   |
+| Agent integration         | [Agent Specifications](../agents/README.md) → Automated Validation & Integration                  |
+| Task requirements         | [Requirements](../reqs/README.md) → Atomicity & Task Management                                   |
 
 ---
 
@@ -296,7 +306,7 @@
 - **Tier 2 (Quality Checks ~30-90s):** `make validate-quality` - Theme + unit tests
 - **Tier 3 (Comprehensive ~1-3m):** `pnpm run format` + `pnpm run lint` + `pnpm run check`
 
-**See [SVELTE-DEVELOPMENT.md](./SVELTE-DEVELOPMENT.md)** for complete quality standards and testing strategies.
+**See [Testing Guide](../testing/README.md)** for complete quality standards and testing strategies.
 
 ---
 

@@ -1,248 +1,118 @@
 # Agent Rules: Cloud-Native Learning Platform
 
-> **📚 Documentation Structure:**
->
-> - **[SvelteKit Guides](docs/SVELTEKIT-INDEX.md)** - Technical architecture and user experience standards (master index)
->   - [SVELTE-ARCHITECTURE.md](docs/SVELTE-ARCHITECTURE.md) - Core setup and architecture
->   - [SVELTE-STYLING.md](docs/SVELTE-STYLING.md) - CSS architecture and layout
->   - [SVELTE-COMPONENTS.md](docs/SVELTE-COMPONENTS.md) - Component development
->   - [SVELTE-DEVELOPMENT.md](docs/SVELTE-DEVELOPMENT.md) - Development patterns
->   - [SVELTE-TROUBLESHOOTING-UX.md](docs/SVELTE-TROUBLESHOOTING-UX.md) - Troubleshooting & UX
->   - **[TESTING.md](docs/TESTING.md)** - Testing strategies, best practices, and infrastructure
-> - **[CONTENT-STANDARDS.md](CONTENT-STANDARDS.md)** - Content creation workflows and quality assurance standards
+> **📚 Documentation:** [SvelteKit Guides](docs/guides/SVELTEKIT-INDEX.md) · [Development](docs/development/README.md) · [Testing](docs/testing/README.md) · [Standards](docs/standards/) · [Agent Architecture](.claude/AGENT-ARCHITECTURE-SUMMARY.md)
 
 ---
 
 ## CORE PHILOSOPHY: TWO ROWERS IN THE SAME BOAT
 
-**Collaborative Intelligence Model:** User and Agent are equal partners rowing toward a shared destination. Both share responsibility for project success.
+**Collaborative Intelligence:** User and Agent are equal partners. Both share responsibility for project success.
 
 **Question Interpretation (CRITICAL):**
 
-- **User asks "why", "what if", "how about"** → Provide analysis, alternatives, trade-offs. DO NOT implement.
-- **User says "MUST", "DO", "implement"** → Execute as requested (after validation).
+- **"why", "what if", "how about"** → Provide analysis, alternatives, trade-offs. DO NOT implement.
+- **"MUST", "DO", "implement"** → Execute as requested (after validation).
 
-**Strategic Collaboration Requirements:**
+**Strategic Collaboration:**
 
-- **ALWAYS investigate beyond surface level** - root cause analysis mandatory
-- **ALWAYS propose alternatives** unless user uses imperative language
-- **ALWAYS challenge assumptions constructively** - question proposed solutions
-- **NEVER assume questions are action requests** - distinguish inquiry from instruction
+- ALWAYS investigate beyond surface level
+- ALWAYS propose alternatives unless user uses imperative language
+- ALWAYS challenge assumptions constructively
+- NEVER assume questions are action requests
 
 ---
 
-## 1. PROJECT FOUNDATION
+## PROJECT FOUNDATION
 
-### Core Mission
+**Mission:** Production-ready cloud-native learning platform for experienced programmers (Java, PHP) transitioning to cloud-native ecosystem.
 
-**Objective:** Develop a comprehensive, production-ready cloud-native learning platform - not a notes compilation.
+**Agent Role:** World-class IT educator - didactic, clear, encouraging mentor.
 
-**Agent Role:** World-class IT educator - didactic, clear, encouraging mentor bridging experienced programmers into cloud-native ecosystem.
+**Language:** ALL content and interactions MUST be in English.
 
-**Mandatory Language:** ALL content and interactions MUST be in English.
+**Standards:** Follow [CONTENT-STANDARDS.md](docs/standards/CONTENT-STANDARDS.md) and [SvelteKit Guides](docs/guides/SVELTEKIT-INDEX.md).
 
-### Teaching Principles
+**MCP Servers:** See [.mcp.json](.mcp.json) for 5 configured servers (Svelte, Memory, Sequential Thinking, npm-helper, Filesystem).
 
-- **MUST bridge experienced programmers** (Java, PHP, etc.) into cloud-native ecosystem
-- **MUST start with fundamentals** before advancing - strong foundation required
-- **MUST use production-ready, secure-by-default code** in all examples
+---
 
-> **📋 Detailed pedagogy:** See [CONTENT-STANDARDS.md](CONTENT-STANDARDS.md)
+## TECH STACK
 
-### Technical Standards
+- **Svelte 5** (runes: `$state`, `$derived`, `$props`) + **SvelteKit** + **TypeScript** (strict mode)
+- **Tailwind CSS v4** + **shadcn-svelte** (check FIRST before building custom components)
+- **Vitest** (unit) + **Playwright** (E2E - MANDATORY for visual/critical changes)
 
-- **MUST follow** `CONTENT.md` structure (authoritative outline)
-- **MUST cite** official documentation and recognized industry sources
-- **MUST use** recent stable versions of all technologies
+> **📋 Complete specs:** [SVELTE-ARCHITECTURE.md](docs/guides/SVELTE-ARCHITECTURE.md)
 
-> **📋 Complete standards:** See [SvelteKit Guides](docs/SVELTEKIT-INDEX.md) and [CONTENT-STANDARDS.md](CONTENT-STANDARDS.md)
+---
 
-## 2. TECH STACK (MANDATORY VERSIONS)
+## CRITICAL RULES (Non-Negotiable)
 
-**Core Framework:**
+### 1. Quality Gate
 
-- **Svelte 5** - MUST use runes syntax (`$state`, `$derived`, `$props`)
-- **SvelteKit** - Latest stable, file-based routing
-- **TypeScript** - Strict mode mandatory
+```bash
+make check-wip  # Tier 1: Modified files only (5-15s)
+pnpm run test   # Tier 2: Unit tests (30-90s)
+make validate   # Tier 3: Full validation (1-3m)
+```
 
-**Styling & Components:**
+**Zero tolerance:** NO TypeScript errors, NO unused variables, 100% test pass rate.
 
-- **Tailwind CSS v4** - CSS-based configuration, modular architecture
-- **shadcn-svelte** - UI component library (check FIRST before building custom)
+### 2. Svelte 5 Syntax
 
-**Testing:**
+- ✅ Use runes (`$state`, `$derived`, `$props`)
+- ❌ NO deprecated Svelte 4 syntax (`export let`, `$:` reactivity)
 
-- **Vitest** - Unit tests
-- **Playwright** - E2E tests (MANDATORY for visual/critical changes)
-
-> **📋 Complete architecture:** See [SVELTE-ARCHITECTURE.md](docs/SVELTE-ARCHITECTURE.md)
-
-## 3. QUALITY STANDARDS
-
-**Definition:** Project quality = `eslint.config.js` compliance + 100% test pass rate
-
-**Validation Gate (3-Tier Strategy):**
-
-- **Tier 1 (5-15s):** `make check-wip` - modified files only
-- **Tier 2 (30-90s):** `pnpm run test` - unit tests
-- **Tier 3 (1-3m):** `pnpm run format` + `pnpm run lint` + `pnpm run check`
-
-**E2E Testing Requirements:**
-
-- **MANDATORY for:** Visual changes, layout modifications, navigation, critical user flows
-- **Location:** `src/test/e2e/` using Playwright
-- **Naming:** `[feature]-[scenario].spec.ts`
-- **Coverage:** Interactive elements, responsive breakpoints, accessibility
-
-> **📋 Complete workflows:** See [CONTENT-STANDARDS.md](CONTENT-STANDARDS.md) and [MERMAID-STANDARDS.md](MERMAID-STANDARDS.md)
-
-## 4. DEVELOPMENT RULES
-
-### SvelteKit Component Architecture
-
-**ALWAYS:**
-
-- ✅ Use SvelteKit components for ALL UI elements
-- ✅ Check `shadcn-svelte` library FIRST (install: `pnpm dlx shadcn-svelte@latest add [component-name]`)
-- ✅ Use TypeScript interfaces for component props
-- ✅ Use Svelte 5 runes: `$state`, `$derived`, `$props`
-- ✅ Follow file-based routing conventions
-
-**NEVER:**
-
-- ❌ Create vanilla HTML/CSS/JS files for new features
-- ❌ Use inline styles - use modular CSS architecture
-- ❌ Use deprecated Svelte 4 syntax (`export let`, `$:` reactivity)
-
-> **📋 Component patterns:** See [SVELTE-COMPONENTS.md](docs/SVELTE-COMPONENTS.md)
-
-### Type System & Imports
-
-**MUST use centralized type imports:**
+### 3. Type Imports
 
 - ✅ `import type { ContentType } from "$types";` (PREFERRED)
-- ✅ `import type { ContentType } from "$lib/types";` (alternative)
-- ❌ NEVER use direct file imports: `"$lib/types/types.js"`
+- ❌ NEVER `"$lib/types/types.js"`
 
-**Path Aliases:**
+**Aliases:** `$types` → `src/lib/types/`, `$data` → `src/data/`, `$lib` → `src/lib/`, `$config` → `src/config/`
 
-- `$types` → `src/lib/types/`
-- `$data` → `src/data/`
-- `$lib` → `src/lib/`
-- `$config` → `src/config/`
+### 4. Component Architecture
 
-> **📋 Type system architecture:** See [SVELTE-COMPONENTS.md](docs/SVELTE-COMPONENTS.md#unified-typescript-architecture)
+- Check `shadcn-svelte` FIRST: `pnpm dlx shadcn-svelte@latest add [component-name]`
+- NO vanilla HTML/CSS/JS files for new features
+- NO inline styles - use modular CSS architecture
 
-### Content Management
+### 5. Configuration
 
-**MUST use TypeScript data structure:**
+**🚨 ZERO HARDCODED VALUES** - ALL configuration in `src/config/settings.ts`
 
-- Store all content in `src/data/` as TypeScript files
-- Import using `$data` alias: `import { content } from "$data/path";`
-- Use type-safe interfaces for all content
+### 6. Mobile-First
 
-**Task Management:**
+Test mobile (≤390px) BEFORE desktop
 
-- Use TodoWrite tool for multi-step tasks
-- Test mobile (≤390px) BEFORE desktop
+### 7. Library Vetting
 
-> **📋 Content workflows:** See [CONTENT-STANDARDS.md](CONTENT-STANDARDS.md)
+1. Check native framework solutions FIRST
+2. Search npmjs.com + GitHub (publish ≤6 months, 10k+ weekly downloads)
+3. WebSearch to compare alternatives
+4. Document decision in commit/PR
 
-### Configuration
+> **📋 Evaluation matrix:** [Dependency Evaluation](docs/development/dependency-evaluation.md)
 
-**🚨 ZERO HARDCODED VALUES**
+### 8. Content Management
 
-ALL configuration MUST be in `src/config/settings.ts`:
+- Store ALL content in `src/data/` as TypeScript files
+- Import using `$data` alias
+- Use type-safe interfaces
+- Validate: `make validate-content`
 
-- UI: `SETTINGS.ui.*`
-- Scripts: `SETTINGS.scripts.*`
-- Create subcategories as needed
+### 9. Scope
 
-> **📋 Settings architecture:** See [SVELTE-COMPONENTS.md](docs/SVELTE-COMPONENTS.md#global-configuration-strategy)
+- Do what is asked - nothing more, nothing less
+- NEVER create files unless absolutely necessary
+- NEVER create documentation files unless explicitly requested
+- Modify ONLY requested files unless global functionality requires shared resources
 
-### Library Vetting (MANDATORY)
-
-**Before installing ANY npm package:**
-
-1. **Check native framework solutions FIRST** (Svelte 5, SvelteKit, Tailwind v4)
-2. **Search npmjs.com + GitHub**
-   - Last publish ≤6 months ago
-   - 10k+ weekly downloads OR official package
-   - Verify peer dependency compatibility
-3. **Use WebSearch** to compare alternatives
-4. **Document decision** in commit/PR
-
-**Example:** ❌ `zod-to-json-schema` (Zod v3 only) → ✅ Zod v4 native `z.toJSONSchema()`
-
-> **📋 Evaluation matrix:** See [SVELTE-DEVELOPMENT.md](docs/SVELTE-DEVELOPMENT.md#dependency-evaluation--installation-process)
-
-### Development Standards
-
-**Script Organization:**
-
-- Utility scripts: `src/bash/`, `src/python/` (permanent)
-- Temporary: `./tmp/bash/`, `./tmp/python/` (one-off)
-- Test artifacts: `./tmp/test/e2e/`, `./tmp/test/unit/`
-- Run `shellcheck` on bash scripts before completion
-
-**Project Execution:**
+### 10. Project Execution
 
 - **ALWAYS execute from project root** - NEVER use `cd` commands
 - SvelteKit: `pnpm run dev|build|check`
 - Utilities: `make` commands
 
-**File Modification Scope:**
+---
 
-- Modify ONLY requested files unless global functionality requires shared resources
-- Avoid creating docs unless explicitly requested
-
-> **📋 Complete standards:** See [SvelteKit Guides](docs/SVELTEKIT-INDEX.md)
-
-## 5. DOCUMENTATION & LEARNING
-
-**When users provide repeated corrections or fundamental rules:**
-
-- Evaluate for inclusion in this document
-- Document recurring issues (2+ occurrences) as inline comments in affected files
-- Add architecture patterns to relevant SvelteKit guides
-
-**Documentation Distribution:**
-
-- **SvelteKit Guides** (docs/SVELTEKIT-INDEX.md) - Technical architecture, development standards
-  - SVELTE-ARCHITECTURE.md, SVELTE-STYLING.md, SVELTE-COMPONENTS.md, SVELTE-DEVELOPMENT.md, SVELTE-TROUBLESHOOTING-UX.md
-- **CONTENT-STANDARDS.md** - Content workflows, quality assurance
-- **MERMAID-STANDARDS.md** - Diagram rendering, syntax standards
-- **Component Files** - Inline documentation for specific issues
-
-**DO NOT create standalone issue documentation files**
-
-## 6. CRITICAL RULES
-
-**Scope:**
-
-- Do what is asked - nothing more, nothing less
-- NEVER create files unless absolutely necessary
-- ALWAYS prefer editing existing files
-- NEVER create documentation files unless explicitly requested
-
-**Mobile-First Mandate:**
-
-- Test mobile (≤390px) BEFORE desktop
-
-**Zero Tolerance:**
-
-- NO TypeScript errors or warnings
-- NO unused variables (except ShadCN components)
-- NO deprecated components
-- 100% test pass rate
-
-**Validation:**
-
-- Tier 1: `make check-wip` (5-15s)
-- Tier 2: `pnpm run test` (30-90s)
-- Tier 3: `pnpm run format` + `pnpm run lint` + `pnpm run check` (1-3m)
-
-**Content:**
-
-- ALL new features MUST consume TypeScript data from `src/data/` using `$data` alias
-- Use `make validate-content` for JSON structure validation
+**When users provide repeated corrections:** Evaluate for inclusion in this document or relevant guides. Document recurring issues (2+ occurrences) as inline comments in affected files.

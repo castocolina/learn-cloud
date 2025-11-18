@@ -1,0 +1,15 @@
+{
+	"extends": "../../../tsconfig.json",
+	"compilerOptions": {
+		"module": "ESNext",
+		"target": "ESNext",
+		"lib": ["ESNext"],
+		"moduleResolution": "Bundler",
+		"skipLibCheck": true,
+		"strict": true,
+		"esModuleInterop": true,
+		"resolveJsonModule": true
+	},
+	"include": ["scripts/**/*.ts"],
+	"exclude": ["node_modules"]
+}

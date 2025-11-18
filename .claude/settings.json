@@ -1,0 +1,116 @@
+{
+	"permissions": {
+		"allow": [
+			"Bash(python3:*)",
+			"Bash(curl:*)",
+			"Bash(git:*)",
+			"Bash(pnpm:*)",
+			"Bash(make:*)",
+			"Bash(npx:*)",
+			"Bash(npm:*)",
+			"Bash(gh:*)",
+			"Bash(node:*)",
+			"Bash(tsx:*)",
+			"Bash(timeout:*)",
+			"Bash(pkill:*)",
+			"Bash(pgrep:*)",
+			"Bash(wc:*)",
+			"Bash(ls:*)",
+			"Bash(stat:*)",
+			"Bash(chmod:*)",
+			"Bash(sed:*)",
+			"Bash(tee:*)",
+			"Bash(tree:*)",
+			"Bash(unzip:*)",
+			"Bash(echo:*)",
+			"Bash(test:*)",
+			"Bash(time:*)",
+			"Bash(for)",
+			"Bash(do)",
+			"Bash(done)",
+			"Bash(if)",
+			"Bash(then)",
+			"Bash(fi)",
+			"Bash(claude mcp:*)",
+			"Read(./**/*.svelte)",
+			"Write(./**/*.svelte)",
+			"Read(./**/*.ts)",
+			"Write(./**/*.ts)",
+			"Read(./**/*.js)",
+			"Write(./**/*.js)",
+			"Read(./**/*.cjs)",
+			"Write(./**/*.cjs)",
+			"Read(./**/*.json)",
+			"Write(./**/*.json)",
+			"Read(./**/*.md)",
+			"Write(./**/*.md)",
+			"Read(./**/*.sh)",
+			"Write(./**/*.sh)",
+			"Read(./**/*.py)",
+			"Write(./**/*.py)",
+			"Read(.claude/**)",
+			"Read(../**)",
+			"Read(/tmp/**)",
+			"WebSearch",
+			"WebFetch(domain:svelte.dev)",
+			"WebFetch(domain:www.npmjs.com)",
+			"WebFetch(domain:zod.dev)",
+			"WebFetch(domain:www.shadcn-svelte.com)",
+			"WebFetch(domain:ui.shadcn.com)",
+			"WebFetch(domain:www.loopwerk.io)",
+			"WebFetch(domain:www.closingtags.com)",
+			"WebFetch(domain:ishadeed.com)",
+			"WebFetch(domain:m3.material.io)",
+			"WebFetch(domain:www.cssgamelab.com)",
+			"WebFetch(domain:lucide.dev)",
+			"WebFetch(domain:github.com)",
+			"WebFetch(domain:code.claude.com)",
+			"WebFetch(domain:stevekinney.com)",
+			"WebFetch(domain:www.dolthub.com)",
+			"WebFetch(domain:cline.ghost.io)",
+			"WebFetch(domain:bits-ui.com)",
+			"WebFetch(domain:docs.npmjs.com)",
+			"WebFetch(domain:tsx.is)"
+		],
+		"deny": [],
+		"ask": []
+	},
+	"hooks": {
+		"PostToolUse": [
+			{
+				"matcher": "Edit|Write",
+				"hooks": [
+					{
+						"type": "command",
+						"command": ".claude/hooks/post-edit-format.cjs"
+					}
+				]
+			}
+		],
+		"PreToolUse": [
+			{
+				"matcher": "Write|Edit",
+				"hooks": [
+					{
+						"type": "command",
+						"command": ".claude/hooks/pre-write-validation.cjs"
+					}
+				]
+			}
+		],
+		"SessionStart": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": ".claude/hooks/session-start.cjs"
+					}
+				]
+			}
+		]
+	},
+	"statusLine": {
+		"type": "command",
+		"command": ".claude/statusline.sh"
+	}
+}

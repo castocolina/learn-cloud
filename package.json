@@ -52,6 +52,7 @@
 		"@eslint/compat": "^1.2.5",
 		"@eslint/js": "^9.22.0",
 		"@internationalized/date": "^3.9.0",
+		"@jscpd/finder": "^4.0.1",
 		"@lucide/svelte": "^0.544.0",
 		"@mermaid-js/mermaid-cli": "^11.10.1",
 		"@opentelemetry/api": "^1.9.0",
@@ -76,9 +77,11 @@
 		"eslint-import-resolver-typescript": "^4.4.4",
 		"eslint-plugin-import": "^2.32.0",
 		"eslint-plugin-svelte": "^3.13.0",
+		"eslintcc": "^0.8.3",
 		"glob": "^11.0.3",
 		"globals": "^16.0.0",
 		"husky": "^8.0.0",
+		"jscpd": "^4.0.5",
 		"lint-staged": "^16.2.0",
 		"lunr": "^2.3.9",
 		"prettier": "^3.4.2",
@@ -102,6 +105,9 @@
 		"*.{js,ts,svelte,css,md,json}": [
 			"prettier --write",
 			"eslint --fix"
+		],
+		"*.cjs": [
+			"prettier --write"
 		]
 	},
 	"pnpm": {
